@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Interop;
 
 using Vixen.Attributes;
 using Vixen.Data.Value;
@@ -1029,7 +1028,7 @@ namespace VixenModules.Effect.LineDance
 			IntelligentFixtureModule fixtureProperty = GetIntelligentFixtureProperty(_renderNodes[0]);
 
 			// Retrieve the pan function from the fixture
-			FixtureFunction panFunction = fixtureProperty.FixtureSpecification.FunctionDefinitions.FirstOrDefault(fn => fn.FunctionIdentity == Vixen.Data.Value.FunctionIdentity.Pan);
+			FixtureFunction panFunction = fixtureProperty.FixtureSpecification.FunctionDefinitions.FirstOrDefault(fn => fn.FunctionIdentity == FunctionIdentity.Pan);
 
 			// Retrieve the pan limits
 			double panStart = panFunction.RotationLimits.StartPosition;

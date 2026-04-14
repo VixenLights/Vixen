@@ -22,14 +22,14 @@ namespace Common.Controls.ControlsEx.ValueControls
 		/// </summary>
 		public ValueScrollBar()
 		{
-			this.SetStyle(
+			SetStyle(
 				ControlStyles.UserPaint |
 				ControlStyles.AllPaintingInWmPaint |
 				ControlStyles.DoubleBuffer, true);
 
-			this.UpdateElementsLayout();
-			this._tim = new Timer();
-			this._tim.Tick += new EventHandler(_tim_Tick);
+			UpdateElementsLayout();
+			_tim = new Timer();
+			_tim.Tick += new EventHandler(_tim_Tick);
 		}
 
 		#region helper
@@ -66,39 +66,39 @@ namespace Common.Controls.ControlsEx.ValueControls
 		protected override void OnSizeChanged(EventArgs e)
 		{
 			base.OnSizeChanged(e);
-			this.UpdateElementsLayout();
-			this.Refresh();
+			UpdateElementsLayout();
+			Refresh();
 		}
 
 		protected override void OnFontChanged(EventArgs e)
 		{
 			base.OnFontChanged(e);
-			this.UpdateElementsLayout();
-			this.Refresh();
+			UpdateElementsLayout();
+			Refresh();
 		}
 
 		protected override void OnSetMaximum()
 		{
-			this.UpdateElementsLayout();
-			this.Refresh();
+			UpdateElementsLayout();
+			Refresh();
 		}
 
 		protected override void OnSetMinimum()
 		{
-			this.UpdateElementsLayout();
-			this.Refresh();
+			UpdateElementsLayout();
+			Refresh();
 		}
 
 		protected override void OnBeforeSetValue(int newvalue)
 		{
-			this.Invalidate(_elems[2].Bounds);
+			Invalidate(_elems[2].Bounds);
 		}
 
 		protected override void OnAfterSetValue()
 		{
 			UpdateTrackerPosition();
-			this.Invalidate(_elems[2].Bounds);
-			this.Update();
+			Invalidate(_elems[2].Bounds);
+			Update();
 		}
 
 		#endregion
@@ -107,14 +107,14 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (!this.Enabled || e.Button != MouseButtons.Left) return;
-			_selection = this.HitElement(e.X, e.Y);
+			if (!Enabled || e.Button != MouseButtons.Left) return;
+			_selection = HitElement(e.X, e.Y);
 			switch (_selection) {
 				case 0:
-					this.OnSpinDown();
+					OnSpinDown();
 					break;
 				case 1:
-					this.OnSpinUp();
+					OnSpinUp();
 					break;
 				case 2:
 					_offsetx = e.X - _elems[2].Bounds.X;
@@ -125,61 +125,61 @@ namespace Common.Controls.ControlsEx.ValueControls
 					_offsetx = _elems[2].Bounds.Width/2;
 					_offsety = _elems[2].Bounds.Height/2;
 					_elems[2].State = ElementState.pushed;
-					this.SetPosition(e.X - _offsetx, e.Y - _offsety);
+					SetPosition(e.X - _offsetx, e.Y - _offsety);
 					return;
 			}
 			_elems[_selection].State = ElementState.pushed;
-			this.Refresh(_elems[_selection].Bounds);
+			Refresh(_elems[_selection].Bounds);
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			if (!this.Enabled) return;
+			if (!Enabled) return;
 			if (e.Button == MouseButtons.None) {
-				int sel = this.HitElement(e.X, e.Y);
+				int sel = HitElement(e.X, e.Y);
 				if (sel == _selection) return;
 				if (sel != -1) {
 					_elems[sel].State = ElementState.hot;
-					this.Invalidate(_elems[sel].Bounds);
+					Invalidate(_elems[sel].Bounds);
 				}
 				if (_selection != -1) {
 					_elems[_selection].State = ElementState.normal;
-					this.Invalidate(_elems[_selection].Bounds);
+					Invalidate(_elems[_selection].Bounds);
 				}
 				_selection = sel;
-				this.Update();
+				Update();
 			}
 			else if (_selection == 2 && e.Button == MouseButtons.Left) {
-				this.SetPosition(e.X - _offsetx, e.Y - _offsety);
+				SetPosition(e.X - _offsetx, e.Y - _offsety);
 			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-			if (!this.Enabled || e.Button != MouseButtons.Left || _selection == -1) return;
-			this.OnButtonUp();
-			int sel = this.HitElement(e.X, e.Y);
+			if (!Enabled || e.Button != MouseButtons.Left || _selection == -1) return;
+			OnButtonUp();
+			int sel = HitElement(e.X, e.Y);
 			if (sel == _selection) {
 				_elems[_selection].State = ElementState.hot;
 			}
 			else if (sel != -1) {
 				_elems[_selection].State = ElementState.normal;
 				_elems[sel].State = ElementState.hot;
-				this.Invalidate(_elems[sel].Bounds);
+				Invalidate(_elems[sel].Bounds);
 			}
 			else {
 				_elems[_selection].State = ElementState.normal;
 			}
-			this.Invalidate(_elems[_selection].Bounds);
-			this.Update();
+			Invalidate(_elems[_selection].Bounds);
+			Update();
 		}
 
 		protected override void OnMouseLeave(EventArgs e)
 		{
-			if (!this.Enabled) return;
+			if (!Enabled) return;
 			if (_selection != -1) {
 				_elems[_selection].State = ElementState.normal;
-				this.Refresh(_elems[_selection].Bounds);
+				Refresh(_elems[_selection].Bounds);
 				_selection = -1;
 			}
 		}
@@ -187,12 +187,12 @@ namespace Common.Controls.ControlsEx.ValueControls
 		protected override void OnEnabledChanged(EventArgs e)
 		{
 			base.OnEnabledChanged(e);
-			if (!this.Enabled) this._tim.Stop();
-			ElementState state = this.Enabled ? ElementState.normal : ElementState.disabled;
+			if (!Enabled) _tim.Stop();
+			ElementState state = Enabled ? ElementState.normal : ElementState.disabled;
 			for (int i = 0; i < _elems.Length; i++)
 				_elems[i].State = state;
 			_selection = -1;
-			this.Refresh();
+			Refresh();
 		}
 
 		private void OnSpinUp()
@@ -200,7 +200,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 			if (SetValueCore(Value + 1))
 				RaiseValueChanged();
 			_tim.Interval = 400;
-			this._tim.Start();
+			_tim.Start();
 		}
 
 		private void OnSpinDown()
@@ -208,32 +208,32 @@ namespace Common.Controls.ControlsEx.ValueControls
 			if (SetValueCore(Value - 1))
 				RaiseValueChanged();
 			_tim.Interval = 400;
-			this._tim.Start();
+			_tim.Start();
 		}
 
 		private void OnButtonUp()
 		{
-			this._tim.Stop();
+			_tim.Stop();
 		}
 
 		private void _tim_Tick(object sender, EventArgs e)
 		{
-			this._tim.Interval = Math.Max(10, this._tim.Interval/2);
+			_tim.Interval = Math.Max(10, _tim.Interval/2);
 			switch (_selection) {
 				case 1:
 					if (!SetValueCore(Value + 1))
-						this._tim.Stop();
+						_tim.Stop();
 					else
 						RaiseValueChanged();
 					break;
 				case 0:
 					if (!SetValueCore(Value - 1))
-						this._tim.Stop();
+						_tim.Stop();
 					else
 						RaiseValueChanged();
 					break;
 				default:
-					this._tim.Stop();
+					_tim.Stop();
 					break;
 			}
 		}
@@ -247,11 +247,11 @@ namespace Common.Controls.ControlsEx.ValueControls
 	{
 		protected override void UpdateElementsLayout()
 		{
-			_elems[0].Bounds = new Rectangle(0, 0, SystemInformation.HorizontalScrollBarHeight, this.Height);
+			_elems[0].Bounds = new Rectangle(0, 0, SystemInformation.HorizontalScrollBarHeight, Height);
 			_elems[1].Bounds = Rectangle.FromLTRB(
-				this.Width - _elems[0].Bounds.Width, 0, this.Width, this.Height);
-			_elems[2].Bounds.Height = this.Height;
-			using (Graphics gr = this.CreateGraphics()) {
+				Width - _elems[0].Bounds.Width, 0, Width, Height);
+			_elems[2].Bounds.Height = Height;
+			using (Graphics gr = CreateGraphics()) {
 				float width = Math.Max(
 					gr.MeasureString(Maximum.ToString(), base.Font).Width,
 					gr.MeasureString(Minimum.ToString(), base.Font).Width) + 4f;
@@ -276,35 +276,35 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			IntPtr data = Win32.OpenThemeData2(this.Handle, "Scrollbar");
+			IntPtr data = Win32.OpenThemeData2(Handle, "Scrollbar");
 			if (data != IntPtr.Zero) //mit xp themes
 			{
 				IntPtr hdc = e.Graphics.GetHdc();
-				Win32.RECT rct = new Win32.RECT(0, 0, this.Width, this.Height);
+				Win32.RECT rct = new Win32.RECT(0, 0, Width, Height);
 				Win32.DrawThemeBackground2(data, hdc, 4, 4, ref rct);
-				rct = base._elems[0].Bounds;
+				rct = _elems[0].Bounds;
 				rct.Top--;
-				Win32.DrawThemeBackground2(data, hdc, 1, (int) base._elems[0].State + 8, ref rct);
-				rct = base._elems[1].Bounds;
+				Win32.DrawThemeBackground2(data, hdc, 1, (int) _elems[0].State + 8, ref rct);
+				rct = _elems[1].Bounds;
 				rct.Top--;
-				Win32.DrawThemeBackground2(data, hdc, 1, (int) base._elems[1].State + 12, ref rct);
-				rct = base._elems[2].Bounds;
+				Win32.DrawThemeBackground2(data, hdc, 1, (int) _elems[1].State + 12, ref rct);
+				rct = _elems[2].Bounds;
 				rct.Top--;
-				Win32.DrawThemeBackground2(data, hdc, 2, (int) base._elems[2].State, ref rct);
+				Win32.DrawThemeBackground2(data, hdc, 2, (int) _elems[2].State, ref rct);
 				e.Graphics.ReleaseHdc(hdc);
 				Win32.CloseThemeData2(data);
 			}
 			else //ohne xpthemes, einfache rechtecke
 			{
-				e.Graphics.FillRectangle(SystemBrushes.ControlLightLight, this.ClientRectangle);
-				ControlPaint.DrawScrollButton(e.Graphics, base._elems[0].Bounds, ScrollButton.Left, base._elems[0].ToButtonState());
-				ControlPaint.DrawScrollButton(e.Graphics, base._elems[1].Bounds, ScrollButton.Right, base._elems[1].ToButtonState());
-				ControlPaint.DrawButton(e.Graphics, base._elems[2].Bounds, ButtonState.Normal);
+				e.Graphics.FillRectangle(SystemBrushes.ControlLightLight, ClientRectangle);
+				ControlPaint.DrawScrollButton(e.Graphics, _elems[0].Bounds, ScrollButton.Left, _elems[0].ToButtonState());
+				ControlPaint.DrawScrollButton(e.Graphics, _elems[1].Bounds, ScrollButton.Right, _elems[1].ToButtonState());
+				ControlPaint.DrawButton(e.Graphics, _elems[2].Bounds, ButtonState.Normal);
 			}
 			using (StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap)) {
 				fmt.LineAlignment = fmt.Alignment = StringAlignment.Center;
-				e.Graphics.DrawString(base.Value.ToString(), base.Font,
-				                      this.Enabled ? Brushes.Black : Brushes.Gray, base._elems[2].Bounds, fmt);
+				e.Graphics.DrawString(Value.ToString(), base.Font,
+				                      Enabled ? Brushes.Black : Brushes.Gray, _elems[2].Bounds, fmt);
 			}
 		}
 	}
@@ -313,11 +313,11 @@ namespace Common.Controls.ControlsEx.ValueControls
 	{
 		protected override void UpdateElementsLayout()
 		{
-			_elems[0].Bounds = new Rectangle(0, 0, this.Width, SystemInformation.VerticalScrollBarWidth);
+			_elems[0].Bounds = new Rectangle(0, 0, Width, SystemInformation.VerticalScrollBarWidth);
 			_elems[1].Bounds = Rectangle.FromLTRB(0,
-			                                      this.Height - _elems[0].Bounds.Height, this.Width, this.Height);
-			_elems[2].Bounds.Width = this.Width;
-			using (Graphics gr = this.CreateGraphics()) {
+			                                      Height - _elems[0].Bounds.Height, Width, Height);
+			_elems[2].Bounds.Width = Width;
+			using (Graphics gr = CreateGraphics()) {
 				float height = Math.Max(
 					gr.MeasureString(Maximum.ToString(), base.Font).Width,
 					gr.MeasureString(Minimum.ToString(), base.Font).Width) + 4f;
@@ -342,40 +342,40 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			IntPtr data = Win32.OpenThemeData2(this.Handle, "Scrollbar");
+			IntPtr data = Win32.OpenThemeData2(Handle, "Scrollbar");
 			if (data != IntPtr.Zero) //mit xp themes
 			{
 				IntPtr hdc = e.Graphics.GetHdc();
-				Win32.RECT rct = new Win32.RECT(0, 0, this.Width, this.Height);
+				Win32.RECT rct = new Win32.RECT(0, 0, Width, Height);
 				Win32.DrawThemeBackground2(data, hdc, 6, 2, ref rct);
-				rct = base._elems[0].Bounds;
+				rct = _elems[0].Bounds;
 				rct.Left--;
-				Win32.DrawThemeBackground2(data, hdc, 1, (int) base._elems[0].State, ref rct);
-				rct = base._elems[1].Bounds;
+				Win32.DrawThemeBackground2(data, hdc, 1, (int) _elems[0].State, ref rct);
+				rct = _elems[1].Bounds;
 				rct.Left--;
-				Win32.DrawThemeBackground2(data, hdc, 1, (int) base._elems[1].State + 4, ref rct);
-				rct = base._elems[2].Bounds;
+				Win32.DrawThemeBackground2(data, hdc, 1, (int) _elems[1].State + 4, ref rct);
+				rct = _elems[2].Bounds;
 				rct.Left--;
-				Win32.DrawThemeBackground2(data, hdc, 3, (int) base._elems[2].State, ref rct);
+				Win32.DrawThemeBackground2(data, hdc, 3, (int) _elems[2].State, ref rct);
 				e.Graphics.ReleaseHdc(hdc);
 				Win32.CloseThemeData2(data);
 			}
 			else //ohne xpthemes, einfache rechtecke
 			{
-				e.Graphics.FillRectangle(SystemBrushes.ControlLightLight, this.ClientRectangle);
-				ControlPaint.DrawScrollButton(e.Graphics, base._elems[0].Bounds, ScrollButton.Up, base._elems[0].ToButtonState());
-				ControlPaint.DrawScrollButton(e.Graphics, base._elems[1].Bounds, ScrollButton.Down, base._elems[1].ToButtonState());
-				ControlPaint.DrawButton(e.Graphics, base._elems[2].Bounds, ButtonState.Normal);
+				e.Graphics.FillRectangle(SystemBrushes.ControlLightLight, ClientRectangle);
+				ControlPaint.DrawScrollButton(e.Graphics, _elems[0].Bounds, ScrollButton.Up, _elems[0].ToButtonState());
+				ControlPaint.DrawScrollButton(e.Graphics, _elems[1].Bounds, ScrollButton.Down, _elems[1].ToButtonState());
+				ControlPaint.DrawButton(e.Graphics, _elems[2].Bounds, ButtonState.Normal);
 			}
-			base._elems[2].Bounds.X -= 3;
+			_elems[2].Bounds.X -= 3;
 			using (StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap |
 			                                           StringFormatFlags.DirectionVertical)) {
 				fmt.LineAlignment = fmt.Alignment = StringAlignment.Center;
 
-				e.Graphics.DrawString(base.Value.ToString(), base.Font,
-				                      this.Enabled ? Brushes.Black : Brushes.Gray, base._elems[2].Bounds, fmt);
+				e.Graphics.DrawString(Value.ToString(), base.Font,
+				                      Enabled ? Brushes.Black : Brushes.Gray, _elems[2].Bounds, fmt);
 			}
-			base._elems[2].Bounds.X += 3;
+			_elems[2].Bounds.X += 3;
 		}
 	}
 }

@@ -39,7 +39,7 @@
 
 		public bool Equals(AppModuleDescriptorBase x, AppModuleDescriptorBase y)
 		{
-			return Equals(x as IAppModuleDescriptor, y as IAppModuleDescriptor);
+			return Equals(x, y as IAppModuleDescriptor);
 		}
 
 		public int GetHashCode(AppModuleDescriptorBase obj)

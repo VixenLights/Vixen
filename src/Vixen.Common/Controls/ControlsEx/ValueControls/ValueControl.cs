@@ -48,7 +48,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected virtual void OnAfterSetValue()
 		{
-			this.Refresh();
+			Refresh();
 		}
 
 		protected bool SetMaximumCore(int value)
@@ -63,7 +63,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected virtual void OnSetMaximum()
 		{
-			this.Refresh();
+			Refresh();
 		}
 
 		protected bool SetMinimumCore(int value)
@@ -78,7 +78,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected virtual void OnSetMinimum()
 		{
-			this.Refresh();
+			Refresh();
 		}
 
 		/// <summary>
@@ -86,8 +86,8 @@ namespace Common.Controls.ControlsEx.ValueControls
 		/// </summary>
 		public void Refresh(Rectangle rct)
 		{
-			this.Invalidate(rct);
-			this.Update();
+			Invalidate(rct);
+			Update();
 		}
 
 		#endregion
@@ -102,7 +102,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		public int Maximum
 		{
 			get { return _maximum; }
-			set { this.SetMaximumCore(value); }
+			set { SetMaximumCore(value); }
 		}
 
 		/// <summary>
@@ -113,7 +113,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		public int Minimum
 		{
 			get { return _minimum; }
-			set { this.SetMinimumCore(value); }
+			set { SetMinimumCore(value); }
 		}
 
 		/// <summary>
@@ -124,7 +124,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		public int Value
 		{
 			get { return _value; }
-			set { this.SetValueCore(value); }
+			set { SetValueCore(value); }
 		}
 
 		#endregion
@@ -174,8 +174,8 @@ namespace Common.Controls.ControlsEx.ValueControls
 	{
 		public ElementInfo(ElementState state)
 		{
-			this.State = state;
-			this.Bounds = Rectangle.Empty;
+			State = state;
+			Bounds = Rectangle.Empty;
 		}
 
 		#region public members

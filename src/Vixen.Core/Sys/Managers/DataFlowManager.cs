@@ -1,10 +1,12 @@
-﻿using Vixen.Data.Flow;
+﻿using System.Collections;
+using NLog;
+using Vixen.Data.Flow;
 
 namespace Vixen.Sys.Managers
 {
 	public class DataFlowManager : IEnumerable<DataFlowPatch>
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private Dictionary<Guid, IDataFlowComponent> _componentLookup;
 		private Dictionary<IDataFlowComponent, List<IDataFlowComponent>> _componentDestinations;
@@ -151,8 +153,7 @@ namespace Vixen.Sys.Managers
 			if (component.Source == null) return;
 
 			IDataFlowComponent parent = component.Source.Component;
-			List<IDataFlowComponent> children = null;
-			_componentDestinations.TryGetValue(parent, out children);
+			_componentDestinations.TryGetValue(parent, out var children);
 
 			if (children == null) {
 				Logging.Error("removing the source from a data flow component, but it's not already a child of the source!");
@@ -229,7 +230,7 @@ namespace Vixen.Sys.Managers
 			return _componentLookup.Values.SelectMany(GetDestinationsOfComponent).Select(x => new DataFlowPatch(x)).GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

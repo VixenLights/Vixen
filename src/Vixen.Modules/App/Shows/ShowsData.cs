@@ -10,10 +10,6 @@ namespace VixenModules.App.Shows
 		// There can only be one instance of this module, anyway
 		static protected List<Show> _shows;
 
-		public ShowsData()
-		{
-		}
-
 		static public List<Show> ShowList
 		{
 			get { return _shows; }

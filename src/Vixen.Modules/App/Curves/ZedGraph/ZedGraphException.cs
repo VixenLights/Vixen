@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraphException Class
-//Copyright © 2004  Jerry Vos
+//Copyright Â© 2004  Jerry Vos
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -25,7 +25,7 @@ namespace ZedGraph
 	///
 	/// <author> Jerry Vos modified by John Champion</author>
 	/// <version> $Revision: 3.2 $ $Date: 2006-06-24 20:26:44 $ </version>
-	public class ZedGraphException : System.ApplicationException
+	public class ZedGraphException : ApplicationException
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Exception"/> class with a specified
@@ -35,7 +35,7 @@ namespace ZedGraph
 		/// <param name="innerException">The exception that is the cause of the current exception.
 		/// If the innerException parameter is not a null reference, the current exception is raised
 		/// in a catch block that handles the inner exception.</param>
-		public ZedGraphException(System.String message, System.Exception innerException)
+		public ZedGraphException(String message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
@@ -44,7 +44,7 @@ namespace ZedGraph
 		/// Initializes a new instance of the <see cref="Exception"/> class with a specified error message.
 		/// </summary>
 		/// <param name="message">The error message that explains the reason for the exception.</param>
-		public ZedGraphException(System.String message)
+		public ZedGraphException(String message)
 			: base(message)
 		{
 		}

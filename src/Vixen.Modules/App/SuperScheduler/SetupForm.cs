@@ -10,6 +10,7 @@ namespace VixenModules.App.SuperScheduler
 {
 	public partial class SetupForm : BaseForm
 	{
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool _isDirty;
 		public SetupForm(SuperSchedulerData data)
 		{
@@ -29,11 +30,18 @@ namespace VixenModules.App.SuperScheduler
 			FormClosing += SetupForm_Closing;
 		}
 
-		private void SetupForm_Closing(object sender, CancelEventArgs e)
+		private async void SetupForm_Closing(object sender, CancelEventArgs e)
 		{
-			if (_isDirty)
+			try
 			{
-				VixenSystem.SaveModuleConfigAsync();
+				if (_isDirty)
+				{
+					await VixenSystem.SaveModuleConfigAsync();
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Error in SuperScheduler saving module configuration.");
 			}
 		}
 
@@ -217,7 +225,7 @@ namespace VixenModules.App.SuperScheduler
 				{
 					using (Shows.ShowEditorForm f = new Shows.ShowEditorForm(show))
 					{
-						if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+						if (f.ShowDialog() == DialogResult.OK)
 						{
 							UpdateListItem(scheduleItem);
 							_isDirty = true;

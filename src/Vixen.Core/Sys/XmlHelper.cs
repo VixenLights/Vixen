@@ -13,25 +13,25 @@ namespace Vixen.Sys
 		public static Guid? GetGuidAttribute(XElement element, string attributeName)
 		{
 			string attributeValue = GetAttribute(element, attributeName);
-			return (attributeValue != null) ? Guid.Parse(attributeValue) : (Guid?) null;
+			return (attributeValue != null) ? Guid.Parse(attributeValue) : null;
 		}
 
 		public static int? GetIntAttribute(XElement element, string attributeName)
 		{
 			string attributeValue = GetAttribute(element, attributeName);
-			return (attributeValue != null) ? int.Parse(attributeValue) : (int?) null;
+			return (attributeValue != null) ? int.Parse(attributeValue) : null;
 		}
 
 		public static long? GetLongAttribute(XElement element, string attributeName)
 		{
 			string attributeValue = GetAttribute(element, attributeName);
-			return (attributeValue != null) ? long.Parse(attributeValue) : (long?) null;
+			return (attributeValue != null) ? long.Parse(attributeValue) : null;
 		}
 
 		public static TimeSpan? GetTimeSpanAttribute(XElement element, string attributeName)
 		{
 			long? attributeValue = GetLongAttribute(element, attributeName);
-			return (attributeValue != null) ? TimeSpan.FromTicks(attributeValue.Value) : (TimeSpan?) null;
+			return (attributeValue != null) ? TimeSpan.FromTicks(attributeValue.Value) : null;
 		}
 
 		public static bool GetElementValue(XElement contentElement, string childElementName, bool defaultValue)

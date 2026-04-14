@@ -1,16 +1,16 @@
 ﻿using System.Xml.Linq;
+using NLog;
 using Vixen.IO.Policy;
 using Vixen.IO.Xml.Serializer;
+using Vixen.Sys;
 
 namespace Vixen.IO.Xml.SystemConfig
 {
-	using Vixen.Sys;
-
 	internal class XmlSystemConfigFilePolicy : SystemConfigFilePolicy
 	{
-		private SystemConfig _systemConfig;
+		private Sys.SystemConfig _systemConfig;
 		private XElement _content;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_IDENTITY = "Identity";
 		private const string ELEMENT_EVAL_FILTERS = "AllowFilterEvaluation";
@@ -19,7 +19,7 @@ namespace Vixen.IO.Xml.SystemConfig
 		private const string ELEMENT_CLEAR_EFFECT_CACHE_ON_EXIT = "ClearEffectCacheOnExit";
 		private const string ELEMENT_VIDEO_EFFECT_CACHE_FILE_TYPE = "VideoEffectCacheFileType";
 
-		public XmlSystemConfigFilePolicy(SystemConfig systemConfig, XElement content)
+		public XmlSystemConfigFilePolicy(Sys.SystemConfig systemConfig, XElement content)
 		{
 			_systemConfig = systemConfig;
 			_content = content;

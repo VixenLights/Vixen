@@ -160,10 +160,10 @@ namespace Common.Controls.ControlsEx
 
 			public COMRECT(int x, int y, int width, int height)
 			{
-				this.Left = x;
-				this.Top = y;
-				this.Right = x + width;
-				this.Bottom = y + height;
+				Left = x;
+				Top = y;
+				Right = x + width;
+				Bottom = y + height;
 			}
 		}
 
@@ -177,21 +177,12 @@ namespace Common.Controls.ControlsEx
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct NCCALCSIZE_PARAMS
-		{
-			public RECT newbounds;
-			public RECT oldbounds;
-			public RECT oldclientbounds;
-			public IntPtr lppos;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
 		public struct POINTAPI
 		{
 			public POINTAPI(Point pt)
 			{
-				this.x = pt.X;
-				this.y = pt.Y;
+				x = pt.X;
+				y = pt.Y;
 			}
 
 			internal int x;
@@ -213,26 +204,26 @@ namespace Common.Controls.ControlsEx
 
 			public RECT(int x, int y, int width, int height)
 			{
-				this.Left = x;
-				this.Top = y;
-				this.Right = x + width;
-				this.Bottom = y + height;
+				Left = x;
+				Top = y;
+				Right = x + width;
+				Bottom = y + height;
 			}
 
 			public void Inflate(int width, int height)
 			{
-				this.Left -= width;
-				this.Right += width;
-				this.Top -= height;
-				this.Bottom += height;
+				Left -= width;
+				Right += width;
+				Top -= height;
+				Bottom += height;
 			}
 
 			public void Offset(int x, int y)
 			{
-				this.Left += x;
-				this.Right += x;
-				this.Top += y;
-				this.Bottom += y;
+				Left += x;
+				Right += x;
+				Top += y;
+				Bottom += y;
 			}
 
 			#region operators
@@ -274,11 +265,11 @@ namespace Common.Controls.ControlsEx
 
 			public Size Size
 			{
-				get { return new Size(this.Width, this.Height); }
+				get { return new Size(Width, Height); }
 				set
 				{
-					this.Width = value.Width;
-					this.Height = value.Height;
+					Width = value.Width;
+					Height = value.Height;
 				}
 			}
 
@@ -316,30 +307,18 @@ namespace Common.Controls.ControlsEx
 
 			public SCROLLINFO()
 			{
-				this.cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
+				cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
 			}
 
 			public SCROLLINFO(int mask, int min, int max, int page, int pos)
 			{
-				this.cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
-				this.fMask = mask;
-				this.nMin = min;
-				this.nMax = max;
-				this.nPage = page;
-				this.nPos = pos;
+				cbSize = Marshal.SizeOf(typeof (SCROLLINFO));
+				fMask = mask;
+				nMin = min;
+				nMax = max;
+				nPage = page;
+				nPos = pos;
 			}
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct WINDOWPOS
-		{
-			internal int hwnd;
-			internal int hWndInsertAfter;
-			internal int x;
-			internal int y;
-			internal int cx;
-			internal int cy;
-			internal int flags;
 		}
 
 		#endregion
@@ -414,51 +393,6 @@ namespace Common.Controls.ControlsEx
 			}
 			catch {
 				return;
-			}
-		}
-
-		#endregion
-
-		#region user types
-
-		/// <summary>
-		/// Double Buffered Graphics class
-		/// </summary>
-		public class NCGraphics : IDisposable
-		{
-			#region variables
-
-			private Graphics _targetgraphics,
-			                 _memgraphics;
-
-			private Bitmap _membitmap;
-
-			#endregion
-
-			public NCGraphics(IntPtr hdc)
-			{
-				this._targetgraphics = Graphics.FromHdc(hdc);
-				Size size = Size.Ceiling(_targetgraphics.VisibleClipBounds.Size);
-				this._membitmap = new Bitmap(size.Width, size.Height);
-				this._memgraphics = Graphics.FromImage(this._membitmap);
-			}
-
-			public void Dispose()
-			{
-				//render
-				this._targetgraphics.DrawImageUnscaled(this._membitmap, Point.Empty);
-				//dispose
-				this._memgraphics.Dispose();
-				this._membitmap.Dispose();
-				this._targetgraphics.Dispose();
-			}
-
-			/// <summary>
-			/// gets the graphics buffer to render on
-			/// </summary>
-			public Graphics Graphics
-			{
-				get { return this._memgraphics; }
 			}
 		}
 

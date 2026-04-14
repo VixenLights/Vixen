@@ -98,9 +98,7 @@ namespace Common.Controls
 						continue;
 
 					Delegate[] dels = eh.GetInvocationList();
-					if (dels == null)
-						continue;
-
+					
 					EventInfo ei = t.GetEvent(fi.Name, AllBindings);
 					foreach (Delegate del in dels)
 						ei.RemoveEventHandler(obj, del);

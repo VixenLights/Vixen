@@ -1,6 +1,6 @@
 //============================================================================
 //GasGaugeRegion Class
-//Copyright © 2006 Jay Mistry
+//Copyright Â© 2006 Jay Mistry
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,6 @@
 
 using System.Runtime.Serialization;
 using System.Drawing.Drawing2D;
-using System.Security.Permissions;
 using Common.Controls.Theme;
 
 namespace ZedGraph
@@ -195,7 +194,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -418,7 +417,7 @@ namespace ZedGraph
 
 					g.FillPie(Fill.MakeBrush(_boundingRectangle), tRect.X, tRect.Y, tRect.Width, tRect.Height, -StartAngle, -SweepAngle);
 
-					if (this.Border.IsVisible) {
+					if (Border.IsVisible) {
 						Pen borderPen = _border.GetPen(pane, scaleFactor);
 						g.DrawPie(borderPen, tRect.X, tRect.Y, tRect.Width, tRect.Height,
 						          -0.0f, -180.0f);
@@ -568,7 +567,7 @@ namespace ZedGraph
 
 			nonExpRect.Inflate(-(float) 0.05F*nonExpRect.Height, -(float) 0.05*nonExpRect.Width);
 
-			GasGaugeRegion.CalculateGasGuageParameters(pane);
+			CalculateGasGuageParameters(pane);
 
 			foreach (CurveItem curve in pane.CurveList) {
 				if (curve is GasGaugeRegion) {

@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
+using NLog;
 using Vixen.Sys;
 
 namespace Vixen.Execution
 {
 	internal class ControllerUpdateAdjudicator
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private int _threshold;
 		private Stopwatch _stopwatch;
@@ -37,7 +38,7 @@ namespace Vixen.Execution
 
 			// 3 to allow if 3ms early (this is not an exact science)
 			long ms = _stopwatch.ElapsedMilliseconds;
-			if (_firstTime || ms+3 >= System.Math.Max(_threshold,VixenSystem.DefaultUpdateInterval)) {
+			if (_firstTime || ms+3 >= Math.Max(_threshold,VixenSystem.DefaultUpdateInterval)) {
 				_firstTime = false;
 				_stopwatch.Restart();
 				result = true;

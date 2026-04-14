@@ -614,8 +614,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripMenuItem_divideMarksEvenly_Click(object sender, EventArgs e)
 		{
 			const int MinMarkWidthPx = 12;
-			TimeSpan lengthTime = TimeSpan.MinValue;
-			double lengthDivision = 0;
+			double lengthDivision;
 
 			var marksForm = new CreateEvenMarksForm(_mPrevPlaybackStart, _mPrevPlaybackEnd, SequenceLength);
 			DialogResult dialogReturn;
@@ -625,7 +624,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (dialogReturn == DialogResult.Cancel)
 					return;
 
-				lengthTime = marksForm.End - marksForm.Start;
+				var lengthTime = marksForm.End - marksForm.Start;
 				lengthDivision = lengthTime.TotalMilliseconds / marksForm.Divisions;
 
 				// Verify that the time span and number of divisions can sufficiently fit within the defined space
@@ -647,14 +646,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_sequence.LabeledMarkCollections.Remove(mark.First());
 
 			// Create a new mark group
-			VixenModules.App.Marks.MarkCollection mc = new VixenModules.App.Marks.MarkCollection();
+			App.Marks.MarkCollection mc = new App.Marks.MarkCollection();
 			mc.Name = $"{marksForm.Divisions} Divisions";
 
 			// Check if an existing mark has a similar name
 			int nextSimilarMark = 1;
 			foreach(var markItem in _sequence.LabeledMarkCollections)
 			{
-				if (markItem.Name.StartsWith(mc.Name) == true)
+				if (markItem.Name.StartsWith(mc.Name))
 				{
 					Regex regex = new Regex(@"\d+");
 					var match = regex.Match(markItem.Name.Substring(mc.Name.Length));
@@ -699,7 +698,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimeSpan offset = dialog.IsForward ? dialog.Offset : -dialog.Offset;
 				offset = TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, offset, dialog.ProcessVisibleRows, dialog.ClipEffects);
 
-				if (dialog.ProcessMarks == true && offset != TimeSpan.Zero)
+				if (dialog.ProcessMarks && offset != TimeSpan.Zero)
 				{
 					MoveMarksInRangeByTime(dialog.Start, dialog.End, offset, dialog.ProcessVisibleRows);
 				}

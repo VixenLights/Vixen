@@ -103,9 +103,9 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// First color associated with the color wheel item.
 		/// </summary>
-		public System.Drawing.Color Color1
+		public Color Color1
 		{
-			get { return GetValue<System.Drawing.Color>(Color1Property); }
+			get { return GetValue<Color>(Color1Property); }
 			set { SetValue(Color1Property, value); }
 		}
 
@@ -117,16 +117,16 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Second color associated with the color wheel item.
 		/// </summary>
-		public System.Drawing.Color Color2
+		public Color Color2
 		{
-			get { return GetValue<System.Drawing.Color>(Color2Property); }
+			get { return GetValue<Color>(Color2Property); }
 			set { SetValue(Color2Property, value); }
 		}
 
 		/// <summary>
 		/// Color 2 property data.
 		/// </summary>
-		public static readonly IPropertyData Color2Property = RegisterProperty<System.Drawing.Color>(nameof(Color2));
+		public static readonly IPropertyData Color2Property = RegisterProperty<Color>(nameof(Color2));
 		
 		/// <summary>
 		/// Color item represents a half step and contains two colors.

@@ -27,26 +27,26 @@
 
 		public E131DeviceManagementProtocol(byte[] values, int offset, int slots)
 		{
-			this.FlagsLength = (ushort) (0x7000 | (PDU_BASE + 1 + slots));
-			this.Vector = 0x02;
-			this.AddrTypeDataType = 0xa1;
-			this.FirstPropertyAddr = 0x0000;
-			this.AddrIncrement = 0x0001;
-			this.PropertyValueCnt = (ushort) (slots + 1);
-			this.PropertyValues = new byte[slots + 1];
-			this.PropertyValues[0] = 0;
-			Array.Copy(values, offset, this.PropertyValues, 1, slots);
-			this.Malformed = true;
+			FlagsLength = (ushort) (0x7000 | (PDU_BASE + 1 + slots));
+			Vector = 0x02;
+			AddrTypeDataType = 0xa1;
+			FirstPropertyAddr = 0x0000;
+			AddrIncrement = 0x0001;
+			PropertyValueCnt = (ushort) (slots + 1);
+			PropertyValues = new byte[slots + 1];
+			PropertyValues[0] = 0;
+			Array.Copy(values, offset, PropertyValues, 1, slots);
+			Malformed = true;
 		}
 
 		public E131DeviceManagementProtocol(byte[] bfr, int offset)
 		{
-			this.FromBfr(bfr, offset);
+			FromBfr(bfr, offset);
 		}
 
 		public ushort Length
 		{
-			get { return (ushort) (this.FlagsLength & 0x0fff); }
+			get { return (ushort) (FlagsLength & 0x0fff); }
 		}
 
 		public bool Malformed { get; private set; }
@@ -55,14 +55,14 @@
 		{
 			get
 			{
-				var bfr = new byte[this.PhyLength];
+				var bfr = new byte[PhyLength];
 
-				this.ToBfr(bfr, 0);
+				ToBfr(bfr, 0);
 
 				return bfr;
 			}
 
-			set { this.FromBfr(value, 0); }
+			set { FromBfr(value, 0); }
 		}
 
 		private ushort AddrIncrement { get; set; }
@@ -75,7 +75,7 @@
 
 		private ushort PhyLength
 		{
-			get { return (ushort) (PHYBUFFER_BASE + this.PropertyValueCnt); }
+			get { return (ushort) (PHYBUFFER_BASE + PropertyValueCnt); }
 		}
 
 		private ushort PropertyValueCnt { get; set; }
@@ -86,30 +86,30 @@
 
 		public void ToBfr(byte[] bfr, int offset)
 		{
-			Extensions.UInt16ToBfrSwapped(this.FlagsLength, bfr, offset + FLAGSLENGTH_OFFSET);
-			bfr[offset + VECTOR_OFFSET] = this.Vector;
-			bfr[offset + ADDRTYPEDATATYPE_OFFSET] = this.AddrTypeDataType;
-			Extensions.UInt16ToBfrSwapped(this.FirstPropertyAddr, bfr, offset + FIRSTPROPERTYADDR_OFFSET);
-			Extensions.UInt16ToBfrSwapped(this.AddrIncrement, bfr, offset + ADDRINCREMENT_OFFSET);
-			Extensions.UInt16ToBfrSwapped(this.PropertyValueCnt, bfr, offset + PROPERTYVALUECNT_OFFSET);
-			Array.Copy(this.PropertyValues, 0, bfr, offset + PROPERTYVALUES_OFFSET, this.PropertyValueCnt);
+			Extensions.UInt16ToBfrSwapped(FlagsLength, bfr, offset + FLAGSLENGTH_OFFSET);
+			bfr[offset + VECTOR_OFFSET] = Vector;
+			bfr[offset + ADDRTYPEDATATYPE_OFFSET] = AddrTypeDataType;
+			Extensions.UInt16ToBfrSwapped(FirstPropertyAddr, bfr, offset + FIRSTPROPERTYADDR_OFFSET);
+			Extensions.UInt16ToBfrSwapped(AddrIncrement, bfr, offset + ADDRINCREMENT_OFFSET);
+			Extensions.UInt16ToBfrSwapped(PropertyValueCnt, bfr, offset + PROPERTYVALUECNT_OFFSET);
+			Array.Copy(PropertyValues, 0, bfr, offset + PROPERTYVALUES_OFFSET, PropertyValueCnt);
 		}
 
 		private void FromBfr(byte[] bfr, int offset)
 		{
-			this.FlagsLength = Extensions.BfrToUInt16Swapped(bfr, offset + FLAGSLENGTH_OFFSET);
-			this.Vector = bfr[offset + VECTOR_OFFSET];
-			this.AddrTypeDataType = bfr[offset + ADDRTYPEDATATYPE_OFFSET];
-			this.FirstPropertyAddr = Extensions.BfrToUInt16Swapped(bfr, offset + FIRSTPROPERTYADDR_OFFSET);
-			this.AddrIncrement = Extensions.BfrToUInt16Swapped(bfr, offset + ADDRINCREMENT_OFFSET);
-			this.PropertyValueCnt = Extensions.BfrToUInt16Swapped(bfr, offset + PROPERTYVALUECNT_OFFSET);
-			this.PropertyValues = new byte[this.PropertyValueCnt];
+			FlagsLength = Extensions.BfrToUInt16Swapped(bfr, offset + FLAGSLENGTH_OFFSET);
+			Vector = bfr[offset + VECTOR_OFFSET];
+			AddrTypeDataType = bfr[offset + ADDRTYPEDATATYPE_OFFSET];
+			FirstPropertyAddr = Extensions.BfrToUInt16Swapped(bfr, offset + FIRSTPROPERTYADDR_OFFSET);
+			AddrIncrement = Extensions.BfrToUInt16Swapped(bfr, offset + ADDRINCREMENT_OFFSET);
+			PropertyValueCnt = Extensions.BfrToUInt16Swapped(bfr, offset + PROPERTYVALUECNT_OFFSET);
+			PropertyValues = new byte[PropertyValueCnt];
 
-			this.Malformed = true;
+			Malformed = true;
 
-			Array.Copy(bfr, offset + PROPERTYVALUES_OFFSET, this.PropertyValues, 0, this.PropertyValueCnt);
+			Array.Copy(bfr, offset + PROPERTYVALUES_OFFSET, PropertyValues, 0, PropertyValueCnt);
 
-			this.Malformed = false;
+			Malformed = false;
 		}
 	}
 }

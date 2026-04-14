@@ -24,7 +24,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
             get
             {
-                return (PapagayoImportObject.SoundFrames - 1) * 1000 / (int)PapagayoImportObject.FPS;
+                return (SoundFrames - 1) * 1000 / (int)FPS;
             }
         }
 
@@ -99,7 +99,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
         public void Load(string fileName)
         {
             string line;
-            PapagayoVoice voice = null;
 
             m_state = 0;
             m_soundPath = null;
@@ -152,7 +151,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                         m_numVoices = Convert.ToInt32(line);
                         for (int j = 0; j < m_numVoices; j++)
                         {
-                            voice = new PapagayoVoice();
+                            var voice = new PapagayoVoice();
                             voice.EndFrame = PapagayoImportObject.SoundFrames;
                             voice.Load(file);
                             m_voices.Add(voice.VoiceName.Trim(), voice);
@@ -240,11 +239,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             get { return m_voiceName; }
         }
 
-        public PapagayoVoice()
-        {
-
-        }
-
 	    public List<PapagayoPhrase> Phrases => m_phrases.ToList();
 
         public void Load(StreamReader file)
@@ -313,7 +307,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             PapagayoPhoneme newPhoneme = null;
             for (int eventIndex = 0; eventIndex < SoundFrames; eventIndex++)
             {
-                eventList.Add(this.GetEventPhoneme(eventIndex));
+                eventList.Add(GetEventPhoneme(eventIndex));
             }
 
             foreach(PapagayoPhoneme phoneme in eventList)
@@ -380,12 +374,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         int m_numWords;
         PapagayoWord[] m_words = null;
 
-        public PapagayoPhrase()
-        {
-
-        }
-
-	    public List<PapagayoWord> Words => m_words.ToList();
+        public List<PapagayoWord> Words => m_words.ToList();
 
 	    public String Text => m_text;
 
@@ -444,7 +433,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         public PapagayoPhoneme GetEventPhoneme(int eventNum)
         {
-            foreach (PapagayoWord word in this.m_words)
+            foreach (PapagayoWord word in m_words)
             {
                 if (eventNum >= word.StartFrame &&
                     eventNum <= word.EndFrame)
@@ -462,9 +451,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
     public class PapagayoWord : PapagayoImportObject
     {
-        string line = null;
         string m_wordText = null;
-        int m_numPhoneme = 0;
         PapagayoPhoneme[] m_phoneme = null;
 
 	    public List<PapagayoPhoneme> Phonemes => m_phoneme.ToList();
@@ -474,7 +461,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public PapagayoWord(StreamReader file,
             ref List<PapagayoPhoneme> phonemes)
         {
-            line = file.ReadLine();
+	        var line = file.ReadLine();
             if (line == null)
             {
                 throw new IOException("Corrupt File Format");
@@ -487,11 +474,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 m_wordText = split[0].TrimStart(null);
                 StartFrame = Convert.ToInt32(split[1].TrimStart(null));
                 EndFrame = Convert.ToInt32(split[2].TrimStart(null));
-                m_numPhoneme = Convert.ToInt32(split[3].TrimStart(null));
-                m_phoneme = new PapagayoPhoneme[m_numPhoneme];
+                var mNumPhoneme = Convert.ToInt32(split[3].TrimStart(null));
+                m_phoneme = new PapagayoPhoneme[mNumPhoneme];
 
                 PapagayoPhoneme lastObj = null;
-                for (int j = 0; j < m_numPhoneme; j++)
+                for (int j = 0; j < mNumPhoneme; j++)
                 {
                     if ((line = file.ReadLine()) != null)
                     {
@@ -535,12 +522,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         public PapagayoPhoneme(PapagayoPhoneme copyObj)
         {
-            this.m_state = copyObj.m_state;
-            this.m_Text = copyObj.m_Text;
-            this.StartFrame = copyObj.StartFrame;
-            this.EndFrame = copyObj.EndFrame;
-            this.m_type = copyObj.m_type;
-            this.m_lyricWord = copyObj.m_lyricWord;
+            m_state = copyObj.m_state;
+            m_Text = copyObj.m_Text;
+            StartFrame = copyObj.StartFrame;
+            EndFrame = copyObj.EndFrame;
+            m_type = copyObj.m_type;
+            m_lyricWord = copyObj.m_lyricWord;
         }
 
         public PapagayoPhoneme(string pair, PapagayoPhoneme lastObj, string lyricWord = null)
@@ -601,7 +588,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         public bool isPhonemeType(string testVal)
         {
             return ((testVal != null) &&
-                (this.m_Text.Equals(testVal.ToUpper())));
+                (m_Text.Equals(testVal.ToUpper())));
         }
 
     }

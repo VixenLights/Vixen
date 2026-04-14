@@ -66,7 +66,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Guid TypeId { get; private set; }
 		public Guid LayerId { get; set; }
 		public Guid LayerTypeId { get; set; }
-		public string LayerName { get; set; }
+		public string LayerName { get; set; } = string.Empty;
 
 		
 		public IModuleDataModel? GetEffectData() 

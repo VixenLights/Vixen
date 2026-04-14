@@ -15,7 +15,6 @@
  */
 
 using System.Globalization;
-using System.Linq;
 using System.Windows.Data;
 
 namespace System.Windows.Controls.WpfPropertyGrid

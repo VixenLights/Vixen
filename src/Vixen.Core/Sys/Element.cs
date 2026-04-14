@@ -90,10 +90,8 @@ namespace Vixen.Sys
 			{
 				return _stateIndex + 1;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
 		private void _AggregateStateFromContexts()

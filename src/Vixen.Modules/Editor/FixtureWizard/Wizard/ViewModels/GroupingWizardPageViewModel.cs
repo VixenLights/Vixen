@@ -6,7 +6,7 @@
 	using Catel.MVVM;
 	using Orc.Wizard;
 	using System.Collections.ObjectModel;
-	using VixenModules.Editor.FixtureWizard.Wizard.Models;
+	using Models;
 
     /// <summary>
 	/// Wizard view model page for grouping and naming the fixture profiles created.

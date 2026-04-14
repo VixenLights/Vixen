@@ -140,7 +140,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 			Vector3 v1 = new Vector3()
 			{
 				X = (float)(bottomRadius * Math.Cos(theta)),
-				Y = (float)-offset,
+				Y = -offset,
 				Z = (float)(bottomRadius * Math.Sin(theta)),
 			};
 
@@ -156,7 +156,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 			Vector3 v3 = new Vector3()
 			{
 				X = (float)(topRadius * Math.Cos(nextPanelAngle)),
-				Y = (float)length - offset,
+				Y = length - offset,
 				Z = (float)(topRadius * Math.Sin(nextPanelAngle)),
 			};
 
@@ -164,7 +164,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Volumes
 			Vector3 v4 = new Vector3()
 			{
 				X = (float)(bottomRadius * Math.Cos(nextPanelAngle)),
-				Y = (float)-offset,
+				Y = -offset,
 				Z = (float)(bottomRadius * Math.Sin(nextPanelAngle)),
 			};
 

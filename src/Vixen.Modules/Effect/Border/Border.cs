@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 
 using Common.Controls.ColorManagement.ColorModels;
-using Common.Controls.Timeline;
 
 using Vixen.Attributes;
 using Vixen.Module;
@@ -14,8 +13,6 @@ using VixenModules.Effect.Border;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-
-using ZedGraph;
 
 namespace VixenModules.Effect.Borders
 {
@@ -148,7 +145,7 @@ namespace VixenModules.Effect.Borders
 				_data.Thickness = value;
 				IsDirty = true;
 				OnPropertyChanged();
-				UpdateMarqueeModeControlAttributes(true);
+				UpdateMarqueeModeControlAttributes();
 			}
 		}
 
@@ -1161,8 +1158,8 @@ namespace VixenModules.Effect.Borders
 		/// <param name="frameBuffer">Frame buffer to render into</param>
 		private void RenderEffectMarqueeSingleString(int effectFrame, IPixelFrameBuffer frameBuffer)
 		{
-			int bufferWi = (int)Math.Round(((double)(_bufferWi * XScale) / 100.0));
-			int bufferHt = (int)Math.Round(((double)(_bufferHt * YScale) / 100.0));
+			int bufferWi = (int)Math.Round(_bufferWi * XScale / 100.0);
+			int bufferHt = (int)Math.Round(_bufferHt * YScale / 100.0);
 
 			// Calculate the length of the single string of pixels
 			int length = bufferWi * bufferHt;
@@ -1343,7 +1340,6 @@ namespace VixenModules.Effect.Borders
 			int yc_adj = (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPosFactor), 100, -100));
 
 			bool reverse_dir = Reverse; 
-			bool pixelOffsets = false; 
 			bool wrap_x = WrapX; 
 			bool wrap_y = WrapY;
 
@@ -1367,8 +1363,8 @@ namespace VixenModules.Effect.Borders
 			
 			int corner_x1 = 0;
 			int corner_y1 = 0;
-			int corner_x2 = (int)Math.Round(((double)(bufferWi * x_scale) / 100.0) - 1.0);
-			int corner_y2 = (int)Math.Round(((double)(bufferHt * y_scale) / 100.0) - 1.0);
+			int corner_x2 = (int)Math.Round(bufferWi * x_scale / 100.0 - 1.0);
+			int corner_y2 = (int)Math.Round(bufferHt * y_scale / 100.0 - 1.0);
 			int sign = 1;
 			if (reverse_dir)
 			{
@@ -1377,11 +1373,9 @@ namespace VixenModules.Effect.Borders
 
 			int xoffset_adj = xc_adj;
 			int yoffset_adj = yc_adj;
-			if (!pixelOffsets)
-			{
-				xoffset_adj = (int)((xoffset_adj * bufferWi) / 100.0); // xc_adj is from -100 to 100
-				yoffset_adj = (int)((yoffset_adj * bufferHt) / 100.0); // yc_adj is from -100 to 100
-			}
+
+			xoffset_adj = (int)((xoffset_adj * bufferWi) / 100.0); // xc_adj is from -100 to 100
+			yoffset_adj = (int)((yoffset_adj * bufferHt) / 100.0); // yc_adj is from -100 to 100
 
 			for (int thick = 0; thick < thickness; thick++)
 			{

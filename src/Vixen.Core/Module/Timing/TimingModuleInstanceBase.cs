@@ -44,7 +44,7 @@
 
 		public bool Equals(TimingModuleInstanceBase x, TimingModuleInstanceBase y)
 		{
-			return Equals(x as ITimingModuleInstance, y as ITimingModuleInstance);
+			return Equals(x, y as ITimingModuleInstance);
 		}
 
 		public int GetHashCode(TimingModuleInstanceBase obj)

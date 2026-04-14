@@ -159,11 +159,11 @@ namespace Vixen.Module.Effect
 
 			try
 			{
-				var propertyInfos = this.GetType().GetProperties();
+				var propertyInfos = GetType().GetProperties();
 				foreach (var info in propertyInfos)
 				{
 					var value = info.GetValue(this, null) ?? "(null)";
-					sb.AppendLine(info.Name + ": " + value.ToString());
+					sb.AppendLine(info.Name + ": " + value);
 				}
 			}
 			catch (Exception e)
@@ -238,7 +238,7 @@ namespace Vixen.Module.Effect
 		public virtual void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
 		{
 
-			string DisplayValue = string.Format("{0}", this.EffectName);
+			string DisplayValue = string.Format("{0}", EffectName);
 
 
 			using (Font AdjustedFont = Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial", 48))
@@ -297,7 +297,7 @@ namespace Vixen.Module.Effect
 			}
 		}
 
-		private void _markCollections_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		private void _markCollections_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (e.Action == NotifyCollectionChangedAction.Add)
 			{
@@ -421,7 +421,7 @@ namespace Vixen.Module.Effect
 
 		public bool Equals(EffectModuleInstanceBase x, EffectModuleInstanceBase y)
 		{
-			return Equals(x as IEffectModuleInstance, y as IEffectModuleInstance);
+			return Equals(x, y as IEffectModuleInstance);
 		}
 
 		public int GetHashCode(EffectModuleInstanceBase obj)

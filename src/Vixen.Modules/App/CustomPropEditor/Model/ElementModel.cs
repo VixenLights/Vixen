@@ -17,7 +17,6 @@ namespace VixenModules.App.CustomPropEditor.Model
 		private int _order;
 		private string _name;
 		private int _lightSize;
-		private FaceComponent _faceComponent;
 		private FaceDefinition _faceDefinition;
 		private StateDefinition _stateDefinition;
 

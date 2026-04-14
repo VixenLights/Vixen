@@ -2,11 +2,9 @@
 
 namespace Vixen.IO.Xml.ModuleStore
 {
-	using Vixen.Sys;
-
-	internal class ModuleStoreXElementWriter : IObjectContentWriter<XElement, ModuleStore>
+	internal class ModuleStoreXElementWriter : IObjectContentWriter<XElement, Sys.ModuleStore>
 	{
-		public void WriteContentToObject(XElement content, ModuleStore obj)
+		public void WriteContentToObject(XElement content, Sys.ModuleStore obj)
 		{
 			XmlModuleStoreFilePolicy xmlFilePolicy = new XmlModuleStoreFilePolicy(obj, content);
 			xmlFilePolicy.Read();
@@ -22,9 +20,9 @@ namespace Vixen.IO.Xml.ModuleStore
 		void IObjectContentWriter.WriteContentToObject(object content, object obj)
 		{
 			if (!(content is XElement)) throw new InvalidOperationException("Content must be an XElement.");
-			if (!(obj is ModuleStore)) throw new InvalidOperationException("Object must be a ModuleStore.");
+			if (!(obj is Sys.ModuleStore)) throw new InvalidOperationException("Object must be a ModuleStore.");
 
-			WriteContentToObject((XElement) content, (ModuleStore) obj);
+			WriteContentToObject((XElement) content, (Sys.ModuleStore) obj);
 		}
 
 		int IObjectContentWriter.GetContentVersion(object content)

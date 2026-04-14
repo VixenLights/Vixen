@@ -20,7 +20,6 @@
 #region Using directives
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 #endregion
 
@@ -150,7 +149,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>

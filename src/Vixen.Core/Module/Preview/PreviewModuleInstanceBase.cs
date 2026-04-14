@@ -80,7 +80,7 @@ namespace Vixen.Module.Preview
 
 		public bool Equals(PreviewModuleInstanceBase x, PreviewModuleInstanceBase y)
 		{
-			return Equals(x as IPreviewModuleInstance, y as IPreviewModuleInstance);
+			return Equals(x, y as IPreviewModuleInstance);
 		}
 
 		public int GetHashCode(PreviewModuleInstanceBase obj)

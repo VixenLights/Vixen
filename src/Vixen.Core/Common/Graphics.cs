@@ -1,4 +1,5 @@
-﻿using System.Drawing.Text;
+﻿using System.Configuration;
+using System.Drawing.Text;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -6,14 +7,14 @@ namespace Vixen.Common
 {
 	public class Graphics
 	{
-		static PrivateFontCollection private_fonts = null;
+		static PrivateFontCollection private_fonts;
 		[DllImport("gdi32.dll")]
-		private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [System.Runtime.InteropServices.In] ref uint pcFonts);
+		private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);
 		public static bool DisableEffectsEditorRendering
 		{
 			get
 			{
-				var setting=	System.Configuration.ConfigurationManager.AppSettings["DisableEffectsEditorRendering"];
+				var setting=	ConfigurationManager.AppSettings["DisableEffectsEditorRendering"];
 				if (!string.IsNullOrWhiteSpace(setting)) {
 					return setting.Equals("true", StringComparison.CurrentCultureIgnoreCase);
 				}
@@ -57,7 +58,7 @@ namespace Vixen.Common
 		/// <param name="minFontSize"></param>
 		/// <returns></returns>
 		public static Font GetAdjustedFont(System.Drawing.Graphics graphicRef, string graphicString,
-			System.Drawing.Rectangle clipRectangle, string fontResourceName, int maxFontSize = 100, Font font = null, int minFontSize = 10)
+			Rectangle clipRectangle, string fontResourceName, int maxFontSize = 100, Font font = null, int minFontSize = 10)
 		{
 			bool privateFont = fontResourceName.ToLower().EndsWith("ttf");
 			Font  originalFont = (privateFont ? new Font(GetFontFromResx(fontResourceName).Name, 100) : font) ?? new Font("Arial", 100);

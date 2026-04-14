@@ -1,4 +1,5 @@
-﻿using Vixen.Sys;
+﻿using NLog;
+using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
 	public enum EffectGroups
@@ -18,7 +19,7 @@ namespace Vixen.Module.Effect {
 		protected EffectModuleDescriptorBase() {
 			PropertyDependencies = new Guid[0];
 		}
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public abstract EffectGroups EffectGroup { get; }
 
@@ -83,12 +84,12 @@ namespace Vixen.Module.Effect {
 			try
 			{
 				//Default to Null image
-				var resources = this.Assembly.GetManifestResourceNames().ToList();
+				var resources = Assembly.GetManifestResourceNames().ToList();
 
 				var resName =
 					resources.FirstOrDefault(r => r.ContainsString(".EffectImage.", StringComparison.CurrentCultureIgnoreCase));
 				if (!string.IsNullOrWhiteSpace(resName))
-					return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
+					return Image.FromStream(Assembly.GetManifestResourceStream(resName));
 				return null;
 
 			}
@@ -112,7 +113,7 @@ namespace Vixen.Module.Effect {
 		}
 
 		public bool Equals(EffectModuleDescriptorBase x, EffectModuleDescriptorBase y) {
-			return Equals(x as IEffectModuleDescriptor, y as IEffectModuleDescriptor);
+			return Equals(x, y as IEffectModuleDescriptor);
 		}
 
 		public int GetHashCode(EffectModuleDescriptorBase obj) {

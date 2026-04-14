@@ -396,8 +396,7 @@ namespace VixenApplication.Setup
 
 		private void _addFilterShapeToList(FilterShape filterShape, List<FilterShape> list)
 		{
-			if (filterShape != null)
-				list.Add(filterShape);
+			list.Add(filterShape);
 		}
 
 		private void _addFilterShapeToFilterMap(FilterShape filterShape, Dictionary<IOutputFilterModuleInstance, FilterShape> map)
@@ -844,7 +843,7 @@ namespace VixenApplication.Setup
 						int columnWidth = _filterWidth / totalShapes;
 						int shapeWidth = Math.Max(Math.Min(columnWidth, ShapeMaxWidth), ShapeMinWidth);
 						int internalColumnOffset = (columnWidth - shapeWidth) / 2;
-						int xpos = _filterX + (int)(shapesSoFar * columnWidth) + internalColumnOffset;
+						int xpos = _filterX + shapesSoFar * columnWidth + internalColumnOffset;
 
 						shapesSoFar++;
 
@@ -2010,20 +2009,20 @@ namespace VixenApplication.Setup
 		public event EventHandler<FiltersEventArgs> FiltersAdded;
 		public void OnFiltersAdded(FiltersEventArgs e)
 		{
-			if (FiltersAdded == null)
-				return;
-
-			FiltersAdded(this, e);
+			if (FiltersAdded != null)
+			{
+				FiltersAdded(this, e);
+			}
 		}
 
 
 		public event EventHandler PatchingUpdated;
 		public void OnPatchingUpdated()
 		{
-			if (PatchingUpdated == null)
-				return;
-
-			PatchingUpdated(this, EventArgs.Empty);
+			if (PatchingUpdated != null)
+			{
+				PatchingUpdated(this, EventArgs.Empty);
+			}
 		}
 
 

@@ -1,6 +1,7 @@
-﻿using System.ComponentModel;
-using System.Globalization;
+﻿using System.Collections;
+using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
+using System.Globalization;
 using System.Reflection;
 
 namespace Common.Controls.ColorManagement.ColorModels
@@ -11,24 +12,22 @@ namespace Common.Controls.ColorManagement.ColorModels
 	public class XYZTypeConverter : TypeConverter
 	{
 		//conversion
-		public override bool CanConvertFrom(ITypeDescriptorContext context, System.Type sourceType)
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			return sourceType == typeof (string) ||
 			       base.CanConvertFrom(context, sourceType);
 		}
 
-		public override bool CanConvertTo(ITypeDescriptorContext context, System.Type destinationType)
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 		{
 			return destinationType == typeof (string) ||
 			       base.CanConvertTo(context, destinationType);
 		}
 
-		public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture,
+		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture,
 		                                   object value)
 		{
 			if (value is string) {
-				if (culture == null)
-					culture = CultureInfo.CurrentCulture;
 				//
 				string text = (string) value;
 				string[] parts = text.Split(culture.TextInfo.ListSeparator.ToCharArray());
@@ -44,8 +43,8 @@ namespace Common.Controls.ColorManagement.ColorModels
 			return base.ConvertFrom(context, culture, value);
 		}
 
-		public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture,
-		                                 object value, System.Type destinationType)
+		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture,
+		                                 object value, Type destinationType)
 		{
 			if (value is XYZ) {
 				if (culture == null)
@@ -55,27 +54,28 @@ namespace Common.Controls.ColorManagement.ColorModels
 				if (destinationType == null)
 					//exception
 					throw new ArgumentNullException("destinationType");
-				else if (destinationType == typeof (String)) {
+				if (destinationType == typeof (String)) {
 					//to string
 					TypeConverter conv =
 						TypeDescriptor.GetConverter(typeof (double));
 					return string.Join(string.Format("{0} ",culture.TextInfo.ListSeparator),
-					                   new string[]
-					                   	{
-					                   		conv.ConvertToString(context, culture, xyz.X),
-					                   		conv.ConvertToString(context, culture, xyz.Y),
-					                   		conv.ConvertToString(context, culture, xyz.Z)
-					                   	});
+						new[]
+						{
+							conv.ConvertToString(context, culture, xyz.X),
+							conv.ConvertToString(context, culture, xyz.Y),
+							conv.ConvertToString(context, culture, xyz.Z)
+						});
 				}
-				else if (destinationType == typeof (InstanceDescriptor)) {
+
+				if (destinationType == typeof (InstanceDescriptor)) {
 					//new instance
-					ConstructorInfo ctor = typeof (XYZ).GetConstructor(new Type[]
-					                                                   	{
-					                                                   		typeof (double), typeof (double), typeof (double)
-					                                                   	});
+					ConstructorInfo ctor = typeof (XYZ).GetConstructor(new[]
+					{
+						typeof (double), typeof (double), typeof (double)
+					});
 					if (ctor != null)
 						return new InstanceDescriptor(ctor,
-						                              new object[] {xyz.X, xyz.Y, xyz.Z});
+							new object[] {xyz.X, xyz.Y, xyz.Z});
 				}
 			}
 			return base.ConvertTo(context, culture, value, destinationType);
@@ -88,7 +88,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 		}
 
 		public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value,
-		                                                           System.Attribute[] attributes)
+		                                                           Attribute[] attributes)
 		{
 			return TypeDescriptor.GetProperties(typeof (XYZ)).Sort();
 		}
@@ -99,7 +99,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 			return true;
 		}
 
-		public override object CreateInstance(ITypeDescriptorContext context, System.Collections.IDictionary propertyValues)
+		public override object CreateInstance(ITypeDescriptorContext context, IDictionary propertyValues)
 		{
 			if (propertyValues == null)
 				throw new ArgumentNullException("propertyValues");

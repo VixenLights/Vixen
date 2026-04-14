@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,6 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -146,7 +145,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -516,11 +515,11 @@ namespace ZedGraph
 
 				// Draw the bar
 				if (pane._barSettings.Base == BarBase.X)
-					this.Draw(g, pane, pixSide, pixSide + barWidth, pixLowVal,
+					Draw(g, pane, pixSide, pixSide + barWidth, pixLowVal,
 					          pixHiVal, scaleFactor, true, curve.IsSelected,
 					          curve.Points[index]);
 				else
-					this.Draw(g, pane, pixLowVal, pixHiVal, pixSide, pixSide + barWidth,
+					Draw(g, pane, pixLowVal, pixHiVal, pixSide, pixSide + barWidth,
 					          scaleFactor, true, curve.IsSelected,
 					          curve.Points[index]);
 			}

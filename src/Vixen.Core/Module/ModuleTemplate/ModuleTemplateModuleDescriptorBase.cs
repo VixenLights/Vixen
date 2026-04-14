@@ -35,7 +35,7 @@
 
 		public bool Equals(ModuleTemplateModuleDescriptorBase x, ModuleTemplateModuleDescriptorBase y)
 		{
-			return Equals(x as IModuleTemplateModuleDescriptor, y as IModuleTemplateModuleDescriptor);
+			return Equals(x, y as IModuleTemplateModuleDescriptor);
 		}
 
 		public int GetHashCode(ModuleTemplateModuleDescriptorBase obj)

@@ -4,9 +4,9 @@ namespace Vixen.Sys.Instrumentation
 {
 	public class MillisecondsValue : InstrumentationValue
 	{
-		private double tot=0;
+		private double tot;
 		private int cnt=1;
-		private double max=0;
+		private double max;
 		private double min=999;
 
 		public MillisecondsValue( string name)

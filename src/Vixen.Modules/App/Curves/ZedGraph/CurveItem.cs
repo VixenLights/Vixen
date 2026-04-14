@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -18,9 +18,8 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
-#if ( !DOTNET1 )
-	// Is this a .Net 2 compilation?
+#if (!DOTNET1)
+// Is this a .Net 2 compilation?
 
 #endif
 
@@ -192,7 +191,7 @@ namespace ZedGraph
 			_isX2Axis = false;
 			_isVisible = true;
 			_isOverrideOrdinal = false;
-			this.Tag = null;
+			Tag = null;
 			_yAxisIndex = 0;
 			_link = new Link();
 		}
@@ -229,9 +228,9 @@ namespace ZedGraph
 			_yAxisIndex = rhs._yAxisIndex;
 
 			if (rhs.Tag is ICloneable)
-				this.Tag = ((ICloneable) rhs.Tag).Clone();
+				Tag = ((ICloneable) rhs.Tag).Clone();
 			else
-				this.Tag = rhs.Tag;
+				Tag = rhs.Tag;
 
 			_points = (IPointList) rhs.Points.Clone();
 
@@ -674,7 +673,7 @@ namespace ZedGraph
 		/// <param name="y">The Y coordinate value</param>
 		public void AddPoint(double x, double y)
 		{
-			this.AddPoint(new PointPair(x, y));
+			AddPoint(new PointPair(x, y));
 		}
 
 		/// <summary>
@@ -690,7 +689,7 @@ namespace ZedGraph
 		public void AddPoint(PointPair point)
 		{
 			if (_points == null)
-				this.Points = new PointPairList();
+				Points = new PointPairList();
 
 			if (_points is IPointListEdit)
 				(_points as IPointListEdit).Add(point);
@@ -810,7 +809,7 @@ namespace ZedGraph
 		/// </summary>
 		public void MakeUnique()
 		{
-			this.MakeUnique(ColorSymbolRotator.StaticInstance);
+			MakeUnique(ColorSymbolRotator.StaticInstance);
 		}
 
 		/// <summary>
@@ -825,7 +824,7 @@ namespace ZedGraph
 		/// </param>
 		public virtual void MakeUnique(ColorSymbolRotator rotator)
 		{
-			this.Color = rotator.NextColor;
+			Color = rotator.NextColor;
 		}
 
 		/// <summary>
@@ -872,8 +871,8 @@ namespace ZedGraph
 			xMin = yMin = Double.MaxValue;
 			xMax = yMax = Double.MinValue;
 
-			Axis yAxis = this.GetYAxis(pane);
-			Axis xAxis = this.GetXAxis(pane);
+			Axis yAxis = GetYAxis(pane);
+			Axis xAxis = GetXAxis(pane);
 			if (yAxis == null || xAxis == null)
 				return;
 
@@ -885,8 +884,8 @@ namespace ZedGraph
 			}
 
 
-			bool isZIncluded = this.IsZIncluded(pane);
-			bool isXIndependent = this.IsXIndependent(pane);
+			bool isZIncluded = IsZIncluded(pane);
+			bool isXIndependent = IsXIndependent(pane);
 			bool isXLog = xAxis.Scale.IsLog;
 			bool isYLog = yAxis.Scale.IsLog;
 			bool isXOrdinal = xAxis.Scale.IsAnyOrdinal;
@@ -895,8 +894,8 @@ namespace ZedGraph
 
 			// Loop over each point in the arrays
 			//foreach ( PointPair point in this.Points )
-			for (int i = 0; i < this.Points.Count; i++) {
-				PointPair point = this.Points[i];
+			for (int i = 0; i < Points.Count; i++) {
+				PointPair point = Points[i];
 
 				double curX = isXOrdinal ? i + 1 : point.X;
 				double curY = isYOrdinal ? i + 1 : point.Y;
@@ -1159,7 +1158,7 @@ namespace ZedGraph
 			/// <param name="index">The index number of the point on which to sort</param>
 			public Comparer(SortType type, int index)
 			{
-				this.sortType = type;
+				sortType = type;
 				this.index = index;
 			}
 
@@ -1187,12 +1186,12 @@ namespace ZedGraph
 				double lVal, rVal;
 
 				if (sortType == SortType.XValues) {
-					lVal = (l != null) ? System.Math.Abs(l[index].X) : PointPair.Missing;
-					rVal = (r != null) ? System.Math.Abs(r[index].X) : PointPair.Missing;
+					lVal = (l != null) ? Math.Abs(l[index].X) : PointPair.Missing;
+					rVal = (r != null) ? Math.Abs(r[index].X) : PointPair.Missing;
 				}
 				else {
-					lVal = (l != null) ? System.Math.Abs(l[index].Y) : PointPair.Missing;
-					rVal = (r != null) ? System.Math.Abs(r[index].Y) : PointPair.Missing;
+					lVal = (l != null) ? Math.Abs(l[index].Y) : PointPair.Missing;
+					rVal = (r != null) ? Math.Abs(r[index].Y) : PointPair.Missing;
 				}
 
 				if (lVal == PointPair.Missing || Double.IsInfinity(lVal) || Double.IsNaN(lVal))
@@ -1200,7 +1199,7 @@ namespace ZedGraph
 				if (rVal == PointPair.Missing || Double.IsInfinity(rVal) || Double.IsNaN(rVal))
 					r = null;
 
-				if ((l == null && r == null) || (System.Math.Abs(lVal - rVal) < 1e-10))
+				if ((l == null && r == null) || (Math.Abs(lVal - rVal) < 1e-10))
 					return 0;
 				else if (l == null && r != null)
 					return -1;

@@ -32,7 +32,7 @@
 
 		public bool Equals(AnalysisModuleInstanceBase x, AnalysisModuleInstanceBase y)
 		{
-			return Equals(x as IAnalysisModuleInstance, y as IAnalysisModuleInstance);
+			return Equals(x, y as IAnalysisModuleInstance);
 		}
 
 		public int GetHashCode(AnalysisModuleInstanceBase obj)

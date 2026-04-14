@@ -6,7 +6,7 @@ using Common.Controls.Theme;
 namespace Common.Controls.ColorManagement.ColorPicker
 {
 	/// <summary>
-	/// Zusammenfassung für ColorLabel.
+	/// Zusammenfassung fÃ¼r ColorLabel.
 	/// </summary>
 	[ToolboxItem(false)]
 	public class ColorLabel : Control
@@ -28,7 +28,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			ResourceManager man = new ResourceManager(typeof (ColorLabel));
 			_tl_picker = (Bitmap) man.GetObject("tl_picker.png");
 
-			this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+			SetStyle(ControlStyles.AllPaintingInWmPaint |
 			              ControlStyles.DoubleBuffer |
 			              ControlStyles.UserPaint |
 			              ControlStyles.ResizeRedraw, true);
@@ -44,32 +44,32 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			if (this.Enabled) {
+			if (Enabled) {
 				//draw info panel
 				int infowidth = 0,
-				    y = 0;
+				    y;
 				if (_screen && _tl_picker != null) {
-					infowidth = this.Height;
-					y = (this.Height - _tl_picker.Height)/2;
+					infowidth = Height;
+					y = (Height - _tl_picker.Height)/2;
 					e.Graphics.DrawImageUnscaled(_tl_picker, y, y);
 				}
 				using (SolidBrush sld = new SolidBrush(_color)) {
-					y = this.Height/2;
+					y = Height/2;
 					//draw colors
-					e.Graphics.FillRectangle(sld, infowidth, 0, this.Width - infowidth, y);
+					e.Graphics.FillRectangle(sld, infowidth, 0, Width - infowidth, y);
 					sld.Color = _oldcolor;
-					e.Graphics.FillRectangle(sld, infowidth, y, this.Width - infowidth, this.Height - y);
+					e.Graphics.FillRectangle(sld, infowidth, y, Width - infowidth, Height - y);
 					//draw texts
 					using (StringFormat fmt = new StringFormat()) {
 						fmt.Alignment = fmt.LineAlignment = StringAlignment.Center;
 						//color
 						sld.Color = ColorUtility.MaxContrastTo(_color);
-						e.Graphics.DrawString(ColorToHexString(_color), this.Font, sld,
-						                      new Rectangle(infowidth, 0, this.Width - infowidth, y), fmt);
+						e.Graphics.DrawString(ColorToHexString(_color), Font, sld,
+						                      new Rectangle(infowidth, 0, Width - infowidth, y), fmt);
 						//previous color
 						sld.Color = ColorUtility.MaxContrastTo(_oldcolor);
-						e.Graphics.DrawString(ColorToHexString(_oldcolor), this.Font, sld,
-						                      new Rectangle(infowidth, y, this.Width - infowidth, this.Height - y), fmt);
+						e.Graphics.DrawString(ColorToHexString(_oldcolor), Font, sld,
+						                      new Rectangle(infowidth, y, Width - infowidth, Height - y), fmt);
 					}
 				}
 			}
@@ -90,22 +90,22 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		{
 			base.OnMouseMove(e);
 			if (_tracking) {
-				_screen = !this.ClientRectangle.Contains(
-					this.PointToClient(Control.MousePosition));
+				_screen = !ClientRectangle.Contains(
+					PointToClient(MousePosition));
 				if (_screen) //pick color from screen
 				{
-					_color = GDI32.GetScreenPixel(Control.MousePosition.X,
-					                              Control.MousePosition.Y);
+					_color = GDI32.GetScreenPixel(MousePosition.X,
+					                              MousePosition.Y);
 				}
-				this.Cursor = _screen ? Cursors.Cross : Cursors.Default;
-				this.Refresh();
+				Cursor = _screen ? Cursors.Cross : Cursors.Default;
+				Refresh();
 			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
-			this.Cursor = Cursors.Default;
+			Cursor = Cursors.Default;
 			if (_screen) //update color
 			{
 				if (_color != _oldcolor)
@@ -113,7 +113,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			}
 			//else use click-event
 			_tracking = _screen = false;
-			this.Refresh();
+			Refresh();
 		}
 
 		#endregion
@@ -124,7 +124,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		/// specifies the color without alpha
 		/// </summary>
 		[Description("specifies the color without alpha"),
-		 DefaultValueAttribute(typeof (Color), "Black")]
+		 DefaultValue(typeof (Color), "Black")]
 		public Color Color
 		{
 			get { return _color; }
@@ -133,7 +133,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				value = Color.FromArgb(255, value);
 				if (value == _color) return;
 				_color = value;
-				this.Refresh();
+				Refresh();
 			}
 		}
 
@@ -141,7 +141,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		/// specifies the previous color without alpha
 		/// </summary>
 		[Description("specifies the previous color without alpha"),
-		 DefaultValueAttribute(typeof (Color), "Black")]
+		 DefaultValue(typeof (Color), "Black")]
 		public Color OldColor
 		{
 			get { return _oldcolor; }
@@ -150,7 +150,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				value = Color.FromArgb(255, value);
 				if (value == _oldcolor) return;
 				_oldcolor = value;
-				this.Refresh();
+				Refresh();
 			}
 		}
 

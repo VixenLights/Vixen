@@ -66,7 +66,7 @@ namespace Vixen.Module
 
 		public bool Equals(ModuleInstanceBase x, ModuleInstanceBase y)
 		{
-			return Equals(x as IModuleInstance, y as IModuleInstance);
+			return Equals(x, y as IModuleInstance);
 		}
 
 		public int GetHashCode(ModuleInstanceBase obj)

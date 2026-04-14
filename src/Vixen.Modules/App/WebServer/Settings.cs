@@ -2,7 +2,6 @@
 using Common.Controls.Theme;
 using System.ComponentModel;
 using System.Diagnostics;
-using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.App.WebServer
 {
@@ -41,11 +40,11 @@ namespace VixenModules.App.WebServer
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Port
 		{
-			get { return (int)this.numericUpDown1.Value; }
+			get { return (int)numericUpDown1.Value; }
 			set
 			{
 
-				this.numericUpDown1.Value = value;
+				numericUpDown1.Value = value;
 				setLinkLabel();
 				OnSettingsChanged();
 			}
@@ -55,10 +54,10 @@ namespace VixenModules.App.WebServer
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool WebServerEnabled
 		{
-			get { return this.checkBox1.Checked; }
+			get { return checkBox1.Checked; }
 			set
 			{
-				this.checkBox1.Checked = value;
+				checkBox1.Checked = value;
 				setLinkLabel();
 				OnSettingsChanged();
 			}

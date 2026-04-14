@@ -79,7 +79,7 @@ namespace VixenModules.App.ExportWizard
 			_WizardStageChanged();
 		}
 
-		private void radioCreateNew_CheckedChanged(object sender, System.EventArgs e)
+		private void radioCreateNew_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_initializing) return;
 			radioSelectExisting.Checked = !radioCreateNew.Checked;
@@ -92,7 +92,7 @@ namespace VixenModules.App.ExportWizard
 			_WizardStageChanged();
 		}
 
-		private void radioSelectExisting_CheckedChanged(object sender, System.EventArgs e)
+		private void radioSelectExisting_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_initializing) return;
 			radioCreateNew.Checked = !radioSelectExisting.Checked;

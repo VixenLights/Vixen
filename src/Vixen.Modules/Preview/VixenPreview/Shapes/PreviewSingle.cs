@@ -41,9 +41,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Position"),
-		 DescriptionAttribute("An point is defined by a point on the screen.")]
+		 Description("An point is defined by a point on the screen.")]
 		public Point Point1
 		{
 			get

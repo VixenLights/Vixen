@@ -128,7 +128,7 @@ namespace VixenModules.SequenceType.Vixen2x
 
 				if (Sequence.SequenceData != null) {
 					//we got this baby converted so close it out and load up the Sequence
-					DialogResult = System.Windows.Forms.DialogResult.OK;
+					DialogResult = DialogResult.OK;
 					Close();
 				}
 			}

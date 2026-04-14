@@ -1,9 +1,11 @@
-﻿namespace Vixen.IO
+﻿using NLog;
+
+namespace Vixen.IO
 {
 	internal class MigratingObjectLoaderService : IMigratingObjectLoaderService
 	{
 		private static MigratingObjectLoaderService _instance;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private MigratingObjectLoaderService()
 		{

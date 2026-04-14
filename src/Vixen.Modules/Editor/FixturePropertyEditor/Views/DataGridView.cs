@@ -44,9 +44,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 		{
 			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(prop); i++)
 			{
-				DependencyObject child = VisualTreeHelper.GetChild((prop), i) as DependencyObject;
-				if (child == null)
-					continue;
+				DependencyObject child = VisualTreeHelper.GetChild(prop, i);
 
 				T castedProp = child as T;
 				if (castedProp != null)

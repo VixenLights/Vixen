@@ -15,13 +15,10 @@
  */
 
 using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -371,8 +368,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
         /// </summary>
         public static readonly DependencyProperty CurrentDescriptionProperty =
             DependencyProperty.Register("CurrentDescription", typeof(string), typeof(PropertyGrid),
-                new FrameworkPropertyMetadata((string)"",
-                    new PropertyChangedCallback(OnCurrentDescriptionChanged)));
+                new FrameworkPropertyMetadata(string.Empty, OnCurrentDescriptionChanged));
 
         /// <summary>
         /// Gets or sets the CurrentDescription property.  
@@ -871,8 +867,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
         internal CategoryItem CreateCategory(CategoryAttribute attribute)
         {
             // Check the attribute argument to be passed
-            Debug.Assert(attribute != null);
-            if (attribute == null) return null;
+            ArgumentNullException.ThrowIfNull(attribute);
 
             // Check browsable restrictions
             //if (!ShouldDisplayCategory(attribute.Category)) return null;
@@ -926,8 +921,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
 
         private bool ShoudDisplayProperty(PropertyDescriptor propertyDescriptor)
         {
-            Debug.Assert(propertyDescriptor != null);
-            if (propertyDescriptor == null) return false;
+            ArgumentNullException.ThrowIfNull(propertyDescriptor);
 
             // Check whether owning category is not restricted to ouput
             var showWithinCategory = ShouldDisplayCategory(propertyDescriptor.Category);
@@ -1191,12 +1185,10 @@ namespace System.Windows.Controls.WpfPropertyGrid
                     if (child is SearchTextBox) continue;//speeds up things a bit
                     if (child is T)
                         return child as T;
-                    if (child is DependencyObject)
-                    {
-                        var res = FindVisualChild<T>(child as DependencyObject);
-                        if (res == null) continue;
-                        return res;
-                    }
+                    
+                    var res = FindVisualChild<T>(child as DependencyObject);
+                    if (res == null) continue;
+                    return res;
                 }
             }
             return null;

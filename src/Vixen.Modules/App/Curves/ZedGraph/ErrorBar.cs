@@ -20,7 +20,6 @@
 #region Using directives
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 #endregion
 
@@ -214,7 +213,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -359,7 +358,7 @@ namespace ZedGraph
 			float pixBase, pixValue, pixLowValue;
 			double scaleBase, scaleValue, scaleLowValue;
 
-			if (curve.Points != null && this.IsVisible) {
+			if (curve.Points != null && IsVisible) {
 				using (Pen pen = !curve.IsSelected
 				                 	? new Pen(_color, _penWidth)
 				                 	: new Pen(Selection.Border.Color, Selection.Border.Width)) {
@@ -383,7 +382,7 @@ namespace ZedGraph
 							//if ( this.fill.IsGradientValueType )
 							//	brush = fill.MakeBrush( _rect, _points[i] );
 
-							this.Draw(g, pane, baseAxis is XAxis || baseAxis is X2Axis, pixBase, pixValue,
+							Draw(g, pane, baseAxis is XAxis || baseAxis is X2Axis, pixBase, pixValue,
 							          pixLowValue, scaleFactor, pen, curve.IsSelected,
 							          curve.Points[i]);
 						}

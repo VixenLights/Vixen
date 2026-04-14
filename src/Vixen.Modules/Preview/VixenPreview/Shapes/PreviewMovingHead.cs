@@ -289,7 +289,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_zoomLevel = zoomLevel;
 
 			// Called the shared Draw method
-			Draw(fp, editMode, highlightedElements, selected, false, this.Locked, zoomLevel);
+			Draw(fp, editMode, highlightedElements, selected, false, Locked, zoomLevel);
 			
 			// Restore the _zoomLevel back to 1.0 to support editing the preview
 			_zoomLevel = 1.0;
@@ -477,7 +477,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			// Calculate the scale factor
-			double scaleFactor = ((double)width) / (double)widthOrg;
+			double scaleFactor = width / (double)widthOrg;
 
 			// Default the beam color to unlinked (white)
 			Color beamColor = ThemeColorTable.Unlinked;
@@ -932,7 +932,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			int translateY = (int)(Top + fixtureHeight / 2.0);
 			
 			// Update Y coordinate for (0,0) being at the top of the screen
-			translateY = (int)(referenceHeight - translateY);
+			translateY = referenceHeight - translateY;
 
 			// Update the volumes on the OpenGL implementation
 			_movingHeadOpenGL.UpdateVolumes(

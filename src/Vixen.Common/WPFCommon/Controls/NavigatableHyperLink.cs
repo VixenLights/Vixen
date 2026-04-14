@@ -13,7 +13,7 @@ namespace Common.WPFCommon.Controls
 			{
 				StartInfo = new ProcessStartInfo()
 				{
-					FileName = this.NavigateUri.AbsoluteUri,
+					FileName = NavigateUri.AbsoluteUri,
 					UseShellExecute = true
 				}
 			};

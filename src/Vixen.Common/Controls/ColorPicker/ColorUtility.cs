@@ -40,8 +40,8 @@ namespace Common.Controls.ColorManagement.ColorModels
 		public static Color AoverB(Color a, Color b)
 		{
 			//alphas must bew ranged 0-1
-			float alpha_a = (float) a.A/255f,
-			      alpha_b = (float) b.A/255f,
+			float alpha_a = a.A/255f,
+			      alpha_b = b.A/255f,
 			      div = (alpha_a + (1f - alpha_a)*alpha_b),
 			      FB = (1f - alpha_a)*alpha_b;
 			//if divider is zero, return
@@ -50,9 +50,9 @@ namespace Common.Controls.ColorManagement.ColorModels
 			//mix using A over B subpixel alpha blending
 			return Color.FromArgb(
 				(int) (255f - 255f*(1f - alpha_a)*(1f - alpha_b)),
-				(int) ((alpha_a*(float) a.R + FB*(float) b.R)/div),
-				(int) ((alpha_a*(float) a.G + FB*(float) b.G)/div),
-				(int) ((alpha_a*(float) a.B + FB*(float) b.B)/div));
+				(int) ((alpha_a*a.R + FB*b.R)/div),
+				(int) ((alpha_a*a.G + FB*b.G)/div),
+				(int) ((alpha_a*a.B + FB*b.B)/div));
 		}
 
 		/// <summary>
@@ -66,10 +66,10 @@ namespace Common.Controls.ColorManagement.ColorModels
 			position = Math.Max(0f, Math.Min(1f, position));
 
 			return Color.FromArgb(
-				a.A + (int) (position*(float) (b.A - a.A)),
-				a.R + (int) (position*(float) (b.R - a.R)),
-				a.G + (int) (position*(float) (b.G - a.G)),
-				a.B + (int) (position*(float) (b.B - a.B)));
+				a.A + (int) (position*(b.A - a.A)),
+				a.R + (int) (position*(b.R - a.R)),
+				a.G + (int) (position*(b.G - a.G)),
+				a.B + (int) (position*(b.B - a.B)));
 		}
 	}
 }

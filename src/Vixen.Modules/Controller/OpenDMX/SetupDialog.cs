@@ -1,7 +1,5 @@
-﻿using System.Windows.Forms;
-using Common.Controls;
+﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using NLog;
 
 namespace VixenModules.Controller.OpenDMX

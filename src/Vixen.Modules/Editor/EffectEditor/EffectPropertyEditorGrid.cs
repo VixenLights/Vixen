@@ -819,12 +819,9 @@ namespace VixenModules.Editor.EffectEditor
 					if (child is SearchTextBox) continue; //speeds up things a bit
 					if (child is T)
 						return child as T;
-					if (child is DependencyObject)
-					{
-						var res = FindVisualChild<T>(child as DependencyObject);
-						if (res == null) continue;
-						return res;
-					}
+					var res = FindVisualChild<T>(child as DependencyObject);
+					if (res == null) continue;
+					return res;
 				}
 			}
 			return null;
@@ -1179,7 +1176,6 @@ namespace VixenModules.Editor.EffectEditor
 		internal CategoryItem CreateCategory(CategoryAttribute attribute)
 		{
 			// Check the attribute argument to be passed
-			Debug.Assert(attribute != null);
 			if (attribute == null) return null;
 
 			// Check browsable restrictions
@@ -1233,7 +1229,6 @@ namespace VixenModules.Editor.EffectEditor
 
 		private bool ShoudDisplayProperty(PropertyDescriptor propertyDescriptor)
 		{
-			Debug.Assert(propertyDescriptor != null);
 			if (propertyDescriptor == null) return false;
 
 			// Check whether owning category is not restricted to ouput

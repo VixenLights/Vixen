@@ -47,18 +47,18 @@ namespace VixenModules.Editor.EffectEditor.Utils
             }
             set
             {
-                if (this.Child != value)
+                if (Child != value)
                 {
-                    if (this.Child != null)
+                    if (Child != null)
                     {
                         // Restore original clipping of the old child
-                        this.Child.SetValue(UIElement.ClipProperty, oldClip);
+                        Child.SetValue(ClipProperty, oldClip);
                     }
 
                     if (value != null)
                     {
                         // Store the current clipping of the new child
-                        oldClip = value.ReadLocalValue(UIElement.ClipProperty);
+                        oldClip = value.ReadLocalValue(ClipProperty);
                     }
                     else
                     {
@@ -77,11 +77,11 @@ namespace VixenModules.Editor.EffectEditor.Utils
 
         protected virtual void OnApplyChildClip()
         {
-            UIElement child = this.Child;
+            UIElement child = Child;
             if (child != null)
             {
                 // Get the geometry of a rounded rectangle border based on the BorderThickness and CornerRadius
-                clipRect = GeometryHelper.GetRoundRectangle(new Rect(Child.RenderSize), this.BorderThickness, this.CornerRadius);
+                clipRect = GeometryHelper.GetRoundRectangle(new Rect(Child.RenderSize), BorderThickness, CornerRadius);
                 child.Clip = clipRect;
             }
         }

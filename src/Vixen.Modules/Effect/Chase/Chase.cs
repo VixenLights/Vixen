@@ -565,7 +565,7 @@ namespace VixenModules.Effect.Chase
 
 		private List<IElementNode> GetNodesToRenderOn(IElementNode node)
 		{
-			IEnumerable<IElementNode> renderNodes = null;
+			IEnumerable<IElementNode> renderNodes;
 
 			if (DepthOfEffect == 0) {
 				renderNodes = node.GetLeafEnumerator().Distinct();
@@ -644,7 +644,7 @@ namespace VixenModules.Effect.Chase
 
 		private void GeneratePulse(IElementNode target, TimeSpan startTime, TimeSpan duration, double currentMovementPosition)
 		{
-			EffectIntents result = null;
+			EffectIntents result;
 			
 			// figure out what color gradient to use for the pulse
 			switch (ColorHandling) {

@@ -2,7 +2,6 @@
 using System.IO.Ports;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.Output.Renard
 {
@@ -27,7 +26,7 @@ namespace VixenModules.Output.Renard
 
 		private void buttonPortSetup_Click(object sender, EventArgs e)
 		{
-			using (Common.Controls.SerialPortConfig serialPortConfig = new Common.Controls.SerialPortConfig(_port)) {
+			using (SerialPortConfig serialPortConfig = new SerialPortConfig(_port)) {
 				if (serialPortConfig.ShowDialog() == DialogResult.OK) {
 					_port = serialPortConfig.SelectedPort;
 				}

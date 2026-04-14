@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2005  John Champion
+//Copyright Â© 2005  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -47,7 +47,7 @@ namespace ZedGraph
 		public ScrollRangeList(ScrollRangeList rhs)
 		{
 			foreach (ScrollRange item in rhs)
-				this.Add(new ScrollRange(item));
+				Add(new ScrollRange(item));
 		}
 
 		/// <summary>
@@ -57,7 +57,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -84,7 +84,7 @@ namespace ZedGraph
 		{
 			get
 			{
-				if (index < 0 || index >= this.Count)
+				if (index < 0 || index >= Count)
 					return new ScrollRange(false);
 				else
 					return (ScrollRange) base[index];

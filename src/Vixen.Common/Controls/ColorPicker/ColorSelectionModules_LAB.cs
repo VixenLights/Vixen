@@ -44,7 +44,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			ColorBgra* scan0 = (ColorBgra*) bd.Scan0;
 			//draw fader image
 			LAB curr = new LAB(0.0, _color.a, _color.b);
-			double delta_L = 100.0/(double) bd.Width;
+			double delta_L = 100.0/bd.Width;
 			for (int x = 0; x < bd.Width; x++, scan0++,curr.L += delta_L) {
 				scan0[0] = ColorBgra.FromArgb(curr.ToXYZ().ToRGB());
 			}
@@ -63,7 +63,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			if (newL == _color.L) return;
 			_color.L = newL;
 			RaiseColorChanged();
-			System.Windows.Forms.Application.DoEvents();
+			Application.DoEvents();
 			UpdatePlaneImage();
 		}
 
@@ -80,8 +80,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			//draw plane image
 			LAB curr = new LAB(_color.L, -128.0, 127.0);
 			double
-				delta_a = 255.0/(double) bd.Width,
-				delta_b = -255.0/(double) bd.Height;
+				delta_a = 255.0/bd.Width,
+				delta_b = -255.0/bd.Height;
 			for (int y = 0; y < bd.Height; y++, curr.a = -128.0, curr.b += delta_b) {
 				for (int x = 0; x < bd.Width; x++, scan0++,curr.a += delta_a) {
 					scan0[0] = ColorBgra.FromArgb(curr.ToXYZ().ToRGB());
@@ -124,7 +124,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			ColorBgra* scan0 = (ColorBgra*) bd.Scan0;
 			//draw fader image
 			LAB curr = new LAB(_color.L, -128.0, _color.b);
-			double delta_a = 255.0/(double) bd.Width;
+			double delta_a = 255.0/bd.Width;
 			for (int x = 0; x < bd.Width; x++, scan0++,curr.a += delta_a) {
 				scan0[0] = ColorBgra.FromArgb(curr.ToXYZ().ToRGB());
 			}
@@ -143,7 +143,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			if (newa == _color.b) return;
 			_color.a = newa;
 			RaiseColorChanged();
-			System.Windows.Forms.Application.DoEvents();
+			Application.DoEvents();
 			UpdatePlaneImage();
 		}
 
@@ -160,8 +160,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			//draw plane image
 			LAB curr = new LAB(100.0, _color.a, -128.0);
 			double
-				delta_L = -100.0/(double) bd.Height,
-				delta_b = 255.0/(double) bd.Width;
+				delta_L = -100.0/bd.Height,
+				delta_b = 255.0/bd.Width;
 			for (int y = 0; y < bd.Height; y++, curr.b = -128.0, curr.L += delta_L) {
 				for (int x = 0; x < bd.Width; x++, scan0++,curr.b += delta_b) {
 					scan0[0] = ColorBgra.FromArgb(curr.ToXYZ().ToRGB());
@@ -204,7 +204,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			ColorBgra* scan0 = (ColorBgra*) bd.Scan0;
 			//draw fader image
 			LAB curr = new LAB(_color.L, _color.a, -128.0);
-			double delta_b = 255.0/(double) bd.Width;
+			double delta_b = 255.0/bd.Width;
 			for (int x = 0; x < bd.Width; x++, scan0++,curr.b += delta_b) {
 				scan0[0] = ColorBgra.FromArgb(curr.ToXYZ().ToRGB());
 			}
@@ -223,7 +223,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			if (newb == _color.b) return;
 			_color.b = newb;
 			RaiseColorChanged();
-			System.Windows.Forms.Application.DoEvents();
+			Application.DoEvents();
 			UpdatePlaneImage();
 		}
 
@@ -240,8 +240,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			//draw plane image
 			LAB curr = new LAB(100.0, -128.0, _color.b);
 			double
-				delta_L = -100.0/(double) bd.Height,
-				delta_a = 255.0/(double) bd.Width;
+				delta_L = -100.0/bd.Height,
+				delta_a = 255.0/bd.Width;
 			for (int y = 0; y < bd.Height; y++, curr.a = -128.0, curr.L += delta_L) {
 				for (int x = 0; x < bd.Width; x++, scan0++,curr.a += delta_a) {
 					scan0[0] = ColorBgra.FromArgb(curr.ToXYZ().ToRGB());

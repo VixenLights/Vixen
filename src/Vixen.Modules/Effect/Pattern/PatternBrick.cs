@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Windows.Media;
-
-using Common.Controls.ColorManagement.ColorModels;
+﻿using Common.Controls.ColorManagement.ColorModels;
 
 using VixenModules.App.ColorGradients;
 using VixenModules.Effect.Effect;
@@ -132,7 +128,7 @@ namespace VixenModules.Effect.Pattern
 			int count = colors;
 						
 			// Add together all the brick colors with mortar separating them
-			return (int)(count * brickWidth) + count * mortarHeight;			
+			return count * brickWidth + count * mortarHeight;			
 		}
 
 		/// <summary>
@@ -151,7 +147,7 @@ namespace VixenModules.Effect.Pattern
 			int count = 2;
 			
 			// Need the bar thickness then the bar spacing for each of the brick color bars
-			return (int)(count * brickHeight) + count * mortorHeight;			
+			return count * brickHeight + count * mortorHeight;			
 		}
 
 		/// <summary>

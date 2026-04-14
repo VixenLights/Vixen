@@ -2,11 +2,9 @@
 
 namespace Vixen.IO.Xml.SystemConfig
 {
-	using Vixen.Sys;
-
-	internal class SystemConfigXElementWriter : IObjectContentWriter<XElement, SystemConfig>
+	internal class SystemConfigXElementWriter : IObjectContentWriter<XElement, Sys.SystemConfig>
 	{
-		public void WriteContentToObject(XElement content, SystemConfig obj)
+		public void WriteContentToObject(XElement content, Sys.SystemConfig obj)
 		{
 			XmlSystemConfigFilePolicy xmlFilePolicy = new XmlSystemConfigFilePolicy(obj, content);
 			xmlFilePolicy.Read();
@@ -22,9 +20,9 @@ namespace Vixen.IO.Xml.SystemConfig
 		void IObjectContentWriter.WriteContentToObject(object content, object obj)
 		{
 			if (!(content is XElement)) throw new InvalidOperationException("Content must be an XElement.");
-			if (!(obj is SystemConfig)) throw new InvalidOperationException("Object must be a SystemConfig.");
+			if (!(obj is Sys.SystemConfig)) throw new InvalidOperationException("Object must be a SystemConfig.");
 
-			WriteContentToObject((XElement) content, (SystemConfig) obj);
+			WriteContentToObject((XElement) content, (Sys.SystemConfig) obj);
 		}
 
 		int IObjectContentWriter.GetContentVersion(object content)

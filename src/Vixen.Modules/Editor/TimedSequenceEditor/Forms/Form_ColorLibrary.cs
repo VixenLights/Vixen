@@ -36,7 +36,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			const int lvmFirst = 0x1000;
 			const int lvmSeticonspacing = lvmFirst + 53;
-			SendMessage(listview.Handle, lvmSeticonspacing, IntPtr.Zero, (IntPtr)MakeLong(leftPadding, topPadding));
+			SendMessage(listview.Handle, lvmSeticonspacing, IntPtr.Zero, MakeLong(leftPadding, topPadding));
 		}
 
 		#endregion
@@ -336,10 +336,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_lastFolder != string.Empty) openFileDialog.InitialDirectory = _lastFolder;
 			if (openFileDialog.ShowDialog() != DialogResult.OK) return;
 			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-			List<Color> colors = new List<Color>();
 
 			try
 			{
+				List<Color> colors;
 				using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
 				{
 					DataContractSerializer ser = new DataContractSerializer(typeof(List<Color>));
@@ -542,7 +542,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+			if ((ModifierKeys & Keys.Control) == Keys.Control)
 			{
 				if (e.Delta > 0)
 					_colorLibraryScale = _colorLibraryScale * 1.03;

@@ -70,7 +70,7 @@ namespace VixenModules.App.Shows
 
 		public ShowItem AddItem(ShowItemType itemType, string itemName)
 		{
-			ShowItem showItem = new ShowItem(itemType, itemName, this.ID);
+			ShowItem showItem = new ShowItem(itemType, itemName, ID);
 			Items.Add(showItem);
 			return showItem;
 		}

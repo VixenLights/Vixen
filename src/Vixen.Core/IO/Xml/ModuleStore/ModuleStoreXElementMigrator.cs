@@ -148,7 +148,7 @@ namespace Vixen.IO.Xml.ModuleStore
 				string moduleDataPath = Paths.ModuleDataFilesPath + "\\LipSync";
 				string newDirName = moduleDataPath + "\\" + mapName;
 
-				bool isMatrix= Convert.ToBoolean(valueElement.Element(ns + "IsMatrix").Value.ToString());
+				bool isMatrix= Convert.ToBoolean(valueElement.Element(ns + "IsMatrix").Value);
 
 				if (isMatrix)
 				{

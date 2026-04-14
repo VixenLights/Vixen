@@ -1,13 +1,9 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace VixenModules.Output.ElexolEtherIO
@@ -16,7 +12,6 @@ namespace VixenModules.Output.ElexolEtherIO
 	{
 		private int m_MinIntensity = 1;
 		private IPAddress m_IPAddress = null;
-		private ElexolEtherIOData _data;
 		private readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public SetupDialog(ElexolEtherIOData data)
@@ -24,29 +19,27 @@ namespace VixenModules.Output.ElexolEtherIO
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
 
-			_data = data;
-
-			if (_data.Address == null)
+			if (data.Address == null)
 			{
 				ipAddressTextBox.Text = "127.0.0.1";
 			}
 			else
 			{
-				ipAddressTextBox.Text = _data.Address.ToString();
+				ipAddressTextBox.Text = data.Address.ToString();
 			}
 
-			if (_data.Port <= 0)
+			if (data.Port <= 0)
 			{
 				portTextBox.Text = "2424";
 			}
 			else
 			{
-				portTextBox.Text = _data.Port.ToString();
+				portTextBox.Text = data.Port.ToString();
 			}
 
-			if (_data.MinimumIntensity > 1)
+			if (data.MinimumIntensity > 1)
 			{
-				m_MinIntensity = _data.MinimumIntensity;
+				m_MinIntensity = data.MinimumIntensity;
 			}
 			sliderMinIntensityTrackBar.Value = m_MinIntensity;
 			minIntensityLabel.Text = m_MinIntensity.ToString();
@@ -91,7 +84,7 @@ namespace VixenModules.Output.ElexolEtherIO
 				MinIntensity = m_MinIntensity;
 				DataPort = int.Parse(portTextBox.Text);
 
-				DialogResult = System.Windows.Forms.DialogResult.OK;
+				DialogResult = DialogResult.OK;
 			}
 			else
 			{
@@ -118,7 +111,7 @@ namespace VixenModules.Output.ElexolEtherIO
 					client.Send(sendPckt, sendPckt.Length);
 
 					// Wait for data to be available or a timeout to ocurr.
-					while ((client.Available == 0) && (((TimeSpan)(DateTime.Now - begin)).TotalSeconds < 1))
+					while (client.Available == 0 && (DateTime.Now - begin).TotalSeconds < 1)
 					{
 						Thread.Sleep(10);
 					}

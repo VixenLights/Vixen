@@ -1,4 +1,5 @@
-﻿using Vixen.Execution.DataSource;
+﻿using NLog;
+using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
@@ -7,7 +8,7 @@ namespace Vixen.Execution.Context
 {
 	public abstract class ContextBase : IContext
 	{
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		internal ContextCurrentEffectsFull CurrentEffects; 
 		private readonly IntentStateBuilder _elementStateBuilder;
 		private TimeSpan _currentTime = TimeSpan.Zero;

@@ -109,8 +109,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			else
 			{
 				// Attempt to parse the angle into an integer
-				int intValue = 0;
-				bool valid = int.TryParse(value, out intValue);
+				bool valid = int.TryParse(value, out var intValue);
 
 				// If the string did not parse into an int then...
 				if (!valid)

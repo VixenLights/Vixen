@@ -6,24 +6,24 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights.Faces
 	{
 		public static Dictionary<string,FaceComponent> Attributes = new Dictionary<string, FaceComponent>()
 		{
-			{ "Eyes-Closed", Model.FaceComponent.EyesClosed},
-			{ "Eyes-Open", Model.FaceComponent.EyesOpen},
-			{ "Eyes-Closed2", Model.FaceComponent.EyesClosed2},
-			{ "Eyes-Open2", Model.FaceComponent.EyesOpen2},
-			{ "Eyes-Closed3", Model.FaceComponent.EyesClosed3},
-			{ "Eyes-Open3", Model.FaceComponent.EyesOpen3},
-			{ "FaceOutline", Model.FaceComponent.Outlines },
-			{ "FaceOutline2", Model.FaceComponent.Outlines },
-			{ "Mouth-AI", Model.FaceComponent.AI},
-			{ "Mouth-FV", Model.FaceComponent.FV},
-			{ "Mouth-MBP",Model.FaceComponent.MBP},
-			{ "Mouth-E", Model.FaceComponent.E},
-			{ "Mouth-L", Model.FaceComponent.L},
-			{ "Mouth-O", Model.FaceComponent.O},
-			{ "Mouth-U", Model.FaceComponent.U},
-			{ "Mouth-WQ", Model.FaceComponent.WQ},
-			{ "Mouth-etc", Model.FaceComponent.ETC},
-			{ "Mouth-rest", Model.FaceComponent.REST}
+			{ "Eyes-Closed", FaceComponent.EyesClosed},
+			{ "Eyes-Open", FaceComponent.EyesOpen},
+			{ "Eyes-Closed2", FaceComponent.EyesClosed2},
+			{ "Eyes-Open2", FaceComponent.EyesOpen2},
+			{ "Eyes-Closed3", FaceComponent.EyesClosed3},
+			{ "Eyes-Open3", FaceComponent.EyesOpen3},
+			{ "FaceOutline", FaceComponent.Outlines },
+			{ "FaceOutline2", FaceComponent.Outlines },
+			{ "Mouth-AI", FaceComponent.AI},
+			{ "Mouth-FV", FaceComponent.FV},
+			{ "Mouth-MBP",FaceComponent.MBP},
+			{ "Mouth-E", FaceComponent.E},
+			{ "Mouth-L", FaceComponent.L},
+			{ "Mouth-O", FaceComponent.O},
+			{ "Mouth-U", FaceComponent.U},
+			{ "Mouth-WQ", FaceComponent.WQ},
+			{ "Mouth-etc", FaceComponent.ETC},
+			{ "Mouth-rest", FaceComponent.REST}
 		};
 
 		public FaceInfo(string name)

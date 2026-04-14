@@ -1,4 +1,5 @@
-﻿using Vixen.Services;
+﻿using System.Collections;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace Vixen.Execution
@@ -16,7 +17,7 @@ namespace Vixen.Execution
 
 		public ISequenceExecutor Current { get; private set; }
 
-		object System.Collections.IEnumerator.Current
+		object IEnumerator.Current
 		{
 			get { return Current; }
 		}

@@ -84,13 +84,13 @@ namespace VixenModules.App.TimedSequenceMapper
 			_importWizard.WizardFinished += ImportWizard_WizardFinished;
 		}
 
-		private void ImportWizard_WizardFinished(object sender, System.EventArgs e)
+		private void ImportWizard_WizardFinished(object sender, EventArgs e)
 		{
 			_importWizard.WizardFinished -= ImportWizard_WizardFinished;
 			_importWizard = null;
 		}
 
-		private async void ExportWizard_WizardFinished(object sender, System.EventArgs e)
+		private async void ExportWizard_WizardFinished(object sender, EventArgs e)
 		{
 			if (_exportWizard.WizardDialogResult == DialogResult.OK)
 			{
@@ -105,7 +105,7 @@ namespace VixenModules.App.TimedSequenceMapper
 			await VixenSystem.SaveModuleConfigAsync();
 		}
 
-		private void ImportCommand_Click(object sender, System.EventArgs e)
+		private void ImportCommand_Click(object sender, EventArgs e)
 		{
 			if (_importWizard == null)
 			{
@@ -115,7 +115,7 @@ namespace VixenModules.App.TimedSequenceMapper
 			_importWizard.Start(true);
 		}
 
-		private void ExportCommand_Click(object sender, System.EventArgs e)
+		private void ExportCommand_Click(object sender, EventArgs e)
 		{
 			if (_exportWizard == null)
 			{

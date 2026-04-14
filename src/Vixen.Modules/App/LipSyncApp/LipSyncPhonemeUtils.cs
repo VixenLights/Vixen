@@ -26,7 +26,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			get
 			{
-				return (PapagayoImportObject.SoundFrames - 1) * 1000 / (int)PapagayoImportObject.FPS;
+				return (SoundFrames - 1) * 1000 / (int)FPS;
 			}
 		}
 
@@ -101,7 +101,6 @@ namespace VixenModules.App.LipSyncApp
 		public void Load(string fileName)
 		{
 			string line;
-			PapagayoVoice voice = null;
 
 			m_state = 0;
 			m_soundPath = null;
@@ -154,7 +153,7 @@ namespace VixenModules.App.LipSyncApp
 						m_numVoices = Convert.ToInt32(line);
 						for (int j = 0; j < m_numVoices; j++)
 						{
-							voice = new PapagayoVoice();
+							var voice = new PapagayoVoice();
 							voice.EndFrame = PapagayoImportObject.SoundFrames;
 							voice.Load(file);
 							m_voices.Add(voice.VoiceName.Trim(), voice);
@@ -224,11 +223,6 @@ namespace VixenModules.App.LipSyncApp
 			get { return m_voiceName; }
 		}
 
-		public PapagayoVoice()
-		{
-
-		}
-
 		public void Load(StreamReader file)
 		{
 			m_voiceName = null;
@@ -292,10 +286,9 @@ namespace VixenModules.App.LipSyncApp
 			List<PapagayoPhoneme> eventList = new List<PapagayoPhoneme>();
 			List<PapagayoPhoneme> newList = new List<PapagayoPhoneme>();
 			PapagayoPhoneme coalescedPhoneme = null;
-			PapagayoPhoneme newPhoneme = null;
 			for (int eventIndex = 0; eventIndex < SoundFrames; eventIndex++)
 			{
-				eventList.Add(this.GetEventPhoneme(eventIndex));
+				eventList.Add(GetEventPhoneme(eventIndex));
 			}
 
 			foreach(PapagayoPhoneme phoneme in eventList)
@@ -311,7 +304,7 @@ namespace VixenModules.App.LipSyncApp
 				}
 				else
 				{
-					newPhoneme = new PapagayoPhoneme(coalescedPhoneme);
+					var newPhoneme = new PapagayoPhoneme(coalescedPhoneme);
 					newList.Add(newPhoneme);
 					coalescedPhoneme = phoneme;
 				}
@@ -355,11 +348,6 @@ namespace VixenModules.App.LipSyncApp
 		string m_text;
 		int m_numWords;
 		PapagayoWord[] m_words = null;
-
-		public PapagayoPhrase()
-		{
-
-		}
 
 		public void Load(StreamReader file, ref List<PapagayoPhoneme> phonemes)
 		{
@@ -416,7 +404,7 @@ namespace VixenModules.App.LipSyncApp
 
 		public PapagayoPhoneme GetEventPhoneme(int eventNum)
 		{
-			foreach (PapagayoWord word in this.m_words)
+			foreach (PapagayoWord word in m_words)
 			{
 				if (eventNum >= word.StartFrame &&
 					eventNum <= word.EndFrame)
@@ -434,15 +422,13 @@ namespace VixenModules.App.LipSyncApp
 
 	class PapagayoWord : PapagayoImportObject
 	{
-		string line = null;
 		string m_wordText = null;
-		int m_numPhoneme = 0;
 		PapagayoPhoneme[] m_phoneme = null;
 
 		public PapagayoWord(StreamReader file,
 			ref List<PapagayoPhoneme> phonemes)
 		{
-			line = file.ReadLine();
+			var line = file.ReadLine();
 			if (line == null)
 			{
 				throw new IOException("Corrupt File Format");
@@ -455,11 +441,11 @@ namespace VixenModules.App.LipSyncApp
 				m_wordText = split[0].TrimStart(null);
 				StartFrame = Convert.ToInt32(split[1].TrimStart(null));
 				EndFrame = Convert.ToInt32(split[2].TrimStart(null));
-				m_numPhoneme = Convert.ToInt32(split[3].TrimStart(null));
-				m_phoneme = new PapagayoPhoneme[m_numPhoneme];
+				var mNumPhoneme = Convert.ToInt32(split[3].TrimStart(null));
+				m_phoneme = new PapagayoPhoneme[mNumPhoneme];
 
 				PapagayoPhoneme lastObj = null;
-				for (int j = 0; j < m_numPhoneme; j++)
+				for (int j = 0; j < mNumPhoneme; j++)
 				{
 					if ((line = file.ReadLine()) != null)
 					{
@@ -502,11 +488,11 @@ namespace VixenModules.App.LipSyncApp
 
 		public PapagayoPhoneme(PapagayoPhoneme copyObj)
 		{
-			this.m_state = copyObj.m_state;
-			this.m_Text = copyObj.m_Text;
-			this.StartFrame = copyObj.StartFrame;
-			this.EndFrame = copyObj.EndFrame;
-			this.m_type = copyObj.m_type;
+			m_state = copyObj.m_state;
+			m_Text = copyObj.m_Text;
+			StartFrame = copyObj.StartFrame;
+			EndFrame = copyObj.EndFrame;
+			m_type = copyObj.m_type;
 		}
 
 		public PapagayoPhoneme(string pair, PapagayoPhoneme lastObj)
@@ -558,7 +544,7 @@ namespace VixenModules.App.LipSyncApp
 		public bool isPhonemeType(string testVal)
 		{
 			return ((testVal != null) &&
-				(this.m_Text.Equals(testVal.ToUpper())));
+				(m_Text.Equals(testVal.ToUpper())));
 		}
 
 	}
@@ -687,7 +673,7 @@ namespace VixenModules.App.LipSyncApp
 				{
 					if (!items[j].Equals(""))
 					{
-						if (cmu2pbDict.TryGetValue(items[j], out tempVal) == true)
+						if (cmu2pbDict.TryGetValue(items[j], out tempVal))
 						{
 							phonemeList.Add(tempVal);
 						}
@@ -724,7 +710,7 @@ namespace VixenModules.App.LipSyncApp
 
 		public static void InitDictionary()
 		{
-			if (initComplete == true) 
+			if (initComplete) 
 			{ 
 				return; 
 			}

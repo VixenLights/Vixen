@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.Controller
+﻿using Vixen.Sys;
+
+namespace Vixen.Module.Controller
 {
 	public abstract class ControllerModuleDescriptorBase : ModuleDescriptorBase, IControllerModuleDescriptor,
 	                                                       IEqualityComparer<IControllerModuleDescriptor>,
@@ -20,7 +22,7 @@
 
 		public virtual int UpdateInterval
 		{
-			get { return Vixen.Sys.VixenSystem.DefaultUpdateInterval; }
+			get { return VixenSystem.DefaultUpdateInterval; }
 		}
 
 		public bool Equals(IControllerModuleDescriptor x, IControllerModuleDescriptor y)
@@ -40,7 +42,7 @@
 
 		public bool Equals(ControllerModuleDescriptorBase x, ControllerModuleDescriptorBase y)
 		{
-			return Equals(x as IControllerModuleDescriptor, y as IControllerModuleDescriptor);
+			return Equals(x, y as IControllerModuleDescriptor);
 		}
 
 		public int GetHashCode(ControllerModuleDescriptorBase obj)

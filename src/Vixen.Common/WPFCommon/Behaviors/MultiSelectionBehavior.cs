@@ -291,7 +291,7 @@ namespace Common.WPFCommon.Behaviors
 			if (_isUpdatingTarget)
 				return;
 
-			var selectedItems = this.SelectedItems;
+			var selectedItems = SelectedItems;
 			if (selectedItems == null)
 				return;
 

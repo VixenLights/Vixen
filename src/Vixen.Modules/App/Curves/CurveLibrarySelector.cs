@@ -1,7 +1,7 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using System.ComponentModel;
+using NLog;
 using Vixen.Module.App;
 using Vixen.Services;
 
@@ -9,6 +9,8 @@ namespace VixenModules.App.Curves
 {
 	public partial class CurveLibrarySelector : BaseForm
 	{
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		
 		public CurveLibrarySelector()
 		{
 			InitializeComponent();
@@ -96,71 +98,92 @@ namespace VixenModules.App.Curves
 			}
 		}
 
-		private void buttonNewCurve_Click(object sender, EventArgs e)
+		private async void buttonNewCurve_Click(object sender, EventArgs e)
 		{
-			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
-
-			while (dialog.ShowDialog() == DialogResult.OK)
+			try
 			{
-				if (dialog.Response == string.Empty)
-				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("Please enter a name.", "Curve Name", false, false);
-					messageBox.ShowDialog();
-					continue;
-				}
+				TextDialog dialog = new TextDialog("Curve name?");
 
-				if (Library.Contains(dialog.Response))
+				while (await dialog.ShowDialogAsync() == DialogResult.OK)
 				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("There is already a curve with that name. Do you want to overwrite it?", "Overwrite curve?", true, true);
-					messageBox.ShowDialog();
-					if (messageBox.DialogResult == DialogResult.OK)
+					if (dialog.Response == string.Empty)
 					{
-						Library.AddCurve(dialog.Response, new Curve());
-						Library.EditLibraryCurve(dialog.Response);
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("Please enter a name.", "Curve Name", false, false);
+						await messageBox.ShowDialogAsync();
+						continue;
+					}
+
+					if (Library.Contains(dialog.Response))
+					{
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("There is already a curve with that name. Do you want to overwrite it?", "Overwrite curve?", true, true);
+						await messageBox.ShowDialogAsync();
+						if (messageBox.DialogResult == DialogResult.OK)
+						{
+							await Library.AddCurveAsync(dialog.Response, new Curve());
+							await Library.EditLibraryCurveAsync(dialog.Response);
+							PopulateListWithCurves();
+							break;
+						}
+						if (messageBox.DialogResult == DialogResult.Cancel)
+						{
+							break;
+						}
+					}
+					else
+					{
+						await Library.AddCurveAsync(dialog.Response, new Curve());
+						await Library.EditLibraryCurveAsync(dialog.Response);
 						PopulateListWithCurves();
 						break;
 					}
-					if (messageBox.DialogResult == DialogResult.Cancel)
-					{
-						break;
-					}
 				}
-				else
-				{
-					Library.AddCurve(dialog.Response, new Curve());
-					Library.EditLibraryCurve(dialog.Response);
-					PopulateListWithCurves();
-					break;
-				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred trying to create a new curve.");
 			}
 		}
 
-		private void buttonEditCurve_Click(object sender, EventArgs e)
+		private async void buttonEditCurve_Click(object sender, EventArgs e)
 		{
-			if (listViewCurves.SelectedItems.Count != 1)
-				return;
+			try
+			{
+				if (listViewCurves.SelectedItems.Count != 1)
+					return;
 
-			Library.EditLibraryCurve(listViewCurves.SelectedItems[0].Name);
+				await Library.EditLibraryCurveAsync(listViewCurves.SelectedItems[0].Name);
 
-			PopulateListWithCurves();
+				PopulateListWithCurves();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Error editing library curve.");
+			}
 		}
 
-		private void buttonDeleteCurve_Click(object sender, EventArgs e)
+		private async void buttonDeleteCurve_Click(object sender, EventArgs e)
 		{
-			if (listViewCurves.SelectedItems.Count == 0)
-				return;
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("If you delete this library curve, ALL places it is used will be unlinked and will become independent curves. Are you sure you want to continue?", "Delete library curve?", true, false);
-			messageBox.ShowDialog();
+			try
+			{
+				if (listViewCurves.SelectedItems.Count == 0)
+					return;
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("If you delete this library curve, ALL places it is used will be unlinked and will become independent curves. Are you sure you want to continue?", "Delete library curve?", true, false);
+				await messageBox.ShowDialogAsync();
 
-			if (messageBox.DialogResult == DialogResult.OK) {
-				Library.RemoveCurve(listViewCurves.SelectedItems[0].Name);
-				PopulateListWithCurves();
+				if (messageBox.DialogResult == DialogResult.OK) {
+					await Library.RemoveCurveAsync(listViewCurves.SelectedItems[0].Name);
+					PopulateListWithCurves();
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred trying to delete the selected curve from the library.");
 			}
 		}
 

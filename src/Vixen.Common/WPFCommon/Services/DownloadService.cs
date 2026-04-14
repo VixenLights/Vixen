@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Net.Http;
-using Catel.IoC;
 
 namespace Common.WPFCommon.Services
 {

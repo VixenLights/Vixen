@@ -1,7 +1,5 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Newtonsoft.Json.Linq;
-using System.ComponentModel;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {

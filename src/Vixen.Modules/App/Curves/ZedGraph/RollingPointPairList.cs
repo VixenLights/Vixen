@@ -1,7 +1,7 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2006  John Champion
-//RollingPointPairList class Copyright © 2006 by Colin Green
+//Copyright Â© 2006  John Champion
+//RollingPointPairList class Copyright Â© 2006 by Colin Green
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,6 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -203,7 +202,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -321,7 +320,7 @@ namespace ZedGraph
 		/// </param>
 		public void RemoveAt(int index)
 		{
-			int count = this.Count;
+			int count = Count;
 
 			if (index >= count || index < 0)
 				throw new ArgumentOutOfRangeException();
@@ -354,13 +353,13 @@ namespace ZedGraph
 		/// or greater than the total available items in the queue</param>
 		public void RemoveRange(int index, int count)
 		{
-			int totalCount = this.Count;
+			int totalCount = Count;
 
 			if (index >= totalCount || index < 0 || count < 0 || count > totalCount)
 				throw new ArgumentOutOfRangeException();
 
 			for (int i = 0; i < count; i++)
-				this.RemoveAt(index);
+				RemoveAt(index);
 		}
 
 		/// <summary>

@@ -43,11 +43,10 @@ namespace VixenModules.Effect.Effect
 			return true;
 		}
 
-		public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
 		{
-			ObservableCollection<IMarkCollection> markCollections = null;
 			IMarkCollectionExpandoObject expando = (IMarkCollectionExpandoObject)context.Instance;
-			markCollections = expando.MarkCollections;
+			var markCollections = expando.MarkCollections;
 
 			List<string> values = new List<string>();
 
@@ -59,7 +58,7 @@ namespace VixenModules.Effect.Effect
 				}
 			}
 
-			return new TypeConverter.StandardValuesCollection(values.ToArray());
+			return new StandardValuesCollection(values.ToArray());
 		}
 
 		#endregion

@@ -1,8 +1,6 @@
 using System.ComponentModel;
-using System.Diagnostics;
 using Common.Controls.Theme;
 using Vixen.Data.Flow;
-using Vixen.Export;
 using Vixen.Factory;
 using Vixen.Module;
 using Vixen.Services;
@@ -720,7 +718,7 @@ namespace Common.Controls
 		/// </summary>
 		public void ReorderControllers()
 		{
-			if (listReordered == true)
+			if (listReordered)
 			{
 				// Get the list of controller names in the order they are displayed in the treeview.
 				var sortList = new List<Guid>();
@@ -912,7 +910,7 @@ namespace Common.Controls
 			int runningCount = 0;
 			int notRunningCount = 0;
 
-			this.unpatchControllerToolStripMenuItem.Enabled = false;
+			unpatchControllerToolStripMenuItem.Enabled = false;
 
 			foreach (IControllerDevice controller in SelectedControllers) {
 				if (controller.IsRunning) {
@@ -926,16 +924,16 @@ namespace Common.Controls
 				foreach (var output in controller.Outputs)
 					if (output.Source != null && output.Source.Component != null)
 					{
-						this.unpatchControllerToolStripMenuItem.Enabled = true;
+						unpatchControllerToolStripMenuItem.Enabled = true;
 						break;
 					}
 			}
 
 			// Show the menu item as singular or plural
 			if (SelectedControllers.Count() > 1)
-				this.unpatchControllerToolStripMenuItem.Text = "Unpatch Controllers";
+				unpatchControllerToolStripMenuItem.Text = "Unpatch Controllers";
 			else
-				this.unpatchControllerToolStripMenuItem.Text = "Unpatch Controller";
+				unpatchControllerToolStripMenuItem.Text = "Unpatch Controller";
 
 			_someSelectedControllersRunning = runningCount > 0;
 			_someSelectedControllersNotRunning = notRunningCount > 0;

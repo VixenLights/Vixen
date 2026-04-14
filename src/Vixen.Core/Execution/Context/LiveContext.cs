@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using NLog;
 using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
@@ -8,7 +9,7 @@ namespace Vixen.Execution.Context
 {
 	public class LiveContext : ContextBase
 	{
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly string _name;
 		private readonly LiveDataSource _dataSource;
 		

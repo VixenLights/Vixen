@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {
@@ -229,9 +227,7 @@ namespace System.Windows.Controls.WpfPropertyGrid
       if (target == null) throw new ArgumentNullException("target");
       if (string.IsNullOrEmpty(propertyName)) throw new ArgumentNullException("propertyName");
 
-      PropertySet propertySet = null;
-
-      if (!Properties.TryGetValue(target.GetType(), out propertySet))
+      if (!Properties.TryGetValue(target.GetType(), out var propertySet))
         propertySet = CollectProperties(target);
 
       PropertyData property;

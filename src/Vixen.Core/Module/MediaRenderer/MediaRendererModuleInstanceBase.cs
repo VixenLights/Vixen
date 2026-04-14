@@ -31,7 +31,7 @@ namespace Vixen.Module.MediaRenderer
 
 		public bool Equals(MediaRendererModuleInstanceBase x, MediaRendererModuleInstanceBase y)
 		{
-			return Equals(x as IMediaRendererModuleInstance, y as IMediaRendererModuleInstance);
+			return Equals(x, y as IMediaRendererModuleInstance);
 		}
 
 		public int GetHashCode(MediaRendererModuleInstanceBase obj)

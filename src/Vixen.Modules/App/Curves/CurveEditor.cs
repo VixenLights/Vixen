@@ -1,8 +1,8 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using NCalc2;
 using System.ComponentModel;
+using NLog;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
@@ -15,6 +15,7 @@ namespace VixenModules.App.Curves
 		private double _tempX;
 		private bool _drawCurve;
 		private string _holdFunction = String.Empty;
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public CurveEditor()
 		{
@@ -106,7 +107,7 @@ namespace VixenModules.App.Curves
 			double newX, newY;
 			if (e.Button == MouseButtons.Left && _drawCurve)
 			{
-				int textThreshold = textBoxThreshold.Text == "" ? (int) 0 : Convert.ToInt16(textBoxThreshold.Text);
+				int textThreshold = textBoxThreshold.Text == "" ? 0 : Convert.ToInt16(textBoxThreshold.Text);
 				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
 				if (zedGraphControl.MasterPane.FindPane(e.Location) != null)
 				{
@@ -254,7 +255,7 @@ namespace VixenModules.App.Curves
 			// if CTRL is pressed, and we're not near a specific point, add a new point
 
 			double newX, newY;
-			if (Control.ModifierKeys.HasFlag(Keys.Control) &&
+			if (ModifierKeys.HasFlag(Keys.Control) &&
 			    !zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
 				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
 				if (zedGraphControl.MasterPane.FindPane(e.Location) != null) {
@@ -283,7 +284,7 @@ namespace VixenModules.App.Curves
 				}
 			}
 			// if the ALT key was pressed, and we're near a point, delete it -- but only if there would be at least two points left
-			if (Control.ModifierKeys.HasFlag(Keys.Alt) &&
+			if (ModifierKeys.HasFlag(Keys.Alt) &&
 			    zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
 				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
 				if (pointList.Count > 2) {
@@ -419,36 +420,43 @@ namespace VixenModules.App.Curves
 			}
 		}
 
-		private void buttonSaveCurveToLibrary_Click(object sender, EventArgs e)
+		private async void buttonSaveCurveToLibrary_Click(object sender, EventArgs e)
 		{
-			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
+			try
+			{
+				TextDialog dialog = new TextDialog("Curve name?");
 
-			while (dialog.ShowDialog() == DialogResult.OK) {
-				if (dialog.Response == string.Empty) {
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("Please enter a name.", "Curve Name", false, false);
-					messageBox.ShowDialog();
-					continue;
-				}
+				while (await dialog.ShowDialogAsync() == DialogResult.OK) {
+					if (dialog.Response == string.Empty) {
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("Please enter a name.", "Curve Name", false, false);
+						await messageBox.ShowDialogAsync();
+						continue;
+					}
 
-				if (Library.Contains(dialog.Response)) {
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("There is already a curve with that name. Do you want to overwrite it?", "Overwrite curve?", true, true);
-					messageBox.ShowDialog();
-					if (messageBox.DialogResult == DialogResult.OK) {
-						Library.AddCurve(dialog.Response, new Curve(Curve));
+					if (Library.Contains(dialog.Response)) {
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("There is already a curve with that name. Do you want to overwrite it?", "Overwrite curve?", true, true);
+						await messageBox.ShowDialogAsync();
+						if (messageBox.DialogResult == DialogResult.OK) {
+							await Library.AddCurveAsync(dialog.Response, new Curve(Curve));
+							break;
+						}
+						if (messageBox.DialogResult == DialogResult.Cancel) {
+							break;
+						}
+					}
+					else {
+						await Library.AddCurveAsync(dialog.Response, new Curve(Curve));
 						break;
 					}
-					if (messageBox.DialogResult == DialogResult.Cancel) {
-						break;
-					}
 				}
-				else {
-					Library.AddCurve(dialog.Response, new Curve(Curve));
-					break;
-				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Error saving curve to library.");
 			}
 		}
 
@@ -458,13 +466,20 @@ namespace VixenModules.App.Curves
 			PopulateFormWithCurve(Curve);
 		}
 
-		private void buttonEditLibraryCurve_Click(object sender, EventArgs e)
+		private async void buttonEditLibraryCurve_Click(object sender, EventArgs e)
 		{
-			string libraryName = Curve.LibraryReferenceName;
+			try
+			{
+				string libraryName = Curve.LibraryReferenceName;
 
-			Library.EditLibraryCurve(libraryName);
+				await Library.EditLibraryCurveAsync(libraryName);
 
-			PopulateFormWithCurve(Curve);
+				PopulateFormWithCurve(Curve);
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Error editing library curve.");
+			}
 		}
 
 		private void btnReverse_Click(object sender, EventArgs e)

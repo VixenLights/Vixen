@@ -3567,14 +3567,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var marksBulkChangeInfo = new MarksBulkChangeInfo();
 
 			// Iterate through each Mark collection
-			foreach (MarkCollection mc in _sequence.LabeledMarkCollections.Where(x => ((processVisibleRows == true && x.ShowMarkBar == true) || 
+			foreach (MarkCollection mc in _sequence.LabeledMarkCollections.Where(x => ((processVisibleRows && x.ShowMarkBar) || 
 			                                                                            processVisibleRows == false) && 
 																					   x.Locked != true))
 			{
-				var marksMove = new Dictionary<IMark, IMark>();
-
-				// Offset all the Marks within this Mark collection and are within the time window
-				marksMove = mc.OffsetMarksByTime(startTime, endTime, offset, TimelineControl.TimeInfo.TotalTime);
+				var marksMove =
+					// Offset all the Marks within this Mark collection and are within the time window
+					mc.OffsetMarksByTime(startTime, endTime, offset, TimelineControl.TimeInfo.TotalTime);
 
 				// Collect each moved Mark into the bulk change info
 				foreach (var mark in marksMove)
@@ -6030,7 +6029,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void AddMarksToSelectedEffects()
 		{
-			IEnumerable elements = null;
+			IEnumerable elements;
 			if (!TimelineControl.grid.SelectedElements.Any())
 			{
 				var messageBox = new MessageBoxForm("No effects have been selected and action will be applied to your entire sequence. This can take a considerable length of time, are you sure ?",

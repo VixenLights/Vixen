@@ -4,7 +4,6 @@ using Common.Controls.ControlsEx.ValueControls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using Common.DiscreteColorPicker.Views;
 
 namespace VixenModules.App.ColorGradients
@@ -160,7 +159,7 @@ namespace VixenModules.App.ColorGradients
 				using (ColorPicker frm = new ColorPicker(_mode, _fader)) {
 					frm.LockValue_V = LockColorEditorHSV_Value;
 					frm.Color = _xyz;
-					if (frm.ShowDialog(this.FindForm()) == DialogResult.OK) {
+					if (frm.ShowDialog(FindForm()) == DialogResult.OK) {
 						pt.Color = _xyz = frm.Color;
 						lblColorSelect.Color = _xyz.ToRGB().ToArgb();
 						_mode = frm.SecondaryMode;
@@ -195,9 +194,9 @@ namespace VixenModules.App.ColorGradients
 				if (pt == null)
 					return;
 				if (edit.FocusSelection)
-					pt.Focus = (double) vColorLoc.Value/100.0;
+					pt.Focus = vColorLoc.Value/100.0;
 				else
-					pt.Position = (double) vColorLoc.Value/100.0;
+					pt.Position = vColorLoc.Value/100.0;
 			}
 		}
 

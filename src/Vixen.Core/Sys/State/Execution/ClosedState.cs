@@ -1,10 +1,11 @@
-﻿using Vixen.Sys.State.Execution.Behavior;
+﻿using NLog;
+using Vixen.Sys.State.Execution.Behavior;
 
 namespace Vixen.Sys.State.Execution
 {
 	public class ClosedState : State
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		public const string StateName = "Closed";
 
 		public ClosedState(ExecutionStateEngine engine)

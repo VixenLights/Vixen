@@ -1,4 +1,5 @@
-﻿using Vixen.Module;
+﻿using NLog;
+using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
 
@@ -11,7 +12,8 @@ namespace VixenModules.App.Curves
 		private bool _bulkUpdating;
 		public event EventHandler CurvesChanged;
 		private HashSet<string> _bulkCurveChangeNames;
-
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		
 		public override void Loading()
 		{
 		}
@@ -20,7 +22,7 @@ namespace VixenModules.App.Curves
 		{
 		}
 
-		public override Vixen.Sys.IApplication Application
+		public override IApplication Application
 		{
 			set { }
 		}
@@ -49,7 +51,7 @@ namespace VixenModules.App.Curves
 				return null;
 		}
 
-		public bool AddCurve(string name, Curve curve)
+		public async Task<bool> AddCurveAsync(string name, Curve curve)
 		{
 			if (name == string.Empty)
 				return false;
@@ -65,7 +67,7 @@ namespace VixenModules.App.Curves
 			if (!_bulkUpdating)
 			{
 				_CurvesChanged(new []{name});
-				VixenSystem.SaveModuleConfigAsync();
+				await VixenSystem.SaveModuleConfigAsync();
 			}
 			else
 			{
@@ -74,7 +76,7 @@ namespace VixenModules.App.Curves
 			return inLibrary;
 		}
 
-		public bool RemoveCurve(string name)
+		public async Task<bool> RemoveCurveAsync(string name)
 		{
 			bool removed = _RemoveCurve(name);
 			if (removed)
@@ -82,7 +84,7 @@ namespace VixenModules.App.Curves
 				if (!_bulkUpdating)
 				{
 					_CurvesChanged(new[] { name });
-					VixenSystem.SaveModuleConfigAsync();
+					await VixenSystem.SaveModuleConfigAsync();
 				}
 				else
 				{
@@ -102,7 +104,7 @@ namespace VixenModules.App.Curves
 			return true;	
 		}
 
-		public bool EditLibraryCurve(string name)
+		public async Task<bool> EditLibraryCurveAsync(string name)
 		{
 			Curve curve = GetCurve(name);
 			if (curve == null)
@@ -111,9 +113,9 @@ namespace VixenModules.App.Curves
 			CurveEditor editor = new CurveEditor(curve);
 			editor.LibraryCurveName = name;
 
-			if (editor.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (await editor.ShowDialogAsync() == DialogResult.OK) {
 				_RemoveCurve(name);
-				AddCurve(name, editor.Curve);
+				await AddCurveAsync(name, editor.Curve);
 				return true;
 			}
 
@@ -149,10 +151,17 @@ namespace VixenModules.App.Curves
 		/// </summary>
 		public async void EndBulkUpdate()
 		{
-			_bulkUpdating = false;
-			_CurvesChanged(_bulkCurveChangeNames);
-			_bulkCurveChangeNames = null;
-			await VixenSystem.SaveModuleConfigAsync();
+			try
+			{
+				_bulkUpdating = false;
+				_CurvesChanged(_bulkCurveChangeNames);
+				_bulkCurveChangeNames = null;
+				await VixenSystem.SaveModuleConfigAsync();
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "Error saving curve library.");
+			}
 		}
 	}
 

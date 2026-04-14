@@ -1,12 +1,14 @@
-﻿namespace Vixen.Preview
+﻿using Vixen.Sys;
+
+namespace Vixen.Preview
 {
-	public class PreviewElementIntentStates : Dictionary<Vixen.Sys.Element, Vixen.Sys.IIntentStates>
+	public class PreviewElementIntentStates : Dictionary<Element, IIntentStates>
 	{
 		public PreviewElementIntentStates()
 		{
 		}
 
-		public PreviewElementIntentStates(IDictionary<Vixen.Sys.Element, Vixen.Sys.IIntentStates> values)
+		public PreviewElementIntentStates(IDictionary<Element, IIntentStates> values)
 			: base(values)
 		{
 		}

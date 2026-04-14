@@ -491,11 +491,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <summary>
 		/// Handles range intents.
 		/// </summary>
-		/// <param name="positionIntent">Range function intent to handle</param>
+		/// <param name="rangeIntent">Range function intent to handle</param>
 		public override void Handle(IIntentState<RangeValue<FunctionIdentity>> rangeIntent)
 		{
 			// Determine which type of function is in the intent
-			switch ((FunctionIdentity)rangeIntent.GetValue().TagType)
+			switch (rangeIntent.GetValue().TagType)
 			{
 				case FunctionIdentity.Pan:
 
@@ -607,7 +607,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Set the beam length taking into account a factor specified on the preview shape
 			//TODO: Better place to put this code?
-			MovingHead.BeamLength = (int)BeamLength;			
+			MovingHead.BeamLength = BeamLength;			
 		}
 		
 		/// <summary>
@@ -628,7 +628,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Set the beam length taking into account a factor specified on the preview shape
 			//TODO: Better place to put this code?
-			MovingHead.BeamLength = (int)BeamLength;
+			MovingHead.BeamLength = BeamLength;
 		}
 
 		/// <summary>
@@ -649,7 +649,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			// Set the beam length taking into account a factor specified on the preview shape
 			//TODO: Better place to put this code?
-			MovingHead.BeamLength = (int)BeamLength;
+			MovingHead.BeamLength = BeamLength;
 		}
 
 		/// <summary>
@@ -666,16 +666,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				// If the named command is the LampOff command or
 				// shutter closed command then...
-				if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.LampOff ||
-					((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ShutterClosed)
+				if (taggedCommand.IndexType == FixtureIndexType.LampOff ||
+					taggedCommand.IndexType == FixtureIndexType.ShutterClosed)
 				{
 					// Turn off the moving head beam
 					MovingHead.OnOff = false;
 				}
 				// If the named command is the LampOn command or
 				// shutter Open command then...
-				else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.LampOn ||
-						 ((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ShutterOpen)
+				else if (taggedCommand.IndexType == FixtureIndexType.LampOn ||
+						 taggedCommand.IndexType == FixtureIndexType.ShutterOpen)
 				{
 					// If not in strobe mode then...
 					if (!_strobeModeEnabled)
@@ -685,13 +685,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					}
 				}
 				// If the command is a color wheel index command then...
-				else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.ColorWheel)
+				else if (taggedCommand.IndexType == FixtureIndexType.ColorWheel)
 				{
 					// Handle the color wheel index command
 					HandleColorWheelCommand(taggedCommand);
 				}
 				// Otherwise if the command is to strobe then...
-				else if (((FixtureIndexType)taggedCommand.IndexType) == FixtureIndexType.Strobe)
+				else if (taggedCommand.IndexType == FixtureIndexType.Strobe)
 				{
 					// Store off a flag that the fixture is in strobe mode so that the shutter
 					// doesn't get automatically opened
@@ -709,7 +709,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					double fixtureMaximumInMs = 1.0 / StrobeRateMaximum * 1000;
 
 					// Retrieve the strobe rate from the intent command
-					double sRate = (double)taggedCommand.CommandValue;
+					double sRate = taggedCommand.CommandValue;
 
 					// Determine how far away from the minimum the rate is
 					double distanceFromMinimum = sRate - min;
@@ -725,7 +725,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 
 				//TODO: Better place to put this code?
-				MovingHead.BeamLength = (int)BeamLength;
+				MovingHead.BeamLength = BeamLength;
 			}
 		}
 

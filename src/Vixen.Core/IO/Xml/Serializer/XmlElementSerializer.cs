@@ -1,11 +1,12 @@
 ﻿using System.Xml.Linq;
+using NLog;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlElementSerializer : IXmlSerializer<Element>
 	{
-		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger logging = LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_ELEMENT = "Channel";
 		private const string ATTR_ID = "id";

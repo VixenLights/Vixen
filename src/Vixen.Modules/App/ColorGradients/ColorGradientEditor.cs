@@ -1,7 +1,7 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using System.ComponentModel;
+using NLog;
 using Vixen.Module.App;
 using Vixen.Services;
 
@@ -9,6 +9,7 @@ namespace VixenModules.App.ColorGradients
 {
 	public partial class ColorGradientEditor : BaseForm
 	{
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private bool _discreteColors;
 		private IEnumerable<Color> _validDiscreteColors;
 
@@ -118,7 +119,7 @@ namespace VixenModules.App.ColorGradients
 		private void buttonLoadFromLibrary_Click(object sender, EventArgs e)
 		{
 			ColorGradientLibrarySelector selector = new ColorGradientLibrarySelector();
-			if (selector.ShowDialog() == System.Windows.Forms.DialogResult.OK && selector.SelectedItem != null) {
+			if (selector.ShowDialog() == DialogResult.OK && selector.SelectedItem != null) {
 				// make a new curve that references the selected library curve, and set it to the current Curve
 				ColorGradient newGradient = new ColorGradient(selector.SelectedItem.Item2);
 				newGradient.LibraryReferenceName = selector.SelectedItem.Item1;
@@ -127,38 +128,45 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
-		private void buttonSaveToLibrary_Click(object sender, EventArgs e)
+		private async void buttonSaveToLibrary_Click(object sender, EventArgs e)
 		{
-			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Gradient name?");
+			try
+			{
+				TextDialog dialog = new TextDialog("Gradient name?");
 
-			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				if (dialog.Response == string.Empty) {
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("Please enter a name.", "Color Gradient Name", false, false);
-					messageBox.ShowDialog();
-					continue;
-				}
+				while (await dialog.ShowDialogAsync() == DialogResult.OK) {
+					if (dialog.Response == string.Empty) {
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("Please enter a name.", "Color Gradient Name", false, false);
+						await messageBox.ShowDialogAsync();
+						continue;
+					}
 
-				if (Library.Contains(dialog.Response)) {
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					var messageBox = new MessageBoxForm("There is already a gradient with that name. Do you want to overwrite it?", "Overwrite gradient?", true, true);
-					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-					messageBox.ShowDialog();
-					if (messageBox.DialogResult == DialogResult.OK)
-					{
-						Library.AddColorGradient(dialog.Response, new ColorGradient(Gradient));
+					if (Library.Contains(dialog.Response)) {
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						var messageBox = new MessageBoxForm("There is already a gradient with that name. Do you want to overwrite it?", "Overwrite gradient?", true, true);
+						MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+						await messageBox.ShowDialogAsync();
+						if (messageBox.DialogResult == DialogResult.OK)
+						{
+							await Library.AddColorGradientAsync(dialog.Response, new ColorGradient(Gradient));
+							break;
+						}
+						if (messageBox.DialogResult == DialogResult.Cancel)
+						{
+							break;
+						}
+					}
+					else {
+						await Library.AddColorGradientAsync(dialog.Response, new ColorGradient(Gradient));
 						break;
 					}
-					if (messageBox.DialogResult == DialogResult.Cancel)
-					{
-						break;
-					}
 				}
-				else {
-					Library.AddColorGradient(dialog.Response, new ColorGradient(Gradient));
-					break;
-				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred trying to save a new color gradient to library.");
 			}
 		}
 
@@ -168,11 +176,18 @@ namespace VixenModules.App.ColorGradients
 			PopulateFormWithGradient(Gradient);
 		}
 
-		private void buttonEditLibraryItem_Click(object sender, EventArgs e)
+		private async void buttonEditLibraryItem_Click(object sender, EventArgs e)
 		{
-			string libraryName = Gradient.LibraryReferenceName;
-			Library.EditLibraryItem(libraryName);
-			PopulateFormWithGradient(Gradient);
+			try
+			{
+				string libraryName = Gradient.LibraryReferenceName;
+				await Library.EditLibraryItemAsync(libraryName);
+				PopulateFormWithGradient(Gradient);
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occurred trying to edit a library item.");
+			}
 		}
 
 		private void ColorGradientEditor_KeyDown(object sender, KeyEventArgs e)

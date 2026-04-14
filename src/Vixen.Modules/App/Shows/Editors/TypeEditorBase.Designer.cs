@@ -1,11 +1,13 @@
-﻿namespace VixenModules.App.Shows
+﻿using System.ComponentModel;
+
+namespace VixenModules.App.Shows.Editors
 {
 	partial class TypeEditorBase
 	{
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary> 
 		/// Clean up any resources being used.

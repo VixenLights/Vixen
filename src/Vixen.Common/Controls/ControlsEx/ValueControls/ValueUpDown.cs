@@ -35,22 +35,22 @@ namespace Common.Controls.ControlsEx.ValueControls
 			private void AddTracker(Orientation value)
 			{
 				if (value == Orientation.Horizontal) {
-					this._tracker = new HMiniTracker();
-					this._tracker.Size = new Size(120, 25);
+					_tracker = new HMiniTracker();
+					_tracker.Size = new Size(120, 25);
 					//
-					this.Controls.Add(this._tracker);
-					this.ClientSize = new Size(120, 25);
+					Controls.Add(_tracker);
+					ClientSize = new Size(120, 25);
 				}
 				else {
-					this._tracker = new VMiniTracker();
-					this._tracker.Size = new Size(25, 120);
+					_tracker = new VMiniTracker();
+					_tracker.Size = new Size(25, 120);
 					//
-					this.Controls.Add(this._tracker);
-					this.ClientSize = new Size(25, 120);
+					Controls.Add(_tracker);
+					ClientSize = new Size(25, 120);
 				}
-				this._tracker.Dock = DockStyle.Fill;
-				this._tracker.MouseUp += new MouseEventHandler(_tracker_MouseUp);
-				this._tracker.ValueChanged += new ValueChangedEH(_tracker_ValueChanged);
+				_tracker.Dock = DockStyle.Fill;
+				_tracker.MouseUp += new MouseEventHandler(_tracker_MouseUp);
+				_tracker.ValueChanged += new ValueChangedEH(_tracker_ValueChanged);
 			}
 
 			#endregion
@@ -59,7 +59,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 			private void _tracker_MouseUp(object sender, MouseEventArgs e)
 			{
-				this.Close();
+				Close();
 			}
 
 			private void _tracker_ValueChanged(ValueControl sender, ValueChangedEventArgs e)
@@ -83,7 +83,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 					throw new ArgumentNullException("control");
 				_tracker.Assign(control.Value, control.Maximum, control.Minimum);
 				if (_trackerorientation == Orientation.Horizontal) {
-					this.Width = Math.Max(32, control.Width + 24);
+					Width = Math.Max(32, control.Width + 24);
 					//set mouse
 					ShowByControl(control, control.PointToScreen(new Point(0, 22)));
 					Point pt = _tracker.GetTrackerPos();
@@ -91,9 +91,9 @@ namespace Common.Controls.ControlsEx.ValueControls
 					Win32.PostMessage(_tracker.Handle, Win32.WM_LBUTTONDOWN, 0, (pt.Y << 16) | (pt.X - 1));
 				}
 				else {
-					this.Height = Math.Max(32, control.Width + 24);
+					Height = Math.Max(32, control.Width + 24);
 					//set mouse
-					Point mouse = Control.MousePosition;
+					Point mouse = MousePosition;
 					Point pt = _tracker.GetTrackerPos();
 					mouse = new Point(mouse.X - pt.X, mouse.Y - pt.Y);
 					ShowByControl(control, mouse);
@@ -115,10 +115,10 @@ namespace Common.Controls.ControlsEx.ValueControls
 					if (value == _trackerorientation) return;
 					_trackerorientation = value;
 					//remove old tracker
-					if (_tracker != null && this.Controls.Contains(_tracker)) {
-						this._tracker.MouseUp -= new MouseEventHandler(_tracker_MouseUp);
-						this._tracker.ValueChanged -= new ValueChangedEH(_tracker_ValueChanged);
-						this.Controls.Remove(_tracker);
+					if (_tracker != null && Controls.Contains(_tracker)) {
+						_tracker.MouseUp -= new MouseEventHandler(_tracker_MouseUp);
+						_tracker.ValueChanged -= new ValueChangedEH(_tracker_ValueChanged);
+						Controls.Remove(_tracker);
 						_tracker.Dispose();
 					}
 					//add new tracker
@@ -161,45 +161,45 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			#region container+tracker
 
-			this._trackerpopup = new TrackerPopupForm();
-			this._trackerpopup.ValueChanged += new ValueChangedEH(_tracker_ValueChanged);
-			this._trackerpopup.VisibleChanged += new EventHandler(_trackerpopup_VisibleChanged);
-			this._trackerpopup.TrackerOrientation = TrackerOrientation;
+			_trackerpopup = new TrackerPopupForm();
+			_trackerpopup.ValueChanged += new ValueChangedEH(_tracker_ValueChanged);
+			_trackerpopup.VisibleChanged += new EventHandler(_trackerpopup_VisibleChanged);
+			_trackerpopup.TrackerOrientation = TrackerOrientation;
 
 			#endregion
 
 			#region textbox
 
-			this._textbox = new TextBox();
-			this._textbox.Size = new Size(this.Width - 31, 20);
-			this._textbox.Location = new Point(2, 2);
-			this._textbox.BorderStyle = BorderStyle.FixedSingle;
-			this._textbox.Text = this.Minimum.ToString();
-			this._textbox.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-			this._textbox.MaxLength = 5;
-			this._textbox.KeyDown += new KeyEventHandler(_textbox_KeyDown);
-			this._textbox.KeyPress += new KeyPressEventHandler(_textbox_KeyPress);
-			this._textbox.LostFocus += new EventHandler(_textbox_LostFocus);
-			this.Controls.Add(this._textbox);
+			_textbox = new TextBox();
+			_textbox.Size = new Size(Width - 31, 20);
+			_textbox.Location = new Point(2, 2);
+			_textbox.BorderStyle = BorderStyle.FixedSingle;
+			_textbox.Text = Minimum.ToString();
+			_textbox.BackColor = ThemeColorTable.TextBoxBackgroundColor;
+			_textbox.MaxLength = 5;
+			_textbox.KeyDown += new KeyEventHandler(_textbox_KeyDown);
+			_textbox.KeyPress += new KeyPressEventHandler(_textbox_KeyPress);
+			_textbox.LostFocus += new EventHandler(_textbox_LostFocus);
+			Controls.Add(_textbox);
 
 			#endregion
 
 			#region timer
 
-			this._timer = new Timer();
-			this._timer.Tick += new EventHandler(_timer_Tick);
+			_timer = new Timer();
+			_timer.Tick += new EventHandler(_timer_Tick);
 
 			#endregion
 
-			this.Size = new Size(72, 28);
-			this.SetStyle(ControlStyles.ResizeRedraw |
+			Size = new Size(72, 28);
+			SetStyle(ControlStyles.ResizeRedraw |
 						  ControlStyles.FixedHeight |
 						  ControlStyles.DoubleBuffer, true);
 		}
 
 		protected override void Dispose(bool disposing)
 		{
-			this._timer.Stop();
+			_timer.Stop();
 			_trackerpopup.Dispose();
 			base.Dispose(disposing);
 		}
@@ -225,10 +225,10 @@ namespace Common.Controls.ControlsEx.ValueControls
 		/// </summary>
 		private void UpdateTextBox()
 		{
-			this._textbox.MaxLength = Math.Max(
+			_textbox.MaxLength = Math.Max(
 				Maximum.ToString().Length,
 				Minimum.ToString().Length) + 2;
-			this._textbox.Text = Value.ToString();
+			_textbox.Text = Value.ToString();
 		}
 
 		/// <summary>
@@ -262,37 +262,37 @@ namespace Common.Controls.ControlsEx.ValueControls
 		protected override void OnSizeChanged(EventArgs e)
 		{
 			base.OnSizeChanged(e);
-			_elements[0].Bounds = new Rectangle(this.Width - 16, 1, 15, 20);
-			_elements[1].Bounds = new Rectangle(this.Width - 27, 1, 11, 10);
-			_elements[2].Bounds = new Rectangle(this.Width - 27, 11, 11, 10);
-			this._textbox.Width = this.Width - 32;
+			_elements[0].Bounds = new Rectangle(Width - 16, 1, 15, 20);
+			_elements[1].Bounds = new Rectangle(Width - 27, 1, 11, 10);
+			_elements[2].Bounds = new Rectangle(Width - 27, 11, 11, 10);
+			_textbox.Width = Width - 32;
 		}
 
 		// checks if all child elements follow the enabled state
 		protected override void OnEnabledChanged(EventArgs e)
 		{
 			base.OnEnabledChanged(e);
-			if (!this.Enabled) this._timer.Stop();
-			ElementState state = this.Enabled ? ElementState.normal : ElementState.disabled;
+			if (!Enabled) _timer.Stop();
+			ElementState state = Enabled ? ElementState.normal : ElementState.disabled;
 			for (int i = 0; i < _elements.Length; i++)
 				_elements[i].State = state;
 			_currelement = -1;
-			this.Refresh();
+			Refresh();
 		}
 
 		// draws all elements
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			e.Graphics.Clear(ThemeColorTable.BackgroundColor);
-			if (this.Height < 24 || this.Width < 24) return;
-			IntPtr data = Win32.OpenThemeData2(this.Handle, "Combobox");
+			if (Height < 24 || Width < 24) return;
+			IntPtr data = Win32.OpenThemeData2(Handle, "Combobox");
 			if (data != IntPtr.Zero) //draw with winxp themes
 			{
 				IntPtr hdc = e.Graphics.GetHdc();
 
 				#region background, dropdown button
 
-				Win32.RECT rct = new Win32.RECT(0, 0, this.Width, this.Height);
+				Win32.RECT rct = new Win32.RECT(0, 0, Width, Height);
 				Win32.DrawThemeBackground2(data, hdc, 0, _mouseentered ? 2 : 1, ref rct);
 				rct.Left = rct.Right - 15;
 				rct.Top += 2;
@@ -305,7 +305,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 				#region spin buttons
 
-				data = Win32.OpenThemeData2(this.Handle, "Spin");
+				data = Win32.OpenThemeData2(Handle, "Spin");
 				if (data == IntPtr.Zero)
 					goto final;
 				rct.Left -= 13;
@@ -322,13 +322,13 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 				#region progress bar
 
-				data = Win32.OpenThemeData2(this.Handle, "Progress");
+				data = Win32.OpenThemeData2(Handle, "Progress");
 				if (data == IntPtr.Zero)
 					goto final;
-				rct.Bottom = this.Height;
+				rct.Bottom = Height;
 				rct.Top = rct.Bottom - 3;
 				rct.Left = 0;
-				rct.Right = GetPercentage(this.Width);
+				rct.Right = GetPercentage(Width);
 				Win32.DrawThemeBackground2(data, hdc, 3, 1, ref rct);
 				Win32.CloseThemeData2(data);
 
@@ -341,11 +341,11 @@ namespace Common.Controls.ControlsEx.ValueControls
 			{
 				#region background, dropdown button
 
-				Rectangle rct = new Rectangle(0, 0, this.Width, 22);
+				Rectangle rct = new Rectangle(0, 0, Width, 22);
 				e.Graphics.FillRectangle(Brushes.White, rct);
 				e.Graphics.DrawRectangle(_mouseentered ? SystemPens.Highlight : SystemPens.ControlDark,
 										 rct.X, rct.Y, rct.Width - 1, rct.Height - 1);
-				rct.X = this.Width - 15;
+				rct.X = Width - 15;
 				rct.Y = 1;
 				rct.Height -= 2;
 				rct.Width = 15;
@@ -366,10 +366,10 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 				#region progress bar
 
-				rct.Y = this.Height - 3;
+				rct.Y = Height - 3;
 				rct.Height = 3;
 				rct.X = 0;
-				rct.Width = GetPercentage(this.Width);
+				rct.Width = GetPercentage(Width);
 				e.Graphics.FillRectangle(SystemBrushes.Highlight, rct);
 
 				#endregion
@@ -384,9 +384,9 @@ namespace Common.Controls.ControlsEx.ValueControls
 		protected override void OnMouseEnter(EventArgs e)
 		{
 			base.OnMouseEnter(e);
-			if (!this.Enabled || _mouseentered) return;
+			if (!Enabled || _mouseentered) return;
 			_mouseentered = true;
-			this.Refresh();
+			Refresh();
 		}
 
 		// frame falls back on mouse leave
@@ -394,13 +394,13 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			base.OnMouseLeave(e);
 			if (!_mouseentered || _dropped ||
-				this.RectangleToScreen(this.ClientRectangle).Contains(Control.MousePosition)) return;
+				RectangleToScreen(ClientRectangle).Contains(MousePosition)) return;
 			_mouseentered = false;
 			if (_currelement != -1) {
 				_elements[_currelement].State = ElementState.normal;
 				_currelement = -1;
 			}
-			this.Refresh();
+			Refresh();
 		}
 
 		#endregion
@@ -419,13 +419,13 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			if (e.KeyCode == Keys.Return) {
 				e.Handled = true;
-				this.OnTextBoxReturn();
+				OnTextBoxReturn();
 			}
 		}
 
 		private void _textbox_LostFocus(object sender, EventArgs e)
 		{
-			this.OnTextBoxReturn();
+			OnTextBoxReturn();
 		}
 
 		#endregion
@@ -434,20 +434,20 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (!this.Enabled || _dropped) return;
+			if (!Enabled || _dropped) return;
 			_currelement = HitElement(e.X, e.Y);
 			if (_currelement != -1) {
 				_elements[_currelement].State = ElementState.pushed;
 				Refresh(_elements[_currelement].Bounds);
 				switch (_currelement) {
 					case 0:
-						this.OnDropDownPressed();
+						OnDropDownPressed();
 						break;
 					case 1:
-						this.OnSpinUp();
+						OnSpinUp();
 						break;
 					case 2:
-						this.OnSpinDown();
+						OnSpinDown();
 						break;
 				}
 			}
@@ -455,25 +455,25 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			if (!this.Enabled || _dropped || e.Button != MouseButtons.None) return;
+			if (!Enabled || _dropped || e.Button != MouseButtons.None) return;
 			int curr = HitElement(e.X, e.Y);
 			if (curr == _currelement) return;
 			if (curr != -1) {
 				_elements[curr].State = ElementState.hot;
-				this.Invalidate(Rectangle.Inflate(_elements[curr].Bounds, 1, 1));
+				Invalidate(Rectangle.Inflate(_elements[curr].Bounds, 1, 1));
 			}
 			if (_currelement != -1) {
 				_elements[_currelement].State = ElementState.normal;
-				this.Invalidate(Rectangle.Inflate(_elements[_currelement].Bounds, 1, 1));
+				Invalidate(Rectangle.Inflate(_elements[_currelement].Bounds, 1, 1));
 			}
 			_currelement = curr;
-			this.Update();
+			Update();
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-			if (!this.Enabled || _dropped || _currelement == -1) return;
-			this.OnButtonUp();
+			if (!Enabled || _dropped || _currelement == -1) return;
+			OnButtonUp();
 			int curr = HitElement(e.X, e.Y);
 			if (curr == _currelement) {
 				_elements[_currelement].State = ElementState.hot;
@@ -481,13 +481,13 @@ namespace Common.Controls.ControlsEx.ValueControls
 			else if (curr != -1) {
 				_elements[_currelement].State = ElementState.normal;
 				_elements[curr].State = ElementState.hot;
-				this.Invalidate(_elements[curr].Bounds);
+				Invalidate(_elements[curr].Bounds);
 			}
 			else {
 				_elements[_currelement].State = ElementState.normal;
 			}
-			this.Invalidate(_elements[_currelement].Bounds);
-			this.Update();
+			Invalidate(_elements[_currelement].Bounds);
+			Update();
 		}
 
 		#endregion
@@ -497,40 +497,40 @@ namespace Common.Controls.ControlsEx.ValueControls
 		// spin up
 		private void OnSpinUp()
 		{
-			this.SetValueRaise(Value + 1);
-			this._timer.Interval = 400;
-			this._timer.Start();
+			SetValueRaise(Value + 1);
+			_timer.Interval = 400;
+			_timer.Start();
 		}
 
 		// spin down
 		private void OnSpinDown()
 		{
-			this.SetValueRaise(Value - 1);
-			this._timer.Interval = 400;
-			this._timer.Start();
+			SetValueRaise(Value - 1);
+			_timer.Interval = 400;
+			_timer.Start();
 		}
 
 		// deactivates the timer
 		private void OnButtonUp()
 		{
-			this._timer.Stop();
+			_timer.Stop();
 		}
 
 		// timer proceeds to fire spins, and speeds up continously
 		private void _timer_Tick(object sender, EventArgs e)
 		{
-			this._timer.Interval = Math.Max(10, this._timer.Interval/2);
+			_timer.Interval = Math.Max(10, _timer.Interval/2);
 			switch (_currelement) {
 				case 1:
-					if (!this.SetValueRaise(Value + 1))
-						this._timer.Stop();
+					if (!SetValueRaise(Value + 1))
+						_timer.Stop();
 					break;
 				case 2:
-					if (!this.SetValueRaise(Value - 1))
-						this._timer.Stop();
+					if (!SetValueRaise(Value - 1))
+						_timer.Stop();
 					break;
 				default:
-					this._timer.Stop();
+					_timer.Stop();
 					break;
 			}
 		}
@@ -539,10 +539,10 @@ namespace Common.Controls.ControlsEx.ValueControls
 		private void OnTextBoxReturn()
 		{
 			int val = 0;
-			if (TryParseInteger(this._textbox.Text, ref val) && base.SetValueCore(val))
-				this.RaiseValueChanged();
+			if (TryParseInteger(_textbox.Text, ref val) && SetValueCore(val))
+				RaiseValueChanged();
 			else
-				this._textbox.Text = Value.ToString();
+				_textbox.Text = Value.ToString();
 		}
 
 		#endregion
@@ -552,7 +552,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 		// sets the value in the dropdown tracker
 		private void _tracker_ValueChanged(ValueControl sender, ValueChangedEventArgs e)
 		{
-			this.SetValueRaise(_trackerpopup.Value);
+			SetValueRaise(_trackerpopup.Value);
 		}
 
 		// shows the tracker and attaches the mouse to it
@@ -566,14 +566,14 @@ namespace Common.Controls.ControlsEx.ValueControls
 		{
 			if (!_trackerpopup.Visible) {
 				_dropped = false;
-				if (!this.Enabled) return;
-				if (this.RectangleToScreen(this.ClientRectangle).
-					Contains(Control.MousePosition)) {
+				if (!Enabled) return;
+				if (RectangleToScreen(ClientRectangle).
+					Contains(MousePosition)) {
 					_elements[0].State = ElementState.normal;
-					this.Refresh(_elements[0].Bounds);
+					Refresh(_elements[0].Bounds);
 				}
 				else
-					this.OnMouseLeave(EventArgs.Empty);
+					OnMouseLeave(EventArgs.Empty);
 			}
 		}
 
@@ -585,20 +585,20 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 		protected override void OnSetMaximum()
 		{
-			this.UpdateTextBox();
-			this.Refresh();
+			UpdateTextBox();
+			Refresh();
 		}
 
 		protected override void OnSetMinimum()
 		{
-			this.UpdateTextBox();
-			this.Refresh();
+			UpdateTextBox();
+			Refresh();
 		}
 
 		protected override void OnAfterSetValue()
 		{
-			this._textbox.Text = Value.ToString();
-			this.Refresh();
+			_textbox.Text = Value.ToString();
+			Refresh();
 		}
 
 		/// <summary>
@@ -607,10 +607,10 @@ namespace Common.Controls.ControlsEx.ValueControls
 		/// </summary>
 		public bool SetValueRaise(int value)
 		{
-			if (base.SetValueCore(value)) {
-				this._textbox.Text = value.ToString();
+			if (SetValueCore(value)) {
+				_textbox.Text = value.ToString();
 				base.RaiseValueChanged();
-				this.Refresh();
+				Refresh();
 				return true;
 			}
 			return false;

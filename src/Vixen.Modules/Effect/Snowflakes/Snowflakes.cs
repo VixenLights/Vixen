@@ -1097,7 +1097,7 @@ namespace VixenModules.Effect.Snowflakes
 						if (ColorType == SnowflakeColorType.RainBow && !snowFlakes.BuildUp)
 							//No user colors are used for Rainbow effect. Color selection for user will be hidden.
 						{
-							snowFlakes.OuterHsv.H = (float) (Rand()%1000)/1000.0f;
+							snowFlakes.OuterHsv.H = Rand()%1000/1000.0f;
 							snowFlakes.OuterHsv.S = 1.0f;
 							snowFlakes.OuterHsv.V = 1.0f;
 						}

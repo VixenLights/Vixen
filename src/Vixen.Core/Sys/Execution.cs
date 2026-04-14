@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using Vixen.Execution;
 using Vixen.Execution.Context;
+using Vixen.Sys.Instrumentation;
 using Vixen.Sys.Managers;
 using Vixen.Sys.State.Execution;
-using System.Collections.Concurrent;
-using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys
 {
@@ -18,8 +18,8 @@ namespace Vixen.Sys
 		private static MillisecondsValue _systemDeniedUpdateTime;
 		private static MillisecondsValue _systemDeniedBlockTime;
 		private static Stopwatch _stopwatch;
-		private static long lastMs = 0;
-		private static bool lastUpdateClearedStates = false;
+		private static long lastMs;
+		private static bool lastUpdateClearedStates;
 
 		public static void initInstrumentation()
 		{

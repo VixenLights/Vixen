@@ -75,7 +75,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 				ushort value = command.CommandValue;
 
 				// Normalize the value to (0 - 1)
-				double dblValue = (double)value / (double)ushort.MaxValue;
+				double dblValue = value / (double)ushort.MaxValue;
 
 				// Split the value into a high and low byte
 				Handle(dblValue);

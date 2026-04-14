@@ -1,11 +1,13 @@
-﻿namespace VixenModules.App.Shows
+﻿using System.ComponentModel;
+
+namespace VixenModules.App.Shows.Editors
 {
 	partial class SequenceTypeEditor
 	{
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary> 
 		/// Clean up any resources being used.
@@ -111,11 +113,11 @@
 
 		#endregion
 
-		private System.Windows.Forms.OpenFileDialog openFileDialog;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonSelectSequence;
-		private System.Windows.Forms.Label labelSequence;
-		private System.Windows.Forms.TextBox textBoxSequence;
-		private System.Windows.Forms.Label labelName;
+		private OpenFileDialog openFileDialog;
+		private Label label1;
+		private Button buttonSelectSequence;
+		private Label labelSequence;
+		private TextBox textBoxSequence;
+		private Label labelName;
 	}
 }

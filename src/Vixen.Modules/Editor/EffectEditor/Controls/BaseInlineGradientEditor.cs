@@ -238,7 +238,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		public Object Component
 		{
-			get { return (Object)GetValue(ComponentProperty); }
+			get { return GetValue(ComponentProperty); }
 			set { SetValue(ComponentProperty, value); }
 		}
 

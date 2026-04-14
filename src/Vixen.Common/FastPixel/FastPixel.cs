@@ -104,8 +104,6 @@ namespace FastPixel
 			System.Runtime.InteropServices.Marshal.Copy(bmpPtr, rgbValues, 0, rgbValues.Length);
 			
 			bitmapToClone.UnlockBits(bitmapData);
-			bitmapData = null;
-		
 		}
 
 		/// <summary>
@@ -123,7 +121,6 @@ namespace FastPixel
 
 			// Unlock the bits.;
 			Bitmap.UnlockBits(bmpData);
-			bmpData = null;
 			locked = false;
 		}
 

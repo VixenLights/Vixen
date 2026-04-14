@@ -85,7 +85,7 @@ namespace Common.Controls.Timeline
 				Row.RowHeightResized -= RowHeightResizedHandler;
 				Row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
 			}
-			this.timelineRowList.EnableDisableHandlers(enabled);
+			timelineRowList.EnableDisableHandlers(enabled);
 		}
 		#region Initialization
 		protected override void Dispose(bool disposing)
@@ -124,13 +124,13 @@ namespace Common.Controls.Timeline
 		}
 		private void InitializeControls()
 		{
-			this.SuspendLayout();
+			SuspendLayout();
 
 			// (this) Timeline Control
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
-			this.Name = "TimelineControl";
+			AutoScaleDimensions = new SizeF(6F, 13F);
+			AutoScaleMode = AutoScaleMode.Font;
+			AutoSize = true;
+			Name = "TimelineControl";
 
 
 			// Split Container
@@ -142,7 +142,7 @@ namespace Common.Controls.Timeline
 			                 		FixedPanel = FixedPanel.Panel1,
 			                 		Panel1MinSize = 100,
 			                 	};
-			this.Controls.Add(this.splitContainer);
+			Controls.Add(splitContainer);
 
 			// Split container panels
 			splitContainer.BeginInit();
@@ -155,7 +155,7 @@ namespace Common.Controls.Timeline
 			splitContainer.EndInit();
 		
 			splitContainer.PerformAutoScale();
-			this.ResumeLayout(false);
+			ResumeLayout(false);
 		}
 
 		// Panel 1 - the left side of the splitContainer
@@ -865,20 +865,20 @@ namespace Common.Controls.Timeline
 				if (ZoomToMousePosition)
 				{
 					// holding the control key zooms the horizontal axis under the cursor, by 10% per mouse wheel tick
-					ZoomTime(1.0 - ((double)e.Delta / 1200.0), e.Location);
+					ZoomTime(1.0 - e.Delta / 1200.0, e.Location);
 	//			waveform.Invalidate();
 			}
 				else
 				{
 					// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
-					Zoom(1.0 - ((double)e.Delta / 1200.0));
+					Zoom(1.0 - e.Delta / 1200.0);
 				}
 			}
 			else if (ModifierKeys.HasFlag(Keys.Shift)) {
 				// holding the skift key moves the horizontal axis, by 10% of the visible time span per mouse wheel tick
 				// wheel towards user   --> negative delta --> VisibleTimeStart increases
 				// wheel away from user --> positive delta --> VisibleTimeStart decreases
-				VisibleTimeStart += VisibleTimeSpan.Scale(-((double)e.Delta / 1200.0));
+				VisibleTimeStart += VisibleTimeSpan.Scale(-(e.Delta / 1200.0));
 	//			waveform.Invalidate();
 			}
 			else {

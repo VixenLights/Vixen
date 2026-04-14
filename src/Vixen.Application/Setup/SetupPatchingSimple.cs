@@ -2,9 +2,7 @@
 
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using System.ComponentModel;
-using System.Diagnostics;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
 using Vixen.Rule;
@@ -85,19 +83,19 @@ namespace VixenApplication.Setup
 		public event EventHandler<FiltersEventArgs> FiltersAdded;
 		public void OnFiltersAdded(FiltersEventArgs args)
 		{
-			if (FiltersAdded == null)
-				return;
-
-			FiltersAdded(this, args);
+			if (FiltersAdded != null)
+			{
+				FiltersAdded(this, args);
+			}
 		}
 
 		public event EventHandler PatchingUpdated;
 		public void OnPatchingUpdated()
 		{
-			if (PatchingUpdated == null)
-				return;
-
-			PatchingUpdated(this, EventArgs.Empty);
+			if (PatchingUpdated != null)
+			{
+				PatchingUpdated(this, EventArgs.Empty);
+			}
 		}
 
 		private void _UpdateEverything(IEnumerable<ElementNode> selectedNodes, ControllersAndOutputsSet controllersAndOutputs)

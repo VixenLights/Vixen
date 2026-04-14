@@ -7,5 +7,5 @@
 		Started,
 		Paused,
 		Stopping
-	};
+	}
 }

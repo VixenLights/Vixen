@@ -20,7 +20,7 @@
 		#region Protected Methods
 
 		/// <inheritdoc/>
-		protected override void PropertyGrid_PropertyValueChanged(object s, System.Windows.Forms.PropertyValueChangedEventArgs e)
+		protected override void PropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
 			base.PropertyGrid_PropertyValueChanged(s, e);
 

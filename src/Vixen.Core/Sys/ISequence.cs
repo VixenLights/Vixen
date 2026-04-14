@@ -1,5 +1,5 @@
-﻿using Vixen.Module.Timing;
-using Vixen.Execution;
+﻿using Vixen.Execution;
+using Vixen.Module.Timing;
 
 namespace Vixen.Sys
 {

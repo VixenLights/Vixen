@@ -80,8 +80,7 @@ namespace IKriv.Wpf
 
         private IExpression Parse(string s)
         {
-            IExpression result = null;
-            if (!_storedExpressions.TryGetValue(s, out result))
+	        if (!_storedExpressions.TryGetValue(s, out var result))
             {
                 result = new Parser().Parse(s);
                 _storedExpressions[s] = result;

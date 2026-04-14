@@ -75,7 +75,7 @@ namespace VixenModules.App.ExportWizard
 			}
 		}
 
-		private void btnSelectSequences_Click(object sender, System.EventArgs e)
+		private void btnSelectSequences_Click(object sender, EventArgs e)
 		{
 			selectSequencesDialog.InitialDirectory = SequenceService.SequenceDirectory;
 

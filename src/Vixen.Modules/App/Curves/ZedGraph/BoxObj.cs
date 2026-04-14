@@ -18,7 +18,6 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -127,8 +126,8 @@ namespace ZedGraph
 		public BoxObj(double x, double y, double width, double height, Color borderColor, Color fillColor)
 			: base(x, y, width, height)
 		{
-			this.Border = new Border(borderColor, Default.PenWidth);
-			this.Fill = new Fill(fillColor);
+			Border = new Border(borderColor, Default.PenWidth);
+			Fill = new Fill(fillColor);
 		}
 
 		/// <summary>
@@ -147,8 +146,8 @@ namespace ZedGraph
 			:
 				base(x, y, width, height)
 		{
-			this.Border = new Border(Default.BorderColor, Default.PenWidth);
-			this.Fill = new Fill(Default.FillColor);
+			Border = new Border(Default.BorderColor, Default.PenWidth);
+			Fill = new Fill(Default.FillColor);
 		}
 
 		/// <summary>
@@ -182,8 +181,8 @@ namespace ZedGraph
 		              Color fillColor1, Color fillColor2) :
 		              	base(x, y, width, height)
 		{
-			this.Border = new Border(borderColor, Default.PenWidth);
-			this.Fill = new Fill(fillColor1, fillColor2);
+			Border = new Border(borderColor, Default.PenWidth);
+			Fill = new Fill(fillColor1, fillColor2);
 		}
 
 		/// <summary>
@@ -192,8 +191,8 @@ namespace ZedGraph
 		/// <param name="rhs">The <see cref="BoxObj"/> object from which to copy</param>
 		public BoxObj(BoxObj rhs) : base(rhs)
 		{
-			this.Border = rhs.Border.Clone();
-			this.Fill = rhs.Fill.Clone();
+			Border = rhs.Border.Clone();
+			Fill = rhs.Fill.Clone();
 		}
 
 		/// <summary>
@@ -203,7 +202,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -283,7 +282,7 @@ namespace ZedGraph
 		{
 			// Convert the arrow coordinates from the user coordinate system
 			// to the screen coordinate system
-			RectangleF pixRect = this.Location.TransformRect(pane);
+			RectangleF pixRect = Location.TransformRect(pane);
 
 			// Clip the rect to just outside the PaneRect so we don't end up with wild coordinates.
 			RectangleF tmpRect = pane.Rect;

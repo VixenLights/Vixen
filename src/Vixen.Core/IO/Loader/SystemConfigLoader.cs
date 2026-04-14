@@ -1,9 +1,8 @@
 ﻿using Vixen.IO.Factory;
+using Vixen.Sys;
 
 namespace Vixen.IO.Loader
 {
-	using Vixen.Sys;
-
 	internal class SystemConfigLoader : IObjectLoader<SystemConfig>
 	{
 		public SystemConfig LoadFromFile(string filePath)

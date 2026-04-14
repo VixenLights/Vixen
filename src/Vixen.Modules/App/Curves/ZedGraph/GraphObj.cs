@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,6 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -308,7 +307,7 @@ namespace ZedGraph
 		{
 			_isVisible = true;
 			_isClippedToChartRect = Default.IsClippedToChartRect;
-			this.Tag = null;
+			Tag = null;
 			_zOrder = ZOrder.A_InFront;
 			_location = new Location(x, y, coordType, alignH, alignV);
 			_link = new Link();
@@ -343,7 +342,7 @@ namespace ZedGraph
 		{
 			_isVisible = true;
 			_isClippedToChartRect = Default.IsClippedToChartRect;
-			this.Tag = null;
+			Tag = null;
 			_zOrder = ZOrder.A_InFront;
 			_location = new Location(x, y, x2, y2, coordType, alignH, alignV);
 			_link = new Link();
@@ -362,9 +361,9 @@ namespace ZedGraph
 
 			// copy reference types by cloning
 			if (rhs.Tag is ICloneable)
-				this.Tag = ((ICloneable) rhs.Tag).Clone();
+				Tag = ((ICloneable) rhs.Tag).Clone();
 			else
-				this.Tag = rhs.Tag;
+				Tag = rhs.Tag;
 
 			_location = rhs.Location.Clone();
 			_link = rhs._link.Clone();

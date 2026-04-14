@@ -17,7 +17,7 @@ namespace VixenModules.LayerMixingFilter.MultiplyColor
             int newR = Convert(highLayerColor.R, lowLayerColor.R);
             int newG = Convert(highLayerColor.G, lowLayerColor.G);
             int newB = Convert(highLayerColor.B, lowLayerColor.B);
-            return Color.FromArgb((int)newR, newG, newB);
+            return Color.FromArgb(newR, newG, newB);
         }
         private int Convert(int highValue, int lowValue)
         {

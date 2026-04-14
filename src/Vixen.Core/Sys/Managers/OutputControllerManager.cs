@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using NLog;
 using Vixen.Data.Flow;
 using Vixen.Sys.Output;
 
@@ -7,7 +8,7 @@ namespace Vixen.Sys.Managers
 	public class OutputControllerManager : IControllerManager<OutputController>, IControllerFacadeParticipant
 	{
 		//Logger Class
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private OutputDeviceCollectionExecutionMediator<OutputController> _mediator;
 

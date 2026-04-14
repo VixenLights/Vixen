@@ -48,8 +48,8 @@ namespace VixenModules.App.ColorGradients
 			/// </summary>
 			public Point(double position, double focus)
 			{
-				if (!ColorGradient.isValid(position) ||
-				    !ColorGradient.isValid(focus))
+				if (!isValid(position) ||
+				    !isValid(focus))
 					throw new ArgumentException("position or focus");
 				_position = position;
 				_focus = focus;
@@ -70,7 +70,7 @@ namespace VixenModules.App.ColorGradients
 				get { return _position; }
 				set
 				{
-					if (!ColorGradient.isValid(value))
+					if (!isValid(value))
 						throw new ArgumentException("point");
 					if (value == _position)
 						return;
@@ -87,7 +87,7 @@ namespace VixenModules.App.ColorGradients
 				get { return _focus; }
 				set
 				{
-					if (!ColorGradient.isValid(value))
+					if (!isValid(value))
 						throw new ArgumentException("focus");
 					if (value == _focus)
 						return;
@@ -105,8 +105,8 @@ namespace VixenModules.App.ColorGradients
 				Point grd = obj as Point;
 				if (grd == null)
 					return false;
-				return grd._focus == this._focus &&
-				       grd._position == this._position;
+				return grd._focus == _focus &&
+				       grd._position == _position;
 			}
 
 			public override int GetHashCode()
@@ -146,14 +146,12 @@ namespace VixenModules.App.ColorGradients
 		[Serializable]
 		public class PointList<T> : CollectionBase<T> where T : Point, IComparable<T>
 		{
-			protected bool Equals(PointList<T> obj)
+			protected bool Equals(PointList<T> rhs)
 			{
-				
-				PointList<T> rhs = obj as PointList<T>;
 				if (Count != rhs.Count)
 					return false;
 
-				for (int i = 0; i < this.Count; i++)
+				for (int i = 0; i < Count; i++)
 				{
 					if (!this[i].Equals(rhs[i]))
 						return false;
@@ -483,10 +481,10 @@ namespace VixenModules.App.ColorGradients
 			//
 			for (int i = 0; i < blend.Colors.Length; i++) {
 				if (blend.Colors[i].A != 255)
-					Alphas.Add(new AlphaPoint((byte) blend.Colors[i].A,
-					                          (double) blend.Positions[i]));
+					Alphas.Add(new AlphaPoint(blend.Colors[i].A,
+					                          blend.Positions[i]));
 				Colors.Add(new ColorPoint(blend.Colors[i],
-				                          (double) blend.Positions[i]));
+				                          blend.Positions[i]));
 			}
 		}
 
@@ -668,7 +666,7 @@ namespace VixenModules.App.ColorGradients
 			pos = Clamp(pos);
 			//
 			int a, b;
-			SearchPos<float, float>(blend.Positions, (float) pos, out a, out b);
+			SearchPos<float, float>(blend.Positions, pos, out a, out b);
 			return Interpolate(blend.Colors, blend.Positions, a, b, pos);
 		}
 
@@ -1073,7 +1071,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (coll == null || value == null)
 				throw new ArgumentNullException("coll or value");
-			if (!ColorGradient.isValid(focuspos))
+			if (!isValid(focuspos))
 				throw new ArgumentException("focuspos");
 			//
 			T[] sorted = coll.SortedArray();
@@ -1407,7 +1405,7 @@ namespace VixenModules.App.ColorGradients
 		/// ctor
 		/// </summary>
 		public AlphaPoint(byte alpha, double point)
-			: this((double) alpha/255.0, .5, point)
+			: this(alpha/255.0, .5, point)
 		{
 		}
 
@@ -1456,7 +1454,7 @@ namespace VixenModules.App.ColorGradients
 		public override bool Equals(object obj)
 		{
 			return base.Equals(obj) &&
-			       ((AlphaPoint) obj)._alpha == this._alpha;
+			       ((AlphaPoint) obj)._alpha == _alpha;
 		}
 
 		public override int GetHashCode()
@@ -1551,7 +1549,7 @@ namespace VixenModules.App.ColorGradients
 		public override bool Equals(object obj)
 		{
 			return base.Equals(obj) &&
-			       ((ColorPoint) obj)._color == this._color;
+			       ((ColorPoint) obj)._color == _color;
 		}
 
 		public override int GetHashCode()

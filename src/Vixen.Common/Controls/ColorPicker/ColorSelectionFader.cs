@@ -5,9 +5,9 @@ using System.Drawing.Drawing2D;
 namespace Common.Controls.ColorManagement.ColorPicker
 {
 	/// <summary>
-	/// Zusammenfassung für ColorSelectionFader.
+	/// Zusammenfassung fÃ¼r ColorSelectionFader.
 	/// </summary>
-	[System.ComponentModel.ToolboxItem(false)]
+	[ToolboxItem(false)]
 	public class ColorSelectionFader : Control
 	{
 		#region variables
@@ -19,7 +19,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		public ColorSelectionFader()
 		{
-			this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+			SetStyle(ControlStyles.AllPaintingInWmPaint |
 			              ControlStyles.DoubleBuffer |
 			              ControlStyles.UserPaint |
 			              ControlStyles.ResizeRedraw, true);
@@ -28,8 +28,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		private Rectangle GetScrollerRectangle(double pos)
 		{
 			return new Rectangle(
-				0, (int) (_position*(double) (this.Height - 11)),
-				this.Width - 1, 10);
+				0, (int) (_position*(Height - 11)),
+				Width - 1, 10);
 		}
 
 		#region controller
@@ -39,7 +39,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			base.OnSizeChanged(e);
 			if (_bmp != null)
 				_bmp.Dispose();
-			_bmp = new Bitmap(Math.Max(1, this.Height - 10), 1,
+			_bmp = new Bitmap(Math.Max(1, Height - 10), 1,
 			                  System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			OnImageChanged();
 		}
@@ -47,28 +47,28 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			if (_bmp == null || this.Width < 11 || this.Height < 11) return;
+			if (_bmp == null || Width < 11 || Height < 11) return;
 
 			GraphicsState state = e.Graphics.Save();
 			e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
 			e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
 			e.Graphics.Transform = new Matrix(0f, 1f, 1f, 0f, 0f, 0f);
-			e.Graphics.DrawImage(_bmp, 5, 5, this.Height - 11, this.Width - 10);
+			e.Graphics.DrawImage(_bmp, 5, 5, Height - 11, Width - 10);
 
 			e.Graphics.Restore(state);
 			//draw gridlines
-			if ((Control.ModifierKeys & Keys.Shift) != 0) {
-				float dy = (float) (this.Height - 11)/8f, y = 5f;
+			if ((ModifierKeys & Keys.Shift) != 0) {
+				float dy = (Height - 11)/8f, y = 5f;
 				using (Pen pn = new Pen(new HatchBrush(HatchStyle.SmallCheckerBoard,
 				                                       Color.FromArgb(80, 255, 255, 255),
 				                                       Color.FromArgb(0, 0, 0, 0)))) {
 					for (int i = 0; i <= 8; i++,y += dy) {
-						e.Graphics.DrawLine(pn, 5, (int) y, this.Width - 6, (int) y);
+						e.Graphics.DrawLine(pn, 5, (int) y, Width - 6, (int) y);
 					}
 				}
 			}
-			e.Graphics.DrawRectangle(Pens.Silver, 5, 5, this.Width - 11, this.Height - 11);
+			e.Graphics.DrawRectangle(Pens.Silver, 5, 5, Width - 11, Height - 11);
 			//draw fader
 			Rectangle fader = GetScrollerRectangle(_position);
 			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -99,7 +99,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		{
 			base.OnMouseDown(e);
 			if (SetPosition(
-				(double) (e.Y - 5)/(double) Math.Max(1, this.Height - 11)))
+				(e.Y - 5)/(double) Math.Max(1, Height - 11)))
 				RaiseScroll();
 		}
 
@@ -108,7 +108,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			base.OnMouseMove(e);
 			if (e.Button == MouseButtons.Left)
 				if (SetPosition(
-					(double) (e.Y - 5)/(double) Math.Max(1, this.Height - 11)))
+					(e.Y - 5)/(double) Math.Max(1, Height - 11)))
 					RaiseScroll();
 		}
 
@@ -119,14 +119,14 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		public bool SetPosition(double value)
 		{
 			value = XYZ.ClipValue(value, 0.0, 1.0);
-			if ((Control.ModifierKeys & Keys.Shift) != 0) {
+			if ((ModifierKeys & Keys.Shift) != 0) {
 				value = Math.Round(value*8.0, 0)/8.0;
 			}
 			if (value == _position) return false;
-			this.Invalidate(Rectangle.Inflate(GetScrollerRectangle(_position), 1, 1));
+			Invalidate(Rectangle.Inflate(GetScrollerRectangle(_position), 1, 1));
 			_position = value;
-			this.Invalidate(Rectangle.Inflate(GetScrollerRectangle(_position), 1, 1));
-			this.Update();
+			Invalidate(Rectangle.Inflate(GetScrollerRectangle(_position), 1, 1));
+			Update();
 			return true;
 		}
 

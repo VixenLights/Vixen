@@ -213,9 +213,9 @@ namespace Common.Controls
 		protected string NormalTextToNumericString()
 		{
 			string Text = this.Text;
-			string TextTemp1 = "", TextTemp2 = "";
+			var TextTemp2 = string.Empty;
 			#region Lowering Characters
-			TextTemp1 = Text.ToLower();
+			var TextTemp1 = Text.ToLower();
 			#endregion
 			#region Remove Unknown Characters
 			int FloatNumber = 0;
@@ -226,7 +226,7 @@ namespace Common.Controls
 					TextTemp2 += TextTemp1[i];
 				else if (TextTemp1[i] == '0' && (TextTemp2 == "0" || TextTemp2 == ns + "0"))
 				{ // dont allow extra zeroes at begining
-					if (i < this.SelectionStart) _cursorPositionPlus--;
+					if (i < SelectionStart) _cursorPositionPlus--;
 				}
 				else if (_inputMode > 2 && TextTemp1[i] == ns && TextTemp2.IndexOf('e') >= 0 && TextTemp2.Length == TextTemp2.IndexOf('e') + 1)
 					TextTemp2 += TextTemp1[i];
@@ -235,13 +235,13 @@ namespace Common.Controls
 					if ((TextTemp2 == "0" || TextTemp2 == ns + "0") && TextTemp1[i] != '0')
 					{ // remove zero at begining or after negative sign
 						TextTemp2 = TextTemp2.Remove(TextTemp2 == "0" ? 0 : 1, 1);
-						if (i < this.SelectionStart) _cursorPositionPlus--;
+						if (i < SelectionStart) _cursorPositionPlus--;
 					}
 					TextTemp2 += TextTemp1[i];
-					if (TextTemp2.IndexOf(ds) > -1 && TextTemp2.IndexOf('e') < 0 && i < this.SelectionStart)
+					if (TextTemp2.IndexOf(ds) > -1 && TextTemp2.IndexOf('e') < 0 && i < SelectionStart)
 					{
 						FloatNumber++;
-						if (FloatNumber > _decimalNumber && i < this.SelectionStart)
+						if (FloatNumber > _decimalNumber && i < SelectionStart)
 							_cursorPositionPlus--;
 					}
 				}
@@ -249,7 +249,7 @@ namespace Common.Controls
 					TextTemp2 += TextTemp1[i];
 				else if (_inputMode > 2 && TextTemp1[i] == 'e' && TextTemp2.IndexOf('e') < 0 && TextTemp2.Length >= TextTemp2.IndexOf(DecimalSeparator) + 1)
 					TextTemp2 += TextTemp1[i];
-				else if (i < this.SelectionStart)
+				else if (i < SelectionStart)
 					_cursorPositionPlus--;
 			#endregion
 			#region Get Integer Number
@@ -282,7 +282,7 @@ namespace Common.Controls
 					n++;
 					if (n == 3 && i > 0 && INTEGER[i - 1] != NegativeSign[0])
 					{
-						if (i - _cursorPositionPlus < this.SelectionStart)
+						if (i - _cursorPositionPlus < SelectionStart)
 							_cursorPositionPlus++;
 						T = _groupSeparator.ToString() + T;
 						n = 0;
@@ -324,8 +324,8 @@ namespace Common.Controls
 			if (txt == ".")
 				return 0;
 			if (txt.EndsWith("e") || txt.EndsWith("e" + NegativeSign))
-				return System.Convert.ToDouble(txt.Substring(0, txt.IndexOf('e')));
-			return System.Convert.ToDouble(txt);
+				return Convert.ToDouble(txt.Substring(0, txt.IndexOf('e')));
+			return Convert.ToDouble(txt);
 		}
 	}
 }

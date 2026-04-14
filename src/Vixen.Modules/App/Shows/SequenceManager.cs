@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using NLog;
 using Vixen.Services;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
@@ -7,14 +8,13 @@ namespace VixenModules.App.Shows
 {
 	public static class SequenceManager
 	{
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private static readonly ConcurrentDictionary<string, SequenceEntry> ActiveSequences = new ConcurrentDictionary<string, SequenceEntry>();
 		private static readonly ConcurrentDictionary<string, SequenceEntry> RetiredSequences = new ConcurrentDictionary<string, SequenceEntry>();
 
 		public static void ConsumerFinished(string sequenceFile, Guid id)
 		{
-			SequenceEntry entry = null;
-			if (ActiveSequences.TryGetValue(sequenceFile, out entry))
+			if (ActiveSequences.TryGetValue(sequenceFile, out var entry))
 			{
 				lock (entry)
 				{
@@ -92,9 +92,9 @@ namespace VixenModules.App.Shows
 
 		private static DateTime LastModifiedTime(string file)
 		{
-			if (System.IO.File.Exists(file))
+			if (File.Exists(file))
 			{
-				return System.IO.File.GetLastWriteTime(file);
+				return File.GetLastWriteTime(file);
 			}
 
 			return DateTime.MaxValue;
@@ -113,7 +113,7 @@ namespace VixenModules.App.Shows
 
 		private static async Task<SequenceEntry> LoadSequenceAsync(string sequenceFile)
 		{
-			var entry = new SequenceEntry()
+			var entry = new SequenceEntry
 			{
 				SequenceLoading = true
 			};

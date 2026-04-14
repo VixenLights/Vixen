@@ -9,11 +9,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool AddClipboardFormatListener(System.IntPtr hwnd);
+		public static extern bool AddClipboardFormatListener(IntPtr hwnd);
 
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool RemoveClipboardFormatListener(System.IntPtr hwnd);
+		public static extern bool RemoveClipboardFormatListener(IntPtr hwnd);
 
 	}
 

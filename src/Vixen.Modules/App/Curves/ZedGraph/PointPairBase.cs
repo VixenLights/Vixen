@@ -1,6 +1,6 @@
 //============================================================================
 //PointPairBase Class
-//Copyright © 2006  Jerry Vos & John Champion
+//Copyright Â© 2006  Jerry Vos & John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,6 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -77,8 +76,8 @@ namespace ZedGraph
 		/// <param name="y">This pair's y coordinate.</param>
 		public PointPairBase(double x, double y)
 		{
-			this.X = x;
-			this.Y = y;
+			X = x;
+			Y = y;
 		}
 
 		/// <summary>
@@ -97,8 +96,8 @@ namespace ZedGraph
 		/// <param name="rhs">The basis for the copy.</param>
 		public PointPairBase(PointPairBase rhs)
 		{
-			this.X = rhs.X;
-			this.Y = rhs.Y;
+			X = rhs.X;
+			Y = rhs.Y;
 		}
 
 		#endregion
@@ -150,7 +149,7 @@ namespace ZedGraph
 		/// <returns>true if either value is missing</returns>
 		public bool IsMissing
 		{
-			get { return this.X == PointPairBase.Missing || this.Y == PointPairBase.Missing; }
+			get { return X == Missing || Y == Missing; }
 		}
 
 		/// <summary>
@@ -164,12 +163,12 @@ namespace ZedGraph
 		{
 			get
 			{
-				return this.X == PointPairBase.Missing ||
-				       this.Y == PointPairBase.Missing ||
-				       Double.IsInfinity(this.X) ||
-				       Double.IsInfinity(this.Y) ||
-				       Double.IsNaN(this.X) ||
-				       Double.IsNaN(this.Y);
+				return X == Missing ||
+				       Y == Missing ||
+				       Double.IsInfinity(X) ||
+				       Double.IsInfinity(Y) ||
+				       Double.IsNaN(X) ||
+				       Double.IsNaN(Y);
 			}
 		}
 
@@ -183,7 +182,7 @@ namespace ZedGraph
 		/// <returns>true if the value is invalid, false otherwise</returns>
 		public static bool IsValueInvalid(double value)
 		{
-			return (value == PointPairBase.Missing ||
+			return (value == Missing ||
 			        Double.IsInfinity(value) ||
 			        Double.IsNaN(value));
 		}
@@ -217,7 +216,7 @@ namespace ZedGraph
 		public override bool Equals(object obj)
 		{
 			PointPairBase rhs = obj as PointPairBase;
-			return this.X == rhs.X && this.Y == rhs.Y;
+			return X == rhs.X && Y == rhs.Y;
 		}
 
 		/// <summary>
@@ -236,7 +235,7 @@ namespace ZedGraph
 		/// <returns>A string representation of the PointPair</returns>
 		public override string ToString()
 		{
-			return this.ToString(PointPairBase.DefaultFormat);
+			return ToString(DefaultFormat);
 		}
 
 		/// <summary>
@@ -248,8 +247,8 @@ namespace ZedGraph
 		/// <returns>A string representation of the PointPair</returns>
 		public string ToString(string format)
 		{
-			return "( " + this.X.ToString(format) +
-			       ", " + this.Y.ToString(format) +
+			return "( " + X.ToString(format) +
+			       ", " + Y.ToString(format) +
 			       " )";
 		}
 
@@ -265,8 +264,8 @@ namespace ZedGraph
 		/// <returns>A string representation of the PointPair</returns>
 		public string ToString(string formatX, string formatY)
 		{
-			return "( " + this.X.ToString(formatX) +
-			       ", " + this.Y.ToString(formatY) +
+			return "( " + X.ToString(formatX) +
+			       ", " + Y.ToString(formatY) +
 			       " )";
 		}
 

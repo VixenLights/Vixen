@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using NLog;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -6,7 +7,7 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlSequenceListSerializer : IXmlSerializer<IEnumerable<ISequence>>
 	{
-		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger logging = LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_SEQUENCES = "Sequences";
 		private const string ELEMENT_SEQUENCE = "Sequence";

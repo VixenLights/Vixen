@@ -1,6 +1,6 @@
 ﻿using Common.Controls.Theme;
 
-namespace VixenModules.App.Shows
+namespace VixenModules.App.Shows.Editors
 {
 
 	public partial class PauseTypeEditor : TypeEditorBase

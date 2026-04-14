@@ -15,7 +15,7 @@ namespace Common.Controls.Timeline
 		{
 			AutoScaleMode = AutoScaleMode.Font;
 			if (timeinfo== null)
-				timeinfo= new Timeline.TimeInfo();
+				timeinfo= new TimeInfo();
 			
 			TimeInfo = timeinfo;
 			TimeInfo.TimePerPixelChanged += OnTimePerPixelChanged;
@@ -146,7 +146,7 @@ namespace Common.Controls.Timeline
 			if (TimePerPixel.Ticks == 0)
 				throw new DivideByZeroException("Time per pixel is zero!");
 
-			return (Single) t.Ticks/(Single) TimePerPixel.Ticks;
+			return (Single) t.Ticks/TimePerPixel.Ticks;
 		}
 		#endregion
 
@@ -214,13 +214,13 @@ namespace Common.Controls.Timeline
 			try {
                 base.WndProc(ref m);
 				
-                if (m.HWnd != this.Handle) {
+                if (m.HWnd != Handle) {
 					return;
 				}
 				switch (m.Msg) {
 					case WM_MOUSEHWHEEL:
 						MouseHWheelMsg(m.WParam, m.LParam);
-						m.Result = (IntPtr) 1;
+						m.Result = 1;
 						break;
                 }
 			}

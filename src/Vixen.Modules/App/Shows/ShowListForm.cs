@@ -3,6 +3,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
+using Common.VixenHelp;
 using Vixen.Sys;
 
 namespace VixenModules.App.Shows
@@ -29,12 +30,12 @@ namespace VixenModules.App.Shows
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
-			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Show_Editor);
+			VixenHelp.ShowHelp(VixenHelp.HelpStrings.Show_Editor);
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
@@ -89,12 +90,11 @@ namespace VixenModules.App.Shows
 			if (listViewShows.SelectedItems.Count > 0)
 			{
 				ListViewItem lvItem = listViewShows.SelectedItems[0];
-
-				if (lvItem != null)
+				if (lvItem.Tag is Show sh)
 				{
-					Show show = (lvItem.Tag as Show).Clone() as Show;
+					Show show = sh.Clone() as Show;
 					ShowEditorForm form = new ShowEditorForm(show);
-					if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+					if (await form.ShowDialogAsync() == DialogResult.OK)
 					{
 						int showIndex = Data.Shows.FindIndex(oldShow => oldShow == lvItem.Tag);
 						Data.Shows[showIndex] = form.ShowData;
@@ -103,6 +103,7 @@ namespace VixenModules.App.Shows
 						await VixenSystem.SaveModuleConfigAsync();
 					}
 				}
+				
 			}
 		}
 
@@ -112,18 +113,15 @@ namespace VixenModules.App.Shows
 			{
 				ListViewItem lvItem = listViewShows.SelectedItems[0];
 
-				if (lvItem != null)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Are you sure you want to delete the selected show?\r\n\r\n" + lvItem.Text + "\r\n\r\nYou CANNOT undo this!", "Delete Show", true, false);
+				await messageBox.ShowDialogAsync();
+				if (messageBox.DialogResult == DialogResult.OK)
 				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("Are you sure you want to delete the selected show?\r\n\r\n" + lvItem.Text + "\r\n\r\nYou CANNOT undo this!", "Delete Show", true, false);
-					messageBox.ShowDialog();
-					if (messageBox.DialogResult == DialogResult.OK)
-					{
-						Data.Shows.Remove(lvItem.Tag as Show);
-						listViewShows.Items.Remove(lvItem);
-						await VixenSystem.SaveModuleConfigAsync();
-					}
+					Data.Shows.Remove(lvItem.Tag as Show);
+					listViewShows.Items.Remove(lvItem);
+					await VixenSystem.SaveModuleConfigAsync();
 				}
 			}
 		}
@@ -134,10 +132,7 @@ namespace VixenModules.App.Shows
 			{
 				ListViewItem lvItem = listViewShows.Items[e.Item];
 
-				if (lvItem != null)
-				{
-					(lvItem.Tag as Show).Name = e.Label;
-				}
+				(lvItem.Tag as Show)?.Name = e.Label;
 			}
 		}
 

@@ -59,8 +59,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders
 			Link();
 
 			// Create the vertex array object 
-			int vao = -1;
-			GL.GenVertexArrays(1, out vao);			
+			GL.GenVertexArrays(1, out int vao);			
 			VaoID = vao;
 
 			// Generate the buffers associated with the program shaders
@@ -206,8 +205,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders
 			for (int i = 0; i < Attributes.Count; i++)
 			{
 				// Get an unused buffer ID
-				uint buffer = 0;
-				GL.GenBuffers(1, out buffer);
+				GL.GenBuffers(1, out uint buffer);
 
 				// Store off the ID in the dictionary
 				Buffers.Add(Attributes.Values.ElementAt(i).Name, buffer);
@@ -217,8 +215,7 @@ namespace VixenModules.Editor.FixtureGraphics.OpenGL.Shaders
 			for (int i = 0; i < Uniforms.Count; i++)
 			{
 				// Get an unused buffer ID
-				uint buffer = 0;
-				GL.GenBuffers(1, out buffer);
+				GL.GenBuffers(1, out uint buffer);
 
 				// Store off the ID in the dictionary
 				Buffers.Add(Uniforms.Values.ElementAt(i).Name, buffer);

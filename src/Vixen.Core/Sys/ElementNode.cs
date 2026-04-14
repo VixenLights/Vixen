@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using NLog;
+
 namespace Vixen.Sys
 {
 	/// <summary>
@@ -12,7 +14,7 @@ namespace Vixen.Sys
 		// subscriptions from the node manager.
 		public static event EventHandler? Changed;
 		//Logger Class
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		#region Constructors
 
 		internal ElementNode(Guid id, string name, Element? element, IEnumerable<ElementNode> content)
@@ -21,9 +23,8 @@ namespace Vixen.Sys
 			if (VixenSystem.Nodes.ElementNodeExists(id)) {
 				throw new InvalidOperationException("Trying to create a ElementNode that already exists.");
 			}
-			else {
-				VixenSystem.Nodes.SetElementNode(id, this);
-			}
+
+			VixenSystem.Nodes.SetElementNode(id, this);
 			Id = id;
 			if (element != null)
 			{
@@ -230,9 +231,8 @@ namespace Vixen.Sys
 				// Element is already an enumerable, so AsEnumerable<> won't work.
 				return (new[] {Element});
 			}
-			else {
-				return this.Children.SelectMany(x => x.GetElementEnumerator());
-			}
+
+			return Children.SelectMany(x => x.GetElementEnumerator());
 		}
 
 		IEnumerable<Element> IElementNode.GetElementEnumerator()
@@ -257,9 +257,8 @@ namespace Vixen.Sys
 				// Element is already an enumerable, so AsEnumerable<> won't work.
 				return (new[] {this});
 			}
-			else {
-				return Children.SelectMany(x => x.GetLeafEnumerator());
-			}
+
+			return Children.SelectMany(x => x.GetLeafEnumerator());
 		}
 
 		IEnumerable<IElementNode> IElementNode.GetLeafEnumerator()
@@ -272,10 +271,9 @@ namespace Vixen.Sys
 			if (IsLeaf) {
 				return Enumerable.Empty<ElementNode>();
 			}
-			else {
-				// "this" is already an enumerable, so AsEnumerable<> won't work.
-				return (new[] {this}).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
-			}
+
+			// "this" is already an enumerable, so AsEnumerable<> won't work.
+			return (new[] {this}).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
 		}
 
 		IEnumerable<IElementNode> IElementNode.GetNonLeafEnumerator()

@@ -2,11 +2,9 @@
 
 namespace Vixen.IO.Xml.SystemConfig
 {
-	using Vixen.Sys;
-
-	internal class SystemConfigXElementReader : IObjectContentReader<XElement, SystemConfig>
+	internal class SystemConfigXElementReader : IObjectContentReader<XElement, Sys.SystemConfig>
 	{
-		public XElement ReadContentFromObject(SystemConfig obj)
+		public XElement ReadContentFromObject(Sys.SystemConfig obj)
 		{
 			XElement content = new XElement("SystemConfig");
 			XmlRootAttributeVersion.SetVersion(content, ObjectVersion.SystemConfig);
@@ -17,8 +15,8 @@ namespace Vixen.IO.Xml.SystemConfig
 
 		object IObjectContentReader.ReadContentFromObject(object obj)
 		{
-			if (!(obj is SystemConfig)) throw new InvalidOperationException("Object must be a SystemConfig.");
-			return ReadContentFromObject((SystemConfig) obj);
+			if (!(obj is Sys.SystemConfig)) throw new InvalidOperationException("Object must be a SystemConfig.");
+			return ReadContentFromObject((Sys.SystemConfig) obj);
 		}
 	}
 }

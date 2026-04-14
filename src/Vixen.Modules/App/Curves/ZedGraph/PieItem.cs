@@ -1,6 +1,6 @@
 //============================================================================
 //PieItem Class
-//Copyright © 2005  Bob Kaye
+//Copyright Â© 2005  Bob Kaye
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,6 @@
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph {
 	/// <summary>
@@ -318,9 +317,9 @@ namespace ZedGraph {
 			set {
 				_labelType = value;
 				if (value == PieLabelType.None)
-					this.LabelDetail.IsVisible = false;
+					LabelDetail.IsVisible = false;
 				else
-					this.LabelDetail.IsVisible = true;
+					LabelDetail.IsVisible = true;
 			}
 		}
 
@@ -437,7 +436,7 @@ namespace ZedGraph {
 			: base(rhs) {
 			_pieValue = rhs._pieValue;
 			_fill = rhs._fill.Clone();
-			this.Border = rhs._border.Clone();
+			Border = rhs._border.Clone();
 			_displacement = rhs._displacement;
 			_labelDetail = rhs._labelDetail.Clone();
 			_labelType = rhs._labelType;
@@ -451,7 +450,7 @@ namespace ZedGraph {
 		/// </summary>
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone() {
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -577,22 +576,22 @@ namespace ZedGraph {
 
 					Fill tFill = _fill;
 					Border tBorder = _border;
-					if (this.IsSelected) {
+					if (IsSelected) {
 						tFill = Selection.Fill;
 						tBorder = Selection.Border;
 					}
 
 					using (Brush brush = tFill.MakeBrush(_boundingRectangle)) {
-						g.FillPie(brush, tRect.X, tRect.Y, tRect.Width, tRect.Height, this.StartAngle, this.SweepAngle);
+						g.FillPie(brush, tRect.X, tRect.Y, tRect.Width, tRect.Height, StartAngle, SweepAngle);
 
 						//add GraphicsPath for hit testing
 						_slicePath.AddPie(tRect.X, tRect.Y, tRect.Width, tRect.Height,
-										  this.StartAngle, this.SweepAngle);
+										  StartAngle, SweepAngle);
 
-						if (this.Border.IsVisible) {
+						if (Border.IsVisible) {
 							using (Pen borderPen = tBorder.GetPen(pane, scaleFactor)) {
 								g.DrawPie(borderPen, tRect.X, tRect.Y, tRect.Width, tRect.Height,
-										  this.StartAngle, this.SweepAngle);
+										  StartAngle, SweepAngle);
 							}
 						}
 
@@ -669,7 +668,7 @@ namespace ZedGraph {
 				//modify the rect to determine if any of the labels need to be wrapped....
 				//first see if there's any exploded slices and if so, what's the max displacement...
 				//also, might as well get all the display params we can
-				PieItem.CalculatePieChartParams(pane, ref maxDisplacement);
+				CalculatePieChartParams(pane, ref maxDisplacement);
 
 				if (maxDisplacement != 0) //need new rectangle if any slice exploded	
 					CalcNewBaseRect(maxDisplacement, ref nonExplRect);
@@ -696,8 +695,8 @@ namespace ZedGraph {
 		private void CalcExplodedRect(ref RectangleF explRect) {
 			//pie exploded out along the slice bisector - modify upper left of bounding rect to account for displacement
 			//keep height and width same
-			explRect.X += (float)(this.Displacement * explRect.Width / 2 * Math.Cos(_midAngle * Math.PI / 180));
-			explRect.Y += (float)(this.Displacement * explRect.Height / 2 * Math.Sin(_midAngle * Math.PI / 180));
+			explRect.X += (float)(Displacement * explRect.Width / 2 * Math.Cos(_midAngle * Math.PI / 180));
+			explRect.Y += (float)(Displacement * explRect.Height / 2 * Math.Sin(_midAngle * Math.PI / 180));
 		}
 
 		/// <summary>
@@ -728,7 +727,7 @@ namespace ZedGraph {
 				curve.SweepAngle = (float)(360 * curve.Value / pieTotalValue);
 				curve.MidAngle = curve.StartAngle + curve.SweepAngle / 2;
 				nextStartAngle = curve._startAngle + curve._sweepAngle;
-				PieItem.BuildLabelString(curve);
+				BuildLabelString(curve);
 			}
 		}
 
@@ -754,7 +753,7 @@ namespace ZedGraph {
 			if (!_labelDetail.IsVisible)
 				return;
 
-			using (Pen labelPen = this.Border.GetPen(pane, scaleFactor)) {
+			using (Pen labelPen = Border.GetPen(pane, scaleFactor)) {
 				//draw line from intersection point to pivot point -
 				g.DrawLine(labelPen, _intersectionPoint, _pivotPoint);
 
@@ -1008,7 +1007,7 @@ namespace ZedGraph {
 			// x,y location)
 			matrix.Translate(pt.X, pt.Y);
 
-			matrix.Rotate(this.StartAngle);
+			matrix.Rotate(StartAngle);
 			//One mark every 5'ish degrees
 			int count = (int)Math.Floor(SweepAngle / 5) + 1;
 			PointF[] pts = new PointF[2 + count];

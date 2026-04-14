@@ -69,7 +69,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PixelCount = 2;
 			}
 
-			if (Creating == true)
+			if (Creating)
 			{
 				EndCreation();
 			}
@@ -107,9 +107,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    }
         //}
 
-        [CategoryAttribute("Settings"),
+        [Category("Settings"),
          DisplayName("Light Count"),
-         DescriptionAttribute("Number of pixels or lights in the string.")]
+         Description("Number of pixels or lights in the string.")]
         public int PixelCount
         {
             get { return Pixels.Count; }
@@ -304,7 +304,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private double SegmentLength(int segmentNum)
         {
             // Get the length of just this line
-            double thisLineLength = 0;
+            double thisLineLength;
             // Is this a horizontal line?
             if (_points[segmentNum].X == _points[segmentNum + 1].X)
             {
@@ -368,8 +368,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                                                     new PreviewTools.Vector2(_points[pointNum + 1].ToPoint()),
                                                     Convert.ToInt32(thisEmptyStartLength + thisActiveLineLength));
 
-                            double xSpacing = (double)(lineStartPoint.X - lineEndPoint.X) / (double)(pixelSpacesInThisLine);
-                            double ySpacing = (double)(lineStartPoint.Y - lineEndPoint.Y) / (double)(pixelSpacesInThisLine);
+                            double xSpacing = (lineStartPoint.X - lineEndPoint.X) / pixelSpacesInThisLine;
+                            double ySpacing = (lineStartPoint.Y - lineEndPoint.Y) / pixelSpacesInThisLine;
                             double x = lineStartPoint.X;
                             double y = lineStartPoint.Y;
 
@@ -438,9 +438,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             base.MouseMove(x, y, changeX, changeY);
 		}
 
-        public override void MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        public override void MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 if (Creating)
                 {
@@ -526,7 +526,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-            PreviewPolyLine newLine = (PreviewPolyLine)this.MemberwiseClone();
+            PreviewPolyLine newLine = (PreviewPolyLine)MemberwiseClone();
 
 			newLine._pixels = new List<PreviewPixel>();
 

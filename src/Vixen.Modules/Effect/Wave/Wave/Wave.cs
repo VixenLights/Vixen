@@ -423,7 +423,7 @@ namespace VixenModules.Effect.Wave
 				
 				// Initialize the snake window
 				wave.WindowStart = 0;
-				wave.WindowStop = (int)(wave.BufferWi * ((double)wave.WindowPercentage / 100.0));
+				wave.WindowStop = (int)(wave.BufferWi * (wave.WindowPercentage / 100.0));
 							
 				// If the waveform is being primed then...
 				if (wave.PrimeWave)
@@ -1164,7 +1164,7 @@ namespace VixenModules.Effect.Wave
 			DirectionType direction)
 		{
 			// Initialize the state (this variable causes movement)
-			int state = (int)((frame) * wspeed);
+			int state = (frame) * wspeed;
 
 			// Loop over all the columns in the display element
 			for (int x = 0; x < wave.BufferWi; x++)
@@ -1459,12 +1459,12 @@ namespace VixenModules.Effect.Wave
 			int x)						
 		{			
 			// Calculate number of waves
-			double waves = ((double)numberOfWaves / 180.0) / 5; 
+			double waves = numberOfWaves / 180.0 / 5; 
 
 			// Calculate the wave amplitude
 			int amp = wave.BufferHt * waveHeight / 100;
 
-			int yStart = 0;
+			int yStart;
 
 			if (amp == 0)
 			{
@@ -1472,7 +1472,7 @@ namespace VixenModules.Effect.Wave
 			}
 			else
 			{				
-				yStart = (wave.BufferHt - amp) / 2 + Math.Abs((int)(x * waves) % (int)(2 * amp) - amp);
+				yStart = (wave.BufferHt - amp) / 2 + Math.Abs((int)(x * waves) % (2 * amp) - amp);
 			}
 
 			// Check to see if the top of the wave has exceeded the height of the dispay element
@@ -1546,7 +1546,7 @@ namespace VixenModules.Effect.Wave
 				sinradMinus1,				
 				m,
 				toothGap,
-				(int)y1);
+				y1);
 
 			// Check to see if the vertical lines need to be drawn
 			bool verticalLine = IsVerticalLine(sinrad, sinradMinus1);
@@ -1587,7 +1587,7 @@ namespace VixenModules.Effect.Wave
 			if (verticalLine)
 			{
 				// Add additional vertical lines as necessary
-				RenderVerticalLines(wave, y1, y2, yoffset, mirrorWave, (int)(wave.LastWaveThickness - (wave.LastSawToothY - wave.LastLastSawToothY)), fillColor);				
+				RenderVerticalLines(wave, y1, y2, yoffset, mirrorWave, wave.LastWaveThickness - (wave.LastSawToothY - wave.LastLastSawToothY), fillColor);				
 			}
 
 			// Store off the last two Y positions of the sawtooth
@@ -1659,7 +1659,7 @@ namespace VixenModules.Effect.Wave
 			double rise = (y2 - y1);
 
 			// Calculate the slope
-			double m = rise / ((double)toothGap);
+			double m = rise / toothGap;
 
 			// Return the slope of the line
 			return m;
@@ -1763,7 +1763,7 @@ namespace VixenModules.Effect.Wave
 			DirectionType direction)
 		{
 			// Initialize the state (this variable causes movement)
-			int state = (int)(frame * wspeed);
+			int state = frame * wspeed;
 
 			// Initialize the amplitude of the wave
 			double r = wave.YC;
@@ -1832,9 +1832,6 @@ namespace VixenModules.Effect.Wave
 			// If a mark collection has been selected then...
 			if (!string.IsNullOrEmpty(waveform.MarkCollectionName))
 			{
-				// If a mark collection has been specified then default to NOT active
-				markActive = false;
-				
 				// Get the selected mark collection
 				IMarkCollection marks = MarkCollections.FirstOrDefault(item => item.Id == waveform.MarkCollectionId);
 

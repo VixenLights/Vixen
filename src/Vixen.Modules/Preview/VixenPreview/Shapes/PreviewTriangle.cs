@@ -104,9 +104,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 1"),
-		 DescriptionAttribute("An triangle is defined by a 3 points of a rectangle. This is point 1.")]
+		 Description("An triangle is defined by a 3 points of a rectangle. This is point 1.")]
 		public Point Point1
 		{
 			get
@@ -123,9 +123,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 2"),
-		 DescriptionAttribute("An triangle is defined by a 3 points of a rectangle. This is point 2.")]
+		 Description("An triangle is defined by a 3 points of a rectangle. This is point 2.")]
 		public Point Point2
 		{
 			get
@@ -142,9 +142,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 3"),
-		 DescriptionAttribute("An triangle is defined by a 3 points of a rectangle. This is point 3.")]
+		 Description("An triangle is defined by a 3 points of a rectangle. This is point 3.")]
 		public Point Point3
 		{
 			get
@@ -179,9 +179,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String 1 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 1 of the triangle.")]
+		 Description("Number of pixels or lights in string 1 of the triangle.")]
 		public int LightCountString1
 		{
 			get { return Strings[0].Pixels.Count; }
@@ -192,9 +192,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String 2 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 2 of the triangle.")]
+		 Description("Number of pixels or lights in string 2 of the triangle.")]
 		public int LightCountString2
 		{
 			get { return Strings[1].Pixels.Count; }
@@ -205,9 +205,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String 3 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 3 of the triangle.")]
+		 Description("Number of pixels or lights in string 3 of the triangle.")]
 		public int LightCountString3
 		{
 			get { return Strings[2].Pixels.Count; }

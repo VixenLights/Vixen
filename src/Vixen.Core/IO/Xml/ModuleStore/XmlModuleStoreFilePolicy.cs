@@ -4,14 +4,12 @@ using Vixen.IO.Xml.Serializer;
 
 namespace Vixen.IO.Xml.ModuleStore
 {
-	using Vixen.Sys;
-
 	internal class XmlModuleStoreFilePolicy : ModuleStoreFilePolicy
 	{
-		private ModuleStore _moduleStore;
+		private Sys.ModuleStore _moduleStore;
 		private XElement _content;
 
-		public XmlModuleStoreFilePolicy(ModuleStore moduleStore, XElement content)
+		public XmlModuleStoreFilePolicy(Sys.ModuleStore moduleStore, XElement content)
 		{
 			_moduleStore = moduleStore;
 			_content = content;

@@ -45,8 +45,7 @@ namespace VixenModules.Editor.EffectEditor.Converters
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			double width = (double) value;
-			double diff = DefaultOffset;
-			if (parameter != null && double.TryParse(parameter.ToString(), out diff))
+			if (parameter != null && double.TryParse(parameter.ToString(), out var diff))
 				return width + diff;
 
 			return width + DefaultOffset;
@@ -65,8 +64,7 @@ namespace VixenModules.Editor.EffectEditor.Converters
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			double width = (double) value;
-			double diff = DefaultOffset;
-			if (parameter != null && double.TryParse(parameter.ToString(), out diff))
+			if (parameter != null && double.TryParse(parameter.ToString(), out var diff))
 				return width - diff;
 
 			return width - DefaultOffset;

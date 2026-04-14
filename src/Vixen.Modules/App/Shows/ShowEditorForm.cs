@@ -3,6 +3,8 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
+using Common.VixenHelp;
+using VixenModules.App.Shows.Editors;
 
 namespace VixenModules.App.Shows
 {
@@ -61,7 +63,7 @@ namespace VixenModules.App.Shows
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
-			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Show_Editor);
+			VixenHelp.ShowHelp(VixenHelp.HelpStrings.Show_Editor);
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
@@ -134,7 +136,7 @@ namespace VixenModules.App.Shows
 			return ActionType.Sequence;
 		}
 
-		TypeEditorBase currentEditor = null;
+		TypeEditorBase currentEditor;
 		private void SetCurrentEditor(string action)
 		{
 			if (action == "")
@@ -203,10 +205,8 @@ namespace VixenModules.App.Shows
 						item = listViewShowItems.SelectedItems[0].Tag as ShowItem;
 					}
 				}
-				else
-				{
-					//MessageBox.Show("SelectedShowItem: currentListView == null");
-				}
+
+				//MessageBox.Show("SelectedShowItem: currentListView == null");
 				return item;
 			}
 		}
@@ -299,13 +299,13 @@ namespace VixenModules.App.Shows
 				UpdateListViewItems();
 				if (index > 0)
 				{
-					this.listViewShowItems.Items[index - 1].Selected = true;
+					listViewShowItems.Items[index - 1].Selected = true;
 				}
 				else
 				{
 					if (listViewShowItems.Items.Count != index)
 					{
-						this.listViewShowItems.Items[index].Selected = true;
+						listViewShowItems.Items[index].Selected = true;
 					}
 				}
 			}

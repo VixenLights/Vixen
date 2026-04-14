@@ -172,7 +172,7 @@ namespace Common.Controls.ControlsEx
 		public bool Remove(T item)
 		{
 			OnValidate(item);
-			int index = this.InnerList.IndexOf(item);
+			int index = InnerList.IndexOf(item);
 			if (index < 0)
 				return false;
 			OnRemove(index, item);
@@ -200,7 +200,7 @@ namespace Common.Controls.ControlsEx
 
 		#region IEnumerable Member
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return _list.GetEnumerator();
 		}
@@ -223,32 +223,32 @@ namespace Common.Controls.ControlsEx
 		int IList.Add(object item)
 		{
 			Verify(item);
-			this.Add((T) item);
-			return (this.Count - 1);
+			Add((T) item);
+			return (Count - 1);
 		}
 
 		bool IList.Contains(object item)
 		{
-			return (IsCompatible(item) && this.Contains((T) item));
+			return (IsCompatible(item) && Contains((T) item));
 		}
 
 		int IList.IndexOf(object item)
 		{
 			if (!IsCompatible(item))
 				return -1;
-			return this.IndexOf((T) item);
+			return IndexOf((T) item);
 		}
 
 		void IList.Insert(int index, object item)
 		{
 			Verify(item);
-			this.Insert(index, (T) item);
+			Insert(index, (T) item);
 		}
 
 		void IList.Remove(object item)
 		{
 			if (IsCompatible(item))
-				this.Remove((T) item);
+				Remove((T) item);
 		}
 
 		object IList.this[int index]

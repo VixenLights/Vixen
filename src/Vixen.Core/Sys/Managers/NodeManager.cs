@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Collections;
 using Vixen.IO.JSON;
 
 namespace Vixen.Sys.Managers
@@ -225,7 +226,7 @@ namespace Vixen.Sys.Managers
 			return GetAllNodes().GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

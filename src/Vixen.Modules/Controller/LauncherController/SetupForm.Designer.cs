@@ -7,6 +7,16 @@
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing) {
+			if(disposing && (components != null)) {
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
 		#region Windows Form Designer generated code
 
@@ -16,50 +26,45 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.button1 = new System.Windows.Forms.Button();
-            this.chkHideLaunchedWindows = new System.Windows.Forms.CheckBox();
-            this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(172, 77);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(95, 36);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Save";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // chkHideLaunchedWindows
-            // 
-            this.chkHideLaunchedWindows.AutoSize = true;
-            this.chkHideLaunchedWindows.Location = new System.Drawing.Point(123, 31);
-            this.chkHideLaunchedWindows.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkHideLaunchedWindows.Name = "chkHideLaunchedWindows";
-            this.chkHideLaunchedWindows.Size = new System.Drawing.Size(195, 24);
-            this.chkHideLaunchedWindows.TabIndex = 0;
-            this.chkHideLaunchedWindows.Text = "Hide Launched Windows";
-            this.chkHideLaunchedWindows.UseVisualStyleBackColor = true;
-            this.chkHideLaunchedWindows.CheckedChanged += new System.EventHandler(this.chkHideLaunchedWindows_CheckedChanged);
-            // 
-            // SetupForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(437, 138);
-            this.Controls.Add(this.chkHideLaunchedWindows);
-            this.Controls.Add(this.button1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
-            MinimizeBox = false;
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Name = "SetupForm";
-            this.Text = "Launcher Controller Configuration";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+			button1 = new System.Windows.Forms.Button();
+			chkHideLaunchedWindows = new System.Windows.Forms.CheckBox();
+			SuspendLayout();
+			// 
+			// button1
+			// 
+			button1.DialogResult = System.Windows.Forms.DialogResult.OK;
+			button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)0));
+			button1.Location = new System.Drawing.Point(150, 58);
+			button1.Name = "button1";
+			button1.Size = new System.Drawing.Size(83, 27);
+			button1.TabIndex = 4;
+			button1.Text = "Save";
+			button1.UseVisualStyleBackColor = true;
+			// 
+			// chkHideLaunchedWindows
+			// 
+			chkHideLaunchedWindows.AutoSize = true;
+			chkHideLaunchedWindows.Location = new System.Drawing.Point(108, 23);
+			chkHideLaunchedWindows.Name = "chkHideLaunchedWindows";
+			chkHideLaunchedWindows.Size = new System.Drawing.Size(158, 19);
+			chkHideLaunchedWindows.TabIndex = 0;
+			chkHideLaunchedWindows.Text = "Hide Launched Windows";
+			chkHideLaunchedWindows.UseVisualStyleBackColor = true;
+			chkHideLaunchedWindows.CheckedChanged += chkHideLaunchedWindows_CheckedChanged;
+			// 
+			// SetupForm
+			// 
+			AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			ClientSize = new System.Drawing.Size(382, 105);
+			Controls.Add(chkHideLaunchedWindows);
+			Controls.Add(button1);
+			FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Text = "Launcher Controller Configuration";
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion

@@ -9,7 +9,7 @@ namespace Common.WPFCommon.Utils
 
         public static object GetSelectedItem(DependencyObject obj)
         {
-            return (object)obj.GetValue(SelectedItemProperty);
+            return obj.GetValue(SelectedItemProperty);
         }
 
         public static void SetSelectedItem(DependencyObject obj, object value)
@@ -38,7 +38,7 @@ namespace Common.WPFCommon.Utils
             readonly TreeView _view;
             public TreeViewSelectedItemBehavior(TreeView view)
             {
-                this._view = view;
+                _view = view;
                 view.SelectedItemChanged += (sender, e) => SetSelectedItem(view, e.NewValue);
             }
 

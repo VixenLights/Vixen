@@ -96,15 +96,15 @@ namespace Common.WPFCommon.Controls
     protected override Size MeasureOverride(Size constraint)
     {
       int index = 0;
-      bool isEven = true;
+      //bool isEven = true;
       bool foundSelected = false;
 
-      foreach (UIElement element in this.Children)
+      foreach (UIElement element in Children)
       {
 
-        if (this.IsItemsHost)
+        if (IsItemsHost)
         {
-          Selector SelectorParent = this.TemplatedParent as Selector;
+          Selector SelectorParent = TemplatedParent as Selector;
 
           if (SelectorParent != null)
           {
@@ -149,15 +149,16 @@ namespace Common.WPFCommon.Controls
         }
 
         // IndexOddEven
+        // Nothing ever sets isEven to false, so this logic is commented out until a reason for it is found.
 
-        if (isEven)
-        {
+        //if (isEven)
+        //{
           element.SetValue(IndexOddEvenProperty, IndexOddEven.Even);
-        }
-        else
-        {
-          element.SetValue(IndexOddEvenProperty, IndexOddEven.Odd);
-        }
+        //}
+        //else
+        //{
+         // element.SetValue(IndexOddEvenProperty, IndexOddEven.Odd);
+        //}
 
         element.SetValue(IndexProperty, index);
         index++;

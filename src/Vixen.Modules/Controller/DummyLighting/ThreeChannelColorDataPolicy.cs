@@ -3,7 +3,7 @@ using Vixen.Data.Evaluator;
 using Vixen.Data.Policy;
 using Vixen.Sys;
 
-namespace VixenModules.Controller.DummyLighting
+namespace VixenModules.Output.DummyLighting
 {
 	internal class ThreeChannelColorDataPolicy : ControllerDataPolicy
 	{

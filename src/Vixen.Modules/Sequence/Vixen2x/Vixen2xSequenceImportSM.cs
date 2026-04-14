@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using Vixen.Sys;
-using VixenModules.Sequence.Timed;
-using System.Windows.Forms;
-using System.IO;
-using System.ComponentModel;
+﻿using Vixen.Sys;
 using Vixen.Services;
 using Vixen.Module.Effect;
 using VixenModules.App.Curves;
@@ -143,10 +137,10 @@ namespace VixenModules.SequenceType.Vixen2x
 			//			Logging.Info("Vixen2xSequenceImport::GenerateSetLevelEffect - Entry");
 
 			EffectNode effectNode = null;
-			IEffectModuleInstance setLevelInstance = null;
 
 			do
 			{
+				IEffectModuleInstance setLevelInstance;
 				if (null == (setLevelInstance = ApplicationServices.Get<IEffectModuleInstance>(Guid.Parse("32cff8e0-5b10-4466-a093-0d232c55aac0"))))
 				{
 					// could not get the structure
@@ -155,19 +149,14 @@ namespace VixenModules.SequenceType.Vixen2x
 				}
 
 				// Clone() Doesn't work! :(
-				setLevelInstance.TargetNodes = new ElementNode[] { targetNode };
+				setLevelInstance.TargetNodes = [targetNode];
 
 				// calculate how long the event lasts
 				setLevelInstance.TimeSpan = TimeSpan.FromMilliseconds(EventDuration * (endEvent - startEvent + 1));
 
 				// set the event and event starting time
-				if (null == (effectNode = new EffectNode(setLevelInstance, TimeSpan.FromMilliseconds(EventDuration * startEvent))))
-				{
-					// could not allocate the structure
-					Logging.Error("Vixen 2 import: Could not allocate an instance of EffectNode");
-					break;
-				}
-
+				effectNode = new EffectNode(setLevelInstance, TimeSpan.FromMilliseconds(EventDuration * startEvent));
+				
 				// set intensity and color
 				effectNode.Effect.ParameterValues = new object[] { (Convert.ToDouble(intensity) / Convert.ToDouble(byte.MaxValue)), v3color };
 			} while (false);
@@ -207,16 +196,11 @@ namespace VixenModules.SequenceType.Vixen2x
 				}
 				
 				// Clone() Doesn't work! :(
-				pulseInstance.TargetNodes = new ElementNode[] { targetNode };
+				pulseInstance.TargetNodes = [targetNode];
 				pulseInstance.TimeSpan = TimeSpan.FromMilliseconds(EventDuration * (endEvent - startEvent + 1));
 
-				if( null == (effectNode = new EffectNode(pulseInstance, TimeSpan.FromMilliseconds(EventDuration * startEvent))))
-				{
-					// could not allocate the structure
-					Logging.Error("Vixen 2 import: Could not allocate an instance of EffectNode");
-					break;
-				}
-
+				effectNode = new EffectNode(pulseInstance, TimeSpan.FromMilliseconds(EventDuration * startEvent));
+				
 				effectNode.Effect.ParameterValues = new Object[]
 				{
 					new Curve(new PointPairList(new double[] {startX, endX}, new double[] {getY(eventStartValue), getY(eventEndValue)})), new ColorGradient(v3color)

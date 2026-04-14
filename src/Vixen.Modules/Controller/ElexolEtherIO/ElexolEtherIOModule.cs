@@ -21,11 +21,6 @@ namespace VixenModules.Output.ElexolEtherIO
 		{
 			_commandHandler = new ElexolEtherIOCommandHandler();
 			DataPolicyFactory = new ElexolEtherIODataPolicyFactory();
-			
-			if (_data != null && _data.Port <= 0)
-			{
-				_data.Port = _remotePort;
-			}
 		}
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)

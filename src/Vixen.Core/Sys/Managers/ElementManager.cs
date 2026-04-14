@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using NLog;
 using Vixen.Data.Flow;
 using Vixen.Sys.Instrumentation;
 
@@ -13,7 +14,7 @@ namespace Vixen.Sys.Managers
 		private readonly MillisecondsValue _elementUpdateTimeValue = new MillisecondsValue("   Elements update");
 		private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 		private readonly ElementDataFlowAdapterFactory _dataFlowAdapters;
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		// a mapping of element  GUIDs to element instances. Used for quick reverse mapping at runtime.
 		//This was a ConcurrentDictionary for a while, but grabing an instance enumerator can be costly as it makes a read only copy

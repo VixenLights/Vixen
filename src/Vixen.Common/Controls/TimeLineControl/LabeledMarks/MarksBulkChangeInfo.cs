@@ -1,5 +1,4 @@
 ﻿using Vixen.Marks;
-using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {

@@ -20,11 +20,9 @@ namespace Common.Controls.TimelineControl
 			{
 				return instance;
 			}
-			else
-			{
-				instance = new TimeLineGlobalStateManager(id);
-				Instances.Add(id, instance);
-			}
+
+			instance = new TimeLineGlobalStateManager(id);
+			Instances.Add(id, instance);
 
 			return instance;
 		}

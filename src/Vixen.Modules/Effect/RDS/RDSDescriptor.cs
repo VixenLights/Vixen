@@ -47,7 +47,7 @@ namespace VixenModules.Effect.RDS {
 
 
 
-		public override Vixen.Sys.ParameterSignature Parameters {
+		public override ParameterSignature Parameters {
 			get
 			{
 				return new ParameterSignature(

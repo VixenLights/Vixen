@@ -74,9 +74,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("An ellipse is defined by a 2 points of a ellipse. This is point 1.")]
+		 Description("An ellipse is defined by a 2 points of a ellipse. This is point 1.")]
 		public Point TopLeft
 		{
 			get
@@ -93,9 +93,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("An ellipse is defined by a 2 points of a ellipse. This is point 2.")]
+		 Description("An ellipse is defined by a 2 points of a ellipse. This is point 2.")]
 		public Point BottomRight
 		{
 			get
@@ -112,9 +112,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in the ellipse.")]
+		 Description("Number of pixels or lights in the ellipse.")]
 		public int PixelCount
 		{
 			get { return Pixels.Count; }
@@ -251,7 +251,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			if (_selectedPoint == _bottomRight &&
-					System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)
+					Control.ModifierKeys == Keys.Control)
 			{
 				_bottomRight.Y = _topLeft.Y + (_bottomRight.X - _topLeft.X);
 			}

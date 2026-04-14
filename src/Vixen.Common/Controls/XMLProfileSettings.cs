@@ -13,10 +13,10 @@ namespace Common.Controls
 			try {
 				//documentPath = Application.UserAppDataPath + "\\settings.xml";
 				_documentPath =
-					System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "Vixen",
+					Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen",
 					                       "Settings.xml");
-				if( !System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(_documentPath)))
-					System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(_documentPath));
+				if( !Directory.Exists(Path.GetDirectoryName(_documentPath)))
+					Directory.CreateDirectory(Path.GetDirectoryName(_documentPath));
 				_xmlDocument.Load(_documentPath);
 			}
 			catch {

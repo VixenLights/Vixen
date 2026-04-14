@@ -2,11 +2,9 @@
 
 namespace Vixen.IO.Xml.Program
 {
-	using Vixen.Sys;
-
-	internal class ProgramXElementReader : IObjectContentReader<XElement, Program>
+	internal class ProgramXElementReader : IObjectContentReader<XElement, Sys.Program>
 	{
-		public XElement ReadContentFromObject(Program obj)
+		public XElement ReadContentFromObject(Sys.Program obj)
 		{
 			XElement content = new XElement("Program");
 			XmlRootAttributeVersion.SetVersion(content, ObjectVersion.Program);
@@ -17,8 +15,8 @@ namespace Vixen.IO.Xml.Program
 
 		object IObjectContentReader.ReadContentFromObject(object obj)
 		{
-			if (!(obj is Program)) throw new InvalidOperationException("Object must be a Program.");
-			return ReadContentFromObject((Program) obj);
+			if (!(obj is Sys.Program)) throw new InvalidOperationException("Object must be a Program.");
+			return ReadContentFromObject((Sys.Program) obj);
 		}
 	}
 }

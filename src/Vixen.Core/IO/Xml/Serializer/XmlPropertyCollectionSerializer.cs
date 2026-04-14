@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using NLog;
 using Vixen.Module.Property;
 using Vixen.Sys;
 
@@ -6,7 +7,7 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlPropertyCollectionSerializer : IXmlSerializer<IEnumerable<IPropertyModuleInstance>>
 	{
-		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger logging = LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_PROPERTIES = "Properties";
 		private const string ELEMENT_PROPERTY = "Property";

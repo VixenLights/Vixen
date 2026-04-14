@@ -19,7 +19,6 @@ using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Services;
 using ModelType = VixenModules.App.CustomPropEditor.Model.InternalVendorInventory.ModelType;
-using PropertyData = Catel.Data.PropertyData;
 using Catel.Data;
 using VixenModules.App.Modeling;
 

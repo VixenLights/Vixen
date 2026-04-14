@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.Drawing;
 using System.Reflection;
 using Vixen.Sys;
 using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
@@ -154,7 +150,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				item.SubItems[(int)mapperColumnId.v3Destination].Tag = enode;
 
 				// are we processing an RGB Pixel?
-				if(true == checkBoxRGB.Checked)
+				if(checkBoxRGB.Checked)
 				{
 					// use a fixed translation
 					// MessageBox.Show("m_defaultPixelColors.Count: '" + m_defaultPixelColors.Count + "' comboBoxColorOrder.SelectedText: '" + comboBoxColorOrder.SelectedItem.ToString() + "' i: " + i + "'", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);					
@@ -262,7 +258,7 @@ namespace VixenModules.SequenceType.Vixen2x
 					item.SubItems.Add(string.Empty);
 				}
 				// rgbPixel
-				if( true == mapping.RgbPixel )
+				if( mapping.RgbPixel )
 				{
 					item.SubItems.Add("Yes");
 				}
@@ -286,12 +282,11 @@ namespace VixenModules.SequenceType.Vixen2x
 		private void CreateV2toV3MappingTable()
 		{
 			//default these to white
-			Color vixen2Color = Color.Empty;
 
 			Mappings = new List<ChannelMapping>();
-			foreach (ListViewItem itemrow in listViewMapping.Items) 
+			foreach (ListViewItem itemrow in listViewMapping.Items)
 			{
-				vixen2Color = itemrow.SubItems[(int)mapperColumnId.v2channelColor].BackColor;
+				var vixen2Color = itemrow.SubItems[(int)mapperColumnId.v2channelColor].BackColor;
 
 				if (!String.IsNullOrEmpty(itemrow.SubItems[(int)mapperColumnId.v3Destination].Text)) 
 				{
@@ -329,7 +324,7 @@ namespace VixenModules.SequenceType.Vixen2x
 		/// <param name="e"></param>
 		private void checkBoxRGB_CheckedChanged(object sender, EventArgs e)
 		{
-			if(true == checkBoxRGB.Checked)
+			if(checkBoxRGB.Checked)
 			{
 				// disable the repeat counter and enter pixel mode
 				numericUpDownRepeatElements.Enabled = false;
@@ -362,7 +357,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				{
 					DialogResult result = MessageBox.Show("You are about to over write existing items.  Do you wish to continue?",
 					                                      "Continue", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-					if (result == System.Windows.Forms.DialogResult.OK) 
+					if (result == DialogResult.OK) 
 					{
 						startingIndex = dragToItem.Index;
 						ParseNodes(treeview.SelectedNodes);
@@ -406,7 +401,7 @@ namespace VixenModules.SequenceType.Vixen2x
 		{
 			if (String.IsNullOrEmpty(mappingNameTextBox.Text)) {
 				MessageBox.Show("Please enter name of Map.", "Missing Name", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop);
-				DialogResult = System.Windows.Forms.DialogResult.None;
+				DialogResult = DialogResult.None;
 			}
 			else {
 				CreateV2toV3MappingTable();

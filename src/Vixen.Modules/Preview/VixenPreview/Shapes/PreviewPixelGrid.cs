@@ -107,7 +107,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			int lastChildLightCount = -1;
 			childLightCount = -1;
-			if (selectedNode != null && selectedNode.Children != null) {
+			if (selectedNode != null) {
 				int parentStringCount = selectedNode.Children.ToList().Count;
 				// Selected node has to be a group!
 				if (!selectedNode.IsLeaf && parentStringCount >= 2) {
@@ -122,8 +122,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						else if (lastChildLightCount != childCount) {
 							return false;
 						}
-						lastChildLightCount = childCount;
-
+						
 						foreach (ElementNode child in parent.Children) {
 							// If there are sub-groups this is not a grid element!
 							if (!child.IsLeaf) {
@@ -188,9 +187,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		#region "Properties'
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Lights Per String"),
-		 DescriptionAttribute("The number of lights on each string of the Pixel Grid")]
+		 Description("The number of lights on each string of the Pixel Grid")]
 		public int LightsPerString
 		{
 			set
@@ -203,9 +202,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _lightsPerString; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String Count"),
-		 DescriptionAttribute("Number of strings on Pixel Grid")]
+		 Description("Number of strings on Pixel Grid")]
 		public int StringCount
 		{
 			set
@@ -275,9 +274,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
         }
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Lower right point of Pixel Grid.")]
+		 Description("Lower right point of Pixel Grid.")]
 		public Point BottomRight
 		{
 			get
@@ -318,9 +317,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Upper left point of Pixel Grid.")]
+		 Description("Upper left point of Pixel Grid.")]
 		public Point TopLeft
 		{
 			get
@@ -337,9 +336,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String Orientation"),
-		 DescriptionAttribute("Orientation of strings in pixel grid. Vertical is Up/Down, Horizontal is Left/Right")]
+		 Description("Orientation of strings in pixel grid. Vertical is Up/Down, Horizontal is Left/Right")]
 		public StringOrientations StringOrientation 
 		{ 
 			get 
@@ -412,7 +411,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					int width = _bottomRight.X - _topLeft.X;
 					int height = _bottomRight.Y - _topLeft.Y;
-					double stringXSpacing = (double)width / (double)(StringCount - 1);
+					double stringXSpacing = width / (double)(StringCount - 1);
 					double x = _topLeft.X;
 					int y = _topLeft.Y;
 					for (int stringNum = 0; stringNum < StringCount; stringNum++)
@@ -420,8 +419,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						PreviewLine line = _strings[stringNum] as PreviewLine;
 						var x1 = (int)Math.Round(x, MidpointRounding.AwayFromZero);
 
-						line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x1, y + height), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
-						line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x1, y), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+						line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x1, y + height), ZoomLevel).ToPoint();
+						line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x1, y), ZoomLevel).ToPoint();
 						line.ZoomLevel = 1;
 
 						line.Layout();
@@ -439,8 +438,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					{
 						PreviewLine line = _strings[stringNum] as PreviewLine;
 						var y1 = (int)Math.Round(y, MidpointRounding.AwayFromZero);
-						line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x, y1), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
-						line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint((x + width), y1), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+						line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(x, y1), ZoomLevel).ToPoint();
+						line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint((x + width), y1), ZoomLevel).ToPoint();
 						line.ZoomLevel = 1;
 
 						line.Layout();
@@ -548,7 +547,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-			PreviewPixelGrid newGrid = (PreviewPixelGrid) this.MemberwiseClone();
+			PreviewPixelGrid newGrid = (PreviewPixelGrid) MemberwiseClone();
 
 			newGrid._strings = new List<PreviewBaseShape>();
 			foreach (PreviewLightBaseShape line in _strings) {

@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,6 @@
 
 using System.Drawing.Drawing2D;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -184,7 +183,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -265,8 +264,8 @@ namespace ZedGraph
 		{
 			// Convert the arrow coordinates from the user coordinate system
 			// to the screen coordinate system
-			PointF pix1 = this.Location.TransformTopLeft(pane);
-			PointF pix2 = this.Location.TransformBottomRight(pane);
+			PointF pix1 = Location.TransformTopLeft(pane);
+			PointF pix2 = Location.TransformBottomRight(pane);
 
 			if (pix1.X > -10000 && pix1.X < 100000 && pix1.Y > -100000 && pix1.Y < 100000 &&
 			    pix2.X > -10000 && pix2.X < 100000 && pix2.Y > -100000 && pix2.Y < 100000) {

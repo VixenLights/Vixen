@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using Vixen.Extensions;
 using Vixen.Services;
+using VixenModules.App.Shows.Editors;
 
 namespace VixenModules.App.Shows
 {
@@ -99,7 +100,7 @@ namespace VixenModules.App.Shows
 		public Guid CurrentShowID { get; set; }
 
 		[NonSerialized]
-		TypeEditorBase currentEditor = null;
+		TypeEditorBase currentEditor;
 		public TypeEditorBase Editor
 		{
 			get
@@ -133,7 +134,7 @@ namespace VixenModules.App.Shows
 		public static bool diableShowAction;
 
 		[NonSerialized]
-		public Action currentAction = null;
+		public Action currentAction;
 		public Action GetAction()
 		{
 			if (currentAction == null)

@@ -1,4 +1,6 @@
-﻿namespace Vixen.Module.Preview
+﻿using Vixen.Sys;
+
+namespace Vixen.Module.Preview
 {
 	public abstract class PreviewModuleDescriptorBase : ModuleDescriptorBase, IPreviewModuleDescriptor,
 	                                                    IEqualityComparer<IPreviewModuleDescriptor>,
@@ -20,7 +22,7 @@
 
 		public virtual int UpdateInterval
 		{
-			get { return Vixen.Sys.VixenSystem.DefaultUpdateInterval; }
+			get { return VixenSystem.DefaultUpdateInterval; }
 		}
 
 		public bool Equals(IPreviewModuleDescriptor x, IPreviewModuleDescriptor y)
@@ -40,7 +42,7 @@
 
 		public bool Equals(PreviewModuleDescriptorBase x, PreviewModuleDescriptorBase y)
 		{
-			return Equals(x as IPreviewModuleDescriptor, y as IPreviewModuleDescriptor);
+			return Equals(x, y as IPreviewModuleDescriptor);
 		}
 
 		public int GetHashCode(PreviewModuleDescriptorBase obj)

@@ -2,10 +2,10 @@
 {
     public sealed class CSVWriter : ExportWriterBase
     {
-        private Int32 _seqNumChannels = 0;
+        private Int32 _seqNumChannels;
 
-        private FileStream _outfs = null;
-        private BinaryWriter _dataOut = null;
+        private FileStream _outfs;
+        private BinaryWriter _dataOut;
 
         public CSVWriter()
         {
@@ -52,7 +52,7 @@
                         _dataOut.Write(',');
                         _dataOut.Write(periodData[j].ToString("000").ToCharArray());
                     }
-                    _dataOut.Write(System.Environment.NewLine.ToCharArray());
+                    _dataOut.Write(Environment.NewLine.ToCharArray());
                 }
                 catch (Exception)
                 {

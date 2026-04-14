@@ -239,7 +239,7 @@ namespace VixenModules.Effect.Whirlpool
 			set
 			{
 				_whirlpoolMode = value;
-				UpdateWhirlModeConfigurationAttributes(true);
+				UpdateWhirlModeConfigurationAttributes();
 
 				// If the whirlpool mode is meteor then...
 				if (_whirlpoolMode == WhirlpoolMode.Meteor)
@@ -362,7 +362,7 @@ namespace VixenModules.Effect.Whirlpool
 			set
 			{
 				_thickness = value;
-				UpdateThicknessAttributes(true);
+				UpdateThicknessAttributes();
 				OnPropertyChanged();
 			}
 		}
@@ -417,7 +417,7 @@ namespace VixenModules.Effect.Whirlpool
 			set
 			{
 				_colorMode = value;
-				UpdateColorModeAttribute(true);
+				UpdateColorModeAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -1957,7 +1957,7 @@ namespace VixenModules.Effect.Whirlpool
 				if (WhirlMode == WhirlpoolMode.Meteor && !leadingEdge)
 				{
 					// Draw the pixels that make up one row of the side	
-					totalNumberOfPixelsRemaining = DrawSidePixels(
+					DrawSidePixels(
 						frameBuffer,
 						side,
 						x,
@@ -1973,7 +1973,7 @@ namespace VixenModules.Effect.Whirlpool
 				}
 				else
 				{
-					int numOfPixels = 0;
+					int numOfPixels;
 
 					// If drawing the tail then...
 					if (_drawingTail)
@@ -1991,7 +1991,7 @@ namespace VixenModules.Effect.Whirlpool
 					numOfPixels = Math.Min(numberOfPixels, numOfPixels);
 
 					// Draw the pixels that make up one row of the side	
-					totalNumberOfPixelsRemaining = DrawSidePixels(
+					DrawSidePixels(
 						frameBuffer,
 						side,
 						x,

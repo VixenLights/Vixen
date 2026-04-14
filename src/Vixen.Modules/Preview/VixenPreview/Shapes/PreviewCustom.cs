@@ -57,9 +57,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Position"),
-		 DescriptionAttribute("Top, left position of this custom object.")]
+		 Description("Top, left position of this custom object.")]
 		public Point TopLeft
 		{
 			get
@@ -181,7 +181,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// See if we're resizing
 			if (_selectedPoint != null)
 			{
-				double aspect = ((double) startWidth + (double) changeX)/(double) startWidth;
+				double aspect = (startWidth + changeX)/(double) startWidth;
 				//Resize(aspect);
                 foreach (PreviewLightBaseShape shape in Strings)
                 {
@@ -213,7 +213,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override void SetSelectPoint(PreviewPoint point)
 		{
 			foreach (PreviewLightBaseShape shape in Strings) {
-				shape.SetSelectPoint(null);
+				shape.SetSelectPoint();
 			}
 			topLeftStart = new PreviewPoint(_topLeft.X, _topLeft.Y);
 			startWidth = BottomRight.X - TopLeft.X;

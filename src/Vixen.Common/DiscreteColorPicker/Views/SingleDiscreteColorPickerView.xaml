@@ -7,6 +7,7 @@
                                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                                    xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                                    xmlns:views="clr-namespace:Common.DiscreteColorPicker.Views"
+                                   xmlns:viewModels="clr-namespace:Common.DiscreteColorPicker.ViewModels"
                                    mc:Ignorable="d"
                                    Title="Select Color"
                                    WindowStartupLocation="CenterScreen">
@@ -41,7 +42,7 @@
 				</Style>
 			</ListBox.ItemContainerStyle>
 			<ListBox.ItemTemplate>
-				<DataTemplate>
+				<DataTemplate DataType="{x:Type viewModels:ColorItem}">
 					<StackPanel Orientation="Horizontal" Margin="5,5,5,5">
 						<Rectangle Width="50" Height="50"  Fill="{Binding ItemColor, Converter={StaticResource ColorToSolidBrushConverter}}"/>
 					</StackPanel>

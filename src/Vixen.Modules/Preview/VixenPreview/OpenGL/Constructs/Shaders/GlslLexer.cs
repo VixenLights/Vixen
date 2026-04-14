@@ -67,15 +67,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
                     if (text.Contains("'s")) text = text.Substring(0, text.IndexOf('s')) + text.Substring(text.IndexOf('s') + 1);
                 }
 
-                this.Text = text;
-                this.LineNumber = lineNumber;
-                this.Offset = offset;
-                this.TokenType = type;
+                Text = text;
+                LineNumber = lineNumber;
+                Offset = offset;
+                TokenType = type;
             }
 
             public void SetText(string text)
             {
-                this.Text = text;
+                Text = text;
             }
 
             public override string ToString()
@@ -119,9 +119,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
             public Line(string text, int lineNumber, bool comment = false)
             {
-                this.Text = text;
-                this.LineNumber = lineNumber;
-                this.Comment = comment;
+                Text = text;
+                LineNumber = lineNumber;
+                Comment = comment;
             }
 
             public override string ToString()
@@ -230,7 +230,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
         public static List<Line> GetLines(string filename)
         {
             using (StreamReader stream = new StreamReader(filename))
-                return GetLinesFromMemory(stream.ReadToEnd(), filename);
+                return GetLinesFromMemory(stream.ReadToEnd());
         }
 
         /// <summary>
@@ -239,20 +239,21 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
         /// <param name="fileContents">A string containing the GLSL program.</param>
         /// <param name="filename">An optional filename to associate with the provided GLSL program.</param>
         /// <returns>A list of lines that make up the GLSL program.</returns>
-        public static List<Line> GetLinesFromMemory(string fileContents, string filename = "")
+        public static List<Line> GetLinesFromMemory(string fileContents)
         {
-            return GetLinesFromMemoryInternal(fileContents, filename);
+            return GetLinesFromMemoryInternal(fileContents);
         }
 
-        private static List<Line> GetLinesFromMemoryInternal(string fileContents, string filename = "")
+        private static List<Line> GetLinesFromMemoryInternal(string fileContents)
         {
             List<Line> lines = new List<Line>();
             int lineNumber = 0;
 
             using (StringReader stream = new StringReader(fileContents))
             {
-                bool comment = false, remove = false;
-                string temp = "";
+	            bool comment = false;
+	            //bool remove = false; //The remove field was never set, so this did nothing. Commenting in case a use arises.
+                string temp;
 
                 while ((temp = stream.ReadLine()) != null)
                 {
@@ -273,7 +274,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
                         if (index != -1)
                         {
-                            if (!remove) lines.Add(new Line(temp.Substring(index + 2), lineNumber, true));
+                            //if (!remove) lines.Add(new Line(temp.Substring(index + 2), lineNumber, true));
                             temp = temp.Substring(0, index);
                         }
                     }
@@ -299,10 +300,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
                         }
                     }
 
-                    if (!remove)
-                    {
-                        if (line.Length > 0) lines.Add(new Line(line, lineNumber));
-                    }
+                    // if (!remove)
+                    // {
+                    //     if (line.Length > 0) lines.Add(new Line(line, lineNumber));
+                    // }
                 }
             }
 

@@ -1,8 +1,9 @@
 ﻿using Vixen.Data.Value;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Interpolator
 {
-	[Vixen.Sys.Attribute.Interpolator(typeof (RGBValue))]
+	[Interpolator(typeof (RGBValue))]
 	internal class RGBValueInterpolator : Interpolator<RGBValue>
 	{
 		protected override RGBValue InterpolateValue(double percent, RGBValue startValue, RGBValue endValue)

@@ -3,7 +3,6 @@ using Common.Controls.Theme;
 using QMLibrary;
 using System.ComponentModel;
 using Vixen.Marks;
-using VixenModules.Analysis.BeatsAndBars.Properties;
 using VixenModules.Media.Audio;
 
 namespace VixenModules.Analysis.BeatsAndBars
@@ -11,7 +10,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 	
 	public partial class BeatsAndBarsDialog : BaseForm
 	{
-		private ToolTip m_toolTip;
 		private static BeatBarSettingsData m_settingsData = null;
 		private bool m_allowUpdates;
 		private BeatBarPreviewData m_previewData;
@@ -31,22 +29,22 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			m_allowUpdates = false;
 
-			m_toolTip = new ToolTip();
-			m_toolTip.AutoPopDelay = 5000;
-			m_toolTip.InitialDelay = 500;
-			m_toolTip.ReshowDelay = 500;
-			m_toolTip.ShowAlways = true;
-			m_toolTip.Active = true;
+			var mToolTip = new ToolTip();
+			mToolTip.AutoPopDelay = 5000;
+			mToolTip.InitialDelay = 500;
+			mToolTip.ReshowDelay = 500;
+			mToolTip.ShowAlways = true;
+			mToolTip.Active = true;
 
-			m_toolTip.SetToolTip(AllFeaturesCB, "Single Collection containing all features");
-			m_toolTip.SetToolTip(BarsCB, "Single Collection containing starting location of each measure/bar");
-			m_toolTip.SetToolTip(BeatCountsCB, "Generates a beat collection for each beat count");
-			m_toolTip.SetToolTip(BeatSplitsCB, "Generates a beat collection for each beat count and each beat count split");
-			m_toolTip.SetToolTip(BeatsNameTB, "Base name of each collection");
-			m_toolTip.SetToolTip(AllColorPanel, "Color of All Features Collection");
-			m_toolTip.SetToolTip(BarsColorPanel, "Color of Bars Collection");
-			m_toolTip.SetToolTip(BeatCountsColorPanel, "Color of Beat Counts Collection");
-			m_toolTip.SetToolTip(BeatSplitsColorPanel, "Color of Beat Splits Collection");
+			mToolTip.SetToolTip(AllFeaturesCB, "Single Collection containing all features");
+			mToolTip.SetToolTip(BarsCB, "Single Collection containing starting location of each measure/bar");
+			mToolTip.SetToolTip(BeatCountsCB, "Generates a beat collection for each beat count");
+			mToolTip.SetToolTip(BeatSplitsCB, "Generates a beat collection for each beat count and each beat count split");
+			mToolTip.SetToolTip(BeatsNameTB, "Base name of each collection");
+			mToolTip.SetToolTip(AllColorPanel, "Color of All Features Collection");
+			mToolTip.SetToolTip(BarsColorPanel, "Color of Bars Collection");
+			mToolTip.SetToolTip(BeatCountsColorPanel, "Color of Beat Counts Collection");
+			mToolTip.SetToolTip(BeatSplitsColorPanel, "Color of Beat Splits Collection");
 
 			m_settingsData = m_settingsData ?? new BeatBarSettingsData("Beats");
 

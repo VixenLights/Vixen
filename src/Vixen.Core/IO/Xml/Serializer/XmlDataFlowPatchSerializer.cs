@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using NLog;
 using Vixen.Data.Flow;
 using Vixen.Sys;
 
@@ -6,7 +7,7 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlDataFlowPatchSerializer : IXmlSerializer<DataFlowPatch>
 	{
-		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger logging = LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_PATCH = "Patch";
 		private const string ATTR_COMPONENT_ID = "componentId";

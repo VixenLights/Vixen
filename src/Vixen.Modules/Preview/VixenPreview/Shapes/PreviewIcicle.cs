@@ -75,9 +75,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-        [CategoryAttribute("Settings"),
+        [Category("Settings"),
          DisplayName("Vertical Spacing"),
-         DescriptionAttribute("This is the spacing between each light in a vertical icicle strand.")]
+         Description("This is the spacing between each light in a vertical icicle strand.")]
         public int VerticalSpacing
         {
             get
@@ -92,9 +92,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 1"),
-		 DescriptionAttribute("Icicles are defined by 2 points. This is point 1.")]
+		 Description("Icicles are defined by 2 points. This is point 1.")]
 		public Point Point1
 		{
 			get
@@ -111,9 +111,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 2"),
-		 DescriptionAttribute("Icicles are defined by 2 points. This is point 2.")]
+		 Description("Icicles are defined by 2 points. This is point 2.")]
 		public Point Point2
 		{
 			get
@@ -130,9 +130,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-        [CategoryAttribute("Settings"),
+        [Category("Settings"),
          DisplayName("Icicle Count"),
-         DescriptionAttribute("Number of icicles in the string.")]
+         Description("Number of icicles in the string.")]
         public int StringCount
         {
             set
@@ -171,7 +171,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 
         [Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
-         CategoryAttribute("Settings"),
+         Category("Settings"),
          DisplayName("Linked Elements")]
         public override List<PreviewLightBaseShape> Strings
         {
@@ -292,8 +292,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_points != null && _points.Count > 0)
 			{
-				double xSpacing = (double)(_points[0].X - _points[1].X) / (double)(StringCount - 1);
-				double ySpacing = (double)(_points[0].Y - _points[1].Y) / (double)(StringCount - 1);
+				double xSpacing = (_points[0].X - _points[1].X) / (double)(StringCount - 1);
+				double ySpacing = (_points[0].Y - _points[1].Y) / (double)(StringCount - 1);
 				double x = _points[0].X;
 				double y = _points[0].Y;
 				foreach (PreviewLine line in Strings)
@@ -302,8 +302,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					line.Point1 = new Point((int)Math.Round(x), (int)Math.Round(y));
                     line.Point2 = new Point((int)Math.Round(x), (int)Math.Round(y) + lineLength);
 
-					line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point1), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
-					line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point2), ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+					line.Point1 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point1), ZoomLevel).ToPoint();
+					line.Point2 = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(line.Point2), ZoomLevel).ToPoint();
 					line.ZoomLevel = 1;
 
 					x -= xSpacing;
@@ -355,7 +355,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			base.MouseMove(x, y, changeX, changeY);
 		}
 
-        public override void MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        public override void MouseUp(object sender, MouseEventArgs e)
         {
             base.MouseUp(sender, e);
             creating = false;
@@ -411,7 +411,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-            PreviewIcicle newIcicle = (PreviewIcicle)this.MemberwiseClone();
+            PreviewIcicle newIcicle = (PreviewIcicle)MemberwiseClone();
 
 			newIcicle._points = new List<PreviewPoint>();
 

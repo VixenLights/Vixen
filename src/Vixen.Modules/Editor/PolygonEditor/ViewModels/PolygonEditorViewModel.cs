@@ -2363,33 +2363,6 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		}
 
 		/// <summary>
-		/// Sorts the snapshots by the associated time.
-		/// </summary>
-		/// <typeparam name="T">Type of shape</typeparam>
-		/// <param name="shapes">Colletion of shapes to sort</param>
-		/// <param name="times">Times associated with the shapes</param>
-		private void SortSnapshots<T>(IList<T> shapes, IList<double> times)
-				where T : Shape
-		{
-			// Create a data structure to associate the shape with its normalized time
-			List<Tuple<T, double>> timedLines = new List<Tuple<T, double>>();
-
-			// Loop over the shapes
-			for (int index = 0; index < shapes.Count; index++)
-			{
-				// Create a shape/time tuple
-				timedLines.Add(new Tuple<T, double>(shapes[index], times[index]));
-			}
-
-			// Sort the tuples by the time
-			List<Tuple<T, double>> sortedShapes = timedLines.OrderBy(shapeTuple => shapeTuple.Item2).ToList();
-
-			// Break down the tuples into the shapes and the times
-			shapes = sortedShapes.Select(tuple => tuple.Item1).ToList();
-			times = sortedShapes.Select(tuple => tuple.Item2).ToList();
-		}
-
-		/// <summary>
 		/// Ensure the point is on the drawing canvas.
 		/// </summary>
 		/// <param name="position">Polygon point to update</param>
@@ -3527,7 +3500,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		private bool ConvertToEllipseEnabled()
 		{
 			// Default to NOT enabling the command
-			bool convertToEllipseEnabled = false;
+			bool convertToEllipseEnabled;
 
 			// If the editor is configured to allow multiple shapes then...
 			if (EditorCapabilities.AllowMultipleShapes)
@@ -3554,7 +3527,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		private bool ConvertToPolygonEnabled()
 		{
 			// Default to NOT enabling the command
-			bool convertToPolygonEnabled = false;
+			bool convertToPolygonEnabled;
 
 			// If the editor is configured to allow multiple shapes then...
 			if (EditorCapabilities.AllowMultipleShapes)
@@ -3581,7 +3554,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 		private bool ConvertToLineEnabled()
 		{
 			// Default to NOT enabling the command
-			bool convertToLineEnabled = false;
+			bool convertToLineEnabled;
 
 			// If the editor is configured to allow multiple shapes then...
 			if (EditorCapabilities.AllowMultipleShapes)
@@ -3688,10 +3661,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
 			{
 				using (var resReader = new System.Resources.ResourceReader(stream))
 				{
-					string dataType = null;
-					byte[] data = null;
-
-					resReader.GetResourceData(path.ToLower(), out dataType, out data);
+					resReader.GetResourceData(path.ToLower(), out var dataType, out var data);
 
 					if (data != null)
 					{

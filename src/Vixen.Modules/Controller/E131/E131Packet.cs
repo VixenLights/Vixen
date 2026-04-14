@@ -16,26 +16,26 @@
 		public E131Packet(
 			Guid guid, string source, byte sequence, ushort universe, byte[] values, int offset, int slots, int priority, bool blind)
 		{
-			this.E131DeviceManagementProtocol = new E131DeviceManagementProtocol(values, offset, slots);
-			this.E131Framing = new E131Framing(
-				(ushort) (E131Framing.PHYBUFFER_SIZE + this.E131DeviceManagementProtocol.Length), source, sequence, universe, priority, blind);
-			this.E131Root = new E131Root((ushort) (E131Root.PDU_SIZE + this.E131Framing.Length), guid);
+			E131DeviceManagementProtocol = new E131DeviceManagementProtocol(values, offset, slots);
+			E131Framing = new E131Framing(
+				(ushort) (E131Framing.PHYBUFFER_SIZE + E131DeviceManagementProtocol.Length), source, sequence, universe, priority, blind);
+			E131Root = new E131Root((ushort) (E131Root.PDU_SIZE + E131Framing.Length), guid);
 		}
 
 		public E131Packet(byte[] bfr)
 		{
-			this.SetBuffer(bfr);
+			SetBuffer(bfr);
 		}
 
 		public override byte[] PhyBuffer
 		{
 			get
 			{
-				var bfr = new byte[this.PhyLength];
+				var bfr = new byte[PhyLength];
 
-				this.E131Root.ToBuffer(bfr, ROOT_OFFSET);
-				this.E131Framing.ToBfr(bfr, FRAMING_OFFSET);
-				this.E131DeviceManagementProtocol.ToBfr(bfr, DMP_OFFSET);
+				E131Root.ToBuffer(bfr, ROOT_OFFSET);
+				E131Framing.ToBfr(bfr, FRAMING_OFFSET);
+				E131DeviceManagementProtocol.ToBfr(bfr, DMP_OFFSET);
 
 				return bfr;
 			}
@@ -47,18 +47,18 @@
 					return;
 				}
 
-				this.E131Root = new E131Root(value, ROOT_OFFSET);
-				if (this.E131Root.IsMalformed) {
+				E131Root = new E131Root(value, ROOT_OFFSET);
+				if (E131Root.IsMalformed) {
 					return;
 				}
 
-				this.E131Framing = new E131Framing(value, FRAMING_OFFSET);
-				if (this.E131Root.IsMalformed) {
+				E131Framing = new E131Framing(value, FRAMING_OFFSET);
+				if (E131Root.IsMalformed) {
 					return;
 				}
 
-				this.E131DeviceManagementProtocol = new E131DeviceManagementProtocol(value, DMP_OFFSET);
-				if (this.E131DeviceManagementProtocol.Malformed) {
+				E131DeviceManagementProtocol = new E131DeviceManagementProtocol(value, DMP_OFFSET);
+				if (E131DeviceManagementProtocol.Malformed) {
 					return;
 				}
 			}
@@ -66,7 +66,7 @@
 
 		public ushort PhyLength
 		{
-			get { return (ushort) (E131Root.PHYBUFFER_SIZE + this.E131Framing.Length); }
+			get { return (ushort) (E131Root.PHYBUFFER_SIZE + E131Framing.Length); }
 		}
 
 		public E131DeviceManagementProtocol E131DeviceManagementProtocol { get; set; }
@@ -117,7 +117,7 @@
 
 		private void SetBuffer(byte[] bfr)
 		{
-			this.PhyBuffer = bfr;
+			PhyBuffer = bfr;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Vixen.Execution.DataSource;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Execution.Context
@@ -18,21 +19,21 @@ namespace Vixen.Execution.Context
 			get { return _dataSource; }
 		}
 
-		protected override void OnSequenceStarted(Sys.SequenceStartedEventArgs e)
+		protected override void OnSequenceStarted(SequenceStartedEventArgs e)
 		{
 			_dataSource.Sequence = Sequence;
 			_dataSource.Start();
 			base.OnSequenceStarted(e);
 		}
 
-		protected override void OnSequenceReStarted(Sys.SequenceStartedEventArgs e)
+		protected override void OnSequenceReStarted(SequenceStartedEventArgs e)
 		{
 			_dataSource.Stop();
 			_dataSource.Start();
 			base.OnSequenceReStarted(e);
 		}
 
-		protected override void OnSequenceEnded(Sys.SequenceEventArgs e)
+		protected override void OnSequenceEnded(SequenceEventArgs e)
 		{
 			_dataSource.Stop();
 			base.OnSequenceEnded(e);

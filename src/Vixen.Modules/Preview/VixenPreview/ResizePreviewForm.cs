@@ -1,6 +1,5 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -41,7 +40,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			_newWidth = (int) numericWidth.Value;
 			_newHeight = (int) numericHeight.Value;
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			DialogResult = DialogResult.OK;
 		}
 
 		private void ResizePreviewForm_Load(object sender, EventArgs e)
@@ -82,8 +81,8 @@ namespace VixenModules.Preview.VixenPreview
         {
             if (numericHeight.Value < 10) numericHeight.Value = 10;
             if (_lockAspect) { 
-                double aspect = (double)numericWidth.Value / (double)_origWidth;
-                numericHeight.Value = (int)((double)_origHeight * aspect);
+                double aspect = (double)numericWidth.Value / _origWidth;
+                numericHeight.Value = (int)(_origHeight * aspect);
             }
         }
 	}

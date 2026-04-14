@@ -1,11 +1,13 @@
-﻿namespace VixenModules.App.Shows
+﻿using System.ComponentModel;
+
+namespace VixenModules.App.Shows.Editors
 {
 	partial class LaunchTypeEditor
 	{
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary> 
 		/// Clean up any resources being used.
@@ -168,16 +170,16 @@
 
 		#endregion
 
-		private System.Windows.Forms.Button buttonSelectProgram;
-		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.TextBox textBoxProgram;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.OpenFileDialog openFileDialog;
-		private System.Windows.Forms.TextBox textBoxCommandLine;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button buttonTest;
-		private System.Windows.Forms.CheckBox checkBoxShowCommandWindow;
-		private System.Windows.Forms.CheckBox checkBoxWaitForExit;
-		private System.Windows.Forms.Panel panel1;
+		private Button buttonSelectProgram;
+		private ToolTip toolTip1;
+		private TextBox textBoxProgram;
+		private Label label1;
+		private OpenFileDialog openFileDialog;
+		private TextBox textBoxCommandLine;
+		private Label label2;
+		private Button buttonTest;
+		private CheckBox checkBoxShowCommandWindow;
+		private CheckBox checkBoxWaitForExit;
+		private Panel panel1;
 	}
 }

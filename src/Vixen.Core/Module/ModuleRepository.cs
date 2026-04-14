@@ -14,13 +14,13 @@ namespace Vixen.Module
 			MethodInfo mi;
 			foreach (ModuleImplementation moduleImplemenation in moduleImplemenations) {
 				obj = moduleImplemenation.GetType().GetProperty("Repository").GetValue(moduleImplemenation, null);
-				mi = obj.GetType().GetMethod("Add", new Type[] {typeof (Guid)});
+				mi = obj.GetType().GetMethod("Add", new[] {typeof (Guid)});
 				_methods.Add("Add" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
-				mi = obj.GetType().GetMethod("Get", new Type[] {typeof (Guid)});
+				mi = obj.GetType().GetMethod("Get", new[] {typeof (Guid)});
 				_methods.Add("Get" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
 				mi = obj.GetType().GetMethod("GetAll");
 				_methods.Add("GetAll" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
-				mi = obj.GetType().GetMethod("Remove", new Type[] {typeof (Guid)});
+				mi = obj.GetType().GetMethod("Remove", new[] {typeof (Guid)});
 				_methods.Add("Remove" + moduleImplemenation.TypeOfModule,
 				             new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
 			}

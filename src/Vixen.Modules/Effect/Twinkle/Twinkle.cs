@@ -704,7 +704,7 @@ namespace VixenModules.Effect.Twinkle
 
 		private List<IElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<IElementNode> renderNodes = null;
+			IEnumerable<IElementNode> renderNodes;
 
 			if (DepthOfEffect == 0 || !IndividualElements) {
 				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();

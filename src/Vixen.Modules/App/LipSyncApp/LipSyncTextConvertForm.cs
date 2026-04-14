@@ -31,8 +31,7 @@ namespace VixenModules.App.LipSyncApp
 		private List<string> CreateSubstringList()
 		{
 			List<string> retVal = new List<string>();
-			string[] linesToConvert = new string[] {};
-			string cleanLine = "";
+			string[] linesToConvert;
 			if (textBox.SelectionLength > 0 )
 			{
 				linesToConvert = textBox.SelectedText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
@@ -43,7 +42,7 @@ namespace VixenModules.App.LipSyncApp
 			}
 			foreach (string line in linesToConvert)
 			{
-				cleanLine = LipSyncTextConvert.RemovePunctuation(line); //Remove punctuation marks as these always fail to match words
+				var cleanLine = LipSyncTextConvert.RemovePunctuation(line);
 				if ((alignCombo.SelectedIndex == -1) || !(alignCombo.SelectedItem.Equals("Phrase")))
 				{
 					retVal.AddRange(cleanLine.Split());
@@ -168,7 +167,7 @@ namespace VixenModules.App.LipSyncApp
 
 					foreach (PhonemeType phoneme in phonemeList)
 					{
-						if (doPhonemeAlign == true)
+						if (doPhonemeAlign)
 						{
 							timing = CalcPhonemeTimespans(selMC, mcIndex++, 1);
 							phonemeIndex = 0;

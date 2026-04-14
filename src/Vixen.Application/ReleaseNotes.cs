@@ -1,6 +1,5 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using Vixen.Sys;
 
 namespace VixenApplication

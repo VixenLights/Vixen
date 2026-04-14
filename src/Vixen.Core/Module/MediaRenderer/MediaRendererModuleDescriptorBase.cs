@@ -37,7 +37,7 @@
 
 		public bool Equals(MediaRendererModuleDescriptorBase x, MediaRendererModuleDescriptorBase y)
 		{
-			return Equals(x as IMediaRendererModuleDescriptor, y as IMediaRendererModuleDescriptor);
+			return Equals(x, y as IMediaRendererModuleDescriptor);
 		}
 
 		public int GetHashCode(MediaRendererModuleDescriptorBase obj)

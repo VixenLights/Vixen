@@ -35,7 +35,7 @@
 
 		public bool Equals(PropertyModuleDescriptorBase x, PropertyModuleDescriptorBase y)
 		{
-			return Equals(x as IPropertyModuleDescriptor, y as IPropertyModuleDescriptor);
+			return Equals(x, y as IPropertyModuleDescriptor);
 		}
 
 		public int GetHashCode(PropertyModuleDescriptorBase obj)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections;
+using System.Collections.Concurrent;
 using Vixen.Sys.Enumerator;
 
 namespace Vixen.Sys
@@ -31,7 +32,7 @@ namespace Vixen.Sys
 			return new ConcurrentQueueLiveEnumerator<IDataNode>(_data);
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

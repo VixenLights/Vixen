@@ -1,7 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
-using System.Reflection;
 
 namespace Vixen.Sys
 {
@@ -75,7 +74,7 @@ namespace Vixen.Sys
 
 		public static Type GetAttributedInterface(this Type type, Type attributeType)
 		{
-			return GetAttributedInterfaces(type, attributeType).FirstOrDefault();
+			return type.GetAttributedInterfaces(attributeType).FirstOrDefault();
 		}
 
 		public static IEnumerable<Type> GetAttributedTypes(this Assembly assembly, Type attributeType)
@@ -173,7 +172,7 @@ namespace Vixen.Sys
 		public static T[] SubArray<T>(this T[] data, int index)
 		{
 			int length = data.Length - index;
-			return SubArray(data, index, length);
+			return data.SubArray(index, length);
 		}
 
 		/// <summary>

@@ -405,7 +405,7 @@ namespace VixenModules.Effect.SnowStorm
 					switch (ColorType)
 					{
 						case SnowStormColorType.RainBow: //No user colors are used for Rainbow effect.
-							it.Hsv.H = (float)(Rand() % 1000) / 1000.0f;
+							it.Hsv.H = Rand() % 1000 / 1000.0f;
 							it.Hsv.S = 1.0f;
 							it.Hsv.V = 1.0f;
 							break;

@@ -74,20 +74,20 @@ namespace Common.Controls
 		private void listBoxItems_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (listBoxItems.SelectedIndex >= 0) {
-				this.DialogResult = DialogResult.OK;
-				this.Close();
+				DialogResult = DialogResult.OK;
+				Close();
 			}
 		}
 
 		private void ListSelectDialog_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (e.KeyChar == (char) Keys.Enter && listBoxItems.SelectedIndex >= 0) {
-				this.DialogResult = DialogResult.OK;
-				this.Close();
+				DialogResult = DialogResult.OK;
+				Close();
 			}
 			else if (e.KeyChar == (char) Keys.Escape) {
-				this.DialogResult = DialogResult.Cancel;
-				this.Close();
+				DialogResult = DialogResult.Cancel;
+				Close();
 			}
 		}
 	}

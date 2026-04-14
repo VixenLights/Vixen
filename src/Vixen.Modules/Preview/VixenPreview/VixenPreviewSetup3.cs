@@ -47,7 +47,7 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (_data == null) {
 					Logging.Warn("VixenPreviewSetup3: access of null Data. (Thread ID: " +
-					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+					                            Thread.CurrentThread.ManagedThreadId + ")");
 				}
 				return _data;
 			}
@@ -98,7 +98,7 @@ namespace VixenModules.Preview.VixenPreview
 			var theme = new VS2015DarkTheme();
 			dockPanel.Theme = theme;
 
-			this.ShowInTaskbar = false;
+			ShowInTaskbar = false;
 
 			undoToolStripMenuItem.Enabled = false;
 			redoToolStripMenuItem.Enabled = false;
@@ -125,9 +125,9 @@ namespace VixenModules.Preview.VixenPreview
 			elementsForm = new VixenPreviewSetupElementsDocument(previewForm.Preview);
 			propertiesForm = new VixenPreviewSetupPropertiesDocument(previewForm.Preview);
 
-			previewForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
-			elementsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
-			propertiesForm.Show(elementsForm.Pane, WeifenLuo.WinFormsUI.Docking.DockAlignment.Bottom, 0.5);
+			previewForm.Show(dockPanel, DockState.Document);
+			elementsForm.Show(dockPanel, DockState.DockLeft);
+			propertiesForm.Show(elementsForm.Pane, DockAlignment.Bottom, 0.5);
 
 			previewForm.Preview.elementsForm = elementsForm;
 			previewForm.Preview.propertiesForm = propertiesForm;
@@ -278,11 +278,11 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
+		private void OnDeSelectDisplayItem(object sender, DisplayItem displayItem) {
 			propertiesForm.ClearSetupControl();
 		}
 
-		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
+		private void OnSelectDisplayItem(object sender, DisplayItem displayItem) {
 
 			if (propertiesForm.SetupPreviewShape() != displayItem.Shape)
 			{
@@ -320,7 +320,7 @@ namespace VixenModules.Preview.VixenPreview
 			else if (previewForm.Preview.SelectedDisplayItems.Any())
 			{
 				// If any selected prop is locked, then show "Unlock"
-				if (previewForm.Preview.SelectedDisplayItems.FindIndex(x => x.Shape.Locked == true) >= 0)
+				if (previewForm.Preview.SelectedDisplayItems.FindIndex(x => x.Shape.Locked) >= 0)
 					btnUnlock.Enabled = unlockToolStripMenuItem.Enabled = true;
 				// If any selected prop is unlocked, then show "Lock"
 				if (previewForm.Preview.SelectedDisplayItems.FindIndex(x => x.Shape.Locked == false) >= 0)
@@ -328,7 +328,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			
 			// If any prop is locked, then show "Unlock All"
-			if (previewForm.Preview.DisplayItems.FindIndex(x => x.Shape.Locked == true) >= 0)
+			if (previewForm.Preview.DisplayItems.FindIndex(x => x.Shape.Locked) >= 0)
 				btnUnlockAll.Enabled = unlockAllToolStripMenuItem.Enabled = true;
 
 			var multiSelect = previewForm.Preview.SelectedDisplayItems.Count > 1;
@@ -603,8 +603,6 @@ namespace VixenModules.Preview.VixenPreview
 		/// </summary>
 		private void CheckForIntelligentFixturesAndOpenGL()
 		{
-			bool continueToExit = true;
-
 			// If the OpenGL preview is NOT selected and
 			// there are Intelligent Fixtures then...
 			if (!Data.UseOpenGL &&
@@ -655,7 +653,7 @@ namespace VixenModules.Preview.VixenPreview
 	    private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
 			if (Data == null) {
 				Logging.Warn("VixenPreviewSetup3_Move: Data is null. abandoning move. (Thread ID: " +
-											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+											Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
 
@@ -666,7 +664,7 @@ namespace VixenModules.Preview.VixenPreview
 		private void VixenPreviewSetup3_Resize(object sender, EventArgs e) {
 			if (Data == null) {
 				Logging.Warn("VixenPreviewSetup3_Resize: Data is null. abandoning resize. (Thread ID: " +
-											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+											Thread.CurrentThread.ManagedThreadId + ")");
 				return;
 			}
 
@@ -698,7 +696,7 @@ namespace VixenModules.Preview.VixenPreview
 			ResizePreviewForm resizeForm = new ResizePreviewForm(previewForm.Preview.Background.Width,
 																 previewForm.Preview.Background.Height,
 																 true);
-			if (resizeForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (resizeForm.ShowDialog() == DialogResult.OK) {
                 if (resizeForm.Height > 10 && resizeForm.Width > 10)
                 {
 					// If the background is NOT blank then...

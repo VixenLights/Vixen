@@ -20,7 +20,6 @@
 #region Using directives
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 #endregion
 
@@ -51,7 +50,7 @@ namespace ZedGraph
 		public PaneList(PaneList rhs)
 		{
 			foreach (GraphPane item in rhs) {
-				this.Add(item.Clone());
+				Add(item.Clone());
 			}
 		}
 
@@ -62,7 +61,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>

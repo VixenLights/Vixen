@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ namespace ZedGraph
 		public ScaleStateList(YAxisList list)
 		{
 			foreach (Axis axis in list)
-				this.Add(new ScaleState(axis));
+				Add(new ScaleState(axis));
 		}
 
 		/// <summary>
@@ -53,7 +53,7 @@ namespace ZedGraph
 		public ScaleStateList(Y2AxisList list)
 		{
 			foreach (Axis axis in list)
-				this.Add(new ScaleState(axis));
+				Add(new ScaleState(axis));
 		}
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace ZedGraph
 		public ScaleStateList(ScaleStateList rhs)
 		{
 			foreach (ScaleState item in rhs) {
-				this.Add(item.Clone());
+				Add(item.Clone());
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -97,7 +97,7 @@ namespace ZedGraph
 		/// <returns>true if a difference is found, false otherwise</returns>
 		public bool IsChanged(YAxisList list)
 		{
-			int count = Math.Min(list.Count, this.Count);
+			int count = Math.Min(list.Count, Count);
 			for (int i = 0; i < count; i++)
 				if (this[i].IsChanged(list[i]))
 					return true;
@@ -116,7 +116,7 @@ namespace ZedGraph
 		/// <returns>true if a difference is found, false otherwise</returns>
 		public bool IsChanged(Y2AxisList list)
 		{
-			int count = Math.Min(list.Count, this.Count);
+			int count = Math.Min(list.Count, Count);
 			for (int i = 0; i < count; i++)
 				if (this[i].IsChanged(list[i]))
 					return true;
@@ -155,7 +155,7 @@ namespace ZedGraph
 		/// <param name="list"></param>
 		public void ApplyScale(YAxisList list)
 		{
-			int count = Math.Min(list.Count, this.Count);
+			int count = Math.Min(list.Count, Count);
 			for (int i = 0; i < count; i++)
 				this[i].ApplyScale(list[i]);
 		}
@@ -166,7 +166,7 @@ namespace ZedGraph
 		/// <param name="list"></param>
 		public void ApplyScale(Y2AxisList list)
 		{
-			int count = Math.Min(list.Count, this.Count);
+			int count = Math.Min(list.Count, Count);
 			for (int i = 0; i < count; i++)
 				this[i].ApplyScale(list[i]);
 		}

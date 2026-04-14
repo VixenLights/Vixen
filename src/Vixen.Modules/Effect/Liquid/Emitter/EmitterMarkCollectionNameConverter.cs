@@ -38,11 +38,10 @@ namespace VixenModules.Effect.Liquid.Emitters
 			return true;
 		}
 
-		public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
 		{
-			ObservableCollection<IMarkCollection> markCollections = null;
 			IEmitter emitter = (IEmitter)context.Instance;
-			markCollections = emitter.MarkCollections;
+			var markCollections = emitter.MarkCollections;
 			
 
 			List<string> values = new List<string>();
@@ -55,7 +54,7 @@ namespace VixenModules.Effect.Liquid.Emitters
 				}
 			}
 
-			return new TypeConverter.StandardValuesCollection(values.ToArray());
+			return new StandardValuesCollection(values.ToArray());
 		}
 	}
 }

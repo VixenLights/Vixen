@@ -44,8 +44,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 		/// <param name="type">Specifies the type of shader to create (either vertex, fragment or geometry).</param>
 		public Shader(string source, ShaderType type)
 		{
-			this.ShaderType = type;
-			this.ShaderID = GL.CreateShader(type);
+			ShaderType = type;
+			ShaderID = GL.CreateShader(type);
 			GL.ShaderSource(ShaderID, source);
 			GL.CompileShader(ShaderID);
 
@@ -122,7 +122,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 				}
 			}
 
-			this.ShaderParams = shaderParams.ToArray();
+			ShaderParams = shaderParams.ToArray();
 		}
 		#endregion
 

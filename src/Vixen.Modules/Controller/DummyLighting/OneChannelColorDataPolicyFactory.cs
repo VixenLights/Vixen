@@ -1,4 +1,5 @@
 ﻿using Vixen.Sys;
+using VixenModules.Output.DummyLighting;
 
 namespace VixenModules.Controller.DummyLighting
 {

@@ -1,6 +1,6 @@
 ﻿using Common.Controls;
 
-namespace VixenModules.App.Shows
+namespace VixenModules.App.Shows.Editors
 {
 	public partial class LaunchTypeTester : BaseForm
 	{
@@ -19,8 +19,8 @@ namespace VixenModules.App.Shows
 		private delegate void OnActionCompleteDelegate(Object sender, EventArgs e);
 		public void OnActionComplete(Object sender, EventArgs e) 
 		{
-			if (this.InvokeRequired)
-				this.Invoke(new OnActionCompleteDelegate(OnActionComplete), sender, e);
+			if (InvokeRequired)
+				Invoke(new OnActionCompleteDelegate(OnActionComplete), sender, e);
 			else
 			{
 				textBoxOutput.Text = _action.ResultString;

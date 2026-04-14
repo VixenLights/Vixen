@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,6 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -290,7 +289,7 @@ namespace ZedGraph
 			{
 				if (value != _family) {
 					_family = value;
-					Remake(_scaledSize/_size, this.Size, ref _scaledSize, ref _font);
+					Remake(_scaledSize/_size, Size, ref _scaledSize, ref _font);
 				}
 			}
 		}
@@ -307,7 +306,7 @@ namespace ZedGraph
 			{
 				if (value != _isBold) {
 					_isBold = value;
-					Remake(_scaledSize/_size, this.Size, ref _scaledSize, ref _font);
+					Remake(_scaledSize/_size, Size, ref _scaledSize, ref _font);
 				}
 			}
 		}
@@ -324,7 +323,7 @@ namespace ZedGraph
 			{
 				if (value != _isItalic) {
 					_isItalic = value;
-					Remake(_scaledSize/_size, this.Size, ref _scaledSize, ref _font);
+					Remake(_scaledSize/_size, Size, ref _scaledSize, ref _font);
 				}
 			}
 		}
@@ -341,7 +340,7 @@ namespace ZedGraph
 			{
 				if (value != _isUnderline) {
 					_isUnderline = value;
-					Remake(_scaledSize/_size, this.Size, ref _scaledSize, ref _font);
+					Remake(_scaledSize/_size, Size, ref _scaledSize, ref _font);
 				}
 			}
 		}
@@ -605,7 +604,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -717,7 +716,7 @@ namespace ZedGraph
 			// Regenerate the font only if the size has changed significantly
 			if (font == null ||
 			    Math.Abs(newSize - oldSize) > 0.1 ||
-			    font.Name != this.Family ||
+			    font.Name != Family ||
 			    font.Bold != _isBold ||
 			    font.Italic != _isItalic ||
 			    font.Underline != _isUnderline) {
@@ -745,7 +744,7 @@ namespace ZedGraph
 		/// </returns>
 		public Font GetFont(float scaleFactor)
 		{
-			Remake(scaleFactor, this.Size, ref _scaledSize, ref _font);
+			Remake(scaleFactor, Size, ref _scaledSize, ref _font);
 			return _font;
 		}
 
@@ -789,7 +788,7 @@ namespace ZedGraph
 		                 float y, AlignH alignH, AlignV alignV,
 		                 float scaleFactor)
 		{
-			this.Draw(g, pane, text, x, y, alignH, alignV,
+			Draw(g, pane, text, x, y, alignH, alignV,
 			          scaleFactor, new SizeF());
 		}
 
@@ -953,9 +952,9 @@ namespace ZedGraph
 			}
 
 			// make sure the font size is properly scaled
-			Remake(scaleFactor, this.Size, ref _scaledSize, ref _font);
+			Remake(scaleFactor, Size, ref _scaledSize, ref _font);
 			float scaledSuperSize = _scaledSize*Default.SuperSize;
-			Remake(scaleFactor, this.Size*Default.SuperSize, ref scaledSuperSize,
+			Remake(scaleFactor, Size*Default.SuperSize, ref scaledSuperSize,
 			       ref _superScriptFont);
 
 			// Get the width and height of the text
@@ -1026,7 +1025,7 @@ namespace ZedGraph
 		/// <returns>The scaled font height, in pixels</returns>
 		public float GetHeight(float scaleFactor)
 		{
-			Remake(scaleFactor, this.Size, ref _scaledSize, ref _font);
+			Remake(scaleFactor, Size, ref _scaledSize, ref _font);
 			float height = _font.Height;
 			if (_isDropShadow)
 				height += (float) (Math.Sin(_dropShadowAngle)*_dropShadowOffset*_font.Height);
@@ -1050,7 +1049,7 @@ namespace ZedGraph
 		/// <returns>The scaled font width, in pixels</returns>
 		public float GetWidth(Graphics g, float scaleFactor)
 		{
-			Remake(scaleFactor, this.Size, ref _scaledSize, ref _font);
+			Remake(scaleFactor, Size, ref _scaledSize, ref _font);
 			return g.MeasureString("x", _font).Width;
 		}
 
@@ -1072,7 +1071,7 @@ namespace ZedGraph
 		/// <returns>The scaled text width, in pixels</returns>
 		public float GetWidth(Graphics g, string text, float scaleFactor)
 		{
-			Remake(scaleFactor, this.Size, ref _scaledSize, ref _font);
+			Remake(scaleFactor, Size, ref _scaledSize, ref _font);
 			float width = g.MeasureString(text, _font).Width;
 			if (_isDropShadow)
 				width += (float) (Math.Cos(_dropShadowAngle)*_dropShadowOffset*_font.Height);
@@ -1099,7 +1098,7 @@ namespace ZedGraph
 		/// a <see cref="SizeF"/> struct</returns>
 		public SizeF MeasureString(Graphics g, string text, float scaleFactor)
 		{
-			Remake(scaleFactor, this.Size, ref _scaledSize, ref _font);
+			Remake(scaleFactor, Size, ref _scaledSize, ref _font);
 			SizeF size = g.MeasureString(text, _font);
 			if (_isDropShadow) {
 				size.Width += (float) (Math.Cos(_dropShadowAngle)*
@@ -1138,7 +1137,7 @@ namespace ZedGraph
 		/// a <see cref="SizeF"/> struct</returns>
 		public SizeF MeasureString(Graphics g, string text, float scaleFactor, SizeF layoutArea)
 		{
-			Remake(scaleFactor, this.Size, ref _scaledSize, ref _font);
+			Remake(scaleFactor, Size, ref _scaledSize, ref _font);
 			SizeF size = g.MeasureString(text, _font, layoutArea);
 			if (_isDropShadow) {
 				size.Width += (float) (Math.Cos(_dropShadowAngle)*
@@ -1251,7 +1250,7 @@ namespace ZedGraph
 		{
 			//Remake( scaleFactor, this.Size, ref this.scaledSize, ref this.font );
 			float scaledSuperSize = _scaledSize*Default.SuperSize;
-			Remake(scaleFactor, this.Size*Default.SuperSize, ref scaledSuperSize,
+			Remake(scaleFactor, Size*Default.SuperSize, ref scaledSuperSize,
 			       ref _superScriptFont);
 
 			// Get the width and height of the text
@@ -1352,7 +1351,7 @@ namespace ZedGraph
 		                       float scaleFactor, SizeF layoutArea)
 		{
 			// make sure the font size is properly scaled
-			Remake(scaleFactor, this.Size, ref _scaledSize, ref _font);
+			Remake(scaleFactor, Size, ref _scaledSize, ref _font);
 
 			// Get the width and height of the text
 			SizeF sizeF;
@@ -1498,7 +1497,7 @@ namespace ZedGraph
 		                       float scaleFactor, SizeF layoutArea)
 		{
 			// make sure the font size is properly scaled
-			Remake(scaleFactor, this.Size, ref _scaledSize, ref _font);
+			Remake(scaleFactor, Size, ref _scaledSize, ref _font);
 
 			// Get the width and height of the text
 			SizeF sizeF;

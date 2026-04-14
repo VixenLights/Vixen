@@ -12,7 +12,7 @@ namespace VixenModules.Effect.RDS {
 		public string Artist { get; set; }
 
 		public override IModuleDataModel Clone() {
-			return (IModuleDataModel)this.MemberwiseClone();
+			return (IModuleDataModel)MemberwiseClone();
 		}
 	}
 }

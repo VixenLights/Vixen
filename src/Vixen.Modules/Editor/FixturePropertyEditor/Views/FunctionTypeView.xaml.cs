@@ -152,14 +152,11 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
 			{
 				DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-				if (child != null && child is T)
+				if (child is T)
 					return (T)child;
-				else
-				{
-					T childOfChild = FindVisualChild<T>(child);
-					if (childOfChild != null)
-						return childOfChild;
-				}
+				T childOfChild = FindVisualChild<T>(child);
+				if (childOfChild != null)
+					return childOfChild;
 			}
 			return null;
 		}

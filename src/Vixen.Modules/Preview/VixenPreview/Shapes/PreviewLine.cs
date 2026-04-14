@@ -100,9 +100,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_points[1].Y = Y;
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 1"),
-		 DescriptionAttribute("Lines are defined by 2 points. This is point 1.")]
+		 Description("Lines are defined by 2 points. This is point 1.")]
 		public Point Point1
 		{
 			get
@@ -120,9 +120,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Point 2"),
-		 DescriptionAttribute("Lines are defined by 2 points. This is point 2.")]
+		 Description("Lines are defined by 2 points. This is point 2.")]
 		public Point Point2
 		{
 			get
@@ -145,9 +145,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_points.Add(point);
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in the string.")]
+		 Description("Number of pixels or lights in the string.")]
 		public int PixelCount
 		{
 			get { return Pixels.Count; }
@@ -332,7 +332,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-			PreviewLine newLine = (PreviewLine) this.MemberwiseClone();
+			PreviewLine newLine = (PreviewLine) MemberwiseClone();
 
 			newLine._pixels = new List<PreviewPixel>();
 

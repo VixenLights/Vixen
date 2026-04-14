@@ -43,7 +43,7 @@ namespace Vixen.Module.App
 
 		public bool Equals(AppModuleInstanceBase x, AppModuleInstanceBase y)
 		{
-			return Equals(x as IAppModuleInstance, y as IAppModuleInstance);
+			return Equals(x, y as IAppModuleInstance);
 		}
 
 		public int GetHashCode(AppModuleInstanceBase obj)

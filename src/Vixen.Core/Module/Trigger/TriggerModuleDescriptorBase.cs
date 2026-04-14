@@ -35,7 +35,7 @@
 
 		public bool Equals(TriggerModuleDescriptorBase x, TriggerModuleDescriptorBase y)
 		{
-			return Equals(x as ITriggerModuleDescriptor, y as ITriggerModuleDescriptor);
+			return Equals(x, y as ITriggerModuleDescriptor);
 		}
 
 		public int GetHashCode(TriggerModuleDescriptorBase obj)

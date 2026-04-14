@@ -1,6 +1,5 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 using System.ComponentModel;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
@@ -46,8 +45,8 @@ namespace VixenModules.Property.Color
 
 			// pull out the new data settings from the form elements
 			ElementColorType colorType;
-			string colorSetName = "";
-			System.Drawing.Color singleColor = System.Drawing.Color.Black;
+			string colorSetName;
+			System.Drawing.Color singleColor;
 
 			if (radioButtonOptionSingle.Checked) {
 				colorType = ElementColorType.SingleColor;
@@ -89,7 +88,7 @@ namespace VixenModules.Property.Color
 
 			foreach (IElementNode leafElement in leafElementList) {
 				bool skip = false;
-				ColorModule existingProperty = null;
+				ColorModule existingProperty;
 
 				if (leafElement.Properties.Contains(ColorDescriptor.ModuleId)) {
 					if (!askedUserAboutExistingProperties) {

@@ -1,5 +1,4 @@
 ﻿using Common.AudioPlayer.SampleProvider;
-using NAudio.Wave;
 
 namespace VixenModules.Media.Audio.SampleProviders
 {

@@ -89,10 +89,10 @@ namespace Common.Controls.ColorManagement.ColorPicker
 					new Point(0, 0), new Point(1, 0),
 					Color.White, new HSV(_color.H, 100, 100).ToRGB())) {
 					//draw saturation
-					brs.Transform = new Matrix((float) bmp.Width, 0f, 0f, 1f, 0f, 0f);
+					brs.Transform = new Matrix(bmp.Width, 0f, 0f, 1f, 0f, 0f);
 					gr.FillRectangle(brs, new Rectangle(Point.Empty, bmp.Size));
 					//draw luminance
-					brs.Transform = new Matrix(0f, (float) bmp.Height, 1f, 0f, 0f, 0f);
+					brs.Transform = new Matrix(0f, bmp.Height, 1f, 0f, 0f, 0f);
 					brs.LinearColors = new Color[] {Color.FromArgb(0, 0, 0, 0), Color.Black};
 					gr.FillRectangle(brs, new Rectangle(Point.Empty, bmp.Size));
 				}
@@ -159,11 +159,11 @@ namespace Common.Controls.ColorManagement.ColorPicker
 					new Point(0, 0), new Point(1, 0),
 					Color.White, Color.White)) {
 					//draw hue
-					brs.Transform = new Matrix((float) bmp.Width, 0f, 0f, 1f, 0f, 0f);
+					brs.Transform = new Matrix(bmp.Width, 0f, 0f, 1f, 0f, 0f);
 					brs.InterpolationColors = GetHueBlend(_color.S, 1.0);
 					gr.FillRectangle(brs, new Rectangle(Point.Empty, bmp.Size));
 					//draw value
-					brs.Transform = new Matrix(0f, (float) bmp.Height, 1f, 0f, 0f, 0f);
+					brs.Transform = new Matrix(0f, bmp.Height, 1f, 0f, 0f, 0f);
 					ColorBlend blnd = new ColorBlend();
 					blnd.Colors = new Color[] {Color.FromArgb(0, 0, 0, 0), Color.Black};
 					blnd.Positions = new float[] {0f, 1f};
@@ -234,11 +234,11 @@ namespace Common.Controls.ColorManagement.ColorPicker
 					new Point(0, 0), new Point(1, 0),
 					Color.White, Color.White)) {
 					//draw hue
-					brs.Transform = new Matrix((float) bmp.Width, 0f, 0f, 1f, 0f, 0f);
+					brs.Transform = new Matrix(bmp.Width, 0f, 0f, 1f, 0f, 0f);
 					brs.InterpolationColors = GetHueBlend(1.0, _color.V);
 					gr.FillRectangle(brs, new Rectangle(Point.Empty, bmp.Size));
 					//draw value
-					brs.Transform = new Matrix(0f, (float) bmp.Height, 1f, 0f, 0f, 0f);
+					brs.Transform = new Matrix(0f, bmp.Height, 1f, 0f, 0f, 0f);
 					ColorBlend blnd = new ColorBlend();
 					Color zerosat = new HSV(0.0, 0.0, _color.V).ToRGB();
 					blnd.Colors = new Color[] {Color.FromArgb(0, zerosat), zerosat};

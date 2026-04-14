@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2006  John Champion
+//Copyright Â© 2006  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,6 @@
 #region Using directives
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 #endregion
 
@@ -192,7 +191,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -380,7 +379,7 @@ namespace ZedGraph
 							else
 								pixClose = valueAxis.Scale.Transform(curve.IsOverrideOrdinal, i, close);
 
-							if (!curve.IsSelected && this._gradientFill.IsGradientValueType) {
+							if (!curve.IsSelected && _gradientFill.IsGradientValueType) {
 								using (Pen tPen = GetPen(pane, scaleFactor, pt))
 									Draw(g, pane, baseAxis is XAxis || baseAxis is X2Axis,
 									     pixBase, pixHigh, pixLow, pixOpen,

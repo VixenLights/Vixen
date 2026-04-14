@@ -47,7 +47,7 @@ namespace VixenModules.App.Shows
 				{
 					using (ShowListForm form = new ShowListForm(_data))
 					{
-						if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+						if (form.ShowDialog() == DialogResult.OK)
 						{
 							
 						}

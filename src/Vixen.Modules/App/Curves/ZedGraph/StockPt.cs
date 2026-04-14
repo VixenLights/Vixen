@@ -1,6 +1,6 @@
 //============================================================================
 //PointPair4 Class
-//Copyright © 2006  Jerry Vos & John Champion
+//Copyright Â© 2006  Jerry Vos & John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,6 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph {
 	/// <summary>
@@ -102,12 +101,12 @@ namespace ZedGraph {
 		public StockPt(double date, double high, double low, double open, double close, double vol,
 					   string tag)
 			: base(date, high) {
-			this.Low = low;
-			this.Open = open;
-			this.Close = close;
-			this.Vol = vol;
-			this.ColorValue = PointPair.Missing;
-			this.Tag = tag;
+			Low = low;
+			Open = open;
+			Close = close;
+			Vol = vol;
+			ColorValue = Missing;
+			Tag = tag;
 		}
 
 		/// <summary>
@@ -116,16 +115,16 @@ namespace ZedGraph {
 		/// <param name="rhs">The basis for the copy.</param>
 		public StockPt(StockPt rhs)
 			: base(rhs) {
-			this.Low = rhs.Low;
-			this.Open = rhs.Open;
-			this.Close = rhs.Close;
-			this.Vol = rhs.Vol;
-			this.ColorValue = rhs.ColorValue;
+			Low = rhs.Low;
+			Open = rhs.Open;
+			Close = rhs.Close;
+			Vol = rhs.Vol;
+			ColorValue = rhs.ColorValue;
 
 			if (rhs.Tag is ICloneable)
-				this.Tag = ((ICloneable)rhs.Tag).Clone();
+				Tag = ((ICloneable)rhs.Tag).Clone();
 			else
-				this.Tag = rhs.Tag;
+				Tag = rhs.Tag;
 		}
 
 		/// <summary>
@@ -136,16 +135,16 @@ namespace ZedGraph {
 			: base(rhs) {
 			if (rhs is StockPt) {
 				StockPt pt = rhs as StockPt;
-				this.Open = pt.Open;
-				this.Close = pt.Close;
-				this.Vol = pt.Vol;
-				this.ColorValue = rhs.ColorValue;
+				Open = pt.Open;
+				Close = pt.Close;
+				Vol = pt.Vol;
+				ColorValue = rhs.ColorValue;
 			}
 			else {
-				this.Open = PointPair.Missing;
-				this.Close = PointPair.Missing;
-				this.Vol = PointPair.Missing;
-				this.ColorValue = PointPair.Missing;
+				Open = Missing;
+				Close = Missing;
+				Vol = Missing;
+				ColorValue = Missing;
 			}
 		}
 
@@ -237,21 +236,21 @@ namespace ZedGraph {
 		/// <returns>true if any value is invalid</returns>
 		public bool IsInvalid5D {
 			get {
-				return this.Date == PointPair.Missing ||
-					   this.Close == PointPair.Missing ||
-					   this.Open == PointPair.Missing ||
-					   this.High == PointPair.Missing ||
-					   this.Low == PointPair.Missing ||
-					   Double.IsInfinity(this.Date) ||
-					   Double.IsInfinity(this.Close) ||
-					   Double.IsInfinity(this.Open) ||
-					   Double.IsInfinity(this.High) ||
-					   Double.IsInfinity(this.Low) ||
-					   Double.IsNaN(this.Date) ||
-					   Double.IsNaN(this.Close) ||
-					   Double.IsNaN(this.Open) ||
-					   Double.IsNaN(this.High) ||
-					   Double.IsNaN(this.Low);
+				return Date == Missing ||
+					   Close == Missing ||
+					   Open == Missing ||
+					   High == Missing ||
+					   Low == Missing ||
+					   Double.IsInfinity(Date) ||
+					   Double.IsInfinity(Close) ||
+					   Double.IsInfinity(Open) ||
+					   Double.IsInfinity(High) ||
+					   Double.IsInfinity(Low) ||
+					   Double.IsNaN(Date) ||
+					   Double.IsNaN(Close) ||
+					   Double.IsNaN(Open) ||
+					   Double.IsNaN(High) ||
+					   Double.IsNaN(Low);
 			}
 		}
 
@@ -266,7 +265,7 @@ namespace ZedGraph {
 		/// <param name="isShowAll">true to show all the value coordinates</param>
 		/// <returns>A string representation of the <see cref="StockPt" />.</returns>
 		public override string ToString(bool isShowAll) {
-			return this.ToString(PointPair.DefaultFormat, isShowAll);
+			return ToString(DefaultFormat, isShowAll);
 		}
 
 		/// <summary>
@@ -280,8 +279,8 @@ namespace ZedGraph {
 		/// <returns>A string representation of the PointPair</returns>
 		/// <param name="isShowAll">true to show all the value coordinates</param>
 		public override string ToString(string format, bool isShowAll) {
-			return string.Format("({0}, {1}{2})", XDate.ToString(this.Date, "g"), this.Close.ToString(format),
-				isShowAll ? string.Format(", {0}, {1}, {2}", this.Low.ToString(format), this.Open.ToString(format), this.Close.ToString(format)) : string.Empty);
+			return string.Format("({0}, {1}{2})", XDate.ToString(Date, "g"), Close.ToString(format),
+				isShowAll ? string.Format(", {0}, {1}, {2}", Low.ToString(format), Open.ToString(format), Close.ToString(format)) : string.Empty);
 
 		}
 

@@ -1485,7 +1485,7 @@ namespace VixenModules.Effect.Morph
 				// Determine the length of the long side of the polygon				
 				int length = GetLengthOfWipePolygon(_wipePolygonRenderData[polygonIndex]);
 
-				double time = 0.0;
+				double time;
 
 				// If this is Free Form polygon then...
 				if (RepeatCount == 0 && morphPolygon.StartOffset != 0)

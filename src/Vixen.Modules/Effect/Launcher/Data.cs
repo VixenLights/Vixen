@@ -25,7 +25,7 @@ namespace Launcher
 
 		public override IModuleDataModel Clone()
 		{
-			return (IModuleDataModel)this.MemberwiseClone();
+			return (IModuleDataModel)MemberwiseClone();
 		}
 	}
 }

@@ -89,9 +89,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Line Light Count"),
-		 DescriptionAttribute("The number of lights in the vertical string of the candy cane.")]
+		 Description("The number of lights in the vertical string of the candy cane.")]
 		public int LinePixelCount
 		{
 			set
@@ -109,9 +109,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _linePixelCount; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Arch Light Count"),
-		 DescriptionAttribute("The number of lights in the arch of the candy cane.")]
+		 Description("The number of lights in the arch of the candy cane.")]
 		public int ArchPixelCount
 		{
 			set
@@ -130,9 +130,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _archPixelCount; }
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("The bottom right point of bounding box of the candy cane.")]
+		 Description("The bottom right point of bounding box of the candy cane.")]
 		public Point BottomRight
 		{
 			get
@@ -149,9 +149,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("The top left point of the bounding box of the candy cane.")]
+		 Description("The top left point of the bounding box of the candy cane.")]
 		public Point TopLeft
 		{
 			get
@@ -168,9 +168,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Arch Start"),
-		 DescriptionAttribute("The point on the line where the arch starts.")]
+		 Description("The point on the line where the arch starts.")]
 		public Point ArchLeft
 		{
 			get
@@ -277,7 +277,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_bottomRightPoint != null && _archLeftPoint != null)
 			{
-				double pixelSpacing = (double)(_bottomRightPoint.Y - _archLeftPoint.Y) / (double)_linePixelCount;
+				double pixelSpacing = (_bottomRightPoint.Y - _archLeftPoint.Y) / (double)_linePixelCount;
 				for (int i = 0; i < _linePixelCount; i++)
 				{
 					PreviewPixel pixel = _pixels[i];

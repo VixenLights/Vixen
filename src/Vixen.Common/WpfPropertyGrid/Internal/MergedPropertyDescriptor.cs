@@ -18,9 +18,6 @@ using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Globalization;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Linq;
-using System.Collections.Generic;
 using System.Diagnostics;
 using MessagePack;
 
@@ -179,11 +176,10 @@ namespace System.Windows.Controls.WpfPropertyGrid.Internal
     protected override AttributeCollection CreateAttributeCollection()
     {
       IEnumerable<Attribute> attributes = null;
-      Attribute[] buffer = null;
 
       foreach (PropertyDescriptor descriptor in descriptors)
       {
-        buffer = new Attribute[descriptor.Attributes.Count];
+        var buffer = new Attribute[descriptor.Attributes.Count];
         descriptor.Attributes.CopyTo(buffer, 0);
         attributes = (attributes == null) ? buffer : attributes.Intersect(buffer);
       }

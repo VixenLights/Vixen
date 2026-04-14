@@ -63,8 +63,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		/// <param name="orientation">The orientation of the camera.</param>
 		public Camera(Vector3 position, Quaternion orientation)
 		{
-			this.Position = position;
-			this.Orientation = orientation;
+			Position = position;
+			Orientation = orientation;
 		}
 
 		/// <summary>

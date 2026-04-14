@@ -67,7 +67,7 @@ namespace Vixen.Module.SequenceFilter
 
 		public bool Equals(SequenceFilterModuleInstanceBase x, SequenceFilterModuleInstanceBase y)
 		{
-			return Equals(x as ISequenceFilterModuleInstance, y as ISequenceFilterModuleInstance);
+			return Equals(x, y as ISequenceFilterModuleInstance);
 		}
 
 		public int GetHashCode(SequenceFilterModuleInstanceBase obj)

@@ -16,7 +16,7 @@ namespace Vixen.Module.Preview
 					Func<Form> initMethod = Initialize;
 					_threadBehavior = VixenSystem.SystemConfig.IsPreviewThreaded
 					                  	? new MultiThreadBehavior(initMethod)
-					                  	: (IThreadBehavior) new SingleThreadBehavior(initMethod);
+					                  	: new SingleThreadBehavior(initMethod);
 				}
 				return _threadBehavior;
 			}

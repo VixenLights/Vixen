@@ -1,10 +1,6 @@
-﻿using System;
-using System.Xml.Linq;
-using System.IO;
-using System.Collections.Generic;
+﻿using System.Xml.Linq;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Linq;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
@@ -142,7 +138,6 @@ namespace VixenModules.SequenceType.Vixen2x
 					{
 						ProfilePath = Path.GetDirectoryName(dialog.FileName);
 						ProfileName = dialog.SafeFileName;
-						root = null;
 						root = XElement.Load(dialog.FileName);
 
 						foreach (XElement e in root.Elements("ChannelObjects").Elements("Channel"))

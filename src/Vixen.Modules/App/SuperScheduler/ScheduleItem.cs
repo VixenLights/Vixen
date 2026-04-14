@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using System.Windows.Forms;
 
 using VixenModules.App.Shows;
 
@@ -51,7 +50,7 @@ namespace VixenModules.App.SuperScheduler
 		#region Variables
 
 		private Object _actionLock;
-		Shows.ShowItem _currentItem = null;
+		ShowItem _currentItem = null;
 		CancellationTokenSource tokenSourcePreProcess;
 		//CancellationToken tokenPreProcess;
 		CancellationTokenSource tokenSourcePreProcessAll;
@@ -61,8 +60,8 @@ namespace VixenModules.App.SuperScheduler
 
 		#region Properties
 
-		private List<Shows.Action> runningActions = null;
-		public List<Shows.Action> RunningActions => runningActions ?? (runningActions = new List<Shows.Action>());
+		private List<Action> runningActions = null;
+		public List<Action> RunningActions => runningActions ?? (runningActions = new List<Action>());
 
 		private StateType _state = StateType.Waiting;
 		public StateType State
@@ -71,12 +70,12 @@ namespace VixenModules.App.SuperScheduler
 			set { _state = value; }
 		}
 
-		private Shows.Show _show = null;
-		public Shows.Show Show {
+		private Show _show = null;
+		public Show Show {
 			get 
 			{
 				if (_show == null)
-					_show = Shows.ShowsData.GetShow(ShowID);
+					_show = ShowsData.GetShow(ShowID);
 				return _show;
 			}
 		}
@@ -143,31 +142,31 @@ namespace VixenModules.App.SuperScheduler
 			set { _endTime = value; }
 		}
 
-		private bool DaySupported(System.DayOfWeek dayOfWeek)
+		private bool DaySupported(DayOfWeek dayOfWeek)
 		{
 			bool daySupported = false;
 
 			switch (dayOfWeek)
 			{
-				case System.DayOfWeek.Sunday:
+				case DayOfWeek.Sunday:
 					daySupported = Sunday;
 					break;
-				case System.DayOfWeek.Monday:
+				case DayOfWeek.Monday:
 					daySupported = Monday;
 					break;
-				case System.DayOfWeek.Tuesday:
+				case DayOfWeek.Tuesday:
 					daySupported = Tuesday;
 					break;
-				case System.DayOfWeek.Wednesday:
+				case DayOfWeek.Wednesday:
 					daySupported = Wednesday;
 					break;
-				case System.DayOfWeek.Thursday:
+				case DayOfWeek.Thursday:
 					daySupported = Thursday;
 					break;
-				case System.DayOfWeek.Friday:
+				case DayOfWeek.Friday:
 					daySupported = Friday;
 					break;
-				case System.DayOfWeek.Saturday:
+				case DayOfWeek.Saturday:
 					daySupported = Saturday;
 					break;
 			}
@@ -224,10 +223,9 @@ namespace VixenModules.App.SuperScheduler
 			get
 			{			
 				// Default the next time to run to the current date / time
-				DateTime dateTime = DateTime.Now;
 
 				// Check to see if this item is still scheduable
-				if (!IsSchedulableInFuture(out dateTime))
+				if (!IsSchedulableInFuture(out var dateTime))
 				{
 					// Otherwise return null
 					return null;
@@ -256,13 +254,13 @@ namespace VixenModules.App.SuperScheduler
 
 		private DateTime InProcessEndTime { get; set; }
 
-		private Queue<Shows.ShowItem> itemQueue;
-		public Queue<Shows.ShowItem> ItemQueue
+		private Queue<ShowItem> itemQueue;
+		public Queue<ShowItem> ItemQueue
 		{
 			get
 			{
 				if (itemQueue == null)
-					itemQueue = new Queue<Shows.ShowItem>();
+					itemQueue = new Queue<ShowItem>();
 				return itemQueue;
 			}
 			set
@@ -271,13 +269,13 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
-		private List<Shows.Action> backgroundActions;
-		public List<Shows.Action> BackgroundActions
+		private List<Action> backgroundActions;
+		public List<Action> BackgroundActions
 		{
 			get
 			{
 				if (backgroundActions == null)
-					backgroundActions = new List<Shows.Action>();
+					backgroundActions = new List<Action>();
 				return backgroundActions;
 			}
 			set
@@ -449,7 +447,7 @@ namespace VixenModules.App.SuperScheduler
 
 		}
 
-		private void ExecuteAction(Shows.Action action)
+		private void ExecuteAction(Action action)
 		{
 			LogScheduleInfoEntry(string.Format("ExecuteAction: {0} with state of {1}", action.ShowItem.Name, State));
 			
@@ -496,7 +494,7 @@ namespace VixenModules.App.SuperScheduler
 			if (Show != null) {
 				// Sort the items
 				Show.Items.Sort((item1, item2) => item1.ItemOrder.CompareTo(item2.ItemOrder));
-				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Startup)) {
+				foreach (ShowItem item in Show.GetItems(ShowItemType.Startup)) {
 					ItemQueue.Enqueue(item);
 				}
 				 
@@ -512,7 +510,7 @@ namespace VixenModules.App.SuperScheduler
 				if (ItemQueue.Any())
 				{
 					_currentItem = ItemQueue.Dequeue();
-					Shows.Action action = _currentItem.GetAction();
+					Action action = _currentItem.GetAction();
 					action.ActionComplete += OnStartupActionComplete;
 					ExecuteAction(action);
 				}
@@ -527,7 +525,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void OnStartupActionComplete(object sender, EventArgs e)
 		{
-			var action = (sender as Shows.Action);
+			var action = (sender as Action);
 			if (action != null) {
 				action.ActionComplete -= OnStartupActionComplete;
 				lock(_actionLock)
@@ -578,7 +576,7 @@ namespace VixenModules.App.SuperScheduler
 				{
 					LogScheduleInfoEntry("ExecuteNextSequentialItem: Dequeue next item");
 					_currentItem = ItemQueue.Dequeue();
-					Shows.Action action = _currentItem.GetAction();
+					Action action = _currentItem.GetAction();
 					action.ActionComplete += OnSequentialActionComplete;
 					ExecuteAction(action);
 				}
@@ -593,7 +591,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void OnSequentialActionComplete(object sender, EventArgs e)
 		{
-			Shows.Action action = (sender as Shows.Action);
+			Action action = (sender as Action);
 			action.ActionComplete -= OnSequentialActionComplete;
 			lock (_actionLock)
 			{
@@ -617,14 +615,14 @@ namespace VixenModules.App.SuperScheduler
 			{
 				foreach (ShowItem item in Show.GetItems(ShowItemType.Background))
 				{
-					Shows.Action action = item.GetAction();
+					Action action = item.GetAction();
 					BackgroundActions.Add(action);
 					ExecuteBackgroundAction(action);
 				}
 			}
 		}
 
-		public void ExecuteBackgroundAction(Shows.Action action)
+		public void ExecuteBackgroundAction(Action action)
 		{
 			if (State == StateType.Running)
 			{
@@ -635,7 +633,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void OnBackgroundActionComplete(object sender, EventArgs e)
 		{
-			Shows.Action action = (sender as Shows.Action);
+			Action action = (sender as Action);
 			action.ActionComplete -= OnBackgroundActionComplete;
 			lock (_actionLock)
 			{
@@ -652,7 +650,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void StopBackground()
 		{
-			foreach (Shows.Action action in BackgroundActions)
+			foreach (Action action in BackgroundActions)
 			{
 				action.Stop();
 				action.Dispose();
@@ -663,7 +661,7 @@ namespace VixenModules.App.SuperScheduler
 		{
 			foreach (ShowItem item in Show.GetItems(ShowItemType.Sequential))
 			{
-				Shows.Action action = item.GetAction();
+				Action action = item.GetAction();
 				if (action.IsRunning)
 				{
 					action.Stop();
@@ -697,7 +695,7 @@ namespace VixenModules.App.SuperScheduler
 				ItemQueue.Clear();
 
 				State = StateType.Shutdown;
-				foreach (ShowItem item in Show.GetItems(Shows.ShowItemType.Shutdown))
+				foreach (ShowItem item in Show.GetItems(ShowItemType.Shutdown))
 				{
 					LogScheduleInfoEntry(string.Format("BeginShutdown: Enqueue: {0}", item.Name));
 					ItemQueue.Enqueue(item);
@@ -717,7 +715,7 @@ namespace VixenModules.App.SuperScheduler
 			if (ItemQueue.Any() )
 			{
 				_currentItem = ItemQueue.Dequeue();
-				Shows.Action action = _currentItem.GetAction();
+				Action action = _currentItem.GetAction();
 				action.ActionComplete += OnShutdownActionComplete;
 				ExecuteAction(action);
 				// Otherwise, the show is done :(
@@ -732,7 +730,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void OnShutdownActionComplete(object sender, EventArgs e)
 		{
-			Shows.Action action = (sender as Shows.Action);
+			Action action = (sender as Action);
 			action.ActionComplete -= OnShutdownActionComplete;
 			lock (_actionLock)
 			{

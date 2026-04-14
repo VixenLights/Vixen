@@ -1,8 +1,5 @@
 ﻿using Common.Controls;
-using Common.Controls.Scaling;
 using Common.Controls.Theme;
-using Common.Resources;
-using Common.Resources.Properties;
 
 namespace VixenModules.App.SuperScheduler
 {
@@ -58,7 +55,7 @@ namespace VixenModules.App.SuperScheduler
 
 			if (comboBoxShow.SelectedIndex >= 0)
 			{
-				Shows.Show show = ((comboBoxShow.SelectedItem as Common.Controls.ComboBoxItem).Value) as Shows.Show;
+				Shows.Show show = ((comboBoxShow.SelectedItem as ComboBoxItem).Value) as Shows.Show;
 				_scheduleItem.ShowID = show.ID;
 			}
 			else
@@ -79,7 +76,7 @@ namespace VixenModules.App.SuperScheduler
 
 		private void buttonCancel_Click(object sender, EventArgs e)
 		{
-			DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
@@ -105,7 +102,7 @@ namespace VixenModules.App.SuperScheduler
 		{
 			foreach (Shows.Show show in Shows.ShowsData.ShowList)
 			{
-				Common.Controls.ComboBoxItem item = new Common.Controls.ComboBoxItem(show.Name, show);
+				ComboBoxItem item = new ComboBoxItem(show.Name, show);
 				comboBoxShow.Items.Add(item);
 				if (show.ID == showID)
 				{
@@ -126,7 +123,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void SetTime()
 		{
-			TimeSpan t = TimeSpan.Zero;
+			TimeSpan t;
 
 			if (dateEndTime.Value < dateStartTime.Value)
 			{

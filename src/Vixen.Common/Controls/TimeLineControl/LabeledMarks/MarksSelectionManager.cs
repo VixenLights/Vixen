@@ -22,11 +22,9 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 			{
 				return instance;
 			}
-			else
-			{
-				instance = new MarksSelectionManager(id);
-				Instances.Add(id, instance);
-			}
+
+			instance = new MarksSelectionManager(id);
+			Instances.Add(id, instance);
 
 			return instance;
 		}

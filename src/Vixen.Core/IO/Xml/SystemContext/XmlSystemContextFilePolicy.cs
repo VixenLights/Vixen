@@ -1,21 +1,20 @@
 ﻿using System.Xml.Linq;
 using Vixen.IO.Policy;
 using Vixen.IO.Xml.Serializer;
+using Vixen.Sys;
 
 namespace Vixen.IO.Xml.SystemContext
 {
-	using Vixen.Sys;
-
 	internal class XmlSystemContextFilePolicy : SystemContextFilePolicy
 	{
-		private SystemContext _context;
+		private Sys.SystemContext _context;
 		private XElement _content;
 
 		private const string ELEMENT_SOURCE_IDENTITY = "SourceIdentity";
 		private const string ELEMENT_CONTEXT_NAME = "Name";
 		private const string ELEMENT_CONTEXT_DESCRIPTION = "Description";
 
-		public XmlSystemContextFilePolicy(SystemContext context, XElement content)
+		public XmlSystemContextFilePolicy(Sys.SystemContext context, XElement content)
 		{
 			_context = context;
 			_content = content;

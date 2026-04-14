@@ -234,9 +234,7 @@ namespace VixenModules.Editor.EffectEditor
 			if (target == null) throw new ArgumentNullException("target");
 			if (string.IsNullOrEmpty(propertyName)) throw new ArgumentNullException("propertyName");
 
-			PropertySet propertySet = null;
-
-			if (!Properties.TryGetValue(target, out propertySet))
+			if (!Properties.TryGetValue(target, out var propertySet))
 				propertySet = CollectProperties(target);
 
 			PropertyData property;

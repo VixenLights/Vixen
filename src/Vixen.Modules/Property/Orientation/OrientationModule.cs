@@ -13,7 +13,7 @@ namespace VixenModules.Property.Orientation {
 		public override void SetDefaultValues() {
 			if (_data == null)
 				_data = new OrientationData();
-			_data.Orientation = Property.Orientation.Orientation.Vertical;
+			_data.Orientation = Orientation.Vertical;
 		}
 
 		public Orientation Orientation
@@ -29,7 +29,7 @@ namespace VixenModules.Property.Orientation {
 
 		public static Orientation GetOrientationForElement(IElementNode element)
 		{
-			Orientation p = Property.Orientation.Orientation.Vertical;
+			Orientation p = Orientation.Vertical;
 			OrientationModule module = element?.Properties.Get(OrientationDescriptor.ModuleId) as OrientationModule;
 			if (module != null)
 			{

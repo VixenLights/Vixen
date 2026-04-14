@@ -20,7 +20,6 @@ namespace Common.Controls.Timeline
 	public sealed class Waveform : TimelineControlBase
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
-		private double samplesPerPixel;
 		private List<Sample> samples;
 		private Audio audio;
 		private bool _creatingSamples = false;
@@ -163,12 +162,12 @@ namespace Common.Controls.Timeline
 
 		public WaveformStyle WaveformStyle { get; set; } = WaveformStyle.Half;
 
-		private delegate void SetAudioDelegate(VixenModules.Media.Audio.Audio value);
+		private delegate void SetAudioDelegate(Audio value);
 
-		private void SetAudio(VixenModules.Media.Audio.Audio value)
+		private void SetAudio(Audio value)
 		{
-			if (this.InvokeRequired)
-				this.Invoke(new SetAudioDelegate(SetAudio), value);
+			if (InvokeRequired)
+				Invoke(new SetAudioDelegate(SetAudio), value);
 			else {
 				//Clean up any existing audio. 
 				if (audio != null) {
@@ -185,7 +184,7 @@ namespace Common.Controls.Timeline
 					Visible = false;
 				}
 
-				this.Invalidate();
+				Invalidate();
 			}
 		}
 

@@ -62,7 +62,7 @@ namespace Vixen.Module.SequenceType
 
 		public bool Equals(SequenceTypeModuleInstanceBase x, SequenceTypeModuleInstanceBase y)
 		{
-			return Equals(x as ISequenceTypeModuleInstance, y as ISequenceTypeModuleInstance);
+			return Equals(x, y as ISequenceTypeModuleInstance);
 		}
 
 		public int GetHashCode(SequenceTypeModuleInstanceBase obj)

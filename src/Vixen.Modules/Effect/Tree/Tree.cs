@@ -334,7 +334,7 @@ namespace VixenModules.Effect.Tree
 					: (float)((1.0 * mod / pixelsPerBranch) * (blendLevel));
 
 				backgroundhsv.V = backgroundLevelCurve * V; // we have now set the color for the background tree
-				Branch = (int)((y - 1) / pixelsPerBranch);
+				Branch = (y - 1) / pixelsPerBranch;
 				if (_branchColor >= Colors.Count || Branch == 0)
 					_branchColor = 0;
 				_row = pixelsPerBranch - mod; // now row=0 is bottom of branch, row=1 is one above bottom
@@ -345,7 +345,7 @@ namespace VixenModules.Effect.Tree
 				//
 				//	row = 0, the $p is in the bottom row of tree
 				//	row =1, the $p is in second row from bottom
-				b = (int)((cycleLen) / BufferWi) % Branches; // what branch we are on based on frame #
+				b = cycleLen / BufferWi % Branches; // what branch we are on based on frame #
 				//
 				//	b = 0, we are on bottomow row of tree during frames 1 to BufferWi
 				//	b = 1, we are on second row from bottom, frames = BufferWi+1 to 2*BufferWi

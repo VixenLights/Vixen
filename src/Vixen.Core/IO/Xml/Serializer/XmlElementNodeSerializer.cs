@@ -1,12 +1,13 @@
 ﻿using System.Xml.Linq;
-using Vixen.Sys;
+using NLog;
 using Vixen.Module.Property;
+using Vixen.Sys;
 
 namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlElementNodeSerializer : IXmlSerializer<ElementNode>
 	{
-		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger logging = LogManager.GetCurrentClassLogger();
 
 		private readonly Dictionary<Guid, Element> _underlyingElementMap; 
 		private const string ELEMENT_NODE = "Node";
@@ -51,11 +52,11 @@ namespace Vixen.IO.Xml.Serializer
 
 			return result;
 		}
-		public static int readCount = 0;
+		public static int readCount;
 		public ElementNode ReadObject(XElement element)
 		{
 			try {
-				System.Threading.Interlocked.Increment(ref readCount);
+				Interlocked.Increment(ref readCount);
 
 				string name = XmlHelper.GetAttribute(element, ATTR_NAME);
 				if (name == null)

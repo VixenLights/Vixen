@@ -300,7 +300,7 @@ namespace Common.Controls
 			m_SelectedNodes = new List<TreeNode>();
 			base.SelectedNode = null;
 
-			base.SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.DoubleBuffer, true);
 			//base.SetStyle(ControlStyles.UserPaint, true);
 			//base.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			AllowDrop = true;
@@ -563,8 +563,8 @@ namespace Common.Controls
 		protected override void WndProc(ref Message m)
 		{
 			// Stop erase background message
-			if (m.Msg == (int) 0x0014) {
-				m.Msg = (int) 0x0000; // Set to null
+			if (m.Msg == 0x0014) {
+				m.Msg = 0x0000; // Set to null
 			}
 
 			switch (m.Msg) {
@@ -689,9 +689,9 @@ namespace Common.Controls
 
 			// Scrolling down/up
 			if (pt.Y + 10 > ClientSize.Height)
-				SendMessage(Handle, 277, (IntPtr) 1, 0);
+				SendMessage(Handle, 277, 1, 0);
 			else if (pt.Y < Top + 10)
-				SendMessage(Handle, 277, (IntPtr) 0, 0);
+				SendMessage(Handle, 277, 0, 0);
 		}
 
 		protected override void OnDragLeave(EventArgs e)
@@ -845,7 +845,7 @@ namespace Common.Controls
 		protected void CustomPaint(ref Message m)
 		{
 			base.WndProc(ref m);
-			using (Graphics g = this.CreateGraphics()) {
+			using (Graphics g = CreateGraphics()) {
 				if (DraggingBetweenRows) {
 					Color c = Color.FromArgb((int) (0.5*byte.MaxValue), Color.Black);
 					using (Pen p = new Pen(c, 2)) {
@@ -1030,8 +1030,8 @@ namespace Common.Controls
 		{
 			try {
 				foreach (TreeNode node in m_SelectedNodes) {
-					node.BackColor = this.BackColor;
-					node.ForeColor = this.ForeColor;
+					node.BackColor = BackColor;
+					node.ForeColor = ForeColor;
 				}
 			}
 			finally {
@@ -1068,8 +1068,8 @@ namespace Common.Controls
 			}
 			else {
 				m_SelectedNodes.Remove(node);
-				node.BackColor = this.BackColor;
-				node.ForeColor = this.ForeColor;
+				node.BackColor = BackColor;
+				node.ForeColor = ForeColor;
 			}
 		}
 

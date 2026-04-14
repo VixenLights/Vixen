@@ -1,4 +1,5 @@
-﻿using Vixen.Execution.DataSource;
+﻿using NLog;
+using Vixen.Execution.DataSource;
 using Vixen.Sys;
 
 namespace Vixen.Execution
@@ -9,7 +10,7 @@ namespace Vixen.Execution
 	/// </summary>
 	internal class ContextCurrentEffectsFull : List<IEffectNode> ,IContextCurrentEffects
 	{
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private bool _reset;
 
 		/// <summary>

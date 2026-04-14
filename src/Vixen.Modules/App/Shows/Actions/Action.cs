@@ -1,9 +1,11 @@
-﻿namespace VixenModules.App.Shows
+﻿using NLog;
+
+namespace VixenModules.App.Shows
 {
 	public abstract class Action: IDisposable
 	{
 		//Timer completeTimer;
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		public Action(ShowItem showItem)
 		{
 			ShowItem = showItem;

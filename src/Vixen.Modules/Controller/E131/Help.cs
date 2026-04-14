@@ -34,7 +34,7 @@ namespace VixenModules.Controller.E131
 	using System.Net.Sockets;
 	using System.Text;
 	using System.Windows.Forms;
-	using VixenModules.Controller.E131.J1Sys;
+	using J1Sys;
 
 	internal static class Help
 	{

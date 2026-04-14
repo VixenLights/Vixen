@@ -15,12 +15,10 @@ namespace Vixen.Sys.Instrumentation
 
 		public void AddValue(IInstrumentationValue value)
 		{
-			Debug.Assert(value != null);
+			ArgumentNullException.ThrowIfNull(value);
 			// last one wins... old one is orphaned
 			// this is nicer for providers that "re-register counters
-			if (value != null) {
-				_values[value.Name] = value;
-			}
+			_values[value.Name] = value;
 		}
 
 		public void RemoveValue(IInstrumentationValue value)

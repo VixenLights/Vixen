@@ -35,7 +35,7 @@
 
 		public bool Equals(TimingModuleDescriptorBase x, TimingModuleDescriptorBase y)
 		{
-			return Equals(x as ITimingModuleDescriptor, y as ITimingModuleDescriptor);
+			return Equals(x, y as ITimingModuleDescriptor);
 		}
 
 		public int GetHashCode(TimingModuleDescriptorBase obj)

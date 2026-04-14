@@ -22,8 +22,6 @@ namespace Vixen.Sys.LayerMixing
 		/// </summary>
 		private Dictionary<Guid, ILayer> _layerMap;
 
-		private ISequence _sequence;
-
 		public SequenceLayers()
 		{
 			Layers = new ObservableCollection<ILayer>();

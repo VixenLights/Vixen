@@ -102,7 +102,7 @@ namespace Common.Controls.Timeline
 				Invalidate();
 			}
 			else if (LabelArea.Contains(e.Location) || ((ParentRow.ChildRows.Count == 0) && IconArea.Contains(e.Location))) {
-				_LabelClicked(Form.ModifierKeys);
+				_LabelClicked(ModifierKeys);
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace Common.Controls.Timeline
 			{
 				if (LabelArea.Contains(e.Location) || ((ParentRow.ChildRows.Count == 0) && IconArea.Contains(e.Location)))
 				{
-					_LabelClicked(Form.ModifierKeys);
+					_LabelClicked(ModifierKeys);
 				}
 				_RowContextMenuSelect();
 			}
@@ -144,9 +144,9 @@ namespace Common.Controls.Timeline
 			base.OnMouseMove(e);
 
 			if (MousePosContainsResizeBar(e))
-				this.Cursor = Cursors.HSplit;
+				Cursor = Cursors.HSplit;
 			else
-				this.Cursor = Cursors.Default;
+				Cursor = Cursors.Default;
 
 			if (Resizing) {
 				int dy = e.Y - LastMouseLocation.Y;

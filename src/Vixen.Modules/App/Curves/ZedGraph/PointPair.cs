@@ -1,6 +1,6 @@
 //============================================================================
 //PointPair Class
-//Copyright © 2004  Jerry Vos
+//Copyright Â© 2004  Jerry Vos
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -18,8 +18,7 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
-#if ( !DOTNET1 )
+#if (!DOTNET1)
 // Is this a .Net 2 compilation?
 
 #endif
@@ -118,8 +117,8 @@ namespace ZedGraph {
 		/// <param name="tag">This pair's <see cref="Tag"/> property</param>
 		public PointPair(double x, double y, double z, object tag)
 			: base(x, y) {
-			this.Z = z;
-			this.Tag = tag;
+			Z = z;
+			Tag = tag;
 		}
 
 		/// <summary>
@@ -137,12 +136,12 @@ namespace ZedGraph {
 		/// <param name="rhs">The basis for the copy.</param>
 		public PointPair(PointPair rhs)
 			: base(rhs) {
-			this.Z = rhs.Z;
+			Z = rhs.Z;
 
 			if (rhs.Tag is ICloneable)
-				this.Tag = ((ICloneable)rhs.Tag).Clone();
+				Tag = ((ICloneable)rhs.Tag).Clone();
 			else
-				this.Tag = rhs.Tag;
+				Tag = rhs.Tag;
 		}
 
 		/// <summary>
@@ -151,7 +150,7 @@ namespace ZedGraph {
 		/// </summary>
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone() {
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -213,15 +212,15 @@ namespace ZedGraph {
 		/// <returns>true if any value is invalid</returns>
 		public bool IsInvalid3D {
 			get {
-				return this.X == PointPair.Missing ||
-					   this.Y == PointPair.Missing ||
-					   this.Z == PointPair.Missing ||
-					   Double.IsInfinity(this.X) ||
-					   Double.IsInfinity(this.Y) ||
-					   Double.IsInfinity(this.Z) ||
-					   Double.IsNaN(this.X) ||
-					   Double.IsNaN(this.Y) ||
-					   Double.IsNaN(this.Z);
+				return X == Missing ||
+					   Y == Missing ||
+					   Z == Missing ||
+					   Double.IsInfinity(X) ||
+					   Double.IsInfinity(Y) ||
+					   Double.IsInfinity(Z) ||
+					   Double.IsNaN(X) ||
+					   Double.IsNaN(Y) ||
+					   Double.IsNaN(Z);
 			}
 		}
 
@@ -231,8 +230,8 @@ namespace ZedGraph {
 		/// </summary>
 		/// <value>The lower dependent value for this <see cref="PointPair"/>.</value>
 		public double LowValue {
-			get { return this.Z; }
-			set { this.Z = value; }
+			get { return Z; }
+			set { Z = value; }
 		}
 
 		/// <summary>
@@ -391,7 +390,7 @@ namespace ZedGraph {
 				double lY = l.Y;
 				double rY = r.Y;
 
-				if (System.Math.Abs(lY - rY) < .000000001)
+				if (Math.Abs(lY - rY) < .000000001)
 					return 0;
 
 				return lY < rY ? -1 : 1;
@@ -411,7 +410,7 @@ namespace ZedGraph {
 			/// </summary>
 			/// <param name="type">The axis type on which to sort.</param>
 			public PointPairComparer(SortType type) {
-				this.sortType = type;
+				sortType = type;
 			}
 
 			/// <summary>
@@ -444,12 +443,12 @@ namespace ZedGraph {
 					rOther = r.X;
 				}
 
-				if (lVal == PointPair.Missing || Double.IsInfinity(lVal) || Double.IsNaN(lVal))
+				if (lVal == Missing || Double.IsInfinity(lVal) || Double.IsNaN(lVal))
 					l = null;
-				if (rVal == PointPair.Missing || Double.IsInfinity(rVal) || Double.IsNaN(rVal))
+				if (rVal == Missing || Double.IsInfinity(rVal) || Double.IsNaN(rVal))
 					r = null;
 
-				if ((l == null && r == null) || (System.Math.Abs(lVal - rVal) < 1e-100))
+				if ((l == null && r == null) || (Math.Abs(lVal - rVal) < 1e-100))
 					return (lOther == rOther) ? 0 : ((lOther < rOther) ? -1 : 1);
 				else if (l == null && r != null)
 					return -1;
@@ -474,7 +473,7 @@ namespace ZedGraph {
 		/// <returns>true if the <see cref="PointPair"/> objects are equal, false otherwise</returns>
 		public override bool Equals(object obj) {
 			PointPair rhs = obj as PointPair;
-			return this.X == rhs.X && this.Y == rhs.Y && this.Z == rhs.Z;
+			return X == rhs.X && Y == rhs.Y && Z == rhs.Z;
 		}
 
 		/// <summary>
@@ -492,7 +491,7 @@ namespace ZedGraph {
 		/// <param name="isShowZ">true to show the third "Z" or low dependent value coordinate</param>
 		/// <returns>A string representation of the PointPair</returns>
 		public virtual string ToString(bool isShowZ) {
-			return this.ToString(PointPair.DefaultFormat, isShowZ);
+			return ToString(DefaultFormat, isShowZ);
 		}
 
 		/// <summary>
@@ -506,7 +505,7 @@ namespace ZedGraph {
 		/// <returns>A string representation of the PointPair</returns>
 		/// <param name="isShowZ">true to show the third "Z" or low dependent value coordinate</param>
 		public virtual string ToString(string format, bool isShowZ) {
-			return string.Format("({0},{1}{2}: )", this.X.ToString(format), this.Y.ToString(format), isShowZ ? (string.Format(", {0}", this.Z.ToString(format))) : string.Empty);
+			return string.Format("({0},{1}{2}: )", X.ToString(format), Y.ToString(format), isShowZ ? (string.Format(", {0}", Z.ToString(format))) : string.Empty);
 		}
 
 		/// <summary>
@@ -521,9 +520,9 @@ namespace ZedGraph {
 		/// double type value (see <see cref="System.Double.ToString()"/>).</param>
 		/// <returns>A string representation of the PointPair</returns>
 		public string ToString(string formatX, string formatY, string formatZ) {
-			return "( " + this.X.ToString(formatX) +
-				   ", " + this.Y.ToString(formatY) +
-				   ", " + this.Z.ToString(formatZ) +
+			return "( " + X.ToString(formatX) +
+				   ", " + Y.ToString(formatY) +
+				   ", " + Z.ToString(formatZ) +
 				   " )";
 		}
 

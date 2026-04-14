@@ -57,7 +57,7 @@ namespace VixenModules.Effect.Effect
 		{ 
 			get
 			{
-				return (EffectTypeModuleData)Data;
+				return Data;
 			}
 		}
 
@@ -817,7 +817,7 @@ namespace VixenModules.Effect.Effect
 		/// </summary>
 		public override IModuleDataModel ModuleData
 		{
-			get => (IModuleDataModel)Data;
+			get => Data;
 			set
 			{
 				Data = (T_Data)value;

@@ -176,7 +176,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
             RoutedPropertyChangedEventArgs<double> e)
         {
             // find appropriate tick spot, and set slider value
-            SetValueToTick(this, (double)e.NewValue);
+            SetValueToTick(this, e.NewValue);
         }
 
         
@@ -276,7 +276,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
         {
             base.OnApplyTemplate();
 
-            this._slider = this.Template.FindName("PART_Slider", this) as Slider;
+            _slider = Template.FindName("PART_Slider", this) as Slider;
 
             if (_slider == null)
                 throw new InvalidOperationException("Control template is missing part Slider_PART");
@@ -308,15 +308,15 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 // top element
                 if (topElement != null)
                 {
-                    if ((double)elem.GetValue(SliderMenuItem.ItemValueProperty) >=
-                        (double)topElement.GetValue(SliderMenuItem.ItemValueProperty))
+                    if ((double)elem.GetValue(ItemValueProperty) >=
+                        (double)topElement.GetValue(ItemValueProperty))
                     {
                         bottomElement = elem;
                     }
                 }
 
                 // Move along.  Nothing to see here.
-                if ((bool)(elem.GetValue(SliderMenuItem.SkipProperty)))
+                if ((bool)(elem.GetValue(SkipProperty)))
                     continue;
 
                 // set the first element
@@ -360,7 +360,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
                     ((MenuItem)elem).Click += new RoutedEventHandler(SliderMenuItem_Click);
 
                 // Move along.  Nothing to see here.
-                if ((bool)(elem.GetValue(SliderMenuItem.SkipProperty)))
+                if ((bool)(elem.GetValue(SkipProperty)))
                     continue;
 
                 // Grab the coordinates of the child menu item
@@ -368,7 +368,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
                 // Get the number of steps, or tick spots between this child menu item
                 //  and the previous one.
-                int steps = (int)elem.GetValue(SliderMenuItem.StepsProperty);
+                int steps = (int)elem.GetValue(StepsProperty);
 
                 // A value of 0 for Steps is like setting Skip = true
                 if (steps < 1)
@@ -392,7 +392,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 }
 
                 _slider.Ticks.Add(thisTickSpot);
-                double sliderValue = (double)elem.GetValue(SliderMenuItem.ItemValueProperty);
+                double sliderValue = (double)elem.GetValue(ItemValueProperty);
                 _tickValueMap[thisTickSpot] = sliderValue;
 
             }
@@ -411,7 +411,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
         /// <param name="e"></param>
         private void SliderMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            this.ItemValue = (double)((DependencyObject)sender).GetValue(SliderMenuItem.ItemValueProperty);
+            ItemValue = (double)((DependencyObject)sender).GetValue(ItemValueProperty);
         }
     }
 }

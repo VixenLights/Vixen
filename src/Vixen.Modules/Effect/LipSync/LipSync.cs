@@ -734,7 +734,7 @@ namespace VixenModules.Effect.LipSync
 		{
 			try
 			{
-				Bitmap displayImage = null;
+				Bitmap displayImage;
 				Bitmap scaledImage = null;
 				
 				if (LipSyncMode == LipSyncMode.MarkCollection)

@@ -19,7 +19,6 @@
 
 using System.Drawing.Drawing2D;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -126,7 +125,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -201,7 +200,7 @@ namespace ZedGraph
 		{
 			// Convert the arrow coordinates from the user coordinate system
 			// to the screen coordinate system
-			RectangleF pixRect = this.Location.TransformRect(pane);
+			RectangleF pixRect = Location.TransformRect(pane);
 
 			if (Math.Abs(pixRect.Left) < 100000 &&
 			    Math.Abs(pixRect.Top) < 100000 &&

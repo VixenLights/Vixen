@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -158,10 +158,10 @@ namespace ZedGraph
 		/// <param name="rhs">The XAxis object from which to copy</param>
 		public CurveList(CurveList rhs)
 		{
-			this.maxPts = rhs.maxPts;
+			maxPts = rhs.maxPts;
 
 			foreach (CurveItem item in rhs) {
-				this.Add((CurveItem) ((ICloneable) item).Clone());
+				Add((CurveItem) ((ICloneable) item).Clone());
 			}
 		}
 
@@ -172,7 +172,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -196,7 +196,7 @@ namespace ZedGraph
 		{
 			get
 			{
-				for (int i = this.Count - 1; i >= 0; i--)
+				for (int i = Count - 1; i >= 0; i--)
 					yield return this[i];
 			}
 		}
@@ -208,7 +208,7 @@ namespace ZedGraph
 		{
 			get
 			{
-				for (int i = 0; i < this.Count; i++)
+				for (int i = 0; i < Count; i++)
 					yield return this[i];
 			}
 		}
@@ -342,7 +342,7 @@ namespace ZedGraph
 		/// </summary>
 		public void Sort(SortType type, int index)
 		{
-			this.Sort(new CurveItem.Comparer(type, index));
+			Sort(new CurveItem.Comparer(type, index));
 		}
 
 		/// <summary>
@@ -368,7 +368,7 @@ namespace ZedGraph
 				return -1;
 
 			CurveItem curve = this[index];
-			this.RemoveAt(index);
+			RemoveAt(index);
 
 			index += relativePos;
 			if (index < 0)
@@ -635,7 +635,7 @@ namespace ZedGraph
 			//Bar.ResetBarStack();
 
 			// Count the number of BarItems in the curvelist
-			int pos = this.NumBars;
+			int pos = NumBars;
 
 			// sorted overlay bars are a special case, since they are sorted independently at each
 			// ordinal position.
@@ -647,7 +647,7 @@ namespace ZedGraph
 						tempList.Add((CurveItem) curve);
 
 				// Loop through the bars, graphing each ordinal position separately
-				for (int i = 0; i < this.maxPts; i++) {
+				for (int i = 0; i < maxPts; i++) {
 					// At each ordinal position, sort the curves according to the value axis value
 					tempList.Sort(pane._barSettings.Base == BarBase.X ? SortType.YValues : SortType.XValues, i);
 					// plot the bars for the current ordinal position, in sorted order
@@ -663,7 +663,7 @@ namespace ZedGraph
 			// The reverse order is done so that curves that are later in the list are plotted behind
 			// curves that are earlier in the list
 
-			for (int i = this.Count - 1; i >= 0; i--) {
+			for (int i = Count - 1; i >= 0; i--) {
 				CurveItem curve = this[i];
 
 				if (curve.IsBar)

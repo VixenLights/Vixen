@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Vixen.Module;
+﻿using Vixen.Module;
 using System.Runtime.Serialization;
 
 namespace VixenModules.SequenceType.Vixen2x

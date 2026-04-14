@@ -1,8 +1,9 @@
 ﻿using Vixen.Data.Value;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Interpolator
 {
-	[Vixen.Sys.Attribute.Interpolator(typeof (RangeValue<FunctionIdentity>))]
+	[Interpolator(typeof (RangeValue<FunctionIdentity>))]
 	internal class RangeValueInterpolator : Interpolator<RangeValue<FunctionIdentity>>
 	{
 		protected override RangeValue<FunctionIdentity> InterpolateValue(double percent, RangeValue<FunctionIdentity> startValue, RangeValue<FunctionIdentity> endValue)

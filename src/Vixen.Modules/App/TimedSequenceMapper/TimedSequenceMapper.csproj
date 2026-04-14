@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <AssemblyName>Module.App.TimedSequenceMapper</AssemblyName>
+      <RootNamespace>VixenModules.App.TimedSequenceMapper</RootNamespace>
+	  <AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
 	  <UseWPF>true</UseWPF>
   </PropertyGroup>
 

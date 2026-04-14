@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using NLog;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -8,7 +8,7 @@ namespace Vixen.IO.Xml
 {
 	internal class XElementFileWriter : IFileWriter<XElement>
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const int BackupsToKeep = 3;
 		private const int DaysToKeep = 3;
 		private const string BackupFolder = "auto_backup";
@@ -18,7 +18,7 @@ namespace Vixen.IO.Xml
 		    while (IsFileLocked(filePath))
 		    {
 				Logging.Warn("Filepath {0} is locked! Sleeping for 250ms to wait for it to free up.", filePath);
-		        System.Threading.Thread.Sleep(250);
+		        Thread.Sleep(250);
 		    }
 			try
 			{
@@ -73,7 +73,7 @@ namespace Vixen.IO.Xml
 			while (IsFileLocked(filePath))
 			{
 				Logging.Warn("Filepath {0} is locked! Sleeping for 250ms to wait for it to free up.", filePath);
-				System.Threading.Thread.Sleep(250);
+				Thread.Sleep(250);
 			}
 			try
 			{
@@ -155,11 +155,11 @@ namespace Vixen.IO.Xml
 					if(orderedBackups.Any())
 					{
 						int dayNum = 0;
-						int skipNum = 0;
 						try
 						{
 							foreach (var dateGroup in orderedBackups)
 							{
+								int skipNum;
 								switch (dayNum)
 								{
 									case 0:

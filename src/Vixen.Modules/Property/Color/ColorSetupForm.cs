@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.Property.Color
 {
@@ -29,9 +28,9 @@ namespace VixenModules.Property.Color
 		}
 
 		#region Overrides of Form
-
+		
 		/// <inheritdoc />
-		protected override void OnClosing(CancelEventArgs e)
+		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
 			colorPanelSingleColor.ColorChanged -= colorPanelSingleColor_ColorChanged;
 		}

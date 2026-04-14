@@ -147,11 +147,6 @@ namespace VixenModules.Effect.CustomValue
 			}
 		}
 
-		public CustomValueModule()
-		{
-			//_data = new CustomValueData();
-		}
-
 		protected override void TargetNodesChanged()
 		{
 			//Nothing to do

@@ -14,7 +14,7 @@
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
-			EnableDisableHandlers(true);
+			EnableDisableHandlers();
 		}
 
 		#region Properties
@@ -116,8 +116,8 @@
 
 		public void AddRowLabel(RowLabel trl)
 		{
-			if (this.InvokeRequired) {
-				this.Invoke(new AddRowLabelDelegate(AddRowLabel), trl);
+			if (InvokeRequired) {
+				Invoke(new AddRowLabelDelegate(AddRowLabel), trl);
 			}
 			else {
 				RowLabels.Add(trl);

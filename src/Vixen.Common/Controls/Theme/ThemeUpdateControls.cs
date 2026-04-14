@@ -69,8 +69,8 @@ namespace Common.Controls.Theme
 						btn.ForeColor = ThemeColorTable.ForeColor;
 
 						// Install mouse standard events.
-						btn.MouseLeave += new System.EventHandler(buttonBackground_MouseLeave);
-						btn.MouseHover += new System.EventHandler(buttonBackground_MouseHover);
+						btn.MouseLeave += new EventHandler(buttonBackground_MouseLeave);
+						btn.MouseHover += new EventHandler(buttonBackground_MouseHover);
 					}
 					else
 					{

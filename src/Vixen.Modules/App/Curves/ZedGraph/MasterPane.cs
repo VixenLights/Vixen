@@ -23,7 +23,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Collections;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 #endregion
 
@@ -324,7 +323,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -692,8 +691,8 @@ namespace ZedGraph
 			// See if the point is in a GraphObj
 			// If so, just save the object and index so we can see if other overlying objects were
 			// intersected as well.
-			if (this.GraphObjList.FindPoint(mousePt, this, g, scaleFactor, out index)) {
-				saveGraphItem = this.GraphObjList[index];
+			if (GraphObjList.FindPoint(mousePt, this, g, scaleFactor, out index)) {
+				saveGraphItem = GraphObjList[index];
 				saveIndex = index;
 
 				// If it's an "In-Front" item, then just return it

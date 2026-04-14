@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
-				<AssemblyName>Module.App.CustomPropEditor</AssemblyName>
+                <AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
 				<RootNamespace>VixenModules.App.CustomPropEditor</RootNamespace>
 			 	<EnableDynamicLoading>true</EnableDynamicLoading>
 				<UseWPF>true</UseWPF>

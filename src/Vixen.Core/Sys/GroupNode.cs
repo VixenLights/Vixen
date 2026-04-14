@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys
+﻿using System.Collections;
+
+namespace Vixen.Sys
 {
 	public abstract class GroupNode<T> : IEnumerable<T>
 	{
@@ -57,7 +59,7 @@
 			// children of other nodes, not just this one).
 			if (cleanupIfFloating && Parents.Count() == 0) {
 				foreach (GroupNode<T> child in _children.ToList()) {
-					child.RemoveFromParent(this, cleanupIfFloating);
+					child.RemoveFromParent(this, true);
 				}
 			}
 
@@ -126,7 +128,7 @@
 			return _children.SelectMany(x => x).GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

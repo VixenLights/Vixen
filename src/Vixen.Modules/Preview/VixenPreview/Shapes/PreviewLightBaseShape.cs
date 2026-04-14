@@ -9,7 +9,6 @@ using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 using Color = System.Drawing.Color;
-using System.Xml.Serialization;
 using Common.Controls.Theme;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
@@ -161,7 +160,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					//Instead of going through the strings multiple times.. do it once
 					// set all the sub-strings to match the connection state for elements
 					foreach (PreviewLightBaseShape line in _strings)
-						line.connectStandardStrings = this.connectStandardStrings;
+						line.connectStandardStrings = connectStandardStrings;
 
 					// Set all the StringTypes in the substrings
 					foreach (PreviewLightBaseShape line in _strings) {
@@ -323,7 +322,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			int origPixelSize = pixel.PixelSize;
             if (forceDraw)
             {
-                pixel.Draw(fp, forceDraw);
+                pixel.Draw(fp, true);
             }
             else
             {
@@ -425,7 +424,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				if (allIn && result == false)
 					break;
-				else if (!allIn && result == true)
+				else if (!allIn && result)
 					break;
             }
 			return result;
@@ -433,7 +432,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		
 		public override object Clone()
 		{
-			var shape = (PreviewLightBaseShape)this.MemberwiseClone();
+			var shape = (PreviewLightBaseShape)MemberwiseClone();
 			foreach (var previewPixel in Pixels)
 			{
 				shape.Pixels.Add(previewPixel.Clone());

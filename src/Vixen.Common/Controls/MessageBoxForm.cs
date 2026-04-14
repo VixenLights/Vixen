@@ -106,8 +106,7 @@ namespace Common.Controls
 		{
 			if (InvokeRequired)
 			{
-				return (DialogResult) Invoke(new Func<DialogResult>(
-					() => ShowDialog(owner)));
+				return Invoke(() => ShowDialog(owner));
 			}
 			
 			return ShowDialog(owner);

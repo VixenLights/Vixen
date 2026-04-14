@@ -1,10 +1,11 @@
-﻿using Common.Controls.Scaling;
+﻿using System.ComponentModel;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Vixen.Services;
 
-namespace VixenModules.App.Shows
+namespace VixenModules.App.Shows.Editors
 {
 	public partial class SequenceTypeEditor : TypeEditorBase
 	{
@@ -22,7 +23,7 @@ namespace VixenModules.App.Shows
 			_showItem = showItem;
 		}
 
-		private void OpenFileDialog_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+		private void OpenFileDialog_FileOk(object sender, CancelEventArgs e)
 		{
 			string[] files = openFileDialog.FileNames;
 

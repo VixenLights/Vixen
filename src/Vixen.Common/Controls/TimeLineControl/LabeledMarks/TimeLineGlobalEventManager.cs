@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Common.Controls.Timeline;
+﻿using Common.Controls.Timeline;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
@@ -30,11 +29,9 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 			{
 				return instance;
 			}
-			else
-			{
-				instance = new TimeLineGlobalEventManager(id);
-				Instances.Add(id, instance);
-			}
+
+			instance = new TimeLineGlobalEventManager(id);
+			Instances.Add(id, instance);
 
 			return instance;
 		}

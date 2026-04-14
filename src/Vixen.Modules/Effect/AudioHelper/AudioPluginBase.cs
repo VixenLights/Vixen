@@ -499,7 +499,7 @@ namespace VixenModules.Effect.AudioHelp
 
 		private List<IElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<IElementNode> renderNodes = null;
+			IEnumerable<IElementNode> renderNodes;
 
 			if (DepthOfEffect == 0)
 			{

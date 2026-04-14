@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Line Graph/Bar Graph Library in C#
-//Copyright © 2004  John Champion
+//Copyright Â© 2004  John Champion
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,6 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -189,7 +188,7 @@ namespace ZedGraph
 		/// type of symbol to use for this <see cref="LineItem"/>.  Use <see cref="SymbolType.None"/>
 		/// to hide the symbols.</param>
 		public LineItem(string label, IPointList points, Color color, SymbolType symbolType)
-			: this(label, points, color, symbolType, ZedGraph.LineBase.Default.Width)
+			: this(label, points, color, symbolType, LineBase.Default.Width)
 		{
 		}
 
@@ -210,7 +209,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -344,8 +343,8 @@ namespace ZedGraph
 		/// </param>
 		public override void MakeUnique(ColorSymbolRotator rotator)
 		{
-			this.Color = rotator.NextColor;
-			this.Symbol.Type = rotator.NextSymbol;
+			Color = rotator.NextColor;
+			Symbol.Type = rotator.NextSymbol;
 		}
 
 		/// <summary>

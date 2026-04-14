@@ -729,12 +729,12 @@ namespace VixenModules.Effect.CountDown
 				if (_direction == CountDownDirection.Rotate)
 				{
 					//move rotation point to center of image
-					graphics.TranslateTransform((float) (bitmap.Width / 2 + xOffset), (float) (bitmap.Height / 2 + (yOffset / 2)));
+					graphics.TranslateTransform(bitmap.Width / 2f + xOffset, bitmap.Height / 2f + (yOffset / 2f));
 					//rotate
 					graphics.SmoothingMode = SmoothingMode.None;
 					graphics.RotateTransform(textAngle);
 					//move image back
-					graphics.TranslateTransform(-(float) (bitmap.Width / 2 + xOffset), -(float) (bitmap.Height / 2 + (yOffset / 2)));
+					graphics.TranslateTransform(-(bitmap.Width / 2f + xOffset), -(bitmap.Height / 2f + (yOffset / 2f)));
 				}
 
 				if (Spinner)
@@ -1045,7 +1045,7 @@ namespace VixenModules.Effect.CountDown
 					double totalFrames = GetNumberFrames();
 					string displayTime1 = "";
 					bool isInt = Math.Abs((totalFrames / _fps) % 1) <= Double.Epsilon * 100;
-					int startTick = (int)((double)clipRectangle.Width / totalFrames * (int)((totalFrames / _fps - Math.Floor(totalFrames / _fps)) * _fps));
+					int startTick = (int)(clipRectangle.Width / totalFrames * (int)((totalFrames / _fps - Math.Floor(totalFrames / _fps)) * _fps));
 					countTime = (int)Math.Ceiling(totalFrames / _fps);
 					if (!isInt) countTime--;
 					secondTicks = (int)((double)clipRectangle.Width / (int)TimeSpan.Ticks * 10000000);
@@ -1227,7 +1227,7 @@ namespace VixenModules.Effect.CountDown
 				minCrossHashWidth = 1;
 			}
 
-			int crossHashWidth = 0;
+			int crossHashWidth;
 
 			switch (SizeMode)
 			{

@@ -127,8 +127,8 @@ namespace VixenModules.Effect.Whirlpool
 			}
 			else
 			{
-				_vortexMetadata.LastWidth = width += 2 * (thickness + spacing);
-				_vortexMetadata.LastHeight = height += 2 * (thickness + spacing);
+				_vortexMetadata.LastWidth = width + 2 * (thickness + spacing);
+				_vortexMetadata.LastHeight = height + 2 * (thickness + spacing);
 
 				if (_vortexMetadata.DrawLeft &&
 				    _vortexMetadata.DrawBottom &&
@@ -254,8 +254,8 @@ namespace VixenModules.Effect.Whirlpool
 			}
 			else
 			{
-				_vortexMetadata.LastWidth = width += 2 * (thickness + spacing);
-				_vortexMetadata.LastHeight = height += 2 * (thickness + spacing);
+				_vortexMetadata.LastWidth = width + 2 * (thickness + spacing);
+				_vortexMetadata.LastHeight = height + 2 * (thickness + spacing);
 				if (_vortexMetadata.DrawLeft &&
 				    _vortexMetadata.DrawTop &&
 				    _vortexMetadata.DrawRight &&
@@ -378,8 +378,8 @@ namespace VixenModules.Effect.Whirlpool
 			}
 			else
 			{
-				_vortexMetadata.LastWidth = width += 2 * (thickness + spacing);
-				_vortexMetadata.LastHeight = height += 2 * (thickness + spacing);
+				_vortexMetadata.LastWidth = width + 2 * (thickness + spacing);
+				_vortexMetadata.LastHeight = height + 2 * (thickness + spacing);
 				if (_vortexMetadata.DrawLeft &&
 				    _vortexMetadata.DrawTop &&
 				    _vortexMetadata.DrawRight &&
@@ -503,8 +503,8 @@ namespace VixenModules.Effect.Whirlpool
 			}
 			else
 			{
-				_vortexMetadata.LastWidth = width += 2 * (thickness + spacing);
-				_vortexMetadata.LastHeight = height += 2 * (thickness + spacing);
+				_vortexMetadata.LastWidth = width + 2 * (thickness + spacing);
+				_vortexMetadata.LastHeight = height + 2 * (thickness + spacing);
 				if (_vortexMetadata.DrawLeft &&
 				    _vortexMetadata.DrawTop &&
 				    _vortexMetadata.DrawRight &&
@@ -627,8 +627,8 @@ namespace VixenModules.Effect.Whirlpool
 			}
 			else
 			{
-				_vortexMetadata.LastWidth = width += 2 * (thickness + spacing);
-				_vortexMetadata.LastHeight = height += 2 * (thickness + spacing);
+				_vortexMetadata.LastWidth = width + 2 * (thickness + spacing);
+				_vortexMetadata.LastHeight = height + 2 * (thickness + spacing);
 				if (_vortexMetadata.DrawLeft &&
 				    _vortexMetadata.DrawTop &&
 				    _vortexMetadata.DrawRight &&
@@ -752,8 +752,8 @@ namespace VixenModules.Effect.Whirlpool
 			}
 			else
 			{
-				_vortexMetadata.LastWidth = width += 2 * (thickness + spacing);
-				_vortexMetadata.LastHeight = height += 2 * (thickness + spacing);
+				_vortexMetadata.LastWidth = width + 2 * (thickness + spacing);
+				_vortexMetadata.LastHeight = height + 2 * (thickness + spacing);
 				if (_vortexMetadata.DrawLeft &&
 				    _vortexMetadata.DrawTop &&
 				    _vortexMetadata.DrawRight &&
@@ -876,8 +876,8 @@ namespace VixenModules.Effect.Whirlpool
 			}
 			else
 			{
-				_vortexMetadata.LastWidth = width += 2 * (thickness + spacing);
-				_vortexMetadata.LastHeight = height += 2 * (thickness + spacing);
+				_vortexMetadata.LastWidth = width + 2 * (thickness + spacing);
+				_vortexMetadata.LastHeight = height + 2 * (thickness + spacing);
 
 				if (_vortexMetadata.DrawLeft &&
 				    _vortexMetadata.DrawTop &&
@@ -1001,8 +1001,8 @@ namespace VixenModules.Effect.Whirlpool
 			}
 			else
 			{
-				_vortexMetadata.LastWidth = width += 2 * (thickness + spacing);
-				_vortexMetadata.LastHeight = height += 2 * (thickness + spacing);
+				_vortexMetadata.LastWidth = width + 2 * (thickness + spacing);
+				_vortexMetadata.LastHeight = height + 2 * (thickness + spacing);
 				if (_vortexMetadata.DrawLeft &&
 				    _vortexMetadata.DrawTop &&
 				    _vortexMetadata.DrawRight &&

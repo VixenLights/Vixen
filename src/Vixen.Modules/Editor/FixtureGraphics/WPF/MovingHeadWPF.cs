@@ -760,7 +760,7 @@ namespace VixenModules.Editor.FixtureGraphics.WPF
 											  //textblock.Background = new SolidColorBrush(System.Windows.Media.Colors.Gray);
 			textblock.FontFamily = new FontFamily("Arial"); // setting the font to be used
 
-			textblock.Measure(new System.Windows.Size(text.Length * height, height));
+			textblock.Measure(new Size(text.Length * height, height));
 
 			textblock.Arrange(new Rect(0, 0, text.Length * height, height));
 			

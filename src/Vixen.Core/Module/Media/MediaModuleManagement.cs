@@ -6,7 +6,7 @@ namespace Vixen.Module.Media
 	{
 		public IMediaModuleInstance Get(string filePath)
 		{
-			string fileType = System.IO.Path.GetExtension(filePath);
+			string fileType = Path.GetExtension(filePath);
 
 			IMediaModuleDescriptor descriptor =
 				Modules.GetDescriptors<IMediaModuleInstance, IMediaModuleDescriptor>().FirstOrDefault(

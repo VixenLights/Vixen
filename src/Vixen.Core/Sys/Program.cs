@@ -1,4 +1,5 @@
-﻿using Vixen.Services;
+﻿using System.Collections;
+using Vixen.Services;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys
@@ -85,7 +86,7 @@ namespace Vixen.Sys
 			return _sequences.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}

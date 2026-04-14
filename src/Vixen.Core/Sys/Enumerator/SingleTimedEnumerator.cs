@@ -1,4 +1,5 @@
-﻿using Vixen.Module.Timing;
+﻿using System.Collections;
+using Vixen.Module.Timing;
 
 namespace Vixen.Sys.Enumerator {
 	abstract class SingleTimedEnumerator<T> : IEnumerator<T>
@@ -41,7 +42,7 @@ namespace Vixen.Sys.Enumerator {
 			}
 		}
 
-		object System.Collections.IEnumerator.Current {
+		object IEnumerator.Current {
 			get { return Current; }
 		}
 

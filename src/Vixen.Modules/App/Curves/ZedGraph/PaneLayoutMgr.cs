@@ -18,7 +18,6 @@
 //=============================================================================
 
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace ZedGraph
 {
@@ -96,7 +95,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -278,20 +277,20 @@ namespace ZedGraph
 
 			// use defaults if the parameters are invalid
 			if (countList != null && countList.Length > 0) {
-				this._prop = new float[countList.Length];
+				_prop = new float[countList.Length];
 
 				// Sum up the total proportional factors
 				float sumProp = 0.0f;
 				for (int i = 0; i < countList.Length; i++) {
-					this._prop[i] = (proportion == null || proportion.Length <= i || proportion[i] < 1e-10)
+					_prop[i] = (proportion == null || proportion.Length <= i || proportion[i] < 1e-10)
 					                	? 1.0f
 					                	: proportion[i];
-					sumProp += this._prop[i];
+					sumProp += _prop[i];
 				}
 
 				// Make prop sum to 1.0
 				for (int i = 0; i < countList.Length; i++)
-					this._prop[i] /= sumProp;
+					_prop[i] /= sumProp;
 
 				_isColumnSpecified = isColumnSpecified;
 				_countList = countList;
@@ -315,8 +314,8 @@ namespace ZedGraph
 		/// <seealso cref="SetLayout(bool,int[],float[])" />
 		public void DoLayout(Graphics g, MasterPane master)
 		{
-			if (this._countList != null)
-				DoLayout(g, master, this._isColumnSpecified, this._countList, this._prop);
+			if (_countList != null)
+				DoLayout(g, master, _isColumnSpecified, _countList, _prop);
 			else {
 				int count = master.PaneList.Count;
 				if (count == 0)

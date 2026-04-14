@@ -1,7 +1,6 @@
 ﻿using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
 
 namespace VixenModules.LayerMixingFilter.ChromaKey
 {

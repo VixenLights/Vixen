@@ -64,7 +64,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         [Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
-         CategoryAttribute("Settings"),
+         Category("Settings"),
          DisplayName("Linked Elements")]
         public override List<PreviewLightBaseShape> Strings
         {
@@ -263,8 +263,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     var line = Strings[stringNum] as PreviewLine;
                     line.AddStartPadding = stringNum > 0;
 
-					line.Point1 = PreviewTools.TransformPreviewPoint(this, _points[stringNum], ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
-                    line.Point2 = PreviewTools.TransformPreviewPoint(this, _points[stringNum + 1], ZoomLevel, PreviewTools.RotateTypes.Clockwise).ToPoint();
+					line.Point1 = PreviewTools.TransformPreviewPoint(this, _points[stringNum], ZoomLevel).ToPoint();
+                    line.Point2 = PreviewTools.TransformPreviewPoint(this, _points[stringNum + 1], ZoomLevel).ToPoint();
                     line.ZoomLevel = 1;
                 }
             }
@@ -300,9 +300,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			base.MouseMove(x, y, changeX, changeY);
         }
 
-        public override void MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        public override void MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 if (Creating)
                 {
@@ -329,9 +329,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 // We've got an ElementNode selected in the tree, now figure out what to do with it.
                 else
                 {
-                    int inputStringCount = 0;
-                    int inputPixelCount = 0;
-                    PreviewTools.CountPixelsAndStrings(inputElements, out inputPixelCount, out inputStringCount);
+	                PreviewTools.CountPixelsAndStrings(inputElements, out var inputPixelCount, out var inputStringCount);
                     int stringNum = _strings.Count();
 
                     // is this a single node with no children?
@@ -448,7 +446,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override object Clone()
         {
-            PreviewMultiString newMultiString = (PreviewMultiString)this.MemberwiseClone();
+            PreviewMultiString newMultiString = (PreviewMultiString)MemberwiseClone();
 
 			foreach (PreviewPixel pixel in _pixels)
 			{

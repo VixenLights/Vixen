@@ -34,13 +34,9 @@ namespace VixenModules.Editor.EffectEditor.Converters
 			if (rgb.Length != 6)
 				throw new ArgumentException("Invalid rgb value given");
 
-			int red = 0;
-			int green = 0;
-			int blue = 0;
-
-			red = System.Convert.ToInt32(rgb.Substring(0, 2), 16);
-			green = System.Convert.ToInt32(rgb.Substring(2, 2), 16);
-			blue = System.Convert.ToInt32(rgb.Substring(4, 2), 16);
+			var red = System.Convert.ToInt32(rgb.Substring(0, 2), 16);
+			var green = System.Convert.ToInt32(rgb.Substring(2, 2), 16);
+			var blue = System.Convert.ToInt32(rgb.Substring(4, 2), 16);
 
 
 			return Color.FromArgb(red, green, blue);

@@ -497,11 +497,7 @@ namespace Common.Controls
 			}
 			else
 			{
-				if (e.TargetNode.Parent == null)
-				{
-					newParentNode = null; // needs to go at the root level
-				}
-				else
+				if (e.TargetNode.Parent != null)
 				{
 					newParentNode = e.TargetNode.Parent.Tag as ElementNode;
 				}
@@ -589,8 +585,8 @@ namespace Common.Controls
 			// of the new parent node are considered OK, as we might just be shuffling them around. Normally, this would
 			// be A Bad Thing, since it would seem like we're adding a child to the group it's already in. (This is only
 			// the case when moving; if copying, it should be disabled. That's checked later.)
-			IEnumerable<ElementNode> invalidNodesForTarget = null;
-			IEnumerable<ElementNode> permittedNodesForTarget = null;
+			IEnumerable<ElementNode> invalidNodesForTarget;
+			IEnumerable<ElementNode> permittedNodesForTarget;
 
 			if (e.DragBetweenNodes == DragBetweenNodes.DragOnTargetNode ||
 				e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded)
@@ -723,7 +719,7 @@ namespace Common.Controls
 			if (!skipPatchCheck && CheckAndPromptIfNodeWillLosePatches(parent))
 				return null;
 
-			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, nodeName, true);
+			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, nodeName);
 			if (repopulateNodeTree)
 				PopulateNodeTree(newNode);
 			return newNode;

@@ -1,9 +1,8 @@
 ﻿using Vixen.IO.Factory;
+using Vixen.Sys;
 
 namespace Vixen.IO.Persistor
 {
-	using Vixen.Sys;
-
 	internal class SystemContextPersistor : IObjectPersistor<SystemContext>
 	{
 		public void SaveToFile(SystemContext obj, string filePath)

@@ -94,7 +94,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			int lastChildLightCount = -1;
 			childLightCount = -1;
-			if (selectedNode != null && selectedNode.Children != null) {
+			if (selectedNode != null) {
 				int parentStringCount = selectedNode.Children.ToList().Count;
 				// Selected node has to be a group!
 				if (!selectedNode.IsLeaf && parentStringCount >= 4) {
@@ -109,8 +109,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						else if (lastChildLightCount != childCount) {
 							return false;
 						}
-						lastChildLightCount = childCount;
-
+						
 						foreach (ElementNode child in parent.Children) {
 							// If there are sub-groups this is not a mega tree element!
 							if (!child.IsLeaf) {
@@ -173,9 +172,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		#region "Properties'
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Top Height"),
-		 DescriptionAttribute("Height of Mega Tree top.")]
+		 Description("Height of Mega Tree top.")]
 		public int TopHeight
 		{
 			set
@@ -186,9 +185,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _topHeight; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Top Width"),
-		 DescriptionAttribute("Width of Mega Tree top.")]
+		 Description("Width of Mega Tree top.")]
 		public int TopWidth
 		{
 			set
@@ -199,9 +198,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _topWidth; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Base Height"),
-		 DescriptionAttribute("Height of Mega Tree base.")]
+		 Description("Height of Mega Tree base.")]
 		public int BaseHeight
 		{
 			set
@@ -212,9 +211,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _baseHeight; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String Coverage Degrees"),
-		 DescriptionAttribute("Coverage in degrees that strings go around Mega Tree.")]
+		 Description("Coverage in degrees that strings go around Mega Tree.")]
 		public int Degrees
 		{
 			set
@@ -226,8 +225,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		
-		[CategoryAttribute("Settings"),
-		DescriptionAttribute("Degree offset can be used to center the Mega Tree."),
+		[Category("Settings"),
+		Description("Degree offset can be used to center the Mega Tree."),
 		DisplayName("Degree Offset")]
 		public int DegreeOffset
 		{
@@ -242,9 +241,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Lights Per String"),
-		 DescriptionAttribute("The number of lights on each string of the Mega Tree")]
+		 Description("The number of lights on each string of the Mega Tree")]
 		public int LightsPerString
 		{
 			set
@@ -257,9 +256,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _lightsPerString; }
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String Count"),
-		 DescriptionAttribute("Number of strings on Mega Tree")]
+		 Description("Number of strings on Mega Tree")]
 		public int StringCount
 		{
 			set
@@ -326,9 +325,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Upper left point of Mega Tree.")]
+		 Description("Upper left point of Mega Tree.")]
 		public Point TopLeft
 		{
 			get
@@ -345,9 +344,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Lower right point of Mega Tree.")]
+		 Description("Lower right point of Mega Tree.")]
 		public Point BottomRight
 		{
 			get
@@ -457,7 +456,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 																   _degrees,
 																   _degreeOffset);
 
-				for (int stringNum = 0; stringNum < (int)_stringCount; stringNum++)
+				for (int stringNum = 0; stringNum < _stringCount; stringNum++)
 				{
 					if (stringNum < StringCount && stringNum < _topEllipsePoints.Count())
 					{
@@ -467,8 +466,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						var line = _strings[stringNum] as PreviewLine;
 					    if (line != null)
 					    {
-							var _top = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(topPixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
-							var _base = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(basePixel), ZoomLevel, PreviewTools.RotateTypes.Clockwise);
+							var _top = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(topPixel), ZoomLevel);
+							var _base = PreviewTools.TransformPreviewPoint(this, new PreviewPoint(basePixel), ZoomLevel);
 
 							line.SetPoint0(_base.X, _base.Y);
 					        line.SetPoint1(_top.X, _top.Y);
@@ -583,7 +582,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override object Clone()
 		{
-			PreviewMegaTree newTree = (PreviewMegaTree) this.MemberwiseClone();
+			PreviewMegaTree newTree = (PreviewMegaTree) MemberwiseClone();
 
 			newTree._strings = new List<PreviewBaseShape>();
 			foreach (PreviewLightBaseShape line in _strings) {
@@ -597,7 +596,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		[Editor(typeof (PreviewSetElementsUIEditor), typeof (UITypeEditor)),
-		 CategoryAttribute("Settings"),
+		 Category("Settings"),
 		 DisplayName("Linked Elements")]
 		public override List<PreviewLightBaseShape> Strings
 		{

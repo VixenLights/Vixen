@@ -43,7 +43,7 @@
 
 		private void _AddIntentForElement(Guid elementId, IIntentNode intentNode)
 		{
-		   _AddIntentsForElement(elementId, new IIntentNode[] { intentNode });
+		   _AddIntentsForElement(elementId, new[] { intentNode });
 		}
 		
 		private void _AddIntentsForElement(Guid elementId, IEnumerable<IIntentNode> intentNodes) {

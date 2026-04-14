@@ -8,7 +8,6 @@ namespace Vixen.Rule.Patch
 	{
 		private IDataFlowComponent[] _elementComponents;
 		private IDataFlowComponent[] _controllerOutputComponents;
-		private int _startingOutputIndex;
 		private int _outputsPerElement;
 
 		public ElementsToSingleController(IEnumerable<Element> elements, IControllerDevice controllerDevice,
@@ -39,13 +38,12 @@ namespace Vixen.Rule.Patch
 				throw new IndexOutOfRangeException("Starting output index invalid for the controller.");
 			if (outputsPerElement < 1 || outputsPerElement > controllerOutputCount)
 				throw new InvalidOperationException("Invalid output count.");
-			//if(outputsPerElement >= (controllerOutputCount - startingOutputIndex)) throw new InvalidOperationException("Not enough outputs to patch.");
 
-			_startingOutputIndex = startingOutputIndex;
+			//if(outputsPerElement >= (controllerOutputCount - startingOutputIndex)) throw new InvalidOperationException("Not enough outputs to patch.");
 			_outputsPerElement = outputsPerElement;
 			_elementComponents = elements.Select(VixenSystem.Elements.GetDataFlowComponentForElement).ToArray();
 			_controllerOutputComponents =
-				Enumerable.Range(_startingOutputIndex, controllerOutputCount - _startingOutputIndex).Select(
+				Enumerable.Range(startingOutputIndex, controllerOutputCount - startingOutputIndex).Select(
 					x => VixenSystem.ControllerManagement.GetDataFlowComponentForOutput(controllerDevice, x)).ToArray();
 		}
 

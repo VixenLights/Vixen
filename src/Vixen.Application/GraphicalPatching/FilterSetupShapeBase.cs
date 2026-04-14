@@ -309,9 +309,6 @@ public abstract class FilterSetupShapeBase : RoundedBox, IDisposable
 		if (point < 0 || point >= totalPoints)
 			throw new ArgumentOutOfRangeException("point");
 
-		if (totalPoints <= 0)
-			throw new ArgumentOutOfRangeException("totalPoints");
-
 		if (totalPoints == 1)
 			return 0.5f;
 

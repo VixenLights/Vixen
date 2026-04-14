@@ -58,7 +58,7 @@ namespace VixenModules.Effect.LipSync
 		/// <inheritdoc />
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			var intervalPosFactor = ((double)100 / EffectEndTime.TotalMilliseconds) * (StartTime.TotalMilliseconds + frame * FrameTime);
+			var intervalPosFactor = 100d / EffectEndTime.TotalMilliseconds * (StartTime.TotalMilliseconds + frame * FrameTime);
 			var yOffsetAdjust = CalculateYOffset(intervalPosFactor);
 			var xOffsetAdjust = CalculateXOffset(intervalPosFactor);
 			if (_fp != null)
@@ -86,12 +86,12 @@ namespace VixenModules.Effect.LipSync
 
 		private int CalculateYOffset(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), (int)(BufferHt / 2 + _fp.Height / 2), -(int)(BufferHt / 2 + _fp.Height / 2));
+			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), BufferHt / 2d + _fp.Height / 2d, -(BufferHt / 2d + _fp.Height / 2d));
 		}
 
 		private int CalculateXOffset(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), (int)(BufferWi/2 + _fp.Width / 2), -(int)(BufferWi / 2 + _fp.Width / 2));
+			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), BufferWi/2d + _fp.Width / 2d, -(BufferWi / 2d + _fp.Width / 2d));
 		}
 
 		/// <inheritdoc />

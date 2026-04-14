@@ -1,6 +1,6 @@
 //============================================================================
 //ZedGraph Class Library - A Flexible Charting Library for .Net
-//Copyright © 2005 John Champion and Jerry Vos
+//Copyright Â© 2005 John Champion and Jerry Vos
 //
 //This library is free software; you can redistribute it and/or
 //modify it under the terms of the GNU Lesser General Public
@@ -197,7 +197,7 @@ namespace ZedGraph
 		/// <returns>A deep copy of this object</returns>
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -222,7 +222,7 @@ namespace ZedGraph
 			get
 			{
 				double xVal, yVal;
-				if (index >= 0 && index < this.Count) {
+				if (index >= 0 && index < Count) {
 					// grab the specified PerformanceData struct
 					PerformanceData perfData = (PerformanceData) DataCollection[index];
 					// extract the values from the struct according to the user-set

@@ -18,7 +18,7 @@ namespace Common.Controls.DragDropListView
     /// <param name="item">The source <see cref="ListViewItem"/> the event data relates to.</param>
     public CancelListViewItemDragEventArgs(ListViewItem item)
     {
-      this.Item = item;
+      Item = item;
     }
 
     #endregion

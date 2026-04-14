@@ -39,7 +39,7 @@ namespace Vixen.Module.SmartController
 
 		public bool Equals(SmartControllerModuleInstanceBase x, SmartControllerModuleInstanceBase y)
 		{
-			return Equals(x as ISmartControllerModuleInstance, y as ISmartControllerModuleInstance);
+			return Equals(x, y as ISmartControllerModuleInstance);
 		}
 
 		public int GetHashCode(SmartControllerModuleInstanceBase obj)

@@ -1,11 +1,13 @@
-﻿namespace VixenModules.App.Shows
+﻿using System.ComponentModel;
+
+namespace VixenModules.App.Shows
 {
 	partial class WebPageTypeEditor
 	{
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary> 
 		/// Clean up any resources being used.
@@ -89,10 +91,10 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxWebsite;
-		private System.Windows.Forms.OpenFileDialog openFileDialog;
-		private System.Windows.Forms.Button buttonTest;
-		private System.Windows.Forms.ToolTip toolTip1;
+		private Label label1;
+		private TextBox textBoxWebsite;
+		private OpenFileDialog openFileDialog;
+		private Button buttonTest;
+		private ToolTip toolTip1;
 	}
 }

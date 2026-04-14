@@ -1,11 +1,13 @@
-﻿namespace VixenModules.App.Shows
+﻿using System.ComponentModel;
+
+namespace VixenModules.App.Shows.Editors
 {
 	partial class PauseTypeEditor
 	{
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary> 
 		/// Clean up any resources being used.
@@ -80,9 +82,9 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.OpenFileDialog openFileDialog;
-		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.NumericUpDown numericUpDownPauseSeconds;
+		private Label label1;
+		private OpenFileDialog openFileDialog;
+		private ToolTip toolTip1;
+		private NumericUpDown numericUpDownPauseSeconds;
 	}
 }

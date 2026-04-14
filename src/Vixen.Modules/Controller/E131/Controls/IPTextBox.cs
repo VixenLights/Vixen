@@ -11,7 +11,7 @@
 				var createParams = base.CreateParams;
 				createParams.ClassName = "SysIPAddress32";
 				createParams.Height = 23;
-                Font = (System.Drawing.Font)Font.Clone();
+                Font = (Font)Font.Clone();
 				return createParams;
 			}
 		}

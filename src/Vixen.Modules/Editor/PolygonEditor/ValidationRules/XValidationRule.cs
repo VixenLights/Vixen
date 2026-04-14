@@ -34,8 +34,7 @@ namespace VixenModules.Editor.PolygonEditor.ViewModels
             ValidationResult result = ValidationResult.ValidResult;
 
             // Attempt to parse the coordinate into a double
-            double doubleValue = 0;
-            bool valid = double.TryParse((string)value, out doubleValue);
+            bool valid = double.TryParse((string)value, out var doubleValue);
 
             // If the string did not parse into a double then...
             if (!valid)

@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys
+﻿using NLog;
+
+namespace Vixen.Sys
 {
 	internal class UIThread
 	{
@@ -9,7 +11,7 @@
 		private Func<Form> _formThreadInit;
 		private Func<ApplicationContext> _applicationContextThreadInit;
 		private WindowsFormsSynchronizationContext _synchronizationContext;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private ManualResetEvent _startupFinished;
 		private const int START_TIMEOUT = 5000;	// 5 seconds to wait for the thread to start

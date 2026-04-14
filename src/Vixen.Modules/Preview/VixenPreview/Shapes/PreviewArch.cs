@@ -111,9 +111,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is point 1.")]
+		 Description("An arch is defined by a 2 points of a rectangle. This is point 1.")]
 		public Point TopLeft
 		{
 			get
@@ -137,9 +137,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is point 2.")]
+		 Description("An arch is defined by a 2 points of a rectangle. This is point 2.")]
 		public Point BottomRight
 		{
 			get
@@ -163,9 +163,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Size"),
+		[Category("Size"),
 		 DisplayName("Width"),
-		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is the width of those points.")]
+		 Description("An arch is defined by a 2 points of a rectangle. This is the width of those points.")]
 		public int Width
 		{
 			get
@@ -180,9 +180,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Size"),
+		[Category("Size"),
 		 DisplayName("Height"),
-		 DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is the height of those points.")]
+		 Description("An arch is defined by a 2 points of a rectangle. This is the height of those points.")]
 		public int Height
 		{
 			get
@@ -197,9 +197,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in the arch.")]
+		 Description("Number of pixels or lights in the arch.")]
 		public int PixelCount
 		{
 			get { return Pixels == null ? 0 : Pixels.Count; }

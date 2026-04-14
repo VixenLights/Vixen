@@ -35,7 +35,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 				r = GammaCorrection(value.R),
 				g = GammaCorrection(value.G),
 				b = GammaCorrection(value.B);
-			//Observer. = 2°, Illuminant = D65
+			//Observer. = 2ï¿½, Illuminant = D65
 			return new XYZ(
 				r * 41.24 + g * 35.76 + b * 18.05, //multiplicated by 100
 				r * 21.26 + g * 71.52 + b * 7.22,
@@ -49,29 +49,27 @@ namespace Common.Controls.ColorManagement.ColorModels
 		public static double ClipValue(double value, double min, double max)
 		{
 			if (double.IsNaN(value) ||
-				double.IsNegativeInfinity(value) ||
-				value < min)
+			    double.IsNegativeInfinity(value) ||
+			    value < min)
 				return min;
-			else if (double.IsPositiveInfinity(value) ||
-					 value > max)
+			if (double.IsPositiveInfinity(value) ||
+			    value > max)
 				return max;
-			else return value;
+			return value;
 		}
 
 		private static double GammaCorrection(double value)
 		{
 			if (value > 0.04045)
 				return Math.Pow((value + 0.055) / 1.055, 2.4);
-			else
-				return value / 12.92;
+			return value / 12.92;
 		}
 
 		private static double InvertGammaCorrection(double value)
 		{
 			if (value > 0.0031308)
 				return 1.055 * Math.Pow(value, 1.0 / 2.4) - 0.055;
-			else
-				return 12.92 * value;
+			return 12.92 * value;
 		}
 
 		#endregion
@@ -112,7 +110,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public RGB ToRGB()
 		{
-			//Observer. = 2°, Illuminant = D65
+			//Observer. = 2ï¿½, Illuminant = D65
 			double
 				r = InvertGammaCorrection(_x * +0.032406 + _y * -0.015372 + _z * -0.004986),
 				g = InvertGammaCorrection(_x * -0.009689 + _y * +0.018758 + _z * +0.000415),
@@ -167,10 +165,10 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public RGBA(Color value) :
 			this(
-			(double)(value.R) / 255.0,
-			(double)(value.G) / 255.0,
-			(double)(value.B) / 255.0,
-			(double)(value.A) / 255.0)
+			value.R / 255.0,
+			value.G / 255.0,
+			value.B / 255.0,
+			value.A / 255.0)
 		{
 		}
 
@@ -257,9 +255,9 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public RGB(Color value) :
 			this(
-			(double)(value.R) / 255.0,
-			(double)(value.G) / 255.0,
-			(double)(value.B) / 255.0)
+			value.R / 255.0,
+			value.G / 255.0,
+			value.B / 255.0)
 		{
 		}
 
@@ -381,14 +379,14 @@ namespace Common.Controls.ColorManagement.ColorModels
 		private static double DriveCurve(double value)
 		{
 			if (value > 0.008856) return Math.Pow(value, 1.0 / 3.0);
-			else return (7.787 * value) + (16.0 / 116.0);
+			return (7.787 * value) + (16.0 / 116.0);
 		}
 
 		private static double DriveInverseCurve(double value)
 		{
 			double cubic = value * value * value;
 			if (cubic > 0.008856) return cubic;
-			else return (value - 16.0 / 116.0) / 7.787;
+			return (value - 16.0 / 116.0) / 7.787;
 		}
 
 		#endregion

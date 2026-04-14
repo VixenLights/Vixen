@@ -37,16 +37,16 @@ namespace VixenModules.Effect.Liquid
 			EmitterData[0].Y = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 
 			// Second Emitter is static
-			EmitterData[1].Color = new ColorGradient(System.Drawing.Color.Purple);
+			EmitterData[1].Color = new ColorGradient(Color.Purple);
 
 			// Initialize the scale factor to 1/4
 			RenderScaleFactor = 4;
 
 			Colors = new List<ColorGradient>
 			{
-				new ColorGradient(System.Drawing.Color.Blue),
-				new ColorGradient(System.Drawing.Color.White),
-				new ColorGradient(System.Drawing.Color.Purple)
+				new ColorGradient(Color.Blue),
+				new ColorGradient(Color.White),
+				new ColorGradient(Color.Purple)
 			};
 
 			// Audio Defaults
@@ -127,7 +127,7 @@ namespace VixenModules.Effect.Liquid
 			// Clone the emitters
 			for (int index = 0; index < EmitterData.Count; index++)
 			{				
-				result.EmitterData.Add((EmitterData)(EmitterData[index]).CreateInstanceForClone());
+				result.EmitterData.Add((EmitterData[index]).CreateInstanceForClone());
 			}
 
 			return result;

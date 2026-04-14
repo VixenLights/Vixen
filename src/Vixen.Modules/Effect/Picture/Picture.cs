@@ -1210,7 +1210,7 @@ namespace VixenModules.Effect.Picture
 					{
 						locationX = locationX % _imageWidth;
 					}
-					else if (locationX < 0)
+					else
 					{
 						locationX = Convert.ToInt32(locationX % _imageWidth) + _imageWidth - 1;
 					}
@@ -1219,10 +1219,11 @@ namespace VixenModules.Effect.Picture
 					{
 						locationY = Convert.ToInt32((locationY % _imageHeight));
 					}
-					else if (locationY < 0)
+					else
 					{
 						locationY = Convert.ToInt32(locationY % _imageHeight) + _imageHeight - 1;
 					}
+
 					break;
 			}
 
@@ -1258,8 +1259,7 @@ namespace VixenModules.Effect.Picture
 		{
 			if (ColorEffect == ColorEffect.CustomColor)
 			{
-				Color newColor = new Color();
-				newColor = Colors.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
+				var newColor = Colors.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
 				double hsvLevel = Convert.ToInt32(fpColor.GetBrightness() * 255);
 				HSV hsv = HSV.FromRGB(newColor);
 				hsv.V = hsvLevel / 100;
@@ -1305,8 +1305,8 @@ namespace VixenModules.Effect.Picture
 		{
 			lock (image)
 			{
-				int maxWidth = Convert.ToInt32((double) image.Width * scale);
-				int maxHeight = Convert.ToInt32((double) image.Height * scale);
+				int maxWidth = Convert.ToInt32(image.Width * scale);
+				int maxHeight = Convert.ToInt32(image.Height * scale);
 				var ratioX = (double) maxWidth / image.Width;
 				var ratioY = (double) maxHeight / image.Height;
 				var ratio = Math.Min(ratioX, ratioY);
@@ -1340,8 +1340,8 @@ namespace VixenModules.Effect.Picture
 					new float[] {0, 0, 0, 1, 0},
 					new float[] {0, 0, 0, 0, 1}
 				};
-				var ia = new System.Drawing.Imaging.ImageAttributes();
-				ia.SetColorMatrix(new System.Drawing.Imaging.ColorMatrix(matrix));
+				var ia = new ImageAttributes();
+				ia.SetColorMatrix(new ColorMatrix(matrix));
 				var rc = new Rectangle(0, 0, srce.Width, srce.Height);
 				gr.DrawImage(srce, rc, 0, 0, srce.Width, srce.Height, GraphicsUnit.Pixel, ia);
 				return bmp;

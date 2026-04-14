@@ -1,5 +1,5 @@
-﻿using Vixen.Sys;
-using Vixen.Module.Effect;
+﻿using Vixen.Module.Effect;
+using Vixen.Sys;
 
 namespace Vixen.Module.EffectEditor
 {

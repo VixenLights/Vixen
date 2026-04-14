@@ -5,8 +5,8 @@
 	    private Byte[] _periodData;
         private int _curPeriod;
         private SequenceSessionData _sessionData;
-        private FileStream _outfs = null;
-        private BinaryWriter _dataOut = null;
+        private FileStream _outfs;
+        private BinaryWriter _dataOut;
 
         public Vir2Writer()
         {

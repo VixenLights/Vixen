@@ -1,4 +1,5 @@
-﻿using Vixen.Cache.Sequence;
+﻿using NLog;
+using Vixen.Cache.Sequence;
 using Vixen.Module;
 using Vixen.Module.SequenceType;
 using Vixen.Sys;
@@ -11,7 +12,7 @@ namespace Vixen.Services
 		// There is no longer a Sequence class in the core assembly.  Better place for this?
 		[DataPath] public static readonly string SequenceDirectory = Path.Combine(Paths.DataRootPath, "Sequence");
 		[DataPath] public static readonly string SequenceBackupDirectory = Path.Combine(Paths.DataRootPath, SequenceDirectory + "\\auto_backup");
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private static SequenceService _instance;
 
@@ -19,7 +20,7 @@ namespace Vixen.Services
 		{
 			AllDirectories,
 			ExcludeBackup
-		};
+		}
 
 		private SequenceService()
 		{

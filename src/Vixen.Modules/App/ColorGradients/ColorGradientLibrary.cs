@@ -1,4 +1,5 @@
-﻿using Vixen.Module;
+﻿using NLog;
+using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
 
@@ -11,6 +12,7 @@ namespace VixenModules.App.ColorGradients
 		private bool _bulkUpdating;
 		public event EventHandler GradientsChanged;
 		private HashSet<string> _bulkGradientChangeNames;
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public override void Loading()
 		{
@@ -20,7 +22,7 @@ namespace VixenModules.App.ColorGradients
 		{
 		}
 
-		public override Vixen.Sys.IApplication Application
+		public override IApplication Application
 		{
 			set { }
 		}
@@ -50,7 +52,7 @@ namespace VixenModules.App.ColorGradients
 				return null;
 		}
 
-		public bool AddColorGradient(string name, ColorGradient cg)
+		public async Task<bool> AddColorGradientAsync(string name, ColorGradient cg)
 		{
 			if (name == string.Empty)
 				return false;
@@ -66,7 +68,7 @@ namespace VixenModules.App.ColorGradients
 			if (!_bulkUpdating)
 			{
 				_GradientsChanged(new []{name});
-				VixenSystem.SaveModuleConfigAsync();
+				await VixenSystem.SaveModuleConfigAsync();
 			}
 			else
 			{
@@ -75,7 +77,7 @@ namespace VixenModules.App.ColorGradients
 			return inLibrary;
 		}
 
-		public bool RemoveColorGradient(string name)
+		public async Task<bool> RemoveColorGradientAsync(string name)
 		{
 			bool removed = _RemoveColorGradient(name);
 			if (removed)
@@ -83,7 +85,7 @@ namespace VixenModules.App.ColorGradients
 				if (!_bulkUpdating)
 				{
 					_GradientsChanged(new []{name});
-					VixenSystem.SaveModuleConfigAsync();
+					await VixenSystem.SaveModuleConfigAsync();
 				}
 				else
 				{
@@ -105,7 +107,7 @@ namespace VixenModules.App.ColorGradients
 			return true;
 		}
 
-		public bool EditLibraryItem(string name)
+		public async Task<bool> EditLibraryItemAsync(string name)
 		{
 			ColorGradient cg = GetColorGradient(name);
 			if (cg == null)
@@ -114,9 +116,9 @@ namespace VixenModules.App.ColorGradients
 			ColorGradientEditor editor = new ColorGradientEditor(cg, false, null);
 			editor.LibraryItemName = name;
 
-			if (editor.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (await editor.ShowDialogAsync() == DialogResult.OK) {
 				_RemoveColorGradient(name);
-				AddColorGradient(name, editor.Gradient);
+				await AddColorGradientAsync(name, editor.Gradient);
 				return true;
 			}
 
@@ -152,10 +154,17 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		public async void EndBulkUpdate()
 		{
-			_bulkUpdating = false;
-			_GradientsChanged(_bulkGradientChangeNames);
-			_bulkGradientChangeNames = null;
-			await VixenSystem.SaveModuleConfigAsync();
+			try
+			{
+				_bulkUpdating = false;
+				_GradientsChanged(_bulkGradientChangeNames);
+				_bulkGradientChangeNames = null;
+				await VixenSystem.SaveModuleConfigAsync();
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "Error saving color gradient library.");
+			}
 		}
 
 	}

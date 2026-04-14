@@ -1,6 +1,6 @@
 //============================================================================ 
 //DataSourcePointList Class 
-//Copyright © 2006 John Champion, Jerry Vos 
+//Copyright Â© 2006 John Champion, Jerry Vos 
 // 
 //This library is free software; you can redistribute it and/or 
 //modify it under the terms of the GNU Lesser General Public 
@@ -51,7 +51,7 @@ namespace ZedGraph {
 		public PointPair this[int index] {
 			get {
 				if (index < 0 || index >= _bindingSource.Count)
-					throw new System.ArgumentOutOfRangeException("Error: Index out of range");
+					throw new ArgumentOutOfRangeException("Error: Index out of range");
 
 				object row = _bindingSource[index];
 
@@ -188,7 +188,7 @@ namespace ZedGraph {
 		/// </summary> 
 		/// <returns>A deep copy of this object</returns> 
 		object ICloneable.Clone() {
-			return this.Clone();
+			return Clone();
 		}
 
 		/// <summary> 
@@ -229,7 +229,7 @@ namespace ZedGraph {
 			else if (drv != null)
 				val = drv[dataMember];
 			else if (pInfo == null)
-				throw new System.Exception(string.Format("Can't find DataMember '{0}' in DataSource", dataMember));
+				throw new Exception(string.Format("Can't find DataMember '{0}' in DataSource", dataMember));
 
 
 			double x;
@@ -267,7 +267,7 @@ namespace ZedGraph {
 				val = drv[dataMember];
 
 			if (val == null)
-				throw new System.Exception(string.Format("Can't find DataMember '{0}' in DataSource", dataMember));
+				throw new Exception(string.Format("Can't find DataMember '{0}' in DataSource", dataMember));
 
 			return val;
 		}

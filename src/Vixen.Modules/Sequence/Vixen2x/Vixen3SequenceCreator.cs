@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Common.Controls;
+﻿using Common.Controls;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
 using System.Windows.Forms;
-using System.IO;
-using System.ComponentModel;
 using Vixen.Services;
-using Vixen.Module.Effect;
-using VixenModules.App.Curves;
-using VixenModules.App.ColorGradients;
 using System.Drawing;
-using ZedGraph;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
@@ -92,21 +82,18 @@ namespace VixenModules.SequenceType.Vixen2x
 			Sequence.Length = TimeSpan.FromMilliseconds(parsedV2Sequence.SeqLengthInMills);
 
 			var songFileName = parsedV2Sequence.SongPath + Path.DirectorySeparatorChar + parsedV2Sequence.SongFileName;
-			if (songFileName != null)
+			if (File.Exists(songFileName))
 			{
-				if (File.Exists(songFileName))
-				{
-					Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));
-				}
-				else
-				{
-					var message = string.Format("Could not locate the audio file '{0}'; please add it manually " +
-												"after import (Under Tools -> Associate Audio).", Path.GetFileName(songFileName));
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm(message, "Couldn't find audio", false, false);
-					messageBox.ShowDialog();
-				}
+				Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));
+			}
+			else
+			{
+				var message = string.Format("Could not locate the audio file '{0}'; please add it manually " +
+				                            "after import (Under Tools -> Associate Audio).", Path.GetFileName(songFileName));
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, "Couldn't find audio", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -119,9 +106,6 @@ namespace VixenModules.SequenceType.Vixen2x
 			Vixen2xSequenceImportSM import = new Vixen2xSequenceImportSM(Sequence, parsedV2Sequence.EventPeriod);
 
 			// the current color is based on the intensity of a three channel group
-			int red = 0;
-			int green = 0;
-			int blue = 0;
 
 			// for each channel in the V2 sequence
 			for (var currentElementNum = 0; currentElementNum < parsedV2Sequence.ElementCount; currentElementNum++)
@@ -140,8 +124,6 @@ namespace VixenModules.SequenceType.Vixen2x
 				// Logging.Debug("importSequenceData:currentElementNum: " + currentElementNum);
 
 				string elementName = v2ChannelMapping.ChannelName;
-				Color currentColor = Color.FromArgb(255, 255, 255);
-				byte currentIntensity = 0;
 
 				conversionProgressBar.UpdateProgressBar(currentElementNum);
 				Application.DoEvents();
@@ -161,7 +143,7 @@ namespace VixenModules.SequenceType.Vixen2x
 				}
 
 				// is this a valid pixel configuration
-				if ((true == v2ChannelMapping.RgbPixel) && (3 != m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count))
+				if (v2ChannelMapping.RgbPixel && (3 != m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count))
 				{
 					Logging.Error("importSequenceData: Configuration error. Found '" + m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId].Count + "' V2 channels attached to element '" + elementName + "'. Expected 3(RGB). Converting element to non color mixing mode.");
 					v2ChannelMapping.RgbPixel = false;
@@ -171,10 +153,11 @@ namespace VixenModules.SequenceType.Vixen2x
 				for (uint currentEventNum = 0; currentEventNum < parsedV2Sequence.EventsPerElement; currentEventNum++)
 				{
 					// get the intensity for this V2 channel
-					currentIntensity = parsedV2Sequence.EventData[currentElementNum * parsedV2Sequence.EventsPerElement + currentEventNum];
+					var currentIntensity = parsedV2Sequence.EventData[currentElementNum * parsedV2Sequence.EventsPerElement + currentEventNum];
 
 					// is this an RGB Pixel?
-					if (true == v2ChannelMapping.RgbPixel)
+					Color currentColor;
+					if (v2ChannelMapping.RgbPixel)
 					{
 						// Only process the RED channel of a three channel pixel
 						if (Color.Red != v2ChannelMapping.DestinationColor)
@@ -183,9 +166,9 @@ namespace VixenModules.SequenceType.Vixen2x
 							continue;
 						} // end not red pixel channel
 
-						red = 0;
-						green = 0;
-						blue = 0;
+						var red = 0;
+						var green = 0;
+						var blue = 0;
 
 						// process the input colors bound to this output channel
 						foreach (ChannelMapping v2Channel in m_GuidToV2ChanList[v2ChannelMapping.ElementNodeId])
@@ -221,16 +204,16 @@ namespace VixenModules.SequenceType.Vixen2x
 						} // end process each V2 channel assigned to the v3 channel
 
 						// get the max intensity for this v2 channel set
-						currentIntensity = Convert.ToByte(Math.Min( (int)255, Math.Max(red, Math.Max(green, blue))));
+						currentIntensity = Convert.ToByte(Math.Min( 255, Math.Max(red, Math.Max(green, blue))));
 
 						// Scale the color to full intensity and let the intensity value attenuate it.
 						if (0 != currentIntensity)
 						{
 							double multplier = Convert.ToDouble(byte.MaxValue) / Convert.ToDouble(currentIntensity);
 
-							red = Math.Min(((int)255), Convert.ToInt32(Convert.ToDouble(red) * multplier));
-							green = Math.Min(((int)255), Convert.ToInt32(Convert.ToDouble(green) * multplier));
-							blue = Math.Min(((int)255), Convert.ToInt32(Convert.ToDouble(blue) * multplier));
+							red = Math.Min(255, Convert.ToInt32(Convert.ToDouble(red) * multplier));
+							green = Math.Min(255, Convert.ToInt32(Convert.ToDouble(green) * multplier));
+							blue = Math.Min(255, Convert.ToInt32(Convert.ToDouble(blue) * multplier));
 						}
 
 						// set the final color

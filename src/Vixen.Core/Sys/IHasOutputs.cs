@@ -9,7 +9,7 @@
 	}
 
 	public interface IHasOutputs<T> : IHasOutputs
-		where T : Vixen.Sys.Output.Output
+		where T : Output.Output
 	{
 		void AddOutput(T output);
 		void RemoveOutput(T output);

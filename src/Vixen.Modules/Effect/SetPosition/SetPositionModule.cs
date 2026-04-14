@@ -74,7 +74,7 @@ namespace VixenModules.Effect.SetPosition
 				Data.EnablePan = value;
 				IsDirty = true;
 
-				UpdateAttributes(true);
+				UpdateAttributes();
 			}
 		}
 
@@ -112,7 +112,7 @@ namespace VixenModules.Effect.SetPosition
 				Data.EnableTilt = value;
 				IsDirty = true;
 
-				UpdateAttributes(true);
+				UpdateAttributes();
 			}
 		}
 

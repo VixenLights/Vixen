@@ -38,7 +38,7 @@ namespace VixenModules.Editor.LayerEditor
 		private void LayerEditorView_Initialized(object sender, EventArgs e)
 		{
 			// I am not sure why the dependency property is not registering correctly so we are doing it manually. 
-			var listBox = FindChild(this as UIElement, "_lbLayers", typeof(ListBox));
+			var listBox = FindChild(this, "_lbLayers", typeof(ListBox));
 			if (listBox != null)
 			{
 				DragDropManager.SetDragSourceAdvisor(listBox, this);

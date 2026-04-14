@@ -1,7 +1,5 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
-using System;
-using System.ComponentModel;
 using Vixen.Module.Effect;
 using Timer = System.Timers.Timer;
 

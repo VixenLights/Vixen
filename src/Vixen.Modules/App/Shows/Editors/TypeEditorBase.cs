@@ -1,4 +1,4 @@
-﻿namespace VixenModules.App.Shows
+﻿namespace VixenModules.App.Shows.Editors
 {
 	public partial class TypeEditorBase : UserControl
 	{

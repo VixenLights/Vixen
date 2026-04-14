@@ -42,7 +42,7 @@ namespace Vixen.Data.Evaluator
 			if (!CommandLookup.ContainsKey(value))
 			{
 				// Add the command to the dictionary
-				CommandLookup.Add((ushort)value, new _16BitCommand(value));
+				CommandLookup.Add(value, new _16BitCommand(value));
 			}
 			
 			// Return the cached command

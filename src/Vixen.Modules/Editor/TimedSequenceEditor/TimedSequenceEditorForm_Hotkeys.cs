@@ -1,6 +1,5 @@
 ﻿using Common.Controls.Timeline;
 using Element = Common.Controls.Timeline.Element;
-using Common.Controls.ControlsEx;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -42,14 +41,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public void HandleQuickKeySWI(System.Windows.Input.KeyEventArgs swiKey)
 		{
 			var wpfKey = swiKey.Key == System.Windows.Input.Key.System ? swiKey.SystemKey : swiKey.Key;
-			var swfKeys = (System.Windows.Forms.Keys)System.Windows.Input.KeyInterop.VirtualKeyFromKey(wpfKey);
+			var swfKeys = (Keys)System.Windows.Input.KeyInterop.VirtualKeyFromKey(wpfKey);
 
-			System.Windows.Forms.Keys swfModifiers;
-			swfModifiers = swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Alt) ? System.Windows.Forms.Keys.Alt : System.Windows.Forms.Keys.None;
-			swfModifiers |= swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Control) ? System.Windows.Forms.Keys.Control : System.Windows.Forms.Keys.None;
-			swfModifiers |= swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift) ? System.Windows.Forms.Keys.Shift : System.Windows.Forms.Keys.None;
+			Keys swfModifiers;
+			swfModifiers = swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Alt) ? Keys.Alt : Keys.None;
+			swfModifiers |= swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Control) ? Keys.Control : Keys.None;
+			swfModifiers |= swiKey.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift) ? Keys.Shift : Keys.None;
 
-			var swfkey = new System.Windows.Forms.KeyEventArgs(swfKeys | swfModifiers);
+			var swfkey = new KeyEventArgs(swfKeys | swfModifiers);
 			HandleQuickKeySWF(swfkey);
 			swiKey.Handled = swfkey.Handled;
 		}

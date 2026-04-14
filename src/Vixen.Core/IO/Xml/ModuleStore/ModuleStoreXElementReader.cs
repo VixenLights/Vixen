@@ -2,11 +2,9 @@
 
 namespace Vixen.IO.Xml.ModuleStore
 {
-	using Vixen.Sys;
-
-	internal class ModuleStoreXElementReader : IObjectContentReader<XElement, ModuleStore>
+	internal class ModuleStoreXElementReader : IObjectContentReader<XElement, Sys.ModuleStore>
 	{
-		public XElement ReadContentFromObject(ModuleStore obj)
+		public XElement ReadContentFromObject(Sys.ModuleStore obj)
 		{
 			XElement content = new XElement("ModuleStore");
 			XmlRootAttributeVersion.SetVersion(content, ObjectVersion.ModuleStore);
@@ -17,8 +15,8 @@ namespace Vixen.IO.Xml.ModuleStore
 
 		object IObjectContentReader.ReadContentFromObject(object obj)
 		{
-			if (!(obj is ModuleStore)) throw new InvalidOperationException("Object must be a ModuleStore.");
-			return ReadContentFromObject((ModuleStore) obj);
+			if (!(obj is Sys.ModuleStore)) throw new InvalidOperationException("Object must be a ModuleStore.");
+			return ReadContentFromObject((Sys.ModuleStore) obj);
 		}
 	}
 }

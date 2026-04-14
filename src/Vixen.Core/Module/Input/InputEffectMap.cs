@@ -1,8 +1,8 @@
 ﻿using System.Runtime.Serialization;
-//using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
 using Vixen.Services;
 using Vixen.Sys;
+//using Vixen.Commands.KnownDataTypes;
 
 namespace Vixen.Module.Input
 {

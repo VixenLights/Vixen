@@ -1260,7 +1260,7 @@ namespace VixenModules.Effect.Liquid
 					break;
 					case FlowControl.Musical:
 						// Get the emitter flow based on the associated music volume
-						emitterWrapper.Flow = CalculateEmitterMusicalFlow(emitter, (int)(frameNum * FrameTime), frameNum);
+						emitterWrapper.Flow = CalculateEmitterMusicalFlow(emitter, frameNum * FrameTime, frameNum);
 					break;
 				default:
 					Debug.Assert(false, "Unsupported Flow Control");
@@ -1507,11 +1507,8 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private int CalculateEmitterMusicalFlow(IEmitter emitter, int time, int frame)
 		{
-			// Initialize the flow to Off
-			int value = 0;
-			
 			// Initialize the flow to the maximum musical flow
-			value = MaxEmitterMusicFlow;
+			var value = MaxEmitterMusicFlow;
 
 			// Return the volume for the current frame
 			double volume = 0;

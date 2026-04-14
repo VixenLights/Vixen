@@ -105,7 +105,7 @@ namespace VixenModules.Output.Renard
 		private void _WaitForBufferRoom(int bytesToWrite)
 		{
 			while (_port.WriteBufferSize - _port.BytesToWrite <= bytesToWrite) {
-				System.Threading.Thread.Sleep(10);
+				Thread.Sleep(10);
 			}
 		}
 

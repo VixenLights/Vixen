@@ -14,8 +14,7 @@ namespace Vixen.Module.Media
 
 		/// <inheritdoc />
 		public abstract ITiming TimingSource { get; }
-		public abstract int CurrentPlaybackDeviceIndex { get; set; }
-
+		
 		public virtual bool HasSetup
 		{
 			get { return false; }
@@ -51,7 +50,7 @@ namespace Vixen.Module.Media
 
 		public bool Equals(MediaModuleInstanceBase x, MediaModuleInstanceBase y)
 		{
-			return Equals(x as IMediaModuleInstance, y as IMediaModuleInstance);
+			return Equals(x, y as IMediaModuleInstance);
 		}
 
 		public int GetHashCode(MediaModuleInstanceBase obj)

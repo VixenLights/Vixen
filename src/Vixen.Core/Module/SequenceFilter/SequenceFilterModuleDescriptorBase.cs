@@ -35,7 +35,7 @@
 
 		public bool Equals(SequenceFilterModuleDescriptorBase x, SequenceFilterModuleDescriptorBase y)
 		{
-			return Equals(x as ISequenceFilterModuleDescriptor, y as ISequenceFilterModuleDescriptor);
+			return Equals(x, y as ISequenceFilterModuleDescriptor);
 		}
 
 		public int GetHashCode(SequenceFilterModuleDescriptorBase obj)

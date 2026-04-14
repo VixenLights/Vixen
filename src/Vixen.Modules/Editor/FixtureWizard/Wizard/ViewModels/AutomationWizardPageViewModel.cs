@@ -5,7 +5,7 @@ namespace VixenModules.Editor.FixtureWizard.Wizard.ViewModels
 	using Catel.MVVM;
 	using Orc.Wizard;
 	using System.Linq;
-	using VixenModules.Editor.FixtureWizard.Wizard.Models;
+	using Models;
 
     /// <summary>
     /// Wizard view model page that configures fixture automation options.

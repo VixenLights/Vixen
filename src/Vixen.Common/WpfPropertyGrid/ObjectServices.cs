@@ -15,10 +15,8 @@
  */
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Collections.Generic;
 
 namespace System.Windows.Controls.WpfPropertyGrid
 {

@@ -2,6 +2,7 @@
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
+using VixenModules.App.Shows.Editors;
 
 namespace VixenModules.App.Shows
 {

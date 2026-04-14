@@ -24,7 +24,7 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 
 		public override string Description
 		{
-			get { return string.Format("Separate Group"); }
+			get { return "Separate Group"; }
 		}
 	}
 }

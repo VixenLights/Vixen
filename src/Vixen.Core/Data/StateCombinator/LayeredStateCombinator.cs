@@ -9,8 +9,8 @@ namespace Vixen.Data.StateCombinator
 	{
 		private Color? _combinedMixingColor;
 		private Color? _tempMixingColor;
-		private Dictionary<int, DiscreteValue> _combinedDiscreteColors = null;
-		private Dictionary<int, DiscreteValue> _tempDiscreteColors = null;
+		private Dictionary<int, DiscreteValue> _combinedDiscreteColors;
+		private Dictionary<int, DiscreteValue> _tempDiscreteColors;
 		private readonly StaticIntentState<RGBValue> _mixedIntentState = new StaticIntentState<RGBValue>(new RGBValue(Color.Black));
 		private static readonly IntentStateLayerComparer LayerComparer = new IntentStateLayerComparer();
 		private static readonly List<IIntentState>  EmptyState = Enumerable.Empty<IIntentState>().ToList();

@@ -18,7 +18,7 @@ namespace Vixen.Export
         NONE,
 		SAVING,
         COMPLETE
-    };
+    }
 
     public class Export
     {
@@ -248,8 +248,6 @@ namespace Vixen.Export
                             fppStartChannel = fppStartChannel + uc.Size;
                             }
                             break;
-
-                        default: break;
                     }
 
 			    }
@@ -294,8 +292,6 @@ namespace Vixen.Export
 						    {
 							    //Validate ip address
 							    ip = controller.ControllerNetworkConfiguration.IpAddress.ToString();
-							    if (ip == null)
-								    ip = string.Empty;
 						    }
 						    var s =
 							    $"{(uc.Active ? "1" : "0")},{uc.UniverseNumber}," +
@@ -497,7 +493,7 @@ namespace Vixen.Export
 				List<ICommand> commandList = new List<ICommand>(controllerOutputs.Count);
 	            _eventData = new List<byte>(controllerOutputs.Count);
 				var progressData = new ExportProgressStatus(ExportProgressStatus.ProgressType.Task);
-	            if (_cancelling == false)
+	            if (!_cancelling)
                 {
                     sessionData.OutFileName = OutFileName;
                     sessionData.NumPeriods = periods;
@@ -514,7 +510,7 @@ namespace Vixen.Export
 	                {
 		                _output.OpenSession(sessionData);
 		                double j = 0;
-		                while (_generator.HasNextInterval() && _cancelling == false)
+		                while (_generator.HasNextInterval() && !_cancelling)
 		                {
 			                if (progress != null)
 			                {

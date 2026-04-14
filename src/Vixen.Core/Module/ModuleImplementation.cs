@@ -8,7 +8,7 @@ namespace Vixen.Module
 		{
 			// Get the name from the ModuleTypeAttribute of the superclass.
 			TypeOfModuleAttribute typeOfModule =
-				(this.GetType().GetCustomAttributes(typeof (TypeOfModuleAttribute), true).FirstOrDefault() as TypeOfModuleAttribute);
+				(GetType().GetCustomAttributes(typeof (TypeOfModuleAttribute), true).FirstOrDefault() as TypeOfModuleAttribute);
 			if (typeOfModule == null)
 				throw new InvalidOperationException(string.Format("Type {0} is not a valid module type.", moduleInstanceType));
 			TypeOfModule = typeOfModule.Name;
@@ -29,8 +29,8 @@ namespace Vixen.Module
 		protected ModuleImplementation(IModuleManagement<T> moduleManagement, IModuleRepository<T> moduleRepository)
 			: base(typeof (T))
 		{
-			this.Management = moduleManagement;
-			this.Repository = moduleRepository;
+			Management = moduleManagement;
+			Repository = moduleRepository;
 		}
 
 		public override IModuleRepository Repository { get; protected set; }

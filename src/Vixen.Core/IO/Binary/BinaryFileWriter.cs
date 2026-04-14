@@ -8,7 +8,7 @@ namespace Vixen.IO.Binary
 		{
 			while (IsFileLocked(filePath))
 			{
-				System.Threading.Thread.Sleep(250);
+				Thread.Sleep(250);
 			}
 			File.WriteAllBytes(filePath,content);
 		}

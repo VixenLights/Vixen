@@ -2,6 +2,7 @@
 
 		<PropertyGroup>
 				<UseWindowsForms>true</UseWindowsForms>
+            <RootNamespace>BaseSequence</RootNamespace>
 		</PropertyGroup>
 
 		<ItemGroup>

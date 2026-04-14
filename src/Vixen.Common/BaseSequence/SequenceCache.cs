@@ -2,7 +2,7 @@
 using Vixen.Services;
 using Vixen.Sys;
 
-namespace Common.BaseSequence
+namespace BaseSequence
 {
 	[Serializable]
 	public abstract class SequenceCache : ISequenceCache

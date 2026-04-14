@@ -59,7 +59,7 @@ namespace Launcher
 
 
 
-		public override Vixen.Sys.ParameterSignature Parameters
+		public override ParameterSignature Parameters
 		{
 			get
 			{

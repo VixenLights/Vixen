@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using NLog;
 using Vixen.Factory;
 using Vixen.Sys;
 using Vixen.Sys.Output;
@@ -7,7 +8,7 @@ namespace Vixen.IO.Xml.Serializer
 {
 	internal class XmlPreviewSerializer : IXmlSerializer<IOutputDevice>
 	{
-		private static NLog.Logger logging = NLog.LogManager.GetCurrentClassLogger();
+		private static Logger logging = LogManager.GetCurrentClassLogger();
 
 		private const string ELEMENT_PREVIEW = "Preview";
 		private const string ATTR_NAME = "name";

@@ -147,9 +147,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Rectangles are defined by 4 points. This is point 1.")]
+		 Description("Rectangles are defined by 4 points. This is point 1.")]
 		public Point TopLeftPoint
 		{
 			get
@@ -171,9 +171,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Top Right"),
-		 DescriptionAttribute("Rectangles are defined by 4 points. This is point 2.")]
+		 Description("Rectangles are defined by 4 points. This is point 2.")]
 		public Point TopRightPoint
 		{
 			get
@@ -190,9 +190,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Rectangles are defined by 4 points. This is point 3.")]
+		 Description("Rectangles are defined by 4 points. This is point 3.")]
 		public Point BottomRightPoint
 		{
 			get
@@ -209,9 +209,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Position"),
+		[Category("Position"),
 		 DisplayName("Botom Left"),
-		 DescriptionAttribute("Rectangles are defined by 4 points. This is point 4.")]
+		 Description("Rectangles are defined by 4 points. This is point 4.")]
 		public Point BottomLeftPoint
 		{
 			get
@@ -229,9 +229,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String 1 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 1 of the rectangle.")]
+		 Description("Number of pixels or lights in string 1 of the rectangle.")]
 		public int LightCountString1
 		{
 			get { return Strings[0].Pixels.Count; }
@@ -242,9 +242,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String 2 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 2 of the rectangle.")]
+		 Description("Number of pixels or lights in string 2 of the rectangle.")]
 		public int LightCountString2
 		{
 			get { return Strings[1].Pixels.Count; }
@@ -255,9 +255,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String 3 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 3 of the rectangle.")]
+		 Description("Number of pixels or lights in string 3 of the rectangle.")]
 		public int LightCountString3
 		{
 			get { return Strings[2].Pixels.Count; }
@@ -268,9 +268,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("String 4 Light Count"),
-		 DescriptionAttribute("Number of pixels or lights in string 4 of the rectangle.")]
+		 Description("Number of pixels or lights in string 4 of the rectangle.")]
 		public int LightCountString4
 		{
 			get { return Strings[3].Pixels.Count; }
@@ -283,9 +283,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private Directions _direction = Directions.Clockwise;
 
-		[CategoryAttribute("Settings"),
+		[Category("Settings"),
 		 DisplayName("Direction"),
-		 DescriptionAttribute("Wrap direction."),
+		 Description("Wrap direction."),
 		 DataMember]
 		public Directions Direction 
         {
@@ -514,7 +514,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_selectedPoint.Y = point.Y;
 				if (lockXY ||
 				    (_selectedPoint == _bottomRight &&
-				     System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)) {
+				     Control.ModifierKeys == Keys.Control)) {
 					_topRight.X = point.X;
 					_bottomLeft.Y = point.Y;
 				}

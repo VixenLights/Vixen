@@ -1,11 +1,13 @@
-﻿namespace VixenModules.App.Shows
+﻿using System.ComponentModel;
+
+namespace VixenModules.App.Shows
 {
 	partial class ShowListForm
 	{
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -162,14 +164,14 @@
 
 		#endregion
 
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Button buttonDelete;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonHelp;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.ListView listViewShows;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.Label label1;
+		private GroupBox groupBox1;
+		private Button buttonDelete;
+		private Button buttonEdit;
+		private Button buttonAdd;
+		private Button buttonHelp;
+		private Button buttonOK;
+		private ListView listViewShows;
+		private ColumnHeader columnHeader1;
+		private Label label1;
 	}
 }

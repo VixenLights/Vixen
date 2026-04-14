@@ -17,15 +17,15 @@ namespace Common.Controls
 		Description("Gets or sets whether the ToolStripEx honors item clicks when its containing form does")]
 		public bool ClickThrough
 		{
-			get { return this.clickThrough; }
-			set { this.clickThrough = value; }
+			get { return clickThrough; }
+			set { clickThrough = value; }
 		}
 
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);
 
-			if (this.clickThrough &&
+			if (clickThrough &&
 			    m.Msg == NativeConstants.WM_MOUSEACTIVATE &&
 			    m.Result == (IntPtr) NativeConstants.MA_ACTIVATEANDEAT) {
 				m.Result = (IntPtr) NativeConstants.MA_ACTIVATE;

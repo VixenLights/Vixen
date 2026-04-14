@@ -1,5 +1,4 @@
 ﻿using Common.Controls.Theme;
-using Common.Resources.Properties;
 using NLog;
 using Vixen.Rule;
 using Vixen.Services;

@@ -120,7 +120,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 					throw new Exception("File was not a DDS file format.");
 
 				DDS.DDSURFACEDESC2 imageData = DDS.DDSURFACEDESC2.FromBinaryReader(stream);//new DDS.DDSURFACEDESC2(stream);  // read the DirectDraw surface descriptor
-				this.Size = new Size((int)imageData.Width, (int)imageData.Height);
+				Size = new Size(imageData.Width, imageData.Height);
 
 				if (imageData.LinearSize == 0)
 					throw new Exception("The linear scan line size was zero.");
@@ -171,7 +171,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 						break;
 				}
 
-				if (imageData.LinearSize != 0) buffersize = (int)((imageData.MipmapCount > 1) ? imageData.LinearSize * factor : imageData.LinearSize);
+				if (imageData.LinearSize != 0) buffersize = (imageData.MipmapCount > 1) ? imageData.LinearSize * factor : imageData.LinearSize;
 				else buffersize = (int)(stream.BaseStream.Length - stream.BaseStream.Position);
 
 				// read the pixel data and then pin it to memory so that the garbage collector
@@ -188,13 +188,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 					GL.TexParameter(TextureTarget, TextureParameterName.TextureMinFilter,(int) TextureMinFilter.Linear);
 					GL.TexParameter(TextureTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
-					int nOffset = 0, nWidth = (int)imageData.Width, nHeight = (int)imageData.Height;
+					int nOffset = 0, nWidth = imageData.Width, nHeight = imageData.Height;
 
 					for (int i = 0; i < (imageData.MipmapCount == 0 ? 1 : imageData.MipmapCount); ++i)
 					{
 						if (nWidth == 0) nWidth = 1;        // smallest mipmap is 1x1 pixels
 						if (nHeight == 0) nHeight = 1;
-						int nSize = 0;
+						int nSize;
 
 						if (compressed)
 						{
