@@ -33,7 +33,7 @@ jobs:
           PR_INFO=$(cat ./downloaded-data/pr_review_info)
           
           # Split by | and assign to temporary bash variables
-          IFS='|' read -r REVIEW_STATE PR_NUMBER ACTOR <<< "PR_INFO"
+          IFS='|' read -r REVIEW_STATE PR_NUMBER ACTOR <<< "$PR_INFO"
 
           if [ "$REVIEW_STATE" == "approved" ]; then
             echo "reviewed=true" >> $GITHUB_OUTPUT
