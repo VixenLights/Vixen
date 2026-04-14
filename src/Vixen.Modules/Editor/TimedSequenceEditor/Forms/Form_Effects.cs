@@ -45,14 +45,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			effectTreeImages.ImageSize = new Size(imageSize, imageSize);
 
 			foreach (
-				IEffectModuleDescriptor effectDesriptor in
+				IEffectModuleDescriptor effectDescriptor in
 					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
 				// Add the effects to the tree
 				// Set default to basic to get rid of annoying possible null reference warning.
 				TreeNode parentNode = treeEffects.Nodes["treeBasic"];
 
-				switch (effectDesriptor.EffectGroup)
+				switch (effectDescriptor.EffectGroup)
 				{
 					case EffectGroups.Basic:
 						parentNode = treeEffects.Nodes["treeBasic"];
@@ -67,15 +67,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						parentNode = treeEffects.Nodes["intelligentFixture"];
 						break;
 				}
-				TreeNode node = new TreeNode(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
+				TreeNode node = new TreeNode(effectDescriptor.EffectName) {Tag = effectDescriptor.TypeId};
 				
 				node.ForeColor = ThemeColorTable.ForeColor;
 				parentNode.Nodes.Add(node);
 				// Set the image
-				Image image = effectDesriptor.GetRepresentativeImage();
+				Image image = effectDescriptor.GetRepresentativeImage();
 				if (image != null)
 				{
-					effectTreeImages.Images.Add(effectDesriptor.EffectName, image);
+					effectTreeImages.Images.Add(effectDescriptor.EffectName, image);
 					node.ImageIndex = effectTreeImages.Images.Count - 1;
 					node.SelectedImageIndex = node.ImageIndex;
 				}

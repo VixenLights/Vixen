@@ -63,24 +63,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			#region Add Effect
 
 			ToolStripMenuItem contextMenuItemAddEffect = new ToolStripMenuItem("Add Effect(s)") {Image = Resources.effects};
-			IEnumerable<IEffectModuleDescriptor> effectDesriptors =
+			IEnumerable<IEffectModuleDescriptor> effectDescriptors =
 				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>()
 					.Cast<IEffectModuleDescriptor>()
 					.OrderBy(x => x.EffectGroup)
 					.ThenBy(n => n.EffectName);
-			EffectGroups group = effectDesriptors.First().EffectGroup;
-			foreach (IEffectModuleDescriptor effectDesriptor in effectDesriptors)
+			EffectGroups group = effectDescriptors.First().EffectGroup;
+			foreach (IEffectModuleDescriptor effectDescriptor in effectDescriptors)
 			{
-				if (effectDesriptor.EffectGroup != group)
+				if (effectDescriptor.EffectGroup != group)
 				{
 					ToolStripSeparator seperator = new ToolStripSeparator();
 					contextMenuItemAddEffect.DropDownItems.Add(seperator);
-					group = effectDesriptor.EffectGroup;
+					group = effectDescriptor.EffectGroup;
 				}
 				// Add an entry to the menu
-				ToolStripMenuItem contextMenuItemEffect = new ToolStripMenuItem(effectDesriptor.EffectName);
-				contextMenuItemEffect.Image = effectDesriptor.GetRepresentativeImage();
-				contextMenuItemEffect.Tag = effectDesriptor.TypeId;
+				ToolStripMenuItem contextMenuItemEffect = new ToolStripMenuItem(effectDescriptor.EffectName);
+				contextMenuItemEffect.Image = effectDescriptor.GetRepresentativeImage();
+				contextMenuItemEffect.Tag = effectDescriptor.TypeId;
 				contextMenuItemEffect.ToolTipText = @"Use Shift key to add multiple effects of the same type.";
 				contextMenuItemEffect.Click += (mySender, myE) =>
 				{
@@ -89,7 +89,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						//add multiple
 						if (ModifierKeys == Keys.Shift || ModifierKeys == (Keys.Shift | Keys.Control))
 						{
-							AddMultipleEffects(e.GridTime, effectDesriptor.EffectName, (Guid) contextMenuItemEffect.Tag, e.Row);
+							AddMultipleEffects(e.GridTime, effectDescriptor.EffectName, (Guid) contextMenuItemEffect.Tag, e.Row);
 						}
 						else //add single
 							AddNewEffectById((Guid) contextMenuItemEffect.Tag, e.Row, e.GridTime, GetDefaultEffectDuration(e.GridTime), true);

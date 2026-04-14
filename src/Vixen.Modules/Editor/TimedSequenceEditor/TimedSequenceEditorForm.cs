@@ -1221,18 +1221,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			};
 			modeToolStripDropDownButton_DragBoxFilter.DropDownItems.Add(dbfInvertMenuItem);
 
-			foreach (IEffectModuleDescriptor effectDesriptor in
+			foreach (IEffectModuleDescriptor effectDescriptor in
 				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
 				//Populate Drag Box Filter drop down with effect types
-				ToolStripMenuItem dbfMenuItem = new ToolStripMenuItem(effectDesriptor.EffectName,
-					effectDesriptor.GetRepresentativeImage());
+				ToolStripMenuItem dbfMenuItem = new ToolStripMenuItem(effectDescriptor.EffectName,
+					effectDescriptor.GetRepresentativeImage());
 				dbfMenuItem.CheckOnClick = true;
 				dbfMenuItem.CheckStateChanged += (sender, e) =>
 				{
 					//OK, now I don't remember why I put this here, I think to make sure the list is updated when using the invert
-					if (dbfMenuItem.Checked) TimelineControl.grid.DragBoxFilterTypes.Add(effectDesriptor.TypeId);
-					else TimelineControl.grid.DragBoxFilterTypes.Remove(effectDesriptor.TypeId);
+					if (dbfMenuItem.Checked) TimelineControl.grid.DragBoxFilterTypes.Add(effectDescriptor.TypeId);
+					else TimelineControl.grid.DragBoxFilterTypes.Remove(effectDescriptor.TypeId);
 					//Either way...(the user is getting ready to use the filter)
 					modeToolStripButton_DragBoxFilter.Checked = true;
 				};
@@ -1243,11 +1243,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void LoadAvailableEffects()
 		{
-			foreach (IEffectModuleDescriptor effectDesriptor in
+			foreach (IEffectModuleDescriptor effectDescriptor in
 				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
 				// Add an entry to the menu
-				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
+				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDescriptor.EffectName) {Tag = effectDescriptor.TypeId};
 				menuItem.Click += (sender, e) =>
 				{
 					Row destination = TimelineControl.ActiveRow ?? TimelineControl.SelectedRow;
