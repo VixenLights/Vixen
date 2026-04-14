@@ -145,3 +145,11 @@ exclude:
       - src\Vixen.Modules\OutputFilter
       - src\Vixen.Modules\Sequence\Vixen2x
       - src\Vixen.Modules\Sequence\Timed
+  - name: Xaml.BindingWithContextNotResolved
+    paths:
+      - src\Vixen.Common\WpfPropertyGrid\Themes\EditorResources.xaml
+      - src\Vixen.Modules\App\CustomPropEditor\Views\CustomPropEditorWindow.xaml
+      - src\Vixen.Modules\App\CustomPropEditor\Views\ElementTree.xaml
+      - src\Vixen.Modules\App\CustomPropEditor\Views\ModelInventoryTree.xaml
+      - src\Vixen.Modules\App\CustomPropEditor\Views\VendorInventoryWindow.xaml
+      - src\Vixen.Modules\App\TimingTrackBrowser\Views\SongInventoryTree.xaml
