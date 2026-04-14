@@ -13,6 +13,8 @@ on:
       - .github/**
       - .tgitconfig
       - 'Release Notes.txt'
+      - 'qodana.yml'
+      - 'CLAUDE.md'
 
   pull_request:
     branches:

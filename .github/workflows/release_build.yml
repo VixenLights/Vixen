@@ -18,6 +18,8 @@ on:
       - 'sandbox/**'
       - '**/.editorconfig'
       - 'Assets/**'
+      - 'qodana.yml'
+      - 'CLAUDE.md'
 
 jobs:
 
@@ -170,7 +172,7 @@ jobs:
         run: echo "${GITHUB_ENV}"
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: setup-artifact/*.*
           body_path: Release Notes.md
