@@ -27,6 +27,7 @@ jobs:
           path: ./downloaded-data
 
       - name: setup
+        id: setup-output
         run: |
           # Read file content (e.g., "review_state|pr_number|review_actor")
           PR_INFO=$(cat ./downloaded-data/pr_review_info)
@@ -36,12 +37,18 @@ jobs:
 
           if [ "$REVIEW_STATE" == "approved" ]; then
             echo "reviewed=true" >> $GITHUB_OUTPUT
+            echo "PR was approved"
           else
             echo "reviewed=false" >> $GITHUB_OUTPUT
+            echo "PR was not approved"
           fi
          
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "PR# $PR_NUMBER"
           echo "actor=$ACTOR" >> $GITHUB_OUTPUT
+          echo "actor is $ACTOR"
+      - name: Debug all outputs
+        run: echo "${{ toJSON(steps.setup-output.outputs) }}"
 
   auto-approve:
     runs-on: ubuntu-latest
