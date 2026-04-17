@@ -20,6 +20,7 @@ on:
       - 'Assets/**'
       - 'qodana.yml'
       - 'CLAUDE.md'
+      - '.claude/**'
 
 jobs:
 

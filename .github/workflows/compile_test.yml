@@ -15,7 +15,8 @@ on:
       - 'Release Notes.txt'
       - 'qodana.yml'
       - 'CLAUDE.md'
-
+      - '.claude/**'
+  
   pull_request:
     branches:
       - master
