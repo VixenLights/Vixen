@@ -81,6 +81,19 @@ Effect modules inherit from `EffectModuleInstanceBase` and implement `IEffect`. 
 - `GenerateVisualRepresentation()` — produces the thumbnail shown in the sequence editor if the standard intent rasterizer needs to be overridden
 - Edits of an effect, run this lifecycle method to update the effect instance's data model.
 
+### Adding Projects to the Solution
+
+After running `dotnet sln add`, the generated `Any CPU` platform entries in `Vixen.sln` must be corrected — they default to `Any CPU` targets but this solution only builds `x86` and `x64`. For every newly added project, find its GUID in the `GlobalSection(ProjectConfigurationPlatforms)` block and ensure all three `Any CPU` entries point to `x64`:
+
+```
+{GUID}.Debug|Any CPU.ActiveCfg = Debug|x64
+{GUID}.Debug|Any CPU.Build.0 = Debug|x64
+{GUID}.Deploy|Any CPU.ActiveCfg = Deploy|x64
+{GUID}.Deploy|Any CPU.Build.0 = Deploy|x64
+{GUID}.Release|Any CPU.ActiveCfg = Release|x64
+{GUID}.Release|Any CPU.Build.0 = Release|x64
+```
+
 ### Project References
 
 Per README conventions:

@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "$raw = [Console]::In.ReadToEnd(); $json = $raw | ConvertFrom-Json; $f = $json.tool_input.file_path; if ($f -and (Test-Path $f)) { $c = [System.IO.File]::ReadAllText($f); $c2 = $c -replace '(?<!\\r)\\n', \"`r`n\"; if ($c -ne $c2) { [System.IO.File]::WriteAllText($f, $c2, (New-Object System.Text.UTF8Encoding $false)) } }",
+            "statusMessage": "Normalizing line endings..."
+          }
+        ]
+      }
+    ]
+  }
+}
