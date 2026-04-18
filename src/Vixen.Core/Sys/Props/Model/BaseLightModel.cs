@@ -19,6 +19,14 @@ namespace Vixen.Sys.Props.Model
 		protected override void PropertyModelChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
 			//TODO make this smarter to do the minimal to add, subtract, or update node size or rotation angle.			
+			UpdateNodes();
+		}
+
+		/// <summary>
+		/// Updates the nodes based on the visual model properties.
+		/// </summary>
+		protected void UpdateNodes()
+		{
 			Nodes.Clear();
 			Nodes.AddRange(Get3DNodePoints());
 		}
