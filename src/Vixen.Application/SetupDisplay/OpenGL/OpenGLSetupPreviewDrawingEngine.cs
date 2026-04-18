@@ -14,8 +14,9 @@ using OpenTK.Mathematics;
 using Vixen.Sys.Props.Model;
 
 using VixenApplication.SetupDisplay.OpenGL.Shapes;
-
+using VixenModules.App.Props.Models;
 using VixenModules.App.Props.Models.IntellligentFixture;
+using VixenModules.App.Props.Models.Polyline;
 using VixenModules.Preview.VixenPreview.OpenGL;
 
 namespace VixenApplication.SetupDisplay.OpenGL
@@ -117,6 +118,16 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// Normalized such that the ruberband is always oriented left to right, top to bottom.
 		/// </summary>
 		private float _normalizedRubberbandPt2Y;
+
+		/// <summary>
+		/// Transient polyline OpenGL data for capturing points inputed by the user.
+		/// </summary>
+		private PolylinePropOpenGLData? _polyline;
+		
+		/// <summary>
+		/// Transient polyline model for capturing points inputed by the user.
+		/// </summary>
+		private PolylineModel? _polylineModel;
 
 		#endregion
 
@@ -285,6 +296,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 				// Draw rubberband selection box
 				DrawRubberband(Matrix4.Identity, Camera.ViewMatrix, perspective);
+
+				// Draw polyline points
+				DrawPolylinePoints(perspective);				
 			}			
 		}
 
@@ -345,6 +359,30 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		#endregion
 
 		#region Public Methods
+
+		/// <summary>
+		/// Completes a polyline prop.
+		/// </summary>
+		public void CompletePolyline()
+		{			
+			// If the setup preview is in polyline add point mode then...
+			if (IsPolylineMode &&
+				_polyline != null)
+			{
+				// Turn off polyline add point mode
+				IsPolylineMode = false;
+
+				// Calculate the center of the polyline and normalize all the coordinates
+				_polyline.CalculateCenterPointAndNormalize();
+				
+				// Update the polyline prop nodes
+				_polyline.PolylineMdl.UpdatePropNodes();
+			}
+
+			// Clear out transient polyline models
+			_polyline = null;
+			_polylineModel = null;
+		}
 
 		/// <summary>
 		/// Makes the selected props all the same size.
@@ -736,14 +774,71 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		}
 
 		/// <summary>
+		/// Gets the mouse point position in world coordinates.
+		/// </summary>
+		/// <param name="mouseX">Mouse X position in screen coordinates</param>
+		/// <param name="mouseY">Mouse Y position in screen coordinates</param>
+		/// <returns>Mouse position in world coordinates</returns>
+		private Vector3 GetMousePointPositionInWorld(int mouseX, int mouseY)
+		{			
+			Vector3 nearPoint = Unproject(mouseX, mouseY, 0f, Camera.ViewMatrix, CreatePerspective());
+			Vector3 farPoint = Unproject(mouseX, mouseY, 1f, Camera.ViewMatrix, CreatePerspective());
+
+			Vector3 rayDir = Vector3.Normalize(farPoint - nearPoint);
+			
+			float t = (-nearPoint.Z) / rayDir.Z;
+
+			return nearPoint + rayDir * t;
+		}
+
+		/// <summary>
 		/// Handles mouse up preview events to select props.
 		/// </summary>
 		/// <param name="mousePos">Position of the mouse in screen coordinates</param>
 		/// <param name="ctrlKeyPressed">True when the ctrl key is being pressed</param>
 		public void MouseUp(Vector2 mousePos, bool ctrlKeyPressed)
 		{
-			// If a rubberband operation is not in progress then...
-			if (!_rubberbandOperationInProgress)
+			// If in polyline mode then...
+			if (IsPolylineMode)
+			{
+				// Get the mouse position in 3-D world coordinates
+				Vector3 worldPt = GetMousePointPositionInWorld((int)mousePos.X, (int)mousePos.Y);
+
+				// Create a new polyline point
+				PolylinePointOpenGLDrawablePrimitive pt = new PolylinePointOpenGLDrawablePrimitive();
+
+				// Set the points position in world coordinates
+				pt.WorldPtX = worldPt.X;
+				pt.WorldPtY = worldPt.Y;
+
+				// Create the point's rectangle
+				pt.CreatePoint(worldPt.X, worldPt.Y);
+				
+				// Add the point to the polyline
+				_polyline.Points.Add(pt);					
+				
+				// If there are at least two polyline points then...
+				if (_polyline.Points.Count > 1)
+				{
+					// Create a new polyline segment
+					PolylineSegment segment = new();
+					
+					// Set the start position equal to the last point
+					segment.StartX = ((PolylinePointOpenGLDrawablePrimitive)_polyline.Points[_polyline.Points.Count - 2]).WorldPtX;
+					segment.StartY = ((PolylinePointOpenGLDrawablePrimitive)_polyline.Points[_polyline.Points.Count - 2]).WorldPtY;
+
+					// Set the End position equal to the mouse position
+					segment.EndX = worldPt.X;
+					segment.EndY = worldPt.Y;
+
+					// Add the segment to the polyline segment collection
+					_polyline.PolylineMdl.Segments.Add(segment);					
+				}
+			}
+
+			// If a rubberband operation is not in progress and
+			// a poly line is not being drawn then...
+			if (!_rubberbandOperationInProgress && !IsPolylineMode)
 			{
 				// If the ctrl key has NOT been pressed then...
 				if (!ctrlKeyPressed)
@@ -1080,6 +1175,22 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			// Check to see if the mouse is over any prop
 			bool mouseOverProp = IsMouseOverProp(mouseX, mouseY);
+
+			// If in Polyline mode and 
+			// this is the first point of the polyline then...
+			if (IsPolylineMode && 
+				_polyline == null)
+			{
+				// Create a new polyline model
+				_polylineModel = new PolylineModel();
+				_polyline = new PolylinePropOpenGLData(_polylineModel);
+
+				// Add the polyline line to the light props collection
+				LightProps.Add(_polyline);
+
+				// Add the polyline to the overall props collection
+				Props.Add(_polyline);
+			}
 						
 			// If only one prop is selected then...
 			if (SelectedProps.Count == 1)
@@ -1159,6 +1270,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				OnPropertyChanged(nameof(IsPartialSelectMode));
 				OnPropertyChanged(nameof(IsSelectMode));
 				OnPropertyChanged(nameof(IsPanMode));
+				OnPropertyChanged(nameof(IsPolylineMode));
 			}
 		}
 
@@ -1185,6 +1297,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				OnPropertyChanged(nameof(IsPartialSelectMode));
 				OnPropertyChanged(nameof(IsSelectMode));
 				OnPropertyChanged(nameof(IsPanMode));
+				OnPropertyChanged(nameof(IsPolylineMode));
 			}
 		}
 
@@ -1211,6 +1324,30 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				OnPropertyChanged(nameof(IsPartialSelectMode));
 				OnPropertyChanged(nameof(IsSelectMode));
 				OnPropertyChanged(nameof(IsPanMode));
+				OnPropertyChanged(nameof(IsPolylineMode));
+			}
+		}
+
+		private bool _isPolylineMode;
+
+		/// <summary>
+		/// True when in poly line mode.
+		/// </summary>
+		public bool IsPolylineMode
+		{
+			get
+			{
+				return _isPolylineMode;
+			}
+			set
+			{
+				_isPolylineMode = value;
+
+				IsPartialSelectMode = false;
+				IsSelectMode = false;
+				IsPanMode = false;
+				
+				OnPropertyChanged(nameof(IsPolylineMode));
 			}
 		}
 
@@ -1392,6 +1529,46 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		}
 
 		/// <summary>
+		/// Draws a square around each polyline point.
+		/// </summary>
+		/// <param name="polyline">Polyline OpenGL data to draw</param>
+		/// <param name="modelMatrix">Model matrix of the prop</param>
+		/// <param name="viewMatrix">View matrix of the preview</param>
+		/// <param name="projectionMatrix">Projection matrix of the preview</param>
+		private void DrawPolylinePointSquares(
+			PolylinePropOpenGLData polyline,
+			Matrix4 modelMatrix,
+			Matrix4 viewMatrix,
+			Matrix4 projectionMatrix)
+		{						
+			// Draw the point squares
+			DrawPolyLinePointSquare(
+				modelMatrix,
+				viewMatrix,
+				projectionMatrix,
+				polyline,
+				(prop) =>
+				{
+					// Convert the prop OpenGL data  to a polyline prop OpenGL data
+					PolylinePropOpenGLData pl = (PolylinePropOpenGLData)prop;
+
+					// Loop over the polyline points
+					foreach(PolylinePointOpenGLDrawablePrimitive primitive in pl.Points)
+					{						
+						// If the point is normalized then...
+						if (pl.Normalized)
+						{							
+							// Update the points square position
+							primitive.CreatePoint(prop.X + primitive.WorldPtX * prop.SizeX, prop.Y + primitive.WorldPtY * prop.SizeY);							
+						}
+
+						// Draw the square
+						DrawLineUtility.DrawLineLoop(primitive);						
+					}					
+				});			
+		}
+
+		/// <summary>
 		/// Draws the resize handles of a prop.
 		/// </summary>
 		/// <param name="modelMatrix">Model matrix</param>
@@ -1445,6 +1622,48 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				projectionMatrix,
 				(prop) =>
 					DrawLineUtility.DrawLines(prop.GetCenterX()));
+			}
+		}
+
+		/// <summary>
+		/// Draws a polyline point square.
+		/// </summary>
+		/// <param name="modelMatrix">Model matrix</param>
+		/// <param name="viewMatrix">View matrix</param>
+		/// <param name="projectionMatrix">Projection matrix</param>
+		/// <param name="drawLines">Delegate to draw lines</param>
+		private void DrawPolyLinePointSquare(
+			Matrix4 modelMatrix,
+			Matrix4 viewMatrix,
+			Matrix4 projectionMatrix,
+			PolylinePropOpenGLData polyline,
+			Action<IPropOpenGLData> drawLines)
+		{
+			try
+			{
+				// Activate the line shader program
+				LineProgram.Use();
+
+				// Give the line program the projection and view matrices
+				LineProgram.TransferGlobalUniforms(
+					projectionMatrix,
+					viewMatrix);
+
+				// Transfer the Uniforms to the GPU
+				LineProgram.TransferModelMatrixUniform(modelMatrix);
+
+				// Give the line shader program the line color
+				LineProgram.TransferColorUniform(Color4.HotPink);
+				
+				// Have the delegate draw lines
+				drawLines(polyline);
+				
+				// Clear the OpenGL program
+				GL.UseProgram(0);
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "An error occurred in DrawLines");
 			}
 		}
 
@@ -1748,6 +1967,24 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				}
 			}
 			return true;
+		}
+
+		/// <summary>
+		/// Draws polyline points.
+		/// </summary>		
+		/// <param name="projectionMatrix">Projection matrix</param>
+		private void DrawPolylinePoints(Matrix4 projectionMatrix)			
+		{
+			// Loop over the props that are polylines
+			foreach (PolylinePropOpenGLData polyline in LightProps.Where(prop => prop is PolylinePropOpenGLData))
+			{
+				// Draw the polyline points for the specified polyline prop
+				DrawPolylinePointSquares(
+					polyline,
+					Matrix4.Identity,
+					Camera.ViewMatrix,
+					projectionMatrix);
+			}
 		}
 
 		#endregion

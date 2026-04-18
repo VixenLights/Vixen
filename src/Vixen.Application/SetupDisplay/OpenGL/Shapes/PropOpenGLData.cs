@@ -305,7 +305,9 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 		/// </summary>
 		/// <param name="sizeY">Size of the prop in the Y axis</param>
 		private void InitializeCenterXMoveHandle(float sizeY, float minZ)
-		{ 
+		{
+			const int SizeCross = 20;
+
 			// Clear the center X selection handle vertices
 			_centerX.Vertices.Clear();
 
@@ -314,36 +316,36 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			_centerX.Vertices.Add(0.0f + Y); // Y
 			_centerX.Vertices.Add(minZ);     // Z
 
-			_centerX.Vertices.Add(0.2f * sizeY + X); // X
-			_centerX.Vertices.Add(0.0f * sizeY + Y); // Y
-			_centerX.Vertices.Add(minZ);             // Z
+			_centerX.Vertices.Add(SizeCross + X); // X
+			_centerX.Vertices.Add(Y);             // Y
+			_centerX.Vertices.Add(minZ);          // Z
 
 			// <- X
 			_centerX.Vertices.Add(0.0f + X); // X
 			_centerX.Vertices.Add(0.0f + Y); // Y
 			_centerX.Vertices.Add(minZ);     // Z
 
-			_centerX.Vertices.Add(-0.2f * sizeY + X); // X
-			_centerX.Vertices.Add(0.0f + Y);          // Y
-			_centerX.Vertices.Add(minZ);              // Z
+			_centerX.Vertices.Add(-SizeCross + X); // X
+			_centerX.Vertices.Add(Y);             // Y
+			_centerX.Vertices.Add(minZ);          // Z
 
 			// Y Up
 			_centerX.Vertices.Add(0.0f + X); // X
 			_centerX.Vertices.Add(0.0f + Y); // Y
 			_centerX.Vertices.Add(minZ);     // Z
 
-			_centerX.Vertices.Add(0.0f + X);         // X
-			_centerX.Vertices.Add(0.2f * sizeY + Y); // Y
-			_centerX.Vertices.Add(minZ);             // Z
+			_centerX.Vertices.Add(0.0f + X);             // X
+			_centerX.Vertices.Add(SizeCross + Y);        // Y
+			_centerX.Vertices.Add(minZ);                 // Z
 
 			// Y Down
 			_centerX.Vertices.Add(0.0f + X); // X
 			_centerX.Vertices.Add(0.0f + Y); // Y
 			_centerX.Vertices.Add(minZ);     // Z
 
-			_centerX.Vertices.Add(0.0f + X);          // X
-			_centerX.Vertices.Add(-0.2f * sizeY + Y); // Y
-			_centerX.Vertices.Add(minZ);              // Z
+			_centerX.Vertices.Add(0.0f + X);       // X
+			_centerX.Vertices.Add(-SizeCross + Y); // Y
+			_centerX.Vertices.Add(minZ);           // Z
 		}
 
 		/// <summary>
