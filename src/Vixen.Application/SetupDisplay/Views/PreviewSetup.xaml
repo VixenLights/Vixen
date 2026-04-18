@@ -91,6 +91,10 @@
 				<Button Command="{Binding AlignBottom}" ToolTip="Align Props Bottom">
 					<Image Source="pack://application:,,,/Resources;component/buttonAlignBottom.BackgroundImage.png" Width="32" Height="32"/>
 				</Button>
+
+				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsPolylineMode}" ToolTip="Polyline">
+					<Image Source="buttonPolyLine.BackgroundImage.png" Width="32" Height="32"/>
+				</ToggleButton>
 			</ToolBar>
 			<glWpfControl:GLWpfControl
 				x:Name="OpenTkControlPreview" 							

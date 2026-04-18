@@ -97,7 +97,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			// Initialize the vertices used to indicate the prop is selected
 			// TODO: Should this be optimized to only run when the prop is actually selected
-			InitializeSelectionVertices(coordinates, SizeY);			
+			InitializeSelectionVertices(coordinates, controlHeight);			
 		}
 
 		#endregion						
