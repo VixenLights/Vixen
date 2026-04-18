@@ -204,6 +204,11 @@ namespace VixenApplication.SetupDisplay.Views
 				// Nudge the selected props right
 				GetViewModel().DisplayPreviewDrawingEngine.NudgeSelectedPropsRight();
 			}
+			else if (e.Key == Key.Escape)
+			{
+				// Finalize the polyline
+				GetViewModel().DisplayPreviewDrawingEngine.CompletePolyline();
+			}
 		}
 
 		/// <summary>
