@@ -5,11 +5,24 @@ using VixenModules.App.Props.Models.Arch;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
-	public class ArchPropWizardPageViewModel : GraphicsWizardPageViewModelBase<ArchPropWizardPage, VixenModules.App.Props.Models.Arch.ArchModel>, IPropWizardPageViewModel
+	/// <summary>
+	/// Maintains an arch wizard page view model.
+	/// </summary>
+	public class ArchPropWizardPageViewModel : LightWizardPageViewModel<ArchPropWizardPage, ArchModel>, IPropWizardPageViewModel
 	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="wizardPage">Type of wizard page</param>
 		public ArchPropWizardPageViewModel(ArchPropWizardPage wizardPage) : base(wizardPage)
 		{
 		}
+
+		#endregion
+
+		#region Private Methods
 
 		/// <summary>
 		/// Refreshes the 3-D OpenGL graphics.
@@ -21,17 +34,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			PropModel.LightSize = LightSize;			
 		}
 
-		#region Name property
-		/// <summary>
-		/// Gets or sets the prop name.
-		/// </summary>
-		[ViewModelToModel]
-		public string Name
-		{
-			get { return GetValue<string>(NameProperty); }
-			set { SetValue(NameProperty, value); }
-		}
-		private static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 		#endregion
 
 		#region NodeCount property
@@ -84,58 +86,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		}
 		private static readonly IPropertyData NodeCountMaximumProperty = RegisterProperty<int>(nameof(NodeCountMaximum));
 		#endregion
-
-		#region LightSize property
-		/// <summary>
-		/// Gets or sets the size of each light.
-		/// </summary>
-		/// <remarks>
-		/// The size of the lights is constrained by <see cref="LightSizeMinimum"/> and <see cref="LightSizeMaximum"/>, consequently
-		/// set these values prior to setting LightSize.
-		/// </remarks>
-		[ViewModelToModel]
-		public int LightSize
-		{
-			get { return GetValue<int>(LightSizeProperty); }
-			set 
-			{
-				SetValue(LightSizeProperty, Math.Clamp(value, LightSizeMinimum, LightSizeMaximum));
-				RefreshGraphics();
-			}
-		}
-		private static readonly IPropertyData LightSizeProperty = RegisterProperty<int>(nameof(LightSize));
-
-		[ViewModelToModel]
-		public int LightSizeMinimum
-		{
-			get { return GetValue<int>(LightSizeMinimumProperty); }
-			set 
-			{
-				if (LightSize < value)
-				{
-					LightSize = value;
-				}
-				SetValue(LightSizeMinimumProperty, value); 
-			}
-		}
-		private static readonly IPropertyData LightSizeMinimumProperty = RegisterProperty<int>(nameof(LightSizeMinimum));
-
-		[ViewModelToModel]
-		public int LightSizeMaximum
-		{
-			get { return GetValue<int>(LightSizeMaximumProperty); }
-			set 
-			{
-				if (LightSize > value)
-				{
-					LightSize = value;
-				}
-				SetValue(LightSizeMaximumProperty, value); 
-			}
-		}
-		private static readonly IPropertyData LightSizeMaximumProperty = RegisterProperty<int>(nameof(LightSizeMaximum));
-		#endregion
-
+		
 		#region ArchWiringStart property
 		/// <summary>
 		/// Gets or sets the Wiring Start value.
@@ -153,19 +104,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		private static readonly IPropertyData ArchWiringStartProperty = RegisterProperty<ArchStartLocation>(nameof(ArchWiringStart));
 		#endregion
 
-		/// <summary>
-		/// Performs validation on the properties.
-		/// </summary>
-		/// <param name="validationResults"></param>
-		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
-		{
-			base.ValidateFields(validationResults);
-
-			if (string.IsNullOrWhiteSpace(Name))
-			{
-				validationResults.Add(FieldValidationResult.CreateError("Name", "Name is required"));
-			}
-		}
+		#region Protected Methods
 
 		protected override async Task InitializeAsync()
 		{
@@ -176,5 +115,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 			RefreshGraphics();
 		}
+
+		#endregion
 	}
 }
