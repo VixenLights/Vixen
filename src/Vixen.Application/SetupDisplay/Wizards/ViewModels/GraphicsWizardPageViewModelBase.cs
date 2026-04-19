@@ -16,7 +16,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
     /// <typeparam name="TPropModel">Type of prop model</typeparam>
     public class GraphicsWizardPageViewModelBase<TWizardPage, TPropModel> : WizardPageViewModelBase<TWizardPage>
         where TWizardPage : class, IWizardPage
-        where TPropModel : class, ILightPropModel, new()
+        where TPropModel : class, IPropModel, new()
     {
         #region Constructor
         

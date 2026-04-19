@@ -1,22 +1,31 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
 
-using Vixen.Sys.Props;
-
 using VixenApplication.SetupDisplay.Wizards.Pages;
 using VixenModules.App.Props;
+using VixenModules.App.Props.Models.Tree;
 
 namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 {
 	/// <summary>
 	/// Maintains a tree prop wizard page view model.
 	/// </summary>
-	public class TreePropWizardPageViewModel : GraphicsWizardPageViewModelBase<TreePropWizardPage, VixenModules.App.Props.Models.Tree.TreeModel>, IPropWizardPageViewModel
+	public class TreePropWizardPageViewModel : LightWizardPageViewModel<TreePropWizardPage, TreeModel>, IPropWizardPageViewModel
 	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="wizardPage">Type of wizard page</param>
 		public TreePropWizardPageViewModel(TreePropWizardPage wizardPage) : base(wizardPage)
 		{			
 		}
-		
+
+		#endregion
+
+		#region Private Methods
+
 		/// <summary>
 		/// Refreshes the 3-D OpenGL graphics.
 		/// </summary>
@@ -35,23 +44,6 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 			PropModel.TopRadius = TopRadius;
 			PropModel.BottomRadius = BottomRadius;			
 		}
-
-		#region Name property
-
-		/// <summary>
-		/// Gets or sets the Name value.
-		/// </summary>
-		[ViewModelToModel]
-		public string Name
-		{
-			get { return GetValue<string>(NameProperty); }
-			set { SetValue(NameProperty, value); }
-		}
-
-		/// <summary>
-		/// Name property data.
-		/// </summary>
-		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 
 		#endregion
 
@@ -97,44 +89,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 		#endregion
 
-
-		[ViewModelToModel]
-		public int LightSize
-		{
-			get { return GetValue<int>(LightSizeProperty); }
-			set { SetValue(LightSizeProperty, Math.Clamp(value, LightSizeMinimum, LightSizeMaximum)); }
-		}
-		private static readonly IPropertyData LightSizeProperty = RegisterProperty<int>(nameof(LightSize));
-
-		[ViewModelToModel]
-		protected int LightSizeMinimum
-		{
-			get { return GetValue<int>(LightSizeMinimumProperty); }
-			set
-			{
-				if (LightSize < value)
-				{
-					LightSize = value;
-				}
-				SetValue(LightSizeMinimumProperty, value);
-			}
-		}
-		private static readonly IPropertyData LightSizeMinimumProperty = RegisterProperty<int>(nameof(LightSizeMinimum));
-
-		[ViewModelToModel]
-		protected int LightSizeMaximum
-		{
-			get { return GetValue<int>(LightSizeMaximumProperty); }
-			set
-			{
-				if (LightSize > value)
-				{
-					LightSize = value;
-				}
-				SetValue(LightSizeMaximumProperty, value);
-			}
-		}
-		private static readonly IPropertyData LightSizeMaximumProperty = RegisterProperty<int>(nameof(LightSizeMaximum));
+		#region Public Properties
 
 		[ViewModelToModel]
 		public int DegreesCoverage
@@ -256,18 +211,14 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
         }
 		public static readonly IPropertyData BottomRadiusProperty = RegisterProperty<float>(nameof(BottomRadius));
 
+		#endregion
 
-
+		#region Protected Methods
 
 		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
 		{
 			base.ValidateFields(validationResults);
-
-			if (string.IsNullOrWhiteSpace(Name))
-			{
-				validationResults.Add(FieldValidationResult.CreateError(nameof(Name), "Name is required"));
-			}
-
+			
 			if (Strings <= 0)
 			{
 				validationResults.Add(
@@ -288,5 +239,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 			RefreshGraphics();
 		}
+
+		#endregion
 	}
 }
