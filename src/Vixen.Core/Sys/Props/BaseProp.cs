@@ -42,11 +42,11 @@ namespace Vixen.Sys.Props
 			PropModel = new TModel();
 			
 			Id = Guid.NewGuid();
-			_name = name;
+			PropComponents = new();
+			Name = name;
 			CreationDate = _modifiedDate = DateTime.Now;
 			_createdBy = Environment.UserName;
-			PropType = propType;
-			PropComponents = new();
+			PropType = propType;			
 			UserDefinedPropComponents = new();
 			
 			PropertyChanged += Prop_PropertyChanged;
@@ -94,7 +94,7 @@ namespace Vixen.Sys.Props
 			get => _name;
 			set
 			{
-				if (_name.Equals(value) == false)
+				if (!string.Equals(_name, value))
 				{
 					RenamePropElement(_name, value);
 					SetProperty(ref _name, value);
