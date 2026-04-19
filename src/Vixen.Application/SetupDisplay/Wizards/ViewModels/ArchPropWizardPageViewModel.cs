@@ -17,8 +17,8 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		private void RefreshGraphics()
 		{
 			// Update the prop nodes
-			LightPropModel.NumPoints = NodeCount;
-			LightPropModel.LightSize = LightSize;			
+			PropModel.NumPoints = NodeCount;
+			PropModel.LightSize = LightSize;			
 		}
 
 		#region Name property
@@ -169,8 +169,8 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 
 		protected override async Task InitializeAsync()
 		{
-			LightPropModel.NumPoints = NodeCount;
-			LightPropModel.LightSize = LightSize;
+			PropModel.NumPoints = NodeCount;
+			PropModel.LightSize = LightSize;
 
 			await base.InitializeAsync();
 
