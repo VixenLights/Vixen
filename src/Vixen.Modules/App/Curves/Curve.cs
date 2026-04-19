@@ -29,7 +29,7 @@ namespace VixenModules.App.Curves
 		/// <param name="curve"></param>
 		public Curve(Curve curve)
 		{
-			if (curve == null)
+			if (curve is null)
 			{
 				throw new ArgumentNullException(nameof(curve));
 			}
