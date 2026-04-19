@@ -23,6 +23,11 @@
 				<None Remove="Fonts\RadioLand.ttf" />
 		</ItemGroup>
 
+        <ItemGroup>
+            <Using Include="System.IO" />
+            <Using Include="System.Net.Http"/>
+        </ItemGroup>
+
 		<ItemGroup>
 				<EmbeddedResource Include="Fonts\DigitalDream.ttf" />
 				<EmbeddedResource Include="Fonts\RadioLand.ttf" />

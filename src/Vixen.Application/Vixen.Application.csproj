@@ -16,6 +16,10 @@
 				<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		</ItemGroup>
 
+        <ItemGroup>
+            <Using Include="System.IO" />
+            <Using Include="System.Net.Http"/>
+        </ItemGroup>
 
 		<ItemGroup>
 				<None Remove="NLog.config" />

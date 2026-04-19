@@ -109,6 +109,8 @@ namespace VixenModules.App.Curves
 		public bool ReadonlyCurve { get; private set; }
 
 		private int _threshold;
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Threshold
 		{
 			get { return _threshold; }
@@ -116,6 +118,8 @@ namespace VixenModules.App.Curves
 		}
 
 		private string _LibraryName;
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string LibraryName
 		{
 			get { return _LibraryName; }
