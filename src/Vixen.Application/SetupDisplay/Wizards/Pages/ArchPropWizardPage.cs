@@ -1,53 +1,39 @@
 ﻿using Catel.Data;
 using Common.WPFCommon.Converters;
 using Orc.Wizard;
-using System.Collections.ObjectModel;
 using Vixen.Extensions;
 using Vixen.Sys.Props;
-using Vixen.Sys.Props.Model;
-using VixenApplication.SetupDisplay.ViewModels;
 using VixenModules.App.Props.Models.Arch;
 
 namespace VixenApplication.SetupDisplay.Wizards.Pages
 {
-	public class ArchPropWizardPage : WizardPageBase
+	/// <summary>
+	/// Maintains an Arch Prop Wizard page.
+	/// </summary>
+	public class ArchPropWizardPage : LightPropWizardPage
 	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public ArchPropWizardPage()
 		{
 			Title = "Basic Attributes";
 			Description = $"Enter attributes for {PropType.Arch.GetEnumDescription()}";
 			NodeCountMinimum = 3;
 			NodeCountMaximum = 10000;
-			LightSizeMinimum = 1;
-			LightSizeMaximum = 50;
-
+			
 			// Generic parameters
 			Name = "Arch";
 			NodeCount = 20;
 			LightSize = 2;
-			ArchWiringStart = ArchStartLocation.Left;
-
-			// Initialize the Rotation collection
-			ObservableCollection<AxisRotationModel> rotations = new ObservableCollection<AxisRotationModel>();
-			rotations.Add(new AxisRotationModel() { Axis = Axis.XAxis, RotationAngle = 0 });
-			rotations.Add(new AxisRotationModel() { Axis = Axis.YAxis, RotationAngle = 0 });
-			rotations.Add(new AxisRotationModel() { Axis = Axis.ZAxis, RotationAngle = 0 });
-			Rotations = AxisRotationViewModel.ConvertToViewModel(rotations);
+			ArchWiringStart = ArchStartLocation.Left;			
 		}
 
-		#region Name property
-		/// <summary>
-		/// Gets or sets the Name value.
-		/// </summary>
-		public string Name
-		{
-			get { return GetValue<string>(NameProperty); }
-			set { SetValue(NameProperty, value); }
-		}
-		private static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name));
 		#endregion
 
-		#region NodeCount property
+		#region NodeCount Property
 		/// <summary>
 		/// Gets or sets the number of lights.
 		/// </summary>
@@ -89,53 +75,11 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			}
 		}
 		private static readonly IPropertyData NodeCountMaximumProperty = RegisterProperty<int>(nameof(NodeCountMaximum));
+		
 		#endregion
+		
+		#region ArchWiringStart Property
 
-		#region LightSize property
-		/// <summary>
-		/// Gets or sets the size of each light.
-		/// </summary>
-		/// <remarks>
-		/// The size of the lights is constrained by <see cref="LightSizeMinimum"/> and <see cref="LightSizeMaximum"/>, consequently
-		/// set these values prior to setting LightSize.
-		/// </remarks>
-		public int LightSize
-		{
-			get { return GetValue<int>(LightSizeProperty); }
-			set { SetValue(LightSizeProperty, Math.Clamp(value, LightSizeMinimum, LightSizeMaximum)); }
-		}
-		private static readonly IPropertyData LightSizeProperty = RegisterProperty<int>(nameof(LightSize));
-
-		protected int LightSizeMinimum
-		{
-			get { return GetValue<int>(LightSizeMinimumProperty); }
-			set
-			{
-				if (LightSize < value)
-				{
-					LightSize = value;
-				}
-				SetValue(LightSizeMinimumProperty, value);
-			}
-		}
-		private static readonly IPropertyData LightSizeMinimumProperty = RegisterProperty<int>(nameof(LightSizeMinimum));
-
-		protected int LightSizeMaximum
-		{
-			get { return GetValue<int>(LightSizeMaximumProperty); }
-			set
-			{
-				if (LightSize > value)
-				{
-					LightSize = value;
-				}
-				SetValue(LightSizeMaximumProperty, value);
-			}
-		}
-		private static readonly IPropertyData LightSizeMaximumProperty = RegisterProperty<int>(nameof(LightSizeMaximum));
-		#endregion
-
-		#region ArchWiringStart property
 		/// <summary>
 		/// Gets or sets the Wiring Start value.
 		/// </summary>
@@ -144,17 +88,12 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 			get { return GetValue<ArchStartLocation>(ArchWiringStartProperty); }
 			set { SetValue(ArchWiringStartProperty, value); }
 		}
+		
 		private static readonly IPropertyData ArchWiringStartProperty = RegisterProperty<ArchStartLocation>(nameof(ArchWiringStart));
+
 		#endregion
 
-		#region Rotation property
-		public ObservableCollection<AxisRotationViewModel> Rotations
-		{
-			get { return GetValue<ObservableCollection<AxisRotationViewModel>>(RotationsProperty); }
-			set { SetValue(RotationsProperty, value); }
-		}
-		private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
-		#endregion
+		#region Public Methods
 
 		/// <summary>
 		/// Get a summary of the wizard page settings.
@@ -175,5 +114,7 @@ namespace VixenApplication.SetupDisplay.Wizards.Pages
 						  $"{Rotations[2].Axis} Rotation: {Rotations[2].RotationAngle}\u00B0"
 			};
 		}
+
+		#endregion
 	}
 }
