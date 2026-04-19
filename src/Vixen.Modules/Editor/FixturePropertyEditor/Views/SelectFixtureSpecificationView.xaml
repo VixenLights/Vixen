@@ -4,9 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:catel="http://schemas.catelproject.com"
-	    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-	    xmlns:views="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views"	    
-	    xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+        xmlns:common="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
         mc:Ignorable="d"
         Title="Load Fixture Specification"
         WindowStartupLocation="CenterScreen">

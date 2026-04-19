@@ -5,8 +5,7 @@
                    xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                    xmlns:utils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon"
-                   xmlns:viewModels="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels"
-                   xmlns:System="clr-namespace:System;assembly=System.Runtime">
+                   xmlns:viewModels="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels">
 
     <UserControl.Resources>
         <ResourceDictionary>

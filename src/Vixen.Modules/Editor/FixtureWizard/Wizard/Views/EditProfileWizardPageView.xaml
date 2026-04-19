@@ -2,8 +2,6 @@
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:catel="http://schemas.catelproject.com"
-                   xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
-				   xmlns:views="clr-namespace:VixenModules.Editor.FixtureWizard.Wizard.Views"
                    xmlns:fpe="clr-namespace:VixenModules.Editor.FixturePropertyEditor.Views;assembly=FixturePropertyEditor">
   
     <StackPanel>
