@@ -1,8 +1,6 @@
-﻿using Antlr4.Runtime.Misc;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using Vixen.Extensions;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
@@ -31,12 +29,14 @@ namespace VixenModules.App.Curves
 		/// <param name="curve"></param>
 		public Curve(Curve curve)
 		{
-			if (curve != null)
+			if (curve is null)
 			{
-				Points = new PointPairList(curve.Points);
-				LibraryReferenceName = curve.LibraryReferenceName;
-				IsCurrentLibraryCurve = curve.IsCurrentLibraryCurve;
+				throw new ArgumentNullException(nameof(curve));
 			}
+
+			Points = new PointPairList(curve.Points);
+			LibraryReferenceName = curve.LibraryReferenceName;
+			IsCurrentLibraryCurve = curve.IsCurrentLibraryCurve;			
 		}
 
 		// default Curve constructor makes a ramp with x = y.
