@@ -8,7 +8,19 @@ namespace Vixen.Sys.Props.Model
 	/// Maintains a base light model.
 	/// </summary>
 	public abstract class BaseLightModel : BasePropModel, ILightPropModel
-	{		
+	{
+		#region Constructor
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		protected BaseLightModel()
+		{
+			LightSize = 2;
+		}
+
+		#endregion
+
 		#region Protected Methods
 
 		/// <summary>

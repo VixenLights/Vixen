@@ -1,5 +1,4 @@
-﻿
-#nullable enable
+﻿#nullable enable
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.Theme;
 using Common.WPFCommon.Converters;
@@ -33,13 +32,10 @@ namespace VixenModules.App.Props.Models.Arch
 
 		public ArchProp(string name, int nodeCount = 0, StringTypes stringType = StringTypes.ColorMixingRGB) : base(name, PropType.Arch)
 		{			
-			// Set some default parameters
-			Name = name;
-			NodeCount = 24;
-			LightSize = 2;
-			ArchWiringStart = ArchStartLocation.Left;
+			// Set Arch default parameters			
 			LeftRight = true;
 
+			// TODO: These probably don't belong at this level
 			Brightness = 100;
 			Gamma = 1;
 			Curve = null;
@@ -71,14 +67,18 @@ namespace VixenModules.App.Props.Models.Arch
 				OnPropertyChanged(nameof(NodeCount));
 			}
 		}
-
-		private ArchStartLocation _archWiringStart;
+		
 		public ArchStartLocation ArchWiringStart
 		{
-			get => _archWiringStart;
+			get => PropModel.ArchWiringStart;
 			set
 			{
-				_archWiringStart = value;
+				if (value == PropModel.ArchWiringStart)
+				{
+					return;
+				}
+
+				PropModel.ArchWiringStart = value;
 				OnPropertyChanged(nameof(ArchWiringStart));
 			}
 		}

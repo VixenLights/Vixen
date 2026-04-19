@@ -14,18 +14,30 @@ namespace VixenModules.App.Props.Models.Arch
 		/// Constructor
 		/// </summary>
 		public ArchModel()
-		{			
+		{
+			ArchWiringStart = ArchStartLocation.Left;
+			NumPoints = 24;
 		}
 
 		#endregion
 
 		#region Public Properties
 
-		private int _numPoints = 3;
+		private int _numPoints;
 		public int NumPoints
 		{
 			get => _numPoints;
 			set => SetProperty(ref _numPoints, value);
+		}
+
+		private ArchStartLocation _archWiringStart;
+		public ArchStartLocation ArchWiringStart
+		{
+			get => _archWiringStart;
+			set
+			{
+				SetProperty(ref _archWiringStart, value);				
+			}
 		}
 
 		#endregion
