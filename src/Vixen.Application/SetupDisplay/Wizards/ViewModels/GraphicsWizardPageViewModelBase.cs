@@ -19,33 +19,38 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
         where TPropModel : class, ILightPropModel, new()
     {
         #region Constructor
-        /// <summary>
+        
+		/// <summary>
         /// Constructor
         /// </summary>
         /// <param name="wizardPage">Wizard page model</param>
         protected GraphicsWizardPageViewModelBase(TWizardPage wizardPage) : base(wizardPage)
         {
-            LightPropModel = new TPropModel();
+            PropModel = new TPropModel();
             List<IPropModel> propModels = new List<IPropModel>();
-            propModels.Add(LightPropModel);
+            propModels.Add(PropModel);
 
 			// Create the prop drawing engine
 			DrawingEngine = new OpenGLPropDrawingEngine(propModels, 1, 100.0f);
 
 			AttachRotationHandlers(Rotations);
         }
+
         #endregion
 
         #region Protected Properties
-        public TPropModel LightPropModel
+        
+		protected TPropModel PropModel
         {
-            get { return GetValue<TPropModel>(LightPropModelProperty); }
-            set { SetValue(LightPropModelProperty, value); }
+            get { return GetValue<TPropModel>(PropModelProperty); }
+            set { SetValue(PropModelProperty, value); }
         }
-        private static readonly IPropertyData LightPropModelProperty = RegisterProperty<TPropModel>(nameof(LightPropModel));
-        #endregion
+        private static readonly IPropertyData PropModelProperty = RegisterProperty<TPropModel>(nameof(PropModel));
+        
+		#endregion
 
         #region Public Properties
+
         /// <summary>
         /// Collection of rotations to support rotating the props around the x,y, and z axis.
         /// </summary>
@@ -75,6 +80,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 	            }
             }
         }
+		
 		private static readonly IPropertyData RotationsProperty = RegisterProperty<ObservableCollection<AxisRotationViewModel>>(nameof(Rotations));
 
 		/// <summary>
@@ -85,6 +91,7 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		#endregion
 
 		#region Private Methods
+
 		/// <summary>
 		/// Add Rotation Handlers to the collection and each item in the collection. This ensures that when a rotation is changed, 
 		/// the prop nodes will update accordingly. It also ensures that when the collection changes (e.g. a new rotation is added), 
@@ -202,14 +209,19 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
             }
 
             // Set the updated parameters
-            LightPropModel.AxisRotations = AxisRotationViewModel.ConvertToModel(Rotations);           
+            PropModel.AxisRotations = AxisRotationViewModel.ConvertToModel(Rotations);           
         }
-        #endregion
 
-        protected override async Task InitializeAsync()
+		#endregion
+
+		#region Protected Methods
+
+		protected override async Task InitializeAsync()
         {
             // Set the updated parameters
-            LightPropModel.AxisRotations = AxisRotationViewModel.ConvertToModel(Rotations);
+            PropModel.AxisRotations = AxisRotationViewModel.ConvertToModel(Rotations);
         }
-    }
+
+		#endregion
+	}
 }

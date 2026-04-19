@@ -23,17 +23,17 @@ namespace VixenApplication.SetupDisplay.Wizards.ViewModels
 		private void RefreshGraphics()
 		{
 			// Pass the properties needed to draw the graphics to the light prop model
-			LightPropModel.Strings = Strings;
-			LightPropModel.NodesPerString = NodesPerString;
-			LightPropModel.TopWidth = TopWidth;
-			LightPropModel.TopHeight = TopWidth;
-			LightPropModel.BaseHeight = BaseHeight;
-			LightPropModel.DegreesCoverage = DegreesCoverage;
-			LightPropModel.Strings = Strings;
-			LightPropModel.NodesPerString = NodesPerString;
-			LightPropModel.LightSize = LightSize;
-			LightPropModel.TopRadius = TopRadius;
-			LightPropModel.BottomRadius = BottomRadius;			
+			PropModel.Strings = Strings;
+			PropModel.NodesPerString = NodesPerString;
+			PropModel.TopWidth = TopWidth;
+			PropModel.TopHeight = TopWidth;
+			PropModel.BaseHeight = BaseHeight;
+			PropModel.DegreesCoverage = DegreesCoverage;
+			PropModel.Strings = Strings;
+			PropModel.NodesPerString = NodesPerString;
+			PropModel.LightSize = LightSize;
+			PropModel.TopRadius = TopRadius;
+			PropModel.BottomRadius = BottomRadius;			
 		}
 
 		#region Name property
