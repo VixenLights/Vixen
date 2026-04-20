@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using Common.Controls.Theme;
-using Brush = System.Drawing.Brush;
 using Brushes = System.Drawing.Brushes;
 using Color = System.Drawing.Color;
 

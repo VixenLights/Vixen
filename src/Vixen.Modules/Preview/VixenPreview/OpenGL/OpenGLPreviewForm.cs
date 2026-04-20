@@ -40,7 +40,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		
 		private Background _background;
 		private const double Fov = 45.0;
-		private const float FarDistance = 4000f;
+		private const float FarDistance = 6000f;
 		private const float NearDistance = 1f;
 		private bool _mouseDown;
 		private int _prevX, _prevY;

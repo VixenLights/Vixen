@@ -5,8 +5,7 @@
                   xmlns:views="clr-namespace:VixenModules.App.TimingTrackBrowser.Views"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                  xmlns:viewModels="clr-namespace:VixenModules.App.TimingTrackBrowser.ViewModels"
-                  mc:Ignorable="d"
+				  mc:Ignorable="d"
                   Height="600" Width="800" WindowStartupLocation="CenterOwner">
 
 	<Window.Resources>

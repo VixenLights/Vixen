@@ -1,14 +1,12 @@
 ﻿<views:WizardUserControlBase x:Class="VixenModules.Editor.FixtureWizard.Wizard.Views.AutomationWizardPageView"
-                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                   xmlns:catel="http://schemas.catelproject.com"
-				   xmlns:views="clr-namespace:VixenModules.Editor.FixtureWizard.Wizard.Views"
-                   xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
-                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-				   Loaded="UserControl_Loaded">
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:views="clr-namespace:VixenModules.Editor.FixtureWizard.Wizard.Views"
+                    mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    Loaded="UserControl_Loaded">
 
 	<StackPanel Orientation="Horizontal">
 	<Viewport3D Name="LeftMainViewport"/>
