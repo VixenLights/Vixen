@@ -274,7 +274,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
                         if (index != -1)
                         {
-                            //if (!remove) lines.Add(new Line(temp.Substring(index + 2), lineNumber, true));
+                            //if (!remove)
+                            lines.Add(new Line(temp.Substring(index + 2), lineNumber, true));
                             temp = temp.Substring(0, index);
                         }
                     }
@@ -302,7 +303,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
                     // if (!remove)
                     // {
-                    //     if (line.Length > 0) lines.Add(new Line(line, lineNumber));
+	                if (line.Length > 0) lines.Add(new Line(line, lineNumber));
                     // }
                 }
             }
