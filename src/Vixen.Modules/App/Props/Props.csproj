@@ -7,6 +7,7 @@
 		</PropertyGroup>
 
 		<ItemGroup>
+				<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
 				<ProjectReference Include="..\..\Editor\FixtureGraphics\FixtureGraphics.csproj" />
 				<ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj" />
