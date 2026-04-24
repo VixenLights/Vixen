@@ -31,10 +31,6 @@ namespace Vixen.Execution
 			IEnumerable<IEffectNode> newQualifiedEffects = dataSource.GetDataAt(currentTime);
 			// Add them to the current effect list.
 			AddRange(newQualifiedEffects);
-			// Get the distinct list of all elements affected by all effects in the list.
-			// List has current effects as well as effects that may be expiring.
-			// Current and expired effects affect state.
-			//_GetElementsAffected();
 			_RemoveExpiredEffects(currentTime);
 
 			return Count > 0;
@@ -75,7 +71,7 @@ namespace Vixen.Execution
 			// Remove expired effects.
 			for (int i = Count - 1; i >= 0; i--)
 			{
-				if (_IsExpired(currentTime, this[i]))
+				if (currentTime > this[i].EndTime)
 				{
 					RemoveAt(i);
 				}
@@ -89,11 +85,5 @@ namespace Vixen.Execution
 				Remove(effectNode);
 			}
 		}
-
-		private bool _IsExpired(TimeSpan currentTime, IEffectNode effectNode)
-		{
-			return currentTime > effectNode.EndTime;
-		}
-
 	}
 }
