@@ -17,9 +17,11 @@ namespace Vixen.Sys.Managers
 		//General locking on a Dictionary is sufficient here and more performant for iterating
 		private readonly Dictionary<Guid, IContext> _instances;
 		//Used to help reduce the amount of object allocations. So the enumerator does not have to constantly make a copy.
-		private List<IContext> _contextInstances; 
+		private volatile List<IContext> _contextInstances; 
 		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("   Contexts update");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
+		private static readonly IReadOnlyList<Type> ContextTypes =
+			Assembly.GetExecutingAssembly().GetAttributedTypes(typeof(ContextAttribute)).ToList();
 		
 		public event EventHandler<ContextEventArgs> ContextCreated;
 		public event EventHandler<ContextEventArgs> ContextReleased;
@@ -83,27 +85,25 @@ namespace Vixen.Sys.Managers
 				context.Sequence = sequence;
 				_AddContext(context);
 			}
-			VixenSystem.Instrumentation.AddValue(_contextUpdateTimeValue);
 			return context;
 		}
 
 		public void ReleaseContext(IContext context)
 		{
 			if (context == null) return;
-			if (_instances.ContainsKey(context.Id)) {
-				_ReleaseContext(context);
-			}
+			_ReleaseContext(context);
 		}
 
 		public void ReleaseContexts()
 		{
-			foreach (IContext context in _instances.Values.ToArray()) {
+			IContext[] instances;
+			lock (_instances)
+			{
+				instances = _instances.Values.ToArray();
+			}
+			foreach (IContext context in instances) {
 				ReleaseContext(context);
 			}
-			lock (_instances) {
-				_instances.Clear();
-			}
-			_contextInstances = _instances.Values.ToList();
 		}
 
 		public bool UpdateCacheCompileContext(TimeSpan time, IContext context)
@@ -134,16 +134,11 @@ namespace Vixen.Sys.Managers
 					{
 						// Get a snapshot time value for this update.
 						TimeSpan contextTime = context.GetTimeSnapshot();
-						var contextAffectedElements = context.UpdateElementStates(contextTime);
-						if (contextAffectedElements)
-						{
-							elementsAffected = true;
-						}
-
+						elementsAffected |= context.UpdateElementStates(contextTime);
 					}
-					catch (Exception ee)
+					catch (Exception e)
 					{
-						Logging.Error(ee,ee.Message);
+						Logging.Error(e,e.Message);
 					}
 				}
 			}
@@ -151,11 +146,6 @@ namespace Vixen.Sys.Managers
 			_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			return elementsAffected;
 		}
-
-		//public IEnumerator<IContext> GetEnumerator()
-		//{
-		//	return _contextInstances.GetEnumerator();
-		//}
 
 		IEnumerator<IContext> IEnumerable<IContext>.GetEnumerator()
 		{
@@ -171,12 +161,7 @@ namespace Vixen.Sys.Managers
 		{
 			return new Enumerator(_contextInstances);
 		}
-
-		//System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		//{
-		//	return GetEnumerator();
-		//}
-
+		
 		private IContext _CreateContext(ContextTargetType contextTargetType, ContextFeatures contextFeatures)
 		{
 			if (contextFeatures == null) throw new ArgumentNullException("contextFeatures");
@@ -190,9 +175,8 @@ namespace Vixen.Sys.Managers
 
 		private Type _FindContextWithFeatures(ContextTargetType contextTargetType, ContextFeatures contextFeatures)
 		{
-			IEnumerable<Type> contextTypes = Assembly.GetExecutingAssembly().GetAttributedTypes(typeof (ContextAttribute));
 			return
-				contextTypes.FirstOrDefault(
+				ContextTypes.FirstOrDefault(
 					x =>
 					x.GetCustomAttributes(typeof(ContextAttribute), false).Cast<ContextAttribute>().Any(
 						y => y.TargetType == contextTargetType && y.Caching == contextFeatures.Caching));
@@ -202,35 +186,32 @@ namespace Vixen.Sys.Managers
 		{
 			lock (_instances) {
 				_instances[context.Id] = context;
+				_contextInstances = _instances.Values.ToList();
 			}
-			_contextInstances = _instances.Values.ToList();
 			OnContextCreated(new ContextEventArgs(context));
 		}
 
 		private void _ReleaseContext(IContext context)
 		{
+			if (context == null) return;
 			context.Stop();
 			lock (_instances)
 			{
-				_instances.Remove(context.Id);	
+				_instances.Remove(context.Id);
+				_contextInstances = _instances.Values.ToList();
 			}
-			_contextInstances = _instances.Values.ToList();
 			context.Dispose();
 			OnContextReleased(new ContextEventArgs(context));
 		}
 
 		protected virtual void OnContextCreated(ContextEventArgs e)
 		{
-			if (ContextCreated != null) {
-				ContextCreated(this, e);
-			}
+			ContextCreated?.Invoke(this, e);
 		}
 
 		protected virtual void OnContextReleased(ContextEventArgs e)
 		{
-			if (ContextReleased != null) {
-				ContextReleased(this, e);
-			}
+			ContextReleased?.Invoke(this, e);
 		}
 
 		public struct Enumerator : IEnumerator<IContext>
@@ -277,6 +258,4 @@ namespace Vixen.Sys.Managers
 		}
 	}
 	}
-
-	
 }
