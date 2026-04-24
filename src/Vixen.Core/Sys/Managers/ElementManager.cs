@@ -44,20 +44,11 @@ namespace Vixen.Sys.Managers
 			AddElements(elements);
 		}
 
-		public Element AddElement(string elementName)
-		{
-			elementName = _Uniquify(elementName);
-			Element element = new Element(elementName);
-			AddElement(element);
-			return element;
-		}
-
 		public void AddElement(Element element)
 		{
-			if (_instances.ContainsKey(element.Id))
-				Logging.Error("ElementManager: Adding a element, but it's already in the instance map!");
-
 			lock (_instances) {
+				if (_instances.ContainsKey(element.Id))
+					Logging.Error("ElementManager: Adding a element, but it's already in the instance map!");
 				_instances[element.Id] = element;
 				_enumeratorInvalid = true;
 			}
@@ -150,20 +141,6 @@ namespace Vixen.Sys.Managers
 			return _dataFlowAdapters.GetAdapter(element);
 		}
 
-		private string _Uniquify(string name)
-		{
-			if (_instances.Values.Any(x => x.Name == name)) {
-				string originalName = name;
-				bool unique;
-				int counter = 2;
-				do {
-					name = string.Format("{0}-{1}", originalName, counter++);
-					unique = _instances.Values.All(x => x.Name != name);
-				} while (!unique);
-			}
-			return name;
-		}
-
 		IEnumerator<Element> IEnumerable<Element>.GetEnumerator()
 		{
 			return GetEnumerator();
@@ -176,11 +153,15 @@ namespace Vixen.Sys.Managers
 
 		public Enumerator<Element> GetEnumerator()
 		{
-			if (_enumeratorInvalid)
+			lock (_instances)
 			{
-				_enumerator = new Enumerator<Element>(_instances.Values.ToList());
-				_enumeratorInvalid = false;
+				if (_enumeratorInvalid)
+				{
+					_enumerator = new Enumerator<Element>(_instances.Values.ToList());
+					_enumeratorInvalid = false;
+				}
 			}
+			
 			return _enumerator;
 		}
 
