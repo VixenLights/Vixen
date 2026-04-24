@@ -9,16 +9,14 @@ namespace Vixen.Sys.Managers
 	public class FilterManager : IEnumerable<IOutputFilterModuleInstance>
 	{
 		private MillisecondsValue _filterUpdateTimeValue = new MillisecondsValue("   Filters update");
-		//private MillisecondsValue _filterUpdateWaitValue = new MillisecondsValue("   Filters wait");
 		private static Stopwatch _stopwatch = Stopwatch.StartNew();
 		private Dictionary<Guid, IOutputFilterModuleInstance> _instances;
 		// The data flow manager has data flow roots, but those are elements and are updated
 		// in a separate layer.  We need to track our own roots separately for updates.
 		private HashSet<IOutputFilterModuleInstance> _rootFilters;
 		private FilterChildren _filterChildren;
-		private object _updateLock = new object();
-		private readonly ParallelOptions _po = new ParallelOptions {MaxDegreeOfParallelism = Environment.ProcessorCount};
-
+		private readonly object _updateLock = new object();
+		
 		public FilterManager(DataFlowManager dataFlowManager)
 		{
 			_instances = new Dictionary<Guid, IOutputFilterModuleInstance>();
@@ -30,7 +28,6 @@ namespace Vixen.Sys.Managers
 			dataFlowManager.ComponentSourceChanged += DataFlowManagerOnComponentSourceChanged;
 
 			VixenSystem.Instrumentation.AddValue(_filterUpdateTimeValue);
-			//VixenSystem.Instrumentation.AddValue(_filterUpdateWaitValue);
 		}
 
 		public void AddFilter(IOutputFilterModuleInstance filter)
@@ -131,9 +128,8 @@ namespace Vixen.Sys.Managers
 
 		private void _AddInstanceReference(IOutputFilterModuleInstance filter)
 		{
-			lock (_instances) {
-				_instances[filter.DataFlowComponentId] = filter;
-			}
+			//Guarded by _updateLock upstream
+			_instances[filter.DataFlowComponentId] = filter;
 		}
 
 		private void _AddRootNode(IOutputFilterModuleInstance filter)
@@ -159,9 +155,8 @@ namespace Vixen.Sys.Managers
 
 		private void _RemoveInstanceReference(IOutputFilterModuleInstance filter)
 		{
-			lock (_instances) {
-				_instances.Remove(filter.DataFlowComponentId);
-			}
+			//Guarded by _updateLock upstream
+			_instances.Remove(filter.DataFlowComponentId);
 		}
 
 		private void _RemoveDataModel(IOutputFilterModuleInstance filter)
@@ -188,7 +183,10 @@ namespace Vixen.Sys.Managers
 
 		public List<IOutputFilterModuleInstance> GetOrphanedFilters()
 		{
-			return _instances.Values.Except(_rootFilters).Where(x => x.Source == null).ToList();
+			lock (_updateLock)
+			{
+				return _instances.Values.Except(_rootFilters).Where(x => x.Source == null).ToList();
+			}
 		}
 
 		public void RemoveOrphanedFilters()
@@ -210,7 +208,10 @@ namespace Vixen.Sys.Managers
 
 		public IEnumerator<IOutputFilterModuleInstance> GetEnumerator()
 		{
-			return _instances.Values.GetEnumerator();
+			lock (_updateLock)
+			{
+				return _instances.Values.GetEnumerator();
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
