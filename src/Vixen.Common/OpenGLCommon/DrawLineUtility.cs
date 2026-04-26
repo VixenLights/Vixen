@@ -24,7 +24,7 @@ namespace Common.OpenGLCommon
 			ConfigurePrimitiveVAO(primitive);
 
 			// Draw the lines
-			GL.DrawArrays(PrimitiveType.Lines, 0, primitive.Vertices.Count / 2);
+			GL.DrawArrays(PrimitiveType.Lines, 0, primitive.Vertices.Count / 3);
 		}
 
 		/// <summary>

@@ -1476,10 +1476,12 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			if (_rubberbandOperationInProgress && _rubberbandPrimitive.Vertices.Count > 0)
 			{
 				// Draw the Rubberband Selection Rectangle
-				DrawRubberbandSelectionRectangle(
+				DrawLineContent(
 					modelMatrix,
 					viewMatrix,
 					projectionMatrix,
+					Color4.HotPink,
+					Enumerable.Repeat(_rubberbandPrimitive, 1),
 					DrawLineUtility.DrawLineLoop);
 			}
 		}
@@ -1496,34 +1498,42 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			Matrix4 projectionMatrix)
 		{	
 			// Draw the front side of the cuboid
-			DrawLines(
+			DrawLineContent(
 				modelMatrix,
 				viewMatrix,
 				projectionMatrix,
+				Color4.HotPink,
+				SelectedProps,
 				(prop) =>
 					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidFrontSide()));
 
 			// Draw the back side of the cuboid
-			DrawLines(
+			DrawLineContent(
 				modelMatrix,
 				viewMatrix,
 				projectionMatrix,
+				Color4.HotPink,
+				SelectedProps,
 				(prop) =>
 					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidBackSide()));
 
 			// Draw the left side of the cuboid
-			DrawLines(
+			DrawLineContent(
 				modelMatrix,
 				viewMatrix,
 				projectionMatrix,
+				Color4.HotPink,
+				SelectedProps,
 				(prop) =>
 					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidLeftSide()));
 
 			// Draw the top side of the cuboid
-			DrawLines(
+			DrawLineContent(
 				modelMatrix,
 				viewMatrix,
 				projectionMatrix,
+				Color4.HotPink,
+				SelectedProps,
 				(prop) =>
 					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidRightSide()));		
 		}
@@ -1542,11 +1552,12 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			Matrix4 projectionMatrix)
 		{						
 			// Draw the point squares
-			DrawPolyLinePointSquare(
+			DrawLineContent(
 				modelMatrix,
 				viewMatrix,
 				projectionMatrix,
-				polyline,
+				Color4.HotPink,
+				Enumerable.Repeat(polyline, 1),
 				(prop) =>
 				{
 					// Convert the prop OpenGL data  to a polyline prop OpenGL data
@@ -1585,17 +1596,19 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				!SelectedProps[0].Locked)
 			{
 				// Draw the resize handles
-				DrawLines(
-				modelMatrix,
-				viewMatrix,
-				projectionMatrix,
-				(prop) =>
-					{
-						DrawLineUtility.DrawLineLoop(prop.GetUpperLeftCornerResizeBox());
-						DrawLineUtility.DrawLineLoop(prop.GetUpperRightCornerResizeBox());
-						DrawLineUtility.DrawLineLoop(prop.GetLowerRightCornerResizeBox());
-						DrawLineUtility.DrawLineLoop(prop.GetLowerLeftCornerResizeBox());
-					});
+				DrawLineContent(
+					modelMatrix,
+					viewMatrix,
+					projectionMatrix,
+					Color4.HotPink,
+					SelectedProps,
+					(prop) =>
+						{
+							DrawLineUtility.DrawLineLoop(prop.GetUpperLeftCornerResizeBox());
+							DrawLineUtility.DrawLineLoop(prop.GetUpperRightCornerResizeBox());
+							DrawLineUtility.DrawLineLoop(prop.GetLowerRightCornerResizeBox());
+							DrawLineUtility.DrawLineLoop(prop.GetLowerLeftCornerResizeBox());
+						});
 			}
 		}
 
@@ -1616,28 +1629,34 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				!SelectedProps[0].Locked)
 			{
 				// Draw the move handle			
-				DrawLines(
-				modelMatrix,
-				viewMatrix,
-				projectionMatrix,
-				(prop) =>
-					DrawLineUtility.DrawLines(prop.GetCenterX()));
+				DrawLineContent(
+					modelMatrix,
+					viewMatrix,
+					projectionMatrix,
+					Color4.HotPink,
+					SelectedProps,	
+					(prop) =>
+						DrawLineUtility.DrawLines(prop.GetCenterX()));
 			}
 		}
 
+	
 		/// <summary>
-		/// Draws a polyline point square.
+		/// Draws line content associated with a prop or a collection of props.
 		/// </summary>
 		/// <param name="modelMatrix">Model matrix</param>
 		/// <param name="viewMatrix">View matrix</param>
 		/// <param name="projectionMatrix">Projection matrix</param>
-		/// <param name="drawLines">Delegate to draw lines</param>
-		private void DrawPolyLinePointSquare(
+		/// <param name="color">Color to draw content with</param>
+		/// <param name="props">Props to draw content for</param>
+		/// <param name="drawDelegate">Delegate to draw content related to the prop</param>
+		private void DrawLineContent(
 			Matrix4 modelMatrix,
 			Matrix4 viewMatrix,
 			Matrix4 projectionMatrix,
-			PolylinePropOpenGLData polyline,
-			Action<IPropOpenGLData> drawLines)
+			Color4 color,
+			IEnumerable<IOpenGLDrawablePrimitive> propPrimitives,
+			Action<IPropOpenGLData> drawDelegate)
 		{
 			try
 			{
@@ -1652,55 +1671,14 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				// Transfer the Uniforms to the GPU
 				LineProgram.TransferModelMatrixUniform(modelMatrix);
 
-				// Give the line shader program the line color
-				LineProgram.TransferColorUniform(Color4.HotPink);
-				
-				// Have the delegate draw lines
-				drawLines(polyline);
-				
-				// Clear the OpenGL program
-				GL.UseProgram(0);
-			}
-			catch (Exception e)
-			{
-				Logging.Error(e, "An error occurred in DrawLines");
-			}
-		}
+				// Give the shader program the color
+				LineProgram.TransferColorUniform(color);
 
-		/// <summary>
-		/// Draws selection lines associated with a prop.
-		/// </summary>
-		/// <param name="modelMatrix">Model matrix</param>
-		/// <param name="viewMatrix">View matrix</param>
-		/// <param name="projectionMatrix">Projection matrix</param>
-		/// <param name="drawLines">Delegate to draw lines</param>
-		private void DrawLines(
-			Matrix4 modelMatrix,
-			Matrix4 viewMatrix,
-			Matrix4 projectionMatrix,
-			Action<IPropOpenGLData> drawLines)
-		{
-			try
-			{
-				// Activate the line shader program
-				LineProgram.Use();
-
-				// Give the line program the projection and view matrices
-				LineProgram.TransferGlobalUniforms(
-					projectionMatrix,
-					viewMatrix);
-
-				// Transfer the Uniforms to the GPU
-				LineProgram.TransferModelMatrixUniform(modelMatrix);
-
-				// Give the line shader program the line color
-				LineProgram.TransferColorUniform(Color4.HotPink);
-
-				// Loop over all the selected props
-				foreach (IPropOpenGLData prop in SelectedProps)
+				// Loop over all the props primitives
+				foreach (IPropOpenGLData prop in propPrimitives)
 				{
-					// Have the delegate draw lines
-					drawLines(prop); 					
+					// Have the delegate draw content
+					drawDelegate(prop);
 				}
 
 				// Clear the OpenGL program
@@ -1708,48 +1686,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error occurred in DrawLines");
-			}
-		}
-
-		/// <summary>
-		/// Draws lines associated with the rubberband selection rectangle.
-		/// </summary>
-		/// <param name="modelMatrix">Model matrix</param>
-		/// <param name="viewMatrix">View matrix</param>
-		/// <param name="projectionMatrix">Projection matrix</param>
-		/// <param name="drawLines">Delegate to draw lines</param>
-		private void DrawRubberbandSelectionRectangle(
-			Matrix4 modelMatrix,
-			Matrix4 viewMatrix,
-			Matrix4 projectionMatrix,
-			Action<IOpenGLDrawablePrimitive> drawLines)
-		{
-			try
-			{
-				// Activate the line shader program
-				LineProgram.Use();
-
-				// Give the line program the projection and view matrices
-				LineProgram.TransferGlobalUniforms(
-					projectionMatrix,
-					viewMatrix);
-
-				// Transfer the Uniforms to the GPU
-				LineProgram.TransferModelMatrixUniform(modelMatrix);
-
-				// Give the line shader program the line color
-				LineProgram.TransferColorUniform(Color4.HotPink);
-
-				// Have the delegate draw lines
-				drawLines(_rubberbandPrimitive);
-				
-				// Clear the OpenGL program
-				GL.UseProgram(0);
-			}
-			catch (Exception e)
-			{
-				Logging.Error(e, "An error occurred in DrawRubberbandSelectionRectangle");
+				Logging.Error(e, "An error occurred in DrawContent");
 			}
 		}
 
@@ -1978,12 +1915,32 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			// Loop over the props that are polylines
 			foreach (PolylinePropOpenGLData polyline in LightProps.Where(prop => prop is PolylinePropOpenGLData))
 			{
-				// Draw the polyline points for the specified polyline prop
-				DrawPolylinePointSquares(
-					polyline,
+				// Draw the polyline points (point squares) for the specified polyline prop				
+				DrawLineContent(
 					Matrix4.Identity,
 					Camera.ViewMatrix,
-					projectionMatrix);
+					projectionMatrix,
+					Color4.HotPink,
+					Enumerable.Repeat(polyline, 1),
+					(prop) =>
+					{
+						// Convert the prop OpenGL data  to a polyline prop OpenGL data
+						PolylinePropOpenGLData pl = (PolylinePropOpenGLData)prop;
+
+						// Loop over the polyline points
+						foreach (PolylinePointOpenGLDrawablePrimitive primitive in pl.Points)
+						{
+							// If the point is normalized then...
+							if (pl.Normalized)
+							{
+								// Update the points square position
+								primitive.CreatePoint(prop.X + primitive.WorldPtX * prop.SizeX, prop.Y + primitive.WorldPtY * prop.SizeY);
+							}
+
+							// Draw the square
+							DrawLineUtility.DrawLineLoop(primitive);
+						}
+					});
 			}
 		}
 
