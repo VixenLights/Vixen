@@ -125,6 +125,7 @@
 		  <Resource Include="SetupDisplay\Views\BackgroundImage.png">
 		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		  </Resource>
+		  <Resource Include="SetupDisplay\Views\buttonPolyLine.BackgroundImage.png" />
 		  <Resource Include="SetupDisplay\Views\buttonSelect.png">
 		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		  </Resource>
