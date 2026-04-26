@@ -1,18 +1,14 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Media.Media3D;
-
-using Common.OpenGLCommon;
+﻿using Common.OpenGLCommon;
 using Common.OpenGLCommon.Constructs.DrawingEngine;
 using Common.OpenGLCommon.Constructs.DrawingEngine.Primitive;
 using Common.OpenGLCommon.Constructs.DrawingEngine.Shape;
 using Common.OpenGLCommon.Constructs.Shaders;
-
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Media.Media3D;
 using Vixen.Sys.Props.Model;
-
 using VixenApplication.SetupDisplay.OpenGL.Shapes;
 using VixenModules.App.Props.Models;
 using VixenModules.App.Props.Models.IntellligentFixture;
@@ -1496,8 +1492,8 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			Matrix4 modelMatrix,
 			Matrix4 viewMatrix,
 			Matrix4 projectionMatrix)
-		{	
-			// Draw the front side of the cuboid
+		{
+			// Draw the selection cuboid
 			DrawLineContent(
 				modelMatrix,
 				viewMatrix,
@@ -1505,37 +1501,12 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				Color4.HotPink,
 				SelectedProps,
 				(prop) =>
-					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidFrontSide()));
-
-			// Draw the back side of the cuboid
-			DrawLineContent(
-				modelMatrix,
-				viewMatrix,
-				projectionMatrix,
-				Color4.HotPink,
-				SelectedProps,
-				(prop) =>
-					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidBackSide()));
-
-			// Draw the left side of the cuboid
-			DrawLineContent(
-				modelMatrix,
-				viewMatrix,
-				projectionMatrix,
-				Color4.HotPink,
-				SelectedProps,
-				(prop) =>
-					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidLeftSide()));
-
-			// Draw the top side of the cuboid
-			DrawLineContent(
-				modelMatrix,
-				viewMatrix,
-				projectionMatrix,
-				Color4.HotPink,
-				SelectedProps,
-				(prop) =>
-					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidRightSide()));		
+				{
+					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidFrontSide());
+					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidBackSide());
+					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidLeftSide());
+					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidRightSide());
+				});			
 		}
 
 		/// <summary>
@@ -1911,37 +1882,33 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>		
 		/// <param name="projectionMatrix">Projection matrix</param>
 		private void DrawPolylinePoints(Matrix4 projectionMatrix)			
-		{
-			// Loop over the props that are polylines
-			foreach (PolylinePropOpenGLData polyline in LightProps.Where(prop => prop is PolylinePropOpenGLData))
-			{
-				// Draw the polyline points (point squares) for the specified polyline prop				
-				DrawLineContent(
-					Matrix4.Identity,
-					Camera.ViewMatrix,
-					projectionMatrix,
-					Color4.HotPink,
-					Enumerable.Repeat(polyline, 1),
-					(prop) =>
+		{			
+			// Draw the polyline points (point squares) for the specified polyline prop				
+			DrawLineContent(
+				Matrix4.Identity,
+				Camera.ViewMatrix,
+				projectionMatrix,
+				Color4.HotPink,
+				LightProps.Where(prop => prop is PolylinePropOpenGLData),
+				(prop) =>
+				{
+					// Convert the prop OpenGL data  to a polyline prop OpenGL data
+					PolylinePropOpenGLData pl = (PolylinePropOpenGLData)prop;
+
+					// Loop over the polyline points
+					foreach (PolylinePointOpenGLDrawablePrimitive primitive in pl.Points)
 					{
-						// Convert the prop OpenGL data  to a polyline prop OpenGL data
-						PolylinePropOpenGLData pl = (PolylinePropOpenGLData)prop;
-
-						// Loop over the polyline points
-						foreach (PolylinePointOpenGLDrawablePrimitive primitive in pl.Points)
+						// If the point is normalized then...
+						if (pl.Normalized)
 						{
-							// If the point is normalized then...
-							if (pl.Normalized)
-							{
-								// Update the points square position
-								primitive.CreatePoint(prop.X + primitive.WorldPtX * prop.SizeX, prop.Y + primitive.WorldPtY * prop.SizeY);
-							}
-
-							// Draw the square
-							DrawLineUtility.DrawLineLoop(primitive);
+							// Update the points square position
+							primitive.CreatePoint(prop.X + primitive.WorldPtX * prop.SizeX, prop.Y + primitive.WorldPtY * prop.SizeY);
 						}
-					});
-			}
+
+						// Draw the square
+						DrawLineUtility.DrawLineLoop(primitive);
+					}
+				});			
 		}
 
 		#endregion
