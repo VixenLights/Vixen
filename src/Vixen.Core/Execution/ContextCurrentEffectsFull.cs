@@ -28,9 +28,7 @@ namespace Vixen.Execution
 			}
 
 			// Get the effects that are newly qualified.
-			IEnumerable<IEffectNode> newQualifiedEffects = dataSource.GetDataAt(currentTime);
-			// Add them to the current effect list.
-			AddRange(newQualifiedEffects);
+			dataSource.GetDataAt(currentTime, this);
 			_RemoveExpiredEffects(currentTime);
 
 			return Count > 0;
