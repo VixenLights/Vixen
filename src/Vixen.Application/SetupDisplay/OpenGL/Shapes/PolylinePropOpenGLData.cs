@@ -140,6 +140,125 @@ namespace VixenApplication.SetupDisplay.OpenGL.Shapes
 			}
 		}
 
-        #endregion
-    }
+		/// <summary>
+		/// Denormalizes the polyline points.
+		/// </summary>
+		public void Denormalize()
+		{
+			// De-normalize the polyline points
+			foreach (PolylinePointOpenGLDrawablePrimitive pt in Points)
+			{
+				pt.WorldPtX = pt.WorldPtX * SizeX;
+				pt.WorldPtY = pt.WorldPtY * SizeY;
+				pt.WorldPtX += X;
+				pt.WorldPtY += Y;
+			}
+
+			// De-normalize the segment points
+			foreach (ISegment segment in (PropModel as PolylineModel).Segments)
+			{
+				segment.StartX = segment.StartX * SizeX;
+				segment.StartY = segment.StartY * SizeY;
+				segment.EndX = segment.EndX * SizeX;
+				segment.EndY = segment.EndY * SizeY;
+
+				// Normalize the segment points
+				segment.StartX += X;
+				segment.StartY += Y;
+				segment.EndX += X;
+				segment.EndY += Y;
+			}
+
+			// Reset the prop location to the center
+			X = 0;
+			Y = 0;
+
+			// Eliminate the scaling
+			SizeX = 1.0f;
+			SizeY = 1.0f;
+			SizeZ = 1.0f;
+
+			// Indicate the prop is no longer normalized
+			Normalized = false;
+		}
+		
+		/// <summary>
+		/// Moves a point on segments.
+		/// </summary>
+		/// <param name="pointIndex">Index of the point</param>
+		/// <param name="x">X position of the point</param>
+		/// <param name="y">Y position of the point</param>
+		public void MoveSegments(int pointIndex, float x, float y)
+		{
+			// If there is only one segment then...
+			if ((PropModel as PolylineModel).Segments.Count == 1)
+			{
+				// If this is the first point on the polyline then...
+				if (pointIndex == 0)
+				{
+					// Move the segment start point
+					MoveSegmentStart(0, x, y);
+				}
+				else
+				{
+					// Move the segment end point
+					MoveSegmentEnd(0, x, y);
+				}
+			}
+			// Otherwise there is more than one segment
+			else
+			{
+				// If this is NOT the first point on the polyline then...
+				if (pointIndex != 0)
+				{
+					// Move the end point of the previous segment
+					MoveSegmentEnd(pointIndex - 1, x, y);
+				}
+
+				// If the point is not the last point and
+				// there is a segment beyond the point then...
+				if (Points.Count - 1 != pointIndex &&
+					(PropModel as PolylineModel).Segments.Count - 1 >= pointIndex)
+				{
+					// Move the start point of the segment
+					MoveSegmentStart(pointIndex, x, y); 
+				}
+			}
+
+			// Update the prop light nodes
+			PropModel.UpdatePropNodes();
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		/// <summary>
+		/// Moves a segment start point.
+		/// </summary>
+		/// <param name="segmentIndex">Index of the segment</param>
+		/// <param name="x">Updated X coordinate</param>
+		/// <param name="y">Updated Y coordinate</param>
+		private void MoveSegmentStart(int segmentIndex, float x, float y)
+		{
+			// Update the position of the segment start point
+			(PropModel as PolylineModel).Segments[segmentIndex].StartX = x;
+			(PropModel as PolylineModel).Segments[segmentIndex].StartY = y;
+		}
+
+		/// <summary>
+		/// Moves a segment end point.
+		/// </summary>
+		/// <param name="segmentIndex">Index of the segment</param>
+		/// <param name="x">Updated X coordinate</param>
+		/// <param name="y">Updated Y coordinate</param>
+		private void MoveSegmentEnd(int segmentIndex, float x, float y)
+		{
+			// Update the position of the segment end point
+			(PropModel as PolylineModel).Segments[segmentIndex].EndX = x;
+			(PropModel as PolylineModel).Segments[segmentIndex].EndY = y;
+		}
+
+		#endregion
+	}
 }
