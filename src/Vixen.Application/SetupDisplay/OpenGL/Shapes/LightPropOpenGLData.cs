@@ -20,7 +20,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		public LightPropOpenGLData(ILightPropModel lightPropModel) : base(lightPropModel)
 		{
 			// Store off the light prop model
-			_propModel = lightPropModel;			
+			PropModel = lightPropModel;			
 		}
 
 		#endregion
@@ -30,12 +30,16 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <summary>
 		/// Collection of point vertices to be drawn.
 		/// </summary>
-		private List<float> _points = new List<float>();		
+		private List<float> _points = new List<float>();
+
+		#endregion
+
+		#region Protected Properties
 
 		/// <summary>
 		/// Model associated with the light based prop.
 		/// </summary>
-		private ILightPropModel _propModel;
+		protected ILightPropModel PropModel { get; set; }
 
 		#endregion
 
@@ -64,7 +68,7 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			List<Vector3> coordinates = new List<Vector3>();
 			
 			// Loop over the 3-D points associated with the prop
-			foreach (NodePoint nodePoint in _propModel.Nodes)
+			foreach (NodePoint nodePoint in PropModel.Nodes)
 			{				
 				// Adjust (scale) the 3-D points for the reference height
 				_points.Add((float)(nodePoint.X * SizeX) + X);

@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Windows.Media.Media3D;
 using Vixen.Sys.Props.Model;
 using VixenApplication.SetupDisplay.OpenGL.Shapes;
-using VixenModules.App.Props.Models;
 using VixenModules.App.Props.Models.IntellligentFixture;
 using VixenModules.App.Props.Models.Polyline;
 using VixenModules.Preview.VixenPreview.OpenGL;
@@ -39,6 +38,16 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>
 		private bool _mouseButtonDown;
 
+		/// <summary>
+		/// State to find a point being moved.
+		/// </summary>
+		private PolyPointLocator _polyPointLocator;
+
+		/// <summary>
+		/// Flag indicating a point is being moved.
+		/// </summary>
+		private bool _pointMoveInProgress;
+		
 		/// <summary>
 		/// Flag that indciates a prop move operation is in progress.
 		/// </summary>
@@ -134,6 +143,11 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>
 		public ObservableCollection<IPropOpenGLData> SelectedProps { get; set; }
 
+		/// <summary>
+		/// Collection of selected points.
+		/// </summary>
+		public ObservableCollection<PolylinePointOpenGLDrawablePrimitive> SelectedPoints { get; set; }
+
 		#endregion
 
 		#region Private Properties
@@ -163,6 +177,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <param name="data">Preview data</param>		
 		public OpenGLSetupPreviewDrawingEngine(List<IPropModel> props)
 		{
+			// Initialize the selected points collection
+			SelectedPoints = new ObservableCollection<PolylinePointOpenGLDrawablePrimitive>();	
+
 			// Initialize the selected props collection
 			SelectedProps = new ObservableCollection<IPropOpenGLData>();
 			
@@ -182,6 +199,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			// Initialize the color line shader program
 			LineProgram = new ColorLineShaderProgram();
+
+			// Initialize the point locator
+			// This data structure helps with moving polyline points
+			_polyPointLocator = new PolyPointLocator();
 		}
 
 		#endregion
@@ -794,6 +815,19 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <param name="ctrlKeyPressed">True when the ctrl key is being pressed</param>
 		public void MouseUp(Vector2 mousePos, bool ctrlKeyPressed)
 		{
+			// If a polyline point move was in progress then...
+			if (_pointMoveInProgress)
+			{				
+				// Calculate the center of the polyline and normalize all the coordinates				
+				_polyPointLocator.Prop.CalculateCenterPointAndNormalize();
+
+				// Update the polyline prop nodes
+				_polyPointLocator.Prop.PolylineMdl.UpdatePropNodes();
+
+				// Indicate the point is no longer being moved
+				_pointMoveInProgress = false;
+			}
+
 			// If in polyline mode then...
 			if (IsPolylineMode)
 			{
@@ -832,6 +866,37 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				}
 			}
 
+			// Clear the selected points 
+			SelectedPoints.Clear();
+
+			// Declare local variables for storing which poly point is selected						
+			PolylinePointOpenGLDrawablePrimitive point = null;
+			PolylinePropOpenGLData polyProp = null;
+			int ptIndex = 0;
+
+			// Determine if the mouse is over a polypoint
+			bool mouseOverPoint = IsMouseOverPoint(
+				_prevMousePosition.X,
+				_prevMousePosition.Y,
+				Camera.Position,
+				Camera.ViewMatrix,
+				CreatePerspective(),
+				OpenTkControl_Width,
+				OpenTkControl_Height,
+				out point,
+				out polyProp,
+				out ptIndex);
+
+			// If the mouse is over a poly point then...
+			if (mouseOverPoint)
+			{
+				// Deselect all props 
+				ClearSelectedProps();
+
+				// Add the point the collection of selected points
+				SelectedPoints.Add(point);
+			}
+
 			// If a rubberband operation is not in progress and
 			// a poly line is not being drawn then...
 			if (!_rubberbandOperationInProgress && !IsPolylineMode)
@@ -846,8 +911,10 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				// Loop over all the props
 				foreach (IPropOpenGLData prop in Props)
 				{
-					// If the mouse if over the specified prop then...
-					if (IsMouseOverProp(mousePos, prop))
+					// If the mouse if over the specified prop and
+					// the mouse is NOT over a poly point then...
+					if (IsMouseOverProp(mousePos, prop) && 
+						!mouseOverPoint)
 					{
 						// If the prop is not selected then...
 						if (!prop.Selected)
@@ -893,6 +960,11 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		{
 			// Get the mouse position in screen coordinates
 			Vector2i mousePos = new Vector2i(mouseX, mouseY);
+
+			// Declare local variables to keep track of a poly point being moved			
+			PolylinePointOpenGLDrawablePrimitive point;
+			PolylinePropOpenGLData polyProp = null;
+			int ptIndex = 0;
 
 			// If a rubberband operation is in progress then...
 			if (_rubberbandOperationInProgress)
@@ -997,12 +1069,59 @@ namespace VixenApplication.SetupDisplay.OpenGL
 					}
 				}				
 			}
+			// If there is exactly one selected poly point and
+			// we are not drawing line segments and
+			// the left mouse button is down and
+			// the mouse is over the point OR a point move is in progress then...
+			else if (SelectedPoints.Count == 1 &&
+					!IsPolylineMode &&
+					_mouseButtonDown &&
+					 (IsMouseOverPoint(
+						mouseX, 
+						mouseY,						
+						Camera.Position,
+						Camera.ViewMatrix,
+						CreatePerspective(),					
+						OpenTkControl_Width,
+						OpenTkControl_Height,
+						out point,
+						out polyProp,
+						out ptIndex) || _pointMoveInProgress))					 			
+			{	
+				// If we are just starting to move a point and 
+				// the prop is normalized then...
+				if (!_pointMoveInProgress && polyProp.Normalized)
+				{
+					// Denormalize the polypoint prop
+					polyProp.Denormalize();
+				
+					// Save off the poly point that is being moved
+					_polyPointLocator.PointIndex = ptIndex;
+					_polyPointLocator.Point = point;
+					_polyPointLocator.Prop = polyProp;					
+				}
+								
+				// Indicate a poly point move is in progress
+				_pointMoveInProgress = true;
+				
+				// Get the mouse position in world coordinates
+				Vector3 mouseWorldPosition = GetMouseMovementInWorld(previousMouseX, previousMouseY, mouseX, mouseY, _polyPointLocator.Point.WorldPtX, _polyPointLocator.Point.WorldPtY);
+
+				// Move the point
+				_polyPointLocator.Point.WorldPtX += mouseWorldPosition.X;
+				_polyPointLocator.Point.WorldPtY += mouseWorldPosition.Y;
+
+				// Move the segments connecting to the point
+				_polyPointLocator.Prop.MoveSegments(_polyPointLocator.PointIndex, _polyPointLocator.Point.WorldPtX, _polyPointLocator.Point.WorldPtY);				
+			}
 			// If only one props is selected and
 			// the mouse is down and
-			// over a resize handle then			
+			// over a resize handle and
+			// resize is enabled then...
 			else if (SelectedProps.Count == 1 &&
 				_mouseButtonDown && 
-				_overResizeHandleOnMouseDown)
+				_overResizeHandleOnMouseDown &&
+				IsResizeEnabled)
 			{
 				// Initialize direction signs
 				int dirXSign = 0;
@@ -1047,11 +1166,13 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			// Otherwise if only one props is selected and 
 			// the mouse is down and
 			// the prop s NOT locked and
-			// the mouse is over a selected prop then...
+			// the mouse is over a selected prop and
+			// resize is enabled then...
 			else if (SelectedProps.Count == 1 &&
 				_mouseButtonDown &&
 				!SelectedProps[0].Locked &&
-				IsOverSelectedProp(mousePos))
+				IsOverSelectedProp(mousePos) &&
+				IsResizeEnabled)
 			{
 				// Loop over the selected props
 				foreach (IPropOpenGLData prop in SelectedProps)
@@ -1083,12 +1204,75 @@ namespace VixenApplication.SetupDisplay.OpenGL
 
 			// Return whether the mouse is over a resize handle and
 			// only one prop is selected and
-			// the prop is NOT locked then...
+			// the prop is NOT locked and
+			// resize is enabled then...
 			return IsMouseOverAResizeHandle(mouseX, mouseY) &&
 				SelectedProps.Count == 1 &&
-				!SelectedProps[0].Locked;
+				!SelectedProps[0].Locked &&
+				IsResizeEnabled;
 		}
+	
+		/// <summary>
+		/// Returns true if the mouse is over a polyline point.
+		/// </summary>
+		/// <param name="mouseX">Position of the mouse is screen coordinates</param>
+		/// <param name="mouseY"></param>
+		/// <param name="cameraPosition">Position of the OpenGL camera</param>
+		/// <param name="viewMatrix">Camera view matrix</param>
+		/// <param name="projectionMatrix">Project matrix</param>
+		/// <param name="width">Width of the OpenTK control</param>
+		/// <param name="height">Height of the OpenTK control</param>
+		/// <param name="point">Polyline point under the mouse</param>
+		/// <param name="polyProp">Polyline prop under the mouse</param>
+		/// <param name="ptIndex">Index of the point</param>
+		/// <returns></returns>
+		private bool IsMouseOverPoint(
+			int mouseX,
+			int mouseY,			
+			Vector3 cameraPosition,
+			Matrix4 viewMatrix,
+			Matrix4 projectionMatrix,
+			int width,
+			int height,
+			out PolylinePointOpenGLDrawablePrimitive point,
+			out PolylinePropOpenGLData polyProp,
+			out int ptIndex)
+		{			
+			// Initialize the out arguments
+			point = null;
+			polyProp = null;
+			ptIndex = 0;
 
+			// Loop over all the polyline props
+			foreach (PolylinePropOpenGLData prop in LightProps.Where(p => p is PolylinePropOpenGLData))
+			{
+				// Initialize a point counter
+				int pointBeingMovedIndex = 0;
+
+				// Loop over the points on the polyline prop
+				foreach (PolylinePointOpenGLDrawablePrimitive pt in prop.Points)
+				{
+					// If the mouse is over the specified point then...
+					if (pt.MouseOver(cameraPosition, projectionMatrix, viewMatrix, width, height, new Vector2(mouseX, mouseY)))
+					{						
+						// Store off information about the point
+						point = pt;
+						polyProp = prop;						
+						ptIndex  = pointBeingMovedIndex;
+
+						// Indicate the mouse is over a point
+						return true;
+					}
+
+					// Increment to the next point to test
+					pointBeingMovedIndex++;
+				}			
+			}
+
+			// Return false as the mouse is not over a point
+			return false;
+		}
+		
 		/// <summary>
 		/// Returns true if the prop represented by the minimum and maximum vectors intersect with
 		/// the rubberband frustum.
@@ -1347,6 +1531,25 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			}
 		}
 
+		private bool _isResizeEnabled = true;
+
+		/// <summary>
+		/// True when in resizing shapes is enabled.
+		/// </summary>
+		public bool IsResizeEnabled
+		{
+			get
+			{
+				return _isResizeEnabled;
+			}
+			set
+			{
+				_isResizeEnabled = value;
+											
+				OnPropertyChanged(nameof(IsResizeEnabled));
+			}
+		}
+
 		/// <summary>
 		/// Called when property value is changed.
 		/// </summary>
@@ -1502,10 +1705,14 @@ namespace VixenApplication.SetupDisplay.OpenGL
 				SelectedProps,
 				(prop) =>
 				{
-					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidFrontSide());
-					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidBackSide());
-					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidLeftSide());
-					DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidRightSide());
+					// Only draw the selection box / resize box when resize is enabled
+					if (IsResizeEnabled)
+					{
+						DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidFrontSide());
+						DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidBackSide());
+						DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidLeftSide());
+						DrawLineUtility.DrawLineLoop(prop.GetSelectionCuboidRightSide());
+					}
 				});			
 		}
 
@@ -1562,9 +1769,11 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			Matrix4 projectionMatrix)
 		{
 			// If only one prop is selected and
-			// the prop is NOT locked then...
+			// the prop is NOT locked and
+			// resize is enabled then...
 			if (SelectedProps.Count == 1 &&
-				!SelectedProps[0].Locked)
+				!SelectedProps[0].Locked && 
+				IsResizeEnabled)
 			{
 				// Draw the resize handles
 				DrawLineContent(
@@ -1759,9 +1968,9 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// <param name="mouseY">Mouse Y position in screen coordinates</param>
 		/// <param name="prop">Prop to relate mouse movement to</param>
 		/// <returns>Mouse position in world coordinates</returns>
-		private Vector3 GetMouseMovementInWorld(int previousMouseX, int previousMouseY, int mouseX, int mouseY, IPropOpenGLData prop)
+		private Vector3 GetMouseMovementInWorld(int previousMouseX, int previousMouseY, int mouseX, int mouseY, float ptX, float ptY)
 		{
-			Vector3 propPos = new Vector3(prop.X, prop.Y, 0.0f);
+			Vector3 propPos = new Vector3(ptX, ptY, 0.0f);
 			Vector4 clip = new Vector4(propPos, 1.0f) * Camera.ViewMatrix * CreatePerspective();
 			clip /= clip.W; // convert to NDC
 
@@ -1773,6 +1982,20 @@ namespace VixenApplication.SetupDisplay.OpenGL
 			propPos = currWorld - lastWorld;
 
 			return propPos;
+		}
+
+		/// <summary>
+		/// Gets the mouse position in world coordinates.
+		/// </summary>
+		/// <param name="previousMouseX">Previous mouse X position in screen coordinates</param>
+		/// <param name="previousMouseY">Previous mouse Y position in screen coordinates</param>
+		/// <param name="mouseX">Mouse X position in screen coordinates</param>
+		/// <param name="mouseY">Mouse Y position in screen coordinates</param>
+		/// <param name="prop">Prop to relate mouse movement to</param>
+		/// <returns>Mouse position in world coordinates</returns>
+		private Vector3 GetMouseMovementInWorld(int previousMouseX, int previousMouseY, int mouseX, int mouseY, IPropOpenGLData prop)
+		{			
+			return GetMouseMovementInWorld(previousMouseX, previousMouseY, mouseX, mouseY, prop.X, prop.Y);						
 		}
 
 		/// <summary>
@@ -1882,14 +2105,50 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>		
 		/// <param name="projectionMatrix">Projection matrix</param>
 		private void DrawPolylinePoints(Matrix4 projectionMatrix)			
-		{			
-			// Draw the polyline points (point squares) for the specified polyline prop				
+		{				
+			// Draw the selected polyline points (point squares) in pink 
 			DrawLineContent(
 				Matrix4.Identity,
 				Camera.ViewMatrix,
 				projectionMatrix,
 				Color4.HotPink,
 				LightProps.Where(prop => prop is PolylinePropOpenGLData),
+				(prop) =>
+				{
+					// Convert the prop OpenGL data to a polyline prop OpenGL data
+					PolylinePropOpenGLData pl = (PolylinePropOpenGLData)prop;
+
+					// Loop over the polyline points
+					foreach (PolylinePointOpenGLDrawablePrimitive primitive in pl.Points)
+					{
+						// If the point is selected then...
+						if (SelectedPoints.Contains(primitive))
+						{
+							// If the point is normalized then...
+							if (pl.Normalized)
+							{
+								// Update the points square position
+								primitive.CreatePoint(prop.X + primitive.WorldPtX * prop.SizeX, prop.Y + primitive.WorldPtY * prop.SizeY);
+							}
+							else
+							{
+								// Create the denormalized point
+								primitive.CreatePoint(primitive.WorldPtX, primitive.WorldPtY);
+							}
+
+							// Draw the square
+							DrawLineUtility.DrawLineLoop(primitive);
+						}
+					}
+				});
+			
+			// Draw the polyline points (point squares) for the selected polyline props				
+			DrawLineContent(
+				Matrix4.Identity,
+				Camera.ViewMatrix,
+				projectionMatrix,
+				Color4.HotPink,
+				LightProps.Where(prop => prop is PolylinePropOpenGLData && prop.Selected),
 				(prop) =>
 				{
 					// Convert the prop OpenGL data  to a polyline prop OpenGL data
@@ -1904,11 +2163,47 @@ namespace VixenApplication.SetupDisplay.OpenGL
 							// Update the points square position
 							primitive.CreatePoint(prop.X + primitive.WorldPtX * prop.SizeX, prop.Y + primitive.WorldPtY * prop.SizeY);
 						}
+						else
+						{
+							// Create the denormalized point
+							primitive.CreatePoint(primitive.WorldPtX, primitive.WorldPtY);
+						}
 
 						// Draw the square
 						DrawLineUtility.DrawLineLoop(primitive);
 					}
-				});			
+				});
+
+			// Draw the polyline unselected points (point squares) for the specified polyline prop				
+			DrawLineContent(
+				Matrix4.Identity,
+				Camera.ViewMatrix,
+				projectionMatrix,
+				Color4.Aqua,
+				LightProps.Where(prop => prop is PolylinePropOpenGLData && !prop.Selected),
+				(prop) =>
+				{
+					// Convert the prop OpenGL data  to a polyline prop OpenGL data
+					PolylinePropOpenGLData pl = (PolylinePropOpenGLData)prop;
+
+					// Loop over the polyline points
+					foreach (PolylinePointOpenGLDrawablePrimitive primitive in pl.Points)
+					{
+						// If the point is NOT selected then...
+						if (!SelectedPoints.Contains(primitive))
+						{
+							// If the point is normalized then...
+							if (pl.Normalized)
+							{
+								// Update the points square position
+								primitive.CreatePoint(prop.X + primitive.WorldPtX * prop.SizeX, prop.Y + primitive.WorldPtY * prop.SizeY);
+							}
+
+							// Draw the square
+							DrawLineUtility.DrawLineLoop(primitive);
+						}
+					}
+				});
 		}
 
 		#endregion
