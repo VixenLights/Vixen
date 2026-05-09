@@ -26,7 +26,6 @@
 				<None Remove="SetupDisplay\Views\BackgroundImage.png" />
 				<None Remove="SetupDisplay\Views\buttonContainsSelect.png" />
 				<None Remove="SetupDisplay\Views\buttonPartialSelect.png" />
-				<None Remove="SetupDisplay\Views\buttonSelect.png" />
 				<None Remove="SetupDisplay\Views\hand-drag.png" />
 		</ItemGroup>
 
@@ -125,7 +124,9 @@
 		  <Resource Include="SetupDisplay\Views\BackgroundImage.png">
 		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		  </Resource>
-		  <Resource Include="SetupDisplay\Views\buttonSelect.png">
+		  <Resource Include="SetupDisplay\Views\buttonPolyLine.BackgroundImage.png" />
+		  <Resource Include="SetupDisplay\Views\buttonSelect.png" />
+		  <Resource Include="SetupDisplay\Views\buttonResizeEnable.png">
 		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		  </Resource>
 		</ItemGroup>

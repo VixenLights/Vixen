@@ -95,7 +95,10 @@
 				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsPolylineMode}" ToolTip="Polyline">
 					<Image Source="buttonPolyLine.BackgroundImage.png" Width="32" Height="32"/>
 				</ToggleButton>
-			</ToolBar>
+				<ToggleButton IsChecked="{Binding DisplayPreviewDrawingEngine.IsResizeEnabled}" ToolTip="Polyline">
+					<Image Source="buttonResizeEnable.png" Width="32" Height="32"/>
+				</ToggleButton>
+            </ToolBar>
 			<glWpfControl:GLWpfControl
 				x:Name="OpenTkControlPreview" 							
 				Render="OpenTkControlPreview_OnRender"
