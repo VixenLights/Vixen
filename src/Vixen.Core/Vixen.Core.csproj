@@ -24,7 +24,7 @@
 				<EmbeddedResource Include="Fonts\RadioLand.ttf" />
 		</ItemGroup>
 
-		<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(SolutionDir)' != '' and '$(SolutionDir)' != '*Undefined*'">
 				<Exec Command="copy &quot;$(SolutionDir)\Release Notes.txt&quot; &quot;$(OutputPath)&quot;&#xD;&#xA;copy &quot;$(SolutionDir)\License.txt&quot; &quot;$(OutputPath)&quot;" />
 		</Target>
 </Project>

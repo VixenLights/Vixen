@@ -17,9 +17,11 @@
     <PackageVersion Include="LiteDB" Version="4.1.4" />
     <PackageVersion Include="LoadAssembliesOnStartup.Fody" Version="4.7.0" />
     <PackageVersion Include="MessagePack" Version="3.1.4" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="Microsoft.Win32.SystemEvents" Version="10.0.5" />
     <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
     <PackageVersion Include="ModuleInit.Fody" Version="2.1.1" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="NAudio.Core" Version="2.3.0" />
     <PackageVersion Include="NAudio.Vorbis" Version="1.5.0" />
     <PackageVersion Include="NAudio.Wasapi" Version="2.3.0" />
@@ -47,5 +49,7 @@
     <PackageVersion Include="WixToolset.Bal.wixext" Version="5.0.2" />
     <PackageVersion Include="WixToolset.Netfx.wixext" Version="5.0.2" />
     <PackageVersion Include="WixToolset.Util.wixext" Version="5.0.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
   </ItemGroup>
 </Project>
