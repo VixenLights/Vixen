@@ -1,0 +1,179 @@
+{
+  "templates": {
+    "basic_task": {
+      "description": "Simple task with minimal fields",
+      "example": {
+        "project_key": "PROJ",
+        "summary": "Complete user authentication module",
+        "issue_type": "Task",
+        "description": "Implement JWT-based authentication for the API"
+      }
+    },
+    "bug_report": {
+      "description": "Bug with priority and affected version",
+      "example": {
+        "project_key": "PROJ",
+        "summary": "Login button not responding on mobile",
+        "issue_type": "Bug",
+        "description": "## Steps to Reproduce\n1. Open app on mobile\n2. Click login button\n3. Nothing happens\n\n## Expected\nLogin form should appear\n\n## Actual\nNo response",
+        "additional_fields": {
+          "priority": {"name": "High"},
+          "labels": ["mobile", "login"],
+          "affectedVersion": [{"name": "1.0.0"}]
+        }
+      }
+    },
+    "user_story": {
+      "description": "User story with acceptance criteria",
+      "example": {
+        "project_key": "PROJ",
+        "summary": "As a user, I want to reset my password",
+        "issue_type": "Story",
+        "description": "## User Story\nAs a user, I want to reset my password so that I can regain access if I forget it.\n\n## Acceptance Criteria\n- [ ] User can request password reset via email\n- [ ] Reset link expires after 24 hours\n- [ ] User receives confirmation email\n- [ ] Password meets security requirements",
+        "additional_fields": {
+          "labels": ["authentication", "security"]
+        }
+      }
+    },
+    "epic": {
+      "description": "Epic for large initiatives",
+      "example": {
+        "project_key": "PROJ",
+        "summary": "User Authentication System",
+        "issue_type": "Epic",
+        "description": "Complete overhaul of authentication system including:\n- JWT implementation\n- OAuth integration\n- Password reset flow\n- Two-factor authentication",
+        "additional_fields": {
+          "labels": ["authentication", "epic-q1-2025"]
+        }
+      }
+    },
+    "subtask": {
+      "description": "Subtask under parent issue",
+      "example": {
+        "project_key": "PROJ",
+        "summary": "Write unit tests for authentication",
+        "issue_type": "Subtask",
+        "description": "Create comprehensive unit tests for all authentication endpoints",
+        "assignee": "developer@example.com",
+        "additional_fields": {
+          "parent": "PROJ-123"
+        }
+      }
+    },
+    "task_with_assignee_and_components": {
+      "description": "Task with team member and components",
+      "example": {
+        "project_key": "PROJ",
+        "summary": "Implement API rate limiting",
+        "issue_type": "Task",
+        "description": "Add rate limiting middleware to prevent API abuse",
+        "assignee": "developer@example.com",
+        "components": "API,Security",
+        "additional_fields": {
+          "priority": {"name": "Medium"},
+          "labels": ["backend", "security"]
+        }
+      }
+    },
+    "linked_to_epic": {
+      "description": "Story linked to an epic (requires two-step process)",
+      "note": "First create the issue, then use jira_link_to_epic",
+      "step1_create": {
+        "project_key": "PROJ",
+        "summary": "Implement password reset flow",
+        "issue_type": "Story",
+        "description": "Build password reset functionality"
+      },
+      "step2_link": {
+        "note": "After creation, use jira_link_to_epic",
+        "function": "mcp__atlassian-evinova__jira_link_to_epic",
+        "params": {
+          "issue_key": "PROJ-124",
+          "epic_key": "PROJ-100"
+        }
+      }
+    },
+    "with_custom_fields": {
+      "description": "Issue with custom fields (find IDs using jira_search_fields)",
+      "example": {
+        "project_key": "PROJ",
+        "summary": "Implement feature X",
+        "issue_type": "Task",
+        "description": "Feature implementation",
+        "additional_fields": {
+          "customfield_10010": "PROJ-100",
+          "customfield_10020": {"value": "Option A"},
+          "customfield_10030": 5,
+          "priority": {"name": "High"}
+        }
+      }
+    },
+    "with_sprint": {
+      "description": "Issue assigned to sprint (use after sprint creation)",
+      "note": "Sprint assignment typically done after creation via board/sprint tools",
+      "example": {
+        "project_key": "PROJ",
+        "summary": "Sprint task",
+        "issue_type": "Task",
+        "description": "Task for current sprint",
+        "additional_fields": {
+          "customfield_10016": 123
+        },
+        "note": "customfield_10016 is typically the sprint field ID"
+      }
+    },
+    "with_fix_version": {
+      "description": "Issue with target fix version",
+      "example": {
+        "project_key": "PROJ",
+        "summary": "Bug fix for v1.1.0",
+        "issue_type": "Bug",
+        "description": "Critical bug that needs to be in v1.1.0",
+        "additional_fields": {
+          "fixVersions": [{"name": "1.1.0"}],
+          "priority": {"name": "Critical"}
+        }
+      }
+    }
+  },
+  "batch_creation_example": {
+    "description": "Create multiple issues at once",
+    "function": "mcp__atlassian-evinova__jira_batch_create_issues",
+    "example": {
+      "issues": [
+        {
+          "project_key": "PROJ",
+          "summary": "Setup development environment",
+          "issue_type": "Task",
+          "components": ["Infrastructure"]
+        },
+        {
+          "project_key": "PROJ",
+          "summary": "Configure CI/CD pipeline",
+          "issue_type": "Task",
+          "components": ["Infrastructure"]
+        },
+        {
+          "project_key": "PROJ",
+          "summary": "Write API documentation",
+          "issue_type": "Task",
+          "components": ["Documentation"]
+        }
+      ],
+      "validate_only": false
+    }
+  },
+  "field_format_reference": {
+    "priority": {"name": "High"},
+    "assignee_string": "user@example.com",
+    "labels_array": ["label1", "label2"],
+    "components_string": "Component1,Component2",
+    "fixVersions_array": [{"name": "1.0.0"}],
+    "parent_string": "PROJ-123",
+    "custom_field_epic_link": "PROJ-100",
+    "custom_field_select": {"value": "Option A"},
+    "custom_field_number": 5,
+    "custom_field_text": "Some text value",
+    "custom_field_date": "2025-01-21"
+  }
+}
