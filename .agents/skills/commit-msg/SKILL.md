@@ -30,6 +30,10 @@ Read the actual code changes to understand:
 - Why this change matters
 - Appropriate imperative verb (Add/Fix/Refactor/Update/etc.)
 
+### Step 2b:
+
+The Subject line must start with the JIRA issue. Ex VIX-XXXX This is typically the branch name.
+
 ### Step 3: Generate Commit Message
 
 Follow Chris Beams' seven rules:

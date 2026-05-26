@@ -11,28 +11,31 @@ Vixen currently has no automated tests. After this change, a developer can run `
 ## Progress
 
 - [x] Create JIRA issue in the VIX project to track this work (VIX-3920)
-- [ ] Add xunit, xunit.runner.visualstudio, Microsoft.NET.Test.Sdk, and Moq entries to `Directory.Packages.props`
-- [ ] Create `src/Vixen.Tests/` directory and subdirectories
-- [ ] Create `src/Vixen.Tests/Directory.Build.props` (imports parent, overrides output path)
-- [ ] Create `src/Vixen.Tests/Vixen.Tests.csproj`
-- [ ] Create `src/Vixen.Tests/Utility/NamingUtilitiesTests.cs`
-- [ ] Create `src/Vixen.Tests/Common/XYZTests.cs`
-- [ ] Create `src/Vixen.Tests/Data/Value/RGBValueTests.cs`
-- [ ] Run `dotnet sln add src/Vixen.Tests/Vixen.Tests.csproj` from repo root
-- [ ] Edit `Vixen.sln` to replace the six `Any CPU` platform entries for Vixen.Tests with `x64` targets
-- [ ] Run `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release` and confirm 10 tests pass
+- [x] Add xunit, xunit.runner.visualstudio, Microsoft.NET.Test.Sdk, and Moq entries to `Directory.Packages.props`
+- [x] Create `src/Vixen.Tests/` directory and subdirectories
+- [x] Create `src/Vixen.Tests/Directory.Build.props` (imports parent, overrides output path)
+- [x] Create `src/Vixen.Tests/Vixen.Tests.csproj`
+- [x] Create `src/Vixen.Tests/Utility/NamingUtilitiesTests.cs`
+- [x] Create `src/Vixen.Tests/Common/XYZTests.cs`
+- [x] Create `src/Vixen.Tests/Data/Value/RGBValueTests.cs`
+- [x] Run `dotnet sln add src/Vixen.Tests/Vixen.Tests.csproj` from repo root
+- [x] Edit `Vixen.sln` to replace the six `Any CPU` platform entries for Vixen.Tests with `x64` targets
+- [x] Run `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release` and confirm 10 tests pass (12 passed)
 
 
 ## Surprises & Discoveries
 
-No discoveries yet — plan is pre-implementation.
+- xunit 2.x does not inject global usings automatically; all test files need `using Xunit;` explicitly.
+- The plan's decision to use `<Private>false</Private>` on the Vixen.Core project reference caused `Vixen.Core.dll` to be absent from the test output folder, making all tests fail at runtime with `FileNotFoundException`. The Copy Local = No convention applies to production modules deploying to the shared `Release\Output` folder; test projects must copy dependencies locally. The attribute was removed from `Vixen.Tests.csproj`.
+- `dotnet test` without `-p:SolutionDir=...` triggers a failing post-build copy step in Vixen.Core (`*Undefined*\Release Notes.txt`). Always pass `-p:SolutionDir="C:\Dev\Vixen\\"` when building or testing the project in isolation.
+- The three seed test files contain 12 tests total (3 + 6 + 3), not 10 as stated in the plan — the plan count was off by 2.
 
 
 ## Decision Log
 
-- Decision: Use `xunit 2.9.2`, `xunit.runner.visualstudio 2.8.2`, `Microsoft.NET.Test.Sdk 17.12.0`, `Moq 4.20.72`.
-  Rationale: Most recent stable patch versions in each package line as of the plan date.
-  Date/Author: 2026-05-26 / planning
+- Decision: Use `xunit.v3 3.2.2`, `xunit.runner.visualstudio 3.1.5`, `Microsoft.NET.Test.Sdk 17.12.0`, `Moq 4.20.72`.
+  Rationale: xUnit v2 is deprecated/maintenance-only; v3 is the current supported version. `xunit.runner.visualstudio` 3.x is required alongside `xunit.v3` for `dotnet test` / VSTest discovery — v3 does not embed its own adapter.
+  Date/Author: 2026-05-26 / planning (updated post-implementation)
 
 - Decision: The local `src/Vixen.Tests/Directory.Build.props` must explicitly import `../Directory.Build.props` before overriding output paths.
   Rationale: MSBuild stops ascending the directory tree at the first `Directory.Build.props` it finds. If the local file does not import the parent, the test project loses `TargetFramework`, `Platforms`, `Nullable`, `ImplicitUsings`, and all other shared settings.
@@ -62,7 +65,7 @@ No discoveries yet — plan is pre-implementation.
 
 ## Outcomes & Retrospective
 
-Not yet complete.
+Completed 2026-05-26. `dotnet test` reports 12 passed, 0 failed, 0 skipped. Test binary lands in `src/Vixen.Tests/bin/Release/` as intended. Three deviations from the plan were required: explicit `using Xunit;` in all test files, removal of `<Private>false</Private>` on the Vixen.Core reference, and passing `-p:SolutionDir` when running outside the full solution build. All tracked under VIX-3920.
 
 
 ## Context and Orientation
@@ -232,8 +235,8 @@ Expected:
 
 The change is accepted when all of the following are true:
 
-1. `dotnet build src/Vixen.Tests/Vixen.Tests.csproj -c Release` succeeds with zero errors and zero warnings.
-2. `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release` reports 10 passed, 0 failed, 0 skipped.
+1. `dotnet build src/Vixen.Tests/Vixen.Tests.csproj -c Release -p:SolutionDir="C:\Dev\Vixen\"` succeeds with zero errors and zero warnings.
+2. `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release -p:SolutionDir="C:\Dev\Vixen\"` reports 10 passed, 0 failed, 0 skipped.
 3. The test binary is present at `src/Vixen.Tests/bin/Release/net10.0-windows/Vixen.Tests.dll` and NOT at `Release\Output\Vixen.Tests.dll`.
 4. The full solution build `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release` still succeeds (the test project must not break the overall build).
 

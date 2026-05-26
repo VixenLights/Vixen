@@ -1,0 +1,8 @@
+<Project>
+	<Import Project="..\Directory.Build.props" />
+
+	<PropertyGroup>
+		<BaseOutputPath>$(MSBuildThisFileDirectory)bin\</BaseOutputPath>
+		<OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
+	</PropertyGroup>
+</Project>

@@ -6,6 +6,8 @@ _ReSharper*
 /*.exe.*
 *.user
 *.suo
+/src/*/Release
+/src/*/Debug
 /Release
 /Release64
 Vixen 3*
