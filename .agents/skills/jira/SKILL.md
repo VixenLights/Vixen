@@ -59,17 +59,21 @@ When creating JIRA issues, follow this sequence:
 #### Step 1: Gather Requirements
 Ask the user for:
 - **Project key** (e.g., "PROJ", "DEV", "SUPPORT") - NEVER ASSUME
-- **Issue type** (Task, Bug, Story, Epic, Subtask)
 - **Summary** (title/description)
 - **Priority** (if applicable)
 - **Assignee** (optional - email, display name, or account ID)
 - **Additional fields** (components, labels, custom fields)
+
+Do NOT ask for issue type yet — fetch valid types from the project first (Step 2b).
 
 #### Step 2: Validate Project
 Use `mcp__atlassian__jira_get_all_projects` to:
 - Verify project exists
 - Get available projects if user unsure
 - Confirm project key matches exactly
+
+#### Step 2b: Fetch Valid Issue Types
+Call the JIRA project API (`GET /rest/api/3/project/{projectKey}`) or use `mcp__atlassian__jira_get_project_issue_types` if available, to retrieve the actual issue types for the project. Present these to the user and ask them to choose. NEVER assume "Task" or any other type exists — issue types vary per project.
 
 #### Step 3: Search Available Fields (if needed)
 Use `mcp__atlassian__jira_search_fields` to find custom field names and IDs. See [Custom Field Discovery](references/custom_field_discovery.md) for detailed methodology.

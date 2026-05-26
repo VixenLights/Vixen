@@ -128,7 +128,7 @@ Per README conventions:
 
 ## Issue Tracker
 
-Bugs and feature requests are tracked at <http://bugs.vixenlights.com> (Jira). Commit messages and branch names reference ticket IDs (e.g., `VIX-3871`).
+Bugs and feature requests are tracked at <http://vixenlights.atlassian.net> (Jira). Commit messages and branch names reference ticket IDs (e.g., `VIX-3871`).
 
 # ExecPlans
 

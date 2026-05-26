@@ -20,8 +20,11 @@ on:
       - 'Assets/**'
       - 'qodana.yml'
       - 'CLAUDE.md'
+      - 'AGENTS.md'
       - '.claude/**'
-
+      - '.agents/**'
+      - 'docs/**'
+     
 jobs:
 
   setup:
