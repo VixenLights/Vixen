@@ -15,7 +15,10 @@ on:
       - 'Release Notes.txt'
       - 'qodana.yml'
       - 'CLAUDE.md'
+      - 'AGENTS.md'
       - '.claude/**'
+      - '.agents/**'
+      - 'docs/**'
   
   pull_request:
     branches:
@@ -27,6 +30,12 @@ on:
       - .github/**
       - .tgitconfig
       - 'Release Notes.txt'
+      - 'qodana.yml'
+      - 'CLAUDE.md'
+      - 'AGENTS.md'
+      - '.claude/**'
+      - '.agents/**'
+      - 'docs/**'
     
 
 jobs:
