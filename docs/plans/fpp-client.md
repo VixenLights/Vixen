@@ -21,7 +21,7 @@ host's name, platform, and version string.
 ## Progress
 
 - [x] (2026-05-26) Milestone 1 — Create JIRA issue covering the full feature (VIX-3921)
-- [ ] Milestone 2 — Project scaffolding: create the csproj, module boilerplate, add to solution
+- [x] (2026-05-26) Milestone 2 — Project scaffolding: create the csproj, module boilerplate, add to solution
 - [ ] Milestone 3 — Interfaces and models: define `IFppClient`, configuration record, and all response model records
 - [ ] Milestone 4 — Client implementation: `FppClient` class with all required methods
 - [ ] Milestone 5 — Test suite: add FPPClient tests to `Vixen.Tests`

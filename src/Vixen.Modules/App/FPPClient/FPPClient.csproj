@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>Module.App.FPPClient</AssemblyName>
+		<RootNamespace>VixenModules.App.FPPClient</RootNamespace>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NLog" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+	</ItemGroup>
+
+</Project>
