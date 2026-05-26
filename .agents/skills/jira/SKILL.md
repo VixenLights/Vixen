@@ -66,6 +66,17 @@ Ask the user for:
 
 Do NOT ask for issue type yet — fetch valid types from the project first (Step 2b).
 
+If the request originates from an ExecPlan document (e.g., `docs/plans/*.md`), read the plan
+before creating the issue and extract:
+- **Scope / description** from the plan's Purpose or Plan of Work sections
+- **Acceptance criteria** from the plan's Validation and Acceptance section — include these
+  as a dedicated "Acceptance Criteria" section in the issue description
+- **Expected test names or outcomes** if the plan lists them explicitly
+
+Always include acceptance criteria in the issue description when they are available, whether
+from a plan document or provided directly by the user. A JIRA issue without acceptance criteria
+cannot be reliably reviewed or closed.
+
 #### Step 2: Validate Project
 Use `mcp__atlassian__jira_get_all_projects` to:
 - Verify project exists
