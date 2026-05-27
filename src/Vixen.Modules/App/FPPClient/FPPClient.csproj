@@ -4,6 +4,8 @@
 		<AssemblyName>Module.App.FPPClient</AssemblyName>
 		<RootNamespace>VixenModules.App.FPPClient</RootNamespace>
 		<EnableDynamicLoading>true</EnableDynamicLoading>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>

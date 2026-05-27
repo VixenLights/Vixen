@@ -22,13 +22,31 @@ host's name, platform, and version string.
 
 - [x] (2026-05-26) Milestone 1 — Create JIRA issue covering the full feature (VIX-3921)
 - [x] (2026-05-26) Milestone 2 — Project scaffolding: create the csproj, module boilerplate, add to solution
-- [ ] Milestone 3 — Interfaces and models: define `IFppClient`, configuration record, and all response model records
+- [x] (2026-05-26) Milestone 3 — Interfaces and models: define `IFppClient`, configuration record, and all response model records
 - [ ] Milestone 4 — Client implementation: `FppClient` class with all required methods
 - [ ] Milestone 5 — Test suite: add FPPClient tests to `Vixen.Tests`
 
 ## Surprises & Discoveries
 
-(Empty — to be filled as implementation proceeds.)
+- Observation: `dotnet sln add` created duplicate solution folder hierarchy entries
+  (`src`, `Vixen.Modules`, `App`) instead of nesting the project under the existing
+  `App` solution folder that other App modules live in. The `NestedProjects` section
+  pointed FPPClient into these new folders rather than the existing one.
+  Evidence: Three extra `Project` entries with type GUID `{2150E333...}` (Solution Folder)
+  appeared in the sln; corrected manually by removing the spurious folder entries and
+  updating the `NestedProjects` entry to reference the pre-existing App folder GUID
+  `{18C30343-DC00-48B0-B712-93CC89D20643}`.
+  Resolution: After `dotnet sln add`, always verify the `NestedProjects` section and
+  remove any auto-generated solution folder entries that duplicate existing folders.
+
+- Observation: `FppClientFactory` (Milestone 3) references `FppClient` (Milestone 4), so the
+  project would not compile at the end of Milestone 3 without a stub.
+  Resolution: Created a stub `Client/FppClient.cs` with `NotImplementedException` bodies during
+  Milestone 3. Milestone 4 replaces those bodies with the real implementation.
+
+- Observation: `FPPClient.csproj` was missing `<Nullable>enable</Nullable>` and
+  `<ImplicitUsings>enable</ImplicitUsings>`, causing CS8632 warnings on nullable annotations.
+  Resolution: Added both properties to the `<PropertyGroup>` in the csproj.
 
 ## Decision Log
 
