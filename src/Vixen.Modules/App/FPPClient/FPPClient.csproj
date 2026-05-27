@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>Module.App.FPPClient</AssemblyName>
+		<RootNamespace>VixenModules.App.FPPClient</RootNamespace>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NLog" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Vixen.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+</Project>

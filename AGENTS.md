@@ -110,6 +110,11 @@ After running `dotnet sln add`, the generated `Any CPU` platform entries in `Vix
 {GUID}.Release|Any CPU.Build.0 = Release|x64
 ```
 
+**`dotnet sln add` creates spurious solution folders.** The command generates new `Project` entries of type `{2150E333...}` (Solution Folder) mirroring the filesystem path (e.g. `src`, `Vixen.Modules`, `App`) and nests the new project inside them. These duplicate folders must be removed manually:
+
+1. Delete the auto-generated `Project`/`EndProject` blocks for the spurious folders.
+2. In `GlobalSection(NestedProjects)`, update the new project's entry to point at the correct pre-existing solution folder GUID instead of the auto-generated one.
+
 ### Project References
 
 Per README conventions:
