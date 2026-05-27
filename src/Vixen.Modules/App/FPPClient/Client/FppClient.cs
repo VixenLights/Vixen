@@ -130,6 +130,39 @@ internal sealed class FppClient : IFppClient
 		UploadFileAsync("videos", filename, content, cancellationToken);
 
 	/// <inheritdoc/>
+	public async Task RenameFileAsync(
+		string dirName, string source, string dest, CancellationToken cancellationToken = default)
+	{
+		ArgumentException.ThrowIfNullOrWhiteSpace(dirName);
+		ArgumentException.ThrowIfNullOrWhiteSpace(source);
+		ArgumentException.ThrowIfNullOrWhiteSpace(dest);
+
+		var url = $"file/{Uri.EscapeDataString(dirName)}/rename"
+		        + $"/{Uri.EscapeDataString(source)}/{Uri.EscapeDataString(dest)}";
+
+		Log.Debug("Renaming {Source} to {Dest} in {DirName}", source, dest, dirName);
+
+		using var response = await _httpClient.PostAsync(url, content: null, cancellationToken)
+			.ConfigureAwait(false);
+
+		if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+		{
+			Log.Debug("Rename of {Source} in {DirName}: file not found (404), treating as no-op",
+				source, dirName);
+			return;
+		}
+
+		if (!response.IsSuccessStatusCode)
+		{
+			Log.Error("Rename of {Source} in {DirName} failed with HTTP {StatusCode}",
+				source, dirName, (int)response.StatusCode);
+			throw new FppClientException(
+				$"Rename of '{source}' in '{dirName}' failed with HTTP {(int)response.StatusCode}.",
+				(int)response.StatusCode);
+		}
+	}
+
+	/// <inheritdoc/>
 	public ValueTask DisposeAsync()
 	{
 		_httpClient.Dispose();
