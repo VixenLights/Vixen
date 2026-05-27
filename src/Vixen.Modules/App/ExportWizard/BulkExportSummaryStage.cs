@@ -7,6 +7,7 @@ using Vixen.Export;
 using Vixen.Module.Media;
 using Vixen.Services;
 using Vixen.Sys;
+using VixenModules.App.FPPClient.Client;
 
 namespace VixenModules.App.ExportWizard
 {
@@ -67,6 +68,13 @@ namespace VixenModules.App.ExportWizard
 			{
 				lblUniverseFileWarning.Visible = false;
 			}
+
+			// FPP device info — hidden by default; shown only when Direct Upload is active
+			lblFppInfo.Visible = false;
+			lblFppHostName.Visible = lblFppHostNameValue.Visible = false;
+			lblFppDescription.Visible = lblFppDescriptionValue.Visible = false;
+			lblFppPlatform.Visible = lblFppPlatformValue.Visible = false;
+			lblFppVariant.Visible = lblFppVariantValue.Visible = false;
 		}
 
 		private void PopulateProfiles()
@@ -81,7 +89,7 @@ namespace VixenModules.App.ExportWizard
 			}
 		}
 
-		public override void StageStart()
+		public override async void StageStart()
 		{
 			taskProgress.Visible = false;
 			overallProgress.Visible = false;
@@ -94,6 +102,11 @@ namespace VixenModules.App.ExportWizard
 			namesCollection.AddRange(_data.Profiles.Select(x => x.Name).ToArray());
 			PopulateProfiles();
 			ConfigureSummary();
+
+			if (_data.ActiveProfile.IsFalcon2xFormat && _data.ActiveProfile.FppDirectUpload)
+			{
+				await PopulateFppInfoAsync();
+			}
 		}
 
 		public override async Task StageEnd()
@@ -429,6 +442,43 @@ namespace VixenModules.App.ExportWizard
 		private void lblUniverseFolder_Click(object sender, EventArgs e)
 		{
 
+		}
+
+		private async Task PopulateFppInfoAsync()
+		{
+			var host = _data.ActiveProfile.FppHostAddress;
+			if (string.IsNullOrWhiteSpace(host)) return;
+
+			try
+			{
+				var factory = new FppClientFactory();
+				await using var client = factory.Create(new FppClientOptions { BaseUrl = $"http://{host}/" });
+				// ConfigureAwait(true) keeps the continuation on the UI thread so label
+				// assignments do not require Invoke.
+				var info = await client.GetSystemInfoAsync().ConfigureAwait(true);
+
+				if (IsDisposed) return;
+
+				lblFppHostNameValue.Text = info.HostName;
+				lblFppDescriptionValue.Text = info.HostDescription;
+				lblFppPlatformValue.Text = info.Platform;
+				lblFppVariantValue.Text = info.Variant;
+
+				lblFppInfo.Visible = true;
+				lblFppHostName.Visible = lblFppHostNameValue.Visible = true;
+				lblFppDescription.Visible = lblFppDescriptionValue.Visible = true;
+				lblFppPlatform.Visible = lblFppPlatformValue.Visible = true;
+				lblFppVariant.Visible = lblFppVariantValue.Visible = true;
+			}
+			catch (Exception ex)
+			{
+				Logging.Warn(ex, "Could not retrieve FPP system info for host '{Host}'", host);
+				if (!IsDisposed)
+				{
+					lblFppInfo.Text = @"FPP Device Info (unavailable — check host address)";
+					lblFppInfo.Visible = true;
+				}
+			}
 		}
 	}
 }

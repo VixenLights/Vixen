@@ -442,9 +442,9 @@ namespace VixenModules.App.ExportWizard
 
 		private async void txtFppHostAddress_Leave(object sender, EventArgs e)
 		{
+			var host = txtFppHostAddress.Text.Trim();
 			try
 			{
-				var host = txtFppHostAddress.Text.Trim();
 				if (!FppHostValidator.IsHostAddressValid(host)) return;
 				
 				bool reachable = await Task.Run(() => PingHost(host)).ConfigureAwait(true);

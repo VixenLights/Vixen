@@ -18,7 +18,7 @@ The user can see it working by opening the Export Wizard, choosing a Falcon Play
 - [x] Milestone 2: Add `RenameFileAsync` to FPPClient — interface, implementation, unit tests.
 - [x] Milestone 3: Update `ExportProfile` data model — new `[DataMember]` fields, update `Clone()`.
 - [x] Milestone 4: Step 4 UI — radio buttons, host text box, validation, async ping, `CanMoveNext`.
-- [ ] Milestone 5: Summary Stage UI — FPP info panel, populate on `StageStart()`, write profile on radio/text change.
+- [x] Milestone 5: Summary Stage UI — FPP info panel, populate on `StageStart()`, write profile on radio/text change.
 - [ ] Milestone 6: Export logic — direct-upload code path in `Export()` and `CreateUniverseFile()`, project reference, `FppDirectUploadService`.
 - [ ] Milestone 7: Unit tests for ExportWizard logic (`FppHostValidator`, `ExportProfile` clone, `FppDirectUploadService`).
 

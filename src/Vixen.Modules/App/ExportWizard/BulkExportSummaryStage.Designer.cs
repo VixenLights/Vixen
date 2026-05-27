@@ -22,319 +22,425 @@
 
 		#region Component Designer generated code
 
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
+		/// <summary>
+		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.taskProgress = new System.Windows.Forms.ProgressBar();
-			this.lblTaskProgress = new System.Windows.Forms.Label();
-			this.lblOverallProgress = new System.Windows.Forms.Label();
-			this.mainLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-			this.lblAudioOutputFolder = new System.Windows.Forms.Label();
-			this.lblAudioOption = new System.Windows.Forms.Label();
-			this.lblOutputFolder = new System.Windows.Forms.Label();
-			this.lblTimingValue = new System.Windows.Forms.Label();
-			this.lblFormatName = new System.Windows.Forms.Label();
-			this.lblSummary = new System.Windows.Forms.Label();
-			this.lblSequences = new System.Windows.Forms.Label();
-			this.lblFormat = new System.Windows.Forms.Label();
-			this.lblTiming = new System.Windows.Forms.Label();
-			this.lblDestination = new System.Windows.Forms.Label();
-			this.lblAudio = new System.Windows.Forms.Label();
-			this.lblAudioDestination = new System.Windows.Forms.Label();
-			this.lblSequenceCount = new System.Windows.Forms.Label();
-			this.overallProgress = new System.Windows.Forms.ProgressBar();
-			this.chkSaveConfig = new System.Windows.Forms.CheckBox();
-			this.comboConfigName = new System.Windows.Forms.ComboBox();
-			this.lblUniverse = new System.Windows.Forms.Label();
-			this.lblUniverseFolder = new System.Windows.Forms.Label();
-			this.lblUniverseFileWarning = new System.Windows.Forms.Label();
-			this.mainLayoutPanel.SuspendLayout();
-			this.SuspendLayout();
+			taskProgress = new System.Windows.Forms.ProgressBar();
+			lblTaskProgress = new System.Windows.Forms.Label();
+			lblOverallProgress = new System.Windows.Forms.Label();
+			mainLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+			lblAudioOutputFolder = new System.Windows.Forms.Label();
+			lblAudioOption = new System.Windows.Forms.Label();
+			lblOutputFolder = new System.Windows.Forms.Label();
+			lblTimingValue = new System.Windows.Forms.Label();
+			lblFormatName = new System.Windows.Forms.Label();
+			lblSummary = new System.Windows.Forms.Label();
+			lblSequences = new System.Windows.Forms.Label();
+			lblFormat = new System.Windows.Forms.Label();
+			lblTiming = new System.Windows.Forms.Label();
+			lblDestination = new System.Windows.Forms.Label();
+			lblAudio = new System.Windows.Forms.Label();
+			lblAudioDestination = new System.Windows.Forms.Label();
+			lblSequenceCount = new System.Windows.Forms.Label();
+			overallProgress = new System.Windows.Forms.ProgressBar();
+			chkSaveConfig = new System.Windows.Forms.CheckBox();
+			comboConfigName = new System.Windows.Forms.ComboBox();
+			lblUniverse = new System.Windows.Forms.Label();
+			lblUniverseFolder = new System.Windows.Forms.Label();
+			lblUniverseFileWarning = new System.Windows.Forms.Label();
+			lblFppInfo = new System.Windows.Forms.Label();
+			lblFppHostName = new System.Windows.Forms.Label();
+			lblFppHostNameValue = new System.Windows.Forms.Label();
+			lblFppDescription = new System.Windows.Forms.Label();
+			lblFppDescriptionValue = new System.Windows.Forms.Label();
+			lblFppPlatform = new System.Windows.Forms.Label();
+			lblFppPlatformValue = new System.Windows.Forms.Label();
+			lblFppVariant = new System.Windows.Forms.Label();
+			lblFppVariantValue = new System.Windows.Forms.Label();
+			mainLayoutPanel.SuspendLayout();
+			SuspendLayout();
 			// 
 			// taskProgress
 			// 
-			this.taskProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.mainLayoutPanel.SetColumnSpan(this.taskProgress, 2);
-			this.taskProgress.Location = new System.Drawing.Point(3, 287);
-			this.taskProgress.Name = "taskProgress";
-			this.taskProgress.Size = new System.Drawing.Size(607, 23);
-			this.taskProgress.TabIndex = 1;
+			taskProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+			mainLayoutPanel.SetColumnSpan(taskProgress, 2);
+			taskProgress.Location = new System.Drawing.Point(3, 287);
+			taskProgress.Name = "taskProgress";
+			taskProgress.Size = new System.Drawing.Size(607, 23);
+			taskProgress.TabIndex = 1;
 			// 
 			// lblTaskProgress
 			// 
-			this.lblTaskProgress.AutoSize = true;
-			this.mainLayoutPanel.SetColumnSpan(this.lblTaskProgress, 2);
-			this.lblTaskProgress.Location = new System.Drawing.Point(3, 269);
-			this.lblTaskProgress.Name = "lblTaskProgress";
-			this.lblTaskProgress.Size = new System.Drawing.Size(39, 15);
-			this.lblTaskProgress.TabIndex = 3;
-			this.lblTaskProgress.Text = "Ready";
+			lblTaskProgress.AutoSize = true;
+			mainLayoutPanel.SetColumnSpan(lblTaskProgress, 2);
+			lblTaskProgress.Location = new System.Drawing.Point(3, 269);
+			lblTaskProgress.Name = "lblTaskProgress";
+			lblTaskProgress.Size = new System.Drawing.Size(39, 15);
+			lblTaskProgress.TabIndex = 3;
+			lblTaskProgress.Text = "Ready";
 			// 
 			// lblOverallProgress
 			// 
-			this.lblOverallProgress.AutoSize = true;
-			this.mainLayoutPanel.SetColumnSpan(this.lblOverallProgress, 2);
-			this.lblOverallProgress.Location = new System.Drawing.Point(3, 313);
-			this.lblOverallProgress.Name = "lblOverallProgress";
-			this.lblOverallProgress.Size = new System.Drawing.Size(39, 15);
-			this.lblOverallProgress.TabIndex = 5;
-			this.lblOverallProgress.Text = "Ready";
+			lblOverallProgress.AutoSize = true;
+			mainLayoutPanel.SetColumnSpan(lblOverallProgress, 2);
+			lblOverallProgress.Location = new System.Drawing.Point(3, 313);
+			lblOverallProgress.Name = "lblOverallProgress";
+			lblOverallProgress.Size = new System.Drawing.Size(39, 15);
+			lblOverallProgress.TabIndex = 5;
+			lblOverallProgress.Text = "Ready";
 			// 
 			// mainLayoutPanel
 			// 
-			this.mainLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.mainLayoutPanel.AutoSize = true;
-			this.mainLayoutPanel.ColumnCount = 2;
-			this.mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.mainLayoutPanel.Controls.Add(this.lblAudioOutputFolder, 1, 7);
-			this.mainLayoutPanel.Controls.Add(this.lblAudioOption, 1, 6);
-			this.mainLayoutPanel.Controls.Add(this.lblOutputFolder, 1, 5);
-			this.mainLayoutPanel.Controls.Add(this.lblTimingValue, 1, 4);
-			this.mainLayoutPanel.Controls.Add(this.lblFormatName, 1, 3);
-			this.mainLayoutPanel.Controls.Add(this.lblSummary, 0, 0);
-			this.mainLayoutPanel.Controls.Add(this.lblSequences, 0, 2);
-			this.mainLayoutPanel.Controls.Add(this.lblTaskProgress, 0, 13);
-			this.mainLayoutPanel.Controls.Add(this.taskProgress, 0, 14);
-			this.mainLayoutPanel.Controls.Add(this.lblFormat, 0, 3);
-			this.mainLayoutPanel.Controls.Add(this.lblTiming, 0, 4);
-			this.mainLayoutPanel.Controls.Add(this.lblDestination, 0, 5);
-			this.mainLayoutPanel.Controls.Add(this.lblAudio, 0, 6);
-			this.mainLayoutPanel.Controls.Add(this.lblAudioDestination, 0, 7);
-			this.mainLayoutPanel.Controls.Add(this.lblOverallProgress, 0, 15);
-			this.mainLayoutPanel.Controls.Add(this.lblSequenceCount, 1, 2);
-			this.mainLayoutPanel.Controls.Add(this.overallProgress, 0, 17);
-			this.mainLayoutPanel.Controls.Add(this.chkSaveConfig, 0, 11);
-			this.mainLayoutPanel.Controls.Add(this.comboConfigName, 1, 11);
-			this.mainLayoutPanel.Controls.Add(this.lblUniverse, 0, 8);
-			this.mainLayoutPanel.Controls.Add(this.lblUniverseFolder, 1, 8);
-			this.mainLayoutPanel.Controls.Add(this.lblUniverseFileWarning, 1, 9);
-			this.mainLayoutPanel.Location = new System.Drawing.Point(3, 3);
-			this.mainLayoutPanel.Name = "mainLayoutPanel";
-			this.mainLayoutPanel.RowCount = 18;
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.mainLayoutPanel.Size = new System.Drawing.Size(613, 356);
-			this.mainLayoutPanel.TabIndex = 6;
-			this.mainLayoutPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainLayoutPanel_Paint);
+			mainLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+			mainLayoutPanel.AutoSize = true;
+			mainLayoutPanel.ColumnCount = 2;
+			mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			mainLayoutPanel.Controls.Add(lblAudioOutputFolder, 1, 7);
+			mainLayoutPanel.Controls.Add(lblAudioOption, 1, 6);
+			mainLayoutPanel.Controls.Add(lblOutputFolder, 1, 5);
+			mainLayoutPanel.Controls.Add(lblTimingValue, 1, 4);
+			mainLayoutPanel.Controls.Add(lblFormatName, 1, 3);
+			mainLayoutPanel.Controls.Add(lblSummary, 0, 0);
+			mainLayoutPanel.Controls.Add(lblSequences, 0, 2);
+			mainLayoutPanel.Controls.Add(lblTaskProgress, 0, 18);
+			mainLayoutPanel.Controls.Add(taskProgress, 0, 19);
+			mainLayoutPanel.Controls.Add(lblFormat, 0, 3);
+			mainLayoutPanel.Controls.Add(lblTiming, 0, 4);
+			mainLayoutPanel.Controls.Add(lblDestination, 0, 5);
+			mainLayoutPanel.Controls.Add(lblAudio, 0, 6);
+			mainLayoutPanel.Controls.Add(lblAudioDestination, 0, 7);
+			mainLayoutPanel.Controls.Add(lblOverallProgress, 0, 20);
+			mainLayoutPanel.Controls.Add(lblSequenceCount, 1, 2);
+			mainLayoutPanel.Controls.Add(overallProgress, 0, 22);
+			mainLayoutPanel.Controls.Add(chkSaveConfig, 0, 16);
+			mainLayoutPanel.Controls.Add(comboConfigName, 1, 16);
+			mainLayoutPanel.Controls.Add(lblUniverse, 0, 8);
+			mainLayoutPanel.Controls.Add(lblUniverseFolder, 1, 8);
+			mainLayoutPanel.Controls.Add(lblUniverseFileWarning, 1, 9);
+			mainLayoutPanel.Controls.Add(lblFppInfo, 0, 10);
+			mainLayoutPanel.Controls.Add(lblFppHostName, 0, 11);
+			mainLayoutPanel.Controls.Add(lblFppHostNameValue, 1, 11);
+			mainLayoutPanel.Controls.Add(lblFppDescription, 0, 12);
+			mainLayoutPanel.Controls.Add(lblFppDescriptionValue, 1, 12);
+			mainLayoutPanel.Controls.Add(lblFppPlatform, 0, 13);
+			mainLayoutPanel.Controls.Add(lblFppPlatformValue, 1, 13);
+			mainLayoutPanel.Controls.Add(lblFppVariant, 0, 14);
+			mainLayoutPanel.Controls.Add(lblFppVariantValue, 1, 14);
+			mainLayoutPanel.Location = new System.Drawing.Point(3, 3);
+			mainLayoutPanel.Name = "mainLayoutPanel";
+			mainLayoutPanel.RowCount = 23;
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			mainLayoutPanel.Size = new System.Drawing.Size(613, 356);
+			mainLayoutPanel.TabIndex = 6;
+			mainLayoutPanel.Paint += mainLayoutPanel_Paint;
 			// 
 			// lblAudioOutputFolder
 			// 
-			this.lblAudioOutputFolder.AutoSize = true;
-			this.lblAudioOutputFolder.Location = new System.Drawing.Point(145, 110);
-			this.lblAudioOutputFolder.Name = "lblAudioOutputFolder";
-			this.lblAudioOutputFolder.Size = new System.Drawing.Size(182, 15);
-			this.lblAudioOutputFolder.TabIndex = 13;
-			this.lblAudioOutputFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
+			lblAudioOutputFolder.AutoSize = true;
+			lblAudioOutputFolder.Location = new System.Drawing.Point(145, 110);
+			lblAudioOutputFolder.Name = "lblAudioOutputFolder";
+			lblAudioOutputFolder.Size = new System.Drawing.Size(182, 15);
+			lblAudioOutputFolder.TabIndex = 13;
+			lblAudioOutputFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
 			// 
 			// lblAudioOption
 			// 
-			this.lblAudioOption.AutoSize = true;
-			this.lblAudioOption.Location = new System.Drawing.Point(145, 95);
-			this.lblAudioOption.Name = "lblAudioOption";
-			this.lblAudioOption.Size = new System.Drawing.Size(161, 15);
-			this.lblAudioOption.TabIndex = 12;
-			this.lblAudioOption.Text = "Renamed to match sequence";
+			lblAudioOption.AutoSize = true;
+			lblAudioOption.Location = new System.Drawing.Point(145, 95);
+			lblAudioOption.Name = "lblAudioOption";
+			lblAudioOption.Size = new System.Drawing.Size(161, 15);
+			lblAudioOption.TabIndex = 12;
+			lblAudioOption.Text = "Renamed to match sequence";
 			// 
 			// lblOutputFolder
 			// 
-			this.lblOutputFolder.AutoSize = true;
-			this.lblOutputFolder.Location = new System.Drawing.Point(145, 80);
-			this.lblOutputFolder.Name = "lblOutputFolder";
-			this.lblOutputFolder.Size = new System.Drawing.Size(182, 15);
-			this.lblOutputFolder.TabIndex = 11;
-			this.lblOutputFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
+			lblOutputFolder.AutoSize = true;
+			lblOutputFolder.Location = new System.Drawing.Point(145, 80);
+			lblOutputFolder.Name = "lblOutputFolder";
+			lblOutputFolder.Size = new System.Drawing.Size(182, 15);
+			lblOutputFolder.TabIndex = 11;
+			lblOutputFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
 			// 
 			// lblTimingValue
 			// 
-			this.lblTimingValue.AutoSize = true;
-			this.lblTimingValue.Location = new System.Drawing.Point(145, 65);
-			this.lblTimingValue.Name = "lblTimingValue";
-			this.lblTimingValue.Size = new System.Drawing.Size(38, 15);
-			this.lblTimingValue.TabIndex = 10;
-			this.lblTimingValue.Text = "50 ms";
+			lblTimingValue.AutoSize = true;
+			lblTimingValue.Location = new System.Drawing.Point(145, 65);
+			lblTimingValue.Name = "lblTimingValue";
+			lblTimingValue.Size = new System.Drawing.Size(38, 15);
+			lblTimingValue.TabIndex = 10;
+			lblTimingValue.Text = "50 ms";
 			// 
 			// lblFormatName
 			// 
-			this.lblFormatName.AutoSize = true;
-			this.lblFormatName.Location = new System.Drawing.Point(145, 50);
-			this.lblFormatName.Name = "lblFormatName";
-			this.lblFormatName.Size = new System.Drawing.Size(131, 15);
-			this.lblFormatName.TabIndex = 9;
-			this.lblFormatName.Text = "Falcon Sequence Player";
+			lblFormatName.AutoSize = true;
+			lblFormatName.Location = new System.Drawing.Point(145, 50);
+			lblFormatName.Name = "lblFormatName";
+			lblFormatName.Size = new System.Drawing.Size(131, 15);
+			lblFormatName.TabIndex = 9;
+			lblFormatName.Text = "Falcon Sequence Player";
 			// 
 			// lblSummary
 			// 
-			this.lblSummary.AutoSize = true;
-			this.mainLayoutPanel.SetColumnSpan(this.lblSummary, 2);
-			this.lblSummary.Location = new System.Drawing.Point(3, 0);
-			this.lblSummary.Name = "lblSummary";
-			this.lblSummary.Size = new System.Drawing.Size(96, 15);
-			this.lblSummary.TabIndex = 0;
-			this.lblSummary.Text = "Action Summary";
+			lblSummary.AutoSize = true;
+			mainLayoutPanel.SetColumnSpan(lblSummary, 2);
+			lblSummary.Location = new System.Drawing.Point(3, 0);
+			lblSummary.Name = "lblSummary";
+			lblSummary.Size = new System.Drawing.Size(96, 15);
+			lblSummary.TabIndex = 0;
+			lblSummary.Text = "Action Summary";
 			// 
 			// lblSequences
 			// 
-			this.lblSequences.AutoSize = true;
-			this.lblSequences.Location = new System.Drawing.Point(3, 35);
-			this.lblSequences.Name = "lblSequences";
-			this.lblSequences.Size = new System.Drawing.Size(63, 15);
-			this.lblSequences.TabIndex = 1;
-			this.lblSequences.Text = "Sequences";
+			lblSequences.AutoSize = true;
+			lblSequences.Location = new System.Drawing.Point(3, 35);
+			lblSequences.Name = "lblSequences";
+			lblSequences.Size = new System.Drawing.Size(63, 15);
+			lblSequences.TabIndex = 1;
+			lblSequences.Text = "Sequences";
 			// 
 			// lblFormat
 			// 
-			this.lblFormat.AutoSize = true;
-			this.lblFormat.Location = new System.Drawing.Point(3, 50);
-			this.lblFormat.Name = "lblFormat";
-			this.lblFormat.Size = new System.Drawing.Size(45, 15);
-			this.lblFormat.TabIndex = 2;
-			this.lblFormat.Text = "Format";
+			lblFormat.AutoSize = true;
+			lblFormat.Location = new System.Drawing.Point(3, 50);
+			lblFormat.Name = "lblFormat";
+			lblFormat.Size = new System.Drawing.Size(45, 15);
+			lblFormat.TabIndex = 2;
+			lblFormat.Text = "Format";
 			// 
 			// lblTiming
 			// 
-			this.lblTiming.AutoSize = true;
-			this.lblTiming.Location = new System.Drawing.Point(3, 65);
-			this.lblTiming.Name = "lblTiming";
-			this.lblTiming.Size = new System.Drawing.Size(45, 15);
-			this.lblTiming.TabIndex = 3;
-			this.lblTiming.Text = "Timing";
+			lblTiming.AutoSize = true;
+			lblTiming.Location = new System.Drawing.Point(3, 65);
+			lblTiming.Name = "lblTiming";
+			lblTiming.Size = new System.Drawing.Size(45, 15);
+			lblTiming.TabIndex = 3;
+			lblTiming.Text = "Timing";
 			// 
 			// lblDestination
 			// 
-			this.lblDestination.AutoSize = true;
-			this.lblDestination.Location = new System.Drawing.Point(3, 80);
-			this.lblDestination.Name = "lblDestination";
-			this.lblDestination.Size = new System.Drawing.Size(67, 15);
-			this.lblDestination.TabIndex = 4;
-			this.lblDestination.Text = "Destination";
+			lblDestination.AutoSize = true;
+			lblDestination.Location = new System.Drawing.Point(3, 80);
+			lblDestination.Name = "lblDestination";
+			lblDestination.Size = new System.Drawing.Size(67, 15);
+			lblDestination.TabIndex = 4;
+			lblDestination.Text = "Destination";
 			// 
 			// lblAudio
 			// 
-			this.lblAudio.AutoSize = true;
-			this.lblAudio.Location = new System.Drawing.Point(3, 95);
-			this.lblAudio.Name = "lblAudio";
-			this.lblAudio.Size = new System.Drawing.Size(39, 15);
-			this.lblAudio.TabIndex = 5;
-			this.lblAudio.Text = "Audio";
+			lblAudio.AutoSize = true;
+			lblAudio.Location = new System.Drawing.Point(3, 95);
+			lblAudio.Name = "lblAudio";
+			lblAudio.Size = new System.Drawing.Size(39, 15);
+			lblAudio.TabIndex = 5;
+			lblAudio.Text = "Audio";
 			// 
 			// lblAudioDestination
 			// 
-			this.lblAudioDestination.AutoSize = true;
-			this.lblAudioDestination.Location = new System.Drawing.Point(3, 110);
-			this.lblAudioDestination.Name = "lblAudioDestination";
-			this.lblAudioDestination.Size = new System.Drawing.Size(102, 15);
-			this.lblAudioDestination.TabIndex = 6;
-			this.lblAudioDestination.Text = "Audio Destination";
+			lblAudioDestination.AutoSize = true;
+			lblAudioDestination.Location = new System.Drawing.Point(3, 110);
+			lblAudioDestination.Name = "lblAudioDestination";
+			lblAudioDestination.Size = new System.Drawing.Size(102, 15);
+			lblAudioDestination.TabIndex = 6;
+			lblAudioDestination.Text = "Audio Destination";
 			// 
 			// lblSequenceCount
 			// 
-			this.lblSequenceCount.AutoSize = true;
-			this.lblSequenceCount.Location = new System.Drawing.Point(145, 35);
-			this.lblSequenceCount.Name = "lblSequenceCount";
-			this.lblSequenceCount.Size = new System.Drawing.Size(13, 15);
-			this.lblSequenceCount.TabIndex = 7;
-			this.lblSequenceCount.Text = "5";
+			lblSequenceCount.AutoSize = true;
+			lblSequenceCount.Location = new System.Drawing.Point(145, 35);
+			lblSequenceCount.Name = "lblSequenceCount";
+			lblSequenceCount.Size = new System.Drawing.Size(13, 15);
+			lblSequenceCount.TabIndex = 7;
+			lblSequenceCount.Text = "5";
 			// 
 			// overallProgress
 			// 
-			this.overallProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.mainLayoutPanel.SetColumnSpan(this.overallProgress, 2);
-			this.overallProgress.Location = new System.Drawing.Point(3, 331);
-			this.overallProgress.Name = "overallProgress";
-			this.overallProgress.Size = new System.Drawing.Size(607, 22);
-			this.overallProgress.TabIndex = 2;
+			overallProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
+			mainLayoutPanel.SetColumnSpan(overallProgress, 2);
+			overallProgress.Location = new System.Drawing.Point(3, 331);
+			overallProgress.Name = "overallProgress";
+			overallProgress.Size = new System.Drawing.Size(607, 22);
+			overallProgress.TabIndex = 2;
 			// 
 			// chkSaveConfig
 			// 
-			this.chkSaveConfig.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.chkSaveConfig.AutoSize = true;
-			this.chkSaveConfig.Location = new System.Drawing.Point(3, 182);
-			this.chkSaveConfig.Name = "chkSaveConfig";
-			this.chkSaveConfig.Size = new System.Drawing.Size(130, 19);
-			this.chkSaveConfig.TabIndex = 18;
-			this.chkSaveConfig.Text = "Save export settings";
-			this.chkSaveConfig.UseVisualStyleBackColor = true;
-			this.chkSaveConfig.CheckedChanged += new System.EventHandler(this.chkSaveConfig_CheckedChanged);
+			chkSaveConfig.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			chkSaveConfig.AutoSize = true;
+			chkSaveConfig.Location = new System.Drawing.Point(3, 280);
+			chkSaveConfig.Name = "chkSaveConfig";
+			chkSaveConfig.Size = new System.Drawing.Size(130, 19);
+			chkSaveConfig.TabIndex = 18;
+			chkSaveConfig.Text = "Save export settings";
+			chkSaveConfig.UseVisualStyleBackColor = true;
+			chkSaveConfig.CheckedChanged += chkSaveConfig_CheckedChanged;
 			// 
 			// comboConfigName
 			// 
-			this.comboConfigName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-			this.comboConfigName.FormattingEnabled = true;
-			this.comboConfigName.Location = new System.Drawing.Point(145, 180);
-			this.comboConfigName.Name = "comboConfigName";
-			this.comboConfigName.Size = new System.Drawing.Size(332, 23);
-			this.comboConfigName.TabIndex = 19;
-			this.comboConfigName.TextUpdate += new System.EventHandler(this.comboConfigName_TextUpdate);
-			this.comboConfigName.TextChanged += new System.EventHandler(this.comboConfigName_TextChanged);
+			comboConfigName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+			comboConfigName.FormattingEnabled = true;
+			comboConfigName.Location = new System.Drawing.Point(145, 278);
+			comboConfigName.Name = "comboConfigName";
+			comboConfigName.Size = new System.Drawing.Size(332, 23);
+			comboConfigName.TabIndex = 19;
+			comboConfigName.TextUpdate += comboConfigName_TextUpdate;
+			comboConfigName.TextChanged += comboConfigName_TextChanged;
 			// 
 			// lblUniverse
 			// 
-			this.lblUniverse.AutoSize = true;
-			this.lblUniverse.Location = new System.Drawing.Point(3, 125);
-			this.lblUniverse.Name = "lblUniverse";
-			this.lblUniverse.Size = new System.Drawing.Size(136, 15);
-			this.lblUniverse.TabIndex = 20;
-			this.lblUniverse.Text = "Universe File Destination";
+			lblUniverse.AutoSize = true;
+			lblUniverse.Location = new System.Drawing.Point(3, 125);
+			lblUniverse.Name = "lblUniverse";
+			lblUniverse.Size = new System.Drawing.Size(136, 15);
+			lblUniverse.TabIndex = 20;
+			lblUniverse.Text = "Universe File Destination";
 			// 
 			// lblUniverseFolder
 			// 
-			this.lblUniverseFolder.AutoSize = true;
-			this.lblUniverseFolder.Location = new System.Drawing.Point(145, 125);
-			this.lblUniverseFolder.Name = "lblUniverseFolder";
-			this.lblUniverseFolder.Size = new System.Drawing.Size(182, 15);
-			this.lblUniverseFolder.TabIndex = 21;
-			this.lblUniverseFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
-			this.lblUniverseFolder.Click += new System.EventHandler(this.lblUniverseFolder_Click);
+			lblUniverseFolder.AutoSize = true;
+			lblUniverseFolder.Location = new System.Drawing.Point(145, 125);
+			lblUniverseFolder.Name = "lblUniverseFolder";
+			lblUniverseFolder.Size = new System.Drawing.Size(182, 15);
+			lblUniverseFolder.TabIndex = 21;
+			lblUniverseFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
+			lblUniverseFolder.Click += lblUniverseFolder_Click;
 			// 
 			// lblUniverseFileWarning
 			// 
-			this.lblUniverseFileWarning.AutoSize = true;
-			this.lblUniverseFileWarning.ForeColor = System.Drawing.Color.Yellow; 
-			this.lblUniverseFileWarning.Location = new System.Drawing.Point(145, 140);
-			this.lblUniverseFileWarning.Name = "lblUniverseFileWarning";
-			this.lblUniverseFileWarning.Size = new System.Drawing.Size(100, 15);
-			this.lblUniverseFileWarning.TabIndex = 22;
-			this.lblUniverseFileWarning.Text = "Universe Warning";
-			this.lblUniverseFileWarning.Visible = false;
+			lblUniverseFileWarning.AutoSize = true;
+			lblUniverseFileWarning.ForeColor = System.Drawing.Color.Yellow;
+			lblUniverseFileWarning.Location = new System.Drawing.Point(145, 140);
+			lblUniverseFileWarning.Name = "lblUniverseFileWarning";
+			lblUniverseFileWarning.Size = new System.Drawing.Size(100, 15);
+			lblUniverseFileWarning.TabIndex = 22;
+			lblUniverseFileWarning.Text = "Universe Warning";
+			lblUniverseFileWarning.Visible = false;
+			// 
+			// lblFppInfo
+			// 
+			lblFppInfo.AutoSize = true;
+			mainLayoutPanel.SetColumnSpan(lblFppInfo, 2);
+			lblFppInfo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+			lblFppInfo.Location = new System.Drawing.Point(3, 175);
+			lblFppInfo.Margin = new System.Windows.Forms.Padding(3, 20, 3, 3);
+			lblFppInfo.Name = "lblFppInfo";
+			lblFppInfo.Size = new System.Drawing.Size(95, 15);
+			lblFppInfo.TabIndex = 30;
+			lblFppInfo.Text = "FPP Device Info";
+			lblFppInfo.Visible = false;
+			// 
+			// lblFppHostName
+			// 
+			lblFppHostName.AutoSize = true;
+			lblFppHostName.Location = new System.Drawing.Point(3, 193);
+			lblFppHostName.Name = "lblFppHostName";
+			lblFppHostName.Size = new System.Drawing.Size(67, 15);
+			lblFppHostName.TabIndex = 31;
+			lblFppHostName.Text = "Host Name";
+			lblFppHostName.Visible = false;
+			// 
+			// lblFppHostNameValue
+			// 
+			lblFppHostNameValue.AutoSize = true;
+			lblFppHostNameValue.Location = new System.Drawing.Point(145, 193);
+			lblFppHostNameValue.Name = "lblFppHostNameValue";
+			lblFppHostNameValue.Size = new System.Drawing.Size(0, 15);
+			lblFppHostNameValue.TabIndex = 32;
+			lblFppHostNameValue.Visible = false;
+			// 
+			// lblFppDescription
+			// 
+			lblFppDescription.AutoSize = true;
+			lblFppDescription.Location = new System.Drawing.Point(3, 208);
+			lblFppDescription.Name = "lblFppDescription";
+			lblFppDescription.Size = new System.Drawing.Size(67, 15);
+			lblFppDescription.TabIndex = 33;
+			lblFppDescription.Text = "Description";
+			lblFppDescription.Visible = false;
+			// 
+			// lblFppDescriptionValue
+			// 
+			lblFppDescriptionValue.AutoSize = true;
+			lblFppDescriptionValue.Location = new System.Drawing.Point(145, 208);
+			lblFppDescriptionValue.Name = "lblFppDescriptionValue";
+			lblFppDescriptionValue.Size = new System.Drawing.Size(0, 15);
+			lblFppDescriptionValue.TabIndex = 34;
+			lblFppDescriptionValue.Visible = false;
+			// 
+			// lblFppPlatform
+			// 
+			lblFppPlatform.AutoSize = true;
+			lblFppPlatform.Location = new System.Drawing.Point(3, 223);
+			lblFppPlatform.Name = "lblFppPlatform";
+			lblFppPlatform.Size = new System.Drawing.Size(53, 15);
+			lblFppPlatform.TabIndex = 35;
+			lblFppPlatform.Text = "Platform";
+			lblFppPlatform.Visible = false;
+			// 
+			// lblFppPlatformValue
+			// 
+			lblFppPlatformValue.AutoSize = true;
+			lblFppPlatformValue.Location = new System.Drawing.Point(145, 223);
+			lblFppPlatformValue.Name = "lblFppPlatformValue";
+			lblFppPlatformValue.Size = new System.Drawing.Size(0, 15);
+			lblFppPlatformValue.TabIndex = 36;
+			lblFppPlatformValue.Visible = false;
+			// 
+			// lblFppVariant
+			// 
+			lblFppVariant.AutoSize = true;
+			lblFppVariant.Location = new System.Drawing.Point(3, 238);
+			lblFppVariant.Name = "lblFppVariant";
+			lblFppVariant.Size = new System.Drawing.Size(43, 15);
+			lblFppVariant.TabIndex = 37;
+			lblFppVariant.Text = "Variant";
+			lblFppVariant.Visible = false;
+			// 
+			// lblFppVariantValue
+			// 
+			lblFppVariantValue.AutoSize = true;
+			lblFppVariantValue.Location = new System.Drawing.Point(145, 238);
+			lblFppVariantValue.Name = "lblFppVariantValue";
+			lblFppVariantValue.Size = new System.Drawing.Size(0, 15);
+			lblFppVariantValue.TabIndex = 38;
+			lblFppVariantValue.Visible = false;
 			// 
 			// BulkExportSummaryStage
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.mainLayoutPanel);
-			this.Name = "BulkExportSummaryStage";
-			this.Padding = new System.Windows.Forms.Padding(0, 0, 0, 15);
-			this.Size = new System.Drawing.Size(616, 377);
-			this.mainLayoutPanel.ResumeLayout(false);
-			this.mainLayoutPanel.PerformLayout();
-			this.ResumeLayout(false);
-			this.PerformLayout();
-
+			AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			Controls.Add(mainLayoutPanel);
+			Padding = new System.Windows.Forms.Padding(0, 0, 0, 15);
+			Size = new System.Drawing.Size(616, 377);
+			mainLayoutPanel.ResumeLayout(false);
+			mainLayoutPanel.PerformLayout();
+			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion
@@ -361,5 +467,14 @@
 		private System.Windows.Forms.Label lblUniverse;
 		private System.Windows.Forms.Label lblUniverseFolder;
 		private System.Windows.Forms.Label lblUniverseFileWarning;
+		private System.Windows.Forms.Label lblFppInfo;
+		private System.Windows.Forms.Label lblFppHostName;
+		private System.Windows.Forms.Label lblFppHostNameValue;
+		private System.Windows.Forms.Label lblFppDescription;
+		private System.Windows.Forms.Label lblFppDescriptionValue;
+		private System.Windows.Forms.Label lblFppPlatform;
+		private System.Windows.Forms.Label lblFppPlatformValue;
+		private System.Windows.Forms.Label lblFppVariant;
+		private System.Windows.Forms.Label lblFppVariantValue;
 	}
 }
