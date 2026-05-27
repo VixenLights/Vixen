@@ -24,7 +24,7 @@ host's name, platform, and version string.
 - [x] (2026-05-26) Milestone 2 — Project scaffolding: create the csproj, module boilerplate, add to solution
 - [x] (2026-05-26) Milestone 3 — Interfaces and models: define `IFppClient`, configuration record, and all response model records
 - [x] (2026-05-27) Milestone 4 — Client implementation: `FppClient` class with all required methods
-- [ ] Milestone 5 — Test suite: add FPPClient tests to `Vixen.Tests`
+- [x] (2026-05-27) Milestone 5 — Test suite: add FPPClient tests to `Vixen.Tests`
 
 ## Surprises & Discoveries
 
@@ -105,7 +105,16 @@ host's name, platform, and version string.
 
 ## Outcomes & Retrospective
 
-(Empty — to be filled at completion.)
+All five milestones completed 2026-05-26 / 2026-05-27.
+
+The module builds cleanly and 31 unit tests pass (16 FPPClient, 15 pre-existing).
+The client has been manually verified against a live FPP instance via the factory.
+
+Key lessons:
+- `dotnet sln add` generates spurious solution folder hierarchy — always fix `NestedProjects` manually.
+- `PropertyNameCaseInsensitive` does not bridge underscore differences; `[JsonPropertyName]` is needed for snake_case fields.
+- xUnit v3 `Assert.ThrowsAsync<T>` is an exact-type match; `ArgumentException.ThrowIfNullOrWhiteSpace` throws `ArgumentNullException` for null inputs, so assert `ArgumentNullException` specifically.
+- `FppClientFactory` depended on `FppClient` (Milestone 4) but was defined in Milestone 3; a stub class was needed to keep the project compiling between milestones.
 
 ## Risks and Concerns
 
