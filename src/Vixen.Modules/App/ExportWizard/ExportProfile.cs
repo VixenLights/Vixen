@@ -73,6 +73,12 @@ namespace VixenModules.App.ExportWizard
 		[DataMember]
 		public string FalconOutputFolder { get; set; }
 
+		[DataMember(EmitDefaultValue = false)]
+		public bool FppDirectUpload { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
+		public string FppHostAddress { get; set; }
+
 		[DataMember]
 		public List<Controller> Controllers { get; private set; }
 
@@ -139,10 +145,12 @@ namespace VixenModules.App.ExportWizard
 				RenameAudio = RenameAudio,
 				AudioOutputFolder = AudioOutputFolder,
 				FalconOutputFolder = FalconOutputFolder,
+				FppDirectUpload = FppDirectUpload,
+				FppHostAddress = FppHostAddress,
 				CreateUniverseFile = CreateUniverseFile,
 				BackupUniverseFile = BackupUniverseFile,
 				EnableCompression = EnableCompression
-				
+
 			};
 			return data;
 		}
