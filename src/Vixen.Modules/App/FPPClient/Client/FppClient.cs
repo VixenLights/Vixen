@@ -33,7 +33,7 @@ internal sealed class FppClient : IFppClient
 		_options = options;
 
 		var baseUrl = options.BaseUrl.EndsWith('/') ? options.BaseUrl : options.BaseUrl + '/';
-		_httpClient.BaseAddress = new Uri(baseUrl);
+		_httpClient.BaseAddress = new Uri(baseUrl + "api/");
 		_httpClient.Timeout = options.Timeout;
 	}
 

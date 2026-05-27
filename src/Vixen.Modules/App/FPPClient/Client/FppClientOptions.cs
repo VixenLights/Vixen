@@ -6,9 +6,12 @@ namespace VixenModules.App.FPPClient.Client;
 public sealed record FppClientOptions
 {
 	/// <summary>
-	/// Gets the base URL of the FPP REST API, including a trailing slash.
+	/// Gets the host URL of the FPP device, without the <c>/api/</c> path segment.
 	/// </summary>
-	/// <value>The HTTP base URL, for example <c>http://fpp2.home/api/</c>.</value>
+	/// <value>
+	/// The HTTP host URL, for example <c>http://fpp2.mydomain.net/</c>. A trailing slash is optional;
+	/// the client appends <c>api/</c> internally when constructing request URLs.
+	/// </value>
 	public required string BaseUrl { get; init; }
 
 	/// <summary>
