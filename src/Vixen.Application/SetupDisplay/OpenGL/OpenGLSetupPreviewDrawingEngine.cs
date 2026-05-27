@@ -643,8 +643,8 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>
 		public void NudgeSelectedPropsUp()
 		{
-			// Loop over the selected props
-			foreach(IPropOpenGLData prop in SelectedProps)
+			// Loop over the selected unlocked props
+			foreach(IPropOpenGLData prop in SelectedProps.Where(prop => !prop.Locked))
 			{
 				prop.Y += 1; // Move prop up one pixel
 			}
@@ -655,8 +655,8 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>
 		public void NudgeSelectedPropsDown()
 		{
-			// Loop over the selected props
-			foreach (IPropOpenGLData prop in SelectedProps)
+			// Loop over the selected unlocked props
+			foreach (IPropOpenGLData prop in SelectedProps.Where(prop => !prop.Locked))
 			{
 				prop.Y -= 1; // Move prop down one pixel
 			}
@@ -667,8 +667,8 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>
 		public void NudgeSelectedPropsLeft()
 		{
-			// Loop over the selected props
-			foreach (IPropOpenGLData prop in SelectedProps)
+			// Loop over the selected unlocked props
+			foreach (IPropOpenGLData prop in SelectedProps.Where(prop => !prop.Locked))
 			{
 				prop.X -= 1; // Move the prop left one pixel
 			}
@@ -679,8 +679,8 @@ namespace VixenApplication.SetupDisplay.OpenGL
 		/// </summary>
 		public void NudgeSelectedPropsRight()
 		{
-			// Loop over the selected props
-			foreach (IPropOpenGLData prop in SelectedProps)
+			// Loop over the selected unlocked props
+			foreach (IPropOpenGLData prop in SelectedProps.Where(prop => !prop.Locked))
 			{
 				prop.X += 1; // Move the prop right one pixel
 			}
