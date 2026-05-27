@@ -23,7 +23,7 @@ host's name, platform, and version string.
 - [x] (2026-05-26) Milestone 1 — Create JIRA issue covering the full feature (VIX-3921)
 - [x] (2026-05-26) Milestone 2 — Project scaffolding: create the csproj, module boilerplate, add to solution
 - [x] (2026-05-26) Milestone 3 — Interfaces and models: define `IFppClient`, configuration record, and all response model records
-- [ ] Milestone 4 — Client implementation: `FppClient` class with all required methods
+- [x] (2026-05-27) Milestone 4 — Client implementation: `FppClient` class with all required methods
 - [ ] Milestone 5 — Test suite: add FPPClient tests to `Vixen.Tests`
 
 ## Surprises & Discoveries
@@ -47,6 +47,12 @@ host's name, platform, and version string.
 - Observation: `FPPClient.csproj` was missing `<Nullable>enable</Nullable>` and
   `<ImplicitUsings>enable</ImplicitUsings>`, causing CS8632 warnings on nullable annotations.
   Resolution: Added both properties to the `<PropertyGroup>` in the csproj.
+
+- Observation: `FppPlaylistInfo` fields `total_duration` and `total_items` are snake_case in
+  the FPP API response. `PropertyNameCaseInsensitive = true` handles case differences only;
+  it does not bridge underscores (so `total_duration` would not match `TotalDuration`).
+  Resolution: Added `[JsonPropertyName("total_duration")]` and `[JsonPropertyName("total_items")]`
+  attributes directly on the `FppPlaylistInfo` record properties.
 
 ## Decision Log
 
