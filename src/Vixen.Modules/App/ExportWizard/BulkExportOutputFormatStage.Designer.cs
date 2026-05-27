@@ -45,6 +45,10 @@
 			this.lblAudioExportPath = new System.Windows.Forms.Label();
 			this.btnAudioOutputFolder = new System.Windows.Forms.Button();
 			this.grpFalcon = new System.Windows.Forms.GroupBox();
+			this.rdoFilePath = new System.Windows.Forms.RadioButton();
+			this.rdoDirectUpload = new System.Windows.Forms.RadioButton();
+			this.lblFppHostAddress = new System.Windows.Forms.Label();
+			this.txtFppHostAddress = new System.Windows.Forms.TextBox();
 			this.chkCompress = new System.Windows.Forms.CheckBox();
 			this.txtFalconInfo = new System.Windows.Forms.TextBox();
 			this.chkFppIncludeAudio = new System.Windows.Forms.CheckBox();
@@ -245,6 +249,10 @@
 			this.grpFalcon.Controls.Add(this.chkFppIncludeAudio);
 			this.grpFalcon.Controls.Add(this.chkBackupUniverseFile);
 			this.grpFalcon.Controls.Add(this.chkCreateUniverseFile);
+			this.grpFalcon.Controls.Add(this.rdoFilePath);
+			this.grpFalcon.Controls.Add(this.rdoDirectUpload);
+			this.grpFalcon.Controls.Add(this.lblFppHostAddress);
+			this.grpFalcon.Controls.Add(this.txtFppHostAddress);
 			this.grpFalcon.Controls.Add(this.txtFalconOutputFolder);
 			this.grpFalcon.Controls.Add(this.btnFalconUniverseFolder);
 			this.grpFalcon.Location = new System.Drawing.Point(3, 99);
@@ -314,19 +322,63 @@
 			this.chkCreateUniverseFile.Text = "Create Universe File";
 			this.chkCreateUniverseFile.UseVisualStyleBackColor = true;
 			this.chkCreateUniverseFile.CheckedChanged += new System.EventHandler(this.chkCreateUniverseFile_CheckedChanged);
-			// 
+			//
+			// rdoFilePath
+			//
+			this.rdoFilePath.AutoSize = true;
+			this.rdoFilePath.Checked = true;
+			this.rdoFilePath.Location = new System.Drawing.Point(24, 130);
+			this.rdoFilePath.Name = "rdoFilePath";
+			this.rdoFilePath.Size = new System.Drawing.Size(76, 19);
+			this.rdoFilePath.TabIndex = 20;
+			this.rdoFilePath.TabStop = true;
+			this.rdoFilePath.Text = "File Path";
+			this.rdoFilePath.UseVisualStyleBackColor = true;
+			this.rdoFilePath.CheckedChanged += new System.EventHandler(this.rdoUploadMode_CheckedChanged);
+			//
+			// rdoDirectUpload
+			//
+			this.rdoDirectUpload.AutoSize = true;
+			this.rdoDirectUpload.Location = new System.Drawing.Point(120, 130);
+			this.rdoDirectUpload.Name = "rdoDirectUpload";
+			this.rdoDirectUpload.Size = new System.Drawing.Size(100, 19);
+			this.rdoDirectUpload.TabIndex = 21;
+			this.rdoDirectUpload.Text = "Direct Upload";
+			this.rdoDirectUpload.UseVisualStyleBackColor = true;
+			this.rdoDirectUpload.CheckedChanged += new System.EventHandler(this.rdoUploadMode_CheckedChanged);
+			//
+			// lblFppHostAddress
+			//
+			this.lblFppHostAddress.AutoSize = true;
+			this.lblFppHostAddress.Location = new System.Drawing.Point(23, 159);
+			this.lblFppHostAddress.Name = "lblFppHostAddress";
+			this.lblFppHostAddress.Size = new System.Drawing.Size(88, 15);
+			this.lblFppHostAddress.TabIndex = 22;
+			this.lblFppHostAddress.Text = "FPP Host / IP:";
+			this.lblFppHostAddress.Visible = false;
+			//
+			// txtFppHostAddress
+			//
+			this.txtFppHostAddress.Location = new System.Drawing.Point(120, 155);
+			this.txtFppHostAddress.Name = "txtFppHostAddress";
+			this.txtFppHostAddress.Size = new System.Drawing.Size(372, 23);
+			this.txtFppHostAddress.TabIndex = 23;
+			this.txtFppHostAddress.Visible = false;
+			this.txtFppHostAddress.TextChanged += new System.EventHandler(this.txtFppHostAddress_TextChanged);
+			this.txtFppHostAddress.Leave += new System.EventHandler(this.txtFppHostAddress_Leave);
+			//
 			// txtFalconOutputFolder
-			// 
-			this.txtFalconOutputFolder.Location = new System.Drawing.Point(54, 135);
+			//
+			this.txtFalconOutputFolder.Location = new System.Drawing.Point(54, 155);
 			this.txtFalconOutputFolder.Name = "txtFalconOutputFolder";
 			this.txtFalconOutputFolder.Size = new System.Drawing.Size(438, 23);
 			this.txtFalconOutputFolder.TabIndex = 7;
 			this.txtFalconOutputFolder.TextChanged += new System.EventHandler(this.txtFalconOutputFolder_TextChanged);
 			this.txtFalconOutputFolder.Leave += new System.EventHandler(this.txtFalconOutputFolder_Leave);
-			// 
+			//
 			// btnFalconUniverseFolder
-			// 
-			this.btnFalconUniverseFolder.Location = new System.Drawing.Point(23, 135);
+			//
+			this.btnFalconUniverseFolder.Location = new System.Drawing.Point(23, 155);
 			this.btnFalconUniverseFolder.Name = "btnFalconUniverseFolder";
 			this.btnFalconUniverseFolder.Size = new System.Drawing.Size(24, 23);
 			this.btnFalconUniverseFolder.TabIndex = 6;
@@ -406,5 +458,9 @@
 		private System.Windows.Forms.CheckBox chkFppIncludeAudio;
 		private System.Windows.Forms.TextBox txtFalconInfo;
 		private System.Windows.Forms.CheckBox chkCompress;
+		private System.Windows.Forms.RadioButton rdoFilePath;
+		private System.Windows.Forms.RadioButton rdoDirectUpload;
+		private System.Windows.Forms.Label lblFppHostAddress;
+		private System.Windows.Forms.TextBox txtFppHostAddress;
 	}
 }

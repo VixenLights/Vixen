@@ -13,6 +13,7 @@ namespace VixenModules.App.ExportWizard
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly BulkExportWizardData _data;
+		private bool _fppHostReachable;
 		
 		public BulkExportOutputFormatStage(BulkExportWizardData data)
 		{
@@ -74,6 +75,26 @@ namespace VixenModules.App.ExportWizard
 			txtFalconOutputFolder.Text = _data.ActiveProfile.FalconOutputFolder;
 
 			txtAudioOutputFolder.Text = _data.ActiveProfile.AudioOutputFolder;
+
+			// Restore Direct Upload mode and host address
+			_fppHostReachable = false;
+			rdoDirectUpload.Checked = _data.ActiveProfile.FppDirectUpload;
+			rdoFilePath.Checked = !_data.ActiveProfile.FppDirectUpload;
+			txtFppHostAddress.Text = _data.ActiveProfile.FppHostAddress ?? string.Empty;
+			UpdateUploadModeVisibility();
+
+			// If returning to step 4 with a saved host, kick off a background ping so
+			// CanMoveNext is evaluated correctly without requiring the user to re-tab.
+			if (_data.ActiveProfile.FppDirectUpload
+			    && !string.IsNullOrWhiteSpace(_data.ActiveProfile.FppHostAddress))
+			{
+				var host = _data.ActiveProfile.FppHostAddress;
+				Task.Run(() => PingHost(host)).ContinueWith(t =>
+				{
+					_fppHostReachable = t.Result;
+					_WizardStageChanged();
+				}, TaskScheduler.FromCurrentSynchronizationContext());
+			}
 
 			_WizardStageChanged();
 		}
@@ -196,8 +217,16 @@ namespace VixenModules.App.ExportWizard
 				if (!IsIntervalValid()) return false;
 				if (_data.ActiveProfile.IsFalconFormat)
 				{
-					if (CanTestPath() && 
-					    Directory.Exists(_data.ActiveProfile.IsFalcon2xFormat ? _data.ActiveProfile.FalconOutputFolder: _data.ActiveProfile.OutputFolder))
+					if (rdoDirectUpload.Checked)
+					{
+						return FppHostValidator.IsHostAddressValid(txtFppHostAddress.Text.Trim())
+						       && _fppHostReachable;
+					}
+
+					if (CanTestPath() &&
+					    Directory.Exists(_data.ActiveProfile.IsFalcon2xFormat
+						    ? _data.ActiveProfile.FalconOutputFolder
+						    : _data.ActiveProfile.OutputFolder))
 					{
 						return true;
 					}
@@ -206,7 +235,7 @@ namespace VixenModules.App.ExportWizard
 				}
 
 				bool ok = Directory.Exists(_data.ActiveProfile.OutputFolder);
-				if (_data.ActiveProfile.IncludeAudio && !Directory.Exists((_data.ActiveProfile.AudioOutputFolder)))
+				if (_data.ActiveProfile.IncludeAudio && !Directory.Exists(_data.ActiveProfile.AudioOutputFolder))
 				{
 					ok = false;
 				}
@@ -363,6 +392,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void txtFalconOutputFolder_Leave(object sender, EventArgs e)
 		{
+			if (rdoDirectUpload.Checked) return;
 			UpdateFalconPaths(txtFalconOutputFolder.Text);
 			ValidateFalconOutputFolder();
 		}
@@ -380,6 +410,64 @@ namespace VixenModules.App.ExportWizard
 		private void resolutionComboBox_TextChanged(object sender, EventArgs e)
 		{
 			_WizardStageChanged();
+		}
+
+		private void UpdateUploadModeVisibility()
+		{
+			bool isDirect = rdoDirectUpload.Checked;
+			txtFalconOutputFolder.Visible = !isDirect;
+			btnFalconUniverseFolder.Visible = !isDirect;
+			lblFppHostAddress.Visible = isDirect;
+			txtFppHostAddress.Visible = isDirect;
+		}
+
+		private void rdoUploadMode_CheckedChanged(object sender, EventArgs e)
+		{
+			_data.ActiveProfile.FppDirectUpload = rdoDirectUpload.Checked;
+			// Reset reachability whenever the user switches modes so the old ping
+			// result does not carry over to a new host-address entry.
+			_fppHostReachable = false;
+			UpdateUploadModeVisibility();
+			_WizardStageChanged();
+		}
+
+		private void txtFppHostAddress_TextChanged(object sender, EventArgs e)
+		{
+			_data.ActiveProfile.FppHostAddress = txtFppHostAddress.Text.Trim();
+			// Any edit invalidates the previous ping result; the user must leave the
+			// field (firing Leave) to re-validate.
+			_fppHostReachable = false;
+			_WizardStageChanged();
+		}
+
+		private async void txtFppHostAddress_Leave(object sender, EventArgs e)
+		{
+			try
+			{
+				var host = txtFppHostAddress.Text.Trim();
+				if (!FppHostValidator.IsHostAddressValid(host)) return;
+				
+				bool reachable = await Task.Run(() => PingHost(host)).ConfigureAwait(true);
+
+				// Guard against the form being disposed while the ping was in flight
+				// (e.g. the user closed the wizard).
+				if (IsDisposed) return;
+
+				_fppHostReachable = reachable;
+				_WizardStageChanged();
+
+				if (!reachable)
+				{
+					var messageBox = new MessageBoxForm(
+						$"FPP host '{host}' could not be reached. Verify the host is online and try again.",
+						"FPP Host Unreachable", MessageBoxButtons.OK, SystemIcons.Warning);
+					await messageBox.ShowDialogAsync(this);
+				}
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Unexpected error while pinging FPP host '{Host}'", host);
+			}
 		}
 	}
 }
