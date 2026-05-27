@@ -19,6 +19,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Vixen.Core\Vixen.Core.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\App\FPPClient\FPPClient.csproj" />
+		<ProjectReference Include="..\Vixen.Modules\App\ExportWizard\ExportWizard.csproj" />
 	</ItemGroup>
 
 </Project>

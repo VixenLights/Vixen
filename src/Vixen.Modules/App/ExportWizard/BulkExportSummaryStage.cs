@@ -265,26 +265,84 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task CreateUniverseFile()
 		{
-			if (_data.ActiveProfile.IsFalcon2xFormat)
+			if (!_data.ActiveProfile.IsFalcon2xFormat) return;
+
+			if (_data.ActiveProfile.FppDirectUpload)
 			{
-				var path = Path.Combine(_data.ActiveProfile.FalconOutputFolder, "config");
-				if (!Directory.Exists(path))
-				{
-					CreateDirectory(path);
-				}
+				await CreateUniverseFileDirect();
+			}
+			else
+			{
+				await CreateUniverseFileToPath();
+			}
+		}
 
-				string fileName = Path.Combine(path, "co-universes.json");
+		/// <summary>Original file-path universe file code path — unchanged behaviour.</summary>
+		private async Task CreateUniverseFileToPath()
+		{
+			var path = Path.Combine(_data.ActiveProfile.FalconOutputFolder, "config");
+			if (!Directory.Exists(path))
+			{
+				CreateDirectory(path);
+			}
 
-				if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))
+			string fileName = Path.Combine(path, "co-universes.json");
+
+			if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))
+			{
+				var now = DateTime.Now;
+				var newFile = $"{fileName}_{now.Month}{now.Day}{now.Year}-{now.Hour}{now.Minute}{now.Second}";
+				File.Move(fileName, newFile);
+			}
+
+			await _data.Export.Write2xUniverseFile(fileName);
+		}
+
+		/// <summary>
+		/// Direct-upload universe file code path: backs up the existing remote file (rename),
+		/// writes the new file to a temp path, uploads it, then deletes the temp file.
+		/// </summary>
+		private async Task CreateUniverseFileDirect()
+		{
+			if (!_data.ActiveProfile.CreateUniverseFile && !_data.ActiveProfile.BackupUniverseFile)
+				return;
+
+			var factory = new FppClientFactory();
+			await using var client = factory.Create(
+				new FppClientOptions { BaseUrl = $"http://{_data.ActiveProfile.FppHostAddress}/" });
+			var svc = new FppDirectUploadService(client);
+
+			try
+			{
+				if (_data.ActiveProfile.BackupUniverseFile)
 				{
 					var now = DateTime.Now;
-					var newFile = $"{fileName}_{now.Month}{now.Day}{now.Year}-{now.Hour}{now.Minute}{now.Second}";
-					File.Move(fileName, newFile);
+					var backupName = $"co-universes.json_{now.Month}{now.Day}{now.Year}"
+					               + $"-{now.Hour}{now.Minute}{now.Second}";
+					await svc.BackupUniverseFileAsync(backupName).ConfigureAwait(false);
 				}
 
-				await _data.Export.Write2xUniverseFile(fileName);
+				if (_data.ActiveProfile.CreateUniverseFile)
+				{
+					var tempUniverse = Path.Combine(Path.GetTempPath(),
+						Path.GetRandomFileName() + ".json");
+					try
+					{
+						await _data.Export.Write2xUniverseFile(tempUniverse);
+						await svc.UploadUniverseFileAsync(tempUniverse).ConfigureAwait(false);
+					}
+					finally
+					{
+						if (File.Exists(tempUniverse)) File.Delete(tempUniverse);
+					}
+				}
 			}
-			
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Direct upload of universe file to '{Host}' failed",
+					_data.ActiveProfile.FppHostAddress);
+				ShowDirectUploadError(ex.Message);
+			}
 		}
 
 		private bool RenderSequence(ISequence sequence, IProgress<ExportProgressStatus> progress)
@@ -305,7 +363,7 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task Export(ISequence sequence, IProgress<ExportProgressStatus> progress)
 		{
-
+			// Resolve audio filename for this sequence regardless of export mode
 			IEnumerable<string> mediaFileNames =
 			(from media in sequence.SequenceData.Media
 				where media.GetType().ToString().Contains("Audio")
@@ -321,6 +379,19 @@ namespace VixenModules.App.ExportWizard
 				_data.Export.AudioFilename = String.Empty;
 			}
 
+			if (_data.ActiveProfile.FppDirectUpload && _data.ActiveProfile.IsFalcon2xFormat)
+			{
+				await ExportDirect(sequence, progress);
+			}
+			else
+			{
+				await ExportToFilePath(sequence, progress);
+			}
+		}
+
+		/// <summary>Original file-path export code path — unchanged behaviour.</summary>
+		private async Task ExportToFilePath(ISequence sequence, IProgress<ExportProgressStatus> progress)
+		{
 			bool canOutput = true;
 			if (_data.ActiveProfile.IncludeAudio && _data.Export.AudioFilename != string.Empty)
 			{
@@ -346,10 +417,64 @@ namespace VixenModules.App.ExportWizard
 
 			if (canOutput)
 			{
-				_data.Export.OutFileName = Path.Combine(_data.ActiveProfile.OutputFolder, sequence.Name + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
-				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format, _data.ActiveProfile.EnableCompression, progress, _data.ActiveProfile.RenameAudio);
+				_data.Export.OutFileName = Path.Combine(_data.ActiveProfile.OutputFolder,
+					sequence.Name + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
+				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format,
+					_data.ActiveProfile.EnableCompression, progress, _data.ActiveProfile.RenameAudio);
 			}
-			
+		}
+
+		/// <summary>
+		/// Direct-upload export code path: writes fseq/audio to temp files then pushes them
+		/// to the FPP device via <see cref="FppDirectUploadService"/>.
+		/// </summary>
+		private async Task ExportDirect(ISequence sequence, IProgress<ExportProgressStatus> progress)
+		{
+			var factory = new FppClientFactory();
+			await using var client = factory.Create(
+				new FppClientOptions { BaseUrl = $"http://{_data.ActiveProfile.FppHostAddress}/" });
+			var svc = new FppDirectUploadService(client);
+
+			// Export fseq to a temp file, upload it, then delete the temp file.
+			var tempFseq = Path.Combine(Path.GetTempPath(),
+				Path.GetRandomFileName() + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
+			try
+			{
+				_data.Export.OutFileName = tempFseq;
+				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format,
+					_data.ActiveProfile.EnableCompression, progress, _data.ActiveProfile.RenameAudio);
+
+				var fseqFileName = sequence.Name + "."
+					+ _data.Export.ExportFileTypes[_data.ActiveProfile.Format];
+				await svc.UploadSequenceFileAsync(tempFseq, fseqFileName).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Direct upload of sequence '{Name}' failed", sequence.Name);
+				ShowDirectUploadError(ex.Message);
+			}
+			finally
+			{
+				if (File.Exists(tempFseq)) File.Delete(tempFseq);
+			}
+
+			// Upload audio if included.
+			if (_data.ActiveProfile.IncludeAudio && !string.IsNullOrEmpty(_data.Export.AudioFilename))
+			{
+				try
+				{
+					var audioFileName = _data.ActiveProfile.RenameAudio
+						? _data.Export.FormatAudioFileName(sequence.Name)
+						: Path.GetFileName(_data.Export.AudioFilename);
+					await svc.UploadAudioFileAsync(_data.Export.AudioFilename, audioFileName)
+						.ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					Logging.Error(ex, "Direct upload of audio for '{Name}' failed", sequence.Name);
+					ShowDirectUploadError(ex.Message);
+				}
+			}
 		}
 
 		private bool CreateDirectory(string path)
@@ -442,6 +567,20 @@ namespace VixenModules.App.ExportWizard
 		private void lblUniverseFolder_Click(object sender, EventArgs e)
 		{
 
+		}
+
+		private void ShowDirectUploadError(string message)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new Action<string>(ShowDirectUploadError), message);
+				return;
+			}
+
+			var msgBox = new MessageBoxForm(
+				$"FPP direct upload failed:\n{message}",
+				"FPP Upload Error", MessageBoxButtons.OK, SystemIcons.Error);
+			msgBox.ShowDialog(this);
 		}
 
 		private async Task PopulateFppInfoAsync()

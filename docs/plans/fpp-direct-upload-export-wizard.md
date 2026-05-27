@@ -19,8 +19,8 @@ The user can see it working by opening the Export Wizard, choosing a Falcon Play
 - [x] Milestone 3: Update `ExportProfile` data model — new `[DataMember]` fields, update `Clone()`.
 - [x] Milestone 4: Step 4 UI — radio buttons, host text box, validation, async ping, `CanMoveNext`.
 - [x] Milestone 5: Summary Stage UI — FPP info panel, populate on `StageStart()`, write profile on radio/text change.
-- [ ] Milestone 6: Export logic — direct-upload code path in `Export()` and `CreateUniverseFile()`, project reference, `FppDirectUploadService`.
-- [ ] Milestone 7: Unit tests for ExportWizard logic (`FppHostValidator`, `ExportProfile` clone, `FppDirectUploadService`).
+- [x] Milestone 6: Export logic — direct-upload code path in `Export()` and `CreateUniverseFile()`, project reference, `FppDirectUploadService`.
+- [x] Milestone 7: Unit tests for ExportWizard logic (`FppHostValidator`, `ExportProfile` clone, `FppDirectUploadService`).
 
 ---
 
@@ -72,7 +72,12 @@ The user can see it working by opening the Export Wizard, choosing a Falcon Play
 
 ## Outcomes & Retrospective
 
-_(To be written at plan completion.)_
+All 7 milestones complete as of 2026-05-27. The feature shipped with 50 passing tests (35 pre-existing + 15 new: 4 FPPClient rename tests, 8 FppHostValidator tests, 3 ExportProfile clone tests, 4 FppDirectUploadService tests). The AutoSize/Anchor layout conflict on the summary page progress bars was discovered and fixed during Milestone 6 (post-implementation UI review).
+
+Key learnings:
+- `ExportProfile`'s public constructor calls `SyncronizeControllerInfo()`, which requires the Vixen module system. Unit tests must instantiate via the private parameterless constructor through `Activator.CreateInstance(type, nonPublic: true)` and seed `SequenceFiles` and `Controllers` as empty lists before calling `Clone()`.
+- The `<Nullable>disable</Nullable>` setting in `src/Vixen.Modules/App/` means nullable reference type annotations (`string?`) are a compile warning. New code in that subtree must use `string` for parameters, even when null is a valid input.
+- `mainLayoutPanel.AutoSize = true` + `Anchor = Top|Bottom|Left|Right` on a `TableLayoutPanel` causes `SizeType.Percent` rows to collapse to 0 height. Use only `Anchor` (not AutoSize) when the panel should fill its parent.
 
 ---
 

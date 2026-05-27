@@ -95,7 +95,7 @@
 			// mainLayoutPanel
 			// 
 			mainLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
-			mainLayoutPanel.AutoSize = true;
+			mainLayoutPanel.AutoSize = false;
 			mainLayoutPanel.ColumnCount = 2;
 			mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
