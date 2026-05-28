@@ -67,16 +67,16 @@
 			// 
 			taskProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
 			mainLayoutPanel.SetColumnSpan(taskProgress, 2);
-			taskProgress.Location = new System.Drawing.Point(3, 287);
+			taskProgress.Location = new System.Drawing.Point(3, 350);
 			taskProgress.Name = "taskProgress";
-			taskProgress.Size = new System.Drawing.Size(607, 23);
+			taskProgress.Size = new System.Drawing.Size(670, 23);
 			taskProgress.TabIndex = 1;
 			// 
 			// lblTaskProgress
 			// 
 			lblTaskProgress.AutoSize = true;
 			mainLayoutPanel.SetColumnSpan(lblTaskProgress, 2);
-			lblTaskProgress.Location = new System.Drawing.Point(3, 269);
+			lblTaskProgress.Location = new System.Drawing.Point(3, 332);
 			lblTaskProgress.Name = "lblTaskProgress";
 			lblTaskProgress.Size = new System.Drawing.Size(39, 15);
 			lblTaskProgress.TabIndex = 3;
@@ -86,7 +86,7 @@
 			// 
 			lblOverallProgress.AutoSize = true;
 			mainLayoutPanel.SetColumnSpan(lblOverallProgress, 2);
-			lblOverallProgress.Location = new System.Drawing.Point(3, 313);
+			lblOverallProgress.Location = new System.Drawing.Point(3, 376);
 			lblOverallProgress.Name = "lblOverallProgress";
 			lblOverallProgress.Size = new System.Drawing.Size(39, 15);
 			lblOverallProgress.TabIndex = 5;
@@ -94,8 +94,7 @@
 			// 
 			// mainLayoutPanel
 			// 
-			mainLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
-			mainLayoutPanel.AutoSize = false;
+			mainLayoutPanel.AutoSize = true;
 			mainLayoutPanel.ColumnCount = 2;
 			mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -130,7 +129,8 @@
 			mainLayoutPanel.Controls.Add(lblFppPlatformValue, 1, 13);
 			mainLayoutPanel.Controls.Add(lblFppVariant, 0, 14);
 			mainLayoutPanel.Controls.Add(lblFppVariantValue, 1, 14);
-			mainLayoutPanel.Location = new System.Drawing.Point(3, 3);
+			mainLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			mainLayoutPanel.Location = new System.Drawing.Point(0, 0);
 			mainLayoutPanel.Name = "mainLayoutPanel";
 			mainLayoutPanel.RowCount = 23;
 			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -157,7 +157,7 @@
 			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			mainLayoutPanel.Size = new System.Drawing.Size(613, 356);
+			mainLayoutPanel.Size = new System.Drawing.Size(676, 419);
 			mainLayoutPanel.TabIndex = 6;
 			mainLayoutPanel.Paint += mainLayoutPanel_Paint;
 			// 
@@ -283,9 +283,9 @@
 			// 
 			overallProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
 			mainLayoutPanel.SetColumnSpan(overallProgress, 2);
-			overallProgress.Location = new System.Drawing.Point(3, 331);
+			overallProgress.Location = new System.Drawing.Point(3, 394);
 			overallProgress.Name = "overallProgress";
-			overallProgress.Size = new System.Drawing.Size(607, 22);
+			overallProgress.Size = new System.Drawing.Size(670, 22);
 			overallProgress.TabIndex = 2;
 			// 
 			// chkSaveConfig
@@ -436,7 +436,7 @@
 			AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			Controls.Add(mainLayoutPanel);
 			Padding = new System.Windows.Forms.Padding(0, 0, 0, 15);
-			Size = new System.Drawing.Size(616, 377);
+			Size = new System.Drawing.Size(676, 434);
 			mainLayoutPanel.ResumeLayout(false);
 			mainLayoutPanel.PerformLayout();
 			ResumeLayout(false);
