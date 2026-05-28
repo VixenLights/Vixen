@@ -33,6 +33,11 @@ namespace Vixen.Execution.DataSource
 			return _data.Get(time);
 		}
 
+		public void GetDataAt(TimeSpan time, List<IEffectNode> destination)
+		{
+			_data.GetInto(time, destination);
+		}
+
 		private void _Add(EffectNode effectNode)
 		{
 			effectNode.StartTime += Sys.Execution.SystemTime.Position;

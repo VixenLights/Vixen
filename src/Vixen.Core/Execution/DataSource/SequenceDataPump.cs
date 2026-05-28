@@ -45,6 +45,13 @@ namespace Vixen.Execution.DataSource
 			return Enumerable.Empty<IEffectNode>();
 		}
 
+		public void GetDataAt(TimeSpan time, List<IEffectNode> destination)
+		{
+			if (IsRunning) {
+				_effectNodeQueue.GetInto(time, destination);
+			}
+		}
+
 		private void _StartThread()
 		{
 			_effectNodeQueue = new EffectNodeQueue(Sequence.SequenceData.EffectData.Count());
