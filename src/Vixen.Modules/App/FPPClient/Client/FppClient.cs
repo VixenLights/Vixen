@@ -163,6 +163,25 @@ internal sealed class FppClient : IFppClient
 	}
 
 	/// <inheritdoc/>
+	public async Task RestartFppdAsync(bool quick = false, CancellationToken cancellationToken = default)
+	{
+		var url = quick ? "system/fppd/restart?quick=1" : "system/fppd/restart";
+
+		Log.Debug("Restarting FPPD (quick={Quick})", quick);
+
+		using var response = await _httpClient.GetAsync(url, cancellationToken)
+			.ConfigureAwait(false);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			Log.Error("FPPD restart failed with HTTP {StatusCode}", (int)response.StatusCode);
+			throw new FppClientException(
+				$"FPPD restart failed with HTTP {(int)response.StatusCode}.",
+				(int)response.StatusCode);
+		}
+	}
+
+	/// <inheritdoc/>
 	public ValueTask DisposeAsync()
 	{
 		_httpClient.Dispose();

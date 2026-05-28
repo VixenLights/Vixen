@@ -83,4 +83,13 @@ internal sealed class FppDirectUploadService(IFppClient client)
 		await using var stream = File.OpenRead(tempPath);
 		await client.UploadFileAsync("config", "co-universes.json", stream, ct).ConfigureAwait(false);
 	}
+
+	/// <summary>
+	/// Restarts the FPPD daemon
+	/// </summary>
+	internal async Task RestartFppdAsync(bool quick = false, CancellationToken ct = default)
+	{
+		Log.Debug("Restarting FPPD...");
+		await client.RestartFppdAsync(quick, ct).ConfigureAwait(false);
+	}
 }

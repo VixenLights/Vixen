@@ -348,6 +348,7 @@ namespace VixenModules.App.ExportWizard
 					{
 						await _data.Export.Write2xUniverseFile(tempUniverse);
 						await svc.UploadUniverseFileAsync(tempUniverse).ConfigureAwait(false);
+						await svc.RestartFppdAsync().ConfigureAwait(false);
 					}
 					finally
 					{

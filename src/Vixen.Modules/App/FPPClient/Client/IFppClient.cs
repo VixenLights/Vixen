@@ -115,4 +115,15 @@ public interface IFppClient : IAsyncDisposable
 	/// </exception>
 	Task RenameFileAsync(string dirName, string source, string dest,
 		CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Restarts the FPPD daemon process on the FPP instance.
+	/// </summary>
+	/// <param name="quick">
+	/// When <see langword="true"/>, passes <c>?quick=1</c> to the endpoint, which reloads
+	/// some configuration without performing a full daemon restart.
+	/// </param>
+	/// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+	/// <exception cref="FppClientException">The HTTP response indicated a non-success status code.</exception>
+	Task RestartFppdAsync(bool quick = false, CancellationToken cancellationToken = default);
 }
