@@ -446,7 +446,7 @@ namespace VixenModules.App.ExportWizard
 
 				var fseqFileName = sequence.Name + "."
 					+ _data.Export.ExportFileTypes[_data.ActiveProfile.Format];
-				await svc.UploadSequenceFileAsync(tempFseq, fseqFileName).ConfigureAwait(false);
+				await svc.UploadSequenceFileAsync(tempFseq, fseqFileName, progress).ConfigureAwait(false);
 			}
 			catch (Exception ex)
 			{
@@ -466,7 +466,7 @@ namespace VixenModules.App.ExportWizard
 					var audioFileName = _data.ActiveProfile.RenameAudio
 						? _data.Export.FormatAudioFileName(sequence.Name)
 						: Path.GetFileName(_data.Export.AudioFilename);
-					await svc.UploadAudioFileAsync(_data.Export.AudioFilename, audioFileName)
+					await svc.UploadAudioFileAsync(_data.Export.AudioFilename, audioFileName, progress)
 						.ConfigureAwait(false);
 				}
 				catch (Exception ex)

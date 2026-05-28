@@ -25,7 +25,7 @@ public class FppDirectUploadServiceTests
 		try
 		{
 			// Act
-			await svc.UploadSequenceFileAsync(tempPath, "test.fseq", ct);
+			await svc.UploadSequenceFileAsync(tempPath, "test.fseq", progress: null, ct);
 
 			// Assert
 			mockClient.Verify(c => c.UploadSequenceAsync(
@@ -55,7 +55,7 @@ public class FppDirectUploadServiceTests
 		try
 		{
 			// Act
-			await svc.UploadAudioFileAsync(tempPath, "song.mp3", ct);
+			await svc.UploadAudioFileAsync(tempPath, "song.mp3", progress: null, ct);
 
 			// Assert
 			mockClient.Verify(c => c.UploadMusicAsync(

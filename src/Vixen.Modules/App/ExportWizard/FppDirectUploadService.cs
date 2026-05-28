@@ -1,4 +1,5 @@
 using NLog;
+using Vixen.Export;
 using VixenModules.App.FPPClient.Client;
 
 namespace VixenModules.App.ExportWizard;
@@ -15,25 +16,49 @@ internal sealed class FppDirectUploadService(IFppClient client)
 	/// <summary>Uploads an already-written fseq file to the FPP sequences directory.</summary>
 	/// <param name="tempPath">Full path to the local temp file containing the fseq data.</param>
 	/// <param name="fseqFileName">The destination filename on the FPP device (e.g. <c>"MyShow.fseq"</c>).</param>
+	/// <param name="progress">Optional progress sink; receives a task-level status message before and after the upload.</param>
 	/// <param name="ct">Optional cancellation token.</param>
 	internal async Task UploadSequenceFileAsync(
-		string tempPath, string fseqFileName, CancellationToken ct = default)
+		string tempPath, string fseqFileName,
+		IProgress<ExportProgressStatus> progress = null, CancellationToken ct = default)
 	{
 		Log.Debug("Uploading sequence '{FileName}' from '{TempPath}'", fseqFileName, tempPath);
+		progress?.Report(new ExportProgressStatus(ExportProgressStatus.ProgressType.Task)
+		{
+			TaskProgressValue = 0,
+			TaskProgressMessage = $"Uploading {fseqFileName}"
+		});
 		await using var stream = File.OpenRead(tempPath);
 		await client.UploadSequenceAsync(fseqFileName, stream, ct).ConfigureAwait(false);
+		progress?.Report(new ExportProgressStatus(ExportProgressStatus.ProgressType.Task)
+		{
+			TaskProgressValue = 100,
+			TaskProgressMessage = $"Uploaded {fseqFileName}"
+		});
 	}
 
 	/// <summary>Uploads an audio file to the FPP music directory.</summary>
 	/// <param name="sourcePath">Full path to the source audio file on the local machine.</param>
 	/// <param name="destFileName">The destination filename on the FPP device.</param>
+	/// <param name="progress">Optional progress sink; receives a task-level status message before and after the upload.</param>
 	/// <param name="ct">Optional cancellation token.</param>
 	internal async Task UploadAudioFileAsync(
-		string sourcePath, string destFileName, CancellationToken ct = default)
+		string sourcePath, string destFileName,
+		IProgress<ExportProgressStatus> progress = null, CancellationToken ct = default)
 	{
 		Log.Debug("Uploading audio '{FileName}' from '{SourcePath}'", destFileName, sourcePath);
+		progress?.Report(new ExportProgressStatus(ExportProgressStatus.ProgressType.Task)
+		{
+			TaskProgressValue = 0,
+			TaskProgressMessage = $"Uploading {destFileName}"
+		});
 		await using var stream = File.OpenRead(sourcePath);
 		await client.UploadMusicAsync(destFileName, stream, ct).ConfigureAwait(false);
+		progress?.Report(new ExportProgressStatus(ExportProgressStatus.ProgressType.Task)
+		{
+			TaskProgressValue = 100,
+			TaskProgressMessage = $"Uploaded {destFileName}"
+		});
 	}
 
 	/// <summary>
