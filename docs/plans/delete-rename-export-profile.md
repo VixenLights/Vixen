@@ -15,7 +15,7 @@ A user can see it working by opening the Export Wizard. The first step now shows
 ## Progress
 
 - [x] Milestone 1: Update JIRA issue VIX-3632 with requirements, high-level design, acceptance criteria, and testing steps. → [VIX-3632](https://vixenlights.atlassian.net/browse/VIX-3632)
-- [ ] Milestone 2: Wire `BulkExportConfigStage` into `BulkExportWizard` as Stage 1, replacing `BulkExportCreateOrSelectStage`. Verify the wizard opens and reaches Stage 1 correctly.
+- [x] Milestone 2: Wire `BulkExportConfigStage` into `BulkExportWizard` as Stage 1, replacing `BulkExportCreateOrSelectStage`. Verify the wizard opens and reaches Stage 1 correctly.
 - [ ] Milestone 3: Implement full `BulkExportConfigStage` behavior — default profile, button states, Add/Delete/Rename dialogs, trimming, same-name no-op, save-after-rename, save-after-delete, re-create Default after last profile is deleted.
 - [ ] Milestone 4: Apply project skills — `csharp-docs`, `dotnet-best-practices`, `csharp-async`, `dotnet-design-pattern-review` — and address any findings.
 - [ ] Milestone 5 (post-acceptance): Remove `BulkExportCreateOrSelectStage` and its Designer file after the feature is accepted. Do not remove prematurely.
