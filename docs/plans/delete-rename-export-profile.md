@@ -18,7 +18,7 @@ A user can see it working by opening the Export Wizard. The first step now shows
 - [x] Milestone 2: Wire `BulkExportConfigStage` into `BulkExportWizard` as Stage 1, replacing `BulkExportCreateOrSelectStage`. Verify the wizard opens and reaches Stage 1 correctly.
 - [x] Milestone 3: Implement full `BulkExportConfigStage` behavior — default profile, button states, Add/Delete/Rename dialogs, trimming, same-name no-op, save-after-rename, save-after-delete, re-create Default after last profile is deleted.
 - [x] Milestone 4: Apply project skills — `csharp-docs`, `dotnet-best-practices`, `csharp-async`, `dotnet-design-pattern-review` — and address any findings.
-- [ ] Milestone 5 (post-acceptance): Remove `BulkExportCreateOrSelectStage` and its Designer file after the feature is accepted. Do not remove prematurely.
+- [x] Milestone 5 (post-acceptance): Remove `BulkExportCreateOrSelectStage` and its Designer file after the feature is accepted. Do not remove prematurely.
 
 ---
 
@@ -56,7 +56,12 @@ A user can see it working by opening the Export Wizard. The first step now shows
 
 ## Outcomes & Retrospective
 
-*(Fill in at completion.)*
+All 5 milestones complete as of 2026-05-28. The feature shipped with `BulkExportConfigStage` as the new Stage 1 of the Export Wizard, replacing `BulkExportCreateOrSelectStage` which was removed in Milestone 5.
+
+Key learnings:
+- `BulkExportWizardData.CreateDefaultProfile()` already sets the profile name to "Default" via its first constructor argument. The explicit `profile.Name = "Default"` assignment in `PopulateProfiles` was redundant and was removed by the linter.
+- `string?` nullable annotations are a compile warning in `src/Vixen.Modules/App/` because that subtree sets `<Nullable>disable</Nullable>`. Optional parameters that accept `null` must use plain `string` with a `null` default (not `string?`). This matches the pattern established in the FPP Direct Upload plan.
+- The async linter upgraded `messageBox.ShowDialog()` calls inside `async void` event handlers to `await messageBox.ShowDialogAsync()`, which is the correct async pattern for WinForms dialogs in async event handlers.
 
 ---
 
