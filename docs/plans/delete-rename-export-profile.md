@@ -16,7 +16,7 @@ A user can see it working by opening the Export Wizard. The first step now shows
 
 - [x] Milestone 1: Update JIRA issue VIX-3632 with requirements, high-level design, acceptance criteria, and testing steps. → [VIX-3632](https://vixenlights.atlassian.net/browse/VIX-3632)
 - [x] Milestone 2: Wire `BulkExportConfigStage` into `BulkExportWizard` as Stage 1, replacing `BulkExportCreateOrSelectStage`. Verify the wizard opens and reaches Stage 1 correctly.
-- [ ] Milestone 3: Implement full `BulkExportConfigStage` behavior — default profile, button states, Add/Delete/Rename dialogs, trimming, same-name no-op, save-after-rename, save-after-delete, re-create Default after last profile is deleted.
+- [x] Milestone 3: Implement full `BulkExportConfigStage` behavior — default profile, button states, Add/Delete/Rename dialogs, trimming, same-name no-op, save-after-rename, save-after-delete, re-create Default after last profile is deleted.
 - [ ] Milestone 4: Apply project skills — `csharp-docs`, `dotnet-best-practices`, `csharp-async`, `dotnet-design-pattern-review` — and address any findings.
 - [ ] Milestone 5 (post-acceptance): Remove `BulkExportCreateOrSelectStage` and its Designer file after the feature is accepted. Do not remove prematurely.
 
@@ -25,6 +25,8 @@ A user can see it working by opening the Export Wizard. The first step now shows
 ## Surprises & Discoveries
 
 *(Fill in as work progresses.)*
+
+- `string?` nullable annotation is not valid in `src/Vixen.Modules/App/` because that subtree sets `<Nullable>disable</Nullable>`. The `excludeName` parameter in `GetProfileName` was changed from `string?` to `string` with a `null` default. This matches the pattern established in the prior FPP Direct Upload plan.
 
 - TBD: Verify whether `BindingList<ExportProfile>` propagates `Name` property changes to the ComboBox automatically. `ExportProfile.Name` implements `INotifyPropertyChanged`, and `BindingList<T>` forwards item-level property-change notifications when items implement that interface — but this must be confirmed during Milestone 3. If it does not propagate automatically, force a ComboBox refresh after rename (call `comboProfiles.Refresh()` or re-bind).
 
