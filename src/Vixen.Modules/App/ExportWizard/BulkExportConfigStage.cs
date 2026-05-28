@@ -169,6 +169,20 @@ namespace VixenModules.App.ExportWizard
 			UpdateButtonStates();
 		}
 
+		/// <summary>
+		/// Displays a text-input dialog and returns the trimmed profile name entered by the user.
+		/// </summary>
+		/// <param name="dialogTitle">The title shown on the dialog window.</param>
+		/// <param name="initialName">The value pre-populated in the text field.</param>
+		/// <param name="excludeName">
+		/// A profile name to exclude from the duplicate check. Pass the current profile name when renaming
+		/// so that the profile is not considered a duplicate of itself.
+		/// </param>
+		/// <returns>
+		/// A tuple where the first element is <see langword="true"/> if the user confirmed a valid name,
+		/// and the second element is the trimmed name. Returns <see langword="false"/> and an empty string
+		/// when the user cancels.
+		/// </returns>
 		private Tuple<bool, string> GetProfileName(string dialogTitle, string initialName, string excludeName = null)
 		{
 			TextDialog dialog = new TextDialog("Enter a name for the profile", dialogTitle, initialName);
