@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text;
 using Common.Controls;
 using Common.Controls.Wizard;
 using NLog;
@@ -16,7 +17,7 @@ namespace VixenModules.App.ExportWizard
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly BulkExportWizardData _data;
 		private bool _cancelled;
-		private AutoCompleteStringCollection namesCollection = new AutoCompleteStringCollection();
+		private AutoCompleteStringCollection _namesCollection = new();
 		private BindingList<ExportProfile> _profiles;
 
 		public BulkExportSummaryStage(BulkExportWizardData data)
@@ -36,7 +37,7 @@ namespace VixenModules.App.ExportWizard
 			chkSaveConfig.Checked = false;
 			comboConfigName.Visible = false;
 			lblSequenceCount.Text = _data.ActiveProfile.SequenceFiles.Count().ToString();
-			lblTimingValue.Text = string.Format("{0} ms", _data.ActiveProfile.Interval);
+			lblTimingValue.Text = $@"{_data.ActiveProfile.Interval} ms";
 			lblFormatName.Text = _data.ActiveProfile.Format;
 			lblOutputFolder.Text = _data.ActiveProfile.OutputFolder;
 			string audioOption = "Not included.";
@@ -58,11 +59,13 @@ namespace VixenModules.App.ExportWizard
 				lblUniverseFolder.Visible = lblUniverse.Visible = false;
 			}
 			if (!_data.Export.AllSelectedControllersSupportUniverses && _data.ActiveProfile.CreateUniverseFile)
-				{
+			{
 				lblUniverseFileWarning.Visible = true;
-				lblUniverseFileWarning.Text = "Not all controllers selected for export support universes.\n" +
-				                              "These controllers will not be included in the universes file.\n" +
-				                              "Some manual FPP output configuration will be required.";
+				lblUniverseFileWarning.Text = new StringBuilder()
+					.Append("Not all controllers selected for export support universes.\n")
+					.Append("These controllers will not be included in the universes file.\n")
+					.Append("Some manual FPP output configuration will be required.")
+					.ToString();
 			}
 			else
 			{
@@ -91,21 +94,28 @@ namespace VixenModules.App.ExportWizard
 
 		public override async void StageStart()
 		{
-			taskProgress.Visible = false;
-			overallProgress.Visible = false;
-			lblTaskProgress.Visible = false;
-			lblOverallProgress.Visible = false;
-			comboConfigName.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-			comboConfigName.AutoCompleteSource = AutoCompleteSource.CustomSource;
-			namesCollection = new AutoCompleteStringCollection();
-			comboConfigName.AutoCompleteCustomSource = namesCollection;
-			namesCollection.AddRange(_data.Profiles.Select(x => x.Name).ToArray());
-			PopulateProfiles();
-			ConfigureSummary();
-
-			if (_data.ActiveProfile.IsFalcon2xFormat && _data.ActiveProfile.FppDirectUpload)
+			try
 			{
-				await PopulateFppInfoAsync();
+				taskProgress.Visible = false;
+				overallProgress.Visible = false;
+				lblTaskProgress.Visible = false;
+				lblOverallProgress.Visible = false;
+				comboConfigName.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+				comboConfigName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+				_namesCollection = new AutoCompleteStringCollection();
+				comboConfigName.AutoCompleteCustomSource = _namesCollection;
+				_namesCollection.AddRange(_data.Profiles.Select(x => x.Name).ToArray());
+				PopulateProfiles();
+				ConfigureSummary();
+
+				if (_data.ActiveProfile.IsFalcon2xFormat && _data.ActiveProfile.FppDirectUpload)
+				{
+					await PopulateFppInfoAsync();
+				}
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, $"An error occured starting the summary stage");
 			}
 		}
 
@@ -133,22 +143,29 @@ namespace VixenModules.App.ExportWizard
 
 		private async void SaveActiveConfig()
 		{
-			if (comboConfigName.SelectedIndex >= 0)
+			try
 			{
-				//we are replacing an existing config.
-				_data.ActiveProfile.Name = comboConfigName.Text;
-				_data.ActiveProfile.Id = (comboConfigName.SelectedItem as ExportProfile).Id;
-				_data.Profiles[comboConfigName.SelectedIndex] = _data.ActiveProfile;
-			}
-			else
-			{
-				//Save as new with text from combo as name
-				_data.ActiveProfile.Name = comboConfigName.Text;
-				_data.ActiveProfile.Id = Guid.NewGuid();
-				_data.Profiles.Add(_data.ActiveProfile);
-			}
+				if (comboConfigName.SelectedIndex >= 0)
+				{
+					//we are replacing an existing config.
+					_data.ActiveProfile.Name = comboConfigName.Text;
+					_data.ActiveProfile.Id = (comboConfigName.SelectedItem as ExportProfile)!.Id;
+					_data.Profiles[comboConfigName.SelectedIndex] = _data.ActiveProfile;
+				}
+				else
+				{
+					//Save as new with text from combo as name
+					_data.ActiveProfile.Name = comboConfigName.Text;
+					_data.ActiveProfile.Id = Guid.NewGuid();
+					_data.Profiles.Add(_data.ActiveProfile);
+				}
 
-			await VixenSystem.SaveModuleConfigAsync();
+				await VixenSystem.SaveModuleConfigAsync();
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, $"An error occured saving the active config");
+			}
 		}
 
 		private async Task<bool> DoExport(IProgress<ExportProgressStatus> progress)
@@ -170,7 +187,8 @@ namespace VixenModules.App.ExportWizard
 					{
 						break;
 					}
-					exportProgressStatus.TaskProgressMessage = string.Format("Loading {0}", Path.GetFileNameWithoutExtension(sequenceFile)); ;
+					exportProgressStatus.TaskProgressMessage =
+						$"Loading {Path.GetFileNameWithoutExtension(sequenceFile)}";
 					progress.Report(exportProgressStatus);
 
 					ISequence sequence = null;
@@ -189,7 +207,7 @@ namespace VixenModules.App.ExportWizard
 						var result = ShowSequenceLoadError(sequenceFile);
 						if (result)
 						{
-							overallProgressStep = overallProgressStep + 2;
+							overallProgressStep += 2;
 							exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
 							progress.Report(exportProgressStatus);
 							continue;
@@ -199,7 +217,7 @@ namespace VixenModules.App.ExportWizard
 						break;
 					}
 					
-					exportProgressStatus.TaskProgressMessage = string.Format("Loading any media for {0}", sequence.Name);
+					exportProgressStatus.TaskProgressMessage = $"Loading any media for {sequence.Name}";
 					progress.Report(exportProgressStatus);
 					//Load it's media
 					LoadMedia(sequence);
@@ -214,7 +232,7 @@ namespace VixenModules.App.ExportWizard
 					//Update over all progress with next step
 					overallProgressStep++;
 					exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
-					exportProgressStatus.TaskProgressMessage = string.Format("Exporting {0}", sequence.Name);
+					exportProgressStatus.TaskProgressMessage = $"Exporting {sequence.Name}";
 					progress.Report(exportProgressStatus);
 
 					//Begin export step.
@@ -349,7 +367,9 @@ namespace VixenModules.App.ExportWizard
 		{
 			double count = sequence.SequenceData.EffectData.Count();
 			long index = 1;
-			var p = new ExportProgressStatus(ExportProgressStatus.ProgressType.Task) {TaskProgressMessage = string.Format("Rendering {0}", sequence.Name)};
+			var p = new ExportProgressStatus(ExportProgressStatus.ProgressType.Task) {TaskProgressMessage =
+				$"Rendering {sequence.Name}"
+			};
 			foreach (var effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
 			{
 				RenderEffect(effectNode);
@@ -370,15 +390,8 @@ namespace VixenModules.App.ExportWizard
 				where media.MediaFilePath.Length != 0
 				select media.MediaFilePath);
 
-			if (mediaFileNames.Any())
-			{
-				_data.Export.AudioFilename = mediaFileNames.First();
-			}
-			else
-			{
-				_data.Export.AudioFilename = String.Empty;
-			}
-
+			_data.Export.AudioFilename = mediaFileNames.FirstOrDefault(string.Empty);
+			
 			if (_data.ActiveProfile.FppDirectUpload && _data.ActiveProfile.IsFalcon2xFormat)
 			{
 				await ExportDirect(sequence, progress);
@@ -403,10 +416,13 @@ namespace VixenModules.App.ExportWizard
 				if (canOutput)
 				{
 					string audioOutputPath = Path.Combine(_data.ActiveProfile.AudioOutputFolder,
-						_data.ActiveProfile.RenameAudio
+						(_data.ActiveProfile.RenameAudio
 							? _data.Export.FormatAudioFileName(sequence.Name)
-							: Path.GetFileName(_data.Export.AudioFilename));
-					File.Copy(_data.Export.AudioFilename, audioOutputPath, true);
+							: Path.GetFileName(_data.Export.AudioFilename)) ?? string.Empty);
+					if (!string.IsNullOrEmpty(_data.Export.AudioFilename))
+					{
+						File.Copy(_data.Export.AudioFilename, audioOutputPath, true);
+					}
 				}
 			}
 
@@ -442,7 +458,7 @@ namespace VixenModules.App.ExportWizard
 			{
 				_data.Export.OutFileName = tempFseq;
 				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format,
-					_data.ActiveProfile.EnableCompression, progress, _data.ActiveProfile.RenameAudio);
+					_data.ActiveProfile.EnableCompression, progress, _data.ActiveProfile.RenameAudio).ConfigureAwait(false);
 
 				var fseqFileName = sequence.Name + "."
 					+ _data.Export.ExportFileTypes[_data.ActiveProfile.Format];
@@ -496,11 +512,13 @@ namespace VixenModules.App.ExportWizard
 		private void LoadMedia(ISequence sequence)
 		{
 			var sequenceMedia = sequence.GetAllMedia();
-			if (sequenceMedia != null && sequenceMedia.Any())
+			if (sequenceMedia != null)
+			{
 				foreach (IMediaModuleInstance media in sequenceMedia)
 				{
 					media.LoadMedia(TimeSpan.Zero);
 				}
+			}
 		}
 
 		private void RenderEffect(IEffectNode node)
