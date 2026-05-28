@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 				<AssemblyName>Module.App.$(MSBuildProjectName)</AssemblyName>
@@ -10,6 +10,15 @@
 				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\FPPClient\FPPClient.csproj">
+					<Private>false</Private>
+				</ProjectReference>
+		</ItemGroup>
+
+		<ItemGroup>
+			<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+				<_Parameter1>Vixen.Tests</_Parameter1>
+			</AssemblyAttribute>
 		</ItemGroup>
 
 </Project>

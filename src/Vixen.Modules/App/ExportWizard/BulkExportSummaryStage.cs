@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text;
 using Common.Controls;
 using Common.Controls.Wizard;
 using NLog;
@@ -7,6 +8,7 @@ using Vixen.Export;
 using Vixen.Module.Media;
 using Vixen.Services;
 using Vixen.Sys;
+using VixenModules.App.FPPClient.Client;
 
 namespace VixenModules.App.ExportWizard
 {
@@ -15,7 +17,7 @@ namespace VixenModules.App.ExportWizard
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly BulkExportWizardData _data;
 		private bool _cancelled;
-		private AutoCompleteStringCollection namesCollection = new AutoCompleteStringCollection();
+		private AutoCompleteStringCollection _namesCollection = new();
 		private BindingList<ExportProfile> _profiles;
 
 		public BulkExportSummaryStage(BulkExportWizardData data)
@@ -35,7 +37,7 @@ namespace VixenModules.App.ExportWizard
 			chkSaveConfig.Checked = false;
 			comboConfigName.Visible = false;
 			lblSequenceCount.Text = _data.ActiveProfile.SequenceFiles.Count().ToString();
-			lblTimingValue.Text = string.Format("{0} ms", _data.ActiveProfile.Interval);
+			lblTimingValue.Text = $@"{_data.ActiveProfile.Interval} ms";
 			lblFormatName.Text = _data.ActiveProfile.Format;
 			lblOutputFolder.Text = _data.ActiveProfile.OutputFolder;
 			string audioOption = "Not included.";
@@ -57,16 +59,25 @@ namespace VixenModules.App.ExportWizard
 				lblUniverseFolder.Visible = lblUniverse.Visible = false;
 			}
 			if (!_data.Export.AllSelectedControllersSupportUniverses && _data.ActiveProfile.CreateUniverseFile)
-				{
+			{
 				lblUniverseFileWarning.Visible = true;
-				lblUniverseFileWarning.Text = "Not all controllers selected for export support universes.\n" +
-				                              "These controllers will not be included in the universes file.\n" +
-				                              "Some manual FPP output configuration will be required.";
+				lblUniverseFileWarning.Text = new StringBuilder()
+					.Append("Not all controllers selected for export support universes.\n")
+					.Append("These controllers will not be included in the universes file.\n")
+					.Append("Some manual FPP output configuration will be required.")
+					.ToString();
 			}
 			else
 			{
 				lblUniverseFileWarning.Visible = false;
 			}
+
+			// FPP device info — hidden by default; shown only when Direct Upload is active
+			lblFppInfo.Visible = false;
+			lblFppHostName.Visible = lblFppHostNameValue.Visible = false;
+			lblFppDescription.Visible = lblFppDescriptionValue.Visible = false;
+			lblFppPlatform.Visible = lblFppPlatformValue.Visible = false;
+			lblFppVariant.Visible = lblFppVariantValue.Visible = false;
 		}
 
 		private void PopulateProfiles()
@@ -81,19 +92,31 @@ namespace VixenModules.App.ExportWizard
 			}
 		}
 
-		public override void StageStart()
+		public override async void StageStart()
 		{
-			taskProgress.Visible = false;
-			overallProgress.Visible = false;
-			lblTaskProgress.Visible = false;
-			lblOverallProgress.Visible = false;
-			comboConfigName.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-			comboConfigName.AutoCompleteSource = AutoCompleteSource.CustomSource;
-			namesCollection = new AutoCompleteStringCollection();
-			comboConfigName.AutoCompleteCustomSource = namesCollection;
-			namesCollection.AddRange(_data.Profiles.Select(x => x.Name).ToArray());
-			PopulateProfiles();
-			ConfigureSummary();
+			try
+			{
+				taskProgress.Visible = false;
+				overallProgress.Visible = false;
+				lblTaskProgress.Visible = false;
+				lblOverallProgress.Visible = false;
+				comboConfigName.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+				comboConfigName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+				_namesCollection = new AutoCompleteStringCollection();
+				comboConfigName.AutoCompleteCustomSource = _namesCollection;
+				_namesCollection.AddRange(_data.Profiles.Select(x => x.Name).ToArray());
+				PopulateProfiles();
+				ConfigureSummary();
+
+				if (_data.ActiveProfile.IsFalcon2xFormat && _data.ActiveProfile.FppDirectUpload)
+				{
+					await PopulateFppInfoAsync();
+				}
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, $"An error occured starting the summary stage");
+			}
 		}
 
 		public override async Task StageEnd()
@@ -120,22 +143,29 @@ namespace VixenModules.App.ExportWizard
 
 		private async void SaveActiveConfig()
 		{
-			if (comboConfigName.SelectedIndex >= 0)
+			try
 			{
-				//we are replacing an existing config.
-				_data.ActiveProfile.Name = comboConfigName.Text;
-				_data.ActiveProfile.Id = (comboConfigName.SelectedItem as ExportProfile).Id;
-				_data.Profiles[comboConfigName.SelectedIndex] = _data.ActiveProfile;
-			}
-			else
-			{
-				//Save as new with text from combo as name
-				_data.ActiveProfile.Name = comboConfigName.Text;
-				_data.ActiveProfile.Id = Guid.NewGuid();
-				_data.Profiles.Add(_data.ActiveProfile);
-			}
+				if (comboConfigName.SelectedIndex >= 0)
+				{
+					//we are replacing an existing config.
+					_data.ActiveProfile.Name = comboConfigName.Text;
+					_data.ActiveProfile.Id = (comboConfigName.SelectedItem as ExportProfile)!.Id;
+					_data.Profiles[comboConfigName.SelectedIndex] = _data.ActiveProfile;
+				}
+				else
+				{
+					//Save as new with text from combo as name
+					_data.ActiveProfile.Name = comboConfigName.Text;
+					_data.ActiveProfile.Id = Guid.NewGuid();
+					_data.Profiles.Add(_data.ActiveProfile);
+				}
 
-			await VixenSystem.SaveModuleConfigAsync();
+				await VixenSystem.SaveModuleConfigAsync();
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, $"An error occured saving the active config");
+			}
 		}
 
 		private async Task<bool> DoExport(IProgress<ExportProgressStatus> progress)
@@ -157,7 +187,8 @@ namespace VixenModules.App.ExportWizard
 					{
 						break;
 					}
-					exportProgressStatus.TaskProgressMessage = string.Format("Loading {0}", Path.GetFileNameWithoutExtension(sequenceFile)); ;
+					exportProgressStatus.TaskProgressMessage =
+						$"Loading {Path.GetFileNameWithoutExtension(sequenceFile)}";
 					progress.Report(exportProgressStatus);
 
 					ISequence sequence = null;
@@ -176,7 +207,7 @@ namespace VixenModules.App.ExportWizard
 						var result = ShowSequenceLoadError(sequenceFile);
 						if (result)
 						{
-							overallProgressStep = overallProgressStep + 2;
+							overallProgressStep += 2;
 							exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
 							progress.Report(exportProgressStatus);
 							continue;
@@ -186,7 +217,7 @@ namespace VixenModules.App.ExportWizard
 						break;
 					}
 					
-					exportProgressStatus.TaskProgressMessage = string.Format("Loading any media for {0}", sequence.Name);
+					exportProgressStatus.TaskProgressMessage = $"Loading any media for {sequence.Name}";
 					progress.Report(exportProgressStatus);
 					//Load it's media
 					LoadMedia(sequence);
@@ -201,7 +232,7 @@ namespace VixenModules.App.ExportWizard
 					//Update over all progress with next step
 					overallProgressStep++;
 					exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
-					exportProgressStatus.TaskProgressMessage = string.Format("Exporting {0}", sequence.Name);
+					exportProgressStatus.TaskProgressMessage = $"Exporting {sequence.Name}";
 					progress.Report(exportProgressStatus);
 
 					//Begin export step.
@@ -252,33 +283,94 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task CreateUniverseFile()
 		{
-			if (_data.ActiveProfile.IsFalcon2xFormat)
+			if (!_data.ActiveProfile.IsFalcon2xFormat) return;
+
+			if (_data.ActiveProfile.FppDirectUpload)
 			{
-				var path = Path.Combine(_data.ActiveProfile.FalconOutputFolder, "config");
-				if (!Directory.Exists(path))
-				{
-					CreateDirectory(path);
-				}
+				await CreateUniverseFileDirect();
+			}
+			else
+			{
+				await CreateUniverseFileToPath();
+			}
+		}
 
-				string fileName = Path.Combine(path, "co-universes.json");
+		/// <summary>Original file-path universe file code path — unchanged behaviour.</summary>
+		private async Task CreateUniverseFileToPath()
+		{
+			var path = Path.Combine(_data.ActiveProfile.FalconOutputFolder, "config");
+			if (!Directory.Exists(path))
+			{
+				CreateDirectory(path);
+			}
 
-				if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))
+			string fileName = Path.Combine(path, "co-universes.json");
+
+			if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))
+			{
+				var now = DateTime.Now;
+				var newFile = $"{fileName}_{now.Month}{now.Day}{now.Year}-{now.Hour}{now.Minute}{now.Second}";
+				File.Move(fileName, newFile);
+			}
+
+			await _data.Export.Write2xUniverseFile(fileName);
+		}
+
+		/// <summary>
+		/// Direct-upload universe file code path: backs up the existing remote file (rename),
+		/// writes the new file to a temp path, uploads it, then deletes the temp file.
+		/// </summary>
+		private async Task CreateUniverseFileDirect()
+		{
+			if (!_data.ActiveProfile.CreateUniverseFile && !_data.ActiveProfile.BackupUniverseFile)
+				return;
+
+			var factory = new FppClientFactory();
+			await using var client = factory.Create(
+				new FppClientOptions { BaseUrl = $"http://{_data.ActiveProfile.FppHostAddress}/" });
+			var svc = new FppDirectUploadService(client);
+
+			try
+			{
+				if (_data.ActiveProfile.BackupUniverseFile)
 				{
 					var now = DateTime.Now;
-					var newFile = $"{fileName}_{now.Month}{now.Day}{now.Year}-{now.Hour}{now.Minute}{now.Second}";
-					File.Move(fileName, newFile);
+					var backupName = $"co-universes.json_{now.Month}{now.Day}{now.Year}"
+					               + $"-{now.Hour}{now.Minute}{now.Second}";
+					await svc.BackupUniverseFileAsync(backupName).ConfigureAwait(false);
 				}
 
-				await _data.Export.Write2xUniverseFile(fileName);
+				if (_data.ActiveProfile.CreateUniverseFile)
+				{
+					var tempUniverse = Path.Combine(Path.GetTempPath(),
+						Path.GetRandomFileName() + ".json");
+					try
+					{
+						await _data.Export.Write2xUniverseFile(tempUniverse);
+						await svc.UploadUniverseFileAsync(tempUniverse).ConfigureAwait(false);
+						await svc.RestartFppdAsync().ConfigureAwait(false);
+					}
+					finally
+					{
+						if (File.Exists(tempUniverse)) File.Delete(tempUniverse);
+					}
+				}
 			}
-			
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Direct upload of universe file to '{Host}' failed",
+					_data.ActiveProfile.FppHostAddress);
+				ShowDirectUploadError(ex.Message);
+			}
 		}
 
 		private bool RenderSequence(ISequence sequence, IProgress<ExportProgressStatus> progress)
 		{
 			double count = sequence.SequenceData.EffectData.Count();
 			long index = 1;
-			var p = new ExportProgressStatus(ExportProgressStatus.ProgressType.Task) {TaskProgressMessage = string.Format("Rendering {0}", sequence.Name)};
+			var p = new ExportProgressStatus(ExportProgressStatus.ProgressType.Task) {TaskProgressMessage =
+				$"Rendering {sequence.Name}"
+			};
 			foreach (var effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
 			{
 				RenderEffect(effectNode);
@@ -292,22 +384,28 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task Export(ISequence sequence, IProgress<ExportProgressStatus> progress)
 		{
-
+			// Resolve audio filename for this sequence regardless of export mode
 			IEnumerable<string> mediaFileNames =
 			(from media in sequence.SequenceData.Media
 				where media.GetType().ToString().Contains("Audio")
 				where media.MediaFilePath.Length != 0
 				select media.MediaFilePath);
 
-			if (mediaFileNames.Any())
+			_data.Export.AudioFilename = mediaFileNames.FirstOrDefault(string.Empty);
+			
+			if (_data.ActiveProfile.FppDirectUpload && _data.ActiveProfile.IsFalcon2xFormat)
 			{
-				_data.Export.AudioFilename = mediaFileNames.First();
+				await ExportDirect(sequence, progress);
 			}
 			else
 			{
-				_data.Export.AudioFilename = String.Empty;
+				await ExportToFilePath(sequence, progress);
 			}
+		}
 
+		/// <summary>Original file-path export code path — unchanged behaviour.</summary>
+		private async Task ExportToFilePath(ISequence sequence, IProgress<ExportProgressStatus> progress)
+		{
 			bool canOutput = true;
 			if (_data.ActiveProfile.IncludeAudio && _data.Export.AudioFilename != string.Empty)
 			{
@@ -319,10 +417,13 @@ namespace VixenModules.App.ExportWizard
 				if (canOutput)
 				{
 					string audioOutputPath = Path.Combine(_data.ActiveProfile.AudioOutputFolder,
-						_data.ActiveProfile.RenameAudio
+						(_data.ActiveProfile.RenameAudio
 							? _data.Export.FormatAudioFileName(sequence.Name)
-							: Path.GetFileName(_data.Export.AudioFilename));
-					File.Copy(_data.Export.AudioFilename, audioOutputPath, true);
+							: Path.GetFileName(_data.Export.AudioFilename)) ?? string.Empty);
+					if (!string.IsNullOrEmpty(_data.Export.AudioFilename))
+					{
+						File.Copy(_data.Export.AudioFilename, audioOutputPath, true);
+					}
 				}
 			}
 
@@ -333,10 +434,64 @@ namespace VixenModules.App.ExportWizard
 
 			if (canOutput)
 			{
-				_data.Export.OutFileName = Path.Combine(_data.ActiveProfile.OutputFolder, sequence.Name + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
-				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format, _data.ActiveProfile.EnableCompression, progress, _data.ActiveProfile.RenameAudio);
+				_data.Export.OutFileName = Path.Combine(_data.ActiveProfile.OutputFolder,
+					sequence.Name + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
+				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format,
+					_data.ActiveProfile.EnableCompression, progress, _data.ActiveProfile.RenameAudio);
 			}
-			
+		}
+
+		/// <summary>
+		/// Direct-upload export code path: writes fseq/audio to temp files then pushes them
+		/// to the FPP device via <see cref="FppDirectUploadService"/>.
+		/// </summary>
+		private async Task ExportDirect(ISequence sequence, IProgress<ExportProgressStatus> progress)
+		{
+			var factory = new FppClientFactory();
+			await using var client = factory.Create(
+				new FppClientOptions { BaseUrl = $"http://{_data.ActiveProfile.FppHostAddress}/" });
+			var svc = new FppDirectUploadService(client);
+
+			// Export fseq to a temp file, upload it, then delete the temp file.
+			var tempFseq = Path.Combine(Path.GetTempPath(),
+				Path.GetRandomFileName() + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
+			try
+			{
+				_data.Export.OutFileName = tempFseq;
+				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format,
+					_data.ActiveProfile.EnableCompression, progress, _data.ActiveProfile.RenameAudio).ConfigureAwait(false);
+
+				var fseqFileName = sequence.Name + "."
+					+ _data.Export.ExportFileTypes[_data.ActiveProfile.Format];
+				await svc.UploadSequenceFileAsync(tempFseq, fseqFileName, progress).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Direct upload of sequence '{Name}' failed", sequence.Name);
+				ShowDirectUploadError(ex.Message);
+			}
+			finally
+			{
+				if (File.Exists(tempFseq)) File.Delete(tempFseq);
+			}
+
+			// Upload audio if included.
+			if (_data.ActiveProfile.IncludeAudio && !string.IsNullOrEmpty(_data.Export.AudioFilename))
+			{
+				try
+				{
+					var audioFileName = _data.ActiveProfile.RenameAudio
+						? _data.Export.FormatAudioFileName(sequence.Name)
+						: Path.GetFileName(_data.Export.AudioFilename);
+					await svc.UploadAudioFileAsync(_data.Export.AudioFilename, audioFileName, progress)
+						.ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					Logging.Error(ex, "Direct upload of audio for '{Name}' failed", sequence.Name);
+					ShowDirectUploadError(ex.Message);
+				}
+			}
 		}
 
 		private bool CreateDirectory(string path)
@@ -358,11 +513,13 @@ namespace VixenModules.App.ExportWizard
 		private void LoadMedia(ISequence sequence)
 		{
 			var sequenceMedia = sequence.GetAllMedia();
-			if (sequenceMedia != null && sequenceMedia.Any())
+			if (sequenceMedia != null)
+			{
 				foreach (IMediaModuleInstance media in sequenceMedia)
 				{
 					media.LoadMedia(TimeSpan.Zero);
 				}
+			}
 		}
 
 		private void RenderEffect(IEffectNode node)
@@ -429,6 +586,57 @@ namespace VixenModules.App.ExportWizard
 		private void lblUniverseFolder_Click(object sender, EventArgs e)
 		{
 
+		}
+
+		private void ShowDirectUploadError(string message)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new Action<string>(ShowDirectUploadError), message);
+				return;
+			}
+
+			var msgBox = new MessageBoxForm(
+				$"FPP direct upload failed:\n{message}",
+				"FPP Upload Error", MessageBoxButtons.OK, SystemIcons.Error);
+			msgBox.ShowDialog(this);
+		}
+
+		private async Task PopulateFppInfoAsync()
+		{
+			var host = _data.ActiveProfile.FppHostAddress;
+			if (string.IsNullOrWhiteSpace(host)) return;
+
+			try
+			{
+				var factory = new FppClientFactory();
+				await using var client = factory.Create(new FppClientOptions { BaseUrl = $"http://{host}/" });
+				// ConfigureAwait(true) keeps the continuation on the UI thread so label
+				// assignments do not require Invoke.
+				var info = await client.GetSystemInfoAsync().ConfigureAwait(true);
+
+				if (IsDisposed) return;
+
+				lblFppHostNameValue.Text = info.HostName;
+				lblFppDescriptionValue.Text = info.HostDescription;
+				lblFppPlatformValue.Text = info.Platform;
+				lblFppVariantValue.Text = info.Variant;
+
+				lblFppInfo.Visible = true;
+				lblFppHostName.Visible = lblFppHostNameValue.Visible = true;
+				lblFppDescription.Visible = lblFppDescriptionValue.Visible = true;
+				lblFppPlatform.Visible = lblFppPlatformValue.Visible = true;
+				lblFppVariant.Visible = lblFppVariantValue.Visible = true;
+			}
+			catch (Exception ex)
+			{
+				Logging.Warn(ex, "Could not retrieve FPP system info for host '{Host}'", host);
+				if (!IsDisposed)
+				{
+					lblFppInfo.Text = @"FPP Device Info (unavailable — check host address)";
+					lblFppInfo.Visible = true;
+				}
+			}
 		}
 	}
 }

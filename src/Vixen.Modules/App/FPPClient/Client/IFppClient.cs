@@ -94,4 +94,36 @@ public interface IFppClient : IAsyncDisposable
 	/// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
 	/// <exception cref="FppClientException">The HTTP response indicated a non-success status code.</exception>
 	Task UploadVideoAsync(string filename, Stream content, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Renames a file within a directory on the FPP instance.
+	/// </summary>
+	/// <param name="dirName">The FPP media directory containing the file (e.g. <c>"config"</c>).</param>
+	/// <param name="source">The current filename (without path).</param>
+	/// <param name="dest">The desired filename after rename (without path).</param>
+	/// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+	/// <returns>
+	/// A <see cref="Task"/> that completes when the rename succeeds.
+	/// If the file does not exist (HTTP 404), the method returns without error.
+	/// </returns>
+	/// <exception cref="ArgumentException">
+	/// <paramref name="dirName"/>, <paramref name="source"/>, or <paramref name="dest"/> is
+	/// <see langword="null"/> or whitespace.
+	/// </exception>
+	/// <exception cref="FppClientException">
+	/// The HTTP response indicated a non-success status code other than 404.
+	/// </exception>
+	Task RenameFileAsync(string dirName, string source, string dest,
+		CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Restarts the FPPD daemon process on the FPP instance.
+	/// </summary>
+	/// <param name="quick">
+	/// When <see langword="true"/>, passes <c>?quick=1</c> to the endpoint, which reloads
+	/// some configuration without performing a full daemon restart.
+	/// </param>
+	/// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+	/// <exception cref="FppClientException">The HTTP response indicated a non-success status code.</exception>
+	Task RestartFppdAsync(bool quick = false, CancellationToken cancellationToken = default);
 }
