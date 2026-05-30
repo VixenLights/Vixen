@@ -1,6 +1,8 @@
 using System.Windows.Forms.Integration;
+using System.Windows.Interop;
 using Vixen.Module.Property;
 using Vixen.Sys;
+using VixenModules.Property.State.Setup.Services;
 using VixenModules.Property.State.Setup.ViewModels;
 using VixenModules.Property.State.Setup.Views;
 
@@ -16,11 +18,6 @@ namespace VixenModules.Property.State {
 
 		/// <inheritdoc />
 		public override void SetDefaultValues() {
-			if (_data == null)
-			{
-				_data = new StateData();
-			}
-
 			_data.Normalize();
 		}
 
@@ -69,12 +66,15 @@ namespace VixenModules.Property.State {
 		}
 
 		/// <inheritdoc />
-		public override Vixen.Module.IModuleDataModel ModuleData {
+		public override Vixen.Module.IModuleDataModel? ModuleData {
 			get => _data;
 			set
 			{
-				_data = (StateData)value;
-				_data.Normalize();
+				if( value != null)
+				{
+					_data = (StateData)value;
+					_data.Normalize();
+				}
 			}
 		}
 
@@ -95,9 +95,21 @@ namespace VixenModules.Property.State {
 
 		/// <inheritdoc />
 		public override bool SetupElements(IEnumerable<IElementNode> nodes)
-		{ 
-			StateMapperViewModel vm = new StateMapperViewModel(nodes);
-			StateMapperView mapper = new StateMapperView(vm);
+		{
+			var selectedNodes = nodes.Take(2).ToList();
+			if (selectedNodes.Count != 1)
+			{
+				return false;
+			}
+
+			var node = selectedNodes[0];
+			var vm = new StateMapperViewModel(node, _data, new StateColorPickerService());
+			var mapper = new StateMapperView(vm);
+			if (Form.ActiveForm != null)
+			{
+				new WindowInteropHelper(mapper).Owner = Form.ActiveForm.Handle;
+			}
+
 			ElementHost.EnableModelessKeyboardInterop(mapper);
 			var response = mapper.ShowDialog();
 			return response == true;

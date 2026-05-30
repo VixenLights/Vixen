@@ -1,33 +1,64 @@
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Catel.Data;
 using Catel.MVVM;
-using GongSolutions.Wpf.DragDrop;
 using Vixen.Sys;
 using VixenModules.Property.State.Setup.Models;
+using VixenModules.Property.State.Setup.Services;
 
 namespace VixenModules.Property.State.Setup.ViewModels
 {
-	public class StateMapperViewModel : ViewModelBase, GongSolutions.Wpf.DragDrop.IDropTarget
+	/// <summary>
+	/// Provides the editable draft used by the State property mapping window.
+	/// </summary>
+	public sealed class StateMapperViewModel : ViewModelBase
 	{
-		private const string FormTitle = @"State Mapper";
-		public StateMapperViewModel(IEnumerable<IElementNode> selectedNodes)
+		private const string FormTitle = "State Mapper";
+		private readonly StateData _source;
+		private readonly StateData _draft;
+		private readonly IElementNode _rootNode;
+		private readonly Dictionary<Guid, IElementNode> _nodesById;
+		private readonly StateElementNodeSnapshot _elementTree;
+		private readonly IStateColorPickerService _colorPickerService;
+		private TaskCommand? _addItemCommand;
+		private TaskCommand? _removeItemCommand;
+		private TaskCommand<StateItemViewModel>? _editColorCommand;
+		private TaskCommand? _okCommand;
+		private TaskCommand? _cancelCommand;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="StateMapperViewModel"/> class.
+		/// </summary>
+		/// <param name="rootNode">The selected element node whose hierarchy can be assigned to states.</param>
+		/// <param name="source">The persisted State property data to update when the draft is saved.</param>
+		/// <param name="colorPickerService">The service that displays the applicable Vixen color chooser.</param>
+		public StateMapperViewModel(
+			IElementNode rootNode,
+			StateData source,
+			IStateColorPickerService colorPickerService)
 		{
-			Elements = selectedNodes.ToList();
-			StateDefinitions = new ObservableCollection<StateDefinition>();
+			ArgumentNullException.ThrowIfNull(rootNode);
+			ArgumentNullException.ThrowIfNull(source);
+			ArgumentNullException.ThrowIfNull(colorPickerService);
+
+			_rootNode = rootNode;
+			_source = source;
+			_colorPickerService = colorPickerService;
+			_draft = (StateData)source.Clone();
+			_elementTree = StateElementNodeSnapshot.FromElementNode(rootNode);
+			_nodesById = rootNode
+				.GetNodeEnumerator()
+				.Prepend(rootNode)
+				.DistinctBy(node => node.Id)
+				.ToDictionary(node => node.Id);
+			Items = new ObservableCollection<StateItemViewModel>(
+				_draft.Items.Select(item => new StateItemViewModel(item, _elementTree)));
 			Title = FormTitle;
 		}
 
-		protected override async Task InitializeAsync()
-		{
-			await base.InitializeAsync();
-		}
-
-		#region Title property
-
-			/// <summary>
-			/// Gets or sets the Title value.
-			/// </summary>
+		/// <summary>
+		/// Gets or sets the title displayed by the mapping window.
+		/// </summary>
+		/// <value>The title displayed by the mapping window.</value>
 		public new string Title
 		{
 			get => GetValue<string>(TitleProperty);
@@ -35,148 +66,183 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		}
 
 		/// <summary>
-		/// Title property data.
+		/// Identifies the <see cref="Title"/> property.
 		/// </summary>
 		public static readonly IPropertyData TitleProperty = RegisterProperty<string>(nameof(Title));
 
-		#endregion
-
-		#region Elements property
-
 		/// <summary>
-		/// Gets or sets the targeted Elements list.
+		/// Gets or sets the name that identifies the overall state definition.
 		/// </summary>
-		public List<IElementNode> Elements
+		/// <value>The name that identifies the overall state definition.</value>
+		public string Name
 		{
-			get => GetValue<List<IElementNode>>(ElementsProperty);
-			set => SetValue(ElementsProperty, value);
-		}
-
-		/// <summary>
-		/// Elements property data.
-		/// </summary>
-		public static readonly IPropertyData ElementsProperty = RegisterProperty<List<IElementNode>>(nameof(Elements));
-
-		#endregion
-
-		#region StateDefinitions property
-
-		/// <summary>
-		/// Gets or sets the Elements value.
-		/// </summary>
-		public ObservableCollection<StateDefinition> StateDefinitions
-		{
-			get => GetValue<ObservableCollection<StateDefinition>> (StateDefinitionsProperty);
-			set => SetValue(StateDefinitionsProperty, value);
-		}
-
-		/// <summary>
-		/// Elements property data.
-		/// </summary>
-		public static readonly IPropertyData StateDefinitionsProperty = RegisterProperty<ObservableCollection<StateDefinition>>(nameof(StateDefinitions));
-
-		#endregion
-
-		#region AddDefinition command
-
-		private TaskCommand? _addDefinitionCommand;
-
-		/// <summary>
-		/// Gets the AddDefinition command.
-		/// </summary>
-		public TaskCommand AddDefinitionCommand => _addDefinitionCommand ??= new TaskCommand(AddDefinitionAsync);
-
-		/// <summary>
-		/// Method to invoke when the AddDefinition command is executed.
-		/// </summary>
-		private async Task AddDefinitionAsync()
-		{
-			StateDefinitions.Add(new StateDefinition()
+			get => GetValue<string>(NameProperty);
+			set
 			{
-				StateColor = System.Drawing.Color.Silver
-			});
-		}
-
-		#endregion
-
-		#region EditColor command
-
-		private TaskCommand<StateDefinition>? _editColorCommand;
-
-		/// <summary>
-		/// Gets the EditColor command.
-		/// </summary>
-		public TaskCommand<StateDefinition> EditColorCommand => _editColorCommand ??= new TaskCommand<StateDefinition>(EditColorAsync);
-
-		/// <summary>
-		/// Method to invoke when the AddDefinition command is executed.
-		/// </summary>
-		private async Task EditColorAsync(StateDefinition? stateDefinition)
-		{
-			if (stateDefinition != null)
-			{
-				stateDefinition.StateColor = System.Drawing.Color.Black;
-				stateDefinition.StateName = Guid.NewGuid().ToString();
-				 Debug.WriteLine("Test");
+				SetValue(NameProperty, value);
+				_draft.Name = value;
 			}
 		}
 
-		#endregion
-
-		#region Ok command
-
-		private TaskCommand? _okCommand;
+		/// <summary>
+		/// Identifies the <see cref="Name"/> property.
+		/// </summary>
+		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name), string.Empty);
 
 		/// <summary>
-		/// Gets the Ok command.
+		/// Gets or sets the user-provided description of the state definition.
 		/// </summary>
-		public TaskCommand OkCommand => _okCommand ?? (_okCommand = new TaskCommand(OkAsync));
+		/// <value>The user-provided description of the state definition.</value>
+		public string Description
+		{
+			get => GetValue<string>(DescriptionProperty);
+			set
+			{
+				SetValue(DescriptionProperty, value);
+				_draft.Description = value;
+			}
+		}
 
 		/// <summary>
-		/// Method to invoke when the Ok command is executed.
+		/// Identifies the <see cref="Description"/> property.
 		/// </summary>
-		private async Task OkAsync()
-		{
-			//if (MapModified)
-			//{
-			//	await this.SaveAndCloseViewModelAsync();
-			//}
-			//else
-			//{
-				await CloseViewModelAsync(true);
-			//}
-		}
-
-		#endregion
-
-		#region Cancel command
-
-		private TaskCommand? _cancelCommand;
+		public static readonly IPropertyData DescriptionProperty = RegisterProperty<string>(nameof(Description), string.Empty);
 
 		/// <summary>
-		/// Gets the Cancel command.
+		/// Gets the editable state item rows.
 		/// </summary>
-		public TaskCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new TaskCommand(CancelMapAsync));
+		/// <value>The editable state item rows.</value>
+		public ObservableCollection<StateItemViewModel> Items { get; }
 
 		/// <summary>
-		/// Method to invoke when the Cancel command is executed.
+		/// Gets or sets the row whose assignment tree is displayed.
 		/// </summary>
-		private async Task CancelMapAsync()
+		/// <value>The row whose assignment tree is displayed.</value>
+		public StateItemViewModel? SelectedItem
 		{
-			//_elementMapService.CancelEdit();
-			await this.CancelAndCloseViewModelAsync();
+			get => GetValue<StateItemViewModel?>(SelectedItemProperty);
+			set
+			{
+				SetValue(SelectedItemProperty, value);
+				_removeItemCommand?.RaiseCanExecuteChanged();
+			}
 		}
 
-		#endregion
+		/// <summary>
+		/// Identifies the <see cref="SelectedItem"/> property.
+		/// </summary>
+		public static readonly IPropertyData SelectedItemProperty = RegisterProperty<StateItemViewModel?>(nameof(SelectedItem));
 
-		public void DragOver(IDropInfo dropInfo)
+		/// <summary>
+		/// Gets the command that adds a state item row.
+		/// </summary>
+		/// <value>The command that adds a state item row.</value>
+		public TaskCommand AddItemCommand => _addItemCommand ??= new TaskCommand(AddItemAsync, CanAddItem);
+
+		/// <summary>
+		/// Gets the command that removes the selected state item row.
+		/// </summary>
+		/// <value>The command that removes the selected state item row.</value>
+		public TaskCommand RemoveItemCommand => _removeItemCommand ??= new TaskCommand(RemoveItemAsync, CanRemoveItem);
+
+		/// <summary>
+		/// Gets the command that edits a state item color.
+		/// </summary>
+		/// <value>The command that edits a state item color.</value>
+		public TaskCommand<StateItemViewModel> EditColorCommand =>
+			_editColorCommand ??= new TaskCommand<StateItemViewModel>(EditColorAsync, CanEditColor);
+
+		/// <summary>
+		/// Gets the command that saves the draft and closes the window.
+		/// </summary>
+		/// <value>The command that saves the draft and closes the window.</value>
+		public TaskCommand OkCommand => _okCommand ??= new TaskCommand(OkAsync, CanOk);
+
+		/// <summary>
+		/// Gets the command that discards the draft and closes the window.
+		/// </summary>
+		/// <value>The command that discards the draft and closes the window.</value>
+		public TaskCommand CancelCommand => _cancelCommand ??= new TaskCommand(CancelMapAsync, CanCancel);
+
+		/// <inheritdoc />
+		protected override Task InitializeAsync()
 		{
-			throw new NotImplementedException();
+			Name = _draft.Name;
+			Description = _draft.Description;
+			SelectedItem = Items.FirstOrDefault();
+			return base.InitializeAsync();
 		}
 
-		public void Drop(IDropInfo dropInfo)
+		/// <inheritdoc />
+		protected override Task<bool> SaveAsync()
 		{
-			throw new NotImplementedException();
+			_source.Name = _draft.Name;
+			_source.Description = _draft.Description;
+			_source.Items = Items.Select(item => item.Item.Clone()).ToList();
+			return Task.FromResult(true);
 		}
+
+		private bool CanAddItem() => true;
+
+		private Task AddItemAsync()
+		{
+			var item = new StateItemViewModel(new StateItemData(), _elementTree);
+			Items.Add(item);
+			SelectedItem = item;
+			RemoveItemCommand.RaiseCanExecuteChanged();
+			return Task.CompletedTask;
+		}
+
+		private bool CanRemoveItem() => SelectedItem != null;
+
+		private Task RemoveItemAsync()
+		{
+			if (SelectedItem == null)
+			{
+				return Task.CompletedTask;
+			}
+
+			var index = Items.IndexOf(SelectedItem);
+			Items.Remove(SelectedItem);
+			SelectedItem = Items.Count == 0
+				? null
+				: Items[Math.Min(index, Items.Count - 1)];
+			RemoveItemCommand.RaiseCanExecuteChanged();
+			return Task.CompletedTask;
+		}
+
+		private static bool CanEditColor(StateItemViewModel? item) => item != null;
+
+		private Task EditColorAsync(StateItemViewModel? item)
+		{
+			if (item == null)
+			{
+				return Task.CompletedTask;
+			}
+
+			var nodes = item.AssignmentRoots
+				.SelectMany(root => root.GetEffectiveLeafNodeIds())
+				.Select(id => _nodesById.GetValueOrDefault(id))
+				.Where(node => node != null)
+				.Cast<IElementNode>()
+				.ToList();
+			var selectedColor = _colorPickerService.ChooseColor(
+				nodes.Count > 0 ? nodes : [_rootNode],
+				item.Color);
+			if (selectedColor.HasValue)
+			{
+				item.Color = selectedColor.Value;
+			}
+
+			return Task.CompletedTask;
+		}
+
+		private bool CanOk() => true;
+
+		private Task OkAsync() => this.SaveAndCloseViewModelAsync();
+
+		private bool CanCancel() => true;
+
+		private Task CancelMapAsync() => this.CancelAndCloseViewModelAsync();
 	}
 }

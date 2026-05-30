@@ -8,16 +8,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Setup\Services\**" />
-	  <EmbeddedResource Remove="Setup\Services\**" />
-	  <None Remove="Setup\Services\**" />
-	  <Page Remove="Setup\Services\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="NLog" />
 		<PackageReference Include="Catel.MVVM" />
-		<PackageReference Include="gong-wpf-dragdrop" />
 	</ItemGroup>
 
 	<ItemGroup>

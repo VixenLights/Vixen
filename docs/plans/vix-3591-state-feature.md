@@ -19,8 +19,8 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
 - [x] (2026-05-29) Revised the plan to include required unit-test coverage in `src\Vixen.Tests`.
 - [x] (2026-05-30) Completed Milestone 1: updated Jira issue `VIX-3591` with the prepared requirements, design, acceptance criteria, and testing steps.
 - [x] (2026-05-30) Completed Milestone 2: implemented the State property data contract, stable element assignment IDs, deep module cloning, and project-wide nullable analysis.
-- [ ] Rebuild the State setup UI and view model around the persisted data contract.
-- [ ] Connect the setup dialog to Display Setup save/cancel behavior.
+- [x] (2026-05-30) Completed Milestone 3: rebuilt the State setup UI around a cloned draft, added UI-free assignment tree models, added the color chooser service, and removed placeholder drag/drop behavior.
+- [x] (2026-05-30) Connected the setup dialog save/cancel path so Catel save applies the draft and cancel leaves persisted State data unchanged.
 - [ ] Add unit tests for State data cloning, module cloning, setup draft save/cancel behavior, and assignment count/group selection logic.
 - [ ] Integrate xLights `stateInfo` import with the persisted State property, if accepted for this milestone.
 - [ ] Build and manually validate the end-to-end workflow.
@@ -53,6 +53,12 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
 
 - Observation: The State project builds without warnings after enabling nullable analysis project-wide and correcting the exposed annotations.
   Evidence: `dotnet build src\Vixen.Modules\Property\State\State.csproj --configuration Debug --no-restore` completed with zero warnings and zero errors.
+
+- Observation: The placeholder State setup UI depended on GongSolutions drag/drop only for unimplemented methods.
+  Evidence: The old `StateMapperViewModel.DragOver` and `Drop` methods threw `NotImplementedException`. Milestone 3 removed those methods, removed the drag/drop XAML attributes, and removed the unused `gong-wpf-dragdrop` package reference from `State.csproj`.
+
+- Observation: Property module discovery can assign `null` instance data before a profile data set creates or attaches property data.
+  Evidence: `src\Vixen.Core\Sys\Modules.cs` initializes `_GetModuleData` with `null` and returns it when a descriptor does not declare `ModuleDataClass`. `StateDescriptor` follows the existing Property pattern and declares `ModuleStaticDataClass`, so `StateModule.ModuleData` must tolerate a missing assignment.
 
 ## Decision Log
 
@@ -88,9 +94,17 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
   Rationale: The repository root enables nullable analysis, but the shared Property-module props disable it. A project-level override applies consistent nullable checking to every State source file and avoids file-by-file directives.
   Date/Author: 2026-05-30 / Codex
 
+- Decision: Count effective assigned leaf nodes while persisting explicitly checked node IDs.
+  Rationale: A checked group should remain a compact persisted assignment, while the Count column should describe the leaf elements that a future State effect will operate on. Descendants are disabled while their ancestor group is checked and become editable again when the group is unchecked.
+  Date/Author: 2026-05-30 / Codex
+
+- Decision: Require exactly one selected Display Setup node when configuring the State property.
+  Rationale: The editor displays one selected element hierarchy and persists one property definition. Returning `false` for zero or multiple nodes avoids silently editing an arbitrary tree.
+  Date/Author: 2026-05-30 / Codex
+
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. Milestone 2 replaced the early single-row State property storage with a persistent overall definition containing a name, description, and multiple `StateItemData` rows. Each row stores its own stable ID, display color, and assigned `IElementNode.Id` values. `StateModule.CloneValues` now deep-clones this data. The State project enables nullable analysis through `State.csproj`. The next implementation milestone is the setup UI and its UI-free assignment model.
+Milestones 1 through 3 are complete. The State property now stores a persistent definition and opens a draft-based setup window with overall name and description fields, editable state rows, color selection, effective assignment counts, and a checkbox element hierarchy. Checking a group disables its descendants and persists the group assignment. Catel save copies the cloned draft back into the property; cancel discards it. The next milestone is focused xUnit coverage for the persisted contract, draft workflow, and assignment tree semantics.
 
 ## Context and Orientation
 
@@ -174,19 +188,21 @@ The stable identifier was verified before implementation: `IElementNode.Id` is a
 
 `src\Vixen.Modules\Property\State\StateModule.cs` now exposes `Name`, `Description`, and `Items` over `_data`, clones the complete collection deeply, initializes defaults, and returns `true` from `SetupElements` only when the dialog is accepted. `StateDescriptor.ModuleId` remains unchanged. No migration logic is required because the prototype State property has never shipped publicly.
 
-Milestone 3 rebuilds the setup view model and UI. Keep the WPF setup window under `src\Vixen.Modules\Property\State\Setup`, but make its model classes UI-only adapters over `StateData` rather than the persisted contract itself. The setup window should receive the selected parent node and a cloned `StateData` draft. All edits should apply to the draft. On OK, copy the draft back to the module. On Cancel, discard the draft.
+Milestone 3 rebuilds the setup view model and UI. This milestone is complete. The WPF setup window remains under `src\Vixen.Modules\Property\State\Setup`. `StateMapperViewModel` receives the selected parent node, persisted `StateData`, and an `IStateColorPickerService`. It clones the persisted data into a draft, exposes editable rows, and copies the draft back only from Catel's `SaveAsync` path. Cancel closes without applying the draft.
 
-Create UI view models with clear responsibilities:
+The implemented UI models have clear responsibilities:
 
-- A `StateMapperViewModel` owns the overall name, description, collection of row view models, selected row, and OK/Cancel/Add/Remove commands.
-- A `StateItemViewModel` owns one row's name, color, assignment IDs, and computed assignment count.
-- A tree item view model owns one `IElementNode`, checked state, enabled state, child tree items, and logic for group selection disabling descendants.
+- `StateMapperViewModel` owns the overall name, description, collection of row view models, selected row, and OK/Cancel/Add/Remove commands.
+- `StateItemViewModel` owns one row's name, color, assignment IDs, and computed assignment count.
+- `StateAssignmentTreeNode` owns one snapshot node, checked state, enabled state, child tree items, and group selection logic.
+- `StateElementNodeSnapshot` isolates tree editing from live `IElementNode` instances and allows unit tests to create hierarchies directly.
+- `IStateColorPickerService` isolates the Vixen discrete and general color chooser dialogs from the view model.
 
-Extract the group-selection and count behavior into UI-free classes so it can be unit tested. A practical shape is a `StateElementNodeSnapshot` record or class containing an assignment ID, name, and child snapshots, plus a `StateAssignmentTreeNode` class that contains checked/enabled state and computes effective assigned IDs. The production view model can build snapshots from `IElementNode`, but unit tests can build snapshots directly without creating real Vixen element nodes or WPF controls.
+The group-selection and count behavior is implemented in UI-free classes. `StateElementNodeSnapshot` contains an assignment ID, name, and child snapshots. `StateAssignmentTreeNode` contains checked/enabled state and computes explicit persisted IDs plus effective assigned leaf IDs. Production code builds snapshots from `IElementNode`; unit tests can build snapshots directly without creating live Vixen element nodes or WPF controls.
 
-Implement inline editing through `DataGridTextColumn` or a simple editable template. The grid columns must be state item name, color, count, and commands if remove/reorder is included. The feature document says the edit form should be tabular for state definitions; the tree is row-detail context shown beside the grid for the selected row, not a separate row per element.
+The XAML uses a `DataGridTextColumn` for inline item name editing, a colored hex-text template cell that invokes color editing on double-click, and a read-only count column. The tree is row-detail context shown beside the grid for the selected row, not a separate row per element.
 
-For colors, reuse Vixen's existing controls and behavior. The Face property already demonstrates both paths in `FaceSetupHelper.ChooseColor`: when the target nodes have valid discrete colors from `VixenModules.Property.Color.ColorModule.getValidColorsForElementNode`, use `Common.DiscreteColorPicker.Views.SingleDiscreteColorPickerView`; otherwise use `Common.Controls.ColorManagement.ColorPicker.ColorPicker`. Because the State setup view is WPF, prefer a small service class in the State module that opens these existing dialogs and returns `DialogResult` plus `System.Drawing.Color`. Keep the WPF view model free of direct color picker implementation details by calling an interface or injected helper. If adding an interface as public or protected API, document it with XML comments.
+For colors, `StateColorPickerService` reuses Vixen's existing controls and behavior. When assigned nodes have valid discrete colors from `VixenModules.Property.Color.ColorModule.getValidColorsForElementNode`, it opens `Common.DiscreteColorPicker.Views.SingleDiscreteColorPickerView`; otherwise it opens `Common.Controls.ColorManagement.ColorPicker.ColorPicker`. The WPF view model depends only on the documented `IStateColorPickerService` interface.
 
 Milestone 4 wires setup behavior into Display Setup correctly. In `StateModule.SetupElements`, validate that exactly one parent element is selected for the first implementation. If multiple elements are selected, either show a short message and return `false`, or support editing only the first selected element after confirming that is an existing Display Setup convention. Prefer one selected element because the requirements say the tree should contain the selected element and its children. Record the final choice in the Decision Log.
 
@@ -377,10 +393,8 @@ The fifth risk is accidentally making tests depend on WPF UI plumbing. Keep the 
 Open questions to resolve before or during Milestone 2:
 
 - Should the tree allow checking the selected parent element itself, or only descendants?
-- Should the Count column count effective leaf nodes, effective all nodes, or explicitly selected nodes only?
 - Should duplicate state item names be blocked within one state definition?
 - Should xLights import materialize State property data in this issue, or only preserve custom prop editor state metadata until the future State effect work?
-- Should multiple selected Display Setup elements be supported, or should State property setup require exactly one selected element?
 
 ## Revision Notes
 
@@ -391,3 +405,9 @@ Open questions to resolve before or during Milestone 2:
 2026-05-30: Marked Milestone 1 complete and implemented Milestone 2. Recorded the verified `IElementNode.Id` assignment identity, the new `StateItemData` contract, and the successful State project Debug build.
 
 2026-05-30: Removed prototype State data migration logic because the feature has never shipped publicly. Enabled nullable analysis for the complete State project in `State.csproj` instead of using a file-level directive. Corrected the nullable annotations exposed by that change and verified a zero-warning State project build.
+
+2026-05-30: Completed Milestone 3. Replaced the placeholder State mapper with a draft-based Catel view model, editable grid, checkbox assignment tree, effective leaf count, and isolated color chooser service. Removed unused drag/drop scaffolding and verified a zero-warning State project Debug build.
+
+2026-05-30: Fixed State module discovery initialization. `StateModule.ModuleData` now creates default `StateData` when the loader assigns a missing instance data value, preventing a null dereference during module loading.
+
+2026-05-30: Centered the WPF State mapper over the WinForms Display Setup window by assigning the active WinForms handle as the WPF owner and setting `WindowStartupLocation` to `CenterOwner`.
