@@ -21,9 +21,10 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
 - [x] (2026-05-30) Completed Milestone 2: implemented the State property data contract, stable element assignment IDs, deep module cloning, and project-wide nullable analysis.
 - [x] (2026-05-30) Completed Milestone 3: rebuilt the State setup UI around a cloned draft, added UI-free assignment tree models, added the color chooser service, and removed placeholder drag/drop behavior.
 - [x] (2026-05-30) Connected the setup dialog save/cancel path so Catel save applies the draft and cancel leaves persisted State data unchanged.
-- [ ] Add unit tests for State data cloning, module cloning, setup draft save/cancel behavior, and assignment count/group selection logic.
+- [x] (2026-05-30) Completed Milestone 7: added State property unit tests for data and module cloning, normalization, setup draft apply/discard behavior, and assignment tree group-selection semantics.
 - [x] (2026-05-30) Completed Milestone 5: materialized imported xLights `stateInfo` metadata as State properties on generated Vixen state-group elements.
-- [ ] Build and manually validate the end-to-end workflow.
+- [x] (2026-05-30) Completed the automated portion of Milestone 6: rebuilt the full solution in Debug and Release with no errors and confirmed the State test filter currently matches no tests.
+- [ ] Manually validate the end-to-end Display Setup and xLights import workflows.
 
 ## Surprises & Discoveries
 
@@ -59,6 +60,9 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
 
 - Observation: Property module discovery can assign `null` instance data before a profile data set creates or attaches property data.
   Evidence: `src\Vixen.Core\Sys\Modules.cs` initializes `_GetModuleData` with `null` and returns it when a descriptor does not declare `ModuleDataClass`. `StateDescriptor` follows the existing Property pattern and declares `ModuleStaticDataClass`, so `StateModule.ModuleData` must tolerate a missing assignment.
+
+- Observation: The State project reference integrates cleanly into the existing Windows-targeted xUnit project.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug --filter State --no-restore` passes all 8 State tests, and the unfiltered Debug test run passes all 62 tests.
 
 ## Decision Log
 
@@ -112,7 +116,7 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 and Milestone 5 are complete. The State property now stores a persistent definition and opens a draft-based setup window with overall name and description fields, editable state rows, color selection, effective assignment counts, and a checkbox element hierarchy. Checking a group clears and disables its descendants, then persists the group assignment. Catel save copies the cloned draft back into the property; cancel discards it. Imported xLights `stateInfo` metadata now materializes as State properties on generated state-group elements. The remaining work is focused xUnit coverage for the persisted contract, draft workflow, assignment tree semantics, and end-to-end validation.
+Milestones 1 through 3, Milestone 5, the automated portion of Milestone 6, and Milestone 7 are complete. The State property now stores a persistent definition and opens a draft-based setup window with overall name and description fields, editable state rows, color selection, effective assignment counts, and a checkbox element hierarchy. Checking a group clears and disables its descendants, then persists the group assignment. Catel save copies the cloned draft back into the property; cancel discards it. Imported xLights `stateInfo` metadata now materializes as State properties on generated state-group elements. Eight focused xUnit tests cover the persisted contract, module cloning, draft workflow, and assignment tree semantics. The remaining work is manual end-to-end Display Setup and xLights import validation.
 
 ## Context and Orientation
 
@@ -222,14 +226,14 @@ Make `StateMapperView` use Catel/Orchestra conventions already present in the co
 
 Milestone 5 integrates xLights and Vixen Prop import after the persisted property workflow is complete. This milestone is complete. The parser already builds `StateInfo` and `StateItem` values in `src\Vixen.Modules\App\CustomPropEditor\Import\XLights`. `PreviewCustomPropBuilder` now materializes those symbolic state definitions as State properties when imported custom props generate Vixen element nodes. Each `StateInfo.Name` maps to a State property `Name`, each `StateItem.Name` and `Color` maps to a `StateItemData`, and each row stores the generated state-item group node ID as its compact assignment.
 
-Milestone 6 validates the feature. Build the solution in Debug and Release from the repository root:
+Milestone 6 validates the feature. The automated build portion is complete. The full solution rebuilds successfully in Debug and Release from the repository root:
 
     msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug
     msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release
 
-The expected outcome is successful builds and updated output in `Debug\Output` and `Release\Output`. If restore fails because of network access in a sandboxed environment, rerun with the required approval outside the sandbox. Automated unit tests are required for the new State work and must pass before the manual Display Setup workflow is accepted.
+Both commands completed successfully on 2026-05-30 and updated output in `Debug\Output` and `Release\Output`. Existing repository warnings remain, including the LiteDB `NU1904` advisory and architecture mismatch warnings. Before Milestone 7, the State-filtered test command reported that no tests matched the `State` filter. Milestone 7 has now added and passed the required automated State unit tests.
 
-Milestone 7 adds the unit tests. Add a project reference from `src\Vixen.Tests\Vixen.Tests.csproj` to `..\Vixen.Modules\Property\State\State.csproj`. Add tests under `src\Vixen.Tests\Property\State`. Keep the tests focused on non-UI behavior so they run reliably in the normal test runner.
+Milestone 7 adds the unit tests. This milestone is complete. `src\Vixen.Tests\Vixen.Tests.csproj` now references `..\Vixen.Modules\Property\State\State.csproj`, and eight focused tests under `src\Vixen.Tests\Property\State` cover non-UI behavior so they run reliably in the normal test runner.
 
 Create tests with these names or equivalent names that express the same behavior:
 
@@ -251,6 +255,8 @@ The expected result is that only State-related tests run and all pass. If the te
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug
 
 The expected result is all tests pass. If adding the State project reference causes WPF or Windows-only build requirements for the test project, keep the test project Windows-targeted consistently with the solution and document the exact csproj change in this plan.
+
+Both the filtered and unfiltered commands completed successfully on 2026-05-30. The State filter ran 8 tests, and the complete Debug test project ran 62 tests. No test project target framework change was required.
 
 ## Concrete Steps
 
@@ -424,3 +430,7 @@ Open questions to resolve before or during Milestone 2:
 2026-05-30: Centered the WPF State mapper over the WinForms Display Setup window by assigning the active WinForms handle as the WPF owner and setting `WindowStartupLocation` to `CenterOwner`.
 
 2026-05-30: Completed Milestone 5. Imported xLights `stateInfo` metadata now materializes as State properties on generated state-group elements, with state-item child groups stored as compact assignment IDs.
+
+2026-05-30: Completed the automated portion of Milestone 6. Full Debug and Release solution rebuilds succeeded with existing repository warnings. The State-filtered test command reported that no matching tests exist yet, so Milestone 7 test implementation and manual Display Setup/import validation remain pending.
+
+2026-05-30: Completed Milestone 7. Added the State project reference to `Vixen.Tests` and eight UI-free xUnit tests for persisted-data cloning and normalization, module cloning, mapper draft apply/discard behavior, and assignment tree group-selection semantics. The filtered State suite passes 8 tests and the complete Debug test project passes 62 tests.
