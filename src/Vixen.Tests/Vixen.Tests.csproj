@@ -28,6 +28,7 @@
 		<ProjectReference Include="..\Vixen.Modules\App\LivePreview\LivePreview.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Chase\Chase.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Property\State\State.csproj" />
+		<ProjectReference Include="..\Vixen.Modules\Property\State\State.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Spiral\Spiral.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Spin\Spin.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Text\Text.csproj" />
