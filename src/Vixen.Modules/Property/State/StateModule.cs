@@ -1,41 +1,60 @@
-﻿using System.Windows.Forms.Integration;
+using System.Windows.Forms.Integration;
 using Vixen.Module.Property;
 using Vixen.Sys;
 using VixenModules.Property.State.Setup.ViewModels;
 using VixenModules.Property.State.Setup.Views;
 
 namespace VixenModules.Property.State {
-	public class StateModule : PropertyModuleInstanceBase {
+	/// <summary>
+	/// Provides named state definitions for display elements.
+	/// </summary>
+	public sealed class StateModule : PropertyModuleInstanceBase {
 
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		
 		private StateData _data = new();
 
+		/// <inheritdoc />
 		public override void SetDefaultValues() {
 			if (_data == null)
 			{
 				_data = new StateData();
 			}
+
+			_data.Normalize();
 		}
 
-		public string StateName
+		/// <summary>
+		/// Gets or sets the name that identifies the overall state definition.
+		/// </summary>
+		/// <value>The name that identifies the overall state definition.</value>
+		public string Name
 		{
-			get => _data.StateName;
-			set => _data.StateName = value;
+			get => _data.Name;
+			set => _data.Name = value;
 		}
 
-		public string ItemName
+		/// <summary>
+		/// Gets or sets the user-provided description of the state definition.
+		/// </summary>
+		/// <value>The user-provided description of the state definition.</value>
+		public string Description
 		{
-			get => _data.ItemName;
-			set => _data.ItemName = value;
+			get => _data.Description;
+			set => _data.Description = value;
 		}
 
-		public System.Drawing.Color ItemColor
+		/// <summary>
+		/// Gets or sets the configured state items.
+		/// </summary>
+		/// <value>The configured state items.</value>
+		public List<StateItemData> Items
 		{
-			get => _data.ItemColor;
-			set => _data.ItemColor = value;
+			get => _data.Items;
+			set => _data.Items = value;
 		}
 
+		/// <inheritdoc />
 		public override void CloneValues(IProperty sourceProperty)
 		{
 			var source = sourceProperty as StateModule;
@@ -46,17 +65,25 @@ namespace VixenModules.Property.State {
 				return;
 			}
 
-			StateName = source.StateName;
-			ItemName = source.ItemName;
-			ItemColor = source.ItemColor;
+			_data = (StateData)source._data.Clone();
 		}
 
+		/// <inheritdoc />
 		public override Vixen.Module.IModuleDataModel ModuleData {
 			get => _data;
-			set => _data = (StateData)value;
+			set
+			{
+				_data = (StateData)value;
+				_data.Normalize();
+			}
 		}
 
-		public static StateModule GetStateModuleForElement(IElementNode element)
+		/// <summary>
+		/// Gets the State property attached to an element node.
+		/// </summary>
+		/// <param name="element">The element node to inspect.</param>
+		/// <returns>The attached State property, or <see langword="null" /> when the node does not have one.</returns>
+		public static StateModule? GetStateModuleForElement(IElementNode element)
 		{
 			return element.Properties.Get(StateDescriptor.ModuleId) as StateModule;
 		}
@@ -73,7 +100,7 @@ namespace VixenModules.Property.State {
 			StateMapperView mapper = new StateMapperView(vm);
 			ElementHost.EnableModelessKeyboardInterop(mapper);
 			var response = mapper.ShowDialog();
-			return true;
+			return response == true;
 		}
 
 		#endregion

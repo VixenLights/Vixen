@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Catel.Data;
 using Catel.MVVM;
@@ -11,8 +11,6 @@ namespace VixenModules.Property.State.Setup.ViewModels
 	public class StateMapperViewModel : ViewModelBase, GongSolutions.Wpf.DragDrop.IDropTarget
 	{
 		private const string FormTitle = @"State Mapper";
-		private readonly IEnumerable<IElementNode> _selectedNodes;
-
 		public StateMapperViewModel(IEnumerable<IElementNode> selectedNodes)
 		{
 			Elements = selectedNodes.ToList();
@@ -81,7 +79,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		#region AddDefinition command
 
-		private TaskCommand _addDefinitionCommand;
+		private TaskCommand? _addDefinitionCommand;
 
 		/// <summary>
 		/// Gets the AddDefinition command.
@@ -103,7 +101,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		#region EditColor command
 
-		private TaskCommand<StateDefinition> _editColorCommand;
+		private TaskCommand<StateDefinition>? _editColorCommand;
 
 		/// <summary>
 		/// Gets the EditColor command.
@@ -113,7 +111,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		/// <summary>
 		/// Method to invoke when the AddDefinition command is executed.
 		/// </summary>
-		private async Task EditColorAsync(StateDefinition stateDefinition)
+		private async Task EditColorAsync(StateDefinition? stateDefinition)
 		{
 			if (stateDefinition != null)
 			{
@@ -127,7 +125,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		#region Ok command
 
-		private TaskCommand _okCommand;
+		private TaskCommand? _okCommand;
 
 		/// <summary>
 		/// Gets the Ok command.
@@ -153,7 +151,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		#region Cancel command
 
-		private TaskCommand _cancelCommand;
+		private TaskCommand? _cancelCommand;
 
 		/// <summary>
 		/// Gets the Cancel command.
