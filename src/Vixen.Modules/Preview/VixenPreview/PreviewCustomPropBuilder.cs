@@ -9,6 +9,7 @@ using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Color;
 using VixenModules.Property.Face;
 using VixenModules.Property.Order;
+using VixenModules.Property.State;
 using FaceComponent = VixenModules.App.CustomPropEditor.Model.FaceComponent;
 
 namespace VixenModules.Preview.VixenPreview
@@ -54,6 +55,7 @@ namespace VixenModules.Preview.VixenPreview
 				_elementModelMap.Add(rootNode.Id, rootElementNode);
 
 				CreateElementsForChildren(rootElementNode, rootNode);
+				AddStateProperties(rootNode);
 
 				var parent = Application.OpenForms["VixenPreviewSetup3"];
 				if (parent != null)
@@ -158,6 +160,41 @@ namespace VixenModules.Preview.VixenPreview
 				var newnode = FindOrCreateElementNode(elementModel, parentNode);
 				CreateElementsForChildren(newnode, elementModel);
 			}
+		}
+
+		private void AddStateProperties(ElementModel model)
+		{
+			foreach (var child in model.Children)
+			{
+				AddStateProperties(child);
+			}
+
+			var stateItemModels = model.Children
+				.Where(child => child.StateDefinition != null)
+				.ToList();
+			if (stateItemModels.Count == 0 || !_elementModelMap.TryGetValue(model.Id, out var node))
+			{
+				return;
+			}
+
+			var state = node.Properties.Contains(StateDescriptor.ModuleId)
+				? node.Properties.Get(StateDescriptor.ModuleId) as StateModule
+				: node.Properties.Add(StateDescriptor.ModuleId) as StateModule;
+			if (state == null)
+			{
+				return;
+			}
+
+			state.Name = stateItemModels[0].StateDefinition.StateDefinitionName;
+			state.Items = stateItemModels
+				.Where(item => _elementModelMap.ContainsKey(item.Id))
+				.Select(item => new StateItemData
+				{
+					Name = item.StateDefinition.Name,
+					Color = item.StateDefinition.DefaultColor,
+					ElementNodeIds = [_elementModelMap[item.Id].Id]
+				})
+				.ToList();
 		}
 
 		private ElementNode FindOrCreateElementNode(ElementModel elementModel, ElementNode parentNode)

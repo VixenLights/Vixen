@@ -41,6 +41,7 @@
 				<ProjectReference Include="..\..\Property\Location\Location.csproj" />
 				<ProjectReference Include="..\..\Property\Order\Order.csproj" />
 				<ProjectReference Include="..\..\Property\Orientation\Orientation.csproj" />
+				<ProjectReference Include="..\..\Property\State\State.csproj" />
 		</ItemGroup>
 
 		<ItemGroup>

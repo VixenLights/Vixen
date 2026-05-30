@@ -22,7 +22,7 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
 - [x] (2026-05-30) Completed Milestone 3: rebuilt the State setup UI around a cloned draft, added UI-free assignment tree models, added the color chooser service, and removed placeholder drag/drop behavior.
 - [x] (2026-05-30) Connected the setup dialog save/cancel path so Catel save applies the draft and cancel leaves persisted State data unchanged.
 - [ ] Add unit tests for State data cloning, module cloning, setup draft save/cancel behavior, and assignment count/group selection logic.
-- [ ] Integrate xLights `stateInfo` import with the persisted State property, if accepted for this milestone.
+- [x] (2026-05-30) Completed Milestone 5: materialized imported xLights `stateInfo` metadata as State properties on generated Vixen state-group elements.
 - [ ] Build and manually validate the end-to-end workflow.
 
 ## Surprises & Discoveries
@@ -78,6 +78,10 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
   Rationale: The core user workflow must define the data contract first. Import can then map parsed xLights state groups into the same contract without guessing the final shape.
   Date/Author: 2026-05-29 / Codex
 
+- Decision: Materialize imported xLights state definitions as State properties on generated state-group elements.
+  Rationale: Each imported `StateInfo` already creates a symbolic state group with one child group per state item. Attaching one State property to the generated state-group element preserves that hierarchy, maps item names and colors into the persisted contract, and stores the generated state-item group IDs as compact assignments.
+  Date/Author: 2026-05-30 / Codex
+
 - Decision: Add unit tests by referencing the State property project from `src\Vixen.Tests` and testing UI-free model/helper code, not WPF controls.
   Rationale: The feature has meaningful non-visual behavior: cloning persisted data, preserving or discarding setup drafts, computing effective assignment counts, and applying group-selection semantics. These can be tested deterministically without launching Display Setup or automating WPF.
   Date/Author: 2026-05-29 / Codex
@@ -108,7 +112,7 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. The State property now stores a persistent definition and opens a draft-based setup window with overall name and description fields, editable state rows, color selection, effective assignment counts, and a checkbox element hierarchy. Checking a group clears and disables its descendants, then persists the group assignment. Catel save copies the cloned draft back into the property; cancel discards it. The next milestone is focused xUnit coverage for the persisted contract, draft workflow, and assignment tree semantics.
+Milestones 1 through 3 and Milestone 5 are complete. The State property now stores a persistent definition and opens a draft-based setup window with overall name and description fields, editable state rows, color selection, effective assignment counts, and a checkbox element hierarchy. Checking a group clears and disables its descendants, then persists the group assignment. Catel save copies the cloned draft back into the property; cancel discards it. Imported xLights `stateInfo` metadata now materializes as State properties on generated state-group elements. The remaining work is focused xUnit coverage for the persisted contract, draft workflow, assignment tree semantics, and end-to-end validation.
 
 ## Context and Orientation
 
@@ -216,7 +220,7 @@ When setup opens, ensure the selected element has a State property. If setup was
 
 Make `StateMapperView` use Catel/Orchestra conventions already present in the codebase: bindings and commands should carry behavior; code-behind should only initialize the view, set the icon, and handle view-specific setup. Do not use WinForms for new State UI. Remove placeholder drag/drop code or implement it fully; no command or event should throw `NotImplementedException` during normal use.
 
-Milestone 5 integrates xLights import after the persisted property workflow is complete. The parser already builds `StateInfo` and `StateItem` values in `src\Vixen.Modules\App\CustomPropEditor\Import\XLights`. Decide whether imported custom prop state groups should remain only in the custom prop model or should also create State property data on the generated Vixen element nodes. If the desired behavior is property creation, map each `StateInfo.Name` to a State property `Name`, map each `StateItem.Name` and `Color` to a `StateItemData`, and map the generated child nodes in the state item group to assignment IDs. Keep this as a separate commit because it touches import and prop modeling, not just Display Setup.
+Milestone 5 integrates xLights and Vixen Prop import after the persisted property workflow is complete. This milestone is complete. The parser already builds `StateInfo` and `StateItem` values in `src\Vixen.Modules\App\CustomPropEditor\Import\XLights`. `PreviewCustomPropBuilder` now materializes those symbolic state definitions as State properties when imported custom props generate Vixen element nodes. Each `StateInfo.Name` maps to a State property `Name`, each `StateItem.Name` and `Color` maps to a `StateItemData`, and each row stores the generated state-item group node ID as its compact assignment.
 
 Milestone 6 validates the feature. Build the solution in Debug and Release from the repository root:
 
@@ -309,7 +313,7 @@ Manual validation:
 
 Start Vixen from the Debug output. In Display Setup, create or select a parent prop with child nodes. Add the State property to the parent if it is not already present. Configure the State property. Enter an overall name such as `Santa Arm` and a description such as `Controls the waving arm positions`. Add rows named `Arm Up` and `Arm Down`. Assign different colors. Select each row and check different child elements in the tree. Check child nodes, then check their parent group and confirm the child checks clear, descendants are grayed out, and descendants are counted. Uncheck the group and confirm descendants become enabled but remain unchecked. Press OK. Reopen the property and confirm all values are still present. Make a visible change, press Cancel, reopen again, and confirm the canceled change was not persisted.
 
-If xLights integration is included, import an xModel containing `stateInfo`. The imported prop should preserve state groups either as custom prop model state definitions or as State property data, depending on the final decision recorded in this plan. The importer should not lose existing face info behavior.
+Import an xModel containing `stateInfo`. The imported prop should preserve its custom prop model state definitions and create State property data on each generated state-group element. Open the State property in Display Setup and verify the imported definition name, item names, colors, and state-item group assignments. The importer should not lose existing face info behavior.
 
 Unit-test acceptance:
 
@@ -400,7 +404,6 @@ Open questions to resolve before or during Milestone 2:
 
 - Should the tree allow checking the selected parent element itself, or only descendants?
 - Should duplicate state item names be blocked within one state definition?
-- Should xLights import materialize State property data in this issue, or only preserve custom prop editor state metadata until the future State effect work?
 
 ## Revision Notes
 
@@ -419,3 +422,5 @@ Open questions to resolve before or during Milestone 2:
 2026-05-30: Fixed State module discovery initialization. `StateModule.ModuleData` now creates default `StateData` when the loader assigns a missing instance data value, preventing a null dereference during module loading.
 
 2026-05-30: Centered the WPF State mapper over the WinForms Display Setup window by assigning the active WinForms handle as the WPF owner and setting `WindowStartupLocation` to `CenterOwner`.
+
+2026-05-30: Completed Milestone 5. Imported xLights `stateInfo` metadata now materializes as State properties on generated state-group elements, with state-item child groups stored as compact assignment IDs.
