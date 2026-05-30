@@ -30,6 +30,8 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			{
 				root.AssignmentChanged += AssignmentChanged;
 			}
+
+			UpdateAssignments();
 		}
 
 		/// <summary>
@@ -88,6 +90,11 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		internal StateItemData Item => _item;
 
 		private void AssignmentChanged(object? sender, EventArgs e)
+		{
+			UpdateAssignments();
+		}
+
+		private void UpdateAssignments()
 		{
 			_item.ElementNodeIds = AssignmentRoots
 				.SelectMany(root => root.GetSelectedNodeIds())

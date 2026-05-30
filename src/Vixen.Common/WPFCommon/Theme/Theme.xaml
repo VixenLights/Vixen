@@ -609,7 +609,7 @@
                       Data="M203.44033,309.51348 L206.49521,313.93147 212.24245,303.99957" />
                             </Grid>
                         </BulletDecorator.Bullet>
-                        <ContentPresenter Margin="8,0,0,0" />
+                        <ContentPresenter Name="contentPresenter" Margin="8,0,0,0"/>
                     </BulletDecorator>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
@@ -617,6 +617,10 @@
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="Arrow" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource ForeColorDisabledBrush}"/>
+                            <Setter Property="Opacity" Value="1.0"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -985,6 +989,11 @@
 		<Setter Property="TextWrapping" Value="NoWrap"/>
 		<Setter Property="TextTrimming" Value="None"/>
 		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource ForeColorDisabledBrush}"/>
+            </Trigger>
+        </Style.Triggers>
 	</Style>
 
 	<!-- TextBox -->

@@ -95,7 +95,11 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
   Date/Author: 2026-05-30 / Codex
 
 - Decision: Count effective assigned leaf nodes while persisting explicitly checked node IDs.
-  Rationale: A checked group should remain a compact persisted assignment, while the Count column should describe the leaf elements that a future State effect will operate on. Descendants are disabled while their ancestor group is checked and become editable again when the group is unchecked.
+  Rationale: A checked group should remain a compact persisted assignment, while the Count column should describe the leaf elements that a future State effect will operate on. Checking a group clears explicit descendant selections before disabling those descendants. Unchecking the group re-enables descendants without restoring their previous checks.
+  Date/Author: 2026-05-30 / Codex
+
+- Decision: Enforce group-selection exclusivity in the assignment tree.
+  Rationale: A branch must persist either a selected group or selected descendants, never both. Clearing checked descendants when their parent group is checked keeps assignments unambiguous, while disabling and graying descendants confirms that they cannot be checked until the group is unchecked.
   Date/Author: 2026-05-30 / Codex
 
 - Decision: Require exactly one selected Display Setup node when configuring the State property.
@@ -104,7 +108,7 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. The State property now stores a persistent definition and opens a draft-based setup window with overall name and description fields, editable state rows, color selection, effective assignment counts, and a checkbox element hierarchy. Checking a group disables its descendants and persists the group assignment. Catel save copies the cloned draft back into the property; cancel discards it. The next milestone is focused xUnit coverage for the persisted contract, draft workflow, and assignment tree semantics.
+Milestones 1 through 3 are complete. The State property now stores a persistent definition and opens a draft-based setup window with overall name and description fields, editable state rows, color selection, effective assignment counts, and a checkbox element hierarchy. Checking a group clears and disables its descendants, then persists the group assignment. Catel save copies the cloned draft back into the property; cancel discards it. The next milestone is focused xUnit coverage for the persisted contract, draft workflow, and assignment tree semantics.
 
 ## Context and Orientation
 
@@ -131,7 +135,7 @@ Milestone 1 updates Jira before code work starts. Use the markdown below as the 
 
     ## Requirements
     
-    Implement a general State property for Display Setup so users can attach a named state definition to a selected prop element. The state definition must include a name, a description, and one or more state rows. Each row must include a state item name, color, and selected child IElementNode assignments. The setup UI must show rows in a grid, allow inline name editing, launch the standard Vixen color chooser from the color cell, show the color cell with the selected color and hex text, show an assignment count, and show a checkbox tree for the selected row. Selecting a group node in the tree must gray out descendants and treat them as included by the group selection.
+    Implement a general State property for Display Setup so users can attach a named state definition to a selected prop element. The state definition must include a name, a description, and one or more state rows. Each row must include a state item name, color, and selected child IElementNode assignments. The setup UI must show rows in a grid, allow inline name editing, launch the standard Vixen color chooser from the color cell, show the color cell with the selected color and hex text, show an assignment count, and show a checkbox tree for the selected row. Selecting a group node in the tree must uncheck any selected descendants, gray out those descendants, prevent them from being checked while the group remains selected, and treat them as included by the group selection.
     
     ## High-Level Design
     
@@ -146,11 +150,12 @@ Milestone 1 updates Jira before code work starts. Use the markdown below as the 
     - Clicking the color cell opens the existing Vixen color chooser or discrete color chooser where element colors are constrained.
     - The color cell displays the selected color as the background and the hex value as text.
     - Selecting a row shows a checkbox tree containing the selected element and its children.
-    - Checking a group node includes all descendants and disables/grays those descendants.
+    - Checking a group node unchecks any selected descendants, includes all descendants, and disables/grays those descendants.
+    - Unchecking a group node re-enables descendants without restoring their previous checks.
     - The count column reflects the number of explicitly selected nodes plus descendants implied by checked group nodes.
     - OK persists the data; Cancel leaves the original property data unchanged.
     - Reopening the property shows the saved name, description, rows, colors, counts, and tree selections.
-    - Unit tests cover deep cloning of state data, module clone behavior, save/cancel draft behavior, assignment count calculation, and group-selection descendant disabling.
+    - Unit tests cover deep cloning of state data, module clone behavior, save/cancel draft behavior, assignment count calculation, group-selection descendant clearing, and descendant disabling.
     - The solution builds in Debug and Release.
     
     ## Testing Steps
@@ -162,10 +167,11 @@ Milestone 1 updates Jira before code work starts. Use the markdown below as the 
     5. Add the State property and configure it.
     6. Enter a state name and description.
     7. Add two rows, set row names, choose different colors, and assign different child nodes.
-    8. Check a group node and verify its descendants become gray and count as included.
-    9. Save, reopen the State property, and verify all values are restored.
-    10. Press Cancel after making changes and verify previously saved values are unchanged.
-    11. Build with `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release`.
+    8. Check child nodes, then check their parent group. Verify the child checks clear, the descendants become gray, and the descendants count as included.
+    9. Uncheck the group and verify its descendants become enabled but remain unchecked.
+    10. Save, reopen the State property, and verify all values are restored.
+    11. Press Cancel after making changes and verify previously saved values are unchanged.
+    12. Build with `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release`.
 
 Milestone 2 defines and implements the persisted data model. This milestone is complete. `src\Vixen.Modules\Property\State\StateData.cs` now serializes the complete state definition, and `src\Vixen.Modules\Property\State\StateItemData.cs` stores each row in a separate one-class-per-file model type. The types live under the State property module rather than the setup UI folder because future effects and import code will need them without referencing setup view models. Public APIs include XML docs as required by `csharp-docs`.
 
@@ -227,8 +233,8 @@ Create tests with these names or equivalent names that express the same behavior
 - `StateDataCloneTests.OnDeserialized_InitializesMissingCollections` verifies a newly deserialized or manually constructed `StateData` with missing collections is normalized to an empty item list rather than throwing.
 - `StateModuleCloneTests.CloneValues_CopiesAllStateItemsAndAssignments` creates a source `StateModule`, clones values into another module, mutates the target, and asserts the source is unchanged.
 - `StateAssignmentTreeTests.CheckedLeaf_ReturnsOneEffectiveAssignment` builds a tiny snapshot tree, checks one leaf, and asserts one effective assignment ID and a count of one.
-- `StateAssignmentTreeTests.CheckedGroup_DisablesDescendantsAndCountsEffectiveChildren` checks a group node, asserts descendants are disabled or grayed by the model state, and asserts the effective assignment count matches the chosen count rule recorded in the Decision Log.
-- `StateAssignmentTreeTests.UncheckingGroup_ReenablesDescendantsAndClearsImpliedAssignments` checks and then unchecks a group node, asserting descendants become enabled again and implied assignment IDs are removed.
+- `StateAssignmentTreeTests.CheckingGroup_ClearsSelectedDescendantsDisablesThemAndCountsEffectiveChildren` selects descendants before checking their parent group, asserts the descendant checks are cleared and disabled or grayed by the model state, and asserts the effective assignment count matches the chosen count rule recorded in the Decision Log.
+- `StateAssignmentTreeTests.UncheckingGroup_ReenablesDescendantsWithoutRestoringChecks` checks and then unchecks a group node, asserting descendants become enabled again, remain unchecked, and implied assignment IDs are removed.
 - `StateMapperDraftTests.Cancel_DoesNotMutateOriginalStateData` edits the setup draft and cancels or discards it, then asserts the original `StateData` remains unchanged.
 - `StateMapperDraftTests.Ok_AppliesDraftToOriginalStateData` edits the setup draft, accepts it, and asserts the module or original data receives the changes.
 
@@ -301,7 +307,7 @@ Build validation:
 
 Manual validation:
 
-Start Vixen from the Debug output. In Display Setup, create or select a parent prop with child nodes. Add the State property to the parent if it is not already present. Configure the State property. Enter an overall name such as `Santa Arm` and a description such as `Controls the waving arm positions`. Add rows named `Arm Up` and `Arm Down`. Assign different colors. Select each row and check different child elements in the tree. Check a group node and confirm its descendants are grayed out and counted. Press OK. Reopen the property and confirm all values are still present. Make a visible change, press Cancel, reopen again, and confirm the canceled change was not persisted.
+Start Vixen from the Debug output. In Display Setup, create or select a parent prop with child nodes. Add the State property to the parent if it is not already present. Configure the State property. Enter an overall name such as `Santa Arm` and a description such as `Controls the waving arm positions`. Add rows named `Arm Up` and `Arm Down`. Assign different colors. Select each row and check different child elements in the tree. Check child nodes, then check their parent group and confirm the child checks clear, descendants are grayed out, and descendants are counted. Uncheck the group and confirm descendants become enabled but remain unchecked. Press OK. Reopen the property and confirm all values are still present. Make a visible change, press Cancel, reopen again, and confirm the canceled change was not persisted.
 
 If xLights integration is included, import an xModel containing `stateInfo`. The imported prop should preserve state groups either as custom prop model state definitions or as State property data, depending on the final decision recorded in this plan. The importer should not lose existing face info behavior.
 
@@ -367,13 +373,13 @@ Required UI behavior:
     DataGrid rows bind two-way to state item names and colors.
     Color cells open Vixen color selection and display hex text over the selected color.
     Count cells are read-only and update when tree selections change.
-    Tree nodes have checkboxes; checking a group disables descendants and counts them as included.
+    Tree nodes have checkboxes; checking a group clears selected descendants, disables them, and counts them as included. Unchecking the group re-enables descendants without restoring their previous checks.
 
 Required unit-test behavior:
 
     State persisted data clone tests prove deep-copy behavior.
     State module clone tests prove Display Setup clone behavior copies all rows and assignments.
-    Assignment tree tests prove group selection, descendant disabling, unchecking, and count calculations.
+    Assignment tree tests prove group selection, descendant clearing and disabling, unchecking without restoring checks, and count calculations.
     Draft apply/cancel tests prove the setup workflow does not mutate module data until OK.
 
 No new NuGet package should be added for the first implementation. Existing dependencies already include Catel, GongSolutions.Wpf.DragDrop, WPFCommon, Controls, DiscreteColorPicker, Resources, Vixen.Core, and the Color property module. Remove `gong-wpf-dragdrop` only if drag/drop is not used anywhere in the final State UI and no other State code references it.
@@ -382,7 +388,7 @@ No new NuGet package should be added for the first implementation. Existing depe
 
 The first risk is element identity. The implementation uses the verified stable `IElementNode.Id` value for serialization. Storing names is not acceptable except as display-only data.
 
-The second risk is group selection semantics. The requirement says that if a group node is selected, descendants are grayed out and assumed associated. The count must be carefully defined as either explicit selected nodes or effective leaf nodes. This plan recommends effective associated nodes so the count matches what the State effect will eventually operate on.
+The second risk is group selection semantics. The requirement says that if a group node is selected, explicitly checked descendants are cleared, descendants are grayed out, and descendants are assumed associated. The count must be carefully defined as either explicit selected nodes or effective leaf nodes. This plan recommends effective associated nodes so the count matches what the State effect will eventually operate on.
 
 The third risk is WPF/WinForms interop. The State setup view is WPF, while some existing color pickers are WinForms. Reuse the existing controls through a small service or helper to keep the view model testable and avoid embedding dialog-specific logic in row models.
 
@@ -407,6 +413,8 @@ Open questions to resolve before or during Milestone 2:
 2026-05-30: Removed prototype State data migration logic because the feature has never shipped publicly. Enabled nullable analysis for the complete State project in `State.csproj` instead of using a file-level directive. Corrected the nullable annotations exposed by that change and verified a zero-warning State project build.
 
 2026-05-30: Completed Milestone 3. Replaced the placeholder State mapper with a draft-based Catel view model, editable grid, checkbox assignment tree, effective leaf count, and isolated color chooser service. Removed unused drag/drop scaffolding and verified a zero-warning State project Debug build.
+
+2026-05-30: Added group-selection exclusivity. Checking a group now clears explicit descendant selections before disabling descendants, and unchecking the group re-enables descendants without restoring their previous checks.
 
 2026-05-30: Fixed State module discovery initialization. `StateModule.ModuleData` now creates default `StateData` when the loader assigns a missing instance data value, preventing a null dereference during module loading.
 

@@ -30,6 +30,11 @@ namespace VixenModules.Property.State.Setup.Models
 				child.AssignmentChanged += ChildAssignmentChanged;
 			}
 
+			if (_isChecked)
+			{
+				ClearDescendantSelections();
+			}
+
 			UpdateDescendantEnabledState();
 		}
 
@@ -62,6 +67,11 @@ namespace VixenModules.Property.State.Setup.Models
 				if (!IsEnabled || !SetProperty(ref _isChecked, value))
 				{
 					return;
+				}
+
+				if (value)
+				{
+					ClearDescendantSelections();
 				}
 
 				UpdateDescendantEnabledState();
@@ -113,6 +123,24 @@ namespace VixenModules.Property.State.Setup.Models
 			foreach (var child in Children)
 			{
 				child.SetEnabled(!IsChecked);
+			}
+		}
+
+		private void ClearDescendantSelections()
+		{
+			foreach (var child in Children)
+			{
+				child.ClearSelection();
+			}
+		}
+
+		private void ClearSelection()
+		{
+			SetProperty(ref _isChecked, false, nameof(IsChecked));
+
+			foreach (var child in Children)
+			{
+				child.ClearSelection();
 			}
 		}
 
