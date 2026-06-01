@@ -35,7 +35,7 @@ The user-visible proof is straightforward: open a State property in Display Setu
 - [x] (2026-06-01 10:19 -05:00) Refined `StateItemViewModel` to use Catel `[Model]` and `[ViewModelToModel]` mappings for direct `StateItemData` fields. Assignment-tree aggregation remains explicit because it projects selected tree nodes into `ElementNodeIds`. Removed the redundant row-name `Validate(true)` call because Catel automatically validates on property changes. The filtered State suite passed 29 of 29 tests and the full Debug rebuild succeeded.
 - [x] (2026-06-01 10:25 -05:00) Refined `StateMapperViewModel` to register its cloned draft as a Catel `[Model]` and map direct `Name` and `Description` fields through `[ViewModelToModel]`. Draft item wrappers and final source commit remain explicit because they represent collection editing and save semantics. The filtered State suite passed 29 of 29 tests and the full Debug rebuild succeeded.
 - [x] (2026-06-01 10:45 -05:00) Added selected-row assignment-tree expansion so checked elements are visible while unrelated branches remain collapsed. Tree nodes expose bindable expansion state, row selection recalculates ancestor expansion from checked descendants, and a focused test verifies required branches expand while a previously expanded unrelated branch collapses. The filtered State suite passed 30 of 30 tests and the full Debug rebuild succeeded.
-- [ ] Run targeted tests, Debug and Release builds, and the manual Display Setup scenarios.
+- [x] (2026-06-01 10:55 -05:00) Run targeted tests, Debug and Release builds, and the manual Display Setup scenarios.
 
 ## Surprises & Discoveries
 
