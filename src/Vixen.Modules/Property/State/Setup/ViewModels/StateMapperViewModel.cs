@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using Catel.Data;
 using Catel.MVVM;
 using Vixen.Sys;
@@ -14,7 +16,6 @@ namespace VixenModules.Property.State.Setup.ViewModels
 	{
 		private const string FormTitle = "State Mapper";
 		private readonly StateData _source;
-		private readonly StateData _draft;
 		private readonly IElementNode _rootNode;
 		private readonly Dictionary<Guid, IElementNode> _nodesById;
 		private readonly StateElementNodeSnapshot _elementTree;
@@ -43,7 +44,8 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			_rootNode = rootNode;
 			_source = source;
 			_colorPickerService = colorPickerService;
-			_draft = (StateData)source.Clone();
+			var draft = (StateData)source.Clone();
+			DeferValidationUntilFirstSaveCall = false;
 			_elementTree = StateElementNodeSnapshot.FromElementNode(rootNode);
 			_nodesById = rootNode
 				.GetNodeEnumerator()
@@ -51,9 +53,27 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				.DistinctBy(node => node.Id)
 				.ToDictionary(node => node.Id);
 			Items = new ObservableCollection<StateItemViewModel>(
-				_draft.Items.Select(item => new StateItemViewModel(item, _elementTree)));
+				draft.Items.Select(item => new StateItemViewModel(item, _elementTree)));
+			Items.CollectionChanged += ItemsCollectionChanged;
+			foreach (var item in Items)
+			{
+				AttachItem(item);
+			}
+
 			Title = FormTitle;
+			SelectedItem = Items.FirstOrDefault();
+			Draft = draft;
+			Validate(true);
 		}
+
+		[Model]
+		internal StateData Draft
+		{
+			get => GetValue<StateData>(DraftProperty);
+			private set => SetValue(DraftProperty, value);
+		}
+
+		private static readonly IPropertyData DraftProperty = RegisterProperty<StateData>(nameof(Draft));
 
 		/// <summary>
 		/// Gets or sets the title displayed by the mapping window.
@@ -74,13 +94,15 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		/// Gets or sets the name that identifies the overall state definition.
 		/// </summary>
 		/// <value>The name that identifies the overall state definition.</value>
+		[ViewModelToModel(nameof(Draft))]
 		public string Name
 		{
 			get => GetValue<string>(NameProperty);
 			set
 			{
-				SetValue(NameProperty, value);
-				_draft.Name = value;
+				var normalizedName = value?.Trim() ?? string.Empty;
+				SetValue(NameProperty, normalizedName);
+				ValidateAndRefreshOkCommand();
 			}
 		}
 
@@ -93,14 +115,11 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		/// Gets or sets the user-provided description of the state definition.
 		/// </summary>
 		/// <value>The user-provided description of the state definition.</value>
+		[ViewModelToModel(nameof(Draft))]
 		public string Description
 		{
 			get => GetValue<string>(DescriptionProperty);
-			set
-			{
-				SetValue(DescriptionProperty, value);
-				_draft.Description = value;
-			}
+			set => SetValue(DescriptionProperty, value);
 		}
 
 		/// <summary>
@@ -165,19 +184,18 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		public TaskCommand CancelCommand => _cancelCommand ??= new TaskCommand(CancelMapAsync, CanCancel);
 
 		/// <inheritdoc />
-		protected override Task InitializeAsync()
-		{
-			Name = _draft.Name;
-			Description = _draft.Description;
-			SelectedItem = Items.FirstOrDefault();
-			return base.InitializeAsync();
-		}
-
-		/// <inheritdoc />
 		protected override Task<bool> SaveAsync()
 		{
-			_source.Name = _draft.Name;
-			_source.Description = _draft.Description;
+			NormalizeNames();
+			Validate(true);
+			if (HasBlockingValidationErrors())
+			{
+				RaiseOkCanExecuteChanged();
+				return Task.FromResult(false);
+			}
+
+			_source.Name = Draft.Name;
+			_source.Description = Draft.Description;
 			_source.Items = Items.Select(item => item.Item.Clone()).ToList();
 			return Task.FromResult(true);
 		}
@@ -190,6 +208,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			Items.Add(item);
 			SelectedItem = item;
 			RemoveItemCommand.RaiseCanExecuteChanged();
+			ValidateAndRefreshOkCommand();
 			return Task.CompletedTask;
 		}
 
@@ -208,6 +227,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				? null
 				: Items[Math.Min(index, Items.Count - 1)];
 			RemoveItemCommand.RaiseCanExecuteChanged();
+			ValidateAndRefreshOkCommand();
 			return Task.CompletedTask;
 		}
 
@@ -237,12 +257,111 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			return Task.CompletedTask;
 		}
 
-		private bool CanOk() => true;
+		/// <inheritdoc />
+		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
+		{
+			if (string.IsNullOrWhiteSpace(Name))
+			{
+				validationResults.Add(FieldValidationResult.CreateError(NameProperty, "State name is required."));
+			}
+			else if (Name.Length < 3)
+			{
+				validationResults.Add(FieldValidationResult.CreateWarning(NameProperty, "State names shorter than three characters may be unclear."));
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void ValidateBusinessRules(List<IBusinessRuleValidationResult> validationResults)
+		{
+			if (Items.Any(item => string.IsNullOrWhiteSpace(item.Name)))
+			{
+				validationResults.Add(BusinessRuleValidationResult.CreateError("Every State item requires a name."));
+			}
+
+			var hasCaseOnlyDuplicates = Items
+				.GroupBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
+				.Any(group => group
+					.Select(item => item.Name)
+					.Distinct(StringComparer.Ordinal)
+					.Skip(1)
+					.Any());
+			if (hasCaseOnlyDuplicates)
+			{
+				validationResults.Add(BusinessRuleValidationResult.CreateWarning("State item names differ only by casing. Check you don't have a typo."));
+			}
+		}
+
+		private bool CanOk() => !HasBlockingValidationErrors();
 
 		private Task OkAsync() => this.SaveAndCloseViewModelAsync();
 
 		private bool CanCancel() => true;
 
 		private Task CancelMapAsync() => this.CancelAndCloseViewModelAsync();
+
+		private void ItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.OldItems != null)
+			{
+				foreach (StateItemViewModel item in e.OldItems)
+				{
+					DetachItem(item);
+				}
+			}
+
+			if (e.NewItems != null)
+			{
+				foreach (StateItemViewModel item in e.NewItems)
+				{
+					AttachItem(item);
+				}
+			}
+
+			ValidateAndRefreshOkCommand();
+		}
+
+		private void AttachItem(StateItemViewModel item)
+		{
+			item.PropertyChanged += ItemPropertyChanged;
+		}
+
+		private void DetachItem(StateItemViewModel item)
+		{
+			item.PropertyChanged -= ItemPropertyChanged;
+		}
+
+		private void ItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(StateItemViewModel.Name))
+			{
+				ValidateAndRefreshOkCommand();
+			}
+		}
+
+		private void NormalizeNames()
+		{
+			Name = Name;
+			foreach (var item in Items)
+			{
+				item.Name = item.Name;
+			}
+		}
+
+		private bool HasBlockingValidationErrors()
+		{
+			return string.IsNullOrWhiteSpace(Name) ||
+				Items.Any(item => string.IsNullOrWhiteSpace(item.Name));
+		}
+
+		private void ValidateAndRefreshOkCommand()
+		{
+			Validate(true);
+			RaiseOkCanExecuteChanged();
+		}
+
+		private void RaiseOkCanExecuteChanged()
+		{
+			_okCommand?.RaiseCanExecuteChanged();
+		}
 	}
 }

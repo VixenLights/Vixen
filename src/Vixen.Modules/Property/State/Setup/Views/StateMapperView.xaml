@@ -26,6 +26,10 @@
 	</Window.Resources>
 
 	<DockPanel Background="{DynamicResource BackColorBrush}" Margin="5,0, 5, 0">
+		<catel:WarningAndErrorValidator DockPanel.Dock="Top"
+										Source="{Binding}"
+										Margin="0,0,0,8"/>
+
 		<WrapPanel DockPanel.Dock="Bottom"
 				   Margin="0,8,8,8"
 				   Style="{StaticResource RowButtonRightContainerStyle}">
@@ -61,7 +65,7 @@
 				</Grid.RowDefinitions>
 				<TextBlock Text="Name" Margin="0,3,8,3" VerticalAlignment="Center"/>
 				<TextBox Grid.Column="1"
-						 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+						 Text="{Binding Name, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
 						 Margin="0,2"/>
 				<TextBlock Grid.Row="1" Text="Description" Margin="0,3,8,3" VerticalAlignment="Top"/>
 				<TextBox Grid.Row="1"
@@ -88,7 +92,7 @@
 						  SelectionMode="Single">
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="Name"
-											Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
 											Width="*"/>
 						<DataGridTemplateColumn Header="Color" Width="120">
 							<DataGridTemplateColumn.CellTemplate>

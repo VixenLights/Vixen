@@ -29,7 +29,12 @@ The user-visible proof is straightforward: open a State property in Display Setu
 - [x] (2026-06-01 09:01 -05:00) Established the baseline: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug --filter State` passed all 8 filtered tests, and `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` completed successfully.
 - [x] (2026-06-01 09:05 -05:00) Added stable State property identity and explicit logical-clone versus copied-property semantics. `StateData` now creates, persists, normalizes, and logically clones its property ID; `StateModule.CloneValues()` creates a distinct copied-property ID while retaining copied item IDs and values. The filtered State suite passed 10 of 10 tests and the full Debug rebuild succeeded.
 - [x] (2026-06-01 09:37 -05:00) Normalized xLights imported State names and added deterministic fallbacks at the parser boundary. Valid overall and item names are trimmed, blank overall names become numbered `State Name N` values, and blank or absent item names use their XML tag such as `s1`. Added direct helper tests through the narrow `CustomPropEditor.csproj` test reference. The filtered State suite passed 20 of 20 tests and the full Debug rebuild succeeded.
-- [ ] Add Catel validation to the State mapper dialog and focused ViewModel tests.
+- [x] (2026-06-01 09:50 -05:00) Added Catel validation to the State mapper dialog and rows. Empty trimmed names block `OK`, short overall names and case-only item-name differences warn without blocking, exact duplicates remain valid, new rows retain valid defaults, save revalidates the active draft, and the XAML now shows a Catel validation summary with field-level visuals. Added serialized mapper ViewModel tests; the filtered State suite passed 28 of 28 tests.
+- [x] (2026-06-01 09:52 -05:00) Verified Milestone 4 with `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug --filter State --no-restore` (28 of 28 passed), `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` (succeeded), `git diff --check` (clean), and explicit CRLF checks for all touched text files (no bare LF line endings).
+- [x] (2026-06-01 10:10 -05:00) Corrected a State mapper load exception found during manual validation. `StateItemViewModel` now initializes `AssignmentRoots` before assigning Catel-backed properties so Catel reflection cannot read `AssignmentCount` while its source collection is null. Added a regression test; the filtered State suite passed 29 of 29 tests and the full Debug rebuild succeeded.
+- [x] (2026-06-01 10:19 -05:00) Refined `StateItemViewModel` to use Catel `[Model]` and `[ViewModelToModel]` mappings for direct `StateItemData` fields. Assignment-tree aggregation remains explicit because it projects selected tree nodes into `ElementNodeIds`. Removed the redundant row-name `Validate(true)` call because Catel automatically validates on property changes. The filtered State suite passed 29 of 29 tests and the full Debug rebuild succeeded.
+- [x] (2026-06-01 10:25 -05:00) Refined `StateMapperViewModel` to register its cloned draft as a Catel `[Model]` and map direct `Name` and `Description` fields through `[ViewModelToModel]`. Draft item wrappers and final source commit remain explicit because they represent collection editing and save semantics. The filtered State suite passed 29 of 29 tests and the full Debug rebuild succeeded.
+- [ ] (2026-06-01 10:32 -05:00) Add selected-row assignment-tree expansion so checked elements are visible while unrelated branches remain collapsed. The user added this requirement after Milestone 4 implementation.
 - [ ] Run targeted tests, Debug and Release builds, and the manual Display Setup scenarios.
 
 ## Surprises & Discoveries
@@ -63,6 +68,24 @@ The user-visible proof is straightforward: open a State property in Display Setu
 
 - Observation: Adding the narrow `CustomPropEditor.csproj` test reference surfaces an existing critical-severity LiteDB package advisory during test restore.
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug --filter State` reports `NU1904` for existing dependency `LiteDB` version `4.1.4` with advisory `GHSA-3x49-g6rc-c284`. No package version changed in Milestone 3.
+
+- Observation: The restored Catel package exposes the expected warning factories.
+  Evidence: Catel 6.2.0 provides `FieldValidationResult.CreateWarning(...)` and `BusinessRuleValidationResult.CreateWarning(...)`, matching the error-factory pattern already used by the repository.
+
+- Observation: Row-level Catel validation requires `StateItemViewModel` to derive from `ViewModelBase`; the lightweight `ModelBase` path does not expose the needed overridable validation hook.
+  Evidence: Compiling an initial `ModelBase` implementation failed because `ValidateFields(List<IFieldValidationResult>)` had no suitable method to override. `StateAssignmentTreeNode` remains on the existing lightweight bindable base.
+
+- Observation: Catel mapper ViewModel validation should not be constructed concurrently in xUnit fixtures.
+  Evidence: Running the new validation fixture in parallel with the existing mapper draft fixture caused Catel 6.2.0 validation-context collection corruption. Placing both mapper fixtures in a non-parallel xUnit collection preserves production's single UI-thread execution model and passes all focused tests.
+
+- Observation: Catel-backed property initialization can cause reflection over other public ViewModel properties during construction.
+  Evidence: Assigning `StateItemViewModel.Name` before `AssignmentRoots` was initialized allowed Catel to read `AssignmentCount`, which called `SelectMany` on a null collection while opening an existing State property. Initializing the assignment tree first removes that partially initialized observable state.
+
+- Observation: `StateItemViewModel` direct model pass-through fields fit Catel's built-in model mapping support.
+  Evidence: The repository uses `[Model]` and `[ViewModelToModel]` in multiple Catel ViewModels, and Catel 6.2.0 documents automatic validation on property changes. `Name` and `Color` now use that mapping; `ElementNodeIds` remains an explicit derived tree projection.
+
+- Observation: `StateMapperViewModel` direct draft fields also fit Catel's built-in model mapping support.
+  Evidence: The mapper's cloned `StateData` draft is now a Catel `[Model]`, with `Name` and `Description` mapped through `[ViewModelToModel]`. `Items` remains a collection of row wrappers and source mutation remains deferred until `SaveAsync()`.
 
 ## Decision Log
 
@@ -104,7 +127,7 @@ The user-visible proof is straightforward: open a State property in Display Setu
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. The Phase 2 Jira scope was recorded before implementation. State properties now have stable normalized identity with explicit copy semantics. xLights State parsing now trims valid names and supplies deterministic overall and XML-tag item fallbacks before downstream model assembly. The filtered State suite passed 20 of 20 tests and the full Debug rebuild succeeded. Mapper validation remains for the next milestone.
+Milestones 1 through 4 are complete. The Phase 2 Jira scope was recorded before implementation. State properties now have stable normalized identity with explicit copy semantics. xLights State parsing trims valid names and supplies deterministic overall and XML-tag item fallbacks before downstream model assembly. The State mapper now validates trimmed names at edit completion, blocks save only for errors, surfaces non-blocking warnings, and keeps cancellation available. The filtered State suite passed 29 of 29 tests and the full Debug rebuild succeeded. Release build and remaining manual scenarios remain for Milestone 5.
 
 ## Context and Orientation
 
@@ -141,6 +164,7 @@ Harden the VIX-3591 State property before implementing the VIX-3924 State effect
 - Allow exact duplicate State item names because same-name items intentionally activate together.
 - Treat State item names as case-sensitive, but show a non-blocking informational warning when names differ only by casing.
 - Ensure every newly added State item starts with a valid non-whitespace default name.
+- When a State item row is selected, expand the element-assignment tree ancestors needed to reveal its checked elements. Expand only nodes that contain checked descendants; leave unrelated branches collapsed.
 - Show Catel validation feedback in a summary section at the top of the State mapper dialog and retain field-level visual validation.
 - Disable `OK` while blocking validation errors exist. Keep `Cancel` and window close enabled so edits can be discarded.
 - Avoid popup validation dialogs. Informational warnings do not require acknowledgement and do not disable `OK`.
@@ -168,6 +192,7 @@ Normalize xLights State names at the XML parsing boundary, before parsed State m
 - Exact duplicate State item names remain valid.
 - State item names that differ only by casing show a non-blocking warning.
 - New State item rows always begin with a valid default name.
+- Selecting a State item row reveals its checked element assignments by expanding only assignment-tree nodes that contain checked descendants.
 - xLights State imports produce valid trimmed names and deterministic fallback names without interactive prompts.
 - Focused unit tests cover identity, clone semantics, validation, warnings, save/cancel behavior, and import name normalization.
 - The solution builds in Debug and Release.
@@ -184,9 +209,10 @@ Normalize xLights State names at the XML parsing boundary, before parsed State m
 8. Clear a State item name, commit the DataGrid cell by moving to another row, and verify field and summary errors appear and `OK` is disabled.
 9. Add exact duplicate State item names and verify they remain valid.
 10. Add names that differ only by casing and verify a non-blocking informational warning appears.
-11. While errors exist, press `Cancel` and reopen the State property to verify the original property remains unchanged.
-12. Import an xLights model containing blank State property and item names and verify deterministic fallback names are created without prompts.
-13. Build with `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release`.
+11. Select a State item row with checked element assignments and verify the assignment tree expands only the ancestor branches needed to reveal those checked elements.
+12. While errors exist, press `Cancel` and reopen the State property to verify the original property remains unchanged.
+13. Import an xLights model containing blank State property and item names and verify deterministic fallback names are created without prompts.
+14. Build with `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release`.
 ```
 
 ## Plan of Work
@@ -291,6 +317,8 @@ Update `src/Vixen.Modules/Property/State/Setup/ViewModels/StateItemViewModel.cs`
 - Trim State item names when cell editing completes.
 - Report a blocking field error for empty trimmed names.
 - Preserve the existing item ID, color, and assignment behavior.
+
+When the selected State item row changes, expand the assignment-tree ancestors needed to reveal checked elements for that row. Expand only nodes with checked descendants so unrelated branches remain collapsed. Add a focused ViewModel test for this behavior.
 
 Keep `StateAssignmentTreeNode` on its existing lightweight bindable base unless implementation shows a concrete need to change it.
 
@@ -455,3 +483,8 @@ No new runtime package is expected. A narrow `Vixen.Tests` project reference to 
 - 2026-06-01: Completed Milestone 1 after the user confirmed the Jira update was appended. Recorded the passing 8-test State baseline and successful full Debug rebuild so later implementation failures can be distinguished from pre-existing behavior.
 - 2026-06-01: Completed Milestone 2 by adding persisted State property identity, normalization, explicit copied-property clone semantics, and focused tests. Recorded that the mapper draft save path already preserves source identity without additional ViewModel changes.
 - 2026-06-01: Completed Milestone 3 by normalizing xLights State names at the parser boundary, adding deterministic fallbacks and direct helper tests, confirming that preview materialization already uses normal State construction, and recording the existing LiteDB advisory surfaced by the narrow test reference.
+- 2026-06-01: Completed Milestone 4 by adding Catel validation to the mapper and rows, wiring summary and field-level validation visuals, gating save on blocking errors, preserving cancellation, adding serialized mapper validation tests, and recording the restored Catel warning API and xUnit concurrency constraint.
+- 2026-06-01: Corrected the mapper row construction order after manual validation exposed Catel reflection reading `AssignmentCount` before `AssignmentRoots` existed. Added a regression test for initialized assignments.
+- 2026-06-01: Replaced manual State row field synchronization with Catel `[Model]` and `[ViewModelToModel]` mappings and removed redundant setter validation while retaining explicit assignment-tree projection.
+- 2026-06-01: Replaced manual State mapper draft field synchronization with Catel `[Model]` and `[ViewModelToModel]` mappings while retaining explicit item-wrapper collection handling and source commit on save.
+- 2026-06-01: Added follow-up scope to expand only assignment-tree ancestors with checked descendants when a State item row is selected.

@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Vixen.Tests.Property.State;
 
+[Collection(StateMapperTestCollection.Name)]
 public class StateMapperDraftTests
 {
 	[Fact]
