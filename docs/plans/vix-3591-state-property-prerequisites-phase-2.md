@@ -28,7 +28,7 @@ The user-visible proof is straightforward: open a State property in Display Setu
 - [x] (2026-06-01 09:01 -05:00) Confirmed the Phase 2 update was added to Jira issue VIX-3591 before implementation. The user reported that the included text was appended; no Jira comment URL was provided.
 - [x] (2026-06-01 09:01 -05:00) Established the baseline: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug --filter State` passed all 8 filtered tests, and `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` completed successfully.
 - [x] (2026-06-01 09:05 -05:00) Added stable State property identity and explicit logical-clone versus copied-property semantics. `StateData` now creates, persists, normalizes, and logically clones its property ID; `StateModule.CloneValues()` creates a distinct copied-property ID while retaining copied item IDs and values. The filtered State suite passed 10 of 10 tests and the full Debug rebuild succeeded.
-- [ ] Normalize xLights imported State names and add best-effort fallbacks.
+- [x] (2026-06-01 09:37 -05:00) Normalized xLights imported State names and added deterministic fallbacks at the parser boundary. Valid overall and item names are trimmed, blank overall names become numbered `State Name N` values, and blank or absent item names use their XML tag such as `s1`. Added direct helper tests through the narrow `CustomPropEditor.csproj` test reference. The filtered State suite passed 20 of 20 tests and the full Debug rebuild succeeded.
 - [ ] Add Catel validation to the State mapper dialog and focused ViewModel tests.
 - [ ] Run targeted tests, Debug and Release builds, and the manual Display Setup scenarios.
 
@@ -57,6 +57,12 @@ The user-visible proof is straightforward: open a State property in Display Setu
 
 - Observation: The existing mapper save path already preserves the new property ID without additional ViewModel code.
   Evidence: `StateMapperViewModel.SaveAsync()` copies editable `Name`, `Description`, and cloned `Items` back to the source data but does not replace the source `StateData` instance. Extended draft save and cancel tests confirm that the source ID remains unchanged.
+
+- Observation: The preview builder already materializes imported State properties through normal module construction, so Milestone 3 does not require a builder change.
+  Evidence: `PreviewCustomPropBuilder.AddStateProperties()` calls `node.Properties.Add(StateDescriptor.ModuleId)` when the property is absent and then populates the resulting `StateModule`. The `StateData` constructor added in Milestone 2 assigns the new property ID.
+
+- Observation: Adding the narrow `CustomPropEditor.csproj` test reference surfaces an existing critical-severity LiteDB package advisory during test restore.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug --filter State` reports `NU1904` for existing dependency `LiteDB` version `4.1.4` with advisory `GHSA-3x49-g6rc-c284`. No package version changed in Milestone 3.
 
 ## Decision Log
 
@@ -92,9 +98,13 @@ The user-visible proof is straightforward: open a State property in Display Setu
   Rationale: The original issue history remains useful. This work tightens the property contract before VIX-3924 rather than replacing the initial implementation.
   Date: 2026-05-31
 
+- Decision: Test xLights State name normalization through an internal helper exposed to `Vixen.Tests` with the repository's existing `InternalsVisibleTo` project-attribute pattern.
+  Rationale: The full importer performs application-service prop construction, while the parser-boundary normalization rules are deterministic string transformations. Direct helper tests prove the required behavior without coupling unit tests to interactive application services.
+  Date: 2026-06-01
+
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. The Phase 2 Jira scope was recorded before implementation. Every new `StateData` now receives a persisted non-empty ID, malformed empty IDs normalize through the module-data path, logical clones retain the same ID, and cross-property copies receive a new ID while preserving item definitions. The filtered State suite passed 10 of 10 tests and the full Debug rebuild succeeded. Name import normalization and mapper validation remain for later milestones.
+Milestones 1 through 3 are complete. The Phase 2 Jira scope was recorded before implementation. State properties now have stable normalized identity with explicit copy semantics. xLights State parsing now trims valid names and supplies deterministic overall and XML-tag item fallbacks before downstream model assembly. The filtered State suite passed 20 of 20 tests and the full Debug rebuild succeeded. Mapper validation remains for the next milestone.
 
 ## Context and Orientation
 
@@ -444,3 +454,4 @@ No new runtime package is expected. A narrow `Vixen.Tests` project reference to 
 - 2026-05-31: Created the Phase 2 prerequisite ExecPlan after reviewing the refined requirements, original VIX-3591 plan, State module code, copy pathways, xLights parsing/materialization path, Catel validation examples, and existing State tests. The original Phase 1 plan was intentionally left unchanged.
 - 2026-06-01: Completed Milestone 1 after the user confirmed the Jira update was appended. Recorded the passing 8-test State baseline and successful full Debug rebuild so later implementation failures can be distinguished from pre-existing behavior.
 - 2026-06-01: Completed Milestone 2 by adding persisted State property identity, normalization, explicit copied-property clone semantics, and focused tests. Recorded that the mapper draft save path already preserves source identity without additional ViewModel changes.
+- 2026-06-01: Completed Milestone 3 by normalizing xLights State names at the parser boundary, adding deterministic fallbacks and direct helper tests, confirming that preview materialization already uses normal State construction, and recording the existing LiteDB advisory surfaced by the narrow test reference.

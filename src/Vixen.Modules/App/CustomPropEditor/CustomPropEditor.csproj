@@ -73,6 +73,12 @@
 		</ItemGroup>
 
 		<ItemGroup>
+			<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+				<_Parameter1>Vixen.Tests</_Parameter1>
+			</AssemblyAttribute>
+		</ItemGroup>
+
+		<ItemGroup>
 		  <Folder Include="Behaviors\" />
 		</ItemGroup>
 

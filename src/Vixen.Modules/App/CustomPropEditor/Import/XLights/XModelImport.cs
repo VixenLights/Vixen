@@ -129,7 +129,10 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 								var type = reader.GetAttribute("Type");
 								if (!string.IsNullOrEmpty(type) && type.Equals("NodeRange") || type.Equals("SingleNode"))
 								{
-									var stateInfo = new StateInfo(reader.GetAttribute("Name"));
+									var stateInfo = new StateInfo(
+										XLightsStateNameNormalizer.NormalizeStateName(
+											reader.GetAttribute("Name"),
+											cm.StateInfos.Count + 1));
 									
 									//Parse the state values
 									Dictionary<string, StateItem> states = new ();
@@ -154,7 +157,9 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 												{
 													if (int.TryParse(parts[0].Substring(1), out var index))
 													{
-														StateItem si = new StateItem(index);
+														StateItem si = new StateItem(
+															index,
+															XLightsStateNameNormalizer.NormalizeStateItemName(null, parts[0]));
 														states.Add(parts[0], si);
 													}
 												}
@@ -199,7 +204,9 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 													if ("Name".Equals(parts[1]))
 													{
-														var stateItemName = reader.Value;
+														var stateItemName = XLightsStateNameNormalizer.NormalizeStateItemName(
+															reader.Value,
+															parts[0]);
 														
 														if (states.ContainsKey(parts[0]))
 														{
