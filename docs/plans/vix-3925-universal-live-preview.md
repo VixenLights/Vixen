@@ -37,7 +37,7 @@ messages — no changes to this feature will be required at that time.
 ## Progress
 
 - [x] (2026-06-01) M1: Create `Common.Messages` project (`src/Vixen.Common/Messages/`)
-- [ ] M2: Create `Vixen.Modules.App.LivePreview` module
+- [x] (2026-06-01) M2: Create `Vixen.Modules.App.LivePreview` module
 - [ ] M3: Refactor WebServer to use ILivePreviewService
 - [ ] M4: Write unit tests in Vixen.Tests
 
@@ -53,6 +53,22 @@ messages — no changes to this feature will be required at that time.
 
 - Observation: The solution file `Any CPU` platform entries generated for the Messages project
   targeted `x86` instead of `x64`. Corrected per CLAUDE.md before marking M1 complete.
+
+- Observation: `LivePreviewData.cs` was scaffolded with the class named `Data` (not matching the
+  filename), while `Descriptor.cs` referenced `typeof(LivePreviewData)`. The class was renamed to
+  `LivePreviewData` to resolve the mismatch.
+
+- Observation: `LivePreviewService.cs` was scaffolded as `public interface LivePreviewService`
+  instead of a class. Replaced with the full implementation.
+
+- Observation: `SetLevel` requires two project references to build: `Effect.csproj` (provides
+  `BaseEffect`, the base class) and `SetLevel.csproj`. Without `Effect.csproj`, the compiler
+  cannot resolve `SetLevel`'s inheritance chain and the `EffectNode` constructor overloads.
+  Both references were added to `LivePreview.csproj`.
+
+- Observation: All App modules are auto-loaded at startup via `Modules.PopulateRepositories()`
+  → `AppModuleRepository.Add()` → `instance.Loading()`. No special "always-on" mechanism is
+  needed; placing the DLL in the module directory is sufficient.
 
 ---
 
@@ -101,6 +117,23 @@ messages — no changes to this feature will be required at that time.
   Rationale: `VixenSystem.Contexts` is a static property returning a concrete `ContextManager`
   with no interface. Without this abstraction the service cannot be unit tested in isolation.
   The abstraction is `internal` — it is not part of the public API.
+  Date/Author: 2026-06-01 / Jeff Uchitjil
+
+- Decision: `ILivePreviewService` singleton exposed via `Module.Instance` static property.
+  Rationale: Consistent with the WebServer's `Module.LiveContext` pattern already established in
+  the codebase. ServiceLocator would be more decoupled but adds ceremony not justified by the
+  current consumer count. Can be migrated later if needed.
+  Date/Author: 2026-06-01 / Jeff Uchitjil
+
+- Decision: Auto-start is inherent — no extra mechanism needed.
+  Rationale: `Modules.PopulateRepositories()` calls `Loading()` on every discovered App module
+  at startup. The LivePreview module starts automatically as long as its DLL is in the module
+  output directory.
+  Date/Author: 2026-06-01 / Jeff Uchitjil
+
+- Decision: `LivePreview.csproj` references both `Effect.csproj` and `SetLevel.csproj`.
+  Rationale: `SetLevel` inherits from `BaseEffect` in the `Effect` project. Without the base
+  project reference the compiler cannot resolve the type hierarchy needed for `EffectNode`.
   Date/Author: 2026-06-01 / Jeff Uchitjil
 
 - Decision: `TurnOnElement` / `TurnOnElements` are not covered by unit tests.
@@ -320,7 +353,7 @@ Expected: Build succeeded with 0 errors.
 
 ### Milestone 2 — Create `Vixen.Modules.App.LivePreview`
 
-Create a new C# class library at `src/Vixen.Modules/App/LivePreview/Vixen.Modules.App.LivePreview.csproj`.
+Create a new C# class library at `src/Vixen.Modules/App/LivePreview/LivePreview.csproj`.
 Target `net10.0-windows`. Reference `Vixen.Core` and `Messages` (from
 `src/Vixen.Common/Messages/Messages.csproj`) as project references (Copy Local = No, Include
 Assets = None per CLAUDE.md conventions). Also reference the `Broadcast` project from
@@ -634,8 +667,8 @@ Build check:
 
 ### M2 — LivePreview module
 
-    dotnet new classlib -n Vixen.Modules.App.LivePreview -o src/Vixen.Modules/App/LivePreview --framework net10.0-windows
-    dotnet sln Vixen.sln add src/Vixen.Modules/App/LivePreview/Vixen.Modules.App.LivePreview.csproj
+    dotnet new classlib -n LivePreview -o src/Vixen.Modules/App/LivePreview
+    dotnet sln Vixen.sln add src/Vixen.Modules/App/LivePreview/LivePreview.csproj
 
 Fix `Vixen.sln` as before. Create `Descriptor.cs`, `Data.cs`, `ILivePreviewService.cs`,
 `LivePreviewService.cs`, `Module.cs`.

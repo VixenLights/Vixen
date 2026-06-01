@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11520.95
@@ -505,6 +505,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPPClient", "src\Vixen.Modules\App\FPPClient\FPPClient.csproj", "{649F0318-552E-41C2-BA33-F7561D310DEE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages", "src\Vixen.Common\Messages\Messages.csproj", "{851B08F6-F80C-4557-A63C-6E0FC99C496B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePreview", "src\Vixen.Modules\App\LivePreview\LivePreview.csproj", "{0D2F803B-50D4-46D7-9758-2954A299FF4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -3339,6 +3341,8 @@ Global
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Debug|x86.Build.0 = Debug|x86
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Deploy|Any CPU.ActiveCfg = Deploy|x64
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Deploy|Any CPU.Build.0 = Deploy|x64
+		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Deploy|x64.ActiveCfg = Release|x64
+		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Deploy|x64.Build.0 = Release|x64
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Deploy|x86.ActiveCfg = Debug|x86
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Deploy|x86.Build.0 = Debug|x86
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Release|Any CPU.ActiveCfg = Release|x64
@@ -3347,8 +3351,24 @@ Global
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Release|x64.Build.0 = Release|x64
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Release|x86.ActiveCfg = Release|x86
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Release|x86.Build.0 = Release|x86
-		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Deploy|x64.ActiveCfg = Release|x64
-		{851B08F6-F80C-4557-A63C-6E0FC99C496B}.Deploy|x64.Build.0 = Release|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Debug|Any CPU.Build.0 = Debug|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Debug|x64.ActiveCfg = Debug|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Debug|x64.Build.0 = Debug|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Debug|x86.ActiveCfg = Debug|x86
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Debug|x86.Build.0 = Debug|x86
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Deploy|Any CPU.ActiveCfg = Deploy|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Deploy|Any CPU.Build.0 = Deploy|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Deploy|x86.ActiveCfg = Debug|x86
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Deploy|x86.Build.0 = Debug|x86
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Release|Any CPU.ActiveCfg = Release|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Release|Any CPU.Build.0 = Release|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Release|x64.ActiveCfg = Release|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Release|x64.Build.0 = Release|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Release|x86.ActiveCfg = Release|x86
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Release|x86.Build.0 = Release|x86
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Deploy|x64.ActiveCfg = Release|x64
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C}.Deploy|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -3525,6 +3545,7 @@ Global
 		{AF0AE844-4B64-442D-917D-453C40D732E5} = {783CEFCF-DBF1-4ED1-B6D3-886B6583097D}
 		{649F0318-552E-41C2-BA33-F7561D310DEE} = {18C30343-DC00-48B0-B712-93CC89D20643}
 		{851B08F6-F80C-4557-A63C-6E0FC99C496B} = {783CEFCF-DBF1-4ED1-B6D3-886B6583097D}
+		{0D2F803B-50D4-46D7-9758-2954A299FF4C} = {18C30343-DC00-48B0-B712-93CC89D20643}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5957242E-E882-44E4-83E0-A1C2F73705BF}
