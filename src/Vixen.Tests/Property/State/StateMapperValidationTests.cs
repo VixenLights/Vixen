@@ -42,6 +42,28 @@ public class StateMapperValidationTests
 	}
 
 	[Fact]
+	public void SelectedItem_ExpandsOnlyBranchesWithCheckedDescendants()
+	{
+		// Arrange
+		var checkedLeafId = Guid.NewGuid();
+		var rootNode = CreateRootNodeWithSiblingGroups(checkedLeafId);
+		var source = CreateSource("Operating Mode", "Enabled", "Disabled");
+		source.Items[1].ElementNodeIds = [checkedLeafId];
+		var viewModel = CreateViewModel(source, rootNode);
+		viewModel.Items[1].AssignmentRoots[0].Children[1].IsExpanded = true;
+
+		// Act
+		viewModel.SelectedItem = viewModel.Items[1];
+
+		// Assert
+		var root = viewModel.SelectedItem.AssignmentRoots[0];
+		Assert.True(root.IsExpanded);
+		Assert.True(root.Children[0].IsExpanded);
+		Assert.False(root.Children[1].IsExpanded);
+		Assert.True(root.Children[0].Children[0].IsChecked);
+	}
+
+	[Fact]
 	public void Name_TrimsWhitespaceAndEnablesOkAfterCorrection()
 	{
 		// Arrange
@@ -177,6 +199,30 @@ public class StateMapperValidationTests
 		rootNode.Setup(node => node.GetNodeEnumerator()).Returns([]);
 
 		return new StateMapperViewModel(rootNode.Object, source, Mock.Of<IStateColorPickerService>());
+	}
+
+	private static StateMapperViewModel CreateViewModel(StateData source, IElementNode rootNode)
+	{
+		return new StateMapperViewModel(rootNode, source, Mock.Of<IStateColorPickerService>());
+	}
+
+	private static IElementNode CreateRootNodeWithSiblingGroups(Guid checkedLeafId)
+	{
+		var checkedLeaf = CreateNode(checkedLeafId, "Checked Leaf");
+		var uncheckedLeaf = CreateNode(Guid.NewGuid(), "Unchecked Leaf");
+		var checkedGroup = CreateNode(Guid.NewGuid(), "Checked Group", checkedLeaf);
+		var uncheckedGroup = CreateNode(Guid.NewGuid(), "Unchecked Group", uncheckedLeaf);
+		return CreateNode(Guid.NewGuid(), "Root", checkedGroup, uncheckedGroup);
+	}
+
+	private static IElementNode CreateNode(Guid id, string name, params IElementNode[] children)
+	{
+		var node = new Mock<IElementNode>();
+		node.SetupGet(elementNode => elementNode.Id).Returns(id);
+		node.SetupGet(elementNode => elementNode.Name).Returns(name);
+		node.SetupGet(elementNode => elementNode.Children).Returns(children);
+		node.Setup(elementNode => elementNode.GetNodeEnumerator()).Returns([]);
+		return node.Object;
 	}
 
 	private static Task InvokeAsync(StateMapperViewModel viewModel, string methodName)

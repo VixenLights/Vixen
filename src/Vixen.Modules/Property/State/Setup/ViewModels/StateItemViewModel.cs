@@ -45,6 +45,14 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		private static readonly IPropertyData ItemProperty = RegisterProperty<StateItemData>(nameof(Item));
 
+		internal void ExpandCheckedAssignments()
+		{
+			foreach (var root in AssignmentRoots)
+			{
+				root.ExpandCheckedDescendants();
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the user-visible state item name.
 		/// </summary>

@@ -9,6 +9,7 @@ namespace VixenModules.Property.State.Setup.Models
 	{
 		private bool _isChecked;
 		private bool _isEnabled = true;
+		private bool _isExpanded;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StateAssignmentTreeNode"/> class.
@@ -89,6 +90,16 @@ namespace VixenModules.Property.State.Setup.Models
 			private set => SetProperty(ref _isEnabled, value);
 		}
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether this node displays its children.
+		/// </summary>
+		/// <value><see langword="true" /> if this node displays its children; otherwise, <see langword="false" />.</value>
+		public bool IsExpanded
+		{
+			get => _isExpanded;
+			set => SetProperty(ref _isExpanded, value);
+		}
+
 		internal StateElementNodeSnapshot Snapshot { get; }
 
 		/// <summary>
@@ -111,6 +122,19 @@ namespace VixenModules.Property.State.Setup.Models
 			return IsChecked
 				? Snapshot.GetLeafNodeIds()
 				: Children.SelectMany(child => child.GetEffectiveLeafNodeIds());
+		}
+
+		internal bool ExpandCheckedDescendants()
+		{
+		var hasCheckedDescendant = false;
+		foreach (var child in Children)
+		{
+			var childHasCheckedDescendant = child.ExpandCheckedDescendants();
+			hasCheckedDescendant |= child.IsChecked || childHasCheckedDescendant;
+		}
+
+			IsExpanded = hasCheckedDescendant;
+			return hasCheckedDescendant;
 		}
 
 		private void ChildAssignmentChanged(object? sender, EventArgs e)

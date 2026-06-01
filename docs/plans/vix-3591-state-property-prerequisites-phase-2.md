@@ -34,7 +34,7 @@ The user-visible proof is straightforward: open a State property in Display Setu
 - [x] (2026-06-01 10:10 -05:00) Corrected a State mapper load exception found during manual validation. `StateItemViewModel` now initializes `AssignmentRoots` before assigning Catel-backed properties so Catel reflection cannot read `AssignmentCount` while its source collection is null. Added a regression test; the filtered State suite passed 29 of 29 tests and the full Debug rebuild succeeded.
 - [x] (2026-06-01 10:19 -05:00) Refined `StateItemViewModel` to use Catel `[Model]` and `[ViewModelToModel]` mappings for direct `StateItemData` fields. Assignment-tree aggregation remains explicit because it projects selected tree nodes into `ElementNodeIds`. Removed the redundant row-name `Validate(true)` call because Catel automatically validates on property changes. The filtered State suite passed 29 of 29 tests and the full Debug rebuild succeeded.
 - [x] (2026-06-01 10:25 -05:00) Refined `StateMapperViewModel` to register its cloned draft as a Catel `[Model]` and map direct `Name` and `Description` fields through `[ViewModelToModel]`. Draft item wrappers and final source commit remain explicit because they represent collection editing and save semantics. The filtered State suite passed 29 of 29 tests and the full Debug rebuild succeeded.
-- [ ] (2026-06-01 10:32 -05:00) Add selected-row assignment-tree expansion so checked elements are visible while unrelated branches remain collapsed. The user added this requirement after Milestone 4 implementation.
+- [x] (2026-06-01 10:45 -05:00) Added selected-row assignment-tree expansion so checked elements are visible while unrelated branches remain collapsed. Tree nodes expose bindable expansion state, row selection recalculates ancestor expansion from checked descendants, and a focused test verifies required branches expand while a previously expanded unrelated branch collapses. The filtered State suite passed 30 of 30 tests and the full Debug rebuild succeeded.
 - [ ] Run targeted tests, Debug and Release builds, and the manual Display Setup scenarios.
 
 ## Surprises & Discoveries
@@ -87,6 +87,9 @@ The user-visible proof is straightforward: open a State property in Display Setu
 - Observation: `StateMapperViewModel` direct draft fields also fit Catel's built-in model mapping support.
   Evidence: The mapper's cloned `StateData` draft is now a Catel `[Model]`, with `Name` and `Description` mapped through `[ViewModelToModel]`. `Items` remains a collection of row wrappers and source mutation remains deferred until `SaveAsync()`.
 
+- Observation: The assignment tree needs ViewModel-owned expansion state for selective row-selection expansion.
+  Evidence: WPF `TreeViewItem.IsExpanded` is now bound two-way to `StateAssignmentTreeNode.IsExpanded`. Recursive recalculation expands ancestors with checked descendants and explicitly collapses unrelated branches.
+
 ## Decision Log
 
 - Decision: Add `Guid Id` to `StateData` and expose it through `StateModule`.
@@ -116,6 +119,10 @@ The user-visible proof is straightforward: open a State property in Display Setu
 - Decision: Generate xLights fallback names at the parser boundary, where XML context such as `s1` is still available.
   Rationale: Downstream models should remain valid, and the parser has the best information for deterministic fallback names.
   Date: 2026-05-31
+
+- Decision: Recalculate assignment-tree expansion when the selected State item row changes.
+  Rationale: Each State item has independent assignments. Expanding only ancestors with checked descendants reveals the active row's selections without opening unrelated branches.
+  Date: 2026-06-01
 
 - Decision: Preserve the original Phase 1 Jira content and append a Phase 2 prerequisite update.
   Rationale: The original issue history remains useful. This work tightens the property contract before VIX-3924 rather than replacing the initial implementation.
@@ -488,3 +495,4 @@ No new runtime package is expected. A narrow `Vixen.Tests` project reference to 
 - 2026-06-01: Replaced manual State row field synchronization with Catel `[Model]` and `[ViewModelToModel]` mappings and removed redundant setter validation while retaining explicit assignment-tree projection.
 - 2026-06-01: Replaced manual State mapper draft field synchronization with Catel `[Model]` and `[ViewModelToModel]` mappings while retaining explicit item-wrapper collection handling and source commit on save.
 - 2026-06-01: Added follow-up scope to expand only assignment-tree ancestors with checked descendants when a State item row is selected.
+- 2026-06-01: Completed the assignment-tree expansion follow-up by binding tree-node expansion state, recalculating it on row selection, collapsing unrelated branches, and adding focused coverage.

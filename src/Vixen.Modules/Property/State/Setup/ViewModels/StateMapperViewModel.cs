@@ -143,6 +143,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			set
 			{
 				SetValue(SelectedItemProperty, value);
+				value?.ExpandCheckedAssignments();
 				_removeItemCommand?.RaiseCanExecuteChanged();
 			}
 		}

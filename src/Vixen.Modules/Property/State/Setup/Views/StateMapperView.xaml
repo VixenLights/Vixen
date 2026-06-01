@@ -138,6 +138,11 @@
 				<TreeView Grid.Row="1"
 						  ItemsSource="{Binding SelectedItem.AssignmentRoots}"
 						  BorderThickness="0">
+					<TreeView.ItemContainerStyle>
+						<Style TargetType="{x:Type TreeViewItem}">
+							<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+						</Style>
+					</TreeView.ItemContainerStyle>
 					<TreeView.ItemTemplate>
 						<HierarchicalDataTemplate ItemsSource="{Binding Children}">
 							<CheckBox Content="{Binding Name}"
