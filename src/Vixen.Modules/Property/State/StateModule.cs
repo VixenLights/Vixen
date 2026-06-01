@@ -22,6 +22,12 @@ namespace VixenModules.Property.State {
 		}
 
 		/// <summary>
+		/// Gets the stable identifier for the attached State property.
+		/// </summary>
+		/// <value>The stable identifier for the attached State property.</value>
+		public Guid Id => _data.Id;
+
+		/// <summary>
 		/// Gets or sets the name that identifies the overall state definition.
 		/// </summary>
 		/// <value>The name that identifies the overall state definition.</value>
@@ -62,7 +68,7 @@ namespace VixenModules.Property.State {
 				return;
 			}
 
-			_data = (StateData)source._data.Clone();
+			_data = source._data.CloneForNewProperty();
 		}
 
 		/// <inheritdoc />

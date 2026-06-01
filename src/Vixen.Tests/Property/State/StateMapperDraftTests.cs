@@ -17,6 +17,7 @@ public class StateMapperDraftTests
 		// Arrange
 		var elementNodeId = Guid.NewGuid();
 		var source = CreateSource(elementNodeId);
+		var sourceId = source.Id;
 		var viewModel = CreateViewModel(source, elementNodeId);
 
 		// Act
@@ -30,6 +31,7 @@ public class StateMapperDraftTests
 		Assert.Equal("Available operating modes", source.Description);
 		Assert.Equal("Enabled", source.Items[0].Name);
 		Assert.Empty(source.Items[0].ElementNodeIds);
+		Assert.Equal(sourceId, source.Id);
 	}
 
 	[Fact]
@@ -38,6 +40,7 @@ public class StateMapperDraftTests
 		// Arrange
 		var elementNodeId = Guid.NewGuid();
 		var source = CreateSource(elementNodeId);
+		var sourceId = source.Id;
 		var viewModel = CreateViewModel(source, elementNodeId);
 		viewModel.Name = "Changed";
 		viewModel.Description = "Changed description";
@@ -53,6 +56,7 @@ public class StateMapperDraftTests
 		Assert.Equal("Changed description", source.Description);
 		Assert.Equal("Disabled", source.Items[0].Name);
 		Assert.Equal([elementNodeId], source.Items[0].ElementNodeIds);
+		Assert.Equal(sourceId, source.Id);
 	}
 
 	private static StateData CreateSource(Guid itemId)

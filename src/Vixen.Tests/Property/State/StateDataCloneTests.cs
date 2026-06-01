@@ -7,6 +7,16 @@ namespace Vixen.Tests.Property.State;
 public class StateDataCloneTests
 {
 	[Fact]
+	public void Constructor_CreatesNonEmptyId()
+	{
+		// Act
+		var data = new StateData();
+
+		// Assert
+		Assert.NotEqual(Guid.Empty, data.Id);
+	}
+
+	[Fact]
 	public void Clone_CopiesDefinitionAndItemsDeeply()
 	{
 		// Arrange
@@ -43,6 +53,7 @@ public class StateDataCloneTests
 		clone.Items[1].ElementNodeIds.Clear();
 
 		// Assert
+		Assert.Equal(source.Id, clone.Id);
 		Assert.Equal("Operating Mode", source.Name);
 		Assert.Equal("Enabled", source.Items[0].Name);
 		Assert.Equal([elementNodeId], source.Items[0].ElementNodeIds);
@@ -87,5 +98,23 @@ public class StateDataCloneTests
 
 		Assert.NotNull(data.Items);
 		Assert.Empty(data.Items);
+	}
+
+	[Fact]
+	public void ModuleData_NormalizesEmptyId()
+	{
+		// Arrange
+		var data = new StateData
+		{
+			Id = Guid.Empty
+		};
+		var module = new StateModule();
+
+		// Act
+		module.ModuleData = data;
+
+		// Assert
+		Assert.NotEqual(Guid.Empty, data.Id);
+		Assert.Equal(data.Id, module.Id);
 	}
 }

@@ -27,7 +27,7 @@ The user-visible proof is straightforward: open a State property in Display Setu
 - [x] (2026-05-31) Write the separate Phase 2 ExecPlan and Jira-ready issue update.
 - [x] (2026-06-01 09:01 -05:00) Confirmed the Phase 2 update was added to Jira issue VIX-3591 before implementation. The user reported that the included text was appended; no Jira comment URL was provided.
 - [x] (2026-06-01 09:01 -05:00) Established the baseline: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug --filter State` passed all 8 filtered tests, and `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` completed successfully.
-- [ ] Add stable State property identity and explicit logical-clone versus copied-property semantics.
+- [x] (2026-06-01 09:05 -05:00) Added stable State property identity and explicit logical-clone versus copied-property semantics. `StateData` now creates, persists, normalizes, and logically clones its property ID; `StateModule.CloneValues()` creates a distinct copied-property ID while retaining copied item IDs and values. The filtered State suite passed 10 of 10 tests and the full Debug rebuild succeeded.
 - [ ] Normalize xLights imported State names and add best-effort fallbacks.
 - [ ] Add Catel validation to the State mapper dialog and focused ViewModel tests.
 - [ ] Run targeted tests, Debug and Release builds, and the manual Display Setup scenarios.
@@ -54,6 +54,9 @@ The user-visible proof is straightforward: open a State property in Display Setu
 
 - Observation: The Phase 2 branch starts with a passing State-focused test baseline and a successful full Debug rebuild.
   Evidence: On 2026-06-01, `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug --filter State` passed 8 of 8 filtered tests, and `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` exited successfully.
+
+- Observation: The existing mapper save path already preserves the new property ID without additional ViewModel code.
+  Evidence: `StateMapperViewModel.SaveAsync()` copies editable `Name`, `Description`, and cloned `Items` back to the source data but does not replace the source `StateData` instance. Extended draft save and cancel tests confirm that the source ID remains unchanged.
 
 ## Decision Log
 
@@ -91,7 +94,7 @@ The user-visible proof is straightforward: open a State property in Display Setu
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. The Phase 2 Jira scope was recorded before implementation, the existing State-focused tests passed 8 of 8, and the full Debug rebuild succeeded. No code changes have started. Update this section after each subsequent milestone with test results, deviations from the design, and any follow-up work deferred to VIX-3924.
+Milestones 1 and 2 are complete. The Phase 2 Jira scope was recorded before implementation. Every new `StateData` now receives a persisted non-empty ID, malformed empty IDs normalize through the module-data path, logical clones retain the same ID, and cross-property copies receive a new ID while preserving item definitions. The filtered State suite passed 10 of 10 tests and the full Debug rebuild succeeded. Name import normalization and mapper validation remain for later milestones.
 
 ## Context and Orientation
 
@@ -440,3 +443,4 @@ No new runtime package is expected. A narrow `Vixen.Tests` project reference to 
 
 - 2026-05-31: Created the Phase 2 prerequisite ExecPlan after reviewing the refined requirements, original VIX-3591 plan, State module code, copy pathways, xLights parsing/materialization path, Catel validation examples, and existing State tests. The original Phase 1 plan was intentionally left unchanged.
 - 2026-06-01: Completed Milestone 1 after the user confirmed the Jira update was appended. Recorded the passing 8-test State baseline and successful full Debug rebuild so later implementation failures can be distinguished from pre-existing behavior.
+- 2026-06-01: Completed Milestone 2 by adding persisted State property identity, normalization, explicit copied-property clone semantics, and focused tests. Recorded that the mapper draft save path already preserves source identity without additional ViewModel changes.

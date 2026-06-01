@@ -16,10 +16,18 @@ namespace VixenModules.Property.State
 		/// </summary>
 		public StateData()
 		{
+			Id = Guid.NewGuid();
 			Name = DefaultName;
 			Description = string.Empty;
 			Items = [];
 		}
+
+		/// <summary>
+		/// Gets or sets the stable identifier for the attached State property.
+		/// </summary>
+		/// <value>The stable identifier for the attached State property.</value>
+		[DataMember]
+		public Guid Id { get; set; }
 
 		/// <summary>
 		/// Gets or sets the name that identifies the overall state definition.
@@ -47,14 +55,31 @@ namespace VixenModules.Property.State
 		{
 			return new StateData
 			{
+				Id = Id,
 				Name = Name,
 				Description = Description,
 				Items = Items.Select(item => item.Clone()).ToList()
 			};
 		}
 
+		/// <summary>
+		/// Creates a deep copy for a distinct attached State property.
+		/// </summary>
+		/// <returns>A deep copy with a new attached property identifier.</returns>
+		internal StateData CloneForNewProperty()
+		{
+			var clone = (StateData)Clone();
+			clone.Id = Guid.NewGuid();
+			return clone;
+		}
+
 		internal void Normalize()
 		{
+			if (Id == Guid.Empty)
+			{
+				Id = Guid.NewGuid();
+			}
+
 			Name ??= DefaultName;
 			Description ??= string.Empty;
 			Items ??= [];

@@ -44,9 +44,17 @@ public class StateModuleCloneTests
 		clone.Items[1].ElementNodeIds.Clear();
 
 		// Assert
+		Assert.NotEqual(Guid.Empty, source.Id);
+		Assert.NotEqual(Guid.Empty, clone.Id);
+		Assert.NotEqual(source.Id, clone.Id);
 		Assert.Equal("Operating Mode", source.Name);
+		Assert.Equal("Available operating modes", source.Description);
 		Assert.Equal("Enabled", source.Items[0].Name);
+		Assert.Equal(source.Items[0].Id, clone.Items[0].Id);
+		Assert.Equal(source.Items[0].Color, clone.Items[0].Color);
 		Assert.Equal([firstElementNodeId, secondElementNodeId], source.Items[0].ElementNodeIds);
+		Assert.Equal(source.Items[1].Id, clone.Items[1].Id);
+		Assert.Equal(source.Items[1].Color, clone.Items[1].Color);
 		Assert.Equal([secondElementNodeId], source.Items[1].ElementNodeIds);
 		Assert.NotSame(source.Items, clone.Items);
 		Assert.NotSame(source.Items[0], clone.Items[0]);
