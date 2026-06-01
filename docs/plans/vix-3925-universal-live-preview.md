@@ -38,8 +38,8 @@ messages — no changes to this feature will be required at that time.
 
 - [x] (2026-06-01) M1: Create `Common.Messages` project (`src/Vixen.Common/Messages/`)
 - [x] (2026-06-01) M2: Create `Vixen.Modules.App.LivePreview` module
-- [ ] M3: Refactor WebServer to use ILivePreviewService
-- [ ] M4: Write unit tests in Vixen.Tests
+- [x] (2026-06-01) M3: Refactor WebServer to use ILivePreviewService  - Out of Scope
+- [x] (2026-06-01) M4: Write unit tests in Vixen.Tests
 
 ---
 
@@ -66,6 +66,25 @@ messages — no changes to this feature will be required at that time.
   cannot resolve `SetLevel`'s inheritance chain and the `EffectNode` constructor overloads.
   Both references were added to `LivePreview.csproj`.
 
+- Observation: The initial M3 implementation made WebServer reference LivePreview directly and
+  call ILivePreviewService. This was corrected to use Broadcast.Publish instead, removing the
+  LivePreview project reference from WebServer entirely. WebServer now only references Messages
+  and Broadcast — no direct dependency on the LivePreview module.
+
+- Observation: The experimental `Effect(ElementEffect)` method in `ElementsHelper` called
+  `Module.LiveContext` directly, which was removed in M3. Since the method is out of scope for
+  broadcast/service promotion and has no known callers outside the WebServer REST API, it was
+  removed along with its `ElementController` action rather than routing it to an ad-hoc context.
+
+
+- Observation: `LiveContext` methods (TerminateNode, TerminateNodes, Execute, Clear) are non-virtual,
+  so Moq cannot mock `LiveContext` directly. Resolved by introducing `ILiveContext` and
+  `LiveContextAdapter` in the LivePreview project. Tests mock `ILiveContext`; production code
+  uses `LiveContextAdapter` to delegate to the real `LiveContext`.
+
+- Observation: Moq requires `[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]` in
+  addition to `InternalsVisibleTo("Vixen.Tests")` to proxy internal interfaces at runtime.
+  Both were added to `LivePreview.csproj`.
 - Observation: All App modules are auto-loaded at startup via `Modules.PopulateRepositories()`
   → `AppModuleRepository.Add()` → `instance.Loading()`. No special "always-on" mechanism is
   needed; placing the DLL in the module directory is sufficient.
@@ -119,6 +138,12 @@ messages — no changes to this feature will be required at that time.
   The abstraction is `internal` — it is not part of the public API.
   Date/Author: 2026-06-01 / Jeff Uchitjil
 
+- Decision: WebServer uses Broadcast.Publish rather than a direct ILivePreviewService reference.
+  Rationale: The original plan said WebServer could reference LivePreview directly; during
+  implementation this was revised because broadcast is the intended decoupled path for all
+  consumers. WebServer now has no dependency on the LivePreview module assembly.
+  Date/Author: 2026-06-01 / Jeff Uchitjil
+
 - Decision: `ILivePreviewService` singleton exposed via `Module.Instance` static property.
   Rationale: Consistent with the WebServer's `Module.LiveContext` pattern already established in
   the codebase. ServiceLocator would be more decoupled but adds ceremony not justified by the
@@ -141,6 +166,11 @@ messages — no changes to this feature will be required at that time.
   infrastructure that cannot be initialised without a running Vixen environment. These paths are
   verified by the manual integration test (Validation step 3). If a test harness for VixenSystem
   is introduced in a future ticket, these tests can be added at that time.
+  Date/Author: 2026-06-01 / Jeff Uchitjil
+
+- Decision: Web server refactor is out of scope.
+  Rationale: Since it requries more detailed responses the basic publish does not provide the details required. Will 
+  consider it in future work.
   Date/Author: 2026-06-01 / Jeff Uchitjil
 
 ---

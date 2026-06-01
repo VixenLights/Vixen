@@ -1,4 +1,3 @@
-using Vixen.Execution.Context;
 using Vixen.Sys;
 
 namespace VixenModules.App.LivePreview
@@ -7,14 +6,18 @@ namespace VixenModules.App.LivePreview
 	internal sealed class VixenContextFactory : IContextFactory
 	{
 		/// <inheritdoc/>
-		public LiveContext Create(string name)
+		public ILiveContext GetOrCreate(string name)
 		{
 			var context = VixenSystem.Contexts.CreateLiveContext(name);
 			context.Start();
-			return context;
+			return new LiveContextAdapter(context);
 		}
 
 		/// <inheritdoc/>
-		public void Release(LiveContext context) => VixenSystem.Contexts.ReleaseContext(context);
+		public void Release(ILiveContext context)
+		{
+			if (context is LiveContextAdapter adapter)
+				VixenSystem.Contexts.ReleaseContext(adapter.Context);
+		}
 	}
 }

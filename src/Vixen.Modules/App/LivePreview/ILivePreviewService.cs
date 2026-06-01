@@ -13,7 +13,7 @@ namespace VixenModules.App.LivePreview
 		/// <summary>Turns on a single element using a SetLevel effect with the specified parameters.</summary>
 		/// <param name="id">The unique identifier of the element node to activate.</param>
 		/// <param name="seconds">The duration in seconds; <c>0</c> keeps the element on indefinitely.</param>
-		/// <param name="intensity">The intensity level as a percentage from 0 to 100.</param>
+		/// <param name="intensity">The intensity level from 0.0 (off) to 1.0 (full brightness).</param>
 		/// <param name="color">An HTML color string such as <c>"#FF0000"</c>, or empty to use the element's default.</param>
 		/// <param name="contextName">The name of the target live context, or <see langword="null"/> to use the default context.</param>
 		void TurnOnElement(Guid id, int seconds, double intensity, string color, string? contextName = null);

@@ -17,9 +17,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Vixen.Common\Messages\Messages.csproj" />
 		<ProjectReference Include="..\Vixen.Core\Vixen.Core.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\App\FPPClient\FPPClient.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\App\ExportWizard\ExportWizard.csproj" />
+		<ProjectReference Include="..\Vixen.Modules\App\LivePreview\LivePreview.csproj" />
 	</ItemGroup>
 
 </Project>

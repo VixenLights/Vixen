@@ -2,13 +2,12 @@ using System.Collections.Concurrent;
 using System.Drawing;
 using Common.Messages.LivePreview;
 using NLog;
-using Vixen.Execution.Context;
 using Vixen.Sys;
 using VixenModules.Effect.SetLevel;
 
 namespace VixenModules.App.LivePreview
 {
-	/// <summary>Implements <see cref="ILivePreviewService"/> by managing a registry of named <see cref="LiveContext"/> instances.</summary>
+	/// <summary>Implements <see cref="ILivePreviewService"/> by managing a registry of named <see cref="ILiveContext"/> instances.</summary>
 	/// <remarks>
 	/// Each named context is created on first use. All contexts are released when <see cref="Dispose"/> is called.
 	/// </remarks>
@@ -17,7 +16,7 @@ namespace VixenModules.App.LivePreview
 		private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 		private const string DefaultContextName = "LivePreview";
 
-		private readonly ConcurrentDictionary<string, LiveContext> _contexts = new(StringComparer.OrdinalIgnoreCase);
+		private readonly ConcurrentDictionary<string, ILiveContext> _contexts = new(StringComparer.OrdinalIgnoreCase);
 
 		/// <inheritdoc/>
 		public void TurnOnElement(Guid id, int seconds, double intensity, string color, string? contextName = null)
@@ -30,7 +29,7 @@ namespace VixenModules.App.LivePreview
 				return;
 			}
 
-			intensity = Math.Clamp(intensity, 0, 100);
+			intensity = Math.Clamp(intensity, 0.0, 100.0);
 			var effect = CreateEffect(node, seconds, intensity, color);
 			context.Execute(new EffectNode(effect, TimeSpan.Zero));
 			Log.Debug("TurnOnElement: {ElementName} on context {Context}", node.Name, contextName ?? DefaultContextName);
@@ -51,8 +50,7 @@ namespace VixenModules.App.LivePreview
 					Log.Warn("TurnOnElements: element {ElementId} not found", state.Id);
 					continue;
 				}
-				var clampedIntensity = Math.Clamp(state.Intensity, 0, 100);
-				effectNodes.Add(new EffectNode(CreateEffect(node, state.Duration, clampedIntensity, state.Color), TimeSpan.Zero));
+				effectNodes.Add(new EffectNode(CreateEffect(node, state.Duration, state.Intensity, state.Color), TimeSpan.Zero));
 			}
 
 			context.Execute(effectNodes);
@@ -86,11 +84,11 @@ namespace VixenModules.App.LivePreview
 
 		/// <summary>Returns the named context, creating and starting it if it does not yet exist.</summary>
 		/// <param name="contextName">The context name, or <see langword="null"/> to use the default context.</param>
-		/// <returns>The existing or newly created <see cref="LiveContext"/>.</returns>
-		internal LiveContext GetOrCreateContext(string? contextName)
+		/// <returns>The existing or newly created <see cref="ILiveContext"/>.</returns>
+		internal ILiveContext GetOrCreateContext(string? contextName)
 		{
 			var key = contextName ?? DefaultContextName;
-			return _contexts.GetOrAdd(key, contextFactory.Create);
+			return _contexts.GetOrAdd(key, contextFactory.GetOrCreate);
 		}
 
 		/// <inheritdoc/>
@@ -107,12 +105,12 @@ namespace VixenModules.App.LivePreview
 		private static SetLevel CreateEffect(ElementNode node, int seconds, double intensity, string color)
 		{
 			if (!string.IsNullOrEmpty(color) && (color.Length != 7 || !color.StartsWith('#')))
-				throw new ArgumentException("Invalid color format; expected #RRGGBB.", nameof(color));
+				throw new ArgumentException(@"Invalid color format; expected #RRGGBB.", nameof(color));
 
 			var effect = new SetLevel
 			{
-				TimeSpan    = seconds > 0 ? TimeSpan.FromSeconds(seconds) : TimeSpan.FromDays(30),
-				IntensityLevel = intensity / 100.0,
+				TimeSpan = seconds > 0 ? TimeSpan.FromSeconds(seconds) : TimeSpan.FromDays(30),
+				IntensityLevel = intensity / 100,
 				TargetNodes = [node]
 			};
 
