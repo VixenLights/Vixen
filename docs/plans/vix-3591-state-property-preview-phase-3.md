@@ -40,8 +40,9 @@ each action and must be clear after the dialog closes.
 - [x] (2026-06-02) Harden `BroadcastChannel<TMessage>` as a sealed reference type with an internal named constructor,
   validate typed Broadcast overloads, repair the State spike to publish through declared `LivePreviewChannels`, and allow
   Broadcast publication when no WPF application dispatcher exists.
-- [ ] Append the Phase 3 Jira markdown in this plan to issue `VIX-3591` and record confirmation here before implementation.
-- [ ] Establish and record the focused State test baseline and full Debug build baseline.
+- [x] (2026-06-02 12:41 -05:00) Confirm the Phase 3 Jira markdown in this plan was added to issue `VIX-3591`.
+- [x] (2026-06-02 12:41 -05:00) Establish the Milestone 1 baseline: `31` focused State tests pass and the full Debug
+  rebuild completes successfully.
 - [ ] Replace the selected-row preview spike with an internal, testable preview publisher and coordinator.
 - [ ] Add State mapper preview controls, State Item Group selection, refresh triggers, and Catel close cleanup.
 - [ ] Add focused coordinator and mapper automated tests, then run the complete State test suite.
@@ -116,6 +117,14 @@ each action and must be clear after the dialog closes.
   `LivePreviewChannels.ReleaseContext` carries that message; `VixenModules.App.LivePreview.Module` subscribes and delegates
   to `ILivePreviewService.ReleaseContext`. `TurnOffElementsMessage` now exposes `ElementIds`.
 
+- Observation: The Milestone 1 baseline is green before replacing the selected-row spike.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --configuration Debug --filter State --no-restore` passes
+  `31` of `31` tests, and `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` completes successfully.
+
+- Observation: The baseline reports a known critical-severity `LiteDB` advisory and unrelated existing compiler warnings.
+  Evidence: Restore reports `NU1904` for `LiteDB` `4.1.4` with advisory `GHSA-3x49-g6rc-c284`. The focused State test run
+  also reports existing compiler warnings in `Vixen.Core`, `FixtureGraphics`, and `WpfPropertyGrid`.
+
 ## Decision Log
 
 - Decision: Treat the existing uncommitted preview code as a spike and refactor it rather than layering group behavior onto
@@ -182,8 +191,9 @@ each action and must be clear after the dialog closes.
 
 ## Outcomes & Retrospective
 
-Planning is complete. Implementation has not started. The plan intentionally separates the Live Preview diff algorithm from
-the Catel ViewModel so overlap behavior can be proved with focused xUnit tests before the WPF surface is changed.
+Planning and the Milestone 1 baseline gate are complete. Implementation code has not started. The plan intentionally
+separates the Live Preview diff algorithm from the Catel ViewModel so overlap behavior can be proved with focused xUnit
+tests before the WPF surface is changed.
 
 ## Context and Orientation
 
@@ -785,3 +795,6 @@ required project references and the repository's CRLF convention.
   type with an internal constructor requiring a non-whitespace name. Typed Broadcast overloads reject null channels, and
   State spike publications use declared `LivePreviewChannels`. `Broadcast.Publish` also dispatches directly when no WPF
   application exists, which keeps non-UI execution and focused tests from dereferencing a missing dispatcher.
+- 2026-06-02: Completed Milestone 1 after the user confirmed the Phase 3 block was added to `VIX-3591`. Recorded the green
+  baseline of `31` focused State tests and a successful full Debug rebuild, along with the existing `LiteDB` advisory and
+  unrelated compiler warnings.
