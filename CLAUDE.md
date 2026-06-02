@@ -18,7 +18,7 @@ msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug
 
 Build output lands in `/Release/Output/` (Release) or `/Debug/Output/` (Debug). Modules build into subdirectories named `Module.{ModuleType}.{ModuleName}/`.
 
-There are no automated tests in this repository.
+Unit tests live in `src/Vixen.Tests/`. Run them with `dotnet test src/Vixen.Tests/Vixen.Tests.csproj`.
 
 ## Code Style
 
