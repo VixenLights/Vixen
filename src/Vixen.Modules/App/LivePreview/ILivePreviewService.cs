@@ -36,5 +36,13 @@ namespace VixenModules.App.LivePreview
 		/// <summary>Clears all active effects from the specified live context.</summary>
 		/// <param name="contextName">The name of the target live context, or <see langword="null"/> to use the default context.</param>
 		void ClearActiveEffects(string? contextName = null);
+
+		/// <summary>Releases a named live context that was previously created through this service.</summary>
+		/// <param name="contextName">The name of the context to release. Must not be <see langword="null"/>.</param>
+		/// <remarks>
+		/// Only contexts tracked by this service are released. If <paramref name="contextName"/> does not
+		/// correspond to a known context, the call is a no-op.
+		/// </remarks>
+		void ReleaseContext(string contextName);
 	}
 }

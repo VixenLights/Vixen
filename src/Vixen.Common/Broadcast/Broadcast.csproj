@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Vixen.Core\Vixen.Core.csproj" />
+    <ProjectReference Include="..\Messages\Messages.csproj" />
   </ItemGroup>
 
 </Project>

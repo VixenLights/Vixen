@@ -56,29 +56,33 @@ namespace VixenModules.App.LivePreview
 
 		private void _SubscribeToBroadcasts()
 		{
-			Broadcast.Subscribe<TurnOnElementMessage>(this, LivePreviewChannels.TurnOnElement,
-				m => _service?.TurnOnElement(m.State.Id, m.State.Duration, m.State.Intensity, m.State.Color, m.ContextName));
+			Broadcast.Subscribe(this, LivePreviewChannels.TurnOnElement,
+				(TurnOnElementMessage m) => _service?.TurnOnElement(m.State.Id, m.State.Duration, m.State.Intensity, m.State.Color, m.ContextName));
 
-			Broadcast.Subscribe<TurnOnElementsMessage>(this, LivePreviewChannels.TurnOnElements,
-				m => _service?.TurnOnElements(m.States, m.ContextName));
+			Broadcast.Subscribe(this, LivePreviewChannels.TurnOnElements,
+				(TurnOnElementsMessage m) => _service?.TurnOnElements(m.States, m.ContextName));
 
-			Broadcast.Subscribe<TurnOffElementMessage>(this, LivePreviewChannels.TurnOffElement,
-				m => _service?.TurnOffElement(m.ElementId, m.ContextName));
+			Broadcast.Subscribe(this, LivePreviewChannels.TurnOffElement,
+				(TurnOffElementMessage m) => _service?.TurnOffElement(m.ElementId, m.ContextName));
 
-			Broadcast.Subscribe<TurnOffElementsMessage>(this, LivePreviewChannels.TurnOffElements,
-				m => _service?.TurnOffElements(m.States, m.ContextName));
+			Broadcast.Subscribe(this, LivePreviewChannels.TurnOffElements,
+				(TurnOffElementsMessage m) => _service?.TurnOffElements(m.States, m.ContextName));
 
-			Broadcast.Subscribe<ClearActiveEffectsMessage>(this, LivePreviewChannels.ClearActiveEffects,
-				m => _service?.ClearActiveEffects(m.ContextName));
+			Broadcast.Subscribe(this, LivePreviewChannels.ClearActiveEffects,
+				(ClearActiveEffectsMessage m) => _service?.ClearActiveEffects(m.ContextName));
+
+			Broadcast.Subscribe(this, LivePreviewChannels.ReleaseContext,
+				(ReleaseContextMessage m) => _service?.ReleaseContext(m.ContextName));
 		}
 
 		private void _UnsubscribeFromBroadcasts()
 		{
-			Broadcast.Unsubscribe<TurnOnElementMessage>(this, LivePreviewChannels.TurnOnElement);
-			Broadcast.Unsubscribe<TurnOnElementsMessage>(this, LivePreviewChannels.TurnOnElements);
-			Broadcast.Unsubscribe<TurnOffElementMessage>(this, LivePreviewChannels.TurnOffElement);
-			Broadcast.Unsubscribe<TurnOffElementsMessage>(this, LivePreviewChannels.TurnOffElements);
-			Broadcast.Unsubscribe<ClearActiveEffectsMessage>(this, LivePreviewChannels.ClearActiveEffects);
+			Broadcast.Unsubscribe(this, LivePreviewChannels.TurnOnElement);
+			Broadcast.Unsubscribe(this, LivePreviewChannels.TurnOnElements);
+			Broadcast.Unsubscribe(this, LivePreviewChannels.TurnOffElement);
+			Broadcast.Unsubscribe(this, LivePreviewChannels.TurnOffElements);
+			Broadcast.Unsubscribe(this, LivePreviewChannels.ClearActiveEffects);
+			Broadcast.Unsubscribe(this, LivePreviewChannels.ReleaseContext);
 		}
 	}
 }

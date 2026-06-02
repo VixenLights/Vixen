@@ -92,6 +92,20 @@ namespace VixenModules.App.LivePreview
 		}
 
 		/// <inheritdoc/>
+		public void ReleaseContext(string contextName)
+		{
+			ArgumentNullException.ThrowIfNull(contextName);
+			if (!_contexts.TryRemove(contextName, out var context))
+			{
+				Log.Warn("ReleaseContext: context {Context} not found", contextName);
+				return;
+			}
+			try { contextFactory.Release(context); }
+			catch (Exception ex) { Log.Error(ex, "Error releasing context {Context}", contextName); }
+			Log.Debug("ReleaseContext: released {Context}", contextName);
+		}
+
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			foreach (var context in _contexts.Values)

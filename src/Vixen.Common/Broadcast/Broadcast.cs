@@ -1,4 +1,5 @@
-﻿using Vixen.Sys;
+﻿using Common.Messages;
+using Vixen.Sys;
 using WPFApplication = System.Windows.Application;
 using CommunityToolkit.Mvvm.Messaging;
 
@@ -104,5 +105,35 @@ namespace Common.Broadcast
 		{
 			WeakReferenceMessenger.Default.Unregister<T, String>(source, channel);
 		}
+
+		/// <summary>
+		/// Transmit a message to all receivers on a typed channel.
+		/// The message type is enforced by the channel declaration.
+		/// </summary>
+		/// <typeparam name="T">The message type bound to the channel.</typeparam>
+		/// <param name="channel">The typed channel to publish on.</param>
+		/// <param name="message">The message to transmit.</param>
+		public static void Publish<T>(BroadcastChannel<T> channel, T message) where T : class
+			=> Publish<T>(channel.Name, message);
+
+		/// <summary>
+		/// Register a receiver on a typed channel.
+		/// The message type is enforced by the channel declaration.
+		/// </summary>
+		/// <typeparam name="T">The message type bound to the channel.</typeparam>
+		/// <param name="source">Receiver's object.</param>
+		/// <param name="channel">The typed channel to subscribe to.</param>
+		/// <param name="callback">The callback to invoke when a message arrives.</param>
+		public static void Subscribe<T>(Object source, BroadcastChannel<T> channel, Action<T> callback) where T : class
+			=> Subscribe<T>(source, channel.Name, callback);
+
+		/// <summary>
+		/// Remove a receiver from a typed channel.
+		/// </summary>
+		/// <typeparam name="T">The message type bound to the channel.</typeparam>
+		/// <param name="source">Receiver's object.</param>
+		/// <param name="channel">The typed channel to unsubscribe from.</param>
+		public static void Unsubscribe<T>(Object source, BroadcastChannel<T> channel) where T : class
+			=> Unsubscribe<T>(source, channel.Name);
 	}
 }

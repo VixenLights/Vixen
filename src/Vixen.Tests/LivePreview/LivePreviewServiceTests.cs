@@ -112,5 +112,28 @@ namespace Vixen.Tests.LivePreview
 				It.Is<IEnumerable<Guid>>(ids => ids.Contains(id1) && ids.Contains(id2))),
 				Times.Once());
 		}
+
+		[Fact]
+		public void ReleaseContext_ReleasesContext_WhenContextExists()
+		{
+			var namedContext = new Mock<ILiveContext>();
+			_factory.Setup(f => f.GetOrCreate("Web Server")).Returns(namedContext.Object);
+			_service.GetOrCreateContext("Web Server");
+
+			_service.ReleaseContext("Web Server");
+
+			_factory.Verify(f => f.Release(namedContext.Object), Times.Once());
+			// Second call should not find the context (already removed)
+			_service.ReleaseContext("Web Server");
+			_factory.Verify(f => f.Release(namedContext.Object), Times.Once());
+		}
+
+		[Fact]
+		public void ReleaseContext_IsNoOp_WhenContextNotFound()
+		{
+			_service.ReleaseContext("NonExistent");
+
+			_factory.Verify(f => f.Release(It.IsAny<ILiveContext>()), Times.Never());
+		}
 	}
 }
