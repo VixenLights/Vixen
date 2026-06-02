@@ -66,7 +66,7 @@ namespace VixenModules.App.LivePreview
 				(TurnOffElementMessage m) => _service?.TurnOffElement(m.ElementId, m.ContextName));
 
 			Broadcast.Subscribe(this, LivePreviewChannels.TurnOffElements,
-				(TurnOffElementsMessage m) => _service?.TurnOffElements(m.States, m.ContextName));
+				(TurnOffElementsMessage m) => _service?.TurnOffElements(m.ElementIds, m.ContextName));
 
 			Broadcast.Subscribe(this, LivePreviewChannels.ClearActiveEffects,
 				(ClearActiveEffectsMessage m) => _service?.ClearActiveEffects(m.ContextName));

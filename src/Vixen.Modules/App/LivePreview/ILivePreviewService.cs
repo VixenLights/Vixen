@@ -29,9 +29,9 @@ namespace VixenModules.App.LivePreview
 		void TurnOffElement(Guid id, string? contextName = null);
 
 		/// <summary>Terminates all active effects on multiple elements.</summary>
-		/// <param name="states">The states identifying the elements to deactivate.</param>
+		/// <param name="ids">The identifiers of the element nodes to deactivate.</param>
 		/// <param name="contextName">The name of the target live context, or <see langword="null"/> to use the default context.</param>
-		void TurnOffElements(IEnumerable<ElementState> states, string? contextName = null);
+		void TurnOffElements(IEnumerable<Guid> ids, string? contextName = null);
 
 		/// <summary>Clears all active effects from the specified live context.</summary>
 		/// <param name="contextName">The name of the target live context, or <see langword="null"/> to use the default context.</param>

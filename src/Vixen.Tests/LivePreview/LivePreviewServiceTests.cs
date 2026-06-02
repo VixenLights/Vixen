@@ -99,14 +99,9 @@ namespace Vixen.Tests.LivePreview
 		{
 			var id1 = Guid.NewGuid();
 			var id2 = Guid.NewGuid();
-			var states = new List<ElementState>
-			{
-				new() { Id = id1 },
-				new() { Id = id2 }
-			};
 			_service.GetOrCreateContext(null);
 
-			_service.TurnOffElements(states, null);
+			_service.TurnOffElements([id1, id2], null);
 
 			_defaultContext.Verify(c => c.TerminateNodes(
 				It.Is<IEnumerable<Guid>>(ids => ids.Contains(id1) && ids.Contains(id2))),

@@ -66,11 +66,11 @@ namespace VixenModules.App.LivePreview
 		}
 
 		/// <inheritdoc/>
-		public void TurnOffElements(IEnumerable<ElementState> states, string? contextName = null)
+		public void TurnOffElements(IEnumerable<Guid> ids, string? contextName = null)
 		{
-			ArgumentNullException.ThrowIfNull(states);
+			ArgumentNullException.ThrowIfNull(ids);
 			var context = GetOrCreateContext(contextName);
-			context.TerminateNodes(states.Select(s => s.Id));
+			context.TerminateNodes(ids);
 			Log.Debug("TurnOffElements on context {Context}", contextName ?? DefaultContextName);
 		}
 
