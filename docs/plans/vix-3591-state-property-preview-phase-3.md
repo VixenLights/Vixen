@@ -45,8 +45,10 @@ each action and must be clear after the dialog closes.
   rebuild completes successfully.
 - [x] (2026-06-02 12:52 -05:00) Extract the internal State preview publisher and coordinator, route the selected-row
   compatibility spike through the adapter, and prove pair-based coordination with focused tests.
-- [ ] Add State mapper preview controls, State Item Group selection, refresh triggers, and Catel close cleanup.
-- [ ] Add focused coordinator and mapper automated tests, then run the complete State test suite.
+- [x] (2026-06-02 13:02 -05:00) Add temporary State mapper preview state, State Item Group selection, incremental refresh
+  triggers, and Catel close cleanup. WPF controls remain Milestone 4 work.
+- [x] (2026-06-02 13:02 -05:00) Add focused mapper preview tests and run the complete State-filtered suite: `62` of `62`
+  tests pass.
 - [ ] Run Debug and Release builds, whitespace and line-ending checks, and the manual Display Setup acceptance scenarios.
 - [ ] Update this living plan with implementation discoveries, evidence, final outcomes, and a revision note.
 
@@ -130,6 +132,11 @@ each action and must be clear after the dialog closes.
   Evidence: `BroadcastStatePreviewPublisherTests.Operations_PublishExpectedTypedMessages` subscribes through the typed
   `LivePreviewChannels`, verifies all four payloads, and passes under the xUnit runner.
 
+- Observation: Mapper add/remove operations and group-list rebuilds need refresh suppression around their intermediate
+  state changes.
+  Evidence: `StateMapperViewModel` now uses `_suppressPreviewRefresh` while changing collections, fallback selections, and
+  `SelectedStateItemGroup`; it performs one coordinator refresh after the state is coherent.
+
 ## Decision Log
 
 - Decision: Treat the existing uncommitted preview code as a spike and refactor it rather than layering group behavior onto
@@ -196,9 +203,9 @@ each action and must be clear after the dialog closes.
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. The Live Preview diff algorithm is isolated from the Catel ViewModel and proved with
-focused xUnit tests before the WPF surface is changed. Milestone 3 still needs to replace the compatibility selected-row
-spike with toggle-gated mapper orchestration.
+Milestones 1 through 3 are complete. The Live Preview diff algorithm is isolated from the Catel ViewModel, and the mapper
+now provides toggle-gated selected-row and exact-name State Item Group orchestration with close cleanup. Milestone 4 still
+needs to expose the temporary mapper state through WPF controls.
 
 ## Context and Orientation
 
@@ -806,3 +813,7 @@ required project references and the repository's CRLF convention.
 - 2026-06-02: Completed Milestone 2. Added the pair-based coordinator, typed broadcast adapter, test visibility, `12`
   coordinator tests, and one adapter integration test. Routed the selected-row compatibility spike through the adapter so
   it no longer publishes directly. The State-filtered suite passes `44` of `44` tests.
+- 2026-06-02: Completed Milestone 3. Replaced the selected-row compatibility spike with toggle-gated coordinator
+  orchestration, exact-name State Item Group choices, incremental edit refreshes, suppressed intermediate updates during
+  compound changes, and Catel `OnClosedAsync(bool?)` context release. Added `18` mapper preview tests; the State-filtered
+  suite passes `62` of `62` tests.

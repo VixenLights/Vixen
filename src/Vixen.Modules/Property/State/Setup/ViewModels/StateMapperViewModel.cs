@@ -17,12 +17,14 @@ namespace VixenModules.Property.State.Setup.ViewModels
 	public sealed class StateMapperViewModel : ViewModelBase
 	{
 		private const string FormTitle = "State Mapper";
+		private const string AllStateItemGroups = "<ALL>";
 		private readonly StateData _source;
 		private readonly IElementNode _rootNode;
 		private readonly Dictionary<Guid, IElementNode> _nodesById;
 		private readonly StateElementNodeSnapshot _elementTree;
 		private readonly IStateColorPickerService _colorPickerService;
-		private readonly IStatePreviewPublisher _previewPublisher;
+		private readonly StatePreviewCoordinator _previewCoordinator;
+		private bool _suppressPreviewRefresh;
 		private TaskCommand? _addItemCommand;
 		private TaskCommand? _removeItemCommand;
 		private TaskCommand<StateItemViewModel>? _editColorCommand;
@@ -57,7 +59,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			_rootNode = rootNode;
 			_source = source;
 			_colorPickerService = colorPickerService;
-			_previewPublisher = previewPublisher;
+			_previewCoordinator = new StatePreviewCoordinator(previewPublisher);
 			var draft = (StateData)source.Clone();
 			DeferValidationUntilFirstSaveCall = false;
 			_elementTree = StateElementNodeSnapshot.FromElementNode(rootNode);
@@ -68,6 +70,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				.ToDictionary(node => node.Id);
 			Items = new ObservableCollection<StateItemViewModel>(
 				draft.Items.Select(item => new StateItemViewModel(item, _elementTree)));
+			AvailableStateItemGroups = [];
 			Items.CollectionChanged += ItemsCollectionChanged;
 			foreach (var item in Items)
 			{
@@ -75,6 +78,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			}
 
 			Title = FormTitle;
+			RebuildAvailableStateItemGroups();
 			SelectedItem = Items.FirstOrDefault();
 			Draft = draft;
 			Validate(true);
@@ -156,11 +160,18 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			get => GetValue<StateItemViewModel?>(SelectedItemProperty);
 			set
 			{
-				TurnOffPreview(GetValue<StateItemViewModel?>(SelectedItemProperty));
+				if (ReferenceEquals(GetValue<StateItemViewModel?>(SelectedItemProperty), value))
+				{
+					return;
+				}
+
 				SetValue(SelectedItemProperty, value);
 				value?.ExpandCheckedAssignments();
 				_removeItemCommand?.RaiseCanExecuteChanged();
-				TurnOnPreview(value);
+				if (!IsStateItemGroupPreviewMode)
+				{
+					RefreshPreview();
+				}
 			}
 		}
 
@@ -168,6 +179,105 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		/// Identifies the <see cref="SelectedItem"/> property.
 		/// </summary>
 		public static readonly IPropertyData SelectedItemProperty = RegisterProperty<StateItemViewModel?>(nameof(SelectedItem));
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether State preview output is enabled.
+		/// </summary>
+		/// <value><see langword="true" /> if State preview output is enabled; otherwise, <see langword="false" />. The default is <see langword="false" />.</value>
+		public bool IsPreviewEnabled
+		{
+			get => GetValue<bool>(IsPreviewEnabledProperty);
+			set
+			{
+				if (GetValue<bool>(IsPreviewEnabledProperty) == value)
+				{
+					return;
+				}
+
+				SetValue(IsPreviewEnabledProperty, value);
+				if (value)
+				{
+					RefreshPreview();
+				}
+				else
+				{
+					_previewCoordinator.Clear();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Identifies the <see cref="IsPreviewEnabled"/> property.
+		/// </summary>
+		public static readonly IPropertyData IsPreviewEnabledProperty = RegisterProperty<bool>(nameof(IsPreviewEnabled));
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether preview includes a State Item Group instead of the selected row.
+		/// </summary>
+		/// <value><see langword="true" /> if preview includes a State Item Group; otherwise, <see langword="false" />. The default is <see langword="false" />.</value>
+		public bool IsStateItemGroupPreviewMode
+		{
+			get => GetValue<bool>(IsStateItemGroupPreviewModeProperty);
+			set
+			{
+				if (GetValue<bool>(IsStateItemGroupPreviewModeProperty) == value)
+				{
+					return;
+				}
+
+				SetValue(IsStateItemGroupPreviewModeProperty, value);
+				if (!IsPreviewEnabled)
+				{
+					return;
+				}
+
+				_previewCoordinator.Clear();
+				RefreshPreview();
+			}
+		}
+
+		/// <summary>
+		/// Identifies the <see cref="IsStateItemGroupPreviewMode"/> property.
+		/// </summary>
+		public static readonly IPropertyData IsStateItemGroupPreviewModeProperty =
+			RegisterProperty<bool>(nameof(IsStateItemGroupPreviewMode));
+
+		/// <summary>
+		/// Gets the State Item Group choices available for preview.
+		/// </summary>
+		/// <value>The State Item Group choices available for preview.</value>
+		public ObservableCollection<string> AvailableStateItemGroups { get; }
+
+		/// <summary>
+		/// Gets or sets the State Item Group selected for preview.
+		/// </summary>
+		/// <value>The State Item Group selected for preview. The default is <c>&lt;ALL&gt;</c>.</value>
+		public string SelectedStateItemGroup
+		{
+			get => GetValue<string>(SelectedStateItemGroupProperty);
+			set
+			{
+				var normalizedValue = string.IsNullOrWhiteSpace(value)
+					? AllStateItemGroups
+					: value.Trim();
+				if (GetValue<string>(SelectedStateItemGroupProperty) == normalizedValue)
+				{
+					return;
+				}
+
+				SetValue(SelectedStateItemGroupProperty, normalizedValue);
+				if (IsPreviewEnabled && IsStateItemGroupPreviewMode)
+				{
+					RefreshPreview();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Identifies the <see cref="SelectedStateItemGroup"/> property.
+		/// </summary>
+		public static readonly IPropertyData SelectedStateItemGroupProperty =
+			RegisterProperty(nameof(SelectedStateItemGroup), AllStateItemGroups);
 
 		/// <summary>
 		/// Gets the command that adds a state item row.
@@ -217,13 +327,30 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			return Task.FromResult(true);
 		}
 
+		/// <inheritdoc />
+		protected override async Task OnClosedAsync(bool? result)
+		{
+			_previewCoordinator.Release();
+			await base.OnClosedAsync(result);
+		}
+
 		private bool CanAddItem() => true;
 
 		private Task AddItemAsync()
 		{
-			var item = new StateItemViewModel(new StateItemData(), _elementTree);
-			Items.Add(item);
-			SelectedItem = item;
+			_suppressPreviewRefresh = true;
+			try
+			{
+				var item = new StateItemViewModel(new StateItemData(), _elementTree);
+				Items.Add(item);
+				SelectedItem = item;
+			}
+			finally
+			{
+				_suppressPreviewRefresh = false;
+			}
+
+			RefreshPreview();
 			RemoveItemCommand.RaiseCanExecuteChanged();
 			ValidateAndRefreshOkCommand();
 			return Task.CompletedTask;
@@ -238,11 +365,21 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				return Task.CompletedTask;
 			}
 
-			var index = Items.IndexOf(SelectedItem);
-			Items.Remove(SelectedItem);
-			SelectedItem = Items.Count == 0
-				? null
-				: Items[Math.Min(index, Items.Count - 1)];
+			_suppressPreviewRefresh = true;
+			try
+			{
+				var index = Items.IndexOf(SelectedItem);
+				Items.Remove(SelectedItem);
+				SelectedItem = Items.Count == 0
+					? null
+					: Items[Math.Min(index, Items.Count - 1)];
+			}
+			finally
+			{
+				_suppressPreviewRefresh = false;
+			}
+
+			RefreshPreview();
 			RemoveItemCommand.RaiseCanExecuteChanged();
 			ValidateAndRefreshOkCommand();
 			return Task.CompletedTask;
@@ -334,6 +471,15 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				}
 			}
 
+			if (!_suppressPreviewRefresh &&
+				SelectedItem != null &&
+				!Items.Contains(SelectedItem))
+			{
+				SelectedItem = Items.FirstOrDefault();
+			}
+
+			RebuildAvailableStateItemGroups();
+			RefreshPreview();
 			ValidateAndRefreshOkCommand();
 		}
 
@@ -351,7 +497,16 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		{
 			if (e.PropertyName == nameof(StateItemViewModel.Name))
 			{
+				RebuildAvailableStateItemGroups();
 				ValidateAndRefreshOkCommand();
+			}
+
+			if (sender is StateItemViewModel item &&
+				(e.PropertyName == nameof(StateItemViewModel.Name) ||
+					e.PropertyName is nameof(StateItemViewModel.Color) or nameof(StateItemViewModel.AssignmentCount) &&
+					IsPreviewedItem(item)))
+			{
+				RefreshPreview();
 			}
 		}
 
@@ -381,21 +536,66 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			_okCommand?.RaiseCanExecuteChanged();
 		}
 
-		private void TurnOffPreview(StateItemViewModel? value)
+		private void RebuildAvailableStateItemGroups()
 		{
-			if (value == null) return;
-			var ids = value.AssignmentRoots
-				.SelectMany(x => x.GetEffectiveLeafNodeIds());
-			_previewPublisher.TurnOff(ids.ToArray());
+			var selectedGroup = SelectedStateItemGroup;
+			var groups = Items
+				.Select(item => item.Name.Trim())
+				.Where(name => !string.IsNullOrEmpty(name))
+				.Distinct(StringComparer.Ordinal)
+				.ToList();
+
+			var previousSuppressPreviewRefresh = _suppressPreviewRefresh;
+			_suppressPreviewRefresh = true;
+			try
+			{
+				AvailableStateItemGroups.Clear();
+				AvailableStateItemGroups.Add(AllStateItemGroups);
+				foreach (var group in groups)
+				{
+					AvailableStateItemGroups.Add(group);
+				}
+
+				SelectedStateItemGroup = groups.Contains(selectedGroup, StringComparer.Ordinal)
+					? selectedGroup
+					: AllStateItemGroups;
+			}
+			finally
+			{
+				_suppressPreviewRefresh = previousSuppressPreviewRefresh;
+			}
 		}
 
-		private void TurnOnPreview(StateItemViewModel? value)
+		private void RefreshPreview()
 		{
-			if (value == null) return;
-			var pairs = value.AssignmentRoots
-				.SelectMany(x => x.GetEffectiveLeafNodeIds())
-				.Select(id => new StatePreviewPair(id, value.Color.ToHex()));
-			_previewPublisher.TurnOn(pairs.ToArray());
+			if (!IsPreviewEnabled || _suppressPreviewRefresh)
+			{
+				return;
+			}
+
+			var pairs = GetPreviewedItems()
+				.SelectMany(item => item.AssignmentRoots
+					.SelectMany(root => root.GetEffectiveLeafNodeIds())
+					.Select(id => new StatePreviewPair(id, item.Color.ToHex())))
+				.Distinct();
+			_previewCoordinator.Refresh(pairs);
+		}
+
+		private IEnumerable<StateItemViewModel> GetPreviewedItems()
+		{
+			if (!IsStateItemGroupPreviewMode)
+			{
+				return SelectedItem == null ? [] : [SelectedItem];
+			}
+
+			return SelectedStateItemGroup == AllStateItemGroups
+				? Items
+				: Items.Where(item => item.Name.Equals(SelectedStateItemGroup, StringComparison.Ordinal));
+		}
+
+		private bool IsPreviewedItem(StateItemViewModel item)
+		{
+			return GetPreviewedItems().Contains(item);
 		}
 	}
 }
