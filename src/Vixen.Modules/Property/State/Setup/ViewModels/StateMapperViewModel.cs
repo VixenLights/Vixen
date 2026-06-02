@@ -5,7 +5,9 @@ using Catel.Data;
 using Catel.MVVM;
 using Vixen.Sys;
 using VixenModules.Property.State.Setup.Models;
+using VixenModules.Property.State.Setup.Preview;
 using VixenModules.Property.State.Setup.Services;
+using WPFCommon.Extensions;
 
 namespace VixenModules.Property.State.Setup.ViewModels
 {
@@ -20,6 +22,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private readonly Dictionary<Guid, IElementNode> _nodesById;
 		private readonly StateElementNodeSnapshot _elementTree;
 		private readonly IStateColorPickerService _colorPickerService;
+		private readonly IStatePreviewPublisher _previewPublisher;
 		private TaskCommand? _addItemCommand;
 		private TaskCommand? _removeItemCommand;
 		private TaskCommand<StateItemViewModel>? _editColorCommand;
@@ -36,14 +39,25 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			IElementNode rootNode,
 			StateData source,
 			IStateColorPickerService colorPickerService)
+			: this(rootNode, source, colorPickerService, new BroadcastStatePreviewPublisher())
+		{
+		}
+
+		internal StateMapperViewModel(
+			IElementNode rootNode,
+			StateData source,
+			IStateColorPickerService colorPickerService,
+			IStatePreviewPublisher previewPublisher)
 		{
 			ArgumentNullException.ThrowIfNull(rootNode);
 			ArgumentNullException.ThrowIfNull(source);
 			ArgumentNullException.ThrowIfNull(colorPickerService);
+			ArgumentNullException.ThrowIfNull(previewPublisher);
 
 			_rootNode = rootNode;
 			_source = source;
 			_colorPickerService = colorPickerService;
+			_previewPublisher = previewPublisher;
 			var draft = (StateData)source.Clone();
 			DeferValidationUntilFirstSaveCall = false;
 			_elementTree = StateElementNodeSnapshot.FromElementNode(rootNode);
@@ -142,9 +156,11 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			get => GetValue<StateItemViewModel?>(SelectedItemProperty);
 			set
 			{
+				TurnOffPreview(GetValue<StateItemViewModel?>(SelectedItemProperty));
 				SetValue(SelectedItemProperty, value);
 				value?.ExpandCheckedAssignments();
 				_removeItemCommand?.RaiseCanExecuteChanged();
+				TurnOnPreview(value);
 			}
 		}
 
@@ -363,6 +379,23 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private void RaiseOkCanExecuteChanged()
 		{
 			_okCommand?.RaiseCanExecuteChanged();
+		}
+
+		private void TurnOffPreview(StateItemViewModel? value)
+		{
+			if (value == null) return;
+			var ids = value.AssignmentRoots
+				.SelectMany(x => x.GetEffectiveLeafNodeIds());
+			_previewPublisher.TurnOff(ids.ToArray());
+		}
+
+		private void TurnOnPreview(StateItemViewModel? value)
+		{
+			if (value == null) return;
+			var pairs = value.AssignmentRoots
+				.SelectMany(x => x.GetEffectiveLeafNodeIds())
+				.Select(id => new StatePreviewPair(id, value.Color.ToHex()));
+			_previewPublisher.TurnOn(pairs.ToArray());
 		}
 	}
 }

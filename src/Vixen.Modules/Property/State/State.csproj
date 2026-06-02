@@ -13,8 +13,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Vixen.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Vixen.Common\Broadcast\Broadcast.csproj" />
 		<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
 		<ProjectReference Include="..\..\..\Vixen.Common\DiscreteColorPicker\DiscreteColorPicker.csproj" />
+		<ProjectReference Include="..\..\..\Vixen.Common\Messages\Messages.csproj" />
 		<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
 		<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
 		<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />

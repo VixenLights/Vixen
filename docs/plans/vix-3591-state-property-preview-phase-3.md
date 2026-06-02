@@ -43,7 +43,8 @@ each action and must be clear after the dialog closes.
 - [x] (2026-06-02 12:41 -05:00) Confirm the Phase 3 Jira markdown in this plan was added to issue `VIX-3591`.
 - [x] (2026-06-02 12:41 -05:00) Establish the Milestone 1 baseline: `31` focused State tests pass and the full Debug
   rebuild completes successfully.
-- [ ] Replace the selected-row preview spike with an internal, testable preview publisher and coordinator.
+- [x] (2026-06-02 12:52 -05:00) Extract the internal State preview publisher and coordinator, route the selected-row
+  compatibility spike through the adapter, and prove pair-based coordination with focused tests.
 - [ ] Add State mapper preview controls, State Item Group selection, refresh triggers, and Catel close cleanup.
 - [ ] Add focused coordinator and mapper automated tests, then run the complete State test suite.
 - [ ] Run Debug and Release builds, whitespace and line-ending checks, and the manual Display Setup acceptance scenarios.
@@ -125,6 +126,10 @@ each action and must be clear after the dialog closes.
   Evidence: Restore reports `NU1904` for `LiteDB` `4.1.4` with advisory `GHSA-3x49-g6rc-c284`. The focused State test run
   also reports existing compiler warnings in `Vixen.Core`, `FixtureGraphics`, and `WpfPropertyGrid`.
 
+- Observation: The broadcast adapter can be tested deterministically without a running WPF application.
+  Evidence: `BroadcastStatePreviewPublisherTests.Operations_PublishExpectedTypedMessages` subscribes through the typed
+  `LivePreviewChannels`, verifies all four payloads, and passes under the xUnit runner.
+
 ## Decision Log
 
 - Decision: Treat the existing uncommitted preview code as a spike and refactor it rather than layering group behavior onto
@@ -191,9 +196,9 @@ each action and must be clear after the dialog closes.
 
 ## Outcomes & Retrospective
 
-Planning and the Milestone 1 baseline gate are complete. Implementation code has not started. The plan intentionally
-separates the Live Preview diff algorithm from the Catel ViewModel so overlap behavior can be proved with focused xUnit
-tests before the WPF surface is changed.
+Milestones 1 and 2 are complete. The Live Preview diff algorithm is isolated from the Catel ViewModel and proved with
+focused xUnit tests before the WPF surface is changed. Milestone 3 still needs to replace the compatibility selected-row
+spike with toggle-gated mapper orchestration.
 
 ## Context and Orientation
 
@@ -798,3 +803,6 @@ required project references and the repository's CRLF convention.
 - 2026-06-02: Completed Milestone 1 after the user confirmed the Phase 3 block was added to `VIX-3591`. Recorded the green
   baseline of `31` focused State tests and a successful full Debug rebuild, along with the existing `LiteDB` advisory and
   unrelated compiler warnings.
+- 2026-06-02: Completed Milestone 2. Added the pair-based coordinator, typed broadcast adapter, test visibility, `12`
+  coordinator tests, and one adapter integration test. Routed the selected-row compatibility spike through the adapter so
+  it no longer publishes directly. The State-filtered suite passes `44` of `44` tests.
