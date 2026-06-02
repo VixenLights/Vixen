@@ -20,6 +20,12 @@ namespace Vixen.Tests.LivePreview
 		}
 
 		[Fact]
+		public void DefaultContext_IsNotCreated_UntilFirstUse()
+		{
+			_factory.Verify(f => f.GetOrCreate(It.IsAny<string>()), Times.Never());
+		}
+
+		[Fact]
 		public void GetOrCreateContext_ReturnsDefaultContext_WhenContextNameIsNull()
 		{
 			var first  = _service.GetOrCreateContext(null);
@@ -121,6 +127,16 @@ namespace Vixen.Tests.LivePreview
 			// Second call should not find the context (already removed)
 			_service.ReleaseContext("Web Server");
 			_factory.Verify(f => f.Release(namedContext.Object), Times.Once());
+		}
+
+		[Fact]
+		public void ReleaseContext_ReleasesDefaultContext_WhenContextNameIsEmpty()
+		{
+			_service.GetOrCreateContext(null);
+
+			_service.ReleaseContext(string.Empty);
+
+			_factory.Verify(f => f.Release(_defaultContext.Object), Times.Once());
 		}
 
 		[Fact]

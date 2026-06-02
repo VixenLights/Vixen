@@ -37,8 +37,6 @@ namespace VixenModules.App.LivePreview
 		public override void Loading()
 		{
 			_service = new LivePreviewService(new VixenContextFactory());
-			// Create the default context eagerly so it is visible in VixenSystem.Contexts immediately.
-			_service.GetOrCreateContext(null);
 			Instance = _service;
 			_SubscribeToBroadcasts();
 			Log.Info("LivePreview module loaded.");
