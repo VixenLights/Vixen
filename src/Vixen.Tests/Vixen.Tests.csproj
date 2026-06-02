@@ -17,6 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Vixen.Common\Broadcast\Broadcast.csproj" />
 		<ProjectReference Include="..\Vixen.Common\Messages\Messages.csproj" />
 		<ProjectReference Include="..\Vixen.Core\Vixen.Core.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\App\FPPClient\FPPClient.csproj" />

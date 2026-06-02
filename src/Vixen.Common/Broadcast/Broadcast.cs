@@ -1,4 +1,4 @@
-﻿using Common.Messages;
+using Common.Messages;
 using Vixen.Sys;
 using WPFApplication = System.Windows.Application;
 using CommunityToolkit.Mvvm.Messaging;
@@ -76,10 +76,11 @@ namespace Common.Broadcast
 		/// <param name="message">Specify the message content</param>
 		public static void Publish<T>(String channel, T message) where T : class
 		{
-			if (VixenSystem.UIThread == Thread.CurrentThread)
+			var application = WPFApplication.Current;
+			if (VixenSystem.UIThread == Thread.CurrentThread || application == null)
 				WeakReferenceMessenger.Default.Send<T, String>(message, channel);
 			else
-				WPFApplication.Current.Dispatcher.Invoke( (Action)(() => WeakReferenceMessenger.Default.Send<T, String>(message, channel) ));
+				application.Dispatcher.Invoke( (Action)(() => WeakReferenceMessenger.Default.Send<T, String>(message, channel) ));
 		}
 
 		/// <summary>
@@ -113,8 +114,12 @@ namespace Common.Broadcast
 		/// <typeparam name="T">The message type bound to the channel.</typeparam>
 		/// <param name="channel">The typed channel to publish on.</param>
 		/// <param name="message">The message to transmit.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="channel"/> is <see langword="null" />.</exception>
 		public static void Publish<T>(BroadcastChannel<T> channel, T message) where T : class
-			=> Publish<T>(channel.Name, message);
+		{
+			ArgumentNullException.ThrowIfNull(channel);
+			Publish<T>(channel.Name, message);
+		}
 
 		/// <summary>
 		/// Register a receiver on a typed channel.
@@ -124,8 +129,12 @@ namespace Common.Broadcast
 		/// <param name="source">Receiver's object.</param>
 		/// <param name="channel">The typed channel to subscribe to.</param>
 		/// <param name="callback">The callback to invoke when a message arrives.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="channel"/> is <see langword="null" />.</exception>
 		public static void Subscribe<T>(Object source, BroadcastChannel<T> channel, Action<T> callback) where T : class
-			=> Subscribe<T>(source, channel.Name, callback);
+		{
+			ArgumentNullException.ThrowIfNull(channel);
+			Subscribe<T>(source, channel.Name, callback);
+		}
 
 		/// <summary>
 		/// Remove a receiver from a typed channel.
@@ -133,7 +142,11 @@ namespace Common.Broadcast
 		/// <typeparam name="T">The message type bound to the channel.</typeparam>
 		/// <param name="source">Receiver's object.</param>
 		/// <param name="channel">The typed channel to unsubscribe from.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="channel"/> is <see langword="null" />.</exception>
 		public static void Unsubscribe<T>(Object source, BroadcastChannel<T> channel) where T : class
-			=> Unsubscribe<T>(source, channel.Name);
+		{
+			ArgumentNullException.ThrowIfNull(channel);
+			Unsubscribe<T>(source, channel.Name);
+		}
 	}
 }
