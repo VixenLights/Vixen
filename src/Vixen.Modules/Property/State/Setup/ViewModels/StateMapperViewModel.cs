@@ -23,8 +23,15 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private readonly Dictionary<Guid, IElementNode> _nodesById;
 		private readonly StateElementNodeSnapshot _elementTree;
 		private readonly IStateColorPickerService _colorPickerService;
+		private readonly IStateDefinitionDialogService _stateDefinitionDialogService;
 		private readonly StatePreviewCoordinator _previewCoordinator;
 		private bool _suppressPreviewRefresh;
+		private bool _suppressStateDefinitionSelection;
+		private StateDefinitionViewModel? _lastValidSelectedStateDefinition;
+		private TaskCommand? _addStateDefinitionCommand;
+		private TaskCommand? _deleteStateDefinitionCommand;
+		private TaskCommand? _renameStateDefinitionCommand;
+		private TaskCommand? _copyStateDefinitionCommand;
 		private TaskCommand? _addItemCommand;
 		private TaskCommand? _removeItemCommand;
 		private TaskCommand<StateItemViewModel>? _editColorCommand;
@@ -41,7 +48,12 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			IElementNode rootNode,
 			StateData source,
 			IStateColorPickerService colorPickerService)
-			: this(rootNode, source, colorPickerService, new BroadcastStatePreviewPublisher())
+			: this(
+				rootNode,
+				source,
+				colorPickerService,
+				new BroadcastStatePreviewPublisher(),
+				new StateDefinitionDialogService())
 		{
 		}
 
@@ -50,17 +62,30 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			StateData source,
 			IStateColorPickerService colorPickerService,
 			IStatePreviewPublisher previewPublisher)
+			: this(rootNode, source, colorPickerService, previewPublisher, new StateDefinitionDialogService())
+		{
+		}
+
+		internal StateMapperViewModel(
+			IElementNode rootNode,
+			StateData source,
+			IStateColorPickerService colorPickerService,
+			IStatePreviewPublisher previewPublisher,
+			IStateDefinitionDialogService stateDefinitionDialogService)
 		{
 			ArgumentNullException.ThrowIfNull(rootNode);
 			ArgumentNullException.ThrowIfNull(source);
 			ArgumentNullException.ThrowIfNull(colorPickerService);
 			ArgumentNullException.ThrowIfNull(previewPublisher);
+			ArgumentNullException.ThrowIfNull(stateDefinitionDialogService);
 
 			_rootNode = rootNode;
 			_source = source;
 			_colorPickerService = colorPickerService;
+			_stateDefinitionDialogService = stateDefinitionDialogService;
 			_previewCoordinator = new StatePreviewCoordinator(previewPublisher);
 			var draft = (StateData)source.Clone();
+			draft.Normalize();
 			DeferValidationUntilFirstSaveCall = false;
 			_elementTree = StateElementNodeSnapshot.FromElementNode(rootNode);
 			_nodesById = rootNode
@@ -68,19 +93,19 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				.Prepend(rootNode)
 				.DistinctBy(node => node.Id)
 				.ToDictionary(node => node.Id);
-			Items = new ObservableCollection<StateItemViewModel>(
-				draft.Items.Select(item => new StateItemViewModel(item, _elementTree)));
+			StateDefinitions = new ObservableCollection<StateDefinitionViewModel>(
+				draft.StateDefinitions.Select(definition => new StateDefinitionViewModel(definition, _elementTree)));
 			AvailableStateItemGroups = [];
-			Items.CollectionChanged += ItemsCollectionChanged;
-			foreach (var item in Items)
+			StateDefinitions.CollectionChanged += StateDefinitionsCollectionChanged;
+			foreach (var definition in StateDefinitions)
 			{
-				AttachItem(item);
+				AttachDefinition(definition);
 			}
 
 			Title = FormTitle;
-			RebuildAvailableStateItemGroups();
-			SelectedItem = Items.FirstOrDefault();
 			Draft = draft;
+			SelectedStateDefinition = StateDefinitions.FirstOrDefault();
+			_lastValidSelectedStateDefinition = SelectedStateDefinition;
 			Validate(true);
 		}
 
@@ -109,10 +134,9 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		public static readonly IPropertyData TitleProperty = RegisterProperty<string>(nameof(Title));
 
 		/// <summary>
-		/// Gets or sets the name that identifies the overall state definition.
+		/// Gets or sets the name of the selected State definition.
 		/// </summary>
-		/// <value>The name that identifies the overall state definition.</value>
-		[ViewModelToModel(nameof(Draft))]
+		/// <value>The name of the selected State definition.</value>
 		public string Name
 		{
 			get => GetValue<string>(NameProperty);
@@ -120,6 +144,11 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			{
 				var normalizedName = value?.Trim() ?? string.Empty;
 				SetValue(NameProperty, normalizedName);
+				if (SelectedStateDefinition != null)
+				{
+					SelectedStateDefinition.Name = normalizedName;
+				}
+
 				ValidateAndRefreshOkCommand();
 			}
 		}
@@ -130,14 +159,20 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		public static readonly IPropertyData NameProperty = RegisterProperty<string>(nameof(Name), string.Empty);
 
 		/// <summary>
-		/// Gets or sets the user-provided description of the state definition.
+		/// Gets or sets the description of the selected State definition.
 		/// </summary>
-		/// <value>The user-provided description of the state definition.</value>
-		[ViewModelToModel(nameof(Draft))]
+		/// <value>The description of the selected State definition.</value>
 		public string Description
 		{
 			get => GetValue<string>(DescriptionProperty);
-			set => SetValue(DescriptionProperty, value);
+			set
+			{
+				SetValue(DescriptionProperty, value);
+				if (SelectedStateDefinition != null)
+				{
+					SelectedStateDefinition.Description = value;
+				}
+			}
 		}
 
 		/// <summary>
@@ -146,10 +181,60 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		public static readonly IPropertyData DescriptionProperty = RegisterProperty<string>(nameof(Description), string.Empty);
 
 		/// <summary>
+		/// Gets the editable State definitions.
+		/// </summary>
+		/// <value>The editable State definitions.</value>
+		public ObservableCollection<StateDefinitionViewModel> StateDefinitions { get; }
+
+		/// <summary>
+		/// Gets or sets the selected State definition.
+		/// </summary>
+		/// <value>The selected State definition.</value>
+		public StateDefinitionViewModel? SelectedStateDefinition
+		{
+			get => GetValue<StateDefinitionViewModel?>(SelectedStateDefinitionProperty);
+			set
+			{
+				if (ReferenceEquals(GetValue<StateDefinitionViewModel?>(SelectedStateDefinitionProperty), value))
+				{
+					return;
+				}
+
+				if (!_suppressStateDefinitionSelection &&
+					_lastValidSelectedStateDefinition != null &&
+					HasBlockingValidationErrors())
+				{
+					_suppressStateDefinitionSelection = true;
+					try
+					{
+						SetValue(SelectedStateDefinitionProperty, _lastValidSelectedStateDefinition);
+					}
+					finally
+					{
+						_suppressStateDefinitionSelection = false;
+					}
+
+					RaisePropertyChanged(nameof(SelectedStateDefinition));
+					return;
+				}
+
+				SetValue(SelectedStateDefinitionProperty, value);
+				_lastValidSelectedStateDefinition = value;
+				ApplySelectedStateDefinition();
+			}
+		}
+
+		/// <summary>
+		/// Identifies the <see cref="SelectedStateDefinition"/> property.
+		/// </summary>
+		public static readonly IPropertyData SelectedStateDefinitionProperty =
+			RegisterProperty<StateDefinitionViewModel?>(nameof(SelectedStateDefinition));
+
+		/// <summary>
 		/// Gets the editable state item rows.
 		/// </summary>
 		/// <value>The editable state item rows.</value>
-		public ObservableCollection<StateItemViewModel> Items { get; }
+		public ObservableCollection<StateItemViewModel> Items => SelectedStateDefinition?.Items ?? [];
 
 		/// <summary>
 		/// Gets or sets the row whose assignment tree is displayed.
@@ -286,6 +371,34 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		public TaskCommand AddItemCommand => _addItemCommand ??= new TaskCommand(AddItemAsync, CanAddItem);
 
 		/// <summary>
+		/// Gets the command that adds a State definition.
+		/// </summary>
+		/// <value>The command that adds a State definition.</value>
+		public TaskCommand AddStateDefinitionCommand =>
+			_addStateDefinitionCommand ??= new TaskCommand(AddStateDefinitionAsync, CanAddStateDefinition);
+
+		/// <summary>
+		/// Gets the command that deletes the selected State definition.
+		/// </summary>
+		/// <value>The command that deletes the selected State definition.</value>
+		public TaskCommand DeleteStateDefinitionCommand =>
+			_deleteStateDefinitionCommand ??= new TaskCommand(DeleteStateDefinitionAsync, CanDeleteStateDefinition);
+
+		/// <summary>
+		/// Gets the command that renames the selected State definition.
+		/// </summary>
+		/// <value>The command that renames the selected State definition.</value>
+		public TaskCommand RenameStateDefinitionCommand =>
+			_renameStateDefinitionCommand ??= new TaskCommand(RenameStateDefinitionAsync, CanRenameStateDefinition);
+
+		/// <summary>
+		/// Gets the command that copies the selected State definition.
+		/// </summary>
+		/// <value>The command that copies the selected State definition.</value>
+		public TaskCommand CopyStateDefinitionCommand =>
+			_copyStateDefinitionCommand ??= new TaskCommand(CopyStateDefinitionAsync, CanCopyStateDefinition);
+
+		/// <summary>
 		/// Gets the command that removes the selected state item row.
 		/// </summary>
 		/// <value>The command that removes the selected state item row.</value>
@@ -321,9 +434,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				return Task.FromResult(false);
 			}
 
-			_source.Name = Draft.Name;
-			_source.Description = Draft.Description;
-			_source.Items = Items.Select(item => item.Item.Clone()).ToList();
+			_source.StateDefinitions = StateDefinitions.Select(definition => definition.ToData()).ToList();
 			return Task.FromResult(true);
 		}
 
@@ -334,10 +445,104 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			await base.OnClosedAsync(result);
 		}
 
-		private bool CanAddItem() => true;
+		private bool CanAddStateDefinition() => !HasBlockingValidationErrors();
+
+		private async Task AddStateDefinitionAsync()
+		{
+			var name = await _stateDefinitionDialogService.RequestNameAsync(
+				"Add State Definition",
+				GetNextStateDefinitionName(),
+				GetStateDefinitionNames(),
+				null);
+			if (!TryNormalizeStateDefinitionName(name, null, out var normalizedName))
+			{
+				return;
+			}
+
+			var definition = new StateDefinitionViewModel(
+				StateDefinitionData.CreateDefault(normalizedName),
+				_elementTree);
+			StateDefinitions.Add(definition);
+			SelectedStateDefinition = definition;
+			ValidateAndRefreshOkCommand();
+		}
+
+		private bool CanDeleteStateDefinition() => SelectedStateDefinition != null && StateDefinitions.Count > 1;
+
+		private async Task DeleteStateDefinitionAsync()
+		{
+			if (SelectedStateDefinition == null ||
+				StateDefinitions.Count <= 1 ||
+				!await _stateDefinitionDialogService.ConfirmDeleteAsync(SelectedStateDefinition.Name))
+			{
+				return;
+			}
+
+			var index = StateDefinitions.IndexOf(SelectedStateDefinition);
+			StateDefinitions.Remove(SelectedStateDefinition);
+			SelectedStateDefinition = StateDefinitions[Math.Min(index, StateDefinitions.Count - 1)];
+			ValidateAndRefreshOkCommand();
+		}
+
+		private bool CanRenameStateDefinition() => SelectedStateDefinition != null && !HasBlockingValidationErrors();
+
+		private async Task RenameStateDefinitionAsync()
+		{
+			if (SelectedStateDefinition == null)
+			{
+				return;
+			}
+
+			var name = await _stateDefinitionDialogService.RequestNameAsync(
+				"Rename State Definition",
+				SelectedStateDefinition.Name,
+				GetStateDefinitionNames(),
+				SelectedStateDefinition.Name);
+			if (!TryNormalizeStateDefinitionName(name, SelectedStateDefinition.Name, out var normalizedName))
+			{
+				return;
+			}
+
+			SelectedStateDefinition.Name = normalizedName;
+			ApplySelectedStateDefinitionValues();
+			ValidateAndRefreshOkCommand();
+		}
+
+		private bool CanCopyStateDefinition() => SelectedStateDefinition != null && !HasBlockingValidationErrors();
+
+		private async Task CopyStateDefinitionAsync()
+		{
+			if (SelectedStateDefinition == null)
+			{
+				return;
+			}
+
+			var name = await _stateDefinitionDialogService.RequestNameAsync(
+				"Copy State Definition",
+				GetNextStateDefinitionName(),
+				GetStateDefinitionNames(),
+				null);
+			if (!TryNormalizeStateDefinitionName(name, null, out var normalizedName))
+			{
+				return;
+			}
+
+			var copiedDefinition = SelectedStateDefinition.ToData().CloneAsNew(normalizedName);
+			var definition = new StateDefinitionViewModel(copiedDefinition, _elementTree);
+			StateDefinitions.Add(definition);
+			SelectedStateDefinition = definition;
+			ValidateAndRefreshOkCommand();
+		}
+
+		private bool CanAddItem() => SelectedStateDefinition != null;
 
 		private Task AddItemAsync()
 		{
+			if (SelectedStateDefinition == null)
+			{
+				return Task.CompletedTask;
+			}
+
 			_suppressPreviewRefresh = true;
 			try
 			{
@@ -356,7 +561,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			return Task.CompletedTask;
 		}
 
-		private bool CanRemoveItem() => SelectedItem != null;
+		private bool CanRemoveItem() => SelectedStateDefinition != null && SelectedItem != null;
 
 		private Task RemoveItemAsync()
 		{
@@ -416,11 +621,11 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		{
 			if (string.IsNullOrWhiteSpace(Name))
 			{
-				validationResults.Add(FieldValidationResult.CreateError(NameProperty, "State name is required."));
+				validationResults.Add(FieldValidationResult.CreateError(NameProperty, "State definition name is required."));
 			}
 			else if (Name.Length < 3)
 			{
-				validationResults.Add(FieldValidationResult.CreateWarning(NameProperty, "State names shorter than three characters may be unclear."));
+				validationResults.Add(FieldValidationResult.CreateWarning(NameProperty, "State definition names shorter than three characters may be unclear."));
 			}
 		}
 
@@ -432,16 +637,26 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				validationResults.Add(BusinessRuleValidationResult.CreateError("Every State item requires a name."));
 			}
 
-			var hasCaseOnlyDuplicates = Items
-				.GroupBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
+			var duplicateNames = StateDefinitions
+				.GroupBy(definition => definition.Name, StringComparer.Ordinal)
+				.Where(group => !string.IsNullOrWhiteSpace(group.Key) && group.Skip(1).Any())
+				.Select(group => group.Key)
+				.ToList();
+			if (duplicateNames.Count > 0)
+			{
+				validationResults.Add(BusinessRuleValidationResult.CreateError("State definition names must be unique."));
+			}
+
+			var hasCaseOnlyDuplicates = StateDefinitions
+				.GroupBy(definition => definition.Name, StringComparer.OrdinalIgnoreCase)
 				.Any(group => group
-					.Select(item => item.Name)
+					.Select(definition => definition.Name)
 					.Distinct(StringComparer.Ordinal)
 					.Skip(1)
 					.Any());
 			if (hasCaseOnlyDuplicates)
 			{
-				validationResults.Add(BusinessRuleValidationResult.CreateWarning("State item names differ only by casing. Check you don't have a typo."));
+				validationResults.Add(BusinessRuleValidationResult.CreateWarning("State definition names differ only by casing. Check you don't have a typo."));
 			}
 		}
 
@@ -452,6 +667,69 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private bool CanCancel() => true;
 
 		private Task CancelMapAsync() => this.CancelAndCloseViewModelAsync();
+
+		private void StateDefinitionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.OldItems != null)
+			{
+				foreach (StateDefinitionViewModel definition in e.OldItems)
+				{
+					DetachDefinition(definition);
+				}
+			}
+
+			if (e.NewItems != null)
+			{
+				foreach (StateDefinitionViewModel definition in e.NewItems)
+				{
+					AttachDefinition(definition);
+				}
+			}
+
+			_deleteStateDefinitionCommand?.RaiseCanExecuteChanged();
+			ValidateAndRefreshOkCommand();
+		}
+
+		private void AttachDefinition(StateDefinitionViewModel definition)
+		{
+			definition.PropertyChanged += DefinitionPropertyChanged;
+			definition.Items.CollectionChanged += ItemsCollectionChanged;
+			foreach (var item in definition.Items)
+			{
+				AttachItem(item);
+			}
+		}
+
+		private void DetachDefinition(StateDefinitionViewModel definition)
+		{
+			definition.PropertyChanged -= DefinitionPropertyChanged;
+			definition.Items.CollectionChanged -= ItemsCollectionChanged;
+			foreach (var item in definition.Items)
+			{
+				DetachItem(item);
+			}
+		}
+
+		private void DefinitionPropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(StateDefinitionViewModel.Name))
+			{
+				if (ReferenceEquals(sender, SelectedStateDefinition) &&
+					SelectedStateDefinition != null)
+				{
+					SetValue(NameProperty, SelectedStateDefinition.Name);
+				}
+
+				ValidateAndRefreshOkCommand();
+			}
+
+			if (e.PropertyName == nameof(StateDefinitionViewModel.Description) &&
+				ReferenceEquals(sender, SelectedStateDefinition) &&
+				SelectedStateDefinition != null)
+			{
+				SetValue(DescriptionProperty, SelectedStateDefinition.Description);
+			}
+		}
 
 		private void ItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 		{
@@ -471,15 +749,22 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				}
 			}
 
+			var isSelectedDefinitionItems = ReferenceEquals(sender, SelectedStateDefinition?.Items);
 			if (!_suppressPreviewRefresh &&
+				isSelectedDefinitionItems &&
 				SelectedItem != null &&
 				!Items.Contains(SelectedItem))
 			{
 				SelectedItem = Items.FirstOrDefault();
 			}
 
-			RebuildAvailableStateItemGroups();
-			RefreshPreview();
+			if (isSelectedDefinitionItems)
+			{
+				RebuildAvailableStateItemGroups();
+				RefreshPreview();
+				RaisePropertyChanged(nameof(Items));
+			}
+
 			ValidateAndRefreshOkCommand();
 		}
 
@@ -497,11 +782,16 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		{
 			if (e.PropertyName == nameof(StateItemViewModel.Name))
 			{
-				RebuildAvailableStateItemGroups();
+				if (IsSelectedDefinitionItem(sender))
+				{
+					RebuildAvailableStateItemGroups();
+				}
+
 				ValidateAndRefreshOkCommand();
 			}
 
 			if (sender is StateItemViewModel item &&
+				IsSelectedDefinitionItem(item) &&
 				(e.PropertyName == nameof(StateItemViewModel.Name) ||
 					e.PropertyName is nameof(StateItemViewModel.Color) or nameof(StateItemViewModel.AssignmentCount) &&
 					IsPreviewedItem(item)))
@@ -512,17 +802,27 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		private void NormalizeNames()
 		{
-			Name = Name;
-			foreach (var item in Items)
+			foreach (var definition in StateDefinitions)
 			{
-				item.Name = item.Name;
+				definition.Name = definition.Name;
+				foreach (var item in definition.Items)
+				{
+					item.Name = item.Name;
+				}
 			}
+
+			ApplySelectedStateDefinitionValues();
 		}
 
 		private bool HasBlockingValidationErrors()
 		{
-			return string.IsNullOrWhiteSpace(Name) ||
-				Items.Any(item => string.IsNullOrWhiteSpace(item.Name));
+			return StateDefinitions.Count == 0 ||
+				StateDefinitions.Any(definition =>
+					string.IsNullOrWhiteSpace(definition.Name) ||
+					definition.Items.Any(item => string.IsNullOrWhiteSpace(item.Name))) ||
+				StateDefinitions
+					.GroupBy(definition => definition.Name, StringComparer.Ordinal)
+					.Any(group => !string.IsNullOrWhiteSpace(group.Key) && group.Skip(1).Any());
 		}
 
 		private void ValidateAndRefreshOkCommand()
@@ -534,6 +834,12 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private void RaiseOkCanExecuteChanged()
 		{
 			_okCommand?.RaiseCanExecuteChanged();
+			_addStateDefinitionCommand?.RaiseCanExecuteChanged();
+			_deleteStateDefinitionCommand?.RaiseCanExecuteChanged();
+			_renameStateDefinitionCommand?.RaiseCanExecuteChanged();
+			_copyStateDefinitionCommand?.RaiseCanExecuteChanged();
+			_addItemCommand?.RaiseCanExecuteChanged();
+			_removeItemCommand?.RaiseCanExecuteChanged();
 		}
 
 		private void RebuildAvailableStateItemGroups()
@@ -596,6 +902,66 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private bool IsPreviewedItem(StateItemViewModel item)
 		{
 			return GetPreviewedItems().Contains(item);
+		}
+
+		private bool IsSelectedDefinitionItem(object? item)
+		{
+			return item is StateItemViewModel stateItem &&
+				SelectedStateDefinition?.Items.Contains(stateItem) == true;
+		}
+
+		private void ApplySelectedStateDefinition()
+		{
+			ApplySelectedStateDefinitionValues();
+			SelectedItem = Items.FirstOrDefault();
+			RebuildAvailableStateItemGroups();
+			RaisePropertyChanged(nameof(Items));
+			RaiseOkCanExecuteChanged();
+
+			if (IsPreviewEnabled)
+			{
+				_previewCoordinator.Clear();
+				RefreshPreview();
+			}
+		}
+
+		private void ApplySelectedStateDefinitionValues()
+		{
+			SetValue(NameProperty, SelectedStateDefinition?.Name ?? string.Empty);
+			SetValue(DescriptionProperty, SelectedStateDefinition?.Description ?? string.Empty);
+		}
+
+		private IReadOnlyCollection<string> GetStateDefinitionNames()
+		{
+			return StateDefinitions.Select(definition => definition.Name).ToList();
+		}
+
+		private string GetNextStateDefinitionName()
+		{
+			var index = 1;
+			var existingNames = GetStateDefinitionNames();
+			string name;
+			do
+			{
+				name = $"State - {index}";
+				index++;
+			}
+			while (existingNames.Contains(name, StringComparer.Ordinal));
+
+			return name;
+		}
+
+		private bool TryNormalizeStateDefinitionName(
+			string? name,
+			string? currentName,
+			out string normalizedName)
+		{
+			var candidateName = name?.Trim() ?? string.Empty;
+			normalizedName = candidateName;
+			return !string.IsNullOrWhiteSpace(candidateName) &&
+				!StateDefinitions.Any(definition =>
+					!definition.Name.Equals(currentName, StringComparison.Ordinal) &&
+					definition.Name.Equals(candidateName, StringComparison.Ordinal));
 		}
 	}
 }

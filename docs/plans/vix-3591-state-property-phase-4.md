@@ -16,7 +16,7 @@ The xLights xModel importer also needs to understand `CustomModelCompressed`, be
 - [x] (2026-06-03 11:05 America/Chicago) Researched the current State property data model, setup ViewModel/XAML, preview coordinator tests, xLights parser, custom prop builder, and existing State import bridge.
 - [x] (2026-06-03 11:15 America/Chicago) Created this initial ExecPlan.
 - [x] (2026-06-03 11:42 America/Chicago) Implemented the State definition data model and updated stable identity/copy/clone behavior. Added focused tests for default definitions, logical clone ID preservation, and copy-as-new ID regeneration.
-- [ ] Update State Property Setup UI and ViewModels for multi-definition editing.
+- [x] (2026-06-03 12:28 America/Chicago) Updated State Property Setup UI and ViewModels for multi-definition editing. Added selected-definition binding, Add/Delete/Rename/Copy commands, modal dialog service boundary, duplicate/case validation, selection blocking while invalid, and tests.
 - [ ] Update Preview behavior so it is scoped to the selected State definition.
 - [ ] Refactor xModel import to decode `CustomModelCompressed` or `CustomModel` into shared Vixen model data.
 - [ ] Update imported element hierarchy and State property attachment.
@@ -66,6 +66,8 @@ The xLights xModel importer also needs to understand `CustomModelCompressed`, be
 This plan captures the intended architecture, milestones, validation commands, and acceptance criteria needed to implement Phase 4. Update this section after each major milestone with what changed, what was verified, and what remains.
 
 Milestone 1 is complete. `StateData` now exposes `StateDefinitions`, `StateDefinitionData` owns per-definition identity/name/description/items, logical clones preserve IDs, and copy-as-new regenerates State property, State definition, and State item IDs. Temporary first-definition compatibility properties remain on `StateData` and `StateModule` so the existing setup UI and tests continue to compile until Milestone 2 replaces the single-definition ViewModel surface.
+
+Milestone 2 is complete. `StateMapperViewModel` now owns an editable collection of `StateDefinitionViewModel` objects, proxies existing `Name`, `Description`, and `Items` bindings through the selected definition, and supports Add, Delete, Rename, and Copy through an `IStateDefinitionDialogService` boundary. The setup XAML now includes the State definition combo box and management controls. Focused State property tests pass after adding coverage for definition selection, add/delete/rename/copy, duplicate blocking, case-only warnings, selection blocking, and save across all definitions.
 
 ## Context and Orientation
 
@@ -330,3 +332,5 @@ If implementation discovers better names that fit the codebase more closely, upd
 - 2026-06-03 / Codex: Completed Milestone 1. Added `StateDefinitionData`, refactored `StateData` into a definition
   container, preserved temporary first-definition compatibility properties for the existing setup UI, and verified the
   focused State property tests.
+- 2026-06-03 / Codex: Completed Milestone 2. Added setup ViewModel and XAML support for selecting and managing State
+  definitions, plus a dialog service boundary and focused tests.

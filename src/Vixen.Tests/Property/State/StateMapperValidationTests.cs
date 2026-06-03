@@ -148,13 +148,13 @@ public class StateMapperValidationTests
 	}
 
 	[Fact]
-	public void CaseOnlyItemNameDifferences_AddWarningWithoutBlockingOk()
+	public void CaseOnlyItemNameDifferences_DoNotAddWarning()
 	{
 		// Arrange
 		var viewModel = CreateViewModel(CreateSource("Operating Mode", "Enabled", "enabled"));
 
 		// Assert
-		Assert.True(viewModel.HasWarnings);
+		Assert.False(viewModel.HasWarnings);
 		Assert.False(viewModel.HasErrors);
 		Assert.True(viewModel.OkCommand.CanExecute(null));
 	}

@@ -63,13 +63,44 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				<TextBlock Text="Name" Margin="0,3,8,3" VerticalAlignment="Center"/>
+				<TextBlock Text="State Definition" Margin="0,3,8,3" VerticalAlignment="Center"/>
+				<Grid Grid.Column="1" Margin="0,2">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<ComboBox ItemsSource="{Binding StateDefinitions}"
+							  SelectedItem="{Binding SelectedStateDefinition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+							  DisplayMemberPath="Name"
+							  MinWidth="180"/>
+					<Button Grid.Column="1"
+							Content="Add"
+							Command="{Binding AddStateDefinitionCommand}"
+							Style="{StaticResource RowButtonStyle}"
+							Margin="6,0,0,0"/>
+					<Button Grid.Column="2"
+							Content="Delete"
+							Command="{Binding DeleteStateDefinitionCommand}"
+							Style="{StaticResource RowButtonStyle}"
+							Margin="6,0,0,0"/>
+					<Menu Grid.Column="3" Margin="6,0,0,0">
+						<MenuItem Header="...">
+							<MenuItem Header="Rename" Command="{Binding RenameStateDefinitionCommand}"/>
+							<MenuItem Header="Copy" Command="{Binding CopyStateDefinitionCommand}"/>
+						</MenuItem>
+					</Menu>
+				</Grid>
+				<TextBlock Grid.Row="1" Text="Name" Margin="0,3,8,3" VerticalAlignment="Center"/>
 				<TextBox Grid.Column="1"
+						 Grid.Row="1"
 						 Text="{Binding Name, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
 						 Margin="0,2"/>
-				<TextBlock Grid.Row="1" Text="Description" Margin="0,3,8,3" VerticalAlignment="Top"/>
-				<TextBox Grid.Row="1"
+				<TextBlock Grid.Row="2" Text="Description" Margin="0,3,8,3" VerticalAlignment="Top"/>
+				<TextBox Grid.Row="2"
 						 Grid.Column="1"
 						 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
 						 AcceptsReturn="True"
