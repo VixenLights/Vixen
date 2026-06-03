@@ -63,8 +63,12 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 					cm.StringType = reader.GetAttribute("StringType");
 					cm.StrandNames = reader.GetAttribute("StrandNames");
 					cm.NodeNames = reader.GetAttribute("NodeNames");
-					string model = reader.GetAttribute("CustomModel");  //TODO Clean up
-					cm.ModelDefinition = model;
+					var compressedModel = reader.GetAttribute("CustomModelCompressed");
+					var customModel = reader.GetAttribute("CustomModel");
+					if (!await TryResolveModelNodesAsync(cm, compressedModel, customModel))
+					{
+						return null;
+					}
 
 					while (reader.Read())
 					{
@@ -248,6 +252,72 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			}
 
 			return p;
+		}
+
+		private async Task<bool> TryResolveModelNodesAsync(
+			CustomModel customModel,
+			string compressedModelDefinition,
+			string modelDefinition)
+		{
+			var result = CustomModelSourceResolver.Resolve(
+				compressedModelDefinition,
+				modelDefinition,
+				customModel.Scale);
+			if (result.Success)
+			{
+				if (result.Source == CustomModelSource.CustomModel &&
+					result.CompressedException != null)
+				{
+					Logging.Warn(
+						result.CompressedException,
+						"Unable to parse CustomModelCompressed for xModel {ModelName}. Falling back to CustomModel.",
+						customModel.Name);
+				}
+
+				customModel.ModelNodes = result.ModelNodes;
+				return true;
+			}
+
+			LogParseFailure(customModel.Name, result);
+			await ShowModelErrorAsync(
+				$"Unable to parse a valid CustomModel or CustomModelCompressed for model '{customModel.Name}'.",
+				"Model import error");
+			return false;
+		}
+
+		private static void LogParseFailure(string modelName, CustomModelParseResult result)
+		{
+			if (result.CompressedException == null &&
+				result.CustomModelException == null)
+			{
+				Logging.Error(
+					"xModel {ModelName} does not contain a valid CustomModelCompressed or CustomModel definition.",
+					modelName);
+				return;
+			}
+
+			if (result.CompressedException != null)
+			{
+				Logging.Error(
+					result.CompressedException,
+					"Unable to parse CustomModelCompressed for xModel {ModelName}.",
+					modelName);
+			}
+
+			if (result.CustomModelException != null)
+			{
+				Logging.Error(
+					result.CustomModelException,
+					"Unable to parse CustomModel for xModel {ModelName}.",
+					modelName);
+			}
+		}
+
+		private async Task ShowModelErrorAsync(string message, string title)
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var messageService = dependencyResolver.Resolve<IMessageService>();
+			await messageService.ShowErrorAsync(message, title);
 		}
 
         private List<RangeGroup> ProcessRanges(XmlReader reader)

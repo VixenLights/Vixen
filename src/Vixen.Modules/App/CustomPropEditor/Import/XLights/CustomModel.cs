@@ -12,6 +12,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			SubModels = new List<SubModel>();
 			FaceInfos = new List<FaceInfo>();
 			StateInfos = new List<StateInfo>();
+			ModelNodes = new Dictionary<int, ModelNode>();
 			Name = name;
 			PixelSize = 1;
 		}
@@ -56,6 +57,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		public string ModelDefinition { get; set; }
 
+		internal Dictionary<int, ModelNode> ModelNodes { get; set; }
+
 		public List<SubModel> SubModels { get; set; }
 
 		public List<FaceInfo> FaceInfos { get; set; }
@@ -80,42 +83,17 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		internal async Task<Dictionary<int, ModelNode>> CreateModelNodesAsync()
 		{
-			var elementCandidates = new Dictionary<int, ModelNode>();
-			await Task.Factory.StartNew(() =>
+			return await Task.Factory.StartNew(() =>
 			{
-
-				string[] rows = ModelDefinition.Split(';');
-				int y = 1;
-				foreach (var row in rows)
-				{
-					string[] nodes = row.Split(',');
-					int x = 1;
-					foreach (var node in nodes)
+				return ModelNodes.ToDictionary(
+					node => node.Key,
+					node => new ModelNode
 					{
-						if (!string.IsNullOrEmpty(node))
-						{
-							int order;
-							int.TryParse(node, out order);
-							var modelNode = new ModelNode()
-							{
-								Order = order,
-								X = x,
-								Y = y
-							};
-
-							elementCandidates[order] = modelNode;
-						}
-
-						x += Scale;
-					}
-
-					y += Scale;
-				}
-
+						Order = node.Value.Order,
+						X = node.Value.X,
+						Y = node.Value.Y
+					});
 			});
-
-			return elementCandidates;
-
 		}
 	}
 }

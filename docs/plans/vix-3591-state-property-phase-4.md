@@ -18,7 +18,7 @@ The xLights xModel importer also needs to understand `CustomModelCompressed`, be
 - [x] (2026-06-03 11:42 America/Chicago) Implemented the State definition data model and updated stable identity/copy/clone behavior. Added focused tests for default definitions, logical clone ID preservation, and copy-as-new ID regeneration.
 - [x] (2026-06-03 12:28 America/Chicago) Updated State Property Setup UI and ViewModels for multi-definition editing. Added selected-definition binding, Add/Delete/Rename/Copy commands, modal dialog service boundary, duplicate/case validation, selection blocking while invalid, and tests.
 - [x] (2026-06-03 12:45 America/Chicago) Updated Preview behavior so it is scoped to the selected State definition. Suppressed intermediate preview refreshes during definition switches, then clear-and-rerendered once when Preview is on. Added tests for switching while on/off and inactive-definition edits.
-- [ ] Refactor xModel import to decode `CustomModelCompressed` or `CustomModel` into shared Vixen model data.
+- [x] (2026-06-03 13:18 America/Chicago) Refactored xModel import to decode `CustomModelCompressed` or `CustomModel` into shared Vixen model data. Added direct compressed and uncompressed parsers, compressed-first source resolution, fallback from invalid compressed to valid uncompressed with warning logging, import abort with user-facing error when no valid source exists, and parser tests proving equivalent Vixen `ModelNode` state.
 - [ ] Update imported element hierarchy and State property attachment.
 - [ ] Add focused automated tests for data model, setup behavior, preview scoping, import hierarchy, compressed decoding, fallback behavior, and compatibility.
 - [ ] Run automated tests and manual acceptance scenarios.
@@ -70,6 +70,8 @@ Milestone 1 is complete. `StateData` now exposes `StateDefinitions`, `StateDefin
 Milestone 2 is complete. `StateMapperViewModel` now owns an editable collection of `StateDefinitionViewModel` objects, proxies existing `Name`, `Description`, and `Items` bindings through the selected definition, and supports Add, Delete, Rename, and Copy through an `IStateDefinitionDialogService` boundary. The setup XAML now includes the State definition combo box and management controls. Focused State property tests pass after adding coverage for definition selection, add/delete/rename/copy, duplicate blocking, case-only warnings, selection blocking, and save across all definitions.
 
 Milestone 3 is complete. Preview is scoped to the selected State definition, switching definitions while Preview is on clears the State Preview context and renders the new definition once, switching while Preview is off publishes no messages, and edits to inactive definitions do not publish preview messages. Focused State property tests now include these multi-definition preview scenarios.
+
+Milestone 4 is complete. xModel import now resolves `CustomModelCompressed` and `CustomModel` as alternate source encodings and decodes the selected source directly into `ModelNode` values. `CustomModelCompressed` is preferred when valid; invalid compressed data falls back to valid `CustomModel` data and logs a warning; no valid source logs an error, shows the user a model import error, and aborts the import. Parser tests use embedded minimal data based on santa and snowman examples and assert equivalent Vixen node state rather than compressed-to-uncompressed text conversion.
 
 ## Context and Orientation
 
@@ -338,3 +340,6 @@ If implementation discovers better names that fit the codebase more closely, upd
   definitions, plus a dialog service boundary and focused tests.
 - 2026-06-03 / Codex: Completed Milestone 3. Tightened selected-definition Preview switching and added tests proving
   clear-and-rerender behavior, off-state suppression, and inactive-definition edit suppression.
+- 2026-06-03 / Codex: Completed Milestone 4. Added direct xModel `CustomModelCompressed` and `CustomModel` parsing into
+  shared `ModelNode` data, compressed-first fallback behavior, import abort/error handling for invalid sources, and focused
+  xLights parser tests.
