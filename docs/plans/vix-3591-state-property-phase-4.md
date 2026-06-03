@@ -15,14 +15,15 @@ The xLights xModel importer also needs to understand `CustomModelCompressed`, be
 - [x] (2026-06-03 10:55 America/Chicago) Read `.agents\PLANS.md` and the Phase 4 spec in `docs\vix-3591-state-property-phase-4.md`.
 - [x] (2026-06-03 11:05 America/Chicago) Researched the current State property data model, setup ViewModel/XAML, preview coordinator tests, xLights parser, custom prop builder, and existing State import bridge.
 - [x] (2026-06-03 11:15 America/Chicago) Created this initial ExecPlan.
-- [ ] Implement the State definition data model and update stable identity/copy/clone behavior.
+- [x] (2026-06-03 11:42 America/Chicago) Implemented the State definition data model and updated stable identity/copy/clone behavior. Added focused tests for default definitions, logical clone ID preservation, and copy-as-new ID regeneration.
 - [ ] Update State Property Setup UI and ViewModels for multi-definition editing.
 - [ ] Update Preview behavior so it is scoped to the selected State definition.
 - [ ] Refactor xModel import to decode `CustomModelCompressed` or `CustomModel` into shared Vixen model data.
 - [ ] Update imported element hierarchy and State property attachment.
 - [ ] Add focused automated tests for data model, setup behavior, preview scoping, import hierarchy, compressed decoding, fallback behavior, and compatibility.
 - [ ] Run automated tests and manual acceptance scenarios.
-- [ ] Update Jira VIX-3591 after this plan is reviewed and before implementation begins.
+- [ ] Update Jira VIX-3591 after this plan is reviewed and before implementation begins, using a rolled-up final summary of
+  requirements, design, acceptance criteria, and testing rather than posting each milestone separately.
 
 ## Surprises & Discoveries
 
@@ -62,7 +63,9 @@ The xLights xModel importer also needs to understand `CustomModelCompressed`, be
 
 ## Outcomes & Retrospective
 
-No implementation has been performed yet. This initial plan captures the intended architecture, milestones, validation commands, and acceptance criteria needed to implement Phase 4. Update this section after each major milestone with what changed, what was verified, and what remains.
+This plan captures the intended architecture, milestones, validation commands, and acceptance criteria needed to implement Phase 4. Update this section after each major milestone with what changed, what was verified, and what remains.
+
+Milestone 1 is complete. `StateData` now exposes `StateDefinitions`, `StateDefinitionData` owns per-definition identity/name/description/items, logical clones preserve IDs, and copy-as-new regenerates State property, State definition, and State item IDs. Temporary first-definition compatibility properties remain on `StateData` and `StateModule` so the existing setup UI and tests continue to compile until Milestone 2 replaces the single-definition ViewModel surface.
 
 ## Context and Orientation
 
@@ -157,7 +160,7 @@ If the full suite is too slow or blocked by environment issues, run the focused 
 
 Manual validation requires opening Display Setup, adding or importing a prop, opening State Property Setup, and verifying the scenarios in `docs\vix-3591-state-property-phase-4.md`. If UI automation is not available, record manual observations and screenshots separately if the team normally captures them.
 
-Milestone 9 updates Jira VIX-3591. Do this after the ExecPlan is reviewed so Jira contains the finalized scope, high-level design, acceptance criteria, test commands, and any known risks. The Jira update should mention that the State effect remains out of scope but can later reference State definition stable IDs.
+Milestone 9 updates Jira VIX-3591. Do this after the ExecPlan is reviewed so Jira contains the finalized scope, high-level design, acceptance criteria, test commands, and any known risks. The Jira update must be a rolled-up final-state summary of Phase 4 requirements and testing, not a sequence of milestone-by-milestone append blocks. The Jira update should mention that the State effect remains out of scope but can later reference State definition stable IDs.
 
 ## Concrete Steps
 
@@ -322,3 +325,8 @@ If implementation discovers better names that fit the codebase more closely, upd
 ## Revision Notes
 
 - 2026-06-03 / Codex: Initial ExecPlan created from `docs\vix-3591-state-property-phase-4.md`, after source research of the State module, xLights import path, and custom prop builder.
+- 2026-06-03 / Codex: Updated Jira guidance after plan review. Jira VIX-3591 should receive a rolled-up final-state
+  requirements, design, acceptance, and testing summary instead of separate milestone append blocks.
+- 2026-06-03 / Codex: Completed Milestone 1. Added `StateDefinitionData`, refactored `StateData` into a definition
+  container, preserved temporary first-definition compatibility properties for the existing setup UI, and verified the
+  focused State property tests.

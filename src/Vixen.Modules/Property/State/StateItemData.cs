@@ -64,6 +64,21 @@ namespace VixenModules.Property.State
 			};
 		}
 
+		/// <summary>
+		/// Creates a deep copy for a distinct State definition.
+		/// </summary>
+		/// <returns>A deep copy with a new stable identifier.</returns>
+		internal StateItemData CloneAsNew()
+		{
+			return new StateItemData
+			{
+				Id = Guid.NewGuid(),
+				Name = Name,
+				Color = Color,
+				ElementNodeIds = [.. ElementNodeIds]
+			};
+		}
+
 		internal void Normalize()
 		{
 			if (Id == Guid.Empty)

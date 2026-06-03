@@ -50,10 +50,11 @@ public class StateModuleCloneTests
 		Assert.Equal("Operating Mode", source.Name);
 		Assert.Equal("Available operating modes", source.Description);
 		Assert.Equal("Enabled", source.Items[0].Name);
-		Assert.Equal(source.Items[0].Id, clone.Items[0].Id);
+		Assert.NotEqual(source.StateDefinitions[0].Id, clone.StateDefinitions[0].Id);
+		Assert.NotEqual(source.Items[0].Id, clone.Items[0].Id);
 		Assert.Equal(source.Items[0].Color, clone.Items[0].Color);
 		Assert.Equal([firstElementNodeId, secondElementNodeId], source.Items[0].ElementNodeIds);
-		Assert.Equal(source.Items[1].Id, clone.Items[1].Id);
+		Assert.NotEqual(source.Items[1].Id, clone.Items[1].Id);
 		Assert.Equal(source.Items[1].Color, clone.Items[1].Color);
 		Assert.Equal([secondElementNodeId], source.Items[1].ElementNodeIds);
 		Assert.NotSame(source.Items, clone.Items);

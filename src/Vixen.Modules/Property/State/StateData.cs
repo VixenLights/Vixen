@@ -4,22 +4,18 @@ using Vixen.Module;
 namespace VixenModules.Property.State
 {
 	/// <summary>
-	/// Stores a named state definition and its configured state items.
+	/// Stores State definitions for an attached State property.
 	/// </summary>
 	[DataContract]
 	public sealed class StateData : ModuleDataModelBase
 	{
-		private const string DefaultName = "State Name 1";
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StateData"/> class.
 		/// </summary>
 		public StateData()
 		{
 			Id = Guid.NewGuid();
-			Name = DefaultName;
-			Description = string.Empty;
-			Items = [];
+			StateDefinitions = [StateDefinitionData.CreateDefault(StateDefinitionData.DefaultName)];
 		}
 
 		/// <summary>
@@ -30,25 +26,41 @@ namespace VixenModules.Property.State
 		public Guid Id { get; set; }
 
 		/// <summary>
-		/// Gets or sets the name that identifies the overall state definition.
+		/// Gets or sets the configured State definitions.
 		/// </summary>
-		/// <value>The name that identifies the overall state definition.</value>
+		/// <value>The configured State definitions.</value>
 		[DataMember]
-		public string Name { get; set; }
+		public List<StateDefinitionData> StateDefinitions { get; set; }
 
 		/// <summary>
-		/// Gets or sets the user-provided description of the state definition.
+		/// Gets or sets the name of the first State definition.
 		/// </summary>
-		/// <value>The user-provided description of the state definition.</value>
-		[DataMember]
-		public string Description { get; set; }
+		/// <value>The name of the first State definition.</value>
+		public string Name
+		{
+			get => FirstDefinition.Name;
+			set => FirstDefinition.Name = value;
+		}
 
 		/// <summary>
-		/// Gets or sets the configured state items.
+		/// Gets or sets the description of the first State definition.
 		/// </summary>
-		/// <value>The configured state items.</value>
-		[DataMember]
-		public List<StateItemData> Items { get; set; }
+		/// <value>The description of the first State definition.</value>
+		public string Description
+		{
+			get => FirstDefinition.Description;
+			set => FirstDefinition.Description = value;
+		}
+
+		/// <summary>
+		/// Gets or sets the State items of the first State definition.
+		/// </summary>
+		/// <value>The State items of the first State definition.</value>
+		public List<StateItemData> Items
+		{
+			get => FirstDefinition.Items;
+			set => FirstDefinition.Items = value;
+		}
 
 		/// <inheritdoc />
 		public override IModuleDataModel Clone()
@@ -56,9 +68,7 @@ namespace VixenModules.Property.State
 			return new StateData
 			{
 				Id = Id,
-				Name = Name,
-				Description = Description,
-				Items = Items.Select(item => item.Clone()).ToList()
+				StateDefinitions = StateDefinitions.Select(definition => definition.Clone()).ToList()
 			};
 		}
 
@@ -68,9 +78,13 @@ namespace VixenModules.Property.State
 		/// <returns>A deep copy with a new attached property identifier.</returns>
 		internal StateData CloneForNewProperty()
 		{
-			var clone = (StateData)Clone();
-			clone.Id = Guid.NewGuid();
-			return clone;
+			return new StateData
+			{
+				Id = Guid.NewGuid(),
+				StateDefinitions = StateDefinitions
+					.Select(definition => definition.CloneAsNew(definition.Name))
+					.ToList()
+			};
 		}
 
 		internal void Normalize()
@@ -80,13 +94,25 @@ namespace VixenModules.Property.State
 				Id = Guid.NewGuid();
 			}
 
-			Name ??= DefaultName;
-			Description ??= string.Empty;
-			Items ??= [];
+			StateDefinitions ??= [];
 
-			foreach (var item in Items)
+			if (StateDefinitions.Count == 0)
 			{
-				item.Normalize();
+				StateDefinitions.Add(StateDefinitionData.CreateDefault(StateDefinitionData.DefaultName));
+			}
+
+			foreach (var definition in StateDefinitions)
+			{
+				definition.Normalize();
+			}
+		}
+
+		private StateDefinitionData FirstDefinition
+		{
+			get
+			{
+				Normalize();
+				return StateDefinitions[0];
 			}
 		}
 

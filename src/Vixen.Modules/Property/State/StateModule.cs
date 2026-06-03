@@ -28,9 +28,19 @@ namespace VixenModules.Property.State {
 		public Guid Id => _data.Id;
 
 		/// <summary>
-		/// Gets or sets the name that identifies the overall state definition.
+		/// Gets or sets the configured State definitions.
 		/// </summary>
-		/// <value>The name that identifies the overall state definition.</value>
+		/// <value>The configured State definitions.</value>
+		public List<StateDefinitionData> StateDefinitions
+		{
+			get => _data.StateDefinitions;
+			set => _data.StateDefinitions = value;
+		}
+
+		/// <summary>
+		/// Gets or sets the name of the first State definition.
+		/// </summary>
+		/// <value>The name of the first State definition.</value>
 		public string Name
 		{
 			get => _data.Name;
@@ -38,9 +48,9 @@ namespace VixenModules.Property.State {
 		}
 
 		/// <summary>
-		/// Gets or sets the user-provided description of the state definition.
+		/// Gets or sets the description of the first State definition.
 		/// </summary>
-		/// <value>The user-provided description of the state definition.</value>
+		/// <value>The description of the first State definition.</value>
 		public string Description
 		{
 			get => _data.Description;
@@ -48,9 +58,9 @@ namespace VixenModules.Property.State {
 		}
 
 		/// <summary>
-		/// Gets or sets the configured state items.
+		/// Gets or sets the State items of the first State definition.
 		/// </summary>
-		/// <value>The configured state items.</value>
+		/// <value>The State items of the first State definition.</value>
 		public List<StateItemData> Items
 		{
 			get => _data.Items;
