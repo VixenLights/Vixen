@@ -26,6 +26,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 		{
 			Lights = new ObservableCollection<Light>();
 			Children = new ObservableCollection<ElementModel>();
+			StateDefinitions = new ObservableCollection<StateDefinition>();
 			Parents = new ObservableCollection<Guid>();
 			Id = Guid.NewGuid();
 			LightSize = DefaultLightSize;
@@ -180,6 +181,16 @@ namespace VixenModules.App.CustomPropEditor.Model
 				OnPropertyChanged(nameof(StateDefinition));
 			}
 		}
+
+		#endregion
+
+		#region State Definitions
+
+		/// <summary>
+		/// Gets or sets imported State definitions attached to this model group.
+		/// </summary>
+		/// <value>The imported State definitions attached to this model group.</value>
+		public ObservableCollection<StateDefinition> StateDefinitions { get; set; }
 
 		#endregion
 

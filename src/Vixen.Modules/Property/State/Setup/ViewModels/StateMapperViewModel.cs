@@ -855,12 +855,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			_suppressPreviewRefresh = true;
 			try
 			{
-				AvailableStateItemGroups.Clear();
-				AvailableStateItemGroups.Add(AllStateItemGroups);
-				foreach (var group in groups)
-				{
-					AvailableStateItemGroups.Add(group);
-				}
+				SynchronizeAvailableStateItemGroups(groups);
 
 				SelectedStateItemGroup = groups.Contains(selectedGroup, StringComparer.Ordinal)
 					? selectedGroup
@@ -870,6 +865,57 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			{
 				_suppressPreviewRefresh = previousSuppressPreviewRefresh;
 			}
+		}
+
+		private void SynchronizeAvailableStateItemGroups(IReadOnlyList<string> groups)
+		{
+			if (AvailableStateItemGroups.Count == 0)
+			{
+				AvailableStateItemGroups.Add(AllStateItemGroups);
+			}
+			else if (!AvailableStateItemGroups[0].Equals(AllStateItemGroups, StringComparison.Ordinal))
+			{
+				AvailableStateItemGroups.Insert(0, AllStateItemGroups);
+			}
+
+			for (var desiredIndex = 0; desiredIndex < groups.Count; desiredIndex++)
+			{
+				var group = groups[desiredIndex];
+				var collectionIndex = desiredIndex + 1;
+				if (AvailableStateItemGroups.Count > collectionIndex &&
+					AvailableStateItemGroups[collectionIndex].Equals(group, StringComparison.Ordinal))
+				{
+					continue;
+				}
+
+				var existingIndex = IndexOfAvailableStateItemGroup(group, collectionIndex + 1);
+				if (existingIndex >= 0)
+				{
+					AvailableStateItemGroups.Move(existingIndex, collectionIndex);
+				}
+				else
+				{
+					AvailableStateItemGroups.Insert(collectionIndex, group);
+				}
+			}
+
+			while (AvailableStateItemGroups.Count > groups.Count + 1)
+			{
+				AvailableStateItemGroups.RemoveAt(AvailableStateItemGroups.Count - 1);
+			}
+		}
+
+		private int IndexOfAvailableStateItemGroup(string group, int startIndex)
+		{
+			for (var i = startIndex; i < AvailableStateItemGroups.Count; i++)
+			{
+				if (AvailableStateItemGroups[i].Equals(group, StringComparison.Ordinal))
+				{
+					return i;
+				}
+			}
+
+			return -1;
 		}
 
 		private void RefreshPreview()
@@ -918,6 +964,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			try
 			{
 				SelectedItem = Items.FirstOrDefault();
+				SelectedStateItemGroup = AllStateItemGroups;
 				RebuildAvailableStateItemGroups();
 				RaisePropertyChanged(nameof(Items));
 				RaiseOkCanExecuteChanged();

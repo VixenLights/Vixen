@@ -62,8 +62,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				}
 
 				if (!int.TryParse(parts[0], out var order) ||
-					!int.TryParse(parts[1], out var compressedX) ||
-					!int.TryParse(parts[2], out var compressedY))
+					!int.TryParse(parts[1], out var compressedRow) ||
+					!int.TryParse(parts[2], out var compressedColumn))
 				{
 					throw new FormatException($"CustomModelCompressed entry '{node}' contains an invalid number.");
 				}
@@ -71,8 +71,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				elementCandidates[order] = new ModelNode
 				{
 					Order = order,
-					X = compressedX * scale + 1,
-					Y = compressedY * scale + 1
+					X = compressedColumn * scale + 1,
+					Y = compressedRow * scale + 1
 				};
 			}
 

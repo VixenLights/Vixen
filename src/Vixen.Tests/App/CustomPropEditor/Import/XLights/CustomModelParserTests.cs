@@ -10,7 +10,7 @@ public class CustomModelParserTests
 	{
 		// Arrange
 		const string customModel = "1,,;,,2;,,,,3";
-		const string compressed = "1,0,0;2,2,1;3,4,2";
+		const string compressed = "1,0,0;2,1,2;3,2,4";
 
 		// Act
 		var customNodes = CustomModelParser.ParseCustomModel(customModel, 1);
@@ -25,7 +25,7 @@ public class CustomModelParserTests
 	{
 		// Arrange
 		const string customModel = "1,,;,,2";
-		const string compressed = "1,0,0;2,2,1";
+		const string compressed = "1,0,0;2,1,2";
 
 		// Act
 		var customNodes = CustomModelParser.ParseCustomModel(customModel, 4);
@@ -44,9 +44,9 @@ public class CustomModelParserTests
 		var customModel = string.Join(
 			";",
 			CreateCustomModelRow((314, 0)),
-			CreateCustomModelRow((315, 5)),
-			CreateCustomModelRow((316, 8)));
-		const string compressed = "314,0,0;315,5,1;316,8,2";
+			CreateCustomModelRow((315, 188)),
+			CreateCustomModelRow((316, 195)));
+		const string compressed = "314,0,0;315,1,188;316,2,195";
 
 		// Act
 		var customNodes = CustomModelParser.ParseCustomModel(customModel, 1);
@@ -62,9 +62,9 @@ public class CustomModelParserTests
 		// Arrange
 		var customModel = string.Join(
 			";",
-			CreateCustomModelRow((243, 0), (242, 4), (241, 8), (240, 11)),
+			CreateCustomModelRow((243, 81), (242, 85), (241, 89), (240, 92)),
 			CreateCustomModelRow((245, 73), (244, 77), (239, 96)));
-		const string compressed = "243,0,0;242,4,0;241,8,0;240,11,0;245,73,1;244,77,1;239,96,1";
+		const string compressed = "243,0,81;242,0,85;241,0,89;240,0,92;245,1,73;244,1,77;239,1,96";
 
 		// Act
 		var customNodes = CustomModelParser.ParseCustomModel(customModel, 1);

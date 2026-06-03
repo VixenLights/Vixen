@@ -169,6 +169,8 @@ namespace VixenModules.Preview.VixenPreview
 				AddStateProperties(child);
 			}
 
+			AddImportedStateDefinitions(model);
+
 			var stateItemModels = model.Children
 				.Where(child => child.StateDefinition != null)
 				.ToList();
@@ -194,6 +196,47 @@ namespace VixenModules.Preview.VixenPreview
 					Color = item.StateDefinition.DefaultColor,
 					ElementNodeIds = [_elementModelMap[item.Id].Id]
 				})
+				.ToList();
+		}
+
+		private void AddImportedStateDefinitions(ElementModel model)
+		{
+			if (model.StateDefinitions == null ||
+				!model.StateDefinitions.Any() ||
+				!_elementModelMap.TryGetValue(model.Id, out var node))
+			{
+				return;
+			}
+
+			var state = node.Properties.Contains(StateDescriptor.ModuleId)
+				? node.Properties.Get(StateDescriptor.ModuleId) as StateModule
+				: node.Properties.Add(StateDescriptor.ModuleId) as StateModule;
+			if (state == null)
+			{
+				return;
+			}
+
+			state.StateDefinitions = model.StateDefinitions
+				.GroupBy(definition => definition.StateDefinitionName)
+				.Select(group => new StateDefinitionData
+				{
+					Name = group.Key,
+					Description = string.Empty,
+					Items = group
+						.Select(item => new StateItemData
+						{
+							Name = item.Name,
+							Color = item.DefaultColor,
+							ElementNodeIds = (item.ElementModelIds ?? [])
+								.Where(elementModelId => _elementModelMap.ContainsKey(elementModelId))
+								.Select(elementModelId => _elementModelMap[elementModelId].Id)
+								.Distinct()
+								.ToList()
+						})
+						.Where(item => item.ElementNodeIds.Any())
+						.ToList()
+				})
+				.Where(definition => definition.Items.Any())
 				.ToList();
 		}
 

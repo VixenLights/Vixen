@@ -1,3 +1,4 @@
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Reflection;
 using Moq;
@@ -39,6 +40,24 @@ public sealed class StateMapperPreviewTests
 
 		// Assert
 		Assert.Equal(["<ALL>"], fixture.ViewModel.AvailableStateItemGroups);
+	}
+
+	[Fact]
+	public void RenamingGroup_RebuildsAvailableGroupsWithoutCollectionReset()
+	{
+		// Arrange
+		var fixture = CreateFixture(
+			("Open", Color.Red, [Guid.Empty]),
+			("Closed", Color.Blue, [Guid.Empty]));
+		var actions = new List<NotifyCollectionChangedAction>();
+		fixture.ViewModel.AvailableStateItemGroups.CollectionChanged += (_, args) => actions.Add(args.Action);
+
+		// Act
+		fixture.ViewModel.Items[0].Name = "Opening";
+
+		// Assert
+		Assert.Equal(["<ALL>", "Opening", "Closed"], fixture.ViewModel.AvailableStateItemGroups);
+		Assert.DoesNotContain(NotifyCollectionChangedAction.Reset, actions);
 	}
 
 	[Fact]
@@ -385,6 +404,28 @@ public sealed class StateMapperPreviewTests
 		// Assert
 		Assert.Empty(fixture.Publisher.Operations);
 		Assert.Equal("Closed", fixture.ViewModel.Items[0].Name);
+	}
+
+	[Fact]
+	public void SwitchingStateDefinition_ResetsSelectedGroupToAll()
+	{
+		// Arrange
+		var fixture = CreateDefinitionFixture(
+			[
+				("Open", Color.Red, [Guid.Empty])
+			],
+			[
+				("Closed", Color.Blue, [Guid.Empty])
+			]);
+		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
+		fixture.ViewModel.SelectedStateItemGroup = "Open";
+
+		// Act
+		fixture.ViewModel.SelectedStateDefinition = fixture.ViewModel.StateDefinitions[1];
+
+		// Assert
+		Assert.Equal("<ALL>", fixture.ViewModel.SelectedStateItemGroup);
+		Assert.Equal(["<ALL>", "Closed"], fixture.ViewModel.AvailableStateItemGroups);
 	}
 
 	[Fact]

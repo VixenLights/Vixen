@@ -16,6 +16,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 	{
 		protected static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const int Offset = 7;
+		private const bool CreateLegacyStateGroups = true;
 		
 		public async Task<Prop> ImportAsync(string filePath)
 		{
@@ -348,40 +349,87 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			var modelNodes = await cm.CreateModelNodesAsync();
 
 			Dictionary<int, ElementModel> lightNodes = new Dictionary<int, ElementModel>();
+			var modelGroup = AssembleModel(cm, modelNodes, lightNodes);
+			AttachStateDefinitions(cm, modelGroup, lightNodes);
 
 			if (cm.SubModels.Any())
 			{
-				AssembleSubModels(cm, modelNodes, lightNodes);
+				AssembleSubModels(cm, lightNodes);
 			}
-			
+
 			if (cm.FaceInfos.Any())
 			{
-				AssembleFaces(cm, modelNodes, lightNodes);
+				AssembleFaces(cm, lightNodes);
 			}
 
-			if (cm.StateInfos.Any())
+			if (CreateLegacyStateGroups && cm.StateInfos.Any())
 			{
-				AssembleStates(cm, modelNodes, lightNodes);
+				AssembleStates(cm, lightNodes);
+			}
+		}
+
+		private ElementModel AssembleModel(
+			CustomModel cm,
+			Dictionary<int, ModelNode> modelNodes,
+			Dictionary<int, ElementModel> lightNodes)
+		{
+			var modelGroup = PropModelServices.Instance().CreateNode($"{cm.Name} - Model {{1}}");
+			foreach (var modelNode in modelNodes.OrderBy(x => x.Value.Order))
+			{
+				var lightNode = PropModelServices.Instance().AddLightNode(
+					modelGroup,
+					new Point(modelNode.Value.X + Offset, modelNode.Value.Y + Offset),
+					modelNode.Value.Order,
+					cm.PixelSize,
+					$"{cm.Name} {{1}} Px {modelNode.Value.Order}");
+				lightNodes[modelNode.Value.Order] = lightNode;
 			}
 
-			if (modelNodes.Any())
-			{
-				ElementModel em = null;
-				if (cm.SubModels.Any() || cm.FaceInfos.Any() || cm.StateInfos.Any())
-				{
-					//Create a group to hold the stuff that was not included in the submodels
-					em = PropModelServices.Instance().CreateNode("Other");
-				}
+			return modelGroup;
+		}
 
-				foreach (var modelNode in modelNodes.OrderBy(x => x.Value.Order))
+		private void AttachStateDefinitions(CustomModel cm, ElementModel modelGroup, Dictionary<int, ElementModel> lightNodes)
+		{
+			foreach (var stateInfo in cm.StateInfos)
+			{
+				foreach (var stateItem in stateInfo.StateItems)
 				{
-					PropModelServices.Instance().AddLightNode(em, new Point(modelNode.Value.X + Offset, modelNode.Value.Y + Offset),
-						modelNode.Value.Order, cm.PixelSize, $"{cm.Name} {{1}} Px {modelNode.Value.Order}");
+					var elementModelIds = GetElementModelIds(stateItem.RangeGroup, lightNodes);
+					if (!elementModelIds.Any())
+					{
+						continue;
+					}
+
+					modelGroup.StateDefinitions.Add(new StateDefinition
+					{
+						StateDefinitionName = stateInfo.Name,
+						DefaultColor = stateItem.Color,
+						Name = stateItem.Name,
+						Index = stateItem.Index,
+						ElementModelIds = elementModelIds
+					});
 				}
 			}
 		}
 
-		private void AssembleSubModels(CustomModel cm, Dictionary<int, ModelNode> modelNodes, Dictionary<int, ElementModel> lightNodes)
+		private static List<Guid> GetElementModelIds(RangeGroup rangeGroup, Dictionary<int, ElementModel> lightNodes)
+		{
+			var elementModelIds = new List<Guid>();
+			foreach (var smRange in rangeGroup.Ranges)
+			{
+				foreach (var order in EnumerateRange(smRange))
+				{
+					if (lightNodes.TryGetValue(order, out var lightNode))
+					{
+						elementModelIds.Add(lightNode.Id);
+					}
+				}
+			}
+
+			return elementModelIds.Distinct().ToList();
+		}
+
+		private void AssembleSubModels(CustomModel cm, Dictionary<int, ElementModel> lightNodes)
 		{
 			foreach (var subModel in cm.SubModels)
 			{
@@ -403,40 +451,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 	                    subModelRangeGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - {subModel.Name} - {subModelGroup.Name} {rangeGroupIndex}", subModelGroup);
                     }
 
-                    foreach (var smRange in rangeGroup.Ranges)
-                    {
-                        int inc = smRange.Start > smRange.End ? -1 : 1;
-                        for (int i = smRange.Start; ;i=i+inc)
-                        {
-                            if (inc > 0 && i > smRange.End)
-                            {
-                                break;
-                            }
-                            if (inc < 0 && i < smRange.End)
-                            {
-                                break;
-                            }
-
-                            if (modelNodes.ContainsKey(i))
-                            {
-                                var modelNode = modelNodes[i];
-                                modelNodes.Remove(i);
-                                var lightNode = PropModelServices.Instance().AddLightNode(subModelRangeGroup, new Point(modelNode.X + Offset, modelNode.Y + Offset), modelNode.Order, cm.PixelSize, $"{cm.Name} {{1}} Px {modelNode.Order}");
-                                if (!lightNodes.ContainsKey(modelNode.Order))
-                                {
-                                    lightNodes.Add(modelNode.Order, lightNode);
-                                }
-                            }
-                            else
-                            {
-                                //We have probably already associated it with another group so look it up
-                                if (lightNodes.TryGetValue(i, out var lightNode))
-                                {
-                                    PropModelServices.Instance().AddToParent(lightNode, subModelRangeGroup);
-                                }
-                            }
-                        }
-                    }
+                    AddRangeLights(rangeGroup.Ranges, subModelRangeGroup, lightNodes);
 
                     rangeGroupIndex++;
 				}
@@ -445,7 +460,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
             }
 		}
 
-		private void AssembleFaces(CustomModel cm, Dictionary<int, ModelNode> modelNodes, Dictionary<int, ElementModel> lightNodes)
+		private void AssembleFaces(CustomModel cm, Dictionary<int, ElementModel> lightNodes)
 		{
 			if (!cm.FaceInfos.Any())
 			{
@@ -470,46 +485,13 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 					var subModelRangeGroup = faceItemGroup;
 					
-					foreach (var smRange in faceDefinition.RangeGroup.Ranges)
-					{
-						int inc = smRange.Start > smRange.End ? -1 : 1;
-						for (int i = smRange.Start; ; i = i + inc)
-						{
-							if (inc > 0 && i > smRange.End)
-							{
-								break;
-							}
-							if (inc < 0 && i < smRange.End)
-							{
-								break;
-							}
-
-							if (modelNodes.ContainsKey(i))
-							{
-								var modelNode = modelNodes[i];
-								modelNodes.Remove(i);
-								var lightNode = PropModelServices.Instance().AddLightNode(subModelRangeGroup, new Point(modelNode.X + Offset, modelNode.Y + Offset), modelNode.Order, cm.PixelSize, $"{cm.Name} {{1}} Px {modelNode.Order}");
-								if (!lightNodes.ContainsKey(modelNode.Order))
-								{
-									lightNodes.Add(modelNode.Order, lightNode);
-								}
-							}
-							else
-							{
-								//We have probably already associated it with another group so look it up
-								if (lightNodes.TryGetValue(i, out var lightNode))
-								{
-									PropModelServices.Instance().AddToParent(lightNode, subModelRangeGroup);
-								}
-							}
-						}
-					}
+					AddRangeLights(faceDefinition.RangeGroup.Ranges, subModelRangeGroup, lightNodes);
 				}
 			}
 
 		}
 
-		private void AssembleStates(CustomModel cm, Dictionary<int, ModelNode> modelNodes, Dictionary<int, ElementModel> lightNodes)
+		private void AssembleStates(CustomModel cm, Dictionary<int, ElementModel> lightNodes)
 		{
 			if (!cm.StateInfos.Any())
 			{
@@ -526,49 +508,57 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				{
 					var stateItemGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - {stateInfo.Name} - S{stateItem.Index} - {stateItem.Name}", stateGroup);
 
-					stateItemGroup.StateDefinition = new StateDefinition{StateDefinitionName = stateInfo.Name, DefaultColor = stateItem.Color, Name = stateItem.Name, Index = stateItem.Index};
-					
 					var subModelRangeGroup = stateItemGroup;
+					AddRangeLights(stateItem.RangeGroup.Ranges, subModelRangeGroup, lightNodes);
+				}
+			}
+		}
 
-					foreach (var smRange in stateItem.RangeGroup.Ranges)
+		private static void AddRangeLights(
+			IEnumerable<Range> ranges,
+			ElementModel parent,
+			Dictionary<int, ElementModel> lightNodes)
+		{
+			foreach (var smRange in ranges)
+			{
+				foreach (var order in EnumerateRange(smRange))
+				{
+					if (lightNodes.TryGetValue(order, out var lightNode))
 					{
-						int inc = smRange.Start > smRange.End ? -1 : 1;
-						for (int i = smRange.Start; ; i = i + inc)
-						{
-							if (inc > 0 && i > smRange.End)
-							{
-								break;
-							}
-							if (inc < 0 && i < smRange.End)
-							{
-								break;
-							}
-
-							if (modelNodes.ContainsKey(i))
-							{
-								var modelNode = modelNodes[i];
-								modelNodes.Remove(i);
-								var lightNode = PropModelServices.Instance().AddLightNode(subModelRangeGroup, new Point(modelNode.X + Offset, modelNode.Y + Offset), modelNode.Order, cm.PixelSize, $"{cm.Name} {{1}} Px {modelNode.Order}");
-								if (!lightNodes.ContainsKey(modelNode.Order))
-								{
-									lightNodes.Add(modelNode.Order, lightNode);
-								}
-							}
-							else
-							{
-								//We have probably already associated it with another group so look it up
-								if (lightNodes.TryGetValue(i, out var lightNode))
-								{
-									PropModelServices.Instance().AddToParent(lightNode, subModelRangeGroup);
-								}
-							}
-						}
+						AddToParentIfNeeded(lightNode, parent);
 					}
 				}
 			}
 		}
 
+		private static IEnumerable<int> EnumerateRange(Range range)
+		{
+			int inc = range.Start > range.End ? -1 : 1;
+			for (int i = range.Start; ; i += inc)
+			{
+				if (inc > 0 && i > range.End)
+				{
+					break;
+				}
 
+				if (inc < 0 && i < range.End)
+				{
+					break;
+				}
+
+				yield return i;
+			}
+		}
+
+		private static void AddToParentIfNeeded(ElementModel lightNode, ElementModel parent)
+		{
+			if (lightNode.Parents.Contains(parent.Id))
+			{
+				return;
+			}
+
+			PropModelServices.Instance().AddToParent(lightNode, parent);
+		}
 
 		private RangeGroup ParseRanges(string rangeLines)
 		{

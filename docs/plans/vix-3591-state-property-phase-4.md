@@ -19,7 +19,7 @@ The xLights xModel importer also needs to understand `CustomModelCompressed`, be
 - [x] (2026-06-03 12:28 America/Chicago) Updated State Property Setup UI and ViewModels for multi-definition editing. Added selected-definition binding, Add/Delete/Rename/Copy commands, modal dialog service boundary, duplicate/case validation, selection blocking while invalid, and tests.
 - [x] (2026-06-03 12:45 America/Chicago) Updated Preview behavior so it is scoped to the selected State definition. Suppressed intermediate preview refreshes during definition switches, then clear-and-rerendered once when Preview is on. Added tests for switching while on/off and inactive-definition edits.
 - [x] (2026-06-03 13:18 America/Chicago) Refactored xModel import to decode `CustomModelCompressed` or `CustomModel` into shared Vixen model data. Added direct compressed and uncompressed parsers, compressed-first source resolution, fallback from invalid compressed to valid uncompressed with warning logging, import abort with user-facing error when no valid source exists, and parser tests proving equivalent Vixen `ModelNode` state.
-- [ ] Update imported element hierarchy and State property attachment.
+- [x] (2026-06-03 14:02 America/Chicago) Updated imported element hierarchy and State property attachment. xModel import now creates a top-level prop as before, creates a child CustomModel group named with ` - Model {1}`, keeps Submodels/Faces/optional legacy States as top-level children, maps `StateInfo` to imported State definitions on the model group, and has `PreviewCustomPropBuilder` create one multi-definition `StateModule` from those mappings.
 - [ ] Add focused automated tests for data model, setup behavior, preview scoping, import hierarchy, compressed decoding, fallback behavior, and compatibility.
 - [ ] Run automated tests and manual acceptance scenarios.
 - [ ] Update Jira VIX-3591 after this plan is reviewed and before implementation begins, using a rolled-up final summary of
@@ -38,6 +38,9 @@ The xLights xModel importer also needs to understand `CustomModelCompressed`, be
 
 - Observation: The Phase 4 spec was corrected during planning so invalid compressed data falls back to a valid `CustomModel` source when one exists, and aborts only when neither source can produce valid Vixen model data.
   Evidence: `docs\vix-3591-state-property-phase-4.md` section `Attribute Precedence And Errors`.
+
+- Observation: `CustomModelCompressed` coordinate entries are `node,row,column` relative to the uncompressed `CustomModel` grid, not `node,x,y`. The parser must map compressed column to Vixen X and compressed row to Vixen Y.
+  Evidence: In `docs\references\santa-waving.xmodel`, compressed entry `314,0,176` maps to uncompressed grid coordinate `x=176, y=0`.
 
 ## Decision Log
 
@@ -72,6 +75,8 @@ Milestone 2 is complete. `StateMapperViewModel` now owns an editable collection 
 Milestone 3 is complete. Preview is scoped to the selected State definition, switching definitions while Preview is on clears the State Preview context and renders the new definition once, switching while Preview is off publishes no messages, and edits to inactive definitions do not publish preview messages. Focused State property tests now include these multi-definition preview scenarios.
 
 Milestone 4 is complete. xModel import now resolves `CustomModelCompressed` and `CustomModel` as alternate source encodings and decodes the selected source directly into `ModelNode` values. `CustomModelCompressed` is preferred when valid; invalid compressed data falls back to valid `CustomModel` data and logs a warning; no valid source logs an error, shows the user a model import error, and aborts the import. Parser tests use embedded minimal data based on santa and snowman examples and assert equivalent Vixen node state rather than compressed-to-uncompressed text conversion.
+
+Milestone 5 is complete. Imported xModels now create a canonical model child group, such as `Santa Waving - Model {1}`, containing all decoded model lights. Submodels, Faces, and optional legacy States remain top-level children and reference the same model leaves without consuming them out of the model group. Imported `StateInfo` values are stored on the model child group and converted by `PreviewCustomPropBuilder` into one State property with multiple State definitions. Legacy States groups are still created behind the temporary constant and no longer carry old per-group State property metadata.
 
 ## Context and Orientation
 
@@ -343,3 +348,9 @@ If implementation discovers better names that fit the codebase more closely, upd
 - 2026-06-03 / Codex: Completed Milestone 4. Added direct xModel `CustomModelCompressed` and `CustomModel` parsing into
   shared `ModelNode` data, compressed-first fallback behavior, import abort/error handling for invalid sources, and focused
   xLights parser tests.
+- 2026-06-03 / Codex: Completed Milestone 5. Updated xModel assembly to create the canonical ` - Model {1}` child group,
+  preserve top-level Faces/Submodels/legacy States, attach imported StateInfo mappings to the model group, and convert
+  those mappings into multi-definition State property data in `PreviewCustomPropBuilder`.
+- 2026-06-03 / Codex: Corrected `CustomModelCompressed` coordinate mapping after visual import validation. Compressed
+  entries are decoded as `node,row,column`, so column maps to Vixen X and row maps to Vixen Y. Updated parser tests with
+  paired santa and snowman values that match the uncompressed grid.
