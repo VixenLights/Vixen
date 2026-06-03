@@ -225,7 +225,10 @@
 				<TextBlock Text="Assigned Elements" HorizontalAlignment="Center" Margin="0,0,0,4"/>
 				<TreeView Grid.Row="1"
 						  ItemsSource="{Binding SelectedItem.AssignmentRoots}"
-						  BorderThickness="0">
+						  BorderThickness="0"
+						  VirtualizingPanel.IsVirtualizing="True"
+						  VirtualizingPanel.VirtualizationMode="Recycling"
+						  ScrollViewer.CanContentScroll="True">
 					<TreeView.ItemContainerStyle>
 						<Style TargetType="{x:Type TreeViewItem}">
 							<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
