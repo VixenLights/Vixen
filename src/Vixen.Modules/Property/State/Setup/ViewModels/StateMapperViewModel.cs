@@ -243,21 +243,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		public StateItemViewModel? SelectedItem
 		{
 			get => GetValue<StateItemViewModel?>(SelectedItemProperty);
-			set
-			{
-				if (ReferenceEquals(GetValue<StateItemViewModel?>(SelectedItemProperty), value))
-				{
-					return;
-				}
-
-				SetValue(SelectedItemProperty, value);
-				value?.ExpandCheckedAssignments();
-				_removeItemCommand?.RaiseCanExecuteChanged();
-				if (!IsStateItemGroupPreviewMode)
-				{
-					RefreshPreview();
-				}
-			}
+			set => SelectItem(value, true);
 		}
 
 		/// <summary>
@@ -956,6 +942,26 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				SelectedStateDefinition?.Items.Contains(stateItem) == true;
 		}
 
+		private void SelectItem(StateItemViewModel? item, bool expandCheckedAssignments)
+		{
+			if (ReferenceEquals(GetValue<StateItemViewModel?>(SelectedItemProperty), item))
+			{
+				return;
+			}
+
+			SetValue(SelectedItemProperty, item);
+			if (expandCheckedAssignments)
+			{
+				item?.ExpandCheckedAssignments();
+			}
+
+			_removeItemCommand?.RaiseCanExecuteChanged();
+			if (!IsStateItemGroupPreviewMode)
+			{
+				RefreshPreview();
+			}
+		}
+
 		private void ApplySelectedStateDefinition()
 		{
 			ApplySelectedStateDefinitionValues();
@@ -963,7 +969,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			_suppressPreviewRefresh = true;
 			try
 			{
-				SelectedItem = Items.FirstOrDefault();
+				SelectItem(Items.FirstOrDefault(), false);
 				SelectedStateItemGroup = AllStateItemGroups;
 				RebuildAvailableStateItemGroups();
 				RaisePropertyChanged(nameof(Items));

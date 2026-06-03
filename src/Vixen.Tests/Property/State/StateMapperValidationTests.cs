@@ -64,6 +64,55 @@ public class StateMapperValidationTests
 	}
 
 	[Fact]
+	public void SwitchingStateDefinition_SelectsFirstItemWithoutExpandingAssignmentTree()
+	{
+		// Arrange
+		var checkedLeafId = Guid.NewGuid();
+		var rootNode = CreateRootNodeWithSiblingGroups(checkedLeafId);
+		var source = new StateData
+		{
+			StateDefinitions =
+			[
+				new StateDefinitionData
+				{
+					Name = "First",
+					Items =
+					[
+						new StateItemData
+						{
+							Name = "Enabled",
+							Color = Color.Green
+						}
+					]
+				},
+				new StateDefinitionData
+				{
+					Name = "Second",
+					Items =
+					[
+						new StateItemData
+						{
+							Name = "Disabled",
+							Color = Color.Red,
+							ElementNodeIds = [checkedLeafId]
+						}
+					]
+				}
+			]
+		};
+		var viewModel = CreateViewModel(source, rootNode);
+
+		// Act
+		viewModel.SelectedStateDefinition = viewModel.StateDefinitions[1];
+
+		// Assert
+		var root = viewModel.SelectedItem!.AssignmentRoots[0];
+		Assert.False(root.IsExpanded);
+		Assert.False(root.Children[0].IsExpanded);
+		Assert.True(root.Children[0].Children[0].IsChecked);
+	}
+
+	[Fact]
 	public void Name_TrimsWhitespaceAndEnablesOkAfterCorrection()
 	{
 		// Arrange

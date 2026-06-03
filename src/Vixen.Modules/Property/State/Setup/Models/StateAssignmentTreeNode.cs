@@ -126,12 +126,12 @@ namespace VixenModules.Property.State.Setup.Models
 
 		internal bool ExpandCheckedDescendants()
 		{
-		var hasCheckedDescendant = false;
-		foreach (var child in Children)
-		{
-			var childHasCheckedDescendant = child.ExpandCheckedDescendants();
-			hasCheckedDescendant |= child.IsChecked || childHasCheckedDescendant;
-		}
+			var hasCheckedDescendant = false;
+			foreach (var child in Children)
+			{
+				var childHasCheckedDescendant = child.ExpandCheckedDescendants();
+				hasCheckedDescendant |= child.IsChecked || childHasCheckedDescendant;
+			}
 
 			IsExpanded = hasCheckedDescendant;
 			return hasCheckedDescendant;
