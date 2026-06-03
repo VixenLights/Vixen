@@ -340,6 +340,76 @@ public sealed class StateMapperPreviewTests
 	}
 
 	[Fact]
+	public void SwitchingStateDefinition_WhilePreviewIsOn_ClearsAndRendersNewDefinition()
+	{
+		// Arrange
+		var fixture = CreateDefinitionFixture(
+			[
+				("Open", Color.Red, [Guid.Empty])
+			],
+			[
+				("Closed", Color.Blue, [Guid.Empty])
+			]);
+		fixture.ViewModel.IsPreviewEnabled = true;
+		fixture.Publisher.Operations.Clear();
+
+		// Act
+		fixture.ViewModel.SelectedStateDefinition = fixture.ViewModel.StateDefinitions[1];
+
+		// Assert
+		Assert.Collection(
+			fixture.Publisher.Operations,
+			operation => Assert.Equal("Clear", operation.Name),
+			operation =>
+			{
+				Assert.Equal("TurnOn", operation.Name);
+				Assert.Equal([(fixture.LeafIds[1], "#0000FF")], ToValues(operation.Pairs));
+			});
+	}
+
+	[Fact]
+	public void SwitchingStateDefinition_WhilePreviewIsOff_DoesNotPublish()
+	{
+		// Arrange
+		var fixture = CreateDefinitionFixture(
+			[
+				("Open", Color.Red, [Guid.Empty])
+			],
+			[
+				("Closed", Color.Blue, [Guid.Empty])
+			]);
+
+		// Act
+		fixture.ViewModel.SelectedStateDefinition = fixture.ViewModel.StateDefinitions[1];
+
+		// Assert
+		Assert.Empty(fixture.Publisher.Operations);
+		Assert.Equal("Closed", fixture.ViewModel.Items[0].Name);
+	}
+
+	[Fact]
+	public void InactiveStateDefinitionEdits_DoNotPublish()
+	{
+		// Arrange
+		var fixture = CreateDefinitionFixture(
+			[
+				("Open", Color.Red, [Guid.Empty])
+			],
+			[
+				("Closed", Color.Blue, [Guid.Empty])
+			]);
+		fixture.ViewModel.IsPreviewEnabled = true;
+		fixture.Publisher.Operations.Clear();
+
+		// Act
+		fixture.ViewModel.StateDefinitions[1].Items[0].Color = Color.Green;
+		fixture.ViewModel.StateDefinitions[1].Items[0].AssignmentRoots[0].Children[1].IsChecked = true;
+
+		// Assert
+		Assert.Empty(fixture.Publisher.Operations);
+	}
+
+	[Fact]
 	public async Task Closed_ReleasesContextWhenPreviewIsOff()
 	{
 		// Arrange
@@ -369,6 +439,42 @@ public sealed class StateMapperPreviewTests
 					Color = item.Color,
 					ElementNodeIds = item.ElementIds
 						.Select(id => id == Guid.Empty ? leafIds[index] : id)
+						.ToList()
+				})
+				.ToList()
+		};
+		var publisher = new RecordingStatePreviewPublisher();
+		var viewModel = new StateMapperViewModel(
+			rootNode,
+			source,
+			Mock.Of<IStateColorPickerService>(),
+			publisher);
+		return new MapperFixture(viewModel, publisher, leafIds);
+	}
+
+	private static MapperFixture CreateDefinitionFixture(
+		params (string Name, Color Color, Guid[] ElementIds)[][] definitions)
+	{
+		var leafIds = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
+		var rootNode = CreateNode(
+			Guid.NewGuid(),
+			"Root",
+			leafIds.Select((id, index) => CreateNode(id, $"Leaf {index + 1}")).ToArray());
+		var source = new StateData
+		{
+			StateDefinitions = definitions
+				.Select((definition, definitionIndex) => new StateDefinitionData
+				{
+					Name = $"Definition {definitionIndex + 1}",
+					Items = definition
+						.Select((item, itemIndex) => new StateItemData
+						{
+							Name = item.Name,
+							Color = item.Color,
+							ElementNodeIds = item.ElementIds
+								.Select(id => id == Guid.Empty ? leafIds[definitionIndex + itemIndex] : id)
+								.ToList()
+						})
 						.ToList()
 				})
 				.ToList()

@@ -913,10 +913,19 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private void ApplySelectedStateDefinition()
 		{
 			ApplySelectedStateDefinitionValues();
-			SelectedItem = Items.FirstOrDefault();
-			RebuildAvailableStateItemGroups();
-			RaisePropertyChanged(nameof(Items));
-			RaiseOkCanExecuteChanged();
+			var previousSuppressPreviewRefresh = _suppressPreviewRefresh;
+			_suppressPreviewRefresh = true;
+			try
+			{
+				SelectedItem = Items.FirstOrDefault();
+				RebuildAvailableStateItemGroups();
+				RaisePropertyChanged(nameof(Items));
+				RaiseOkCanExecuteChanged();
+			}
+			finally
+			{
+				_suppressPreviewRefresh = previousSuppressPreviewRefresh;
+			}
 
 			if (IsPreviewEnabled)
 			{
