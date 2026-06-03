@@ -359,7 +359,7 @@ public sealed class StateMapperPreviewTests
 	}
 
 	[Fact]
-	public void SwitchingStateDefinition_WhilePreviewIsOn_ClearsAndRendersNewDefinition()
+	public void SwitchingStateDefinition_WhilePreviewIsOn_ClearsSelectedItemPreview()
 	{
 		// Arrange
 		var fixture = CreateDefinitionFixture(
@@ -376,14 +376,8 @@ public sealed class StateMapperPreviewTests
 		fixture.ViewModel.SelectedStateDefinition = fixture.ViewModel.StateDefinitions[1];
 
 		// Assert
-		Assert.Collection(
-			fixture.Publisher.Operations,
-			operation => Assert.Equal("Clear", operation.Name),
-			operation =>
-			{
-				Assert.Equal("TurnOn", operation.Name);
-				Assert.Equal([(fixture.LeafIds[1], "#0000FF")], ToValues(operation.Pairs));
-			});
+		Assert.Equal("Clear", Assert.Single(fixture.Publisher.Operations).Name);
+		Assert.Null(fixture.ViewModel.SelectedItem);
 	}
 
 	[Fact]
@@ -404,6 +398,7 @@ public sealed class StateMapperPreviewTests
 		// Assert
 		Assert.Empty(fixture.Publisher.Operations);
 		Assert.Equal("Closed", fixture.ViewModel.Items[0].Name);
+		Assert.Null(fixture.ViewModel.SelectedItem);
 	}
 
 	[Fact]

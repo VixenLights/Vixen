@@ -105,6 +105,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			Title = FormTitle;
 			Draft = draft;
 			SelectedStateDefinition = StateDefinitions.FirstOrDefault();
+			SelectItem(Items.FirstOrDefault(), false);
 			_lastValidSelectedStateDefinition = SelectedStateDefinition;
 			Validate(true);
 		}
@@ -969,7 +970,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			_suppressPreviewRefresh = true;
 			try
 			{
-				SelectItem(Items.FirstOrDefault(), false);
+				SelectItem(null, false);
 				SelectedStateItemGroup = AllStateItemGroups;
 				RebuildAvailableStateItemGroups();
 				RaisePropertyChanged(nameof(Items));

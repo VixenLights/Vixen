@@ -64,7 +64,7 @@ public class StateMapperValidationTests
 	}
 
 	[Fact]
-	public void SwitchingStateDefinition_SelectsFirstItemWithoutExpandingAssignmentTree()
+	public void SwitchingStateDefinition_ClearsSelectedItemWithoutExpandingAssignmentTree()
 	{
 		// Arrange
 		var checkedLeafId = Guid.NewGuid();
@@ -106,10 +106,19 @@ public class StateMapperValidationTests
 		viewModel.SelectedStateDefinition = viewModel.StateDefinitions[1];
 
 		// Assert
-		var root = viewModel.SelectedItem!.AssignmentRoots[0];
+		Assert.Null(viewModel.SelectedItem);
+		var item = viewModel.Items[0];
+		var root = item.AssignmentRoots[0];
 		Assert.False(root.IsExpanded);
 		Assert.False(root.Children[0].IsExpanded);
 		Assert.True(root.Children[0].Children[0].IsChecked);
+
+		// Act
+		viewModel.SelectedItem = item;
+
+		// Assert
+		Assert.True(root.IsExpanded);
+		Assert.True(root.Children[0].IsExpanded);
 	}
 
 	[Fact]
