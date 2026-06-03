@@ -22,6 +22,7 @@
 			<converters:ColorToSolidBrushConverter x:Key="ColorToSolidBrush"/>
 			<converters:ColorToHexStringConverter x:Key="ColorToHexString"/>
 			<converters:BackgroundColorToTextBrushConverter x:Key="BackgroundColorToTextColor"/>
+			<converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
 
@@ -79,11 +80,67 @@
 			<Grid Grid.Row="1" Grid.Column="0" Margin="5,0, 5, 0">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="*"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				<TextBlock Text="State Items" HorizontalAlignment="Center" Margin="0,0,0,4"/>
-				<DataGrid Grid.Row="1"
+				<Grid Margin="0,0,0,8">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<TextBlock Text="Preview" Margin="0,3,8,3" VerticalAlignment="Center"/>
+					<ToggleButton Grid.Column="1"
+					              IsChecked="{Binding IsPreviewEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+					              HorizontalAlignment="Left"
+					              MinWidth="48"
+					              Padding="8,2">
+						<ToggleButton.Style>
+							<Style TargetType="{x:Type ToggleButton}"
+								   BasedOn="{StaticResource {x:Type ToggleButton}}">
+								<Setter Property="Content" Value="Off"/>
+								<Style.Triggers>
+									<Trigger Property="IsChecked" Value="True">
+										<Setter Property="Content" Value="On"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</ToggleButton.Style>
+					</ToggleButton>
+
+					<TextBlock Grid.Row="1"
+					           Text="Preview Mode"
+							   Margin="0,5,8,3"
+							   VerticalAlignment="Top"/>
+					<StackPanel Grid.Row="1" Grid.Column="1" Margin="0,4,0,0">
+						<RadioButton Content="Selected State Item"
+									 GroupName="PreviewMode"
+									 IsChecked="{Binding IsStateItemGroupPreviewMode, Converter={StaticResource InverseBooleanConverter}}"
+									 IsEnabled="{Binding IsPreviewEnabled}"/>
+						<RadioButton Content="State Item Group"
+									 GroupName="PreviewMode"
+									 IsChecked="{Binding IsStateItemGroupPreviewMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									 IsEnabled="{Binding IsPreviewEnabled}"
+									 Margin="0,3,0,0"/>
+					</StackPanel>
+
+					<ComboBox Grid.Row="2"
+							  Grid.Column="1"
+							  ItemsSource="{Binding AvailableStateItemGroups}"
+							  SelectedItem="{Binding SelectedStateItemGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+							  IsEnabled="{Binding IsPreviewEnabled}"
+							  Visibility="{Binding IsStateItemGroupPreviewMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+							  Margin="0,4,0,0"/>
+				</Grid>
+
+				<TextBlock Grid.Row="1" Text="State Items" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+				<DataGrid Grid.Row="2"
 						  ItemsSource="{Binding Items}"
 						  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
 						  AutoGenerateColumns="False"
@@ -117,7 +174,7 @@
 											Width="72"/>
 					</DataGrid.Columns>
 				</DataGrid>
-				<WrapPanel Grid.Row="2" Style="{StaticResource RowButtonRightContainerStyle}" Margin="0,6,0,0">
+				<WrapPanel Grid.Row="3" Style="{StaticResource RowButtonRightContainerStyle}" Margin="0,6,0,0">
 					<Button Content="Add" Command="{Binding AddItemCommand}" Style="{StaticResource RowButtonStyle}"/>
 					<Button Content="Remove" Command="{Binding RemoveItemCommand}" Style="{StaticResource RowButtonStyle}"/>
 				</WrapPanel>

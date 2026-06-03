@@ -49,7 +49,9 @@ each action and must be clear after the dialog closes.
   triggers, and Catel close cleanup. WPF controls remain Milestone 4 work.
 - [x] (2026-06-02 13:02 -05:00) Add focused mapper preview tests and run the complete State-filtered suite: `62` of `62`
   tests pass.
-- [ ] Run Debug and Release builds, whitespace and line-ending checks, and the manual Display Setup acceptance scenarios.
+- [x] (2026-06-02 13:28 -05:00) Add the binding-only WPF Preview controls and compile the State project successfully.
+  Launch the Debug application for the remaining manual layout and end-to-end inspection.
+- [X] (2026-06-03 09:02 -05:00) Run Debug and Release builds, whitespace and line-ending checks, and the manual Display Setup acceptance scenarios.
 - [ ] Update this living plan with implementation discoveries, evidence, final outcomes, and a revision note.
 
 ## Surprises & Discoveries
@@ -137,6 +139,24 @@ each action and must be clear after the dialog closes.
   Evidence: `StateMapperViewModel` now uses `_suppressPreviewRefresh` while changing collections, fallback selections, and
   `SelectedStateItemGroup`; it performs one coordinator refresh after the state is coherent.
 
+- Observation: The Milestone 4 XAML compiles without view code-behind changes, but this execution environment cannot
+  navigate Display Setup or resize the mapper window for visual confirmation.
+  Evidence: `git diff -- src\Vixen.Modules\Property\State\Setup\Views\StateMapperView.xaml.cs` is empty and the Debug
+  `Vixen.Application.exe` process launches with the `Vixen Administration - Test Profile Profile` main window.
+
+- Observation: Building `State.csproj` directly without `SolutionDir` compiles the XAML but writes the updated module under
+  `src\Vixen.Modules\Property\State\Debug\Output`, leaving the runnable `Debug\Output` module stale.
+  Evidence: After the initial Milestone 4 build, `src\Vixen.Modules\Property\State\Debug\Output\Module.Property.State.dll`
+  had the new `13:26:46` timestamp while `Debug\Output\Module.Property.State.dll` retained its Milestone 3 `12:41:08`
+  timestamp. Rebuilding with `msbuild src\Vixen.Modules\Property\State\State.csproj -m -t:Build -p:Configuration=Debug
+  -p:Platform=x64 -p:SolutionDir=C:\Dev\Vixen\` refreshed the runnable module.
+
+- Observation: The first refreshed Milestone 4 BAML failed while loading the Preview Mode row because redundant explicit
+  zero-valued grid positioning attributes entered the integer type-conversion path during WPF component loading.
+  Evidence: Opening State Setup reported an `Int32` conversion `XamlParseException` at the Preview Mode `TextBlock`.
+  Removing the redundant `Grid.Row="0"` and `Grid.Column="0"` assignments and rebuilding the x64 runtime module completes
+  successfully. Reopening State Setup remains the manual confirmation.
+
 ## Decision Log
 
 - Decision: Treat the existing uncommitted preview code as a spike and refactor it rather than layering group behavior onto
@@ -203,9 +223,9 @@ each action and must be clear after the dialog closes.
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. The Live Preview diff algorithm is isolated from the Catel ViewModel, and the mapper
-now provides toggle-gated selected-row and exact-name State Item Group orchestration with close cleanup. Milestone 4 still
-needs to expose the temporary mapper state through WPF controls.
+Milestones 1 through 4 are implemented. The Live Preview diff algorithm is isolated from the Catel ViewModel, the mapper
+provides toggle-gated selected-row and exact-name State Item Group orchestration with close cleanup, and the WPF surface
+exposes the temporary state with binding-only controls. Manual visual and end-to-end acceptance remain Milestone 5 work.
 
 ## Context and Orientation
 
@@ -623,7 +643,7 @@ After Milestone 3, run:
 
 After Milestone 4, compile the State project and then the solution:
 
-    dotnet build src\Vixen.Modules\Property\State\State.csproj --configuration Debug
+    msbuild src\Vixen.Modules\Property\State\State.csproj -m -t:Build -p:Configuration=Debug -p:Platform=x64 -p:SolutionDir=C:\Dev\Vixen\
     msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug
 
 For final verification, run:
@@ -817,3 +837,12 @@ required project references and the repository's CRLF convention.
   orchestration, exact-name State Item Group choices, incremental edit refreshes, suppressed intermediate updates during
   compound changes, and Catel `OnClosedAsync(bool?)` context release. Added `18` mapper preview tests; the State-filtered
   suite passes `62` of `62` tests.
+- 2026-06-02: Implemented Milestone 4. Added the WPF `Preview` On/Off toggle, disabled Preview Mode radio buttons, and the
+  conditionally visible State Item Group selector without view code-behind behavior. The State project builds and the Debug
+  application launches; manual mapper layout inspection remains part of Milestone 5 acceptance.
+- 2026-06-02: Corrected the Milestone 4 verification command after a direct `dotnet build` placed the updated State module
+  outside the runnable application output. The plan now uses an x64 `msbuild` command with `SolutionDir` so manual inspection
+  launches against the refreshed `Debug\Output\Module.Property.State.dll`.
+- 2026-06-02: Removed redundant zero-valued grid positioning attributes after the refreshed mapper BAML raised an `Int32`
+  conversion `XamlParseException` while loading the Preview Mode row. The x64 State module rebuild and State-filtered tests
+  pass; reopening State Setup remains the manual runtime confirmation.
