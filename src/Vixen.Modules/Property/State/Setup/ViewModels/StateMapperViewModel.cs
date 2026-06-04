@@ -578,6 +578,50 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			return Task.CompletedTask;
 		}
 
+		/// <summary>
+		/// Reorders the selected State definition items to match the visible grid sort order.
+		/// </summary>
+		/// <param name="visibleOrder">The State item rows in their displayed order.</param>
+		internal void SynchronizeStateItemOrder(IReadOnlyList<StateItemViewModel> visibleOrder)
+		{
+			ArgumentNullException.ThrowIfNull(visibleOrder);
+
+			if (SelectedStateDefinition == null ||
+				visibleOrder.Count != Items.Count ||
+				visibleOrder.Distinct().Count() != Items.Count ||
+				visibleOrder.Any(item => !Items.Contains(item)))
+			{
+				return;
+			}
+
+			if (visibleOrder.SequenceEqual(Items))
+			{
+				return;
+			}
+
+			var previousSuppressPreviewRefresh = _suppressPreviewRefresh;
+			_suppressPreviewRefresh = true;
+			try
+			{
+				for (var targetIndex = 0; targetIndex < visibleOrder.Count; targetIndex++)
+				{
+					var item = visibleOrder[targetIndex];
+					var currentIndex = Items.IndexOf(item);
+					if (currentIndex >= 0 && currentIndex != targetIndex)
+					{
+						Items.Move(currentIndex, targetIndex);
+					}
+				}
+			}
+			finally
+			{
+				_suppressPreviewRefresh = previousSuppressPreviewRefresh;
+			}
+
+			RebuildAvailableStateItemGroups();
+			RefreshPreview();
+		}
+
 		private static bool CanEditColor(StateItemViewModel? item) => item != null;
 
 		private Task EditColorAsync(StateItemViewModel? item)
@@ -748,8 +792,12 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 			if (isSelectedDefinitionItems)
 			{
-				RebuildAvailableStateItemGroups();
-				RefreshPreview();
+				if (!_suppressPreviewRefresh)
+				{
+					RebuildAvailableStateItemGroups();
+					RefreshPreview();
+				}
+
 				RaisePropertyChanged(nameof(Items));
 			}
 

@@ -131,6 +131,10 @@ This document replaces the earlier phase outline and is intended to be detailed 
 - The selected State definition's description and State items must behave like the current single State property behavior.
 - All validation, trimming, assignment, color, and preview behavior from prior phases applies to the selected State
   definition only.
+- If the user sorts the State Item grid by clicking a column header, saving the setup dialog must persist the currently
+  displayed State Item order for the selected State definition. Reopening the setup dialog must show State Items in that
+  saved sorted order.
+- Persisting a sorted State Item order must not change State item stable IDs, names, colors, or assignments.
 - OK must remain disabled while the selected State definition or any State definition in the container has a blocking
   validation error.
 - Cancel and window close must remain available and must discard draft edits.
@@ -281,6 +285,7 @@ reference.
 - Add, Rename, and Copy dialogs block empty, whitespace-only, and exact duplicate names.
 - Case-only State definition name differences produce a non-blocking warning and do not disable OK.
 - State definitions remain in creation order after add, copy, rename, and delete operations.
+- Sorting the State Item grid and saving persists the displayed row order within that State definition.
 - Switching State definitions is blocked while the current definition has blocking validation errors.
 - Switching State definitions while Preview is on clears and re-renders the `"State Preview"` context.
 - Preview behavior remains scoped to the selected State definition.
@@ -319,7 +324,8 @@ reference.
 7. Create names that differ only by casing and confirm a warning appears without blocking save.
 8. Delete a State definition and confirm the next or previous definition is selected.
 9. Attempt to delete the last remaining State definition and confirm the UI prevents it.
-10. Save and reopen the setup dialog. Confirm State definitions, descriptions, State items, colors, assignments, and order
+10. Sort the State Item grid by Name, save, and reopen the setup dialog. Confirm the sorted row order is preserved.
+11. Save and reopen the setup dialog. Confirm State definitions, descriptions, State items, colors, assignments, and order
     persisted correctly.
 
 ### Preview Across State Definitions

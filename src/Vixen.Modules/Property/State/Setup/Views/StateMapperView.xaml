@@ -166,12 +166,14 @@
 
 				<TextBlock Grid.Row="1" Text="State Items" HorizontalAlignment="Center" Margin="0,0,0,4"/>
 				<DataGrid Grid.Row="2"
+						  x:Name="StateItemsGrid"
 						  ItemsSource="{Binding Items}"
 						  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
 						  AutoGenerateColumns="False"
 						  CanUserAddRows="False"
 						  SelectionUnit="FullRow"
-						  SelectionMode="Single">
+						  SelectionMode="Single"
+						  Sorting="StateItemsGrid_Sorting">
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="Name"
 											Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"

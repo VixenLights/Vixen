@@ -201,6 +201,69 @@ public class StateMapperDefinitionTests
 		Assert.Equal("Closed Item Changed", source.StateDefinitions[1].Items[0].Name);
 	}
 
+	[Fact]
+	public async Task SynchronizeStateItemOrder_PersistsVisibleOrderAndPreservesItemIdentity()
+	{
+		// Arrange
+		var assignedNodeId = Guid.NewGuid();
+		var openId = Guid.NewGuid();
+		var closedId = Guid.NewGuid();
+		var blinkId = Guid.NewGuid();
+		var source = new StateData
+		{
+			StateDefinitions =
+			[
+				new StateDefinitionData
+				{
+					Name = "Operating Mode",
+					Items =
+					[
+						new StateItemData
+						{
+							Id = openId,
+							Name = "Open",
+							Color = Color.Green,
+							ElementNodeIds = [assignedNodeId]
+						},
+						new StateItemData
+						{
+							Id = closedId,
+							Name = "Closed",
+							Color = Color.Red
+						},
+						new StateItemData
+						{
+							Id = blinkId,
+							Name = "Blink",
+							Color = Color.Blue
+						}
+					]
+				}
+			]
+		};
+		var rootNode = CreateNode(Guid.NewGuid(), "Root", CreateNode(assignedNodeId, "Assigned Leaf"));
+		var viewModel = CreateViewModel(source, rootNode);
+		var visibleOrder = new[]
+		{
+			viewModel.Items[2],
+			viewModel.Items[1],
+			viewModel.Items[0]
+		};
+
+		// Act
+		viewModel.SynchronizeStateItemOrder(visibleOrder);
+		var result = await InvokeSaveAsync(viewModel);
+
+		// Assert
+		Assert.True(result);
+		Assert.Equal(["Blink", "Closed", "Open"], source.StateDefinitions[0].Items.Select(item => item.Name));
+		Assert.Equal([blinkId, closedId, openId], source.StateDefinitions[0].Items.Select(item => item.Id));
+		Assert.Equal(Color.Blue, source.StateDefinitions[0].Items[0].Color);
+		Assert.Equal(Color.Red, source.StateDefinitions[0].Items[1].Color);
+		Assert.Equal(Color.Green, source.StateDefinitions[0].Items[2].Color);
+		Assert.Equal([assignedNodeId], source.StateDefinitions[0].Items[2].ElementNodeIds);
+	}
+
 	private static StateData CreateSource(params string[] definitionNames)
 	{
 		return new StateData
@@ -239,6 +302,28 @@ public class StateMapperDefinitionTests
 			Mock.Of<IStateColorPickerService>(),
 			new NoOpStatePreviewPublisher(),
 			dialogService ?? new FakeStateDefinitionDialogService());
+	}
+
+	private static StateMapperViewModel CreateViewModel(
+		StateData source,
+		IElementNode rootNode)
+	{
+		return new StateMapperViewModel(
+			rootNode,
+			source,
+			Mock.Of<IStateColorPickerService>(),
+			new NoOpStatePreviewPublisher(),
+			new FakeStateDefinitionDialogService());
+	}
+
+	private static IElementNode CreateNode(Guid id, string name, params IElementNode[] children)
+	{
+		var node = new Mock<IElementNode>();
+		node.SetupGet(elementNode => elementNode.Id).Returns(id);
+		node.SetupGet(elementNode => elementNode.Name).Returns(name);
+		node.SetupGet(elementNode => elementNode.Children).Returns(children);
+		node.Setup(elementNode => elementNode.GetNodeEnumerator()).Returns(children);
+		return node.Object;
 	}
 
 	private static Task InvokeAsync(StateMapperViewModel viewModel, string methodName)

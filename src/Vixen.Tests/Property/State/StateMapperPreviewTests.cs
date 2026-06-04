@@ -26,7 +26,7 @@ public sealed class StateMapperPreviewTests
 
 		// Assert
 		Assert.False(fixture.ViewModel.IsPreviewEnabled);
-		Assert.False(fixture.ViewModel.IsStateItemGroupPreviewMode);
+		Assert.True(fixture.ViewModel.IsStateItemGroupPreviewMode);
 		Assert.Equal("<ALL>", fixture.ViewModel.SelectedStateItemGroup);
 		Assert.Equal(["<ALL>", "Open", "Closed", "open"], fixture.ViewModel.AvailableStateItemGroups);
 		Assert.Empty(fixture.Publisher.Operations);
@@ -108,6 +108,7 @@ public sealed class StateMapperPreviewTests
 		var fixture = CreateFixture(
 			("Open", Color.Red, [Guid.Empty]),
 			("Closed", Color.Blue, [Guid.Empty]));
+		fixture.ViewModel.IsStateItemGroupPreviewMode = false;
 		fixture.ViewModel.IsPreviewEnabled = true;
 		fixture.Publisher.Operations.Clear();
 
@@ -150,6 +151,7 @@ public sealed class StateMapperPreviewTests
 		var fixture = CreateFixture(
 			("Open", Color.Red, [Guid.Empty]),
 			("Closed", Color.Blue, [Guid.Empty]));
+		fixture.ViewModel.IsStateItemGroupPreviewMode = false;
 		fixture.ViewModel.IsPreviewEnabled = true;
 		fixture.Publisher.Operations.Clear();
 
@@ -189,6 +191,7 @@ public sealed class StateMapperPreviewTests
 		var fixture = CreateFixture(
 			("Open", Color.Red, [Guid.Empty]),
 			("Closed", Color.Blue, [Guid.Empty]));
+		fixture.ViewModel.IsStateItemGroupPreviewMode = false;
 		fixture.ViewModel.IsPreviewEnabled = true;
 		fixture.Publisher.Operations.Clear();
 
@@ -369,6 +372,7 @@ public sealed class StateMapperPreviewTests
 			[
 				("Closed", Color.Blue, [Guid.Empty])
 			]);
+		fixture.ViewModel.IsStateItemGroupPreviewMode = false;
 		fixture.ViewModel.IsPreviewEnabled = true;
 		fixture.Publisher.Operations.Clear();
 
