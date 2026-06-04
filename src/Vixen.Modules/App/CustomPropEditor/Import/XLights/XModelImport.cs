@@ -373,7 +373,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			Dictionary<int, ModelNode> modelNodes,
 			Dictionary<int, ElementModel> lightNodes)
 		{
-			var modelGroup = PropModelServices.Instance().CreateNode($"{cm.Name} - Model {{1}}");
+			var modelGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - Model");
 			foreach (var modelNode in modelNodes.OrderBy(x => x.Value.Order))
 			{
 				var lightNode = PropModelServices.Instance().AddLightNode(
