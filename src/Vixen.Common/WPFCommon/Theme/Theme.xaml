@@ -16,7 +16,15 @@
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
     <Style TargetType="{x:Type catel:Window}">
-	    <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
+	    <Setter Property="Background" Value="{DynamicResource BackColorBrush}"/>
+    </Style>
+    
+    <Style TargetType="{x:Type catel:DataWindow}">
+        <Setter Property="Background" Value="{DynamicResource BackColorBrush}" />
+    </Style>
+    
+    <Style TargetType="{x:Type DockPanel}">
+        <Setter Property="Background" Value="{DynamicResource BackColorBrush}" />
     </Style>
 
 	<Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="{x:Type DataGrid}">

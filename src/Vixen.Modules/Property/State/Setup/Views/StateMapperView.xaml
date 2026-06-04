@@ -63,7 +63,6 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<TextBlock Text="State Definition" Margin="0,3,8,3" VerticalAlignment="Center"/>
 				<Grid Grid.Column="1" Margin="0,2">
@@ -94,12 +93,7 @@
 						</MenuItem>
 					</Menu>
 				</Grid>
-				<TextBlock Grid.Row="1" Text="Name" Margin="0,3,8,3" VerticalAlignment="Center"/>
-				<TextBox Grid.Column="1"
-						 Grid.Row="1"
-						 Text="{Binding Name, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
-						 Margin="0,2"/>
-				<TextBlock Grid.Row="2" Text="Description" Margin="0,3,8,3" VerticalAlignment="Top"/>
+				<TextBlock Grid.Row="1" Text="Description" Margin="0,3,8,3" VerticalAlignment="Top"/>
 				<TextBox Grid.Row="2"
 						 Grid.Column="1"
 						 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
