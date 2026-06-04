@@ -107,6 +107,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			SelectedStateDefinition = StateDefinitions.FirstOrDefault();
 			SelectItem(Items.FirstOrDefault(), false);
 			_lastValidSelectedStateDefinition = SelectedStateDefinition;
+			IsStateItemGroupPreviewMode = true;
 			Validate(true);
 		}
 

@@ -143,16 +143,16 @@
 					           Text="Preview Mode"
 							   Margin="0,5,8,3"
 							   VerticalAlignment="Top"/>
-					<StackPanel Grid.Row="1" Grid.Column="1" Margin="0,4,0,0">
-						<RadioButton Content="Selected State Item"
-									 GroupName="PreviewMode"
-									 IsChecked="{Binding IsStateItemGroupPreviewMode, Converter={StaticResource InverseBooleanConverter}}"
-									 IsEnabled="{Binding IsPreviewEnabled}"/>
+					<StackPanel Grid.Row="1" Grid.Column="1" Margin="0,4,0,4">
 						<RadioButton Content="State Item Group"
 									 GroupName="PreviewMode"
 									 IsChecked="{Binding IsStateItemGroupPreviewMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 									 IsEnabled="{Binding IsPreviewEnabled}"
 									 Margin="0,3,0,0"/>
+						<RadioButton Content="Selected State Item"
+						             GroupName="PreviewMode"
+						             IsChecked="{Binding IsStateItemGroupPreviewMode, Converter={StaticResource InverseBooleanConverter}}"
+						             IsEnabled="{Binding IsPreviewEnabled}"/>
 					</StackPanel>
 
 					<ComboBox Grid.Row="2"
