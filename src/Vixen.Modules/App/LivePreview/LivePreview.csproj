@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Module.App.LivePreview</AssemblyName>
+    <RootNamespace>VixenModules.App.LivePreview</RootNamespace>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Vixen.Tests</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Vixen.Common\Broadcast\Broadcast.csproj" />
+    <ProjectReference Include="..\..\..\Vixen.Common\Messages\Messages.csproj" />
+    <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+    <ProjectReference Include="..\..\Effect\Effect\Effect.csproj" />
+    <ProjectReference Include="..\..\Effect\SetLevel\SetLevel.csproj" />
+  </ItemGroup>
+
+</Project>
