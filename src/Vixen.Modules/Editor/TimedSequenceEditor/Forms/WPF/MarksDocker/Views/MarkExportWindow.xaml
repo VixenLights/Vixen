@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels"
         xmlns:views="clr-namespace:TimedSequenceEditor.Forms.WPF.MarksDocker.Views"
-        mc:Ignorable="d"  WindowStartupLocation="CenterOwner" 
+        mc:Ignorable="d"  WindowStartupLocation="CenterScreen"
               CanCloseUsingEscape="True" WindowStyle="ToolWindow"
         Title="Export Mark Collections" Height="400" Width="600">
 
@@ -27,9 +27,13 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Vertical">
-                <Label Content="Select Mark Collections To Export" FontWeight="Bold"/>
-                <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="Black">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Select Mark Collections To Export" FontWeight="Bold"/>
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="Black">
                     <Border Margin="1" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="1">
                         <Grid Grid.IsSharedSizeScope="True">
                             <Grid.Resources>
@@ -61,7 +65,7 @@
                         </Grid>
                     </Border>
                 </ScrollViewer>
-            </StackPanel>
+            </Grid>
 
             <StackPanel Grid.Column="1" Orientation="Vertical">
                 <Border BorderThickness="1">

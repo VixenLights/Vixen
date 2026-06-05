@@ -3,6 +3,7 @@ using System.Windows.Input;
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
+using Common.Controls.ColorManagement.ColorModels;
 using Common.WPFCommon.Services;
 using Vixen.Marks;
 using VixenModules.App.Marks;
@@ -382,6 +383,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		private void PickColor()
 		{
 			var picker = new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
+			picker.Color = XYZ.FromRGB(Decorator.Color);
 			var result = picker.ShowDialog();
 			if (result == DialogResult.OK)
 			{
