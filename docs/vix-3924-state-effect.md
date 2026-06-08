@@ -101,8 +101,9 @@ definition statically or drive them from a Mark Collection over time.
 - If no State Mark Collection exists, the effect uses the standard Mark Collection selector's normal default behavior.
 - The user explicitly chooses the `Mark Collection` render source when mark labels should drive the State item names.
 - If no Mark Collections exist, the Mark Collection combo box remains empty.
-- If a selected Mark Collection is removed, the effect retains the missing selection and renders nothing until the user
-  corrects it. It must not silently select a replacement.
+- If a selected Mark Collection is removed, the effect follows the established LipSync and Alternating behavior: it removes
+  listeners for the removed collection, clears the selected Mark Collection ID, and renders nothing until the user selects a
+  Mark Collection again. It must not silently select a replacement.
 - Changes to the selected Mark Collection or its marks must invalidate the effect so the render is refreshed.
 
 ### State Item Render Source
