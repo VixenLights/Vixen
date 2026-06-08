@@ -20,7 +20,8 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - [x] (2026-06-08 11:04 -05:00) Completed Milestone 3. Added State definition discovery across target trees, duplicate display-label disambiguation, State and State Item combo converters/options, missing/no-option placeholders, first-definition auto-selection, selected State item preservation by matching name, and render-source-specific browsability for State Item versus Mark Collection.
 - [x] Replace the partial State effect data model and editor metadata with durable State definition/item identity, render source, playback mode, and dynamic combo box options.
 - [x] Implement State definition discovery across target trees and missing-selection/no-option handling.
-- [ ] Implement State Item rendering for `Default`, `Iterate`, `<All>`, duplicate item names, group expansion, discrete-color fallback, and render-pass reset.
+- [x] (2026-06-08 11:23 -05:00) Completed Milestone 4. Added State Item render planning for `Default`, `Iterate`, `<All>`, selected item anchors by ID, duplicate item names, missing anchors, and exact case-sensitive names. Wired State Item intervals into rendering with assignment lookup scoped to the effect target trees, render-time leaf expansion, deleted/out-of-scope assignment skipping, discrete-color fallback to the first supported color, and per-pass `_elementData` reset.
+- [x] Implement State Item rendering for `Default`, `Iterate`, `<All>`, duplicate item names, group expansion, discrete-color fallback, and render-pass reset.
 - [ ] Implement Mark Collection rendering, mark parsing, clipping, invalid-selection behavior, listener refresh, and dirty-state invalidation.
 - [ ] Implement contiguous intent coalescing and the CustomValue-style visual representation.
 - [ ] Add focused tests for discovery, editor option generation, rendering, marks, discrete colors, coalescing, and invalid selections.
@@ -45,6 +46,9 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 
 - Observation: The new State effect project is already present in `Vixen.sln`, but its solution configuration mappings should be verified during implementation because partial additions can leave invalid platform mappings.
   Evidence: `Vixen.sln` contains project `{011C7353-839B-4D5C-A673-482D47D5BE78}` for `src\Vixen.Modules\Effect\State\State.csproj`.
+
+- Observation: `TypeDescriptor.Refresh(effect)` in the Effect Editor refreshed browsability but did not invalidate `PropertyItem.StandardValues`, so dependent combo boxes such as State Item did not call their type converters after another property changed.
+  Evidence: `EffectPropertyEditorGrid.OnTypeDescriptorRefreshedInvoke` called `UpdateBrowsable()` only; `PropertyItem.OnComponentChanged()` is the code path that raises `StandardValues` changes.
 
 ## Decision Log
 
@@ -79,6 +83,8 @@ This plan has started implementation. The main remaining implementation risks ar
 Milestone 2 is complete. The State effect now has the persisted identity and mode fields required for later discovery and rendering work, references the State property module, exposes internals to `Vixen.Tests`, and builds successfully in Debug x64. Rendering remains a placeholder and is intentionally deferred to later milestones.
 
 Milestone 3 is complete. The effect now discovers State definitions from the current target nodes and descendants, exposes dynamic Effect Editor options for State definitions and State item names, keeps missing persisted selections visible, defaults to the first discovered definition when no persisted definition exists, and switches editor browsability between `State Item` and `Mark Collection` based on `Render Source`. Rendering remains a placeholder and is intentionally deferred to later milestones.
+
+Milestone 4 is complete. State Item render mode now produces real intents from the selected State definition, supports full-duration and iterated State item intervals, preserves duplicate-name semantics, skips missing selected anchors plus deleted or out-of-scope assignments, expands assigned groups to leaves at render time, and applies the required discrete-color fallback. Mark Collection rendering, contiguous coalescing, visual representation, and focused tests remain deferred to later milestones.
 
 ## Context and Orientation
 
@@ -191,7 +197,7 @@ Label generation must normally use the State definition name. If more than one d
 
 Add `StateDefinitionNameConverter` inheriting `EffectListTypeConverterBase<State>` and returning `State.GetStateDefinitionOptions()`. Add `StateItemNameConverter` returning `State.GetStateItemOptions()`. These converters must return strings because the existing selection editor stores display values. Implement string properties on `State.cs` that map display labels to IDs:
 
-`StateDefinition` displays the selected discovered label, the missing placeholder, or `<No States Available>`. Setting it to a valid label updates `SelectedStateDefinitionId`, `StatePropertyId`, `StateOwnerElementId`, refreshes State Item options, chooses the first available item name if needed, marks the effect dirty, and calls `OnPropertyChanged()` for dependent properties. Setting it to a placeholder must not change durable IDs.
+`StateDefinition` displays the selected discovered label, the missing placeholder, or `<No States Available>`. Setting it to a valid label updates `SelectedStateDefinitionId`, `StatePropertyId`, `StateOwnerElementId`, refreshes State Item options, preserves a matching State Item name when possible, falls back to `<All>` when no matching item name exists, marks the effect dirty, and calls `OnPropertyChanged()` for dependent properties. Setting it to a placeholder must not change durable IDs.
 
 `StateItem` displays `<All>`, a valid anchor item's current exact name, a missing placeholder such as `<Missing State Item: 01234567>`, or `<No State Items Available>`. Setting it to `<All>` stores `Guid.Empty`. Setting it to a valid item name stores the first item ID in that exact-name group. Setting it to placeholders must not change durable IDs.
 
@@ -221,7 +227,7 @@ Skip marks whose clipped duration is zero or negative. Parse `mark.Text` by spli
 
 Mark gaps naturally render nothing because no intervals are generated. Overlapping marks should both generate intervals; do not suppress one mark because another overlaps it.
 
-Milestone 6 converts intervals into intents, resolves leaf assignments, and coalesces adjacent intervals. For each interval, enumerate the interval's `StateItemData.ElementNodeIds` in stored order. Resolve each ID through `VixenSystem.Nodes.GetElementNode(id)`. If the node is missing, skip it. Expand the node to leaves with `GetLeafEnumerator()` at render time. This ensures group membership changes are reflected on the next render. For each leaf, resolve the color:
+Milestone 6 converts intervals into intents, resolves leaf assignments, and coalesces adjacent intervals. For each interval, enumerate the interval's `StateItemData.ElementNodeIds` in stored order. Resolve each ID from the current effect target nodes and their descendants only. If the node is missing or outside the effect target scope, skip it. Expand the node to leaves with `GetLeafEnumerator()` at render time. This ensures group membership changes are reflected on the next render while preventing assignments outside the effect's target tree from rendering. For each leaf, resolve the color:
 
 If `ColorModule.isElementNodeDiscreteColored(leaf)` is false, use the State item color. If the leaf is discrete, call `ColorModule.getValidColorsForElementNode(leaf, false)` and materialize the list. If the list is empty, skip the leaf. If the list contains the State item color, use that color. Otherwise use the first color in the list.
 
@@ -243,7 +249,7 @@ Add Mark Collection tests covering no collections, selected collection removal c
 
 Add color and coalescing tests covering full-color leaf rendering configured color, discrete leaf supported configured color, discrete fallback to first supported color, discrete leaf with no supported colors skipped, render-pass reset, coalescing adjacent same item/leaf/color intervals, no coalescing across gaps, no coalescing across different State items with same color, and no coalescing across different leaves.
 
-If constructing real element nodes in unit tests is difficult, create narrowly scoped internal helpers that accept `IElementNode` and `Func<Guid, IElementNode?>` delegates for testing assignment expansion independently from `VixenSystem.Nodes`, then keep a smaller integration test proving the production resolver uses `VixenSystem.Nodes.GetElementNode`.
+If constructing real element nodes in unit tests is difficult, create narrowly scoped internal helpers that accept target `IElementNode` collections or a scoped node lookup delegate for testing assignment expansion independently from the Vixen global node manager, then keep a smaller integration test proving the production resolver excludes assignments outside the effect target tree.
 
 Milestone 9 validates and documents evidence. Run the commands in the `Concrete Steps` section. Record concise pass/fail evidence in `Artifacts and Notes`. If any command cannot run because of environment limitations, record the exact error and the reason in `Surprises & Discoveries`, then run the most focused command that can still prove behavior.
 
@@ -310,7 +316,7 @@ When no State definitions are available, the `State` combo options contain `<No 
 
 The editor exposes properties in this order: `State`, `Render Source`, `State Item` or `Mark Collection`, and `Playback Mode`. `Playback Mode` remains visible for both render sources. Hidden render-source selections are retained.
 
-Changing State definition refreshes State Item options, preserves a matching selected name when possible, otherwise selects the first unique item name. `<All>` is first and unique State item names follow first-row order.
+Changing State definition refreshes State Item options, preserves a matching selected name when possible, otherwise selects `<All>`. `<All>` is first and unique State item names follow first-row order.
 
 A renamed selected State item anchor remains selected by ID, displays the new name, and renders every item with that new exact name. A removed selected anchor is retained as missing and renders nothing until corrected or changed to `<All>`.
 
@@ -384,6 +390,28 @@ Milestone 3 validation:
     git diff --check
     Exited successfully. Git printed the expected local checkout warning that `src/Vixen.Modules/Effect/State/State.cs` will be normalized from LF to CRLF the next time Git touches it; no whitespace errors were reported.
 
+Milestone 4 validation:
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+    git diff --check
+    Exited successfully. Git printed the expected local checkout warning that `src/Vixen.Modules/Effect/State/State.cs` will be normalized from LF to CRLF the next time Git touches it; no whitespace errors were reported.
+
+State Item editor refresh validation:
+
+    dotnet build src\Vixen.Modules\Editor\EffectEditor\EffectEditor.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    13 existing warnings.
+    0 Error(s)
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
 Milestone 1 Jira update:
 
     VIX-3924 was updated with the plan summary, design, acceptance criteria, risks, and testing notes from Milestone 1.
@@ -408,7 +436,7 @@ Use these existing effect/editor/rendering types:
     VixenModules.Effect.Effect.EffectListTypeConverterBase<T>
     Vixen.Sys.EffectIntents
     Vixen.Sys.IElementNode
-    Vixen.Sys.VixenSystem.Nodes.GetElementNode(Guid)
+    Vixen.Sys.IElementNode.GetLeafEnumerator()
     Vixen.Intent.IntentBuilder through BaseEffect intent helpers
     Vixen.Marks.IMarkCollection
     Vixen.Marks.IMark
@@ -441,3 +469,6 @@ The helper types should remain internal unless the Effect Editor requires public
 - 2026-06-08 / Codex: Completed Milestone 2 and updated the current-state context, artifacts, and validation evidence so the plan reflects the repository after the data/project foundation changes.
 - 2026-06-08 / Codex: Marked Milestone 1 complete after confirmation that Jira issue VIX-3924 was updated with the planning details.
 - 2026-06-08 / Codex: Completed Milestone 3 by adding State definition discovery, dynamic Effect Editor option converters, missing/no-option placeholders, selected State item preservation, and render-source-specific property visibility.
+- 2026-06-08 / Codex: Completed Milestone 4 by adding State Item render intervals and intent emission with target-scoped assignment lookup, render-time leaf expansion, discrete-color fallback, and render-pass reset.
+- 2026-06-08 / Codex: Corrected Effect Editor refresh handling so `TypeDescriptor.Refresh(effect)` also invalidates property standard values, allowing State Item options to refresh when State Definition changes.
+- 2026-06-08 / Codex: Changed State Definition selection fallback so State Item returns to `<All>` when the new definition does not contain a matching previous item name.

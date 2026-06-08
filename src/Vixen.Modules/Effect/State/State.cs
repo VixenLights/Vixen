@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Drawing;
 using Vixen.Attributes;
 using Vixen.Marks;
 using Vixen.Module;
@@ -7,6 +8,8 @@ using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using VixenModules.Property.Color;
+using VixenModules.Property.State;
 
 namespace VixenModules.Effect.State
 {
@@ -66,6 +69,7 @@ namespace VixenModules.Effect.State
 		[TypeConverter(typeof(StateDefinitionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[PropertyOrder(0)]
+		[RefreshProperties(RefreshProperties.All)]
 		public string StateDefinition
 		{
 			get
@@ -260,10 +264,103 @@ namespace VixenModules.Effect.State
 
 		private void RenderNodes()
 		{
-			//Find the state property in the TargetNodes
-			//Gather the elements for the State(s) we are rendering. 
-			//Do we have discrete elements? If so check target color vs supported colors.
-			//Render Set Level effects on the elements we are rendering in the required colors.
+			if (RenderSource != StateRenderSource.StateItem)
+			{
+				return;
+			}
+
+			var selectedDefinition = GetSelectedStateDefinition();
+			var intervals = StateRenderPlanner.CreateStateItemIntervals(
+				selectedDefinition?.Definition,
+				_data.SelectedStateItemId,
+				PlaybackMode,
+				TimeSpan);
+			var targetScopeNodes = GetTargetScopeNodes()
+				.GroupBy(node => node.Id)
+				.ToDictionary(group => group.Key, group => group.First());
+
+			foreach (var interval in intervals)
+			{
+				RenderInterval(interval, targetScopeNodes);
+			}
+		}
+
+		private void RenderInterval(
+			StateRenderInterval interval,
+			IReadOnlyDictionary<Guid, IElementNode> targetScopeNodes)
+		{
+			if (interval.Duration <= TimeSpan.Zero)
+			{
+				return;
+			}
+
+			foreach (var elementNodeId in interval.Item.ElementNodeIds)
+			{
+				if (!targetScopeNodes.TryGetValue(elementNodeId, out var assignedNode))
+				{
+					continue;
+				}
+
+				foreach (var leafNode in assignedNode.GetLeafEnumerator())
+				{
+					var element = leafNode.Element;
+					if (element == null)
+					{
+						continue;
+					}
+
+					var resolvedColor = ResolveStateItemColor(leafNode, interval.Item.Color);
+					if (resolvedColor == null)
+					{
+						continue;
+					}
+
+					var intent = CreateIntent(leafNode, resolvedColor.Value, 1.0, interval.Duration);
+					_elementData.AddIntentForElement(element.Id, intent, interval.Start);
+				}
+			}
+		}
+
+		private IEnumerable<IElementNode> GetTargetScopeNodes()
+		{
+			foreach (var targetNode in TargetNodes.Where(node => node != null))
+			{
+				foreach (var scopedNode in EnumerateTargetScope(targetNode))
+				{
+					yield return scopedNode;
+				}
+			}
+		}
+
+		private static IEnumerable<IElementNode> EnumerateTargetScope(IElementNode node)
+		{
+			yield return node;
+
+			foreach (var child in node.Children.Where(child => child != null))
+			{
+				foreach (var descendant in EnumerateTargetScope(child))
+				{
+					yield return descendant;
+				}
+			}
+		}
+
+		private static Color? ResolveStateItemColor(IElementNode leafNode, Color stateItemColor)
+		{
+			if (!ColorModule.isElementNodeDiscreteColored(leafNode))
+			{
+				return stateItemColor;
+			}
+
+			var validColors = ColorModule.getValidColorsForElementNode(leafNode, false).ToList();
+			if (validColors.Count == 0)
+			{
+				return null;
+			}
+
+			return validColors.Contains(stateItemColor)
+				? stateItemColor
+				: validColors[0];
 		}
 		
 		#region Overrides of EffectModuleInstanceBase
@@ -355,14 +452,12 @@ namespace VixenModules.Effect.State
 				.FirstOrDefault(definition => definition.StateDefinitionId == _data.SelectedStateDefinitionId);
 		}
 
-		private static IReadOnlyList<VixenModules.Property.State.StateItemData> GetStateItems(
-			DiscoveredStateDefinition definition)
+		private static IReadOnlyList<StateItemData> GetStateItems(DiscoveredStateDefinition definition)
 		{
 			return definition.Definition.Items ?? [];
 		}
 
-		private VixenModules.Property.State.StateItemData? GetSelectedStateItem(
-			DiscoveredStateDefinition definition)
+		private StateItemData? GetSelectedStateItem(DiscoveredStateDefinition definition)
 		{
 			return GetStateItems(definition)
 				.FirstOrDefault(item => item.Id == _data.SelectedStateItemId);
@@ -428,11 +523,10 @@ namespace VixenModules.Effect.State
 			var matchingPreviousName = previousStateItemName == null
 				? null
 				: items.FirstOrDefault(item => item.Name.Equals(previousStateItemName, StringComparison.Ordinal));
-			_data.SelectedStateItemId = matchingPreviousName?.Id ?? items[0].Id;
+			_data.SelectedStateItemId = matchingPreviousName?.Id ?? Guid.Empty;
 		}
 
-		private static IReadOnlyList<string> GetUniqueStateItemNames(
-			IEnumerable<VixenModules.Property.State.StateItemData> items)
+		private static IReadOnlyList<string> GetUniqueStateItemNames(IEnumerable<StateItemData> items)
 		{
 			var names = new List<string>();
 			var knownNames = new HashSet<string>(StringComparer.Ordinal);
