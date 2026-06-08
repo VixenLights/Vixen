@@ -598,7 +598,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				foreach (var emc in collections)
 				{
 					//Convert to Hex and remove the leading #
-					var color = ToHex(emc.MarkCollection.Decorator.Color).Substring(1);
+					var color = ToBGRHex(emc.MarkCollection.Decorator.Color).Substring(1);
 					foreach (IMark mark in emc.MarkCollection.Marks)
 					{
 						var markText = emc.IsTextIncluded ? mark.Text.Replace(',', ' ') : string.Empty;
@@ -641,6 +641,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		public static string ToHex(Color color)
 		{
 			return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+		}
+		
+		public static string ToBGRHex(Color color)
+		{
+			return $"#{color.B:X2}{color.G:X2}{color.R:X2}";
 		}
 
 	}
