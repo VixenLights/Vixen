@@ -23,6 +23,7 @@ namespace VixenModules.Effect.State
 		private StateData _data;
 		private EffectIntents _elementData = new();
 		private IReadOnlyList<DiscoveredStateDefinition> _stateDefinitions = [];
+		private const string VisualRepresentationText = "State";
 
 		public State()
 		{
@@ -53,6 +54,41 @@ namespace VixenModules.Effect.State
 		#region Overrides of BaseEffect
 
 		protected override EffectTypeModuleData EffectModuleData => _data;
+
+		#endregion
+
+		#region Visual Representation
+
+		/// <inheritdoc />
+		public override bool ForceGenerateVisualRepresentation => true;
+
+		/// <inheritdoc />
+		public override void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
+		{
+			try
+			{
+				var adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(
+					g,
+					VisualRepresentationText,
+					clipRectangle,
+					"Vixen.Fonts.DigitalDream.ttf",
+					48);
+
+				using (var stringBrush = new SolidBrush(Color.White))
+				{
+					using (var backgroundBrush = new SolidBrush(Color.DarkGray))
+					{
+						g.FillRectangle(backgroundBrush, clipRectangle);
+					}
+
+					g.DrawString(VisualRepresentationText, adjustedFont, stringBrush, clipRectangle.X + 2, 2);
+				}
+			}
+			catch (Exception exception)
+			{
+				Logging.Error(exception, "Exception rendering the visualization for the State effect.");
+			}
+		}
 
 		#endregion
 
