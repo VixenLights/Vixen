@@ -160,6 +160,10 @@ namespace VixenModules.Effect.State
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the selected Mark Collection display name.
+		/// </summary>
+		/// <value>The selected Mark Collection display name.</value>
 		[Value]
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"MarkCollection")]
@@ -176,8 +180,20 @@ namespace VixenModules.Effect.State
 			}
 			set
 			{
-				var newMarkCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(value));
-				var id = newMarkCollection?.Id ?? Guid.Empty;
+				IMarkCollection? newMarkCollection = null;
+				var id = Guid.Empty;
+				if (!string.IsNullOrEmpty(value))
+				{
+					newMarkCollection = MarkCollections.FirstOrDefault(
+						collection => collection.Name.Equals(value, StringComparison.Ordinal));
+					if (newMarkCollection == null)
+					{
+						return;
+					}
+
+					id = newMarkCollection.Id;
+				}
+
 				if (!id.Equals(_data.MarkCollectionId))
 				{
 					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
@@ -216,13 +232,10 @@ namespace VixenModules.Effect.State
 					OnPropertyChanged();
 					if (_data.RenderSource == StateRenderSource.MarkCollection && _data.MarkCollectionId == Guid.Empty)
 					{
-						if (MarkCollections.Any())
+						var stateMarkCollection = GetFirstStateMarkCollection();
+						if (stateMarkCollection != null)
 						{
-							var mc = MarkCollections.FirstOrDefault(x => x.CollectionType == MarkCollectionType.Phoneme);
-							if (mc != null)
-							{
-								MarkCollectionId = mc.Name;
-							}
+							MarkCollectionId = stateMarkCollection.Name;
 						}
 					}
 				}
@@ -264,17 +277,8 @@ namespace VixenModules.Effect.State
 
 		private void RenderNodes()
 		{
-			if (RenderSource != StateRenderSource.StateItem)
-			{
-				return;
-			}
-
 			var selectedDefinition = GetSelectedStateDefinition();
-			var intervals = StateRenderPlanner.CreateStateItemIntervals(
-				selectedDefinition?.Definition,
-				_data.SelectedStateItemId,
-				PlaybackMode,
-				TimeSpan);
+			var intervals = CreateRenderIntervals(selectedDefinition?.Definition);
 			var targetScopeNodes = GetTargetScopeNodes()
 				.GroupBy(node => node.Id)
 				.ToDictionary(group => group.Key, group => group.First());
@@ -283,6 +287,32 @@ namespace VixenModules.Effect.State
 			{
 				RenderInterval(interval, targetScopeNodes);
 			}
+		}
+
+		private IReadOnlyList<StateRenderInterval> CreateRenderIntervals(StateDefinitionData? selectedDefinition)
+		{
+			if (RenderSource == StateRenderSource.MarkCollection)
+			{
+				var markCollection = GetSelectedMarkCollection();
+				if (markCollection == null)
+				{
+					return [];
+				}
+
+				var marks = markCollection.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+				return StateRenderPlanner.CreateMarkCollectionIntervals(
+					selectedDefinition,
+					marks,
+					PlaybackMode,
+					StartTime,
+					TimeSpan);
+			}
+
+			return StateRenderPlanner.CreateStateItemIntervals(
+				selectedDefinition,
+				_data.SelectedStateItemId,
+				PlaybackMode,
+				TimeSpan);
 		}
 
 		private void RenderInterval(
@@ -370,19 +400,19 @@ namespace VixenModules.Effect.State
 		{
 			if (RenderSource == StateRenderSource.MarkCollection)
 			{
-				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				var markCollection = GetSelectedMarkCollection();
 				InitializeMarkCollectionListeners(markCollection);
 			}
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		protected override void MarkCollectionsRemoved(IList<IMarkCollection> removedCollections)
 		{
-			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
-			if(mc != null)
+			var markCollection = removedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			if (markCollection != null)
 			{
 				//Our collection is gone!!!!
-				RemoveMarkCollectionListeners(mc);
+				RemoveMarkCollectionListeners(markCollection);
 				MarkCollectionId = String.Empty;
 			}
 		}
@@ -547,6 +577,25 @@ namespace VixenModules.Effect.State
 
 		private static string CreateMissingStateItemLabel(Guid stateItemId) =>
 			$"<Missing State Item: {StateDefinitionDiscovery.ToShortId(stateItemId)}>";
+
+		#endregion
+
+		#region Mark Collections
+
+		private IMarkCollection? GetSelectedMarkCollection()
+		{
+			return MarkCollections.FirstOrDefault(collection => collection.Id == _data.MarkCollectionId);
+		}
+
+		private IMarkCollection? GetFirstStateMarkCollection()
+		{
+			if (!Enum.TryParse<MarkCollectionType>("State", out var stateType))
+			{
+				return null;
+			}
+
+			return MarkCollections.FirstOrDefault(collection => collection.CollectionType == stateType);
+		}
 
 		#endregion
 

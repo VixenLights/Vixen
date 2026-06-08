@@ -1,3 +1,4 @@
+using Vixen.Marks;
 using VixenModules.Property.State;
 
 namespace VixenModules.Effect.State
@@ -31,6 +32,54 @@ namespace VixenModules.Effect.State
 				PlaybackMode.Iterate => CreateIteratedIntervals(items, effectDuration),
 				_ => CreateDefaultIntervals(items, effectDuration)
 			};
+		}
+
+		internal static IReadOnlyList<StateRenderInterval> CreateMarkCollectionIntervals(
+			StateDefinitionData? definition,
+			IEnumerable<IMark> marks,
+			PlaybackMode playbackMode,
+			TimeSpan effectStart,
+			TimeSpan effectDuration)
+		{
+			if (definition == null || effectDuration <= TimeSpan.Zero)
+			{
+				return [];
+			}
+
+			var items = definition.Items ?? [];
+			if (items.Count == 0)
+			{
+				return [];
+			}
+
+			var itemGroups = items
+				.GroupBy(item => item.Name)
+				.ToDictionary(group => group.Key, group => group.ToList(), StringComparer.Ordinal);
+			var effectEnd = effectStart + effectDuration;
+			var intervals = new List<StateRenderInterval>();
+
+			foreach (var mark in marks)
+			{
+				var intervalStart = Max(mark.StartTime, effectStart) - effectStart;
+				var intervalEnd = Min(mark.EndTime, effectEnd) - effectStart;
+				var intervalDuration = intervalEnd - intervalStart;
+				if (intervalDuration <= TimeSpan.Zero)
+				{
+					continue;
+				}
+
+				var names = StateMarkParser.ParseStateItemNames(mark.Text);
+				if (playbackMode == PlaybackMode.Iterate)
+				{
+					AddIteratedMarkIntervals(intervals, itemGroups, names, intervalStart, intervalDuration);
+				}
+				else
+				{
+					AddDefaultMarkIntervals(intervals, itemGroups, names, intervalStart, intervalDuration);
+				}
+			}
+
+			return intervals;
 		}
 
 		private static IReadOnlyList<StateRenderInterval> CreateSelectedItemIntervals(
@@ -112,5 +161,62 @@ namespace VixenModules.Effect.State
 
 			return names;
 		}
+
+		private static void AddDefaultMarkIntervals(
+			ICollection<StateRenderInterval> intervals,
+			IReadOnlyDictionary<string, List<StateItemData>> itemGroups,
+			IEnumerable<string> names,
+			TimeSpan intervalStart,
+			TimeSpan intervalDuration)
+		{
+			var recognizedNames = new HashSet<string>(StringComparer.Ordinal);
+
+			foreach (var name in names)
+			{
+				if (string.IsNullOrEmpty(name) ||
+					!recognizedNames.Add(name) ||
+					!itemGroups.TryGetValue(name, out var items))
+				{
+					continue;
+				}
+
+				foreach (var item in items)
+				{
+					intervals.Add(new StateRenderInterval(item, intervalStart, intervalDuration));
+				}
+			}
+		}
+
+		private static void AddIteratedMarkIntervals(
+			ICollection<StateRenderInterval> intervals,
+			IReadOnlyDictionary<string, List<StateItemData>> itemGroups,
+			IReadOnlyList<string> names,
+			TimeSpan intervalStart,
+			TimeSpan intervalDuration)
+		{
+			if (names.Count == 0)
+			{
+				return;
+			}
+
+			var segmentStart = intervalStart;
+			for (var index = 0; index < names.Count; index++)
+			{
+				var segmentDuration = GetIntervalDuration(intervalDuration, names.Count, index, segmentStart - intervalStart);
+				if (!string.IsNullOrEmpty(names[index]) && itemGroups.TryGetValue(names[index], out var items))
+				{
+					foreach (var item in items)
+					{
+						intervals.Add(new StateRenderInterval(item, segmentStart, segmentDuration));
+					}
+				}
+
+				segmentStart += segmentDuration;
+			}
+		}
+
+		private static TimeSpan Max(TimeSpan first, TimeSpan second) => first > second ? first : second;
+
+		private static TimeSpan Min(TimeSpan first, TimeSpan second) => first < second ? first : second;
 	}
 }
