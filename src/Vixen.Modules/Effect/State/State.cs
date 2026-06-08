@@ -282,10 +282,11 @@ namespace VixenModules.Effect.State
 			var targetScopeNodes = GetTargetScopeNodes()
 				.GroupBy(node => node.Id)
 				.ToDictionary(group => group.Key, group => group.First());
+			var segments = intervals.SelectMany(interval => CreateRenderSegments(interval, targetScopeNodes));
 
-			foreach (var interval in intervals)
+			foreach (var segment in StateRenderSegmentCoalescer.Coalesce(segments))
 			{
-				RenderInterval(interval, targetScopeNodes);
+				RenderSegment(segment);
 			}
 		}
 
@@ -315,13 +316,13 @@ namespace VixenModules.Effect.State
 				TimeSpan);
 		}
 
-		private void RenderInterval(
+		private IEnumerable<StateRenderSegment> CreateRenderSegments(
 			StateRenderInterval interval,
 			IReadOnlyDictionary<Guid, IElementNode> targetScopeNodes)
 		{
 			if (interval.Duration <= TimeSpan.Zero)
 			{
-				return;
+				yield break;
 			}
 
 			foreach (var elementNodeId in interval.Item.ElementNodeIds)
@@ -345,10 +346,21 @@ namespace VixenModules.Effect.State
 						continue;
 					}
 
-					var intent = CreateIntent(leafNode, resolvedColor.Value, 1.0, interval.Duration);
-					_elementData.AddIntentForElement(element.Id, intent, interval.Start);
+					yield return new StateRenderSegment(
+						interval.Item.Id,
+						leafNode,
+						element.Id,
+						resolvedColor.Value,
+						interval.Start,
+						interval.Duration);
 				}
 			}
+		}
+
+		private void RenderSegment(StateRenderSegment segment)
+		{
+			var intent = CreateIntent(segment.LeafNode, segment.ResolvedColor, 1.0, segment.Duration);
+			_elementData.AddIntentForElement(segment.ElementId, intent, segment.Start);
 		}
 
 		private IEnumerable<IElementNode> GetTargetScopeNodes()

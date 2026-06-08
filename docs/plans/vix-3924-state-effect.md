@@ -24,7 +24,9 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - [x] Implement State Item rendering for `Default`, `Iterate`, `<All>`, duplicate item names, group expansion, discrete-color fallback, and render-pass reset.
 - [x] (2026-06-08 14:16 -05:00) Completed Milestone 5. Added comma-delimited Mark Collection parsing, effect-boundary clipping, Default and Iterate mark interval planning, selected collection lookup by persisted GUID, missing/removed collection render-nothing behavior, invalid non-empty Mark Collection setter protection, and defensive future `MarkCollectionType.State` auto-selection without falling back to phoneme collections.
 - [x] Implement Mark Collection rendering, mark parsing, clipping, invalid-selection behavior, listener refresh, and dirty-state invalidation.
-- [ ] Implement contiguous intent coalescing and the CustomValue-style visual representation.
+- [x] (2026-06-08 16:39 -05:00) Completed Milestone 6. Added resolved leaf render segments and contiguous coalescing before intent creation. Coalescing now merges only matching State item ID, leaf element ID, resolved color, and exactly adjacent timing while preserving first-emission ordering.
+- [x] Implement contiguous intent coalescing.
+- [ ] Implement the CustomValue-style visual representation.
 - [ ] Add focused tests for discovery, editor option generation, rendering, marks, discrete colors, coalescing, and invalid selections.
 - [ ] Run filtered and full validation commands, record evidence, and update this plan's outcome sections.
 
@@ -91,6 +93,8 @@ Milestone 3 is complete. The effect now discovers State definitions from the cur
 Milestone 4 is complete. State Item render mode now produces real intents from the selected State definition, supports full-duration and iterated State item intervals, preserves duplicate-name semantics, skips missing selected anchors plus deleted or out-of-scope assignments, expands assigned groups to leaves at render time, and applies the required discrete-color fallback. Mark Collection rendering, contiguous coalescing, visual representation, and focused tests remain deferred to later milestones.
 
 Milestone 5 is complete. Mark Collection render mode now parses comma-separated mark text, trims whitespace, matches State item names case-sensitively, clips marks to the effect boundaries, leaves gaps empty, supports overlapping marks, uses Default de-duplication per mark, and uses Iterate timing where unknown or empty segments still consume time. Removed selected Mark Collections clear the persisted selection and render nothing until the user selects another collection. Because the current enum has no `State` value, switching to Mark Collection does not auto-select an unrelated phoneme collection.
+
+Milestone 6 is complete. Rendering now resolves intervals to leaf render segments first, then coalesces contiguous segments only when the same State item renders the same leaf element with the same resolved color and no timing gap. Intent creation happens after coalescing, preserving target-scoped assignment lookup, render-time leaf expansion, and discrete-color fallback behavior.
 
 ## Context and Orientation
 
@@ -410,6 +414,13 @@ Milestone 5 validation:
     0 Warning(s)
     0 Error(s)
 
+Milestone 6 validation:
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
     git diff --check
     Exited successfully. Git printed the expected local checkout warning that `src/Vixen.Modules/Effect/State/State.cs` will be normalized from LF to CRLF the next time Git touches it; no whitespace errors were reported.
 
@@ -486,3 +497,4 @@ The helper types should remain internal unless the Effect Editor requires public
 - 2026-06-08 / Codex: Corrected Effect Editor refresh handling so `TypeDescriptor.Refresh(effect)` also invalidates property standard values, allowing State Item options to refresh when State Definition changes.
 - 2026-06-08 / Codex: Changed State Definition selection fallback so State Item returns to `<All>` when the new definition does not contain a matching previous item name.
 - 2026-06-08 / Codex: Completed Milestone 5 by adding Mark Collection parsing/render intervals, selected collection GUID lookup, invalid selection protection, removal clearing, and defensive future `State` collection auto-selection without current phoneme fallback.
+- 2026-06-08 / Codex: Completed Milestone 6 by adding resolved render segments and contiguous coalescing before intent creation while leaving the visual representation for Milestone 7.
