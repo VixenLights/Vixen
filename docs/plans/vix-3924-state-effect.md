@@ -15,7 +15,8 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - [x] (2026-06-08 10:35 -05:00) Read `.agents/PLANS.md`, `docs/vix-3924-state-effect.md`, `docs/vix-3591-state-property-final-requirements.md`, the partial State effect under `src/Vixen.Modules/Effect/State`, State property models under `src/Vixen.Modules/Property/State`, and comparable effects/converters including LipSync, Alternating, CustomValue, `BaseEffect`, and `EffectListTypeConverterBase`.
 - [x] (2026-06-08 10:35 -05:00) Created this implementation plan with milestones, Jira paste text, risks, concrete file targets, validation commands, and acceptance criteria.
 - [x] (2026-06-08 10:45 -05:00) Updated `docs/vix-3924-state-effect.md` and this ExecPlan so removed Mark Collection selections follow LipSync and Alternating: remove listeners, clear the selected Mark Collection ID, and render nothing until a new collection is selected.
-- [ ] Update Jira issue VIX-3924 with the plan summary, design, acceptance criteria, risks, and testing notes from Milestone 1.
+- [x] (2026-06-08 10:58 -05:00) Completed Milestone 2. `StateData` now persists selected State definition, State property, owner element, render source, selected State item, Mark Collection, and playback mode. Added `StateRenderSource`, removed `TimingMode`, added the State property project reference and `InternalsVisibleTo`, and corrected the State effect `Release|Any CPU` solution mapping to `Release|x64`.
+- [x] (2026-06-08 11:05 -05:00) Completed Milestone 1. Jira issue VIX-3924 was updated with the plan summary, design, acceptance criteria, risks, and testing notes.
 - [ ] Replace the partial State effect data model and editor metadata with durable State definition/item identity, render source, playback mode, and dynamic combo box options.
 - [ ] Implement State definition discovery across target trees and missing-selection/no-option handling.
 - [ ] Implement State Item rendering for `Default`, `Iterate`, `<All>`, duplicate item names, group expansion, discrete-color fallback, and render-pass reset.
@@ -72,7 +73,9 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 
 ## Outcomes & Retrospective
 
-This plan has been created but not yet implemented. The main implementation risks are editor combo box behavior for missing selections, reliable unit-test construction of Vixen element trees and property attachments, and ensuring coalescing reduces intent count without changing ordering semantics. Record completed behavior, validation results, and any deferred gaps here after implementation milestones finish.
+This plan has started implementation. The main remaining implementation risks are editor combo box behavior for missing selections, reliable unit-test construction of Vixen element trees and property attachments, and ensuring coalescing reduces intent count without changing ordering semantics. Record completed behavior, validation results, and any deferred gaps here after implementation milestones finish.
+
+Milestone 2 is complete. The State effect now has the persisted identity and mode fields required for later discovery and rendering work, references the State property module, exposes internals to `Vixen.Tests`, and builds successfully in Debug x64. Rendering remains a placeholder and is intentionally deferred to later milestones.
 
 ## Context and Orientation
 
@@ -88,17 +91,17 @@ Mark Collections are label/timing collections exposed through `IEffect.MarkColle
 
 The partial implementation has these important current files:
 
-`src/Vixen.Modules/Effect/State/State.cs` currently exposes `TimingMode`, `MarkCollectionId`, and `AllowMarkGaps`, creates `_elementData`, and has an empty `RenderNodes` method.
+`src/Vixen.Modules/Effect/State/State.cs` currently exposes `RenderSource` and `MarkCollectionId`, creates `_elementData`, and has an empty `RenderNodes` method. Later milestones add State definition and State item editor properties plus rendering behavior.
 
-`src/Vixen.Modules/Effect/State/StateData.cs` currently stores only `MarkCollectionId`, `TimingMode`, and `AllowMarkGaps`.
+`src/Vixen.Modules/Effect/State/StateData.cs` now stores the selected State definition ID, containing State property ID, owner element ID, render source, selected State item ID, Mark Collection ID, and playback mode.
 
 `src/Vixen.Modules/Effect/State/PlaybackMode.cs` already has `Default` and `Iterate`, matching the required playback modes.
 
-`src/Vixen.Modules/Effect/State/TimingMode.cs` should be replaced or retired because the final requirement calls this concept `Render Source` and does not include `AllowMarkGaps`.
+`src/Vixen.Modules/Effect/State/StateRenderSource.cs` defines `StateItem` and `MarkCollection`. The old `TimingMode.cs` file was removed because the final requirement calls this concept `Render Source` and does not include `AllowMarkGaps`.
 
 `src/Vixen.Modules/Effect/State/StateDescriptor.cs` already gives the effect name, type ID, module class, data class, `EffectGroups.Basic`, and `SupportsMarks = true`.
 
-`src/Vixen.Modules/Effect/State/State.csproj` references Vixen.Core and the common Effect project. It will need a project reference to `src/Vixen.Modules/Property/State/State.csproj` and probably an `InternalsVisibleTo` attribute for `Vixen.Tests` so internal helper types can be tested.
+`src/Vixen.Modules/Effect/State/State.csproj` references Vixen.Core, the common Effect project, and `src/Vixen.Modules/Property/State/State.csproj`. It also declares `InternalsVisibleTo("Vixen.Tests")` so later internal helpers can be unit tested.
 
 ## Plan of Work
 
@@ -347,7 +350,8 @@ If coalescing introduces ordering regressions, disable only the problematic coal
 Key source facts gathered before implementation:
 
     src/Vixen.Modules/Effect/State/State.cs: `_PreRender` creates a new `EffectIntents` and calls an empty `RenderNodes()` placeholder.
-    src/Vixen.Modules/Effect/State/StateData.cs: current data stores `MarkCollectionId`, `TimingMode`, and `AllowMarkGaps`, which does not satisfy VIX-3924 identity requirements.
+    src/Vixen.Modules/Effect/State/StateData.cs: data now stores `SelectedStateDefinitionId`, `StatePropertyId`, `StateOwnerElementId`, `RenderSource`, `SelectedStateItemId`, `MarkCollectionId`, and `PlaybackMode`.
+    src/Vixen.Modules/Effect/State/StateRenderSource.cs: new render-source enum replaces the removed `TimingMode` enum.
     src/Vixen.Modules/Property/State/StateData.cs: State property data stores stable `Id` and `StateDefinitions`.
     src/Vixen.Modules/Property/State/StateDefinitionData.cs: each definition stores stable `Id`, `Name`, `Description`, and ordered `Items`.
     src/Vixen.Modules/Property/State/StateItemData.cs: each item stores stable `Id`, `Name`, `Color`, and `ElementNodeIds`.
@@ -359,6 +363,17 @@ Record Jira update evidence and validation transcripts here as implementation pr
 
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State"
     Passed!  - Failed: 0, Passed: <N>, Skipped: 0, Total: <N>
+
+Milestone 2 validation:
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Milestone 1 Jira update:
+
+    VIX-3924 was updated with the plan summary, design, acceptance criteria, risks, and testing notes from Milestone 1.
 
 ## Interfaces and Dependencies
 
@@ -410,3 +425,5 @@ The helper types should remain internal unless the Effect Editor requires public
 
 - 2026-06-08 / Codex: Initial ExecPlan created from VIX-3924 requirements, State property final requirements, the partial State effect implementation, and comparable Vixen effect patterns. The plan resolves naming and identity decisions up front because the partial effect uses pre-requirement terminology and lacks durable State definition selection.
 - 2026-06-08 / Codex: Updated Mark Collection removal behavior to clear the selected collection ID, matching LipSync and Alternating, because the project direction is to keep Mark Collection removal behavior universal across effects.
+- 2026-06-08 / Codex: Completed Milestone 2 and updated the current-state context, artifacts, and validation evidence so the plan reflects the repository after the data/project foundation changes.
+- 2026-06-08 / Codex: Marked Milestone 1 complete after confirmation that Jira issue VIX-3924 was updated with the planning details.

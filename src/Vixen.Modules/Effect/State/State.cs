@@ -79,27 +79,31 @@ namespace VixenModules.Effect.State
 			}
 		}
 		
+		/// <summary>
+		/// Gets or sets the source used to determine active State items.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the State item render source.</value>
 		[Value]
 		[ProviderCategory("Config", 2)]
-		[ProviderDisplayName(@"TimingMode")]
-		[ProviderDescription(@"TimingMode")]
+		[ProviderDisplayName(@"Render Source")]
+		[ProviderDescription(@"Selects how active State items are determined.")]
 		[PropertyOrder(1)]
-		public TimingMode TimingMode
+		public StateRenderSource RenderSource
 		{
 			get
 			{
-				return _data.TimingMode;
+				return _data.RenderSource;
 
 			}
 			set
 			{
-				if (_data.TimingMode != value)
+				if (_data.RenderSource != value)
 				{
-					_data.TimingMode = value;
-					SetTimingModeBrowsables();
+					_data.RenderSource = value;
+					SetRenderSourceBrowsables();
 					IsDirty = true;
 					OnPropertyChanged();
-					if (_data.TimingMode == TimingMode.MarkCollection && _data.MarkCollectionId == Guid.Empty)
+					if (_data.RenderSource == StateRenderSource.MarkCollection && _data.MarkCollectionId == Guid.Empty)
 					{
 						if (MarkCollections.Any())
 						{
@@ -111,22 +115,6 @@ namespace VixenModules.Effect.State
 						}
 					}
 				}
-			}
-		}
-		
-		[Value]
-		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"AllowMarkGaps")]
-		[ProviderDescription(@"AllowMarkGaps")]
-		[PropertyOrder(3)]
-		public bool AllowMarkGaps
-		{
-			get { return _data.AllowMarkGaps; }
-			set
-			{
-				_data.AllowMarkGaps = value;
-				IsDirty = true;
-				OnPropertyChanged();
 			}
 		}
 
@@ -151,7 +139,7 @@ namespace VixenModules.Effect.State
 		/// <inheritdoc />
 		protected override void MarkCollectionsChanged()
 		{
-			if (TimingMode == TimingMode.MarkCollection)
+			if (RenderSource == StateRenderSource.MarkCollection)
 			{
 				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
 				InitializeMarkCollectionListeners(markCollection);
@@ -174,12 +162,11 @@ namespace VixenModules.Effect.State
 
 		#region Browsables
 
-		private void SetTimingModeBrowsables()
+		private void SetRenderSourceBrowsables()
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
 			{
-				{nameof(MarkCollectionId), TimingMode == TimingMode.MarkCollection},
-				{nameof(AllowMarkGaps), TimingMode == TimingMode.MarkCollection}
+				{nameof(MarkCollectionId), RenderSource == StateRenderSource.MarkCollection}
 			};
 
 			SetBrowsable(propertyStates);
@@ -197,7 +184,7 @@ namespace VixenModules.Effect.State
 				{
 					_data = (StateData)value;
 					CheckForInvalidColorData();
-					SetTimingModeBrowsables();
+					SetRenderSourceBrowsables();
 					IsDirty = true;
 				}
 				
