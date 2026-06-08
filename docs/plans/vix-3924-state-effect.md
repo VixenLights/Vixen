@@ -17,8 +17,9 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - [x] (2026-06-08 10:45 -05:00) Updated `docs/vix-3924-state-effect.md` and this ExecPlan so removed Mark Collection selections follow LipSync and Alternating: remove listeners, clear the selected Mark Collection ID, and render nothing until a new collection is selected.
 - [x] (2026-06-08 10:58 -05:00) Completed Milestone 2. `StateData` now persists selected State definition, State property, owner element, render source, selected State item, Mark Collection, and playback mode. Added `StateRenderSource`, removed `TimingMode`, added the State property project reference and `InternalsVisibleTo`, and corrected the State effect `Release|Any CPU` solution mapping to `Release|x64`.
 - [x] (2026-06-08 11:05 -05:00) Completed Milestone 1. Jira issue VIX-3924 was updated with the plan summary, design, acceptance criteria, risks, and testing notes.
-- [ ] Replace the partial State effect data model and editor metadata with durable State definition/item identity, render source, playback mode, and dynamic combo box options.
-- [ ] Implement State definition discovery across target trees and missing-selection/no-option handling.
+- [x] (2026-06-08 11:04 -05:00) Completed Milestone 3. Added State definition discovery across target trees, duplicate display-label disambiguation, State and State Item combo converters/options, missing/no-option placeholders, first-definition auto-selection, selected State item preservation by matching name, and render-source-specific browsability for State Item versus Mark Collection.
+- [x] Replace the partial State effect data model and editor metadata with durable State definition/item identity, render source, playback mode, and dynamic combo box options.
+- [x] Implement State definition discovery across target trees and missing-selection/no-option handling.
 - [ ] Implement State Item rendering for `Default`, `Iterate`, `<All>`, duplicate item names, group expansion, discrete-color fallback, and render-pass reset.
 - [ ] Implement Mark Collection rendering, mark parsing, clipping, invalid-selection behavior, listener refresh, and dirty-state invalidation.
 - [ ] Implement contiguous intent coalescing and the CustomValue-style visual representation.
@@ -76,6 +77,8 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 This plan has started implementation. The main remaining implementation risks are editor combo box behavior for missing selections, reliable unit-test construction of Vixen element trees and property attachments, and ensuring coalescing reduces intent count without changing ordering semantics. Record completed behavior, validation results, and any deferred gaps here after implementation milestones finish.
 
 Milestone 2 is complete. The State effect now has the persisted identity and mode fields required for later discovery and rendering work, references the State property module, exposes internals to `Vixen.Tests`, and builds successfully in Debug x64. Rendering remains a placeholder and is intentionally deferred to later milestones.
+
+Milestone 3 is complete. The effect now discovers State definitions from the current target nodes and descendants, exposes dynamic Effect Editor options for State definitions and State item names, keeps missing persisted selections visible, defaults to the first discovered definition when no persisted definition exists, and switches editor browsability between `State Item` and `Mark Collection` based on `Render Source`. Rendering remains a placeholder and is intentionally deferred to later milestones.
 
 ## Context and Orientation
 
@@ -371,6 +374,16 @@ Milestone 2 validation:
     0 Warning(s)
     0 Error(s)
 
+Milestone 3 validation:
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+    git diff --check
+    Exited successfully. Git printed the expected local checkout warning that `src/Vixen.Modules/Effect/State/State.cs` will be normalized from LF to CRLF the next time Git touches it; no whitespace errors were reported.
+
 Milestone 1 Jira update:
 
     VIX-3924 was updated with the plan summary, design, acceptance criteria, risks, and testing notes from Milestone 1.
@@ -427,3 +440,4 @@ The helper types should remain internal unless the Effect Editor requires public
 - 2026-06-08 / Codex: Updated Mark Collection removal behavior to clear the selected collection ID, matching LipSync and Alternating, because the project direction is to keep Mark Collection removal behavior universal across effects.
 - 2026-06-08 / Codex: Completed Milestone 2 and updated the current-state context, artifacts, and validation evidence so the plan reflects the repository after the data/project foundation changes.
 - 2026-06-08 / Codex: Marked Milestone 1 complete after confirmation that Jira issue VIX-3924 was updated with the planning details.
+- 2026-06-08 / Codex: Completed Milestone 3 by adding State definition discovery, dynamic Effect Editor option converters, missing/no-option placeholders, selected State item preservation, and render-source-specific property visibility.

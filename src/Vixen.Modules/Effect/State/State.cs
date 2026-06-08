@@ -12,9 +12,14 @@ namespace VixenModules.Effect.State
 {
 	public sealed class State: BaseEffect
 	{
+		internal const string AllStateItemsLabel = "<All>";
+		internal const string NoStateDefinitionsLabel = "<No States Available>";
+		internal const string NoStateItemsLabel = "<No State Items Available>";
+
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private StateData _data;
 		private EffectIntents _elementData = new();
+		private IReadOnlyList<DiscoveredStateDefinition> _stateDefinitions = [];
 
 		public State()
 		{
@@ -26,6 +31,7 @@ namespace VixenModules.Effect.State
 		protected override void TargetNodesChanged()
 		{
 			CheckForInvalidColorData();
+			RefreshStateDefinitionSelection();
 		}
 
 		protected override void _PreRender(CancellationTokenSource? cancellationToken = null)
@@ -48,6 +54,107 @@ namespace VixenModules.Effect.State
 		#endregion
 
 		#region Properties
+
+		/// <summary>
+		/// Gets or sets the selected State definition display label.
+		/// </summary>
+		/// <value>The selected State definition display label.</value>
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"State")]
+		[ProviderDescription(@"Selects the State definition to render.")]
+		[TypeConverter(typeof(StateDefinitionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(0)]
+		public string StateDefinition
+		{
+			get
+			{
+				var selectedDefinition = GetSelectedStateDefinition();
+				if (selectedDefinition != null)
+				{
+					return selectedDefinition.DisplayLabel;
+				}
+
+				return _data.SelectedStateDefinitionId == Guid.Empty
+					? NoStateDefinitionsLabel
+					: CreateMissingStateDefinitionLabel(_data.SelectedStateDefinitionId);
+			}
+			set
+			{
+				var selectedDefinition = GetDiscoveredStateDefinitions()
+					.FirstOrDefault(definition => definition.DisplayLabel.Equals(value, StringComparison.Ordinal));
+				if (selectedDefinition == null)
+				{
+					return;
+				}
+
+				var previousStateItemName = GetSelectedStateItemName();
+				SelectStateDefinition(selectedDefinition, previousStateItemName);
+				IsDirty = true;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(StateItem));
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the selected State item display label.
+		/// </summary>
+		/// <value>The selected State item display label.</value>
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"State Item")]
+		[ProviderDescription(@"Selects the State item name to render.")]
+		[TypeConverter(typeof(StateItemNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(2)]
+		public string StateItem
+		{
+			get
+			{
+				var selectedDefinition = GetSelectedStateDefinition();
+				if (selectedDefinition == null || !GetStateItems(selectedDefinition).Any())
+				{
+					return NoStateItemsLabel;
+				}
+
+				if (_data.SelectedStateItemId == Guid.Empty)
+				{
+					return AllStateItemsLabel;
+				}
+
+				var selectedItem = GetSelectedStateItem(selectedDefinition);
+				return selectedItem?.Name ?? CreateMissingStateItemLabel(_data.SelectedStateItemId);
+			}
+			set
+			{
+				if (value.Equals(AllStateItemsLabel, StringComparison.Ordinal))
+				{
+					_data.SelectedStateItemId = Guid.Empty;
+					IsDirty = true;
+					OnPropertyChanged();
+					return;
+				}
+
+				var selectedDefinition = GetSelectedStateDefinition();
+				if (selectedDefinition == null)
+				{
+					return;
+				}
+
+				var selectedItem = GetStateItems(selectedDefinition)
+					.FirstOrDefault(item => item.Name.Equals(value, StringComparison.Ordinal));
+				if (selectedItem == null)
+				{
+					return;
+				}
+
+				_data.SelectedStateItemId = selectedItem.Id;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]
@@ -118,6 +225,31 @@ namespace VixenModules.Effect.State
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the playback behavior used when multiple State item names are active.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the playback behavior.</value>
+		[Value]
+		[ProviderCategory("Config", 2)]
+		[ProviderDisplayName(@"Playback Mode")]
+		[ProviderDescription(@"Selects how multiple active State item names are scheduled.")]
+		[PropertyOrder(3)]
+		public PlaybackMode PlaybackMode
+		{
+			get => _data.PlaybackMode;
+			set
+			{
+				if (_data.PlaybackMode == value)
+				{
+					return;
+				}
+
+				_data.PlaybackMode = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 		
 		private void CheckForInvalidColorData()
@@ -160,12 +292,177 @@ namespace VixenModules.Effect.State
 
 		#endregion
 
+		#region Discovery
+
+		/// <summary>
+		/// Gets the available State definition option labels.
+		/// </summary>
+		/// <returns>The available State definition option labels.</returns>
+		public List<string> GetStateDefinitionOptions()
+		{
+			var options = GetDiscoveredStateDefinitions()
+				.Select(definition => definition.DisplayLabel)
+				.ToList();
+
+			if (_data.SelectedStateDefinitionId != Guid.Empty &&
+				!_stateDefinitions.Any(definition => definition.StateDefinitionId == _data.SelectedStateDefinitionId))
+			{
+				options.Insert(0, CreateMissingStateDefinitionLabel(_data.SelectedStateDefinitionId));
+			}
+
+			return options.Count == 0 ? [NoStateDefinitionsLabel] : options;
+		}
+
+		/// <summary>
+		/// Gets the available State item option labels.
+		/// </summary>
+		/// <returns>The available State item option labels.</returns>
+		public List<string> GetStateItemOptions()
+		{
+			var selectedDefinition = GetSelectedStateDefinition();
+			if (selectedDefinition == null)
+			{
+				return [NoStateItemsLabel];
+			}
+
+			var items = GetStateItems(selectedDefinition);
+			if (items.Count == 0)
+			{
+				return [NoStateItemsLabel];
+			}
+
+			var options = new List<string> { AllStateItemsLabel };
+			if (_data.SelectedStateItemId != Guid.Empty &&
+				!items.Any(item => item.Id == _data.SelectedStateItemId))
+			{
+				options.Add(CreateMissingStateItemLabel(_data.SelectedStateItemId));
+			}
+
+			options.AddRange(GetUniqueStateItemNames(items));
+
+			return options;
+		}
+
+		private IReadOnlyList<DiscoveredStateDefinition> GetDiscoveredStateDefinitions()
+		{
+			_stateDefinitions = StateDefinitionDiscovery.Discover(TargetNodes ?? []);
+			return _stateDefinitions;
+		}
+
+		private DiscoveredStateDefinition? GetSelectedStateDefinition()
+		{
+			return GetDiscoveredStateDefinitions()
+				.FirstOrDefault(definition => definition.StateDefinitionId == _data.SelectedStateDefinitionId);
+		}
+
+		private static IReadOnlyList<VixenModules.Property.State.StateItemData> GetStateItems(
+			DiscoveredStateDefinition definition)
+		{
+			return definition.Definition.Items ?? [];
+		}
+
+		private VixenModules.Property.State.StateItemData? GetSelectedStateItem(
+			DiscoveredStateDefinition definition)
+		{
+			return GetStateItems(definition)
+				.FirstOrDefault(item => item.Id == _data.SelectedStateItemId);
+		}
+
+		private string? GetSelectedStateItemName()
+		{
+			var selectedDefinition = GetSelectedStateDefinition();
+			if (selectedDefinition == null || _data.SelectedStateItemId == Guid.Empty)
+			{
+				return null;
+			}
+
+			return GetSelectedStateItem(selectedDefinition)?.Name;
+		}
+
+		private void RefreshStateDefinitionSelection()
+		{
+			var definitions = GetDiscoveredStateDefinitions();
+			if (_data.SelectedStateDefinitionId == Guid.Empty)
+			{
+				var firstDefinition = definitions.FirstOrDefault();
+				if (firstDefinition != null)
+				{
+					SelectStateDefinition(firstDefinition, null);
+					IsDirty = true;
+				}
+			}
+			else
+			{
+				var selectedDefinition = definitions.FirstOrDefault(
+					definition => definition.StateDefinitionId == _data.SelectedStateDefinitionId);
+				if (selectedDefinition != null)
+				{
+					_data.StatePropertyId = selectedDefinition.StatePropertyId;
+					_data.StateOwnerElementId = selectedDefinition.OwnerElementId;
+				}
+			}
+
+			OnPropertyChanged(nameof(StateDefinition));
+			OnPropertyChanged(nameof(StateItem));
+			TypeDescriptor.Refresh(this);
+		}
+
+		private void SelectStateDefinition(DiscoveredStateDefinition selectedDefinition, string? previousStateItemName)
+		{
+			_data.SelectedStateDefinitionId = selectedDefinition.StateDefinitionId;
+			_data.StatePropertyId = selectedDefinition.StatePropertyId;
+			_data.StateOwnerElementId = selectedDefinition.OwnerElementId;
+			SelectStateItemForDefinition(selectedDefinition, previousStateItemName);
+		}
+
+		private void SelectStateItemForDefinition(
+			DiscoveredStateDefinition selectedDefinition,
+			string? previousStateItemName)
+		{
+			var items = GetStateItems(selectedDefinition);
+			if (items.Count == 0)
+			{
+				return;
+			}
+
+			var matchingPreviousName = previousStateItemName == null
+				? null
+				: items.FirstOrDefault(item => item.Name.Equals(previousStateItemName, StringComparison.Ordinal));
+			_data.SelectedStateItemId = matchingPreviousName?.Id ?? items[0].Id;
+		}
+
+		private static IReadOnlyList<string> GetUniqueStateItemNames(
+			IEnumerable<VixenModules.Property.State.StateItemData> items)
+		{
+			var names = new List<string>();
+			var knownNames = new HashSet<string>(StringComparer.Ordinal);
+
+			foreach (var item in items)
+			{
+				if (knownNames.Add(item.Name))
+				{
+					names.Add(item.Name);
+				}
+			}
+
+			return names;
+		}
+
+		private static string CreateMissingStateDefinitionLabel(Guid stateDefinitionId) =>
+			$"<Missing State: {StateDefinitionDiscovery.ToShortId(stateDefinitionId)}>";
+
+		private static string CreateMissingStateItemLabel(Guid stateItemId) =>
+			$"<Missing State Item: {StateDefinitionDiscovery.ToShortId(stateItemId)}>";
+
+		#endregion
+
 		#region Browsables
 
 		private void SetRenderSourceBrowsables()
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
 			{
+				{nameof(StateItem), RenderSource == StateRenderSource.StateItem},
 				{nameof(MarkCollectionId), RenderSource == StateRenderSource.MarkCollection}
 			};
 
