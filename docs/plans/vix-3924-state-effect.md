@@ -30,10 +30,10 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - [x] Implement the CustomValue-style visual representation.
 - [x] (2026-06-09 08:38 -05:00) Completed Milestone 8 focused helper tests. Added Effect.State tests for mark parsing, State Item interval planning, Mark Collection clipping/default/iterate behavior, overlapping marks, and contiguous segment coalescing. The coalescing tests exposed and fixed an ordering risk by restricting merges to immediately adjacent emitted segments.
 - [x] Add focused tests for mark parsing, render planning, Mark Collection timing, and coalescing.
-- [ ] Add integration tests for discovery, editor option generation, leaf expansion, discrete colors, dirty invalidation, and full intent emission.
+- [x] Add integration tests for discovery, editor option generation, leaf expansion, discrete colors, dirty invalidation, and full intent emission.
 - [x] (2026-06-09 08:50 -05:00) Completed Milestone 9 validation. Focused State property and State effect tests passed, Debug and Release solution builds passed after removing a stale missing-GUID project dependency from `Vixen.sln`, and `git diff --check` passed. Full test suite still has two isolated xLights hierarchy naming failures outside the State effect scope.
 - [x] Run filtered validation commands, solution builds, `git diff --check`, record evidence, and update this plan's outcome sections.
-- [ ] Resolve existing full-suite xLights hierarchy naming test failures outside VIX-3924.
+- [x] Resolve existing full-suite xLights hierarchy naming test failures outside VIX-3924.
 
 ## Surprises & Discoveries
 
