@@ -31,7 +31,9 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - [x] (2026-06-09 08:38 -05:00) Completed Milestone 8 focused helper tests. Added Effect.State tests for mark parsing, State Item interval planning, Mark Collection clipping/default/iterate behavior, overlapping marks, and contiguous segment coalescing. The coalescing tests exposed and fixed an ordering risk by restricting merges to immediately adjacent emitted segments.
 - [x] Add focused tests for mark parsing, render planning, Mark Collection timing, and coalescing.
 - [ ] Add integration tests for discovery, editor option generation, leaf expansion, discrete colors, dirty invalidation, and full intent emission.
-- [ ] Run filtered and full validation commands, record evidence, and update this plan's outcome sections.
+- [x] (2026-06-09 08:50 -05:00) Completed Milestone 9 validation. Focused State property and State effect tests passed, Debug and Release solution builds passed after removing a stale missing-GUID project dependency from `Vixen.sln`, and `git diff --check` passed. Full test suite still has two isolated xLights hierarchy naming failures outside the State effect scope.
+- [x] Run filtered validation commands, solution builds, `git diff --check`, record evidence, and update this plan's outcome sections.
+- [ ] Resolve existing full-suite xLights hierarchy naming test failures outside VIX-3924.
 
 ## Surprises & Discoveries
 
@@ -61,6 +63,12 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 
 - Observation: The first coalescing implementation could merge matching segments across an intervening segment, which risks changing emission order for overlapping work.
   Evidence: The new `Coalesce_DoesNotMergeAcrossInterveningSegment` test failed against the dictionary-based latest-segment lookup, so the coalescer now merges only with the immediately previous emitted segment.
+
+- Observation: `Vixen.sln` contained a stale project dependency from `Vixen.Application` to missing GUID `{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}`, which prevented any solution build from starting.
+  Evidence: `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` failed with MSB4051 before compiling; `rg` found the missing GUID only in the invalid dependency line, and removing it allowed Debug and Release solution builds to pass.
+
+- Observation: The full `Vixen.Tests` suite has two xLights hierarchy naming failures outside the State effect scope.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj` failed with `XModelImportHierarchyTests.Import_WithStateInfo_CreatesModelChildAndAttachesStateDefinitions` and `Import_WithoutStateInfo_CreatesModelChildWithoutStateDefinitions`, both expecting names such as `Snowman - Model {1}` while current output is `Snowman {1} - Model`.
 
 ## Decision Log
 
@@ -105,6 +113,8 @@ Milestone 6 is complete. Rendering now resolves intervals to leaf render segment
 Milestone 7 is complete. The State effect now forces a custom timeline visual representation and draws a dark gray bar with white `State` text using `Vixen.Common.Graphics.GetAdjustedFont`, matching the CustomValue-style visual pattern without adding new project references.
 
 Milestone 8 focused helper tests are complete. The test project now references the State effect project and includes tests for comma parsing, State Item interval planning, Mark Collection Default and Iterate planning, clipping, overlapping marks, and render segment coalescing. Broader integration coverage for discovery, editor option refresh, leaf expansion, discrete-color fallback, dirty invalidation, and full intent emission remains deferred.
+
+Milestone 9 validation is complete. Focused `Property.State` and `Effect.State` tests pass, the State effect project builds, Debug and Release solution builds pass, and `git diff --check` passes. The solution build initially failed because `Vixen.sln` had a stale `Vixen.Application` dependency on a missing project GUID; the invalid dependency was removed. The full test suite does not pass because two existing xLights hierarchy naming tests fail outside the State effect scope.
 
 ## Context and Orientation
 
@@ -448,8 +458,25 @@ Milestone 8 validation:
     3 existing warnings outside the State effect.
     0 Error(s)
 
+Milestone 9 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Property.State"
+    Passed!  - Failed: 0, Passed: 73, Skipped: 0, Total: 73
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State"
+    Passed!  - Failed: 0, Passed: 11, Skipped: 0, Total: 11
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj
+    Failed. Passed: 173, Failed: 3, Total: 176. `BroadcastStatePreviewPublisherTests.Operations_PublishExpectedTypedMessages` passed when rerun alone. `XModelImportHierarchyTests.Import_WithStateInfo_CreatesModelChildAndAttachesStateDefinitions` and `Import_WithoutStateInfo_CreatesModelChildWithoutStateDefinitions` failed when rerun alone because expected names place `{1}` at the end while current names place `{1}` before the suffix.
+
+    msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug
+    Initially failed with MSB4051 because `Vixen.Application` referenced missing project GUID `{36A1EEC5-146A-488C-BD9F-0BA7DFFD1527}`. After removing the stale dependency line, Debug build succeeded.
+
+    msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release
+    Release build succeeded after the same solution dependency cleanup.
+
     git diff --check
-    Exited successfully. Git printed the expected local checkout warning that `src/Vixen.Modules/Effect/State/State.cs` will be normalized from LF to CRLF the next time Git touches it; no whitespace errors were reported.
+    Exited successfully with no output.
 
 State Item editor refresh validation:
 
@@ -527,3 +554,4 @@ The helper types should remain internal unless the Effect Editor requires public
 - 2026-06-08 / Codex: Completed Milestone 6 by adding resolved render segments and contiguous coalescing before intent creation while leaving the visual representation for Milestone 7.
 - 2026-06-08 / Codex: Completed Milestone 7 by adding the CustomValue-style dark gray and white `State` timeline visual representation.
 - 2026-06-09 / Codex: Completed Milestone 8 focused helper tests and fixed coalescing so only immediately adjacent emitted segments can merge.
+- 2026-06-09 / Codex: Completed Milestone 9 validation, removed a stale missing-GUID solution dependency that blocked solution builds, and recorded remaining full-suite xLights naming test failures outside the State effect scope.
