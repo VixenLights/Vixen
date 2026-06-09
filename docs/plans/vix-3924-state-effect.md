@@ -28,7 +28,9 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - [x] Implement contiguous intent coalescing.
 - [x] (2026-06-08 17:01 -05:00) Completed Milestone 7. Added a forced custom visual representation that draws a dark gray thumbnail with white `State` text using the established CustomValue-style font fitting helper.
 - [x] Implement the CustomValue-style visual representation.
-- [ ] Add focused tests for discovery, editor option generation, rendering, marks, discrete colors, coalescing, and invalid selections.
+- [x] (2026-06-09 08:38 -05:00) Completed Milestone 8 focused helper tests. Added Effect.State tests for mark parsing, State Item interval planning, Mark Collection clipping/default/iterate behavior, overlapping marks, and contiguous segment coalescing. The coalescing tests exposed and fixed an ordering risk by restricting merges to immediately adjacent emitted segments.
+- [x] Add focused tests for mark parsing, render planning, Mark Collection timing, and coalescing.
+- [ ] Add integration tests for discovery, editor option generation, leaf expansion, discrete colors, dirty invalidation, and full intent emission.
 - [ ] Run filtered and full validation commands, record evidence, and update this plan's outcome sections.
 
 ## Surprises & Discoveries
@@ -56,6 +58,9 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 
 - Observation: The current `MarkCollectionType` enum does not contain a `State` value.
   Evidence: `src/Vixen.Core/Marks/IMarkType.cs` contains only `Generic`, `Phrase`, `Word`, and `Phoneme`, so the State effect now leaves Mark Collection selection empty instead of auto-selecting a phoneme collection.
+
+- Observation: The first coalescing implementation could merge matching segments across an intervening segment, which risks changing emission order for overlapping work.
+  Evidence: The new `Coalesce_DoesNotMergeAcrossInterveningSegment` test failed against the dictionary-based latest-segment lookup, so the coalescer now merges only with the immediately previous emitted segment.
 
 ## Decision Log
 
@@ -98,6 +103,8 @@ Milestone 5 is complete. Mark Collection render mode now parses comma-separated 
 Milestone 6 is complete. Rendering now resolves intervals to leaf render segments first, then coalesces contiguous segments only when the same State item renders the same leaf element with the same resolved color and no timing gap. Intent creation happens after coalescing, preserving target-scoped assignment lookup, render-time leaf expansion, and discrete-color fallback behavior.
 
 Milestone 7 is complete. The State effect now forces a custom timeline visual representation and draws a dark gray bar with white `State` text using `Vixen.Common.Graphics.GetAdjustedFont`, matching the CustomValue-style visual pattern without adding new project references.
+
+Milestone 8 focused helper tests are complete. The test project now references the State effect project and includes tests for comma parsing, State Item interval planning, Mark Collection Default and Iterate planning, clipping, overlapping marks, and render segment coalescing. Broader integration coverage for discovery, editor option refresh, leaf expansion, discrete-color fallback, dirty invalidation, and full intent emission remains deferred.
 
 ## Context and Orientation
 
@@ -431,6 +438,16 @@ Milestone 7 validation:
     0 Warning(s)
     0 Error(s)
 
+Milestone 8 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
+    Passed!  - Failed: 0, Passed: 11, Skipped: 0, Total: 11
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    3 existing warnings outside the State effect.
+    0 Error(s)
+
     git diff --check
     Exited successfully. Git printed the expected local checkout warning that `src/Vixen.Modules/Effect/State/State.cs` will be normalized from LF to CRLF the next time Git touches it; no whitespace errors were reported.
 
@@ -509,3 +526,4 @@ The helper types should remain internal unless the Effect Editor requires public
 - 2026-06-08 / Codex: Completed Milestone 5 by adding Mark Collection parsing/render intervals, selected collection GUID lookup, invalid selection protection, removal clearing, and defensive future `State` collection auto-selection without current phoneme fallback.
 - 2026-06-08 / Codex: Completed Milestone 6 by adding resolved render segments and contiguous coalescing before intent creation while leaving the visual representation for Milestone 7.
 - 2026-06-08 / Codex: Completed Milestone 7 by adding the CustomValue-style dark gray and white `State` timeline visual representation.
+- 2026-06-09 / Codex: Completed Milestone 8 focused helper tests and fixed coalescing so only immediately adjacent emitted segments can merge.

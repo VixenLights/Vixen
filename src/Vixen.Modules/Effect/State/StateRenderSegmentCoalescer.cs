@@ -5,19 +5,16 @@ namespace VixenModules.Effect.State
 		internal static IReadOnlyList<StateRenderSegment> Coalesce(IEnumerable<StateRenderSegment> segments)
 		{
 			var coalescedSegments = new List<StateRenderSegment>();
-			var latestSegmentIndexes = new Dictionary<(Guid StateItemId, Guid ElementId, int Color), int>();
 
 			foreach (var segment in segments)
 			{
-				var key = (segment.StateItemId, segment.ElementId, segment.ResolvedColor.ToArgb());
-				if (latestSegmentIndexes.TryGetValue(key, out var previousIndex) &&
-					coalescedSegments[previousIndex].CanCoalesceWith(segment))
+				if (coalescedSegments.Count > 0 &&
+					coalescedSegments[^1].CanCoalesceWith(segment))
 				{
-					coalescedSegments[previousIndex] = coalescedSegments[previousIndex].Extend(segment.Duration);
+					coalescedSegments[^1] = coalescedSegments[^1].Extend(segment.Duration);
 					continue;
 				}
 
-				latestSegmentIndexes[key] = coalescedSegments.Count;
 				coalescedSegments.Add(segment);
 			}
 
