@@ -624,11 +624,11 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		private static bool CanEditColor(StateItemViewModel? item) => item != null;
 
-		private Task EditColorAsync(StateItemViewModel? item)
+		private async Task EditColorAsync(StateItemViewModel? item)
 		{
 			if (item == null)
 			{
-				return Task.CompletedTask;
+				return;
 			}
 
 			var nodes = item.AssignmentRoots
@@ -637,15 +637,13 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				.Where(node => node != null)
 				.Cast<IElementNode>()
 				.ToList();
-			var selectedColor = _colorPickerService.ChooseColor(
+			var selectedColor = await _colorPickerService.ChooseColorAsync(
 				nodes.Count > 0 ? nodes : [_rootNode],
 				item.Color);
 			if (selectedColor.HasValue)
 			{
 				item.Color = selectedColor.Value;
 			}
-
-			return Task.CompletedTask;
 		}
 
 		/// <inheritdoc />

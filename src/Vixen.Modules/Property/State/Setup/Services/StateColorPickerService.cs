@@ -1,6 +1,8 @@
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
 using Common.DiscreteColorPicker.Views;
+using System.Windows.Input;
+using System.Windows.Threading;
 using Vixen.Sys;
 using ColorProperty = VixenModules.Property.Color;
 
@@ -8,7 +10,30 @@ namespace VixenModules.Property.State.Setup.Services
 {
 	internal sealed class StateColorPickerService : IStateColorPickerService
 	{
-		public System.Drawing.Color? ChooseColor(IEnumerable<IElementNode> nodes, System.Drawing.Color initialColor)
+		public async Task<System.Drawing.Color?> ChooseColorAsync(IEnumerable<IElementNode> nodes, System.Drawing.Color initialColor)
+		{
+			await WaitForInitiatingMouseInputAsync();
+
+			return ChooseColor(nodes, initialColor);
+		}
+
+		private static async Task WaitForInitiatingMouseInputAsync()
+		{
+			while (Mouse.LeftButton == MouseButtonState.Pressed)
+			{
+				await Task.Delay(15);
+			}
+
+			var dispatcher = System.Windows.Application.Current?.Dispatcher;
+			if (dispatcher == null || dispatcher.HasShutdownStarted || dispatcher.HasShutdownFinished)
+			{
+				return;
+			}
+
+			await dispatcher.InvokeAsync(() => { }, DispatcherPriority.ContextIdle);
+		}
+
+		private static System.Drawing.Color? ChooseColor(IEnumerable<IElementNode> nodes, System.Drawing.Color initialColor)
 		{
 			ArgumentNullException.ThrowIfNull(nodes);
 
