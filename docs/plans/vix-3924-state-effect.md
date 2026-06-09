@@ -34,6 +34,8 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - [x] (2026-06-09 08:50 -05:00) Completed Milestone 9 validation. Focused State property and State effect tests passed, Debug and Release solution builds passed after removing a stale missing-GUID project dependency from `Vixen.sln`, and `git diff --check` passed. Full test suite still has two isolated xLights hierarchy naming failures outside the State effect scope.
 - [x] Run filtered validation commands, solution builds, `git diff --check`, record evidence, and update this plan's outcome sections.
 - [x] Resolve existing full-suite xLights hierarchy naming test failures outside VIX-3924.
+- [x] (2026-06-09 09:10 -05:00) Updated the VIX-3924 requirements and this ExecPlan for the new Iterate `Iterations` property requirement.
+- [ ] Implement Iterate `Iterations` persistence, editor property, browsability, render planning, and tests.
 
 ## Surprises & Discoveries
 
@@ -70,6 +72,9 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - Observation: The full `Vixen.Tests` suite has two xLights hierarchy naming failures outside the State effect scope.
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj` failed with `XModelImportHierarchyTests.Import_WithStateInfo_CreatesModelChildAndAttachesStateDefinitions` and `Import_WithoutStateInfo_CreatesModelChildWithoutStateDefinitions`, both expecting names such as `Snowman - Model {1}` while current output is `Snowman {1} - Model`.
 
+- Observation: The new Iterate `Iterations` requirement changes scheduling, not item matching or assignment resolution.
+  Evidence: The requirement says two states with `Iterations` set to `2` should play twice in the same effect timespan. Existing exact-name grouping, Mark Collection parsing, clipping, leaf expansion, and coalescing semantics remain valid; only the number of scheduled Iterate slots changes.
+
 ## Decision Log
 
 - Decision: Treat `StateDefinitionId` as the primary persisted selection and store `StatePropertyId` and `StateOwnerElementId` only as optional lookup accelerators.
@@ -96,6 +101,14 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
   Rationale: Mark Collection removal should be universal across effects and should not deviate from established Vixen patterns. Clearing the selected ID prevents a stale reference while still rendering nothing until the user chooses another collection.
   Date/Author: 2026-06-08 / Codex
 
+- Decision: Add `Iterations` as an Iterate-only property with default `1`, editor range `1` through `20`, and `SliderEditor`.
+  Rationale: The user explicitly requested the property to be enabled only for Iterate playback and to follow the existing slider pattern used by other effects. A default of `1` preserves all existing behavior until the user opts into additional repetitions.
+  Date/Author: 2026-06-09 / Codex
+
+- Decision: Apply `Iterations` by repeating the Iterate sequence inside the same total duration rather than lengthening the effect or mark.
+  Rationale: The requirement says two states with `Iterations = 2` should be played twice in the effect timespan. This means the time denominator becomes `uniqueNameCount * Iterations` for State Item `<All>` and `segmentCount * Iterations` for each Mark Collection mark.
+  Date/Author: 2026-06-09 / Codex
+
 ## Outcomes & Retrospective
 
 This plan has started implementation. The main remaining implementation risks are editor combo box behavior for missing selections, reliable unit-test construction of Vixen element trees and property attachments, and ensuring coalescing reduces intent count without changing ordering semantics. Record completed behavior, validation results, and any deferred gaps here after implementation milestones finish.
@@ -115,6 +128,8 @@ Milestone 7 is complete. The State effect now forces a custom timeline visual re
 Milestone 8 focused helper tests are complete. The test project now references the State effect project and includes tests for comma parsing, State Item interval planning, Mark Collection Default and Iterate planning, clipping, overlapping marks, and render segment coalescing. Broader integration coverage for discovery, editor option refresh, leaf expansion, discrete-color fallback, dirty invalidation, and full intent emission remains deferred.
 
 Milestone 9 validation is complete. Focused `Property.State` and `Effect.State` tests pass, the State effect project builds, Debug and Release solution builds pass, and `git diff --check` passes. The solution build initially failed because `Vixen.sln` had a stale `Vixen.Application` dependency on a missing project GUID; the invalid dependency was removed. The full test suite does not pass because two existing xLights hierarchy naming tests fail outside the State effect scope.
+
+The Iterate `Iterations` requirement reopens the plan for a small enhancement. The intended user-visible result is that selecting `Playback Mode = Iterate` shows an `Iterations` slider. Leaving it at `1` preserves the current behavior. Setting it above `1` repeats the same Iterate sequence within the existing effect or mark duration.
 
 ## Context and Orientation
 
@@ -283,6 +298,16 @@ If constructing real element nodes in unit tests is difficult, create narrowly s
 
 Milestone 9 validates and documents evidence. Run the commands in the `Concrete Steps` section. Record concise pass/fail evidence in `Artifacts and Notes`. If any command cannot run because of environment limitations, record the exact error and the reason in `Surprises & Discoveries`, then run the most focused command that can still prove behavior.
 
+Milestone 10 adds Iterate `Iterations`. Extend `src/Vixen.Modules/Effect/State/StateData.cs` with a persisted integer property named `Iterations` or `IterationCount` and default it to `1`. The effective value must be clamped or normalized to the inclusive range `1` through `20` when loaded so old data and malformed serialized data cannot produce zero or negative interval counts. Clone behavior must copy this value.
+
+In `src/Vixen.Modules/Effect/State/State.cs`, add a public property named `Iterations` with `[Value]`, `ProviderCategory("Config", 2)`, `ProviderDisplayName(@"Iterations")`, `ProviderDescription(...)`, `[PropertyEditor("SliderEditor")]`, `[NumberRange(1, 20, 1)]`, and a property order after `PlaybackMode`, such as `4`. The property must call `IsDirty = true` and `OnPropertyChanged()` when changed. Update `PlaybackMode` setter and `SetRenderSourceBrowsables()` or a new browsability helper so `Iterations` is visible only when `PlaybackMode == PlaybackMode.Iterate`. When `PlaybackMode` changes, refresh browsability with `TypeDescriptor.Refresh(this)`.
+
+Update `src/Vixen.Modules/Effect/State/StateRenderPlanner.cs` so Iterate planning accepts an iteration count. For State Item `<All>`, build the unique exact-name list exactly as before, then repeat that list `Iterations` times. Divide the full effect duration by `uniqueNameCount * Iterations`; the final slot consumes any remaining ticks. Every State item sharing the active name still renders together in definition order. Selecting one named State item still renders that selected name for the full duration in either playback mode, so `Iterations` does not affect selected-name mode.
+
+For Mark Collection Iterate mode, parse the mark text exactly as before, then repeat the parsed segment list `Iterations` times inside the clipped mark duration. Divide the clipped mark duration by `segmentCount * Iterations`; the final slot consumes any remaining ticks. Empty and unknown segments still consume their slots and render nothing. Default playback mode ignores `Iterations`.
+
+Update `src/Vixen.Tests/Effect/State` tests to cover State Item `<All>` with two unique names and `Iterations = 2`, Mark Collection Iterate with two recognized segments and `Iterations = 2`, unknown or empty Mark Collection segments consuming repeated timing shares, and the default `Iterations = 1` preserving existing interval behavior. Add editor/data tests as practical to verify the persisted default, clone behavior, range normalization, and Iterate-only browsability.
+
 ## Concrete Steps
 
 From repository root `C:\Dev\Vixen`, first inspect current status so unrelated user changes are not overwritten:
@@ -309,6 +334,16 @@ Implement Milestones 2 through 7. Keep changes localized to these expected files
     src/Vixen.Modules/Effect/State/StateMarkParser.cs
     src/Vixen.Modules/Effect/State/StateIntentBuilder.cs
     Vixen.sln, only if solution mappings are wrong
+
+For Milestone 10, also update these expected files:
+
+    docs/vix-3924-state-effect.md
+    docs/plans/vix-3924-state-effect.md
+    src/Vixen.Modules/Effect/State/StateData.cs
+    src/Vixen.Modules/Effect/State/State.cs
+    src/Vixen.Modules/Effect/State/StateRenderPlanner.cs
+    src/Vixen.Tests/Effect/State/StateRenderPlannerTests.cs
+    src/Vixen.Tests/Effect/State, adding focused editor or data tests if needed
 
 Delete `src/Vixen.Modules/Effect/State/TimingMode.cs` only after replacing all references. Do not delete generated `obj` files unless the user explicitly asks for cleanup; they are build artifacts but removing them is not necessary for implementing the feature.
 
@@ -344,15 +379,15 @@ Renaming a selected State definition does not break the effect because the selec
 
 When no State definitions are available, the `State` combo options contain `<No States Available>` and rendering produces no intents.
 
-The editor exposes properties in this order: `State`, `Render Source`, `State Item` or `Mark Collection`, and `Playback Mode`. `Playback Mode` remains visible for both render sources. Hidden render-source selections are retained.
+The editor exposes properties in this order: `State`, `Render Source`, `State Item` or `Mark Collection`, `Playback Mode`, and `Iterations` when applicable. `Playback Mode` remains visible for both render sources. `Iterations` is visible only in Iterate playback mode. Hidden render-source selections are retained.
 
 Changing State definition refreshes State Item options, preserves a matching selected name when possible, otherwise selects `<All>`. `<All>` is first and unique State item names follow first-row order.
 
 A renamed selected State item anchor remains selected by ID, displays the new name, and renders every item with that new exact name. A removed selected anchor is retained as missing and renders nothing until corrected or changed to `<All>`.
 
-State Item Default and Iterate modes satisfy all VIX-3924 timing and duplicate-name requirements.
+State Item Default and Iterate modes satisfy all VIX-3924 timing, duplicate-name, and `Iterations` requirements.
 
-Mark Collection Default and Iterate modes satisfy all VIX-3924 parsing, clipping, gap, overlap, case-sensitive matching, repeated-name, unknown-name, and empty-segment requirements.
+Mark Collection Default and Iterate modes satisfy all VIX-3924 parsing, clipping, gap, overlap, case-sensitive matching, repeated-name, unknown-name, empty-segment, and `Iterations` requirements.
 
 Rendering affects only State item assignments, expands assigned groups to current leaf nodes during each render pass, skips deleted assignments, preserves State item order for overlaps, uses discrete-color fallback per leaf, and adds no intents when nothing is active.
 
@@ -367,8 +402,8 @@ Manual acceptance is met with this scenario:
 3. Add the State effect to the prop's model group.
 4. Confirm the Effect Editor shows the expected controls and defaults to the first State definition, `State Item`, and `Default` playback.
 5. Select `<All>` and render/play the sequence. Confirm all assigned leaves for the selected State definition activate with configured or fallback colors for the full effect duration.
-6. Change `Playback Mode` to `Iterate` and confirm unique State item names activate sequentially.
-7. Switch to `Mark Collection`, choose a collection with marks such as `Open, Closed, Open`, and confirm Default renders recognized names together per mark while Iterate renders each segment share in order.
+6. Change `Playback Mode` to `Iterate`, set `Iterations` to `2`, and confirm unique State item names activate sequentially twice within the effect duration.
+7. Switch to `Mark Collection`, choose a collection with marks such as `Open, Closed`, set `Iterations` to `2`, and confirm Default renders recognized names together per mark while Iterate renders `Open`, `Closed`, `Open`, `Closed` within the clipped mark duration.
 8. Rename the selected State definition in Display Setup, reopen the sequence, and confirm the effect remains selected and still renders.
 9. Delete the selected State definition, reopen the sequence, and confirm the effect renders nothing and shows the missing selection until corrected.
 
@@ -402,6 +437,20 @@ Record Jira update evidence and validation transcripts here as implementation pr
 
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State"
     Passed!  - Failed: 0, Passed: <N>, Skipped: 0, Total: <N>
+
+Milestone 10 expected validation after implementation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State"
+    Expected: Passed with new Iterations tests included.
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Property.State"
+    Expected: Passed, because the State effect must remain compatible with State property behavior.
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Expected: Build succeeded with zero State effect errors.
+
+    git diff --check
+    Expected: no whitespace errors; local CRLF normalization warnings are acceptable if the command exits successfully.
 
 Milestone 2 validation:
 
@@ -529,6 +578,7 @@ At completion, `src/Vixen.Modules/Effect/State/StateData.cs` must expose and clo
     Guid SelectedStateItemId
     Guid MarkCollectionId
     PlaybackMode PlaybackMode
+    int Iterations
 
 At completion, `src/Vixen.Modules/Effect/State/State.cs` must expose these editor-facing properties with XML docs if public:
 
@@ -537,6 +587,7 @@ At completion, `src/Vixen.Modules/Effect/State/State.cs` must expose these edito
     string StateItem { get; set; }
     string MarkCollectionId { get; set; }
     PlaybackMode PlaybackMode { get; set; }
+    int Iterations { get; set; }
 
 The helper types should remain internal unless the Effect Editor requires public visibility. If any helper becomes public, add XML docs immediately per `.agents/skills/csharp-docs/SKILL.md`.
 
@@ -555,3 +606,4 @@ The helper types should remain internal unless the Effect Editor requires public
 - 2026-06-08 / Codex: Completed Milestone 7 by adding the CustomValue-style dark gray and white `State` timeline visual representation.
 - 2026-06-09 / Codex: Completed Milestone 8 focused helper tests and fixed coalescing so only immediately adjacent emitted segments can merge.
 - 2026-06-09 / Codex: Completed Milestone 9 validation, removed a stale missing-GUID solution dependency that blocked solution builds, and recorded remaining full-suite xLights naming test failures outside the State effect scope.
+- 2026-06-09 / Codex: Added the Iterate `Iterations` requirement to the requirements document and this ExecPlan, including editor behavior, persisted data, render planning semantics, test coverage, and acceptance criteria.

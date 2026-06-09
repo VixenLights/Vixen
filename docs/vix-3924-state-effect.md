@@ -66,11 +66,16 @@ definition statically or drive them from a Mark Collection over time.
 ### Effect Editor
 
 - The State effect must be editable through the standard Effect Editor.
-- Controls appear in this order: `State`, `Render Source`, `State Item` or `Mark Collection`, and `Playback Mode`.
+- Controls appear in this order: `State`, `Render Source`, `State Item` or `Mark Collection`, `Playback Mode`, and
+  `Iterations` when it is applicable.
 - `State` is a combo box that lists discovered State definitions.
 - `Render Source` offers `State Item` and `Mark Collection`.
 - `Playback Mode` offers `Default` and `Iterate`.
 - `Playback Mode` remains visible for both render sources.
+- `Iterations` is an integer property that is visible and enabled only when `Playback Mode` is `Iterate`.
+- `Iterations` defaults to `1`, has an allowed range of `1` through `20`, and uses the standard `SliderEditor` pattern used
+  by other numeric effect properties.
+- When `Playback Mode` is `Default`, `Iterations` is hidden and has no effect on rendering.
 - When `Render Source` is `State Item`, the State Item combo box is visible and the Mark Collection combo box is hidden.
 - When `Render Source` is `Mark Collection`, the Mark Collection combo box is visible and the State Item combo box is
   hidden.
@@ -87,7 +92,7 @@ definition statically or drive them from a Mark Collection over time.
   renders nothing.
 - The State Item combo box lists `<All>` first, followed by each unique State item name once in first-State-definition-row
   order.
-- A newly added State effect defaults to the `State Item` render source and `Default` playback mode.
+- A newly added State effect defaults to the `State Item` render source, `Default` playback mode, and `Iterations` value `1`.
 
 ### Mark Collection Integration
 
@@ -111,8 +116,10 @@ definition statically or drive them from a Mark Collection over time.
 - State Item selection operates on unique State item names within the selected State definition.
 - Selecting one name activates every State item with that exact name.
 - Selecting `<All>` in `Default` mode activates every State item simultaneously for the full effect duration.
-- Selecting `<All>` in `Iterate` mode activates each unique State item name sequentially in State definition order. Each unique
-  name receives an equal share of the full effect duration, and all rows with that name activate together.
+- Selecting `<All>` in `Iterate` mode activates each unique State item name sequentially in State definition order. The full
+  sequence repeats `Iterations` times within the effect duration. Each repeated name slot receives an equal share of the full
+  effect duration, and all rows with that name activate together. For example, if `<All>` contains `Open` and `Closed` and
+  `Iterations` is `2`, the effect plays `Open`, `Closed`, `Open`, `Closed` across the effect duration.
 - Selecting one name in either playback mode activates every matching State item for the full effect duration.
 
 ### Mark Collection Render Source
@@ -125,8 +132,9 @@ definition statically or drive them from a Mark Collection over time.
 - Empty segments and unknown names are preserved as segments but render nothing.
 - In `Default` mode, recognized names are compacted to a distinct set and are active simultaneously for the mark duration.
   Empty segments and unknown names are ignored. Each same-named State item renders once.
-- In `Iterate` mode, every comma-delimited segment receives an equal share of the mark duration. Recognized names render in
-  the listed order. Empty segments and unknown names consume their share of time but render nothing.
+- In `Iterate` mode, every comma-delimited segment receives an equal share of the mark duration after applying `Iterations`.
+  The full comma-delimited segment list repeats `Iterations` times within each clipped mark duration. Recognized names render
+  in the listed order on each repetition. Empty segments and unknown names consume their share of time but render nothing.
 - Repeated names remain significant in `Iterate` mode. For example, `Open, Closed, Open` produces an `Open` interval, a
   `Closed` interval, and another `Open` interval.
 - Gaps between marks render nothing. The user can close mark gaps in the existing Marks user interface when desired.
@@ -187,9 +195,11 @@ definition statically or drive them from a Mark Collection over time.
   definition ID retention, missing-definition rendering suppression, and the no-State placeholder.
 - Add tests for Effect Editor option generation and fallback behavior without automating the visual editor itself.
 - Add tests for State Item `Default` and `Iterate` behavior, including `<All>`, duplicate names, overlaps, renamed selected
-  anchors, removed selected anchors, and empty State definitions.
+  anchors, removed selected anchors, empty State definitions, and `Iterations` values from `1` through at least one value
+  greater than `1`.
 - Add tests for mark parsing, whitespace trimming, case sensitivity, unknown names, empty segments, `Default` mode
-  de-duplication, `Iterate` mode repeated names, gaps, overlapping marks, and clipping to effect boundaries.
+  de-duplication, `Iterate` mode repeated names, Iterate `Iterations`, gaps, overlapping marks, and clipping to effect
+  boundaries.
 - Add tests for leaf expansion at render time, deleted assignments, changed group membership, overlapping State items, and
   intent ordering.
 - Add tests for discrete-color fallback and leaves with no supported colors.
