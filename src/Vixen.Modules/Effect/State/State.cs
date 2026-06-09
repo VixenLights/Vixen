@@ -60,7 +60,7 @@ namespace VixenModules.Effect.State
 		#region Visual Representation
 
 		/// <inheritdoc />
-		public override bool ForceGenerateVisualRepresentation => true;
+		public override bool ForceGenerateVisualRepresentation => _data.ShowEffectVisual;
 
 		/// <inheritdoc />
 		public override void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
@@ -74,14 +74,16 @@ namespace VixenModules.Effect.State
 					"Vixen.Fonts.DigitalDream.ttf",
 					48);
 
+				var text = $"{VisualRepresentationText} - {StateDefinition}";
+
 				using (var stringBrush = new SolidBrush(Color.White))
 				{
 					using (var backgroundBrush = new SolidBrush(Color.DarkGray))
 					{
 						g.FillRectangle(backgroundBrush, clipRectangle);
 					}
-
-					g.DrawString(VisualRepresentationText, adjustedFont, stringBrush, clipRectangle.X + 2, 2);
+				
+					g.DrawString(text, adjustedFont, stringBrush, clipRectangle.X + 2, 2);
 				}
 			}
 			catch (Exception exception)
@@ -101,7 +103,7 @@ namespace VixenModules.Effect.State
 		[Value]
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"State")]
-		[ProviderDescription(@"Selects the State definition to render.")]
+		[ProviderDescription(@"StateDefinition")]
 		[TypeConverter(typeof(StateDefinitionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[PropertyOrder(0)]
@@ -144,8 +146,8 @@ namespace VixenModules.Effect.State
 		/// <value>The selected State item display label.</value>
 		[Value]
 		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"State Item")]
-		[ProviderDescription(@"Selects the State item name to render.")]
+		[ProviderDisplayName(@"StateItem")]
+		[ProviderDescription(@"StateItem")]
 		[TypeConverter(typeof(StateItemNameConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[PropertyOrder(2)]
@@ -248,8 +250,8 @@ namespace VixenModules.Effect.State
 		/// <value>One of the enumeration values that specifies the State item render source.</value>
 		[Value]
 		[ProviderCategory("Config", 2)]
-		[ProviderDisplayName(@"Render Source")]
-		[ProviderDescription(@"Selects how active State items are determined.")]
+		[ProviderDisplayName(@"StateRenderSource")]
+		[ProviderDescription(@"StateRenderSource")]
 		[PropertyOrder(1)]
 		public StateRenderSource RenderSource
 		{
@@ -284,8 +286,8 @@ namespace VixenModules.Effect.State
 		/// <value>One of the enumeration values that specifies the playback behavior.</value>
 		[Value]
 		[ProviderCategory("Config", 2)]
-		[ProviderDisplayName(@"Playback Mode")]
-		[ProviderDescription(@"Selects how multiple active State item names are scheduled.")]
+		[ProviderDisplayName(@"StatePlaybackMode")]
+		[ProviderDescription(@"StatePlaybackMode")]
 		[PropertyOrder(3)]
 		public PlaybackMode PlaybackMode
 		{
@@ -300,6 +302,32 @@ namespace VixenModules.Effect.State
 				_data.PlaybackMode = value;
 				IsDirty = true;
 				OnPropertyChanged();
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the playback behavior used when multiple State item names are active.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the playback behavior.</value>
+		[Value]
+		[ProviderCategory("EffectVisual", 10)]
+		[ProviderDisplayName(@"EffectVisual")]
+		[ProviderDescription(@"EffectVisual.")]
+		[PropertyOrder(3)]
+		public bool ShowEffectVisual
+		{
+			get => _data.ShowEffectVisual;
+			set
+			{
+				if (_data.ShowEffectVisual == value)
+				{
+					return;
+				}
+
+				_data.ShowEffectVisual = value;
+				IsDirty = true;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(ForceGenerateVisualRepresentation));
 			}
 		}
 

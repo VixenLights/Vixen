@@ -1395,4 +1395,16 @@
   <data name="MeteorsGroundLevel" xml:space="preserve">
     <value>Ground Level</value>
   </data>
+  <data name="StateItem" xml:space="preserve">
+    <value>State Item</value>
+  </data>
+  <data name="StateRenderSource" xml:space="preserve">
+    <value>Render Source</value>
+  </data>
+  <data name="StatePlaybackMode" xml:space="preserve">
+    <value>Playback Mode</value>
+  </data>
+  <data name="EffectVisual" xml:space="preserve">
+    <value>Effect Timeline Visual</value>
+  </data>
 </root>

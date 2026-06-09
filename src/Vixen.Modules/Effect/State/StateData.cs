@@ -58,6 +58,12 @@ namespace VixenModules.Effect.State
 		[DataMember]
 		public PlaybackMode PlaybackMode { get; set; } = PlaybackMode.Default;
 		
+		/// <summary>
+		/// Gets or sets whether the timeline renders the full visual or text
+		/// </summary>
+		[DataMember]
+		public bool ShowEffectVisual { get; set; } = true;
+		
 		#region Overrides of EffectTypeModuleData
 
 		protected override EffectTypeModuleData CreateInstanceForClone()

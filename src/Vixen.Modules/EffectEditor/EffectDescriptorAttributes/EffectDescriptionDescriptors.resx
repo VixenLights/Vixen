@@ -1464,6 +1464,21 @@
   <data name="PatternPatternType" xml:space="preserve">
     <value>Selects the pattern (Weave or Brick) to animate.</value>
   </data>
+  <data name="StateDefinition" xml:space="preserve">
+    <value>Selects the State definition to render.</value>
+  </data>
+  <data name="StateItem" xml:space="preserve">
+    <value>Selects the State item name to render.</value>
+  </data>
+  <data name="StateRenderSource" xml:space="preserve">
+    <value>Selects how active State items are determined.</value>
+  </data>
+  <data name="StatePlaybackMode" xml:space="preserve">
+    <value>Selects how multiple active State item names are scheduled.</value>
+  </data>
+  <data name="EffectVisual" xml:space="preserve">
+    <value>How the Effects rendering will appear in the Seqencer Timeline. Default render or text.</value>
+  </data>
   <data name="SpirographSpeed" xml:space="preserve">
     <value>Controls how quickly the spirograph pattern rotates and advances over the effect duration.</value>
   </data>
