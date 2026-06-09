@@ -6,6 +6,7 @@ using Xunit;
 
 namespace Vixen.Tests.LivePreview
 {
+	[Collection("Broadcast tests")]
 	public class BroadcastChannelTests
 	{
 		[Fact]

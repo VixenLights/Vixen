@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Vixen.Tests.Property.State;
 
+[Collection("Broadcast tests")]
 public sealed class BroadcastStatePreviewPublisherTests
 {
 	[Fact]

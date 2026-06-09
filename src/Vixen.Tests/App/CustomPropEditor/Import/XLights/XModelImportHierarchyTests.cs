@@ -26,12 +26,12 @@ public class XModelImportHierarchyTests
 		Assert.Equal("Santa Waving {1}", prop.Name);
 
 		var rootChildren = prop.RootNode.Children.Select(child => child.Name).ToList();
-		Assert.Contains("Santa Waving - Model {1}", rootChildren);
+		Assert.Contains("Santa Waving {1} - Model", rootChildren);
 		Assert.Contains("Santa Waving {1} - Arm", rootChildren);
 		Assert.Contains("Santa Waving {1} - Faces ", rootChildren);
 		Assert.Contains("Santa Waving {1} - States ", rootChildren);
 
-		var modelGroup = prop.RootNode.Children.Single(child => child.Name == "Santa Waving - Model {1}");
+		var modelGroup = prop.RootNode.Children.Single(child => child.Name == "Santa Waving {1} - Model");
 		Assert.Equal([1, 2, 3], modelGroup.Children.Select(child => child.Order).Order());
 
 		var importedStateDefinition = Assert.Single(modelGroup.StateDefinitions);
@@ -63,7 +63,7 @@ public class XModelImportHierarchyTests
 
 		// Assert
 		var modelGroup = Assert.Single(prop.RootNode.Children);
-		Assert.Equal("Snowman - Model {1}", modelGroup.Name);
+		Assert.Equal("Snowman {1} - Model", modelGroup.Name);
 		Assert.Empty(modelGroup.StateDefinitions);
 		Assert.DoesNotContain(prop.RootNode.Children, child => child.Name.Contains("States"));
 		Assert.Equal([1, 2], modelGroup.Children.Select(child => child.Order).Order());
