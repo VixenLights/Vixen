@@ -135,6 +135,22 @@ This document replaces the earlier phase outline and is intended to be detailed 
   displayed State Item order for the selected State definition. Reopening the setup dialog must show State Items in that
   saved sorted order.
 - Persisting a sorted State Item order must not change State item stable IDs, names, colors, or assignments.
+- The setup dialog must also allow the user to manually reorder State Items when column sorting cannot express the desired
+  order.
+- Manual reorder must use a common list reordering mechanism: icon-only Move Up and Move Down buttons beside the State Item
+  list. Drag-and-drop is not required for this requirement.
+- The Move Up button must use `src\Vixen.Common\Resources\arrow_up.png`, the Move Down button must use
+  `src\Vixen.Common\Resources\arrow_down.png`, and both buttons must include tooltips that describe the action.
+- Move Up and Move Down operate on the selected State Item row and move it one position at a time within the selected State
+  definition.
+- Move Up must be disabled when no row is selected, the selected row is first, or the row is not in the selected State
+  definition. Move Down must be disabled when no row is selected, the selected row is last, or the row is not in the
+  selected State definition.
+- Manual reorder must preserve the selected row, keep it visible where practical, and must not change State item stable IDs,
+  names, colors, or assignments.
+- Saving and reopening the setup dialog must show State Items in the manually reordered order.
+- Manual reorder must update State Item Group preview choices in first-grid-appearance order. If Preview is enabled, moving a
+  row must refresh the active preview once after the move.
 - OK must remain disabled while the selected State definition or any State definition in the container has a blocking
   validation error.
 - Cancel and window close must remain available and must discard draft edits.
@@ -286,6 +302,7 @@ reference.
 - Case-only State definition name differences produce a non-blocking warning and do not disable OK.
 - State definitions remain in creation order after add, copy, rename, and delete operations.
 - Sorting the State Item grid and saving persists the displayed row order within that State definition.
+- Moving State Items up or down and saving persists the displayed row order within that State definition.
 - Switching State definitions is blocked while the current definition has blocking validation errors.
 - Switching State definitions while Preview is on clears and re-renders the `"State Preview"` context.
 - Preview behavior remains scoped to the selected State definition.
@@ -325,7 +342,10 @@ reference.
 8. Delete a State definition and confirm the next or previous definition is selected.
 9. Attempt to delete the last remaining State definition and confirm the UI prevents it.
 10. Sort the State Item grid by Name, save, and reopen the setup dialog. Confirm the sorted row order is preserved.
-11. Save and reopen the setup dialog. Confirm State definitions, descriptions, State items, colors, assignments, and order
+11. Select a middle State Item row and use Move Up and Move Down to create a custom non-sorted order. Save and reopen the
+    setup dialog. Confirm the manually reordered row order is preserved and that colors and assignments remain on the same
+    State item IDs.
+12. Save and reopen the setup dialog. Confirm State definitions, descriptions, State items, colors, assignments, and order
     persisted correctly.
 
 ### Preview Across State Definitions

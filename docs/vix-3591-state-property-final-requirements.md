@@ -22,7 +22,7 @@ State effect itself is out of scope for VIX-3591.
 
 - Add a `State` property module that can be attached to a Display Setup element.
 - Store State data as one property container with one or more State definitions.
-- Let users add, delete, rename, copy, edit, validate, sort, and preview State definitions in Display Setup.
+- Let users add, delete, rename, copy, edit, validate, sort, manually reorder, and preview State definitions in Display Setup.
 - Persist stable IDs so future effects can reference State definitions across rename and edit operations.
 - Import xLights `StateInfo` into the same State Property model.
 - Import xLights `CustomModel` and `CustomModelCompressed` as alternate encodings of the same model data.
@@ -104,6 +104,19 @@ State effect itself is out of scope for VIX-3591.
 - The Count column shows the effective assigned leaf count.
 - Sorting the State item grid by a column header and saving persists the displayed row order for that State definition.
 - Persisting sorted order must not change State item IDs, names, colors, or assignments.
+- Users can manually reorder State item rows when column sorting cannot express the desired order.
+- Manual reorder uses common list reordering controls: icon-only Move Up and Move Down buttons next to the State item list,
+  bound to commands that move the selected row one position at a time.
+- The Move Up button uses `src\Vixen.Common\Resources\arrow_up.png`, the Move Down button uses
+  `src\Vixen.Common\Resources\arrow_down.png`, and both buttons must provide clear tooltips.
+- Move Up is disabled when no row is selected, the selected row is the first row, or the selected row is not part of the
+  selected State definition.
+- Move Down is disabled when no row is selected, the selected row is the last row, or the selected row is not part of the
+  selected State definition.
+- Manual reorder must keep the moved row selected and visible, must preserve State item stable IDs, names, colors, and
+  assignments, and must persist after OK/save and reopen.
+- Manual reorder updates State Item Group preview choices in the new first-grid-appearance order. If Preview is on, the
+  active preview refreshes once after the move.
 
 ### Assignment Tree
 
@@ -128,7 +141,7 @@ State effect itself is out of scope for VIX-3591.
 - State Item Group mode previews all exact-name matches for a named group, or all rows when `<ALL>` is selected.
 - Case-different State item names remain separate group choices.
 - The State Item Group combo contains `<ALL>` plus distinct State item names in first-grid-appearance order.
-- Group choices update after State item add, remove, rename, and persisted sort-order changes.
+- Group choices update after State item add, remove, rename, sorted-order changes, and manual reorder changes.
 - Changing group selection refreshes preview when Preview is on.
 - Changing row selection does not affect preview while in State Item Group mode.
 - Assignment and color edits refresh preview for active State items only.
@@ -228,6 +241,8 @@ State effect itself is out of scope for VIX-3591.
 - Cancel and window close discard draft edits.
 - State item sorting persists after save/reopen.
 - Sorted persistence preserves IDs, names, colors, and assignments.
+- State item manual reorder with Move Up and Move Down persists after save/reopen.
+- Manual reorder preservation keeps IDs, names, colors, and assignments.
 
 ### Assignment And Preview
 
@@ -298,6 +313,8 @@ Automated coverage must include:
 - Non-blocking warnings do not disable OK.
 - State item grid sorted order persists after save.
 - Sorted order preservation keeps item IDs, colors, and assignments.
+- State item Move Up and Move Down command availability, selection retention, persisted order, and ID/assignment
+  preservation.
 - Assignment tree group selection, descendant clearing, disabling, effective leaf counts, and selected-row expansion.
 - Preview coordinator pair diffing, duplicate pair deduplication, multi-color same-element repair, clear, and release.
 - Mapper preview defaults, selected-row mode, group mode, group list ordering, group fallback, inactive-row suppression, inactive-definition suppression, and State definition switch behavior.
@@ -329,7 +346,8 @@ Tests must use embedded minimal mocked data based on sample files. They must not
 6. Confirm one State definition exists and is selected.
 7. Confirm the State definition has a valid generated name.
 8. Add State item rows, edit names inline, assign colors, and select assignments.
-9. Save, reopen, and confirm descriptions, rows, colors, assignments, counts, and order persisted.
+9. Select a middle State item row, use Move Up and Move Down to create a non-sorted custom order, save, reopen, and confirm
+   descriptions, rows, colors, assignments, counts, and manual order persisted.
 10. Make additional edits, press Cancel, reopen, and confirm canceled edits were discarded.
 
 ### Validation
@@ -352,6 +370,8 @@ Tests must use embedded minimal mocked data based on sample files. They must not
 5. Delete the selected definition and confirm the next or previous definition is selected.
 6. Attempt to delete the final remaining definition and confirm the UI prevents it.
 7. Sort the State item grid by Name, save, reopen, and confirm the displayed sorted order persisted.
+8. Select a State item row and use Move Up and Move Down to create an order that is not alphabetical or count-sorted. Save,
+   reopen, and confirm the manual row order persisted without changing colors or assignments.
 
 ### Assignment Tree
 
