@@ -9,6 +9,7 @@ namespace VixenModules.Effect.State
 			StateDefinitionData? definition,
 			Guid selectedStateItemId,
 			PlaybackMode playbackMode,
+			int iterations,
 			TimeSpan effectDuration)
 		{
 			if (definition == null || effectDuration <= TimeSpan.Zero)
@@ -29,7 +30,7 @@ namespace VixenModules.Effect.State
 
 			return playbackMode switch
 			{
-				PlaybackMode.Iterate => CreateIteratedIntervals(items, effectDuration),
+				PlaybackMode.Iterate => CreateIteratedIntervals(items, iterations, effectDuration),
 				_ => CreateDefaultIntervals(items, effectDuration)
 			};
 		}
@@ -38,6 +39,7 @@ namespace VixenModules.Effect.State
 			StateDefinitionData? definition,
 			IEnumerable<IMark> marks,
 			PlaybackMode playbackMode,
+			int iterations,
 			TimeSpan effectStart,
 			TimeSpan effectDuration)
 		{
@@ -71,7 +73,7 @@ namespace VixenModules.Effect.State
 				var names = StateMarkParser.ParseStateItemNames(mark.Text);
 				if (playbackMode == PlaybackMode.Iterate)
 				{
-					AddIteratedMarkIntervals(intervals, itemGroups, names, intervalStart, intervalDuration);
+					AddIteratedMarkIntervals(intervals, itemGroups, names, iterations, intervalStart, intervalDuration);
 				}
 				else
 				{
@@ -110,6 +112,7 @@ namespace VixenModules.Effect.State
 
 		private static IReadOnlyList<StateRenderInterval> CreateIteratedIntervals(
 			IReadOnlyList<StateItemData> items,
+			int iterations,
 			TimeSpan effectDuration)
 		{
 			var orderedNames = GetUniqueStateItemNames(items);
@@ -120,11 +123,14 @@ namespace VixenModules.Effect.State
 
 			var intervals = new List<StateRenderInterval>();
 			var intervalStart = TimeSpan.Zero;
+			var normalizedIterations = StateData.NormalizeIterations(iterations);
+			var intervalCount = orderedNames.Count * normalizedIterations;
 
-			for (var index = 0; index < orderedNames.Count; index++)
+			for (var index = 0; index < intervalCount; index++)
 			{
-				var duration = GetIntervalDuration(effectDuration, orderedNames.Count, index, intervalStart);
-				foreach (var item in items.Where(item => item.Name.Equals(orderedNames[index], StringComparison.Ordinal)))
+				var duration = GetIntervalDuration(effectDuration, intervalCount, index, intervalStart);
+				var name = orderedNames[index % orderedNames.Count];
+				foreach (var item in items.Where(item => item.Name.Equals(name, StringComparison.Ordinal)))
 				{
 					intervals.Add(new StateRenderInterval(item, intervalStart, duration));
 				}
@@ -191,6 +197,7 @@ namespace VixenModules.Effect.State
 			ICollection<StateRenderInterval> intervals,
 			IReadOnlyDictionary<string, List<StateItemData>> itemGroups,
 			IReadOnlyList<string> names,
+			int iterations,
 			TimeSpan intervalStart,
 			TimeSpan intervalDuration)
 		{
@@ -200,10 +207,13 @@ namespace VixenModules.Effect.State
 			}
 
 			var segmentStart = intervalStart;
-			for (var index = 0; index < names.Count; index++)
+			var normalizedIterations = StateData.NormalizeIterations(iterations);
+			var segmentCount = names.Count * normalizedIterations;
+			for (var index = 0; index < segmentCount; index++)
 			{
-				var segmentDuration = GetIntervalDuration(intervalDuration, names.Count, index, segmentStart - intervalStart);
-				if (!string.IsNullOrEmpty(names[index]) && itemGroups.TryGetValue(names[index], out var items))
+				var segmentDuration = GetIntervalDuration(intervalDuration, segmentCount, index, segmentStart - intervalStart);
+				var name = names[index % names.Count];
+				if (!string.IsNullOrEmpty(name) && itemGroups.TryGetValue(name, out var items))
 				{
 					foreach (var item in items)
 					{

@@ -28,6 +28,7 @@ namespace VixenModules.Effect.State
 		public State()
 		{
 			_data = new StateData();
+			SetRenderSourceBrowsables();
 		}
 
 		#region Overrides of EffectModuleInstanceBase
@@ -289,6 +290,7 @@ namespace VixenModules.Effect.State
 		[ProviderDisplayName(@"StatePlaybackMode")]
 		[ProviderDescription(@"StatePlaybackMode")]
 		[PropertyOrder(3)]
+		[RefreshProperties(RefreshProperties.All)]
 		public PlaybackMode PlaybackMode
 		{
 			get => _data.PlaybackMode;
@@ -300,6 +302,35 @@ namespace VixenModules.Effect.State
 				}
 
 				_data.PlaybackMode = value;
+				SetRenderSourceBrowsables();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the number of times the active State item sequence repeats in Iterate playback mode.
+		/// </summary>
+		/// <value>The number of Iterate playback repetitions. The default is 1.</value>
+		[Value]
+		[ProviderCategory("Config", 2)]
+		[ProviderDisplayName(@"Iterations")]
+		[ProviderDescription(@"Iterations")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(StateData.MinIterations, StateData.MaxIterations, 1)]
+		[PropertyOrder(4)]
+		public int Iterations
+		{
+			get => _data.Iterations;
+			set
+			{
+				var normalizedValue = StateData.NormalizeIterations(value);
+				if (_data.Iterations == normalizedValue)
+				{
+					return;
+				}
+
+				_data.Iterations = normalizedValue;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -369,6 +400,7 @@ namespace VixenModules.Effect.State
 					selectedDefinition,
 					marks,
 					PlaybackMode,
+					Iterations,
 					StartTime,
 					TimeSpan);
 			}
@@ -377,6 +409,7 @@ namespace VixenModules.Effect.State
 				selectedDefinition,
 				_data.SelectedStateItemId,
 				PlaybackMode,
+				Iterations,
 				TimeSpan);
 		}
 
@@ -682,7 +715,8 @@ namespace VixenModules.Effect.State
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
 			{
 				{nameof(StateItem), RenderSource == StateRenderSource.StateItem},
-				{nameof(MarkCollectionId), RenderSource == StateRenderSource.MarkCollection}
+				{nameof(MarkCollectionId), RenderSource == StateRenderSource.MarkCollection},
+				{nameof(Iterations), PlaybackMode == PlaybackMode.Iterate}
 			};
 
 			SetBrowsable(propertyStates);

@@ -35,7 +35,7 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 - [x] Run filtered validation commands, solution builds, `git diff --check`, record evidence, and update this plan's outcome sections.
 - [x] Resolve existing full-suite xLights hierarchy naming test failures outside VIX-3924.
 - [x] (2026-06-09 09:10 -05:00) Updated the VIX-3924 requirements and this ExecPlan for the new Iterate `Iterations` property requirement.
-- [ ] Implement Iterate `Iterations` persistence, editor property, browsability, render planning, and tests.
+- [x] (2026-06-09 15:35 -05:00) Implemented Iterate `Iterations` persistence, editor property, browsability, render planning, and focused tests.
 
 ## Surprises & Discoveries
 
@@ -147,7 +147,7 @@ The partial implementation has these important current files:
 
 `src/Vixen.Modules/Effect/State/State.cs` currently exposes `RenderSource` and `MarkCollectionId`, creates `_elementData`, and has an empty `RenderNodes` method. Later milestones add State definition and State item editor properties plus rendering behavior.
 
-`src/Vixen.Modules/Effect/State/StateData.cs` now stores the selected State definition ID, containing State property ID, owner element ID, render source, selected State item ID, Mark Collection ID, and playback mode.
+`src/Vixen.Modules/Effect/State/StateData.cs` now stores the selected State definition ID, containing State property ID, owner element ID, render source, selected State item ID, Mark Collection ID, playback mode, and Iterate iterations.
 
 `src/Vixen.Modules/Effect/State/PlaybackMode.cs` already has `Default` and `Iterate`, matching the required playback modes.
 
@@ -452,6 +452,20 @@ Milestone 10 expected validation after implementation:
     git diff --check
     Expected: no whitespace errors; local CRLF normalization warnings are acceptable if the command exits successfully.
 
+Milestone 10 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State"
+    Passed!  - Failed: 0, Passed: 21, Skipped: 0, Total: 21
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded with existing warnings only.
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Property.State"
+    Passed!  - Failed: 0, Passed: 73, Skipped: 0, Total: 73
+
+    git diff --check
+    Exited successfully. Git printed expected CRLF normalization warnings; no whitespace errors were reported.
+
 Milestone 2 validation:
 
     dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
@@ -607,3 +621,4 @@ The helper types should remain internal unless the Effect Editor requires public
 - 2026-06-09 / Codex: Completed Milestone 8 focused helper tests and fixed coalescing so only immediately adjacent emitted segments can merge.
 - 2026-06-09 / Codex: Completed Milestone 9 validation, removed a stale missing-GUID solution dependency that blocked solution builds, and recorded remaining full-suite xLights naming test failures outside the State effect scope.
 - 2026-06-09 / Codex: Added the Iterate `Iterations` requirement to the requirements document and this ExecPlan, including editor behavior, persisted data, render planning semantics, test coverage, and acceptance criteria.
+- 2026-06-09 / Codex: Implemented Milestone 10 by adding persisted clamped `Iterations`, Iterate-only SliderEditor visibility, repeated State Item and Mark Collection interval planning, and focused data/render-planner tests.

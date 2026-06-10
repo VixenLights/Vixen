@@ -9,6 +9,11 @@ namespace VixenModules.Effect.State
 	[DataContract]
 	public sealed class StateData: EffectTypeModuleData
 	{
+		internal const int MinIterations = 1;
+		internal const int MaxIterations = 20;
+
+		private int _iterations = MinIterations;
+
 		/// <summary>
 		/// Gets or sets the stable identifier of the selected State definition.
 		/// </summary>
@@ -57,6 +62,17 @@ namespace VixenModules.Effect.State
 		/// <value>One of the enumeration values that specifies the playback behavior. The default is <see cref="PlaybackMode.Default" />.</value>
 		[DataMember]
 		public PlaybackMode PlaybackMode { get; set; } = PlaybackMode.Default;
+
+		/// <summary>
+		/// Gets or sets the number of times the active State item sequence repeats in Iterate playback mode.
+		/// </summary>
+		/// <value>The number of Iterate playback repetitions. The default is 1.</value>
+		[DataMember]
+		public int Iterations
+		{
+			get => NormalizeIterations(_iterations);
+			set => _iterations = NormalizeIterations(value);
+		}
 		
 		/// <summary>
 		/// Gets or sets whether the timeline renders the full visual or text
@@ -76,12 +92,16 @@ namespace VixenModules.Effect.State
 				RenderSource = RenderSource,
 				SelectedStateItemId = SelectedStateItemId,
 				MarkCollectionId = MarkCollectionId,
-				PlaybackMode = PlaybackMode
+				PlaybackMode = PlaybackMode,
+				Iterations = Iterations
 			};
 
 			return result;
 		}
 
 		#endregion
+
+		internal static int NormalizeIterations(int iterations) =>
+			Math.Clamp(iterations, MinIterations, MaxIterations);
 	}
 }

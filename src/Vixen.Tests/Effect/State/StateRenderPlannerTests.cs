@@ -24,6 +24,7 @@ public class StateRenderPlannerTests
 			definition,
 			selectedItemId,
 			PlaybackMode.Iterate,
+			2,
 			TimeSpan.FromSeconds(3));
 
 		// Assert
@@ -49,11 +50,46 @@ public class StateRenderPlannerTests
 			definition,
 			Guid.Empty,
 			PlaybackMode.Iterate,
+			1,
 			TimeSpan.FromSeconds(4));
 
 		// Assert
 		Assert.Equal([open.Id, openDuplicate.Id, closed.Id], intervals.Select(interval => interval.Item.Id));
 		Assert.Equal([TimeSpan.Zero, TimeSpan.Zero, TimeSpan.FromSeconds(2)], intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(2), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateStateItemIntervals_AllIterateRepeatsUniqueNamesForIterations()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var openDuplicate = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, openDuplicate, closed);
+
+		// Act
+		var intervals = StateRenderPlanner.CreateStateItemIntervals(
+			definition,
+			Guid.Empty,
+			PlaybackMode.Iterate,
+			2,
+			TimeSpan.FromSeconds(8));
+
+		// Assert
+		Assert.Equal(
+			[open.Id, openDuplicate.Id, closed.Id, open.Id, openDuplicate.Id, closed.Id],
+			intervals.Select(interval => interval.Item.Id));
+		Assert.Equal(
+			[
+				TimeSpan.Zero,
+				TimeSpan.Zero,
+				TimeSpan.FromSeconds(2),
+				TimeSpan.FromSeconds(4),
+				TimeSpan.FromSeconds(4),
+				TimeSpan.FromSeconds(6)
+			],
+			intervals.Select(interval => interval.Start));
 		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(2), interval.Duration));
 	}
 
@@ -76,6 +112,7 @@ public class StateRenderPlannerTests
 			definition,
 			marks,
 			PlaybackMode.Default,
+			1,
 			TimeSpan.FromSeconds(10),
 			TimeSpan.FromSeconds(4));
 
@@ -105,6 +142,7 @@ public class StateRenderPlannerTests
 			definition,
 			marks,
 			PlaybackMode.Iterate,
+			1,
 			TimeSpan.FromSeconds(10),
 			TimeSpan.FromSeconds(4));
 
@@ -112,6 +150,61 @@ public class StateRenderPlannerTests
 		Assert.Equal([open.Id, closed.Id], intervals.Select(interval => interval.Item.Id));
 		Assert.Equal([TimeSpan.Zero, TimeSpan.FromSeconds(3)], intervals.Select(interval => interval.Start));
 		Assert.Equal([TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1)], intervals.Select(interval => interval.Duration));
+	}
+
+	[Fact]
+	public void CreateMarkCollectionIntervals_IterateRepeatsSegmentsForIterations()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+		var marks = new[]
+		{
+			CreateMark(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(8), "Open,Closed")
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateMarkCollectionIntervals(
+			definition,
+			marks,
+			PlaybackMode.Iterate,
+			2,
+			TimeSpan.FromSeconds(10),
+			TimeSpan.FromSeconds(8));
+
+		// Assert
+		Assert.Equal([open.Id, closed.Id, open.Id, closed.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal(
+			[TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(6)],
+			intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(2), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateMarkCollectionIntervals_IterateRepeatedUnknownAndEmptySegmentsConsumeTiming()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var definition = CreateDefinition(open);
+		var marks = new[]
+		{
+			CreateMark(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(6), "Open,Missing,")
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateMarkCollectionIntervals(
+			definition,
+			marks,
+			PlaybackMode.Iterate,
+			2,
+			TimeSpan.FromSeconds(10),
+			TimeSpan.FromSeconds(6));
+
+		// Assert
+		Assert.Equal([open.Id, open.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal([TimeSpan.Zero, TimeSpan.FromSeconds(3)], intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(1), interval.Duration));
 	}
 
 	[Fact]
@@ -132,6 +225,7 @@ public class StateRenderPlannerTests
 			definition,
 			marks,
 			PlaybackMode.Default,
+			1,
 			TimeSpan.FromSeconds(10),
 			TimeSpan.FromSeconds(4));
 
