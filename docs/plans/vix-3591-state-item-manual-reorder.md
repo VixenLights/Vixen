@@ -12,11 +12,11 @@ VIX-3591 already lets users sort State Items by grid columns and persists the di
 
 - [x] (2026-06-10 21:27Z) Researched current State setup dialog, ViewModel, existing sort-order persistence, and State mapper tests.
 - [x] (2026-06-10 21:27Z) Updated final and phase requirements to include explicit manual State Item reordering.
-- [ ] Implement Move Up and Move Down commands in the State mapper ViewModel.
-- [ ] Add Move Up and Move Down buttons to the State mapper view.
-- [ ] Add focused tests for command availability, item identity preservation, selection retention, group ordering, and save/reopen persistence.
-- [ ] Run focused State property tests and record the result.
-- [ ] Review the prepared JIRA text for VIX-3591 with the ticket owner before applying it to the issue.
+- [x] (2026-06-10 22:18Z) Implemented Move Up and Move Down commands in the State mapper ViewModel.
+- [x] (2026-06-10 22:18Z) Added Move Up and Move Down icon buttons with tooltips to the State mapper view.
+- [x] (2026-06-10 22:18Z) Added focused tests for command availability, item identity preservation, selection retention, group ordering, and save persistence.
+- [x] (2026-06-10 22:19Z) Ran focused State property tests and `git diff --check`; both passed.
+- [x] (2026-06-10 22:27Z) JIRA issue VIX-3591 was updated externally by the ticket owner.
 
 ## Surprises & Discoveries
 
@@ -38,7 +38,21 @@ VIX-3591 already lets users sort State Items by grid columns and persists the di
 
 ## Outcomes & Retrospective
 
-Not implemented yet. This section must be updated after implementation with the exact behavior delivered, tests run, any blocked validation, and any remaining follow-up.
+Implemented manual State Item reordering in the State setup form. The State mapper now exposes `MoveItemUpCommand` and `MoveItemDownCommand`, moves the selected `StateItemViewModel` instance in the selected definition's `Items` collection, keeps the moved item selected, rebuilds State Item Group preview choices, refreshes preview once after the move, and persists the resulting order on save.
+
+The State Item button row now includes icon-only Move Up and Move Down buttons using `/Resources;component/arrow_up.png` and `/Resources;component/arrow_down.png`, with tooltips describing each action.
+
+Validation completed on 2026-06-10:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Property.State"
+
+Result: Passed, 77 tests, 0 failures.
+
+    git diff --check
+
+Result: Passed.
+
+Known warnings during test execution are pre-existing package/build warnings, including NU1904 for LiteDB 4.1.4 and existing compiler warnings outside this change.
 
 ## Context and Orientation
 
@@ -172,7 +186,7 @@ where `offset` is `-1` for Move Up and `1` for Move Down.
 
 ## JIRA Update
 
-This plan prepares the VIX-3591 update text for review only. Do not apply it to JIRA until the ticket owner explicitly approves the text. After approval, update VIX-3591 with a comment or description addition containing the following rolled-up requirement. If using the Jira skill, first read `.agents\skills\jira\SKILL.md`, verify access to project `VIX`, fetch issue `VIX-3591`, and use the available Atlassian MCP update or comment tool. If the team prefers not to mutate the issue description during active development, add this as a top-level comment and leave the description update to the ticket owner.
+The ticket owner updated VIX-3591 externally, so no repository-side Jira action remains. The reviewed requirement text is retained below as the implementation record.
 
 Suggested JIRA text:
 
@@ -199,3 +213,5 @@ Suggested JIRA text:
 
 - 2026-06-10 / Codex: Created this focused ExecPlan after adding manual reorder requirements to `docs\vix-3591-state-property-final-requirements.md` and `docs\vix-3591-state-property-phase-4.md`.
 - 2026-06-10 / Codex: Updated the plan after review feedback to require icon-only arrow buttons with tooltips and to keep the JIRA update text in review-only state until explicitly approved.
+- 2026-06-10 / Codex: Implemented the ViewModel commands, XAML icon buttons, focused tests, and recorded validation results.
+- 2026-06-10 / Codex: Marked the JIRA update task complete after the ticket owner updated VIX-3591 externally.

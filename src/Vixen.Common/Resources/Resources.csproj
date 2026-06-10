@@ -7,11 +7,11 @@
 		</PropertyGroup>
   <ItemGroup>
 				<None Include="accept.png" />
-				<None Include="arrow_down.png" />
+				<Resource Include="arrow_down.png" />
 				<None Include="arrow_left.png" />
 				<None Include="arrow_refresh.png" />
 				<None Include="arrow_right.png" />
-				<None Include="arrow_up.png" />
+				<Resource Include="arrow_up.png" />
 				<None Include="attributes_display.png" />
 				<None Include="bullet_black.png" />
 				<None Include="bullet_blue.png" />

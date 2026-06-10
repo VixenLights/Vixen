@@ -209,7 +209,173 @@ public class StateMapperDefinitionTests
 		var openId = Guid.NewGuid();
 		var closedId = Guid.NewGuid();
 		var blinkId = Guid.NewGuid();
+		var source = CreateItemOrderSource(assignedNodeId, openId, closedId, blinkId);
+		var rootNode = CreateNode(Guid.NewGuid(), "Root", CreateNode(assignedNodeId, "Assigned Leaf"));
+		var viewModel = CreateViewModel(source, rootNode);
+		var visibleOrder = new[]
+		{
+			viewModel.Items[2],
+			viewModel.Items[1],
+			viewModel.Items[0]
+		};
+
+		// Act
+		viewModel.SynchronizeStateItemOrder(visibleOrder);
+		var result = await InvokeSaveAsync(viewModel);
+
+		// Assert
+		Assert.True(result);
+		Assert.Equal(["Blink", "Closed", "Open"], source.StateDefinitions[0].Items.Select(item => item.Name));
+		Assert.Equal([blinkId, closedId, openId], source.StateDefinitions[0].Items.Select(item => item.Id));
+		Assert.Equal(Color.Blue, source.StateDefinitions[0].Items[0].Color);
+		Assert.Equal(Color.Red, source.StateDefinitions[0].Items[1].Color);
+		Assert.Equal(Color.Green, source.StateDefinitions[0].Items[2].Color);
+		Assert.Equal([assignedNodeId], source.StateDefinitions[0].Items[2].ElementNodeIds);
+	}
+
+	[Fact]
+	public void MoveItemCommands_AreAvailableOnlyWhenSelectionCanMove()
+	{
+		// Arrange
+		var viewModel = CreateViewModel(CreateItemOrderSource(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()));
+
+		// Assert
+		Assert.False(viewModel.MoveItemUpCommand.CanExecute(null));
+		Assert.True(viewModel.MoveItemDownCommand.CanExecute(null));
+
+		// Act
+		viewModel.SelectedItem = viewModel.Items[1];
+
+		// Assert
+		Assert.True(viewModel.MoveItemUpCommand.CanExecute(null));
+		Assert.True(viewModel.MoveItemDownCommand.CanExecute(null));
+
+		// Act
+		viewModel.SelectedItem = viewModel.Items[2];
+
+		// Assert
+		Assert.True(viewModel.MoveItemUpCommand.CanExecute(null));
+		Assert.False(viewModel.MoveItemDownCommand.CanExecute(null));
+
+		// Act
+		viewModel.SelectedItem = null;
+
+		// Assert
+		Assert.False(viewModel.MoveItemUpCommand.CanExecute(null));
+		Assert.False(viewModel.MoveItemDownCommand.CanExecute(null));
+	}
+
+	[Fact]
+	public async Task MoveItemUp_PersistsOrderAndPreservesItemIdentity()
+	{
+		// Arrange
+		var assignedNodeId = Guid.NewGuid();
+		var openId = Guid.NewGuid();
+		var closedId = Guid.NewGuid();
+		var blinkId = Guid.NewGuid();
+		var source = CreateItemOrderSource(assignedNodeId, openId, closedId, blinkId);
+		var rootNode = CreateNode(Guid.NewGuid(), "Root", CreateNode(assignedNodeId, "Assigned Leaf"));
+		var viewModel = CreateViewModel(source, rootNode);
+		var selectedItem = viewModel.Items[2];
+		viewModel.SelectedItem = selectedItem;
+
+		// Act
+		viewModel.MoveItemUpCommand.Execute(null);
+		var result = await InvokeSaveAsync(viewModel);
+
+		// Assert
+		Assert.True(result);
+		Assert.Same(selectedItem, viewModel.SelectedItem);
+		Assert.Equal(["Open", "Blink", "Closed"], source.StateDefinitions[0].Items.Select(item => item.Name));
+		Assert.Equal([openId, blinkId, closedId], source.StateDefinitions[0].Items.Select(item => item.Id));
+		Assert.Equal(Color.Green, source.StateDefinitions[0].Items[0].Color);
+		Assert.Equal(Color.Blue, source.StateDefinitions[0].Items[1].Color);
+		Assert.Equal(Color.Red, source.StateDefinitions[0].Items[2].Color);
+		Assert.Equal([assignedNodeId], source.StateDefinitions[0].Items[0].ElementNodeIds);
+	}
+
+	[Fact]
+	public async Task MoveItemDown_PersistsOrderAndKeepsMovedItemSelected()
+	{
+		// Arrange
+		var openId = Guid.NewGuid();
+		var closedId = Guid.NewGuid();
+		var blinkId = Guid.NewGuid();
+		var source = CreateItemOrderSource(Guid.NewGuid(), openId, closedId, blinkId);
+		var viewModel = CreateViewModel(source);
+		var selectedItem = viewModel.Items[0];
+		viewModel.SelectedItem = selectedItem;
+
+		// Act
+		viewModel.MoveItemDownCommand.Execute(null);
+		var result = await InvokeSaveAsync(viewModel);
+
+		// Assert
+		Assert.True(result);
+		Assert.Same(selectedItem, viewModel.SelectedItem);
+		Assert.Equal(["Closed", "Open", "Blink"], source.StateDefinitions[0].Items.Select(item => item.Name));
+		Assert.Equal([closedId, openId, blinkId], source.StateDefinitions[0].Items.Select(item => item.Id));
+	}
+
+	[Fact]
+	public void MoveItem_RebuildsStateItemGroupsInFirstAppearanceOrder()
+	{
+		// Arrange
 		var source = new StateData
+		{
+			StateDefinitions =
+			[
+				new StateDefinitionData
+				{
+					Name = "Pose",
+					Items =
+					[
+						new StateItemData { Name = "Glove", Color = Color.Green },
+						new StateItemData { Name = "Arm", Color = Color.Red },
+						new StateItemData { Name = "Glove", Color = Color.Blue }
+					]
+				}
+			]
+		};
+		var viewModel = CreateViewModel(source);
+		viewModel.SelectedItem = viewModel.Items[1];
+
+		// Act
+		viewModel.MoveItemUpCommand.Execute(null);
+
+		// Assert
+		Assert.Equal(["<ALL>", "Arm", "Glove"], viewModel.AvailableStateItemGroups);
+	}
+
+	private static StateData CreateSource(params string[] definitionNames)
+	{
+		return new StateData
+		{
+			StateDefinitions = definitionNames
+				.Select(name => new StateDefinitionData
+				{
+					Name = name,
+					Description = $"Description for {name}",
+					Items =
+					[
+						new StateItemData
+						{
+							Name = $"{name} Item",
+							Color = Color.Green
+						}
+					]
+				})
+				.ToList()
+		};
+	}
+
+	private static StateData CreateItemOrderSource(
+		Guid assignedNodeId,
+		Guid openId,
+		Guid closedId,
+		Guid blinkId)
+	{
+		return new StateData
 		{
 			StateDefinitions =
 			[
@@ -240,49 +406,6 @@ public class StateMapperDefinitionTests
 					]
 				}
 			]
-		};
-		var rootNode = CreateNode(Guid.NewGuid(), "Root", CreateNode(assignedNodeId, "Assigned Leaf"));
-		var viewModel = CreateViewModel(source, rootNode);
-		var visibleOrder = new[]
-		{
-			viewModel.Items[2],
-			viewModel.Items[1],
-			viewModel.Items[0]
-		};
-
-		// Act
-		viewModel.SynchronizeStateItemOrder(visibleOrder);
-		var result = await InvokeSaveAsync(viewModel);
-
-		// Assert
-		Assert.True(result);
-		Assert.Equal(["Blink", "Closed", "Open"], source.StateDefinitions[0].Items.Select(item => item.Name));
-		Assert.Equal([blinkId, closedId, openId], source.StateDefinitions[0].Items.Select(item => item.Id));
-		Assert.Equal(Color.Blue, source.StateDefinitions[0].Items[0].Color);
-		Assert.Equal(Color.Red, source.StateDefinitions[0].Items[1].Color);
-		Assert.Equal(Color.Green, source.StateDefinitions[0].Items[2].Color);
-		Assert.Equal([assignedNodeId], source.StateDefinitions[0].Items[2].ElementNodeIds);
-	}
-
-	private static StateData CreateSource(params string[] definitionNames)
-	{
-		return new StateData
-		{
-			StateDefinitions = definitionNames
-				.Select(name => new StateDefinitionData
-				{
-					Name = name,
-					Description = $"Description for {name}",
-					Items =
-					[
-						new StateItemData
-						{
-							Name = $"{name} Item",
-							Color = Color.Green
-						}
-					]
-				})
-				.ToList()
 		};
 	}
 

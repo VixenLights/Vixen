@@ -34,6 +34,8 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private TaskCommand? _copyStateDefinitionCommand;
 		private TaskCommand? _addItemCommand;
 		private TaskCommand? _removeItemCommand;
+		private TaskCommand? _moveItemUpCommand;
+		private TaskCommand? _moveItemDownCommand;
 		private TaskCommand<StateItemViewModel>? _editColorCommand;
 		private TaskCommand? _okCommand;
 		private TaskCommand? _cancelCommand;
@@ -393,6 +395,18 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		public TaskCommand RemoveItemCommand => _removeItemCommand ??= new TaskCommand(RemoveItemAsync, CanRemoveItem);
 
 		/// <summary>
+		/// Gets the command that moves the selected state item row up one position.
+		/// </summary>
+		/// <value>The command that moves the selected state item row up one position.</value>
+		public TaskCommand MoveItemUpCommand => _moveItemUpCommand ??= new TaskCommand(MoveItemUpAsync, CanMoveItemUp);
+
+		/// <summary>
+		/// Gets the command that moves the selected state item row down one position.
+		/// </summary>
+		/// <value>The command that moves the selected state item row down one position.</value>
+		public TaskCommand MoveItemDownCommand => _moveItemDownCommand ??= new TaskCommand(MoveItemDownAsync, CanMoveItemDown);
+
+		/// <summary>
 		/// Gets the command that edits a state item color.
 		/// </summary>
 		/// <value>The command that edits a state item color.</value>
@@ -544,7 +558,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			}
 
 			RefreshPreview();
-			RemoveItemCommand.RaiseCanExecuteChanged();
+			RaiseItemCommandCanExecuteChanged();
 			ValidateAndRefreshOkCommand();
 			return Task.CompletedTask;
 		}
@@ -573,7 +587,58 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			}
 
 			RefreshPreview();
-			RemoveItemCommand.RaiseCanExecuteChanged();
+			RaiseItemCommandCanExecuteChanged();
+			ValidateAndRefreshOkCommand();
+			return Task.CompletedTask;
+		}
+
+		private bool CanMoveItemUp() => SelectedItem != null && Items.IndexOf(SelectedItem) > 0;
+
+		private Task MoveItemUpAsync() => MoveSelectedItemAsync(-1);
+
+		private bool CanMoveItemDown()
+		{
+			if (SelectedItem == null)
+			{
+				return false;
+			}
+
+			var index = Items.IndexOf(SelectedItem);
+			return index >= 0 && index < Items.Count - 1;
+		}
+
+		private Task MoveItemDownAsync() => MoveSelectedItemAsync(1);
+
+		private Task MoveSelectedItemAsync(int offset)
+		{
+			if (SelectedItem == null)
+			{
+				return Task.CompletedTask;
+			}
+
+			var currentIndex = Items.IndexOf(SelectedItem);
+			var targetIndex = currentIndex + offset;
+			if (currentIndex < 0 || targetIndex < 0 || targetIndex >= Items.Count)
+			{
+				return Task.CompletedTask;
+			}
+
+			var item = SelectedItem;
+			var previousSuppressPreviewRefresh = _suppressPreviewRefresh;
+			_suppressPreviewRefresh = true;
+			try
+			{
+				Items.Move(currentIndex, targetIndex);
+				SelectedItem = item;
+			}
+			finally
+			{
+				_suppressPreviewRefresh = previousSuppressPreviewRefresh;
+			}
+
+			RebuildAvailableStateItemGroups();
+			RefreshPreview();
+			RaiseItemCommandCanExecuteChanged();
 			ValidateAndRefreshOkCommand();
 			return Task.CompletedTask;
 		}
@@ -620,6 +685,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 			RebuildAvailableStateItemGroups();
 			RefreshPreview();
+			RaiseItemCommandCanExecuteChanged();
 		}
 
 		private static bool CanEditColor(StateItemViewModel? item) => item != null;
@@ -797,6 +863,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				}
 
 				RaisePropertyChanged(nameof(Items));
+				RaiseItemCommandCanExecuteChanged();
 			}
 
 			ValidateAndRefreshOkCommand();
@@ -873,7 +940,14 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			_renameStateDefinitionCommand?.RaiseCanExecuteChanged();
 			_copyStateDefinitionCommand?.RaiseCanExecuteChanged();
 			_addItemCommand?.RaiseCanExecuteChanged();
+			RaiseItemCommandCanExecuteChanged();
+		}
+
+		private void RaiseItemCommandCanExecuteChanged()
+		{
 			_removeItemCommand?.RaiseCanExecuteChanged();
+			_moveItemUpCommand?.RaiseCanExecuteChanged();
+			_moveItemDownCommand?.RaiseCanExecuteChanged();
 		}
 
 		private void RebuildAvailableStateItemGroups()
@@ -1003,7 +1077,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				item?.ExpandCheckedAssignments();
 			}
 
-			_removeItemCommand?.RaiseCanExecuteChanged();
+			RaiseItemCommandCanExecuteChanged();
 			if (!IsStateItemGroupPreviewMode)
 			{
 				RefreshPreview();

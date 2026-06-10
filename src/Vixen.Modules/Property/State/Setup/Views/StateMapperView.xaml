@@ -204,6 +204,20 @@
 				<WrapPanel Grid.Row="3" Style="{StaticResource RowButtonRightContainerStyle}" Margin="0,6,0,0">
 					<Button Content="Add" Command="{Binding AddItemCommand}" Style="{StaticResource RowButtonStyle}"/>
 					<Button Content="Remove" Command="{Binding RemoveItemCommand}" Style="{StaticResource RowButtonStyle}"/>
+					<Button Command="{Binding MoveItemUpCommand}"
+							Style="{StaticResource RowButtonStyle}"
+							ToolTip="Move selected State Item up">
+						<Image Source="/Resources;component/arrow_up.png"
+							   Width="16"
+							   Height="16"/>
+					</Button>
+					<Button Command="{Binding MoveItemDownCommand}"
+							Style="{StaticResource RowButtonStyle}"
+							ToolTip="Move selected State Item down">
+						<Image Source="/Resources;component/arrow_down.png"
+							   Width="16"
+							   Height="16"/>
+					</Button>
 				</WrapPanel>
 			</Grid>
 
