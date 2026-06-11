@@ -54,6 +54,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private bool _showStatus;
 		private bool _alwaysOnTop;
 		private bool _enableLightScaling = true;
+		private bool _transparentBackground;
 
 		private float _pointScaleFactor;
 		private long _frameCount;
@@ -122,6 +123,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void ConfigureStatusBar()
 		{
 			statusStrip.Visible = _showStatus;
+		}
+
+		private void ConfigureTransparentBackground()
+		{
+			if (_transparentBackground)
+				WinApiTransparency.EnableTransparency(Handle);
+			else
+				WinApiTransparency.DisableTransparency(Handle);
 		}
 
 		private void HandleContextMenu()
@@ -194,6 +203,24 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				}
 
 				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			item = new ToolStripMenuItem("Transparent Background");
+			item.ToolTipText = @"Make the background transparent so the desktop is visible through unlit areas. Transparent areas are click-through.";
+
+			if (_transparentBackground)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize);
+			}
+
+			item.Click += (sender, args) =>
+			{
+				_transparentBackground = !_transparentBackground;
+				ConfigureTransparentBackground();
+				SaveWindowState();
+				glControl.Invalidate();
 			};
 
 			_contextMenuStrip.Items.Add(item);
@@ -802,7 +829,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					ClearScreen();
 
 					_sw2.Restart();
-					_background.Draw(perspective, _camera.ViewMatrix);
+					if (!_transparentBackground) _background.Draw(perspective, _camera.ViewMatrix);
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
 					//Logging.Info($"GL Error: {GL.GetError()}");
 					_sw2.Restart();
@@ -826,7 +853,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					ClearScreen();
 
 					_sw2.Restart();
-					_background.Draw(perspective, _camera.ViewMatrix);
+					if (!_transparentBackground) _background.Draw(perspective, _camera.ViewMatrix);
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
 
 					// Render static preview shapes (moving heads)
@@ -943,6 +970,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), _alwaysOnTop);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EnableLightScaling", name), _enableLightScaling);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), IsOnTopWhenPlaying);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/TransparentBackground", name), _transparentBackground);
 		}
 
 		private void RestoreWindowState()
@@ -956,9 +984,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
 			_enableLightScaling = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EnableLightScaling", name), true);
 			IsOnTopWhenPlaying = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), false);
+			_transparentBackground = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/TransparentBackground", name), false);
 
 			ConfigureStatusBar();
 			ConfigureAlwaysOnTop();
+			ConfigureTransparentBackground();
 
 			var desktopBounds =
 				new Rectangle(

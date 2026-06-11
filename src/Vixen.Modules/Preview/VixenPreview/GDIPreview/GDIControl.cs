@@ -79,7 +79,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 		[Bindable(true), Category("Display"), DefaultValue(50),
 		 Description("Set the alpha value for the background")]
-		public int BackgroundAlpha 
+		public int BackgroundAlpha
 		{
 			get
 			{
@@ -91,6 +91,14 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				if (Background != null) CreateAlphaBackground();
 			}
 		}
+
+		/// <summary>
+		/// When true the background image is suppressed so that the window color-key transparency
+		/// (black = transparent) is visible through unlit areas.
+		/// </summary>
+		[Bindable(true), Category("Display"), DefaultValue(false),
+		 Description("Suppress background image so black pixels become transparent")]
+		public bool TransparentBackground { get; set; }
 
 		public Size BackgroundSize => new Size((int)(_background.Width*ZoomLevel), (int)(_background.Height*ZoomLevel));
 
@@ -144,7 +152,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				return;
 			}
 			
-			if (Background != null)
+			if (Background != null && !TransparentBackground)
 			{
 				Color c = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
 
