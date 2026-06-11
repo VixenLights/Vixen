@@ -12,7 +12,7 @@ The visible proof of the feature is in Display Setup: select a parent prop eleme
 
 ## Progress
 
-- [x] (2026-05-29) Read `docs\vix-3591-state-feature.md` and `.agents\PLANS.md`.
+- [x] (2026-05-29) Read `docs\state\vix-3591-state-feature.md` and `.agents\PLANS.md`.
 - [x] (2026-05-29) Read project skill guidance for `dotnet-best-practices`, `csharp-async`, `csharp-docs`, and `dotnet-design-pattern-review`.
 - [x] (2026-05-29) Researched existing Face property setup, Display Setup property configuration, partial State property implementation, color picker controls, and xLights state import code.
 - [x] (2026-05-29) Created this initial implementation plan.
@@ -413,7 +413,7 @@ Open questions to resolve before or during Milestone 2:
 
 ## Revision Notes
 
-2026-05-29: Initial plan created from `docs\vix-3591-state-feature.md`, `.agents\PLANS.md`, the project skill instructions, and repository research into Face property, Display Setup property configuration, existing State property code, color picker controls, and xLights state import.
+2026-05-29: Initial plan created from `docs\state\vix-3591-state-feature.md`, `.agents\PLANS.md`, the project skill instructions, and repository research into Face property, Display Setup property configuration, existing State property code, color picker controls, and xLights state import.
 
 2026-05-29: Updated plan to require minimal xUnit coverage for the new State property behavior. Added a test milestone, test project reference guidance, concrete test case names, and validation commands.
 

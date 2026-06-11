@@ -11,8 +11,8 @@ This phase adds an explicit Preview toggle, two preview modes, State Item Group 
 behavior. The user will be able to turn previewing on when needed, preview one State item or a named group of State items, and
 see Live Preview update immediately as assignments, colors, rows, or preview controls change.
 
-This is phase 3 on top of `docs\vix-3591-state-feature.md` and
-`docs\vix-3591-state-property-prerequisites.md`. The implementation plan must follow `.agents\PLANS.md`.
+This is phase 3 on top of `docs\state\vix-3591-state-feature.md` and
+`docs\state\vix-3591-state-property-prerequisites.md`. The implementation plan must follow `.agents\PLANS.md`.
 
 ## Terminology
 

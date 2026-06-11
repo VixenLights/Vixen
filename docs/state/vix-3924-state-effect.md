@@ -3,7 +3,7 @@
 ## Overview
 
 This feature creates a State effect that uses the State property completed by VIX-3591 and specified in
-`docs/vix-3591-state-property-final-requirements.md`. It is similar in purpose to the LipSync effect, but it applies named
+`docs/state/vix-3591-state-property-final-requirements.md`. It is similar in purpose to the LipSync effect, but it applies named
 states to props that are not limited to faces or phonemes.
 
 For example, a waving Santa can define State definitions such as `Arm Up` and `Arm Down`. A decorated Santa can define a
@@ -28,7 +28,7 @@ definition statically or drive them from a Mark Collection over time.
 
 ### State Property Dependency
 
-- The State effect depends on the finalized State property model in `docs/vix-3591-state-property-final-requirements.md`.
+- The State effect depends on the finalized State property model in `docs/state/vix-3591-state-property-final-requirements.md`.
 - The effect must not redefine State property setup, xModel import, preview, validation, or ID generation behavior except where
   this document explicitly describes effect-specific fallback or rendering behavior.
 - State property containers, State definitions, and State items all have non-empty persisted stable IDs.

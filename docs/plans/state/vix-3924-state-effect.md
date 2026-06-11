@@ -12,9 +12,9 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
 
 ## Progress
 
-- [x] (2026-06-08 10:35 -05:00) Read `.agents/PLANS.md`, `docs/vix-3924-state-effect.md`, `docs/vix-3591-state-property-final-requirements.md`, the partial State effect under `src/Vixen.Modules/Effect/State`, State property models under `src/Vixen.Modules/Property/State`, and comparable effects/converters including LipSync, Alternating, CustomValue, `BaseEffect`, and `EffectListTypeConverterBase`.
+- [x] (2026-06-08 10:35 -05:00) Read `.agents/PLANS.md`, `docs/state/vix-3924-state-effect.md`, `docs/state/vix-3591-state-property-final-requirements.md`, the partial State effect under `src/Vixen.Modules/Effect/State`, State property models under `src/Vixen.Modules/Property/State`, and comparable effects/converters including LipSync, Alternating, CustomValue, `BaseEffect`, and `EffectListTypeConverterBase`.
 - [x] (2026-06-08 10:35 -05:00) Created this implementation plan with milestones, Jira paste text, risks, concrete file targets, validation commands, and acceptance criteria.
-- [x] (2026-06-08 10:45 -05:00) Updated `docs/vix-3924-state-effect.md` and this ExecPlan so removed Mark Collection selections follow LipSync and Alternating: remove listeners, clear the selected Mark Collection ID, and render nothing until a new collection is selected.
+- [x] (2026-06-08 10:45 -05:00) Updated `docs/state/vix-3924-state-effect.md` and this ExecPlan so removed Mark Collection selections follow LipSync and Alternating: remove listeners, clear the selected Mark Collection ID, and render nothing until a new collection is selected.
 - [x] (2026-06-08 10:58 -05:00) Completed Milestone 2. `StateData` now persists selected State definition, State property, owner element, render source, selected State item, Mark Collection, and playback mode. Added `StateRenderSource`, removed `TimingMode`, added the State property project reference and `InternalsVisibleTo`, and corrected the State effect `Release|Any CPU` solution mapping to `Release|x64`.
 - [x] (2026-06-08 11:05 -05:00) Completed Milestone 1. Jira issue VIX-3924 was updated with the plan summary, design, acceptance criteria, risks, and testing notes.
 - [x] (2026-06-08 11:04 -05:00) Completed Milestone 3. Added State definition discovery across target trees, duplicate display-label disambiguation, State and State Item combo converters/options, missing/no-option placeholders, first-definition auto-selection, selected State item preservation by matching name, and render-source-specific browsability for State Item versus Mark Collection.
@@ -43,7 +43,7 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
   Evidence: `src/Vixen.Modules/Effect/State/State.cs` creates `_elementData` in `_PreRender`, calls `RenderNodes()`, and `RenderNodes()` contains only comments.
 
 - Observation: The partial effect uses `TimingMode.State`, `TimingMode.MarkCollection`, and `AllowMarkGaps`, but the final VIX-3924 requirements use the terms `Render Source`, `State Item`, `Mark Collection`, and `Playback Mode`. `AllowMarkGaps` is not part of the final effect contract because mark gaps always render nothing.
-  Evidence: `docs/vix-3924-state-effect.md` requires `Render Source` with `State Item` and `Mark Collection`, `Playback Mode` with `Default` and `Iterate`, and says gaps between marks render nothing.
+  Evidence: `docs/state/vix-3924-state-effect.md` requires `Render Source` with `State Item` and `Mark Collection`, `Playback Mode` with `Default` and `Iterate`, and says gaps between marks render nothing.
 
 - Observation: The State property data needed by the effect already exists and exposes stable IDs. `StateData.Id` is the attached property ID, `StateDefinitionData.Id` is the durable State definition ID, and `StateItemData.Id` is the durable State item ID. Assignments are stored as `StateItemData.ElementNodeIds`.
   Evidence: `src/Vixen.Modules/Property/State/StateData.cs`, `StateDefinitionData.cs`, and `StateItemData.cs` all initialize and serialize stable IDs.
@@ -52,7 +52,7 @@ The behavior is visible in the standard Effect Editor. Add the State effect to a
   Evidence: `src/Vixen.Modules/Property/State/StateModule.cs` returns `element.Properties.Get(StateDescriptor.ModuleId) as StateModule`.
 
 - Observation: The existing `BaseEffect.CreateIntentsForElement` skips discrete leaves whose valid colors do not contain the requested color, but VIX-3924 requires falling back to the first supported discrete color. The State effect needs its own color resolution helper rather than using `CreateIntentsForElement` directly.
-  Evidence: `src/Vixen.Modules/Effect/Effect/BaseEffect.cs` continues when a discrete element does not support the requested color; `docs/vix-3924-state-effect.md` requires using the first supported color instead.
+  Evidence: `src/Vixen.Modules/Effect/Effect/BaseEffect.cs` continues when a discrete element does not support the requested color; `docs/state/vix-3924-state-effect.md` requires using the first supported color instead.
 
 - Observation: The new State effect project is already present in `Vixen.sln`, but its solution configuration mappings should be verified during implementation because partial additions can leave invalid platform mappings.
   Evidence: `Vixen.sln` contains project `{011C7353-839B-4D5C-A673-482D47D5BE78}` for `src\Vixen.Modules\Effect\State\State.csproj`.
@@ -337,8 +337,8 @@ Implement Milestones 2 through 7. Keep changes localized to these expected files
 
 For Milestone 10, also update these expected files:
 
-    docs/vix-3924-state-effect.md
-    docs/plans/vix-3924-state-effect.md
+    docs/state/vix-3924-state-effect.md
+    docs/plans/state/vix-3924-state-effect.md
     src/Vixen.Modules/Effect/State/StateData.cs
     src/Vixen.Modules/Effect/State/State.cs
     src/Vixen.Modules/Effect/State/StateRenderPlanner.cs

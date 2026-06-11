@@ -2,7 +2,7 @@
 
 This ExecPlan is a living document. Maintain the `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` sections while implementing the work.
 
-This document follows `.agents/PLANS.md`. It is the Phase 2 implementation plan for `docs/vix-3591-state-property-prerequisites.md`. It supplements, and does not replace or modify, the original Phase 1 plan in `docs/plans/vix-3591-state-feature.md`.
+This document follows `.agents/PLANS.md`. It is the Phase 2 implementation plan for `docs/state/vix-3591-state-property-prerequisites.md`. It supplements, and does not replace or modify, the original Phase 1 plan in `docs/plans/state/vix-3591-state-feature.md`.
 
 ## Purpose / Big Picture
 
@@ -424,7 +424,7 @@ git status --short
 Implementation is complete when:
 
 - The Jira Phase 2 update has been added to VIX-3591.
-- The original `docs/plans/vix-3591-state-feature.md` remains unchanged.
+- The original `docs/plans/state/vix-3591-state-feature.md` remains unchanged.
 - Every State property has a normalized, non-empty stable ID.
 - Logical clones preserve property identity and cross-element copies create new property identity.
 - xLights imports normalize names and generate deterministic fallbacks.

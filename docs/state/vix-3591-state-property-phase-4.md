@@ -14,11 +14,11 @@ This document replaces the earlier phase outline and is intended to be detailed 
 
 ## Prior Documents
 
-- `docs\plans\vix-3591-state-feature.md`
-- `docs\plans\vix-3591-state-property-prerequisites-phase-2.md`
-- `docs\plans\vix-3591-state-property-preview-phase-3.md`
-- `docs\vix-3591-state-property-prerequisites.md`
-- `docs\state-property-item-update.md`
+- `docs\plans\state\vix-3591-state-feature.md`
+- `docs\plans\state\vix-3591-state-property-prerequisites-phase-2.md`
+- `docs\plans\state\vix-3591-state-property-preview-phase-3.md`
+- `docs\state\vix-3591-state-property-prerequisites.md`
+- `docs\state\state-property-item-update.md`
 
 ## Terminology
 

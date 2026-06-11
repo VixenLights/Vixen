@@ -4,8 +4,8 @@ This ExecPlan is a living document. Maintain the `Progress`, `Surprises & Discov
 `Outcomes & Retrospective` sections while implementing the work.
 
 This document follows `.agents/PLANS.md`. It is the Phase 3 implementation plan for
-`docs/state-property-item-update.md`. It builds on the completed State Property work described by
-`docs/vix-3591-state-feature.md` and `docs/vix-3591-state-property-prerequisites.md`, but it is self-contained: an
+`docs/state/state-property-item-update.md`. It builds on the completed State Property work described by
+`docs/state/vix-3591-state-feature.md` and `docs/state/vix-3591-state-property-prerequisites.md`, but it is self-contained: an
 implementer can execute this plan using the current working tree without reading the earlier plans or this plan's authoring
 conversation.
 
@@ -656,7 +656,7 @@ For final verification, run:
 Run an explicit CRLF check for each touched text file. PowerShell should report no files with bare line-feed endings:
 
     $files = @(
-        'docs\plans\vix-3591-state-property-preview-phase-3.md',
+        'docs\plans\state\vix-3591-state-property-preview-phase-3.md',
         'src\Vixen.Modules\Property\State\State.csproj',
         'src\Vixen.Modules\Property\State\Setup\Preview\StatePreviewPair.cs',
         'src\Vixen.Modules\Property\State\Setup\Preview\IStatePreviewPublisher.cs',
@@ -816,7 +816,7 @@ required project references and the repository's CRLF convention.
 
 ## Revision Notes
 
-- 2026-06-01: Created the Phase 3 ExecPlan from `docs/state-property-item-update.md`, current State mapper code, the Live
+- 2026-06-01: Created the Phase 3 ExecPlan from `docs/state/state-property-item-update.md`, current State mapper code, the Live
   Preview message architecture, Catel lifecycle documentation, and the requested project skills. The plan treats the
   existing uncommitted preview code as a refactorable spike and requires Jira confirmation before implementation.
 - 2026-06-02: Revised the plan for typed `BroadcastChannel<TMessage>` declarations, the ID-only

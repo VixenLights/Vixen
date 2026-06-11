@@ -12,7 +12,7 @@ The xLights xModel importer also needs to understand `CustomModelCompressed`, be
 
 ## Progress
 
-- [x] (2026-06-03 10:55 America/Chicago) Read `.agents\PLANS.md` and the Phase 4 spec in `docs\vix-3591-state-property-phase-4.md`.
+- [x] (2026-06-03 10:55 America/Chicago) Read `.agents\PLANS.md` and the Phase 4 spec in `docs\state\vix-3591-state-property-phase-4.md`.
 - [x] (2026-06-03 11:05 America/Chicago) Researched the current State property data model, setup ViewModel/XAML, preview coordinator tests, xLights parser, custom prop builder, and existing State import bridge.
 - [x] (2026-06-03 11:15 America/Chicago) Created this initial ExecPlan.
 - [x] (2026-06-03 11:42 America/Chicago) Implemented the State definition data model and updated stable identity/copy/clone behavior. Added focused tests for default definitions, logical clone ID preservation, and copy-as-new ID regeneration.
@@ -37,7 +37,7 @@ The xLights xModel importer also needs to understand `CustomModelCompressed`, be
   Evidence: `src\Vixen.Modules\Preview\VixenPreview\PreviewCustomPropBuilder.cs` method `AddStateProperties` groups child `ElementModel` values with `StateDefinition != null` and then adds or updates `StateModule`.
 
 - Observation: The Phase 4 spec was corrected during planning so invalid compressed data falls back to a valid `CustomModel` source when one exists, and aborts only when neither source can produce valid Vixen model data.
-  Evidence: `docs\vix-3591-state-property-phase-4.md` section `Attribute Precedence And Errors`.
+  Evidence: `docs\state\vix-3591-state-property-phase-4.md` section `Attribute Precedence And Errors`.
 
 - Observation: `CustomModelCompressed` coordinate entries are `node,row,column` relative to the uncompressed `CustomModel` grid, not `node,x,y`. The parser must map compressed column to Vixen X and compressed row to Vixen Y.
   Evidence: In `docs\references\santa-waving.xmodel`, compressed entry `314,0,176` maps to uncompressed grid coordinate `x=176, y=0`.
@@ -171,7 +171,7 @@ If the full suite is too slow or blocked by environment issues, run the focused 
     cd C:\Dev\Vixen
     msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug
 
-Manual validation requires opening Display Setup, adding or importing a prop, opening State Property Setup, and verifying the scenarios in `docs\vix-3591-state-property-phase-4.md`. If UI automation is not available, record manual observations and screenshots separately if the team normally captures them.
+Manual validation requires opening Display Setup, adding or importing a prop, opening State Property Setup, and verifying the scenarios in `docs\state\vix-3591-state-property-phase-4.md`. If UI automation is not available, record manual observations and screenshots separately if the team normally captures them.
 
 Milestone 9 updates Jira VIX-3591. Do this after the ExecPlan is reviewed so Jira contains the finalized scope, high-level design, acceptance criteria, test commands, and any known risks. The Jira update must be a rolled-up final-state summary of Phase 4 requirements and testing, not a sequence of milestone-by-milestone append blocks. The Jira update should mention that the State effect remains out of scope but can later reference State definition stable IDs.
 
@@ -337,7 +337,7 @@ If implementation discovers better names that fit the codebase more closely, upd
 
 ## Revision Notes
 
-- 2026-06-03 / Codex: Initial ExecPlan created from `docs\vix-3591-state-property-phase-4.md`, after source research of the State module, xLights import path, and custom prop builder.
+- 2026-06-03 / Codex: Initial ExecPlan created from `docs\state\vix-3591-state-property-phase-4.md`, after source research of the State module, xLights import path, and custom prop builder.
 - 2026-06-03 / Codex: Updated Jira guidance after plan review. Jira VIX-3591 should receive a rolled-up final-state
   requirements, design, acceptance, and testing summary instead of separate milestone append blocks.
 - 2026-06-03 / Codex: Completed Milestone 1. Added `StateDefinitionData`, refactored `StateData` into a definition

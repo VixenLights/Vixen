@@ -211,7 +211,7 @@ Suggested JIRA text:
 
 ## Revision Notes
 
-- 2026-06-10 / Codex: Created this focused ExecPlan after adding manual reorder requirements to `docs\vix-3591-state-property-final-requirements.md` and `docs\vix-3591-state-property-phase-4.md`.
+- 2026-06-10 / Codex: Created this focused ExecPlan after adding manual reorder requirements to `docs\state\vix-3591-state-property-final-requirements.md` and `docs\state\vix-3591-state-property-phase-4.md`.
 - 2026-06-10 / Codex: Updated the plan after review feedback to require icon-only arrow buttons with tooltips and to keep the JIRA update text in review-only state until explicitly approved.
 - 2026-06-10 / Codex: Implemented the ViewModel commands, XAML icon buttons, focused tests, and recorded validation results.
 - 2026-06-10 / Codex: Marked the JIRA update task complete after the ticket owner updated VIX-3591 externally.

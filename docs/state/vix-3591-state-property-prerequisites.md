@@ -186,7 +186,7 @@ the smallest explicit mechanism that makes the distinction reliable. Do not infe
 - Use the project skills dotnet-best-practices, csharp-async, csharp-docs, dotnet-design-pattern-review, and catel-mvvm as part
   of the design process.
 - Use `.agents\PLANS.md` when creating the implementation plan.
-- Treat `docs\vix-3591-state-feature.md` as the original State property requirements and this document as the prerequisite
+- Treat `docs\state\vix-3591-state-feature.md` as the original State property requirements and this document as the prerequisite
   follow-up requirements for VIX-3924.
 - Update Jira issue VIX-3591 with the prerequisite scope, high-level design, acceptance criteria, and testing steps before
   implementation.
