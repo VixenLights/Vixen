@@ -916,6 +916,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			// set up the OpenGL viewport and clear both the color and depth bits
 			GL.Viewport(0, 0, _width, _height);
+			if (_transparentBackground)
+			{
+				// Use the transparency key color (1,1,1) rather than pure black so that Windows system
+				// chrome (borders, inactive title bar) rendered at 0,0,0 stays opaque and clickable.
+				const float k = 1f / 255f;
+				GL.ClearColor(k, k, k, 1f);
+			}
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 		}
 

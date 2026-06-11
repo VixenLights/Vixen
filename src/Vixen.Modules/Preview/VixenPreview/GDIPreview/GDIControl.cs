@@ -171,7 +171,9 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			{
 				_backgroundAlphaImage = new Bitmap(Width, Height, PixelFormat.Format32bppPArgb);
 				Graphics gfx = Graphics.FromImage(_backgroundAlphaImage);
-				gfx.Clear(Color.Black);
+				// Use the transparency key color rather than pure black so that Windows system
+				// chrome (borders, inactive title bar) rendered at 0,0,0 stays opaque and clickable.
+				gfx.Clear(TransparentBackground ? WinApiTransparency.KeyColor : Color.Black);
 				gfx.Dispose();
 			}
 			{
