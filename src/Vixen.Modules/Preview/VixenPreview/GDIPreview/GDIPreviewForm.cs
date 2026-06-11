@@ -30,6 +30,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		private bool _alwaysOnTop;
 		private bool _lockPosition;
 		private bool _transparentBackground;
+		private Label _transparentOverlay;
 
 		public GDIPreviewForm(VixenPreviewData data, Guid instanceId)
 		{
@@ -54,6 +55,10 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 			// Give the GDI control access to the display items
 			gdiControl.DisplayItems = DisplayItems;
+
+			_transparentOverlay = CreateTransparentOverlay();
+			Controls.Add(_transparentOverlay);
+			_transparentOverlay.BringToFront();
 		}
 
 		private void ConfigureAlwaysOnTop()
@@ -68,12 +73,49 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			}
 		}
 
+		private Label CreateTransparentOverlay()
+		{
+			var label = new Label
+			{
+				Text = "Transparent Mode — click to disable",
+				BackColor = Color.FromArgb(40, 110, 175),
+				ForeColor = Color.White,
+				Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold),
+				BorderStyle = BorderStyle.FixedSingle,
+				AutoSize = true,
+				Padding = new Padding(4),
+				Cursor = Cursors.Hand,
+				Location = new Point(4, 4),
+				Visible = false
+			};
+			label.Click += (s, e) =>
+			{
+				_transparentBackground = false;
+				gdiControl.TransparentBackground = false;
+				gdiControl.CreateAlphaBackground();
+				ConfigureTransparentBackground();
+				SaveWindowState();
+			};
+			label.MouseDown += (s, e) =>
+			{
+				if (e.Button == MouseButtons.Right) HandleContextMenu();
+			};
+			return label;
+		}
+
 		private void ConfigureTransparentBackground()
 		{
 			if (_transparentBackground)
+			{
 				WinApiTransparency.EnableTransparency(Handle);
+				_transparentOverlay.Visible = true;
+				_transparentOverlay.BringToFront();
+			}
 			else
+			{
 				WinApiTransparency.DisableTransparency(Handle);
+				_transparentOverlay.Visible = false;
+			}
 		}
 
 		private void ConfigureBorders()

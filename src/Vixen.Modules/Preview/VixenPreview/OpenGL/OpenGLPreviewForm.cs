@@ -55,6 +55,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private bool _alwaysOnTop;
 		private bool _enableLightScaling = true;
 		private bool _transparentBackground;
+		private Label _transparentOverlay;
 
 		private float _pointScaleFactor;
 		private long _frameCount;
@@ -102,6 +103,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			// Separate out the light based shapes
 			_lightBasedDisplayItems = Data.DisplayItems.Where(item => item.IsLightShape()).ToList();
+
+			_transparentOverlay = CreateTransparentOverlay();
+			Controls.Add(_transparentOverlay);
+			_transparentOverlay.BringToFront();
 		}
 
 		private const int CP_NOCLOSE_BUTTON = 0x200;
@@ -125,12 +130,48 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			statusStrip.Visible = _showStatus;
 		}
 
+		private Label CreateTransparentOverlay()
+		{
+			var label = new Label
+			{
+				Text = "Transparent Mode — click to disable",
+				BackColor = Color.FromArgb(40, 110, 175),
+				ForeColor = Color.White,
+				Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold),
+				BorderStyle = BorderStyle.FixedSingle,
+				AutoSize = true,
+				Padding = new Padding(4),
+				Cursor = Cursors.Hand,
+				Location = new Point(4, 4),
+				Visible = false
+			};
+			label.Click += (s, e) =>
+			{
+				_transparentBackground = false;
+				ConfigureTransparentBackground();
+				SaveWindowState();
+				glControl.Invalidate();
+			};
+			label.MouseDown += (s, e) =>
+			{
+				if (e.Button == MouseButtons.Right) HandleContextMenu();
+			};
+			return label;
+		}
+
 		private void ConfigureTransparentBackground()
 		{
 			if (_transparentBackground)
+			{
 				WinApiTransparency.EnableTransparency(Handle);
+				_transparentOverlay.Visible = true;
+				_transparentOverlay.BringToFront();
+			}
 			else
+			{
 				WinApiTransparency.DisableTransparency(Handle);
+				_transparentOverlay.Visible = false;
+			}
 		}
 
 		private void HandleContextMenu()
