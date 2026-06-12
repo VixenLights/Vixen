@@ -105,6 +105,12 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 		private void ConfigureTransparentBackground()
 		{
+			if (gdiControl.TransparentBackground != _transparentBackground)
+			{
+				gdiControl.TransparentBackground = _transparentBackground;
+				gdiControl.CreateAlphaBackground();
+			}
+
 			if (_transparentBackground)
 			{
 				if (!IsOnTopWhenPlaying)
