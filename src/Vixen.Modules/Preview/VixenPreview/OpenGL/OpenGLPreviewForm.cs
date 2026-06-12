@@ -134,15 +134,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			var label = new Label
 			{
-				Text = "Transparent Mode — click to disable",
+				Text = @"Transparent",
 				BackColor = Color.FromArgb(40, 110, 175),
 				ForeColor = Color.White,
-				Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold),
+				Font = new Font(Font.FontFamily, Font.Size - 2, FontStyle.Bold),
 				BorderStyle = BorderStyle.FixedSingle,
 				AutoSize = true,
-				Padding = new Padding(4),
+				Padding = new Padding(1),
 				Cursor = Cursors.Hand,
-				Location = new Point(4, 4),
+				Location = new Point(2, 2),
 				Visible = false
 			};
 			label.Click += (s, e) =>
