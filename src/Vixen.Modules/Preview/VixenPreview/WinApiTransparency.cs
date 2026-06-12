@@ -24,6 +24,11 @@ namespace VixenModules.Preview.VixenPreview
 		/// </summary>
 		internal static readonly Color KeyColor = Color.FromArgb(1, 1, 1);
 
+		/// <summary>
+		/// A nearly black non-key color used for fixed resize bands in transparent preview controls.
+		/// </summary>
+		internal static readonly Color ResizeBandColor = Color.FromArgb(2, 2, 2);
+
 		/// <summary>COLORREF encoding of <see cref="KeyColor"/> (0x00BBGGRR).</summary>
 		private const uint KeyColorRef = 0x00010101;
 

@@ -16,6 +16,9 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		private FastPixel.FastPixel _fastPixel;
 		private long _frameCount;
         private bool _defaultBackground = true;
+        
+        internal const int ResizeBandRightWidth = 4;
+        internal const int ResizeBandBottomHeight = 4;
 
 		public GDIControl()
 		{
@@ -174,6 +177,10 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				// Use the transparency key color rather than pure black so that Windows system
 				// chrome (borders, inactive title bar) rendered at 0,0,0 stays opaque and clickable.
 				gfx.Clear(TransparentBackground ? WinApiTransparency.KeyColor : Color.Black);
+				if (TransparentBackground)
+				{
+					DrawResizeBands(gfx);
+				}
 				gfx.Dispose();
 			}
 			{
@@ -212,6 +219,17 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		public void SetPixel(int x, int y, Color color)
 		{
 			_fastPixel.SetPixel(new Point(x, y), color);
+		}
+
+		private void DrawResizeBands(Graphics gfx)
+		{
+			var width = Math.Min(ResizeBandRightWidth, Width);
+			var height = Math.Min(ResizeBandBottomHeight, Height);
+			using (var brush = new SolidBrush(WinApiTransparency.ResizeBandColor))
+			{
+				gfx.FillRectangle(brush, Width - width, 0, width, Height);
+				gfx.FillRectangle(brush, 0, Height - height, Width, height);
+			}
 		}
 				
 		protected override void OnPaint(PaintEventArgs e)

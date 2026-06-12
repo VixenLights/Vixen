@@ -22,6 +22,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
+		internal const int ResizeBandRightWidth = 4;
 		private readonly MillisecondsValue _backgroundDraw;
 		private readonly MillisecondsValue _pointsUpdate;
 		private readonly MillisecondsValue _pointsDraw;
@@ -928,7 +929,29 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				const float k = 1f / 255f;
 				GL.ClearColor(k, k, k, 1f);
 			}
+			else
+			{
+				GL.ClearColor(0f, 0f, 0f, 1f);
+			}
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+			if (_transparentBackground)
+			{
+				DrawResizeBands();
+			}
+		}
+
+		private void DrawResizeBands()
+		{
+			var width = Math.Min(ResizeBandRightWidth, _width);
+			var height = Math.Min(statusStrip.Height + 4, _height);
+			var color = WinApiTransparency.ResizeBandColor;
+			GL.Enable(EnableCap.ScissorTest);
+			GL.ClearColor(color.R / 255f, color.G / 255f, color.B / 255f, 1f);
+			GL.Scissor(_width - width, 0, width, _height);
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+			GL.Scissor(0, 0, _width, height);
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+			GL.Disable(EnableCap.ScissorTest);
 		}
 
 		private void DrawPoints(Matrix4 mvp)
