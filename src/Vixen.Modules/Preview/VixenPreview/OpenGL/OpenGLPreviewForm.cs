@@ -163,6 +163,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			if (_transparentBackground)
 			{
+				if (!IsOnTopWhenPlaying)
+				{
+					_alwaysOnTop = true;
+					ConfigureAlwaysOnTop();
+				}
 				WinApiTransparency.EnableTransparency(Handle);
 				_transparentOverlay.Visible = true;
 				_transparentOverlay.BringToFront();
