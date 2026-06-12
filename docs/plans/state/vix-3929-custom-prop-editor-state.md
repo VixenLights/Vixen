@@ -8,7 +8,7 @@ This plan follows `.agents/PLANS.md` from the repository root. Any contributor i
 
 After this work, a Vixen user can open the Custom Prop Editor, import an xLights custom model or create a prop manually, author named State definitions directly in that editor, preview those states on the prop drawing surface, save the prop, reopen it, and import it into Vixen Preview as a real State property. This removes the current gap where xModel `stateInfo` can be imported into a prop-like structure but cannot be edited in the Custom Prop Editor in the same workflow as the Display Setup State property.
 
-The visible result is a third lower-left tab named `State Definition` next to `Prop Info` and `Element Info`. When that tab is active, the right-side prop viewer switches into State Definition preview: the full prop is shown in light gray, active State item assignments are overlaid in their colors, overlapping active colors are mixed deterministically, and selecting nodes in the viewer while a State item row is selected checks the corresponding assignment boxes for that item. Leaving the tab returns the viewer to its normal Custom Prop Editor behavior. Saving a prop persists the new state data in `ElementModel.StateDefinitions`, and importing the prop into Preview attaches the Vixen State property to the designated model element or to the root fallback.
+The visible result is a third lower-left tab named `State Definition` next to `Prop Info` and `Element Info`. When that tab is active, the right-side prop viewer switches into State Definition preview: the full prop is shown in light gray, active State item assignments are overlaid in their colors, overlapping active colors are mixed deterministically, and selecting nodes in the viewer while a State item row is selected checks the corresponding assignment boxes for that item. Leaving the tab returns the viewer to its normal Custom Prop Editor behavior. Saving a prop persists the new state data in `ElementModel.StateDefinitionModels`, and importing the prop into Preview attaches the Vixen State property to the designated model element or to the root fallback.
 
 ## Progress
 
@@ -16,9 +16,9 @@ The visible result is a third lower-left tab named `State Definition` next to `P
 - [x] (2026-06-11 00:00 -05:00) Inspected current Custom Prop Editor model, xModel import, Preview import builder, State property data model, Custom Prop Editor project references, Preview project references, and existing xModel StateInfo tests.
 - [x] (2026-06-11 00:00 -05:00) Created this implementation plan with milestones, design decisions, file targets, Jira paste text, validation commands, and acceptance criteria.
 - [x] (2026-06-11 00:00 -05:00) Updated Jira issue VIX-3929 with the plan summary, high-level design, risks, acceptance criteria, and testing steps.
-- [ ] Add the Custom Prop Editor state data model foundation: model type, authoritative StateDefinitions shape, migration helpers, and mapping helpers.
-- [ ] Update xModel import so new StateInfo imports fill `ElementModel.StateDefinitions`, assign Model Type values, and keep legacy State groups as a compatibility option.
-- [ ] Update Preview import so `ElementModel.StateDefinitions` is authoritative and legacy `ElementModel.StateDefinition` remains a direct-import fallback.
+- [x] (2026-06-11 00:00 -05:00) Added the Custom Prop Editor state data model foundation: `ElementModelType`, `StatePropertyId`, authoritative `StateDefinitionModels`, State definition/item models, mapper, model resolver, migration service, direct State property project reference, and focused tests.
+- [ ] Update xModel import so new StateInfo imports fill `ElementModel.StateDefinitionModels`, assign Model Type values, and keep legacy State groups as a compatibility option.
+- [ ] Update Preview import so `ElementModel.StateDefinitionModels` is authoritative and legacy `ElementModel.StateDefinition` remains a direct-import fallback.
 - [ ] Add the Custom Prop Editor State Definition view models, commands, validation, and save blocking.
 - [ ] Add the State Definition tab UI and viewer preview integration.
 - [ ] Add focused automated tests for model data, import, migration, Preview import, editor view models, and local preview behavior.
@@ -41,9 +41,12 @@ The visible result is a third lower-left tab named `State Definition` next to `P
 - Observation: Existing xModel import tests assert the old item-like shape of `ElementModel.StateDefinitions`.
   Evidence: `src/Vixen.Tests/App/CustomPropEditor/Import/XLights/XModelImportHierarchyTests.cs` expects a single `modelGroup.StateDefinitions` item with `StateDefinitionName == "Wave"` and `Name == "Hand"`.
 
+- Observation: The Custom Prop Editor project can reference the State property project without creating a circular reference.
+  Evidence: `dotnet build src\Vixen.Modules\App\CustomPropEditor\CustomPropEditor.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore` succeeded after adding the project reference.
+
 ## Decision Log
 
-- Decision: Use `ElementModel.StateDefinitions` on the designated model element as the only authoritative Custom Prop Editor State authoring storage.
+- Decision: Use `ElementModel.StateDefinitionModels` on the designated model element as the only authoritative Custom Prop Editor State authoring storage, preserving old item-like `ElementModel.StateDefinitions` only as migration input.
   Rationale: The user explicitly chose this storage location and wants `ElementModel.StateDefinition` deprecated so the Custom Prop Editor mirrors the State property behavior instead of maintaining duplicate legacy data.
   Date/Author: 2026-06-11 / Codex
 
@@ -67,13 +70,19 @@ The visible result is a third lower-left tab named `State Definition` next to `P
   Rationale: The user requires color mixing for overlapping active State items. The plan leaves room to choose an implementation-compatible formula, but it must be stable and tested.
   Date/Author: 2026-06-11 / Codex
 
+- Decision: Preserve the old item-like `ElementModel.StateDefinitions` property as legacy migration input and introduce `ElementModel.StateDefinitionModels` as the new authoritative State authoring collection.
+  Rationale: Older `.prp` files may already contain a serialized field named `StateDefinitions` with the old `ObservableCollection<StateDefinition>` shape. Keeping that property avoids risking LiteDB deserialization while still preventing new authoritative writes to the legacy shape.
+  Date/Author: 2026-06-11 / Codex
+
 ## Outcomes & Retrospective
 
-This plan is ready for implementation. It resolves the main design questions from the requirements phase: authoritative storage is `ElementModel.StateDefinitions`; legacy `ElementModel.StateDefinition` is read-only migration/fallback input; Model Type uses proper .NET naming; invalid State data blocks save with warnings; and preview is tab-activated with viewer selection updating assignments only when a specific State item row is being edited.
+This plan is ready for implementation. It resolves the main design questions from the requirements phase: authoritative storage is `ElementModel.StateDefinitionModels`; legacy `ElementModel.StateDefinition` and the old item-like `ElementModel.StateDefinitions` are read-only migration/fallback input; Model Type uses proper .NET naming; invalid State data blocks save with warnings; and preview is tab-activated with viewer selection updating assignments only when a specific State item row is being edited.
 
 No implementation has been performed yet. Update this section after each milestone with what changed, what passed, and what remains.
 
-Milestone 1 is complete. Jira issue VIX-3929 has been updated with the implementation plan summary, design notes, acceptance criteria, risks, and testing steps. Implementation has not started yet.
+Milestone 1 is complete. Jira issue VIX-3929 has been updated with the implementation plan summary, design notes, acceptance criteria, risks, and testing steps.
+
+Milestone 2 is complete. The Custom Prop Editor now has foundational State model types, a Model Type enum, a stable State property ID on `ElementModel`, a compatibility-safe authoritative collection named `StateDefinitionModels`, mapping helpers to the Vixen State property model, a model resolver, and a migration service for old imported-row and element-level State data. The Custom Prop Editor project now references the State property project directly. Focused Custom Prop Editor and State property tests pass.
 
 ## Context and Orientation
 
@@ -81,11 +90,11 @@ Vixen is a Windows .NET 10 WPF application. The Custom Prop Editor lives under `
 
 The Vixen State property lives under `src/Vixen.Modules/Property/State`. Its persistent model is `StateData`, which contains one or more `StateDefinitionData` objects, each containing ordered `StateItemData` objects. A State definition is a named set such as `Wave`; a State item is one row inside that definition, such as `Hand`, with a color and element assignments. The State effect implemented by VIX-3924 consumes this State property in sequences.
 
-The current Custom Prop Editor has two state-related shapes. The legacy shape is `ElementModel.StateDefinition`, a single `StateDefinition` object exposed through Element Info fields named `State Name`, `State Item`, and `State Item Color`. The newer import shape is `ElementModel.StateDefinitions`, currently an `ObservableCollection<StateDefinition>` where each entry is really one imported State item row grouped later by `StateDefinitionName`. VIX-3929 must change `ElementModel.StateDefinitions` into the authoritative State authoring collection that mirrors the State property model, and must deprecate new writes to `ElementModel.StateDefinition`.
+The current Custom Prop Editor has two state-related shapes. The legacy shape is `ElementModel.StateDefinition`, a single `StateDefinition` object exposed through Element Info fields named `State Name`, `State Item`, and `State Item Color`. The newer import shape is `ElementModel.StateDefinitions`, currently an `ObservableCollection<StateDefinition>` where each entry is really one imported State item row grouped later by `StateDefinitionName`. VIX-3929 now uses `ElementModel.StateDefinitionModels` as the authoritative State authoring collection that mirrors the State property model, and must deprecate new writes to `ElementModel.StateDefinition` and the legacy item-like `ElementModel.StateDefinitions`.
 
 The xModel import code is `src/Vixen.Modules/App/CustomPropEditor/Import/XLights/XModelImport.cs`. It reads xLights `custommodel`, `subModel`, `faceInfo`, and `stateInfo` XML. It currently creates a top-level prop root such as `Santa Waving {1}`, a model group such as `Santa Waving {1} - Model`, optional submodel groups, optional face groups, and optional legacy State groups when `CreateLegacyStateGroups` is true. It already parses `stateInfo` into `CustomModel.StateInfos`, and then `AttachStateDefinitions` stores imported State items on the model group.
 
-The Preview import code is `src/Vixen.Modules/Preview/VixenPreview/PreviewCustomPropBuilder.cs`. It creates real Vixen `ElementNode` objects from `ElementModel` objects, maps `ElementModel.Id` to `ElementNode`, and attaches properties such as Order, Face, Color, and State. This file must be updated so `ElementModel.StateDefinitions` is authoritative, and legacy `ElementModel.StateDefinition` is only a fallback for older files.
+The Preview import code is `src/Vixen.Modules/Preview/VixenPreview/PreviewCustomPropBuilder.cs`. It creates real Vixen `ElementNode` objects from `ElementModel` objects, maps `ElementModel.Id` to `ElementNode`, and attaches properties such as Order, Face, Color, and State. This file must be updated so `ElementModel.StateDefinitionModels` is authoritative, and legacy `ElementModel.StateDefinition` is only a fallback for older files.
 
 The main Custom Prop Editor view is `src/Vixen.Modules/App/CustomPropEditor/Views/CustomPropEditorWindow.xaml`. Its lower-left tab control currently contains `Prop Info` and `Element Info`. Its right-side viewer is `controls:PropDesigner`, backed by `DrawingPanelViewModel`, `LightViewModel`, and current selection behavior. VIX-3929 adds a third lower-left tab named `State Definition` and changes viewer rendering/selection behavior only while that tab is active.
 
@@ -95,15 +104,15 @@ Follow the repository rules in `AGENTS.md`: read docs first, use tabs and CRLF f
 
 Start by updating Jira VIX-3929 with the plan summary in the Milestone 1 text below. If using the Jira skill, read `.agents/skills/jira/SKILL.md` first and follow it. Record the update outcome in `Progress` and `Artifacts and Notes`.
 
-Milestone 2 establishes the data model and mapping foundation. Add a properly named model type enum, update `ElementModel` to store Model Type and a stable State property/container ID, and replace the existing item-like `StateDefinitions` collection with a definition/item shape that can map directly to the State property model. Prefer adding two new model files, `src/Vixen.Modules/App/CustomPropEditor/Model/StateDefinitionModel.cs` and `src/Vixen.Modules/App/CustomPropEditor/Model/StateItemModel.cs`, rather than overloading the legacy `StateDefinition` class. Keep the existing `StateDefinition` class for `ElementModel.StateDefinition` legacy migration input and mark it obsolete if practical. Add helper methods that convert between Custom Prop Editor state models and `VixenModules.Property.State.StateData`, `StateDefinitionData`, and `StateItemData`. If direct reuse requires a project reference from `CustomPropEditor.csproj` to `src/Vixen.Modules/Property/State/State.csproj`, add that project reference and verify `Vixen.sln` platform mappings remain x64 for `Any CPU` entries.
+Milestone 2 establishes the data model and mapping foundation. Add a properly named model type enum, update `ElementModel` to store Model Type and a stable State property/container ID, and introduce an authoritative definition/item shape that can map directly to the State property model. The completed implementation uses `ElementModel.StateDefinitionModels` for that new shape and preserves the old item-like `ElementModel.StateDefinitions` collection as legacy migration input. Prefer adding two new model files, `src/Vixen.Modules/App/CustomPropEditor/Model/StateDefinitionModel.cs` and `src/Vixen.Modules/App/CustomPropEditor/Model/StateItemModel.cs`, rather than overloading the legacy `StateDefinition` class. Keep the existing `StateDefinition` class for `ElementModel.StateDefinition` legacy migration input and mark it obsolete if practical. Add helper methods that convert between Custom Prop Editor state models and `VixenModules.Property.State.StateData`, `StateDefinitionData`, and `StateItemData`. If direct reuse requires a project reference from `CustomPropEditor.csproj` to `src/Vixen.Modules/Property/State/State.csproj`, add that project reference and verify `Vixen.sln` platform mappings remain x64 for `Any CPU` entries.
 
 There is one important serialization challenge in Milestone 2. The user-facing requirement is to use `ElementModel.StateDefinitions` going forward, but older prop files may already contain a serialized field with that name using the old item-like `ObservableCollection<StateDefinition>` shape. The first implementation attempt should preserve the desired public/domain name by renaming the old item-like collection to a legacy placeholder such as `LegacyStateDefinitions` or a private LiteDB-compatible backing property, then use `StateDefinitions` for the new definition/item structure. If LiteDB cannot reliably deserialize older files through that rename, keep the old serialized field as the legacy placeholder and introduce a new authoritative property with a clear name such as `StateDefinitionModels` or `StateData`. In that fallback, update this ExecPlan's Decision Log and all affected requirements references before continuing. The priority order is: load old props safely, keep new authoring data non-duplicated and authoritative, and use the `StateDefinitions` name for the new structure when serialization permits it.
 
 The model foundation must include a way to find the current model element. Add a helper such as `PropStateModelResolver` under `src/Vixen.Modules/App/CustomPropEditor/Services` or a focused model helper namespace. It should return the single explicit `ElementModelType.Model` element when present, otherwise return `Prop.RootNode`. It should reject more than one explicit model if bad data is loaded by keeping the first in tree order and reporting validation/warnings, then the editor can repair by clearing all but one. It should also enforce that a `Model` element is not a leaf unless it is the only element in the prop.
 
-Milestone 3 updates xModel import. In `XModelImport.AssembleModel`, mark the created model group with Model Type `Model`. In `AssembleSubModels`, mark imported submodel groups with Model Type `SubModel`. In `AssembleFaces`, mark imported faceInfo definition groups with Model Type `FaceInfo`, not the parent `Faces` container. In `AssembleStates`, mark imported legacy stateInfo definition groups with Model Type `StateInfo`, not the parent `States` container. In `AttachStateDefinitions`, populate the new `ElementModel.StateDefinitions` model shape on the model group. Keep `CreateLegacyStateGroups = true` and keep legacy State groups visible for the production validation period, but do not write authoritative `ElementModel.StateDefinition` values to those groups.
+Milestone 3 updates xModel import. In `XModelImport.AssembleModel`, mark the created model group with Model Type `Model`. In `AssembleSubModels`, mark imported submodel groups with Model Type `SubModel`. In `AssembleFaces`, mark imported faceInfo definition groups with Model Type `FaceInfo`, not the parent `Faces` container. In `AssembleStates`, mark imported legacy stateInfo definition groups with Model Type `StateInfo`, not the parent `States` container. In `AttachStateDefinitions`, populate the new `ElementModel.StateDefinitionModels` model shape on the model group. Keep `CreateLegacyStateGroups = true` and keep legacy State groups visible for the production validation period, but do not write authoritative `ElementModel.StateDefinition` values to those groups.
 
-Milestone 4 updates migration and Preview import. Add a migration helper that can read old files with legacy `ElementModel.StateDefinition` values and old item-like `ElementModel.StateDefinitions` values if LiteDB can still deserialize them. The migration should group by legacy `StateDefinitionName`, create real State definitions and items with new stable IDs where missing, preserve item names, colors, item order, and assignments, and be idempotent. Use the helper when loading props in `PropEditorViewModel.LoadPropFromPath` or immediately after `PropModelServices.Instance().LoadProp(path)` returns. Update `PreviewCustomPropBuilder.AddImportedStateDefinitions` to read the new model shape and map each `ElementModel.Id` assignment to the created `ElementNode.Id`. Keep the existing child `StateDefinition` scan as a fallback only when the new StateDefinitions collection is empty.
+Milestone 4 updates migration and Preview import. Add a migration helper that can read old files with legacy `ElementModel.StateDefinition` values and old item-like `ElementModel.StateDefinitions` values if LiteDB can still deserialize them. The migration should group by legacy `StateDefinitionName`, create real State definitions and items with new stable IDs where missing, preserve item names, colors, item order, and assignments, and be idempotent. Use the helper when loading props in `PropEditorViewModel.LoadPropFromPath` or immediately after `PropModelServices.Instance().LoadProp(path)` returns. Update `PreviewCustomPropBuilder.AddImportedStateDefinitions` to read the new `StateDefinitionModels` shape and map each `ElementModel.Id` assignment to the created `ElementNode.Id`. Keep the existing child `StateDefinition` scan as a fallback only when the new `StateDefinitionModels` collection is empty.
 
 Milestone 5 adds State Definition editor view models and validation. Create Custom Prop Editor-specific view models under `src/Vixen.Modules/App/CustomPropEditor/ViewModels/State` or directly under `ViewModels` with clear names such as `StateDefinitionEditorViewModel`, `CustomPropStateDefinitionViewModel`, `CustomPropStateItemViewModel`, and `CustomPropStateAssignmentTreeNodeViewModel`. These should inherit from Catel `ViewModelBase` or the existing project base patterns, expose Catel properties and commands, and keep business logic out of code-behind. Implement Add, Delete, Rename, Copy, Add Item, Remove Item, Move Up, Move Down, color edit, assignment check/uncheck, and selected row behavior. Reuse or mirror the State property validation rules: definition names are required, trimmed, exact duplicates blocked, case-only duplicates warn, short names warn, item names required and trimmed, duplicate item names allowed, and group assignment clears/greys descendants. Invalid State data must block Save and show a warning that points the user to the State Definition tab.
 
@@ -248,7 +257,7 @@ Expected successful test output includes an xUnit summary with zero failed tests
 
 Automated acceptance is met when the focused and full validation commands pass and the tests prove these behaviors:
 
-A manually created prop can store State definitions in the model element's `ElementModel.StateDefinitions`, save them, reopen them, and preserve all State property IDs, State definition IDs, State item IDs, colors, item order, descriptions, and assignments.
+A manually created prop can store State definitions in the model element's `ElementModel.StateDefinitionModels`, save them, reopen them, and preserve all State property IDs, State definition IDs, State item IDs, colors, item order, descriptions, and assignments.
 
 An xModel import with `stateInfo` creates one State definition per imported `stateInfo`, creates State items inside each definition, maps assignments to model leaf `ElementModel.Id` values, marks the imported model group as `Model`, marks imported submodel groups as `SubModel`, marks imported faceInfo groups as `FaceInfo`, and marks imported legacy stateInfo groups as `StateInfo`.
 
@@ -274,7 +283,7 @@ Manual acceptance is met with this scenario:
 
 ## Idempotence and Recovery
 
-This plan is safe to implement incrementally. The data model and migration helpers should be additive first: keep legacy `ElementModel.StateDefinition` readable until all new paths pass tests. If a test fails after changing `ElementModel.StateDefinitions`, update the mapper or migration helper rather than restoring writes to `ElementModel.StateDefinition`.
+This plan is safe to implement incrementally. The data model and migration helpers should be additive first: keep legacy `ElementModel.StateDefinition` and old item-like `ElementModel.StateDefinitions` readable until all new paths pass tests. If a test fails after introducing `ElementModel.StateDefinitionModels`, update the mapper or migration helper rather than restoring writes to legacy state fields.
 
 If adding a project reference from CustomPropEditor to the State property project creates a circular reference, stop and record the dependency issue in `Surprises & Discoveries`. In that case, use Custom Prop Editor DTOs with explicit mapper methods in Preview, where the State property reference already exists. Do not force a circular reference.
 
@@ -297,19 +306,19 @@ Milestone 1 Jira update text:
     #### Requirements
 
     - Add a `State Definition` tab next to `Prop Info` and `Element Info`.
-    - Persist authoritative State data in the model element's `ElementModel.StateDefinitions` collection.
+    - Persist authoritative State data in the model element's `ElementModel.StateDefinitionModels` collection.
     - Deprecate new writes to legacy `ElementModel.StateDefinition` and hide the old Element Info fields `State Name`, `State Item`, and `State Item Color`.
     - Add a `Model Type` field with `None`, `Model`, `SubModel`, `FaceInfo`, and `StateInfo`.
     - Enforce one explicit `Model` element at most; use the root element as the implicit model when no explicit model exists.
-    - Map xModel `stateInfo` into `ElementModel.StateDefinitions`.
+    - Map xModel `stateInfo` into `ElementModel.StateDefinitionModels`.
     - Continue creating legacy State groups during xModel import while the compatibility option remains enabled for production validation.
-    - Migrate older prop files with legacy element-level State data into `ElementModel.StateDefinitions`.
+    - Migrate older prop files with legacy element-level State data into `ElementModel.StateDefinitionModels`.
     - Import props into Preview by attaching one State property to the explicit model element, imported model element, or root fallback.
     - Provide a local Custom Prop Editor preview that is active while the State Definition tab is active, shows the full prop in light gray, overlays active State item colors, mixes overlapping colors deterministically, lets viewer selection update assignments for the selected State item row, and does not publish Live Preview messages.
 
     #### High-Level Design
 
-    Use the State property model as the contract for Custom Prop Editor State authoring. Store State definitions on the model element's `ElementModel.StateDefinitions` collection, assign State items to `ElementModel.Id` values, and map those IDs to `ElementNode.Id` values during Preview import. Keep legacy element-level State data readable for migration and direct Preview import, but make `ElementModel.StateDefinitions` authoritative when both exist.
+    Use the State property model as the contract for Custom Prop Editor State authoring. Store State definitions on the model element's `ElementModel.StateDefinitionModels` collection, assign State items to `ElementModel.Id` values, and map those IDs to `ElementNode.Id` values during Preview import. Keep legacy element-level State data readable for migration and direct Preview import, but make `ElementModel.StateDefinitionModels` authoritative when both exist.
 
     #### Acceptance Criteria
 
@@ -323,7 +332,7 @@ Milestone 1 Jira update text:
 
     #### Testing
 
-    - Add automated tests for State data persistence through `ElementModel.StateDefinitions`, Model Type rules, xModel import mapping, legacy migration, Preview import mapping, State Definition editor view-model behavior, save blocking, local preview behavior, and no Live Preview broadcast use.
+    - Add automated tests for State data persistence through `ElementModel.StateDefinitionModels`, Model Type rules, xModel import mapping, legacy migration, Preview import mapping, State Definition editor view-model behavior, save blocking, local preview behavior, and no Live Preview broadcast use.
     - Run focused Custom Prop Editor, State property, and Preview import tests.
     - Run the full test suite, Debug and Release solution builds, and `git diff --check` before final acceptance.
 
@@ -346,6 +355,20 @@ Validation evidence should be recorded here as work proceeds. Use concise transc
 Milestone 1 Jira update:
 
     VIX-3929 was updated with the plan summary, high-level design, risks, acceptance criteria, and testing steps.
+
+Milestone 2 validation:
+
+    dotnet build src\Vixen.Modules\App\CustomPropEditor\CustomPropEditor.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded with existing warnings, including the known LiteDB NU1904 advisory.
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor" --no-restore
+    Passed!  - Failed: 0, Passed: 26, Skipped: 0, Total: 26
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Property.State" --no-restore
+    Passed!  - Failed: 0, Passed: 77, Skipped: 0, Total: 77
+
+    git diff --check
+    Exited successfully. Git printed an expected line-ending normalization warning for the new plan file; no whitespace errors were reported.
 
 ## Interfaces and Dependencies
 
@@ -400,4 +423,5 @@ At completion, preview coordination must be local to Custom Prop Editor. It must
 
 - 2026-06-11 / Codex: Initial ExecPlan created from `docs/state/vix-3929-custom-prop-editor-state.md`, the current Custom Prop Editor model/import code, Preview custom prop builder, State property model, and project-specific skill guidance. The plan records the user's clarified decisions about storage, legacy deprecation, tab-activated preview, mixed colors, save blocking, and helper reuse.
 - 2026-06-11 / Codex: Marked Milestone 1 complete after user confirmation that Jira issue VIX-3929 was updated with the planning details.
-- 2026-06-11 / Codex: Clarified the `ElementModel.StateDefinitions` serialization migration strategy. The plan now directs implementers to prefer the new structure under `StateDefinitions`, but allows preserving the old serialized field as a legacy placeholder and adding a new authoritative property if LiteDB compatibility requires it.
+- 2026-06-11 / Codex: Clarified the `ElementModel.StateDefinitions` serialization migration strategy. The plan initially directed implementers to prefer the new structure under `StateDefinitions`, but allowed preserving the old serialized field as a legacy placeholder and adding a new authoritative property if LiteDB compatibility required it.
+- 2026-06-11 / Codex: Completed Milestone 2 using the compatibility-safe fallback. The old item-like `ElementModel.StateDefinitions` remains as migration input, and the new authoritative collection is `ElementModel.StateDefinitionModels`.
