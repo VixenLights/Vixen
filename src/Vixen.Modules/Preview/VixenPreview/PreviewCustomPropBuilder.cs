@@ -24,6 +24,8 @@ namespace VixenModules.Preview.VixenPreview
 		private readonly Dictionary<string, string> _tokenLookup = new Dictionary<string, string>();
 		private static readonly Regex Regex = new Regex(@"{\d+}");
 		private readonly VixenPreviewControl _parent;
+		private const string DefaultStateDefinitionName = "State - 1";
+		private const string DefaultStateItemName = "Item Name 1";
 
 		public PreviewCustomPropBuilder(Prop prop, double zoomLevel, VixenPreviewControl parent)
 		{
@@ -169,7 +171,10 @@ namespace VixenModules.Preview.VixenPreview
 				AddStateProperties(child);
 			}
 
-			AddImportedStateDefinitions(model);
+			if (AddImportedStateDefinitions(model))
+			{
+				return;
+			}
 
 			var stateItemModels = model.Children
 				.Where(child => child.StateDefinition != null)
@@ -179,45 +184,11 @@ namespace VixenModules.Preview.VixenPreview
 				return;
 			}
 
-			var state = node.Properties.Contains(StateDescriptor.ModuleId)
-				? node.Properties.Get(StateDescriptor.ModuleId) as StateModule
-				: node.Properties.Add(StateDescriptor.ModuleId) as StateModule;
-			if (state == null)
-			{
-				return;
-			}
-
-			state.Name = stateItemModels[0].StateDefinition.StateDefinitionName;
-			state.Items = stateItemModels
+			var stateDefinitions = stateItemModels
 				.Where(item => _elementModelMap.ContainsKey(item.Id))
-				.Select(item => new StateItemData
-				{
-					Name = item.StateDefinition.Name,
-					Color = item.StateDefinition.DefaultColor,
-					ElementNodeIds = [_elementModelMap[item.Id].Id]
-				})
-				.ToList();
-		}
-
-		private void AddImportedStateDefinitions(ElementModel model)
-		{
-			if (model.StateDefinitions == null ||
-				!model.StateDefinitions.Any() ||
-				!_elementModelMap.TryGetValue(model.Id, out var node))
-			{
-				return;
-			}
-
-			var state = node.Properties.Contains(StateDescriptor.ModuleId)
-				? node.Properties.Get(StateDescriptor.ModuleId) as StateModule
-				: node.Properties.Add(StateDescriptor.ModuleId) as StateModule;
-			if (state == null)
-			{
-				return;
-			}
-
-			state.StateDefinitions = model.StateDefinitions
-				.GroupBy(definition => definition.StateDefinitionName)
+				.GroupBy(item => string.IsNullOrWhiteSpace(item.StateDefinition.StateDefinitionName)
+					? DefaultStateDefinitionName
+					: item.StateDefinition.StateDefinitionName.Trim())
 				.Select(group => new StateDefinitionData
 				{
 					Name = group.Key,
@@ -225,7 +196,126 @@ namespace VixenModules.Preview.VixenPreview
 					Items = group
 						.Select(item => new StateItemData
 						{
-							Name = item.Name,
+							Name = string.IsNullOrWhiteSpace(item.StateDefinition.Name)
+								? DefaultStateItemName
+								: item.StateDefinition.Name.Trim(),
+							Color = item.StateDefinition.DefaultColor,
+							ElementNodeIds = [_elementModelMap[item.Id].Id]
+						})
+						.ToList()
+				})
+				.Where(definition => definition.Items.Any())
+				.ToList();
+
+			if (!stateDefinitions.Any())
+			{
+				return;
+			}
+
+			var state = GetOrCreateStateModule(node);
+			if (state == null)
+			{
+				return;
+			}
+
+			state.ModuleData = new StateData
+			{
+				Id = GetStatePropertyId(model),
+				StateDefinitions = stateDefinitions
+			};
+		}
+
+		private bool AddImportedStateDefinitions(ElementModel model)
+		{
+			if (!_elementModelMap.TryGetValue(model.Id, out var node))
+			{
+				return false;
+			}
+
+			var stateDefinitions = GetAuthoredStateDefinitions(model);
+			if (!stateDefinitions.Any())
+			{
+				stateDefinitions = GetLegacyImportedStateDefinitions(model);
+			}
+
+			if (!stateDefinitions.Any())
+			{
+				return false;
+			}
+
+			var state = GetOrCreateStateModule(node);
+			if (state == null)
+			{
+				return false;
+			}
+
+			state.ModuleData = new StateData
+			{
+				Id = GetStatePropertyId(model),
+				StateDefinitions = stateDefinitions
+			};
+
+			return true;
+		}
+
+		private List<StateDefinitionData> GetAuthoredStateDefinitions(ElementModel model)
+		{
+			if (model.StateDefinitionModels == null || !model.StateDefinitionModels.Any())
+			{
+				return [];
+			}
+
+			return model.StateDefinitionModels
+				.Select(group => new StateDefinitionData
+				{
+					Id = group.Id == Guid.Empty ? Guid.NewGuid() : group.Id,
+					Name = string.IsNullOrWhiteSpace(group.Name)
+						? DefaultStateDefinitionName
+						: group.Name.Trim(),
+					Description = group.Description ?? string.Empty,
+					Items = (group.Items ?? [])
+						.Select(item => new StateItemData
+						{
+							Id = item.Id == Guid.Empty ? Guid.NewGuid() : item.Id,
+							Name = string.IsNullOrWhiteSpace(item.Name)
+								? DefaultStateItemName
+								: item.Name.Trim(),
+							Color = item.Color,
+							ElementNodeIds = (item.ElementModelIds ?? [])
+								.Where(elementModelId => _elementModelMap.ContainsKey(elementModelId))
+								.Select(elementModelId => _elementModelMap[elementModelId].Id)
+								.Distinct()
+								.ToList()
+						})
+						.Where(item => item.ElementNodeIds.Any())
+						.ToList()
+				})
+				.Where(definition => definition.Items.Any())
+				.ToList();
+		}
+
+		private List<StateDefinitionData> GetLegacyImportedStateDefinitions(ElementModel model)
+		{
+			if (model.StateDefinitions == null || !model.StateDefinitions.Any())
+			{
+				return [];
+			}
+
+			return model.StateDefinitions
+				.GroupBy(definition => string.IsNullOrWhiteSpace(definition.StateDefinitionName)
+					? DefaultStateDefinitionName
+					: definition.StateDefinitionName.Trim())
+				.Select(group => new StateDefinitionData
+				{
+					Name = group.Key,
+					Description = string.Empty,
+					Items = group
+						.OrderBy(item => item.Index)
+						.Select(item => new StateItemData
+						{
+							Name = string.IsNullOrWhiteSpace(item.Name)
+								? DefaultStateItemName
+								: item.Name.Trim(),
 							Color = item.DefaultColor,
 							ElementNodeIds = (item.ElementModelIds ?? [])
 								.Where(elementModelId => _elementModelMap.ContainsKey(elementModelId))
@@ -238,6 +328,32 @@ namespace VixenModules.Preview.VixenPreview
 				})
 				.Where(definition => definition.Items.Any())
 				.ToList();
+		}
+
+		private static Guid GetStatePropertyId(ElementModel model)
+		{
+			return model.StatePropertyId == Guid.Empty ? Guid.NewGuid() : model.StatePropertyId;
+		}
+
+		private static StateModule GetOrCreateStateModule(ElementNode node)
+		{
+			if (node.Properties.Contains(StateDescriptor.ModuleId))
+			{
+				return node.Properties.Get(StateDescriptor.ModuleId) as StateModule;
+			}
+
+			var state = node.Properties.Add(StateDescriptor.ModuleId) as StateModule;
+			if (state != null)
+			{
+				return state;
+			}
+
+			state = new StateModule
+			{
+				Descriptor = new StateDescriptor()
+			};
+
+			return node.Properties.Add(state) as StateModule;
 		}
 
 		private ElementNode FindOrCreateElementNode(ElementModel elementModel, ElementNode parentNode)
