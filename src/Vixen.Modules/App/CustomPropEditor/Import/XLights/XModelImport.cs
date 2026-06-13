@@ -1,6 +1,7 @@
 ﻿using Catel.IoC;
 using Catel.Services;
 using NLog;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Xml;
 using VixenModules.App.CustomPropEditor.Import.XLights.Faces;
@@ -374,6 +375,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			Dictionary<int, ElementModel> lightNodes)
 		{
 			var modelGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - Model");
+			modelGroup.ModelType = ElementModelType.Model;
 			foreach (var modelNode in modelNodes.OrderBy(x => x.Value.Order))
 			{
 				var lightNode = PropModelServices.Instance().AddLightNode(
@@ -390,9 +392,18 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		private void AttachStateDefinitions(CustomModel cm, ElementModel modelGroup, Dictionary<int, ElementModel> lightNodes)
 		{
+			var usedDefinitionNames = new HashSet<string>(StringComparer.Ordinal);
+
 			foreach (var stateInfo in cm.StateInfos)
 			{
-				foreach (var stateItem in stateInfo.StateItems)
+				var stateDefinition = new StateDefinitionModel
+				{
+					Name = GetUniqueStateDefinitionName(stateInfo.Name, usedDefinitionNames),
+					Description = string.Empty,
+					Items = new ObservableCollection<StateItemModel>()
+				};
+
+				foreach (var stateItem in stateInfo.StateItems.OrderBy(item => item.Index))
 				{
 					var elementModelIds = GetElementModelIds(stateItem.RangeGroup, lightNodes);
 					if (!elementModelIds.Any())
@@ -400,16 +411,44 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 						continue;
 					}
 
-					modelGroup.StateDefinitions.Add(new StateDefinition
+					stateDefinition.Items.Add(new StateItemModel
 					{
-						StateDefinitionName = stateInfo.Name,
-						DefaultColor = stateItem.Color,
 						Name = stateItem.Name,
-						Index = stateItem.Index,
-						ElementModelIds = elementModelIds
+						Color = stateItem.Color,
+						ElementModelIds = new ObservableCollection<Guid>(elementModelIds)
 					});
 				}
+
+				if (stateDefinition.Items.Any())
+				{
+					modelGroup.StateDefinitionModels.Add(stateDefinition);
+				}
 			}
+
+			modelGroup.NormalizeStateModelData();
+		}
+
+		private static string GetUniqueStateDefinitionName(string name, HashSet<string> usedDefinitionNames)
+		{
+			var candidateName = string.IsNullOrWhiteSpace(name)
+				? StateDefinitionModel.DefaultName
+				: name.Trim();
+
+			if (usedDefinitionNames.Add(candidateName))
+			{
+				return candidateName;
+			}
+
+			var suffix = 2;
+			string uniqueName;
+			do
+			{
+				uniqueName = $"{candidateName} - {suffix}";
+				suffix++;
+			}
+			while (!usedDefinitionNames.Add(uniqueName));
+
+			return uniqueName;
 		}
 
 		private static List<Guid> GetElementModelIds(RangeGroup rangeGroup, Dictionary<int, ElementModel> lightNodes)
@@ -435,6 +474,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			{
 				if(subModel.Type == ModelType.Ranges && !subModel.Ranges.Any()) continue; //Skip sub models with empty ranges
 				var subModelGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - {subModel.Name}");
+				subModelGroup.ModelType = ElementModelType.SubModel;
 
                 bool addRangeGroup = subModel.Ranges.Count > 1;
                 int rangeGroupIndex = 1;
@@ -472,6 +512,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			foreach (var faceInfo in cm.FaceInfos)
 			{
 				var faceGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - {faceInfo.Name} ", parentFaceGroup);
+				faceGroup.ModelType = ElementModelType.FaceInfo;
 
 				foreach (var faceDefinition in faceInfo.FaceDefinitions)
 				{
@@ -503,6 +544,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			foreach (var stateInfo in cm.StateInfos)
 			{
 				var stateGroup = PropModelServices.Instance().CreateNode($"{cm.Name} {{1}} - {stateInfo.Name} ", parentStateGroup);
+				stateGroup.ModelType = ElementModelType.StateInfo;
 
 				foreach (var stateItem in stateInfo.StateItems)
 				{

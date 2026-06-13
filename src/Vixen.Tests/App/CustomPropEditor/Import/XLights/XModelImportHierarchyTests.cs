@@ -32,15 +32,27 @@ public class XModelImportHierarchyTests
 		Assert.Contains("Santa Waving {1} - States ", rootChildren);
 
 		var modelGroup = prop.RootNode.Children.Single(child => child.Name == "Santa Waving {1} - Model");
+		Assert.Equal(ElementModelType.Model, modelGroup.ModelType);
 		Assert.Equal([1, 2, 3], modelGroup.Children.Select(child => child.Order).Order());
 
-		var importedStateDefinition = Assert.Single(modelGroup.StateDefinitions);
-		Assert.Equal("Wave", importedStateDefinition.StateDefinitionName);
-		Assert.Equal("Hand", importedStateDefinition.Name);
-		Assert.Equal(1, importedStateDefinition.Index);
+		Assert.Empty(modelGroup.StateDefinitions);
+		var importedStateDefinition = Assert.Single(modelGroup.StateDefinitionModels);
+		Assert.Equal("Wave", importedStateDefinition.Name);
+		var importedStateItem = Assert.Single(importedStateDefinition.Items);
+		Assert.Equal("Hand", importedStateItem.Name);
+		Assert.Equal(System.Drawing.Color.Red.ToArgb(), importedStateItem.Color.ToArgb());
 		Assert.Equal(
 			modelGroup.Children.Where(child => child.Order is 1 or 2).Select(child => child.Id).Order(),
-			importedStateDefinition.ElementModelIds.Order());
+			importedStateItem.ElementModelIds.Order());
+
+		var subModelGroup = prop.RootNode.Children.Single(child => child.Name == "Santa Waving {1} - Arm");
+		Assert.Equal(ElementModelType.SubModel, subModelGroup.ModelType);
+
+		var faceGroup = prop.RootNode.GetNodeEnumerator().Single(node => node.Name == "Santa Waving {1} - Face ");
+		Assert.Equal(ElementModelType.FaceInfo, faceGroup.ModelType);
+
+		var stateGroup = prop.RootNode.GetNodeEnumerator().Single(node => node.Name == "Santa Waving {1} - Wave ");
+		Assert.Equal(ElementModelType.StateInfo, stateGroup.ModelType);
 
 		var legacyStateGroups = prop.RootNode
 			.GetNodeEnumerator()
@@ -64,9 +76,34 @@ public class XModelImportHierarchyTests
 		// Assert
 		var modelGroup = Assert.Single(prop.RootNode.Children);
 		Assert.Equal("Snowman {1} - Model", modelGroup.Name);
+		Assert.Equal(ElementModelType.Model, modelGroup.ModelType);
 		Assert.Empty(modelGroup.StateDefinitions);
+		Assert.Empty(modelGroup.StateDefinitionModels);
 		Assert.DoesNotContain(prop.RootNode.Children, child => child.Name.Contains("States"));
 		Assert.Equal([1, 2], modelGroup.Children.Select(child => child.Order).Order());
+	}
+
+	[Fact]
+	public async Task Import_WithDuplicateStateInfoNames_CreatesUniqueStateDefinitionModelNames()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<custommodel name="Santa Waving" parm1="300" parm2="300" PixelSize="1" CustomModelCompressed="1,0,0;2,1,0">
+				<stateInfo Name="Wave" Type="NodeRange" s1="1" s1-Name="Left" s1-Color="#FF0000" />
+				<stateInfo Name="Wave" Type="NodeRange" s1="2" s1-Name="Right" s1-Color="#00FF00" />
+				<stateInfo Name="wave" Type="NodeRange" s1="1-2" s1-Name="Both" s1-Color="#0000FF" />
+			</custommodel>
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		var modelGroup = prop.RootNode.Children.Single(child => child.Name == "Santa Waving {1} - Model");
+		Assert.Equal(
+			["Wave", "Wave - 2", "wave"],
+			modelGroup.StateDefinitionModels.Select(definition => definition.Name).ToList());
 	}
 
 	private static async Task<Prop> ImportAsync(string modelXml)
