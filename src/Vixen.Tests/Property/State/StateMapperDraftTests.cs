@@ -28,10 +28,10 @@ public class StateMapperDraftTests
 		viewModel.Items[0].AssignmentRoots[0].IsChecked = true;
 
 		// Assert
-		Assert.Equal("Operating Mode", source.Name);
-		Assert.Equal("Available operating modes", source.Description);
-		Assert.Equal("Enabled", source.Items[0].Name);
-		Assert.Empty(source.Items[0].ElementNodeIds);
+		Assert.Equal("Operating Mode", source.StateDefinitions[0].Name);
+		Assert.Equal("Available operating modes", source.StateDefinitions[0].Description);
+		Assert.Equal("Enabled", source.StateDefinitions[0].Items[0].Name);
+		Assert.Empty(source.StateDefinitions[0].Items[0].ElementNodeIds);
 		Assert.Equal(sourceId, source.Id);
 	}
 
@@ -53,10 +53,10 @@ public class StateMapperDraftTests
 
 		// Assert
 		Assert.True(result);
-		Assert.Equal("Changed", source.Name);
-		Assert.Equal("Changed description", source.Description);
-		Assert.Equal("Disabled", source.Items[0].Name);
-		Assert.Equal([elementNodeId], source.Items[0].ElementNodeIds);
+		Assert.Equal("Changed", source.StateDefinitions[0].Name);
+		Assert.Equal("Changed description", source.StateDefinitions[0].Description);
+		Assert.Equal("Disabled", source.StateDefinitions[0].Items[0].Name);
+		Assert.Equal([elementNodeId], source.StateDefinitions[0].Items[0].ElementNodeIds);
 		Assert.Equal(sourceId, source.Id);
 	}
 
@@ -64,15 +64,21 @@ public class StateMapperDraftTests
 	{
 		return new StateData
 		{
-			Name = "Operating Mode",
-			Description = "Available operating modes",
-			Items =
+			StateDefinitions =
 			[
-				new StateItemData
+				new StateDefinitionData
 				{
-					Id = itemId,
-					Name = "Enabled",
-					Color = Color.Green
+					Name = "Operating Mode",
+					Description = "Available operating modes",
+					Items =
+					[
+						new StateItemData
+						{
+							Id = itemId,
+							Name = "Enabled",
+							Color = Color.Green
+						}
+					]
 				}
 			]
 		};

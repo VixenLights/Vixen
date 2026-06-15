@@ -22,10 +22,14 @@ namespace VixenModules.Property.State {
 		}
 
 		/// <summary>
-		/// Gets the stable identifier for the attached State property.
+		/// Gets or sets the stable identifier for the attached State property.
 		/// </summary>
 		/// <value>The stable identifier for the attached State property.</value>
-		public Guid Id => _data.Id;
+		public Guid Id
+		{
+			get => _data.Id;
+			set => _data.Id = value;
+		}
 
 		/// <summary>
 		/// Gets or sets the configured State definitions.
@@ -35,36 +39,6 @@ namespace VixenModules.Property.State {
 		{
 			get => _data.StateDefinitions;
 			set => _data.StateDefinitions = value;
-		}
-
-		/// <summary>
-		/// Gets or sets the name of the first State definition.
-		/// </summary>
-		/// <value>The name of the first State definition.</value>
-		public string Name
-		{
-			get => _data.Name;
-			set => _data.Name = value;
-		}
-
-		/// <summary>
-		/// Gets or sets the description of the first State definition.
-		/// </summary>
-		/// <value>The description of the first State definition.</value>
-		public string Description
-		{
-			get => _data.Description;
-			set => _data.Description = value;
-		}
-
-		/// <summary>
-		/// Gets or sets the State items of the first State definition.
-		/// </summary>
-		/// <value>The State items of the first State definition.</value>
-		public List<StateItemData> Items
-		{
-			get => _data.Items;
-			set => _data.Items = value;
 		}
 
 		/// <inheritdoc />

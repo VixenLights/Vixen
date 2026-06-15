@@ -251,17 +251,23 @@ public sealed class StateMapperPreviewTests
 			leafIds.Select((id, index) => CreateNode(id, $"Leaf {index + 1}")).ToArray());
 		var source = new StateData
 		{
-			Name = "Operating Mode",
-			Items = items
-				.Select((item, index) => new StateItemData
+			StateDefinitions =
+			[
+				new StateDefinitionData
 				{
-					Name = item.Name,
-					Color = item.Color,
-					ElementNodeIds = item.ElementIds
-						.Select(id => id == Guid.Empty ? leafIds[index] : id)
+					Name = "Operating Mode",
+					Items = items
+						.Select((item, index) => new StateItemData
+						{
+							Name = item.Name,
+							Color = item.Color,
+							ElementNodeIds = item.ElementIds
+								.Select(id => id == Guid.Empty ? leafIds[index] : id)
+								.ToList()
+						})
 						.ToList()
-				})
-				.ToList()
+				}
+			]
 		};
 		var publisher = new RecordingStatePreviewPublisher();
 		var viewModel = new StateMapperViewModel(

@@ -217,12 +217,10 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				return;
 			}
-
-			state.ModuleData = new StateData
-			{
-				Id = GetStatePropertyId(model),
-				StateDefinitions = stateDefinitions
-			};
+			
+			state.Id = GetStatePropertyId(model);
+			state.StateDefinitions = stateDefinitions;
+		
 		}
 
 		private bool AddImportedStateDefinitions(ElementModel model)
@@ -249,11 +247,8 @@ namespace VixenModules.Preview.VixenPreview
 				return false;
 			}
 
-			state.ModuleData = new StateData
-			{
-				Id = GetStatePropertyId(model),
-				StateDefinitions = stateDefinitions
-			};
+			state.Id = GetStatePropertyId(model);
+			state.StateDefinitions = stateDefinitions;
 
 			return true;
 		}

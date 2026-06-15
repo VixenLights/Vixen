@@ -48,7 +48,7 @@ public class StateMapperValidationTests
 		var checkedLeafId = Guid.NewGuid();
 		var rootNode = CreateRootNodeWithSiblingGroups(checkedLeafId);
 		var source = CreateSource("Operating Mode", "Enabled", "Disabled");
-		source.Items[1].ElementNodeIds = [checkedLeafId];
+		source.StateDefinitions[0].Items[1].ElementNodeIds = [checkedLeafId];
 		var viewModel = CreateViewModel(source, rootNode);
 		viewModel.Items[1].AssignmentRoots[0].Children[1].IsExpanded = true;
 
@@ -359,21 +359,27 @@ public class StateMapperValidationTests
 
 		// Assert
 		Assert.False(result);
-		Assert.Equal("Enabled", source.Items[0].Name);
+		Assert.Equal("Enabled", source.StateDefinitions[0].Items[0].Name);
 	}
 
 	private static StateData CreateSource(string name, params string[] itemNames)
 	{
 		return new StateData
 		{
-			Name = name,
-			Items = itemNames
-				.Select(itemName => new StateItemData
+			StateDefinitions =
+			[
+				new StateDefinitionData
 				{
-					Name = itemName,
-					Color = Color.Green
-				})
-				.ToList()
+					Name = name,
+					Items = itemNames
+						.Select(itemName => new StateItemData
+						{
+							Name = itemName,
+							Color = Color.Green
+						})
+						.ToList()
+				}
+			]
 		};
 	}
 

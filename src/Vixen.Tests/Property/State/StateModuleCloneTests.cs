@@ -14,23 +14,30 @@ public class StateModuleCloneTests
 		var secondElementNodeId = Guid.NewGuid();
 		var source = new StateModule
 		{
-			Name = "Operating Mode",
-			Description = "Available operating modes",
-			Items =
+			StateDefinitions =
 			[
-				new StateItemData
+				new StateDefinitionData
 				{
 					Id = Guid.NewGuid(),
-					Name = "Enabled",
-					Color = Color.Green,
-					ElementNodeIds = [firstElementNodeId, secondElementNodeId]
-				},
-				new StateItemData
-				{
-					Id = Guid.NewGuid(),
-					Name = "Disabled",
-					Color = Color.Red,
-					ElementNodeIds = [secondElementNodeId]
+					Name = "Operating Mode",
+					Description = "Available operating modes",
+					Items =
+					[
+						new StateItemData
+						{
+							Id = Guid.NewGuid(),
+							Name = "Enabled",
+							Color = Color.Green,
+							ElementNodeIds = [firstElementNodeId, secondElementNodeId]
+						},
+						new StateItemData
+						{
+							Id = Guid.NewGuid(),
+							Name = "Disabled",
+							Color = Color.Red,
+							ElementNodeIds = [secondElementNodeId]
+						}
+					]
 				}
 			]
 		};
@@ -38,29 +45,29 @@ public class StateModuleCloneTests
 
 		// Act
 		clone.CloneValues(source);
-		clone.Name = "Changed";
-		clone.Items[0].Name = "Disabled";
-		clone.Items[0].ElementNodeIds.Remove(firstElementNodeId);
-		clone.Items[1].ElementNodeIds.Clear();
+		clone.StateDefinitions[0].Name = "Changed";
+		clone.StateDefinitions[0].Items[0].Name = "Disabled";
+		clone.StateDefinitions[0].Items[0].ElementNodeIds.Remove(firstElementNodeId);
+		clone.StateDefinitions[0].Items[1].ElementNodeIds.Clear();
 
 		// Assert
 		Assert.NotEqual(Guid.Empty, source.Id);
 		Assert.NotEqual(Guid.Empty, clone.Id);
 		Assert.NotEqual(source.Id, clone.Id);
-		Assert.Equal("Operating Mode", source.Name);
-		Assert.Equal("Available operating modes", source.Description);
-		Assert.Equal("Enabled", source.Items[0].Name);
+		Assert.Equal("Operating Mode", source.StateDefinitions[0].Name);
+		Assert.Equal("Available operating modes", source.StateDefinitions[0].Description);
+		Assert.Equal("Enabled", source.StateDefinitions[0].Items[0].Name);
 		Assert.NotEqual(source.StateDefinitions[0].Id, clone.StateDefinitions[0].Id);
-		Assert.NotEqual(source.Items[0].Id, clone.Items[0].Id);
-		Assert.Equal(source.Items[0].Color, clone.Items[0].Color);
-		Assert.Equal([firstElementNodeId, secondElementNodeId], source.Items[0].ElementNodeIds);
-		Assert.NotEqual(source.Items[1].Id, clone.Items[1].Id);
-		Assert.Equal(source.Items[1].Color, clone.Items[1].Color);
-		Assert.Equal([secondElementNodeId], source.Items[1].ElementNodeIds);
-		Assert.NotSame(source.Items, clone.Items);
-		Assert.NotSame(source.Items[0], clone.Items[0]);
-		Assert.NotSame(source.Items[0].ElementNodeIds, clone.Items[0].ElementNodeIds);
-		Assert.NotSame(source.Items[1], clone.Items[1]);
-		Assert.NotSame(source.Items[1].ElementNodeIds, clone.Items[1].ElementNodeIds);
+		Assert.NotEqual(source.StateDefinitions[0].Items[0].Id, clone.StateDefinitions[0].Items[0].Id);
+		Assert.Equal(source.StateDefinitions[0].Items[0].Color, clone.StateDefinitions[0].Items[0].Color);
+		Assert.Equal([firstElementNodeId, secondElementNodeId], source.StateDefinitions[0].Items[0].ElementNodeIds);
+		Assert.NotEqual(source.StateDefinitions[0].Items[1].Id, clone.StateDefinitions[0].Items[1].Id);
+		Assert.Equal(source.StateDefinitions[0].Items[1].Color, clone.StateDefinitions[0].Items[1].Color);
+		Assert.Equal([secondElementNodeId], source.StateDefinitions[0].Items[1].ElementNodeIds);
+		Assert.NotSame(source.StateDefinitions[0].Items, clone.StateDefinitions[0].Items);
+		Assert.NotSame(source.StateDefinitions[0].Items[0], clone.StateDefinitions[0].Items[0]);
+		Assert.NotSame(source.StateDefinitions[0].Items[0].ElementNodeIds, clone.StateDefinitions[0].Items[0].ElementNodeIds);
+		Assert.NotSame(source.StateDefinitions[0].Items[1], clone.StateDefinitions[0].Items[1]);
+		Assert.NotSame(source.StateDefinitions[0].Items[1].ElementNodeIds, clone.StateDefinitions[0].Items[1].ElementNodeIds);
 	}
 }

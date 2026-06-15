@@ -32,36 +32,6 @@ namespace VixenModules.Property.State
 		[DataMember]
 		public List<StateDefinitionData> StateDefinitions { get; set; }
 
-		/// <summary>
-		/// Gets or sets the name of the first State definition.
-		/// </summary>
-		/// <value>The name of the first State definition.</value>
-		public string Name
-		{
-			get => FirstDefinition.Name;
-			set => FirstDefinition.Name = value;
-		}
-
-		/// <summary>
-		/// Gets or sets the description of the first State definition.
-		/// </summary>
-		/// <value>The description of the first State definition.</value>
-		public string Description
-		{
-			get => FirstDefinition.Description;
-			set => FirstDefinition.Description = value;
-		}
-
-		/// <summary>
-		/// Gets or sets the State items of the first State definition.
-		/// </summary>
-		/// <value>The State items of the first State definition.</value>
-		public List<StateItemData> Items
-		{
-			get => FirstDefinition.Items;
-			set => FirstDefinition.Items = value;
-		}
-
 		/// <inheritdoc />
 		public override IModuleDataModel Clone()
 		{
@@ -104,15 +74,6 @@ namespace VixenModules.Property.State
 			foreach (var definition in StateDefinitions)
 			{
 				definition.Normalize();
-			}
-		}
-
-		private StateDefinitionData FirstDefinition
-		{
-			get
-			{
-				Normalize();
-				return StateDefinitions[0];
 			}
 		}
 
