@@ -22,6 +22,7 @@
 						<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 						<commonConverters:AdditionConverter x:Key="AdditionConverter"/>
 						<commonConverters:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
+						<commonConverters:BackgroundColorToTextBrushConverter x:Key="BackgroundColorToTextBrushConverter"/>
                         <system:Boolean x:Key="BoolTrue">True</system:Boolean>
                         <system:Boolean x:Key="BoolFalse">False</system:Boolean>
         </ResourceDictionary>
@@ -289,6 +290,7 @@
 																								<DataTemplate>
 																										<TextBlock Text="{Binding ColorHex}"
 														 Background="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"
+														 Foreground="{Binding Color, Converter={StaticResource BackgroundColorToTextBrushConverter}}"
 														 Padding="4,1">
 																												<TextBlock.InputBindings>
 																														<MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditColorCommand}"/>
@@ -300,6 +302,7 @@
 																								<DataTemplate>
 																										<TextBox Text="{Binding ColorHex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 													 Background="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"
+													 Foreground="{Binding Color, Converter={StaticResource BackgroundColorToTextBrushConverter}}"
 													 BorderThickness="0"
 													 Padding="4,1"/>
 																								</DataTemplate>
