@@ -91,6 +91,22 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			set { SetValue(IsStateDefinitionModeProperty, value); }
 		}
 
+		/// <summary>
+		/// Identifies the <see cref="IsStateAssignmentEnabled" /> dependency property.
+		/// </summary>
+		public static readonly DependencyProperty IsStateAssignmentEnabledProperty =
+			DependencyProperty.Register(nameof(IsStateAssignmentEnabled), typeof(bool), typeof(PropDesigner),
+				new FrameworkPropertyMetadata(true));
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether State Definition canvas assignment edits are enabled.
+		/// </summary>
+		public bool IsStateAssignmentEnabled
+		{
+			get { return (bool)GetValue(IsStateAssignmentEnabledProperty); }
+			set { SetValue(IsStateAssignmentEnabledProperty, value); }
+		}
+
 		public static readonly DependencyProperty LightNodeViewModelsSourceProperty =
 			DependencyProperty.Register("LightNodeViewModelsSource", typeof(IEnumerable), typeof(PropDesigner),
 				new FrameworkPropertyMetadata(LightNodeViewModelsSource_PropertyChanged));
@@ -248,6 +264,13 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			//if we are source of event, we are rubberband selecting
 			if (e.Source == _drawingCanvas)
 			{
+				if (IsStateDefinitionMode && !IsStateAssignmentEnabled)
+				{
+					_isSelecting = false;
+					e.Handled = true;
+					return;
+				}
+
 				if (!IsDrawing && !(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
 				{
 					if (!IsStateDefinitionMode)
@@ -273,11 +296,18 @@ namespace VixenModules.App.CustomPropEditor.Controls
 				if (l != null)
 				{
 					if (IsStateDefinitionMode &&
+						IsStateAssignmentEnabled &&
 						l is LightViewModel lightViewModel &&
 						_propEditorViewModel != null &&
 						_propEditorViewModel.ToggleStateItemAssignment(lightViewModel))
 					{
 						RemoveResizeAdorner();
+						e.Handled = true;
+						return;
+					}
+
+					if (IsStateDefinitionMode && !IsStateAssignmentEnabled)
+					{
 						e.Handled = true;
 						return;
 					}
@@ -327,6 +357,11 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			}
 
 			if (IsDrawing)
+			{
+				return;
+			}
+
+			if (IsStateDefinitionMode && !IsStateAssignmentEnabled)
 			{
 				return;
 			}

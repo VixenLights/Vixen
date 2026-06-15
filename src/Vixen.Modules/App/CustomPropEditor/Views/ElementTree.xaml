@@ -411,10 +411,15 @@
 												<DataGrid Grid.Row="1"
 									 ItemsSource="{Binding SelectedStateDefinition.Items}"
 									 SelectedItem="{Binding SelectedStateItem, Mode=TwoWay}"
+									 SelectionMode="Extended"
+									 SelectionUnit="FullRow"
 									 AutoGenerateColumns="False"
 									 CanUserAddRows="False"
 									 HeadersVisibility="Column"
 									 MinHeight="90">
+														<i:Interaction.Behaviors>
+																<behaviors1:MultiSelectorSelectedItemsBehavior SelectedItems="{Binding SelectedStateItems}"/>
+														</i:Interaction.Behaviors>
 														<DataGrid.Columns>
 																<DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 																<DataGridTemplateColumn Header="Color" Width="75">

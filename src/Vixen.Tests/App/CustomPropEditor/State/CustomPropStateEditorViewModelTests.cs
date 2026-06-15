@@ -213,6 +213,28 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
+	public void SelectedStateItems_MultipleRowsDisablesCanvasAssignments()
+	{
+		var prop = CreatePropWithModel(out var model, out _);
+		model.ModelType = ElementModelType.Model;
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		definition.Items.Add(new StateItemModel { Name = "Arm" });
+		model.StateDefinitionModels.Add(definition);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var firstItem = editorViewModel.SelectedStateDefinition.Items[0];
+		var secondItem = editorViewModel.SelectedStateDefinition.Items[1];
+
+		editorViewModel.SelectedStateItems.Clear();
+		editorViewModel.SelectedStateItems.Add(firstItem);
+
+		Assert.True(editorViewModel.CanEditCanvasAssignments);
+
+		editorViewModel.SelectedStateItems.Add(secondItem);
+
+		Assert.False(editorViewModel.CanEditCanvasAssignments);
+	}
+
+	[Fact]
 	public void ToggleElementModelId_AddsAndRemovesAssignment()
 	{
 		var prop = CreatePropWithModel(out var model, out var leaf);
@@ -252,6 +274,37 @@ public sealed class CustomPropStateEditorViewModelTests
 		Assert.True(drawingPanelViewModel.IsStatePreviewActive);
 		Assert.Equal(Color.Red.ToArgb(), drawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
 		Assert.Equal(Color.FromArgb(25, 25, 25).ToArgb(), drawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+	}
+
+	[Fact]
+	public void DrawingPanel_ApplyStatePreviewColorsMultipleStateItems()
+	{
+		var prop = CreateServicePropWithLights(out var model, out var firstLeaf, out var secondLeaf);
+		model.ModelType = ElementModelType.Model;
+		var firstItemViewModel = new CustomPropStateItemViewModel(
+			new StateItemModel
+			{
+				Name = "Arm",
+				Color = Color.Red,
+				ElementModelIds = new ObservableCollection<Guid> { firstLeaf.Id }
+			},
+			prop,
+			() => { });
+		var secondItemViewModel = new CustomPropStateItemViewModel(
+			new StateItemModel
+			{
+				Name = "Leg",
+				Color = Color.Green,
+				ElementModelIds = new ObservableCollection<Guid> { secondLeaf.Id }
+			},
+			prop,
+			() => { });
+		var drawingPanelViewModel = new DrawingPanelViewModel(new ElementTreeViewModel(prop));
+
+		drawingPanelViewModel.ApplyStatePreview([firstItemViewModel, secondItemViewModel]);
+
+		Assert.Equal(Color.Red.ToArgb(), drawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.Green.ToArgb(), drawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
 	}
 
 	[Fact]

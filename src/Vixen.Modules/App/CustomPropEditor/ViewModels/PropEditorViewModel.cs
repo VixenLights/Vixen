@@ -595,7 +595,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public bool AssignStateItemAssignment(LightViewModel lightViewModel)
 		{
 			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
-			if (!IsStateDefinitionTabSelected || selectedStateItem == null || lightViewModel == null)
+			if (!IsStateDefinitionTabSelected ||
+				!StateDefinitionEditorViewModel.CanEditCanvasAssignments ||
+				selectedStateItem == null ||
+				lightViewModel == null)
 			{
 				return false;
 			}
@@ -616,7 +619,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public bool RemoveStateItemAssignment(LightViewModel lightViewModel)
 		{
 			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
-			if (!IsStateDefinitionTabSelected || selectedStateItem == null || lightViewModel == null)
+			if (!IsStateDefinitionTabSelected ||
+				!StateDefinitionEditorViewModel.CanEditCanvasAssignments ||
+				selectedStateItem == null ||
+				lightViewModel == null)
 			{
 				return false;
 			}
@@ -637,7 +643,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public bool ToggleStateItemAssignment(LightViewModel lightViewModel)
 		{
 			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
-			if (!IsStateDefinitionTabSelected || selectedStateItem == null || lightViewModel == null)
+			if (!IsStateDefinitionTabSelected ||
+				!StateDefinitionEditorViewModel.CanEditCanvasAssignments ||
+				selectedStateItem == null ||
+				lightViewModel == null)
 			{
 				return false;
 			}
@@ -663,8 +672,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				return;
 			}
 
-			var selectedItem = StateDefinitionEditorViewModel?.SelectedStateItem;
-			var previewItems = selectedItem == null ? [] : new[] { selectedItem };
+			var selectedItems = StateDefinitionEditorViewModel?.SelectedStateItems;
+			var previewItems = selectedItems is { Count: > 0 }
+				? selectedItems.ToArray()
+				: StateDefinitionEditorViewModel?.SelectedStateItem == null
+					? []
+					: [StateDefinitionEditorViewModel.SelectedStateItem];
 			DrawingPanelViewModel.ApplyStatePreview(previewItems);
 		}
 

@@ -39,6 +39,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		public StateDefinitionEditorViewModel(Prop prop)
 		{
 			StateDefinitions = new ObservableCollection<CustomPropStateDefinitionViewModel>();
+			SelectedStateItems = new ObservableCollection<CustomPropStateItemViewModel>();
+			SelectedStateItems.CollectionChanged += SelectedStateItemsOnCollectionChanged;
 			ValidationMessages = new ObservableCollection<string>();
 			SetProp(prop);
 		}
@@ -66,6 +68,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		public ObservableCollection<string> ValidationMessages { get; }
 
 		/// <summary>
+		/// Gets the selected State item rows.
+		/// </summary>
+		public ObservableCollection<CustomPropStateItemViewModel> SelectedStateItems { get; }
+
+		/// <summary>
 		/// Gets or sets the selected State definition.
 		/// </summary>
 		public CustomPropStateDefinitionViewModel SelectedStateDefinition
@@ -79,6 +86,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 				}
 
 				_selectedStateDefinition = value;
+				SelectSingleStateItem(_selectedStateDefinition?.SelectedItem);
 				RaisePropertyChanged(nameof(SelectedStateDefinition));
 				RaisePropertyChanged(nameof(SelectedStateItem));
 				RaiseCommandCanExecuteChanged();
@@ -100,11 +108,21 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 				}
 
 				SelectedStateDefinition.SelectedItem = value;
+				if (SelectedStateItems.Count == 0 && value != null)
+				{
+					SelectSingleStateItem(value);
+				}
+
 				RaisePropertyChanged(nameof(SelectedStateItem));
 				RaiseCommandCanExecuteChanged();
 				StatePreviewChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
+
+		/// <summary>
+		/// Gets a value that indicates whether canvas assignment edits are enabled for the selected State items.
+		/// </summary>
+		public bool CanEditCanvasAssignments => SelectedStateItems.Count <= 1;
 
 		/// <summary>
 		/// Gets a value that indicates whether State validation currently blocks saving.
@@ -320,6 +338,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			{
 				Name = GetUniqueStateItemName(StateItemModel.DefaultName, SelectedStateDefinition)
 			});
+			SelectSingleStateItem(SelectedStateDefinition.SelectedItem);
 			RaisePropertyChanged(nameof(SelectedStateItem));
 			OnStateDataChanged();
 		}
@@ -337,6 +356,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			}
 
 			SelectedStateDefinition.RemoveItem(SelectedStateItem);
+			SelectSingleStateItem(SelectedStateDefinition.SelectedItem);
 			RaisePropertyChanged(nameof(SelectedStateItem));
 			OnStateDataChanged();
 		}
@@ -378,8 +398,21 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			}
 
 			SelectedStateDefinition.MoveItem(SelectedStateItem, offset);
+			SelectSingleStateItem(SelectedStateDefinition.SelectedItem);
 			RaisePropertyChanged(nameof(SelectedStateItem));
 			OnStateDataChanged();
+		}
+
+		private void SelectSingleStateItem(CustomPropStateItemViewModel item)
+		{
+			SelectedStateItems.Clear();
+			if (item != null)
+			{
+				SelectedStateItems.Add(item);
+			}
+
+			RaisePropertyChanged(nameof(SelectedStateItems));
+			RaisePropertyChanged(nameof(CanEditCanvasAssignments));
 		}
 
 		private CustomPropStateDefinitionViewModel CreateDefinitionViewModel(StateDefinitionModel stateDefinition)
@@ -398,6 +431,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		private void StateDefinitionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			RaisePropertyChanged(nameof(StateDefinitions));
+		}
+
+		private void SelectedStateItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			RaisePropertyChanged(nameof(SelectedStateItems));
+			RaisePropertyChanged(nameof(CanEditCanvasAssignments));
+			RaiseCommandCanExecuteChanged();
+			StatePreviewChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void AddModelTypeValidationMessages()

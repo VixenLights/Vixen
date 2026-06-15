@@ -287,6 +287,7 @@
                             TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
                             IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}"
                             IsStateDefinitionMode="{Binding IsStateDefinitionTabSelected}"
+                            IsStateAssignmentEnabled="{Binding StateDefinitionEditorViewModel.CanEditCanvasAssignments}"
                             AddLightCommand="{Binding AddLightCommand}"
                             SelectedModels="{Binding DrawingPanelViewModel.SelectedItems}">
 														<i:Interaction.Behaviors>
