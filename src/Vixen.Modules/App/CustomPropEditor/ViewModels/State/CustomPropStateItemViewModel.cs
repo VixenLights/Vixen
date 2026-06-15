@@ -169,6 +169,28 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		}
 
 		/// <summary>
+		/// Removes element model assignments from this State item.
+		/// </summary>
+		/// <param name="elementModelIds">The element model identifiers to remove.</param>
+		/// <returns><see langword="true" /> if assignments were removed; otherwise, <see langword="false" />.</returns>
+		public bool RemoveElementModelIds(IEnumerable<Guid> elementModelIds)
+		{
+			var changed = false;
+			foreach (var elementModelId in elementModelIds.Where(id => id != Guid.Empty).Distinct())
+			{
+				changed |= StateItem.ElementModelIds.Remove(elementModelId);
+			}
+
+			if (!changed)
+			{
+				return false;
+			}
+
+			OnAssignmentChanged();
+			return true;
+		}
+
+		/// <summary>
 		/// Toggles an element model assignment on this State item.
 		/// </summary>
 		/// <param name="elementModelId">The element model identifier to toggle.</param>

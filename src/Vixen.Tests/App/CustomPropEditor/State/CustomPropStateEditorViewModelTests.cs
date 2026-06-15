@@ -195,6 +195,29 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
+	public void RemoveElementModelIds_RemovesAssignmentsAndMarksDirty()
+	{
+		var prop = CreatePropWithModel(out var model, out var leaf);
+		model.ModelType = ElementModelType.Model;
+		var secondLeaf = new ElementModel("Leaf 2", model);
+		model.AddChild(secondLeaf);
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		definition.Items[0].ElementModelIds = new ObservableCollection<Guid> { leaf.Id, secondLeaf.Id };
+		model.StateDefinitionModels.Add(definition);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var item = editorViewModel.SelectedStateItem;
+
+		var changed = item.RemoveElementModelIds([leaf.Id, leaf.Id, Guid.Empty]);
+
+		Assert.True(changed);
+		Assert.Equal([secondLeaf.Id], item.StateItem.ElementModelIds);
+		Assert.True(item.HasAssignments);
+		Assert.Equal(1, item.AssignmentCount);
+		Assert.True(item.IsDirty);
+		Assert.True(editorViewModel.IsDirty);
+	}
+
+	[Fact]
 	public void AssignmentCount_IgnoresAssignmentsForMissingElements()
 	{
 		var prop = CreatePropWithModel(out var model, out var leaf);

@@ -588,6 +588,48 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		}
 
 		/// <summary>
+		/// Assigns a light to the currently selected State item.
+		/// </summary>
+		/// <param name="lightViewModel">The light view model to assign.</param>
+		/// <returns><see langword="true" /> if the assignment was handled in State Definition mode; otherwise, <see langword="false" />.</returns>
+		public bool AssignStateItemAssignment(LightViewModel lightViewModel)
+		{
+			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
+			if (!IsStateDefinitionTabSelected || selectedStateItem == null || lightViewModel == null)
+			{
+				return false;
+			}
+
+			if (selectedStateItem.AssignElementModelIds([lightViewModel.Light.ParentModelId]))
+			{
+				UpdateStatePreview();
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Removes a light from the currently selected State item.
+		/// </summary>
+		/// <param name="lightViewModel">The light view model to remove.</param>
+		/// <returns><see langword="true" /> if the removal was handled in State Definition mode; otherwise, <see langword="false" />.</returns>
+		public bool RemoveStateItemAssignment(LightViewModel lightViewModel)
+		{
+			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
+			if (!IsStateDefinitionTabSelected || selectedStateItem == null || lightViewModel == null)
+			{
+				return false;
+			}
+
+			if (selectedStateItem.RemoveElementModelIds([lightViewModel.Light.ParentModelId]))
+			{
+				UpdateStatePreview();
+			}
+
+			return true;
+		}
+
+		/// <summary>
 		/// Toggles the State assignment for a light on the currently selected State item.
 		/// </summary>
 		/// <param name="lightViewModel">The light view model to toggle.</param>

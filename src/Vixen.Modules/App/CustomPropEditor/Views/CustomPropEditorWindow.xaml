@@ -8,7 +8,6 @@
 	    xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
-        xmlns:stateViewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels.State"
         xmlns:views1="clr-namespace:VixenModules.App.CustomPropEditor.Views"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         Title="Custom Prop Editor" Height="700" Width="900" WindowStartupLocation="CenterScreen">
@@ -22,7 +21,6 @@
 						<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 						<commonConverters:AdditionConverter x:Key="AdditionConverter"/>
 						<commonConverters:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
-						<commonConverters:BackgroundColorToTextBrushConverter x:Key="BackgroundColorToTextBrushConverter"/>
                         <system:Boolean x:Key="BoolTrue">True</system:Boolean>
                         <system:Boolean x:Key="BoolFalse">False</system:Boolean>
         </ResourceDictionary>
@@ -155,7 +153,6 @@
 								<views1:ElementTree Grid.Column="0" Grid.Row="0" />
 
 								<TabControl  Grid.Row="2" Grid.Column="0" Background="{DynamicResource BackColorBrush}"
-				             SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
 				             Width="Auto" Margin="5,5,10,5">
 										<TabItem Header="Prop Info">
 												<TabControl Width="Auto">
@@ -213,131 +210,6 @@
 																</ResourceDictionary>
 														</wpfPropertyGrid:PropertyGrid.Resources>
 												</wpfPropertyGrid:PropertyGrid>
-										</TabItem>
-										<TabItem Header="State Definition">
-												<Grid DataContext="{Binding StateDefinitionEditorViewModel}" Margin="5">
-														<Grid.RowDefinitions>
-																<RowDefinition Height="Auto"/>
-																<RowDefinition Height="*"/>
-																<RowDefinition Height="Auto"/>
-														</Grid.RowDefinitions>
-														<Grid.ColumnDefinitions>
-																<ColumnDefinition Width="170"/>
-																<ColumnDefinition Width="8"/>
-																<ColumnDefinition Width="*"/>
-														</Grid.ColumnDefinitions>
-
-														<StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
-																<TextBlock Text="Definitions" FontWeight="Bold" Margin="0,0,0,4"/>
-																<ListBox ItemsSource="{Binding StateDefinitions}"
-						                         SelectedItem="{Binding SelectedStateDefinition, Mode=TwoWay}"
-						                         DisplayMemberPath="Name"
-						                         Background="{StaticResource BackColorBrush}"
-						                         BorderBrush="{StaticResource BorderColorBrush}"
-						                         Foreground="{StaticResource ForeColorBrush}"
-						                         MinHeight="90"/>
-																<StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-																		<Button Content="Add" Command="{Binding AddStateDefinitionCommand}" Margin="0,0,4,0"/>
-																		<Button Content="Copy" Command="{Binding CopyStateDefinitionCommand}" Margin="0,0,4,0"/>
-																		<Button Content="Delete" Command="{Binding DeleteStateDefinitionCommand}"/>
-																</StackPanel>
-														</StackPanel>
-
-														<Grid Grid.Row="0" Grid.Column="2">
-																<Grid.RowDefinitions>
-																		<RowDefinition Height="Auto"/>
-																		<RowDefinition Height="Auto"/>
-																</Grid.RowDefinitions>
-																<Grid.ColumnDefinitions>
-																		<ColumnDefinition Width="Auto"/>
-																		<ColumnDefinition Width="*"/>
-																</Grid.ColumnDefinitions>
-																<TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center" Margin="0,0,6,4"/>
-																<TextBox Grid.Row="0" Grid.Column="1"
-										 Text="{Binding SelectedStateDefinition.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-										 Margin="0,0,0,4"/>
-																<TextBlock Grid.Row="1" Grid.Column="0" Text="Description" VerticalAlignment="Center" Margin="0,0,6,0"/>
-																<TextBox Grid.Row="1" Grid.Column="1"
-										 Text="{Binding SelectedStateDefinition.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-														</Grid>
-
-														<Grid Grid.Row="1" Grid.Column="2" Margin="0,8,0,0">
-																<Grid.RowDefinitions>
-																		<RowDefinition Height="Auto"/>
-																		<RowDefinition Height="*"/>
-																		<RowDefinition Height="Auto"/>
-																		<RowDefinition Height="Auto"/>
-																		<RowDefinition Height="*"/>
-																</Grid.RowDefinitions>
-
-																<TextBlock Grid.Row="0" Text="Items" FontWeight="Bold" Margin="0,0,0,4"/>
-																<DataGrid Grid.Row="1"
-									 ItemsSource="{Binding SelectedStateDefinition.Items}"
-									 SelectedItem="{Binding SelectedStateItem, Mode=TwoWay}"
-									 AutoGenerateColumns="False"
-									 CanUserAddRows="False"
-									 HeadersVisibility="Column"
-									 MinHeight="90">
-																		<DataGrid.Columns>
-																				<DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-																				<DataGridTemplateColumn Header="Color" Width="75">
-																						<DataGridTemplateColumn.CellStyle>
-																								<Style TargetType="{x:Type DataGridCell}">
-																										<Setter Property="Background" Value="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"/>
-																								</Style>
-																						</DataGridTemplateColumn.CellStyle>
-																						<DataGridTemplateColumn.CellTemplate>
-																								<DataTemplate>
-																										<TextBlock Text="{Binding ColorHex}"
-														 Background="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"
-														 Foreground="{Binding Color, Converter={StaticResource BackgroundColorToTextBrushConverter}}"
-														 Padding="4,1">
-																												<TextBlock.InputBindings>
-																														<MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditColorCommand}"/>
-																												</TextBlock.InputBindings>
-																										</TextBlock>
-																								</DataTemplate>
-																						</DataGridTemplateColumn.CellTemplate>
-																						<DataGridTemplateColumn.CellEditingTemplate>
-																								<DataTemplate>
-																										<TextBox Text="{Binding ColorHex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-													 Background="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"
-													 Foreground="{Binding Color, Converter={StaticResource BackgroundColorToTextBrushConverter}}"
-													 BorderThickness="0"
-													 Padding="4,1"/>
-																								</DataTemplate>
-																						</DataGridTemplateColumn.CellEditingTemplate>
-																				</DataGridTemplateColumn>
-																				<DataGridTextColumn Header="Assigned" Width="70" Binding="{Binding AssignmentCount, Mode=OneWay}"/>
-																		</DataGrid.Columns>
-																</DataGrid>
-																<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,8">
-																		<Button Content="Add Item" Command="{Binding AddStateItemCommand}" Margin="0,0,4,0"/>
-																		<Button Content="Remove" Command="{Binding RemoveStateItemCommand}" Margin="0,0,4,0"/>
-																		<Button Content="Up" Command="{Binding MoveStateItemUpCommand}" Margin="0,0,4,0"/>
-																		<Button Content="Down" Command="{Binding MoveStateItemDownCommand}"/>
-																</StackPanel>
-
-																<TextBlock Grid.Row="3" Text="Assignments" FontWeight="Bold" Margin="0,0,0,4"/>
-																<TreeView Grid.Row="4" ItemsSource="{Binding SelectedStateItem.AssignmentTree}" MinHeight="90">
-																		<TreeView.Resources>
-																				<HierarchicalDataTemplate DataType="{x:Type stateViewModels:CustomPropStateAssignmentTreeNodeViewModel}" ItemsSource="{Binding Children}">
-																						<CheckBox IsThreeState="True"
-													  IsChecked="{Binding IsAssigned, Mode=TwoWay}"
-													  Content="{Binding Name}"/>
-																				</HierarchicalDataTemplate>
-																		</TreeView.Resources>
-																</TreeView>
-														</Grid>
-
-														<ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ValidationMessages}" Margin="0,8,0,0">
-																<ItemsControl.ItemTemplate>
-																		<DataTemplate>
-																				<TextBlock Text="{Binding}" Foreground="IndianRed" TextWrapping="Wrap"/>
-																		</DataTemplate>
-																</ItemsControl.ItemTemplate>
-														</ItemsControl>
-												</Grid>
 										</TabItem>
 								</TabControl>
 
@@ -414,6 +286,7 @@
                             LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
                             TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
                             IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}"
+                            IsStateDefinitionMode="{Binding IsStateDefinitionTabSelected}"
                             AddLightCommand="{Binding AddLightCommand}"
                             SelectedModels="{Binding DrawingPanelViewModel.SelectedItems}">
 														<i:Interaction.Behaviors>
