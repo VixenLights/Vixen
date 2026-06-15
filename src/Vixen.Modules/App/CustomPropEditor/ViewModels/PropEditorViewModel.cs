@@ -18,6 +18,7 @@ using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Services;
+using VixenModules.App.CustomPropEditor.ViewModels.State;
 using ModelType = VixenModules.App.CustomPropEditor.Model.InternalVendorInventory.ModelType;
 using Catel.Data;
 using VixenModules.App.Modeling;
@@ -53,6 +54,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				ElementTreeViewModel = new ElementTreeViewModel(value);
 				DrawingPanelViewModel = new DrawingPanelViewModel(ElementTreeViewModel);
 				ElementOrderViewModel = new ElementOrderViewModel(value);
+				StateDefinitionEditorViewModel = new StateDefinitionEditorViewModel(value);
 				RegisterModelEvents();
 			}
 		}
@@ -316,6 +318,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region StateDefinitionEditorViewModel property
+
+		/// <summary>
+		/// Gets or sets the StateDefinitionEditorViewModel value.
+		/// </summary>
+		[Browsable(false)]
+		public StateDefinitionEditorViewModel StateDefinitionEditorViewModel
+		{
+			get { return GetValue<StateDefinitionEditorViewModel>(StateDefinitionEditorViewModelProperty); }
+			set { SetValue(StateDefinitionEditorViewModelProperty, value); }
+		}
+
+		/// <summary>
+		/// StateDefinitionEditorViewModel property data.
+		/// </summary>
+		public static readonly IPropertyData StateDefinitionEditorViewModelProperty = RegisterProperty<StateDefinitionEditorViewModel>(nameof(StateDefinitionEditorViewModel));
+
+		#endregion
+
 		#region FilePath property
 
 		/// <summary>
@@ -409,12 +430,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		private void DrawingPanelViewModelsLightModelsChanged(object sender, EventArgs e)
 		{
 			ElementOrderViewModel.RefreshElementLeafViewModels();
+			StateDefinitionEditorViewModel.RefreshAssignments();
 		}
 
 		private void ElementTreeViewModel_ModelsChanged(object sender, EventArgs e)
 		{
 			ElementOrderViewModel.RefreshElementLeafViewModels();
 			DrawingPanelViewModel.RefreshLightViewModels();
+			StateDefinitionEditorViewModel.SetProp(Prop);
 		}
 
 
@@ -509,7 +532,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		private bool TestIsDirty()
 		{
-			return IsDirty || ElementTreeViewModel.IsElementsDirty || DrawingPanelViewModel.IsLightsDirty;
+			return IsDirty || ElementTreeViewModel.IsElementsDirty || DrawingPanelViewModel.IsLightsDirty || StateDefinitionEditorViewModel.IsDirty;
 		}
 
 		internal void ClearDirtyFlag()
@@ -517,6 +540,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			IsDirty = false;
 			ElementTreeViewModel.ClearIsDirty();
 			DrawingPanelViewModel.ClearIsDirty();
+			StateDefinitionEditorViewModel.ClearIsDirty();
 		}
 
 		#endregion
@@ -622,6 +646,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void SaveModel()
 		{
+			if (!TryValidateStateBeforeSave())
+			{
+				return;
+			}
+
 			ModifiedDate = DateTime.Now;
 			if (string.IsNullOrEmpty(FilePath))
 			{
@@ -654,6 +683,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private async void SaveModelAs()
 		{
+			if (!TryValidateStateBeforeSave())
+			{
+				return;
+			}
+
 			ModifiedDate = DateTime.Now;
 			var dependencyResolver = this.GetDependencyResolver();
 			var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
@@ -1161,6 +1195,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				//Alert user
 			}
+		}
+
+		private bool TryValidateStateBeforeSave()
+		{
+			StateDefinitionEditorViewModel.RefreshValidation();
+			if (!StateDefinitionEditorViewModel.HasValidationErrors)
+			{
+				return true;
+			}
+
+			var dependencyResolver = this.GetDependencyResolver();
+			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+			mbs.ShowError(StateDefinitionEditorViewModel.SaveValidationMessage, "Invalid State Definitions");
+			return false;
 		}
 
 		private async Task<Tuple<bool, ModelType>> LoadVendorModel(ModelLink modelLink)

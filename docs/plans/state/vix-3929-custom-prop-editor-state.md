@@ -19,7 +19,7 @@ The visible result is a third lower-left tab named `State Definition` next to `P
 - [x] (2026-06-11 00:00 -05:00) Added the Custom Prop Editor state data model foundation: `ElementModelType`, `StatePropertyId`, authoritative `StateDefinitionModels`, State definition/item models, mapper, model resolver, migration service, direct State property project reference, and focused tests.
 - [x] (2026-06-13 09:56 -05:00) Updated xModel import so new StateInfo imports fill `ElementModel.StateDefinitionModels`, assign Model Type values, and keep legacy State groups as a compatibility option.
 - [x] (2026-06-13 10:50 -05:00) Updated Preview import so `ElementModel.StateDefinitionModels` is authoritative and legacy State data remains a direct-import fallback.
-- [ ] Add the Custom Prop Editor State Definition view models, commands, validation, and save blocking.
+- [x] (2026-06-13 11:21 -05:00) Added the Custom Prop Editor State Definition view models, commands, validation, and save blocking.
 - [ ] Add the State Definition tab UI and viewer preview integration.
 - [ ] Add focused automated tests for model data, import, migration, Preview import, editor view models, and local preview behavior.
 - [ ] Run focused tests, full test suite, Debug and Release solution builds, and `git diff --check`; record validation evidence.
@@ -49,6 +49,9 @@ The visible result is a third lower-left tab named `State Definition` next to `P
 
 - Observation: Preview import can be tested without a full module descriptor load if State property creation has a direct `StateModule` fallback.
   Evidence: `PreviewCustomPropBuilder.GetOrCreateStateModule` first uses the normal property manager path and falls back to a `StateModule` with `StateDescriptor` assigned; `PreviewCustomPropStateImportTests` initializes only the Vixen system managers and module store.
+
+- Observation: The State Definition editor view models can be tested without XAML by binding directly to `ElementModel.StateDefinitionModels` and assignment tree nodes.
+  Evidence: `CustomPropStateEditorViewModelTests` exercises add, copy, delete, item reorder, assignment tree, validation, migration, and `Model Type` exposure through view models only.
 
 ## Decision Log
 
@@ -93,6 +96,8 @@ Milestone 2 is complete. The Custom Prop Editor now has foundational State model
 Milestone 3 is complete. xModel import now marks imported model, submodel, faceInfo, and legacy stateInfo groups with the expected `ElementModelType` values. Imported `stateInfo` data is written directly to `ElementModel.StateDefinitionModels` with ordered State items, colors, and model leaf assignments, while legacy State groups are still created without element-level State authoring data. Exact duplicate imported State definition names are suffixed deterministically and case-only names remain distinct. Focused Custom Prop Editor tests pass.
 
 Milestone 4 is complete. Preview custom prop import now maps authored `ElementModel.StateDefinitionModels` into Vixen State property data, preserves the State property ID, State definition IDs, State item IDs, descriptions, colors, item order, and mapped assignments, and skips unmapped assignment IDs. New authored State data wins over both legacy imported rows and legacy element-level State fields. Older imported-row `ElementModel.StateDefinitions` and child `ElementModel.StateDefinition` data remain direct-import fallbacks when no authored State definition models are present. Focused Preview import tests pass.
+
+Milestone 5 is complete. The Custom Prop Editor now has a State Definition editor view-model layer with editable State definitions, State items, assignment tree nodes, add/delete/rename/copy commands, item add/remove/reorder commands, validation messages, and dirty tracking. `PropEditorViewModel` creates the State editor for each loaded prop, migrates legacy State data through that editor path, refreshes assignments when the element model changes, and blocks Save and Save As when State validation errors exist. `ElementModelViewModel` exposes `Model Type` and hides the legacy Element Info State fields. Focused Custom Prop Editor tests pass.
 
 ## Context and Orientation
 
@@ -396,6 +401,14 @@ Milestone 4 validation:
     git -c core.whitespace=trailing-space,space-before-tab,cr-at-eol diff --check
     Exited successfully. Git printed expected line-ending normalization warnings for the plan and test project file; no whitespace errors were reported.
 
+Milestone 5 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor" --no-restore
+    Passed!  - Failed: 0, Passed: 33, Skipped: 0, Total: 33
+
+    git -c core.whitespace=trailing-space,space-before-tab,cr-at-eol diff --check
+    Exited successfully. No whitespace errors were reported.
+
 ## Interfaces and Dependencies
 
 Use existing Custom Prop Editor types:
@@ -453,3 +466,4 @@ At completion, preview coordination must be local to Custom Prop Editor. It must
 - 2026-06-11 / Codex: Completed Milestone 2 using the compatibility-safe fallback. The old item-like `ElementModel.StateDefinitions` remains as migration input, and the new authoritative collection is `ElementModel.StateDefinitionModels`.
 - 2026-06-13 / Codex: Completed Milestone 3. xModel import now writes imported `stateInfo` to `ElementModel.StateDefinitionModels`, assigns imported Model Type values, keeps legacy State groups as compatibility-only hierarchy, and tests duplicate imported State definition names.
 - 2026-06-13 / Codex: Completed Milestone 4. Preview import now creates State property data from authored `StateDefinitionModels`, preserves stable IDs and mapped assignments, and uses legacy imported rows or element-level State data only when authored State data is absent.
+- 2026-06-13 / Codex: Completed Milestone 5. State Definition editor view models now provide authoring commands, assignment tree editing, validation, dirty tracking, legacy migration on prop load, save blocking, and Element Info `Model Type` exposure.

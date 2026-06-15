@@ -19,7 +19,7 @@ namespace VixenModules.Property.State {
 
 		public override string Version => "1.0";
 
-		public override Type ModuleStaticDataClass => typeof (StateData);
+		public override Type ModuleDataClass => typeof (StateData);
 	}
 }
 
