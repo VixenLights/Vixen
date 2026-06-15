@@ -190,11 +190,11 @@ namespace Vixen.Sys
 			if (cleanup && !Parents.Any()) {
 				if( Element != null) {
 					VixenSystem.Elements.RemoveElement(Element);
-					foreach (var source in Properties.ToArray())
-					{
-						Properties.Remove(source.Descriptor.TypeId);
-					}
 					Element = null;
+				}
+				foreach (var source in Properties.ToArray())
+				{
+					Properties.Remove(source.Descriptor.TypeId);
 				}
 				VixenSystem.Nodes.ClearElementNode(Id);
 			}
