@@ -1,7 +1,10 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Catel.MVVM;
+using Common.Controls.ColorManagement.ColorModels;
+using Common.Controls.ColorManagement.ColorPicker;
 using VixenModules.App.CustomPropEditor.Extensions;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
@@ -17,6 +20,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		private readonly Prop _prop;
 		private readonly Action _itemChanged;
 		private HashSet<Guid> _validElementModelIds;
+		private Command _editColorCommand;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CustomPropStateItemViewModel"/> class.
@@ -99,6 +103,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 
 				Color = color;
 			}
+		}
+
+		/// <summary>
+		/// Gets the command that edits the State item color.
+		/// </summary>
+		public Command EditColorCommand
+		{
+			get { return _editColorCommand ??= new Command(EditColor); }
 		}
 
 		/// <summary>
@@ -190,6 +202,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			OnItemChanged(nameof(HasAssignments));
 			RaisePropertyChanged(nameof(AssignmentCount));
 			RefreshAssignments();
+		}
+
+		private void EditColor()
+		{
+			using var colorPicker = new ColorPicker
+			{
+				LockValue_V = false,
+				Color = XYZ.FromRGB(Color)
+			};
+
+			if (colorPicker.ShowDialog() == DialogResult.OK)
+			{
+				Color = colorPicker.Color.ToRGB();
+			}
 		}
 
 		private void RefreshValidElementModelIds()

@@ -289,7 +289,11 @@
 																								<DataTemplate>
 																										<TextBlock Text="{Binding ColorHex}"
 														 Background="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"
-														 Padding="4,1"/>
+														 Padding="4,1">
+																												<TextBlock.InputBindings>
+																														<MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditColorCommand}"/>
+																												</TextBlock.InputBindings>
+																										</TextBlock>
 																								</DataTemplate>
 																						</DataGridTemplateColumn.CellTemplate>
 																						<DataGridTemplateColumn.CellEditingTemplate>
