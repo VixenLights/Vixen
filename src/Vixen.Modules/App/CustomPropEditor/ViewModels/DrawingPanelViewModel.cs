@@ -10,6 +10,7 @@ using Common.WPFCommon.Command;
 using Common.WPFCommon.Services;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using VixenModules.App.CustomPropEditor.ViewModels.State;
 using Color = System.Drawing.Color;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
@@ -18,6 +19,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		private readonly ElementTreeViewModel _elementTreeViewModel;
 		private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
+		private bool _isStatePreviewActive;
 		
 		public DrawingPanelViewModel(ElementTreeViewModel elementTreeViewModel)
 		{
@@ -60,6 +62,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			MatchLightSizeCommand.RaiseCanExecuteChanged();
 
 			DeleteSelectedLightsCommand.RaiseCanExecuteChanged();
+
+			if (!_isStatePreviewActive)
+			{
+				ApplyNormalLightColors();
+			}
 		}
 
 		private bool CanExecuteAlignmentMethod()
@@ -280,6 +287,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			this.ClearIsDirtyOnAllChildren();
 			//RootNodesViewModels.ForEach(x => x.ClearIsDirtyOnAllChilds());
 		}
+
+		/// <summary>
+		/// Gets a value that indicates whether the drawing panel is showing State preview colors.
+		/// </summary>
+		public bool IsStatePreviewActive => _isStatePreviewActive;
 		
 		internal void RefreshLightViewModels()
 		{
@@ -296,6 +308,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					foreach (var elementModelLight in elementModel.Lights)
 					{
 						var lvm = new LightViewModel(elementModelLight);
+						lvm.DisplayColor = LightColor;
 						lightViewModels.Add(lvm);
 					}
 					_elementModelMap.Add(elementModel.Id, lightViewModels);
@@ -303,6 +316,67 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 
 			LightNodes.AddRange(_elementModelMap.Values.SelectMany(x => x.ToArray()));
+			ApplyNormalLightColors();
+		}
+
+		/// <summary>
+		/// Applies temporary State preview colors to the drawing surface.
+		/// </summary>
+		/// <param name="items">The State items to preview.</param>
+		public void ApplyStatePreview(IEnumerable<CustomPropStateItemViewModel> items)
+		{
+			_isStatePreviewActive = true;
+			var itemList = (items ?? []).ToList();
+			var colorsByElementModelId = itemList
+				.SelectMany(item => item.StateItem.ElementModelIds
+					.Distinct()
+					.Select(elementModelId => new
+					{
+						ElementModelId = elementModelId,
+						item.Color
+					}))
+				.GroupBy(pair => pair.ElementModelId)
+				.ToDictionary(
+					group => group.Key,
+					group => MixColors(group.Select(pair => pair.Color)));
+
+			foreach (var lightViewModel in LightNodes)
+			{
+				lightViewModel.DisplayColor = colorsByElementModelId.TryGetValue(lightViewModel.Light.ParentModelId, out var color)
+					? color
+					: Color.LightGray;
+			}
+		}
+
+		/// <summary>
+		/// Restores normal editor colors on the drawing surface.
+		/// </summary>
+		public void ClearStatePreview()
+		{
+			_isStatePreviewActive = false;
+			ApplyNormalLightColors();
+		}
+
+		private void ApplyNormalLightColors()
+		{
+			foreach (var lightViewModel in LightNodes)
+			{
+				lightViewModel.DisplayColor = lightViewModel.IsSelected ? SelectedLightColor : LightColor;
+			}
+		}
+
+		private static Color MixColors(IEnumerable<Color> colors)
+		{
+			var colorList = colors.ToList();
+			if (!colorList.Any())
+			{
+				return Color.LightGray;
+			}
+
+			return Color.FromArgb(
+				(int)Math.Round(colorList.Average(color => color.R)),
+				(int)Math.Round(colorList.Average(color => color.G)),
+				(int)Math.Round(colorList.Average(color => color.B)));
 		}
 
 		public void DeleteSelectedLights()

@@ -2,8 +2,10 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Input;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.App.CustomPropEditor.ViewModels;
 using VixenModules.App.CustomPropEditor.ViewModels.State;
+using WpfPoint = System.Windows.Point;
 using Xunit;
 
 namespace Vixen.Tests.App.CustomPropEditor.State;
@@ -172,12 +174,90 @@ public sealed class CustomPropStateEditorViewModelTests
 		Assert.True(viewModel.IsDirty);
 	}
 
+	[Fact]
+	public void AssignElementModelIds_AddsDistinctAssignmentsAndMarksDirty()
+	{
+		var prop = CreatePropWithModel(out var model, out var leaf);
+		model.ModelType = ElementModelType.Model;
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		model.StateDefinitionModels.Add(definition);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var item = editorViewModel.SelectedStateItem;
+
+		var changed = item.AssignElementModelIds([leaf.Id, leaf.Id, Guid.Empty]);
+
+		Assert.True(changed);
+		Assert.Equal([leaf.Id], item.StateItem.ElementModelIds);
+		Assert.True(item.HasAssignments);
+		Assert.True(item.IsDirty);
+		Assert.True(editorViewModel.IsDirty);
+	}
+
+	[Fact]
+	public void DrawingPanel_ApplyStatePreviewColorsAssignedLightsAndGreysUnassignedLights()
+	{
+		var prop = CreateServicePropWithLights(out var model, out var firstLeaf, out var secondLeaf);
+		model.ModelType = ElementModelType.Model;
+		var itemModel = new StateItemModel
+		{
+			Name = "Arm",
+			Color = Color.Red,
+			ElementModelIds = new ObservableCollection<Guid> { firstLeaf.Id }
+		};
+		var itemViewModel = new CustomPropStateItemViewModel(itemModel, prop, () => { });
+		var drawingPanelViewModel = new DrawingPanelViewModel(new ElementTreeViewModel(prop));
+
+		drawingPanelViewModel.ApplyStatePreview([itemViewModel]);
+
+		Assert.True(drawingPanelViewModel.IsStatePreviewActive);
+		Assert.Equal(Color.Red.ToArgb(), drawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.LightGray.ToArgb(), drawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+	}
+
+	[Fact]
+	public void DrawingPanel_ClearStatePreviewRestoresNormalLightColors()
+	{
+		var prop = CreateServicePropWithLights(out var model, out var firstLeaf, out _);
+		model.ModelType = ElementModelType.Model;
+		var itemModel = new StateItemModel
+		{
+			Name = "Arm",
+			Color = Color.Red,
+			ElementModelIds = new ObservableCollection<Guid> { firstLeaf.Id }
+		};
+		var itemViewModel = new CustomPropStateItemViewModel(itemModel, prop, () => { });
+		var drawingPanelViewModel = new DrawingPanelViewModel(new ElementTreeViewModel(prop));
+
+		drawingPanelViewModel.ApplyStatePreview([itemViewModel]);
+		drawingPanelViewModel.ClearStatePreview();
+
+		Assert.False(drawingPanelViewModel.IsStatePreviewActive);
+		Assert.All(drawingPanelViewModel.LightNodes, light => Assert.Equal(drawingPanelViewModel.LightColor, light.DisplayColor));
+	}
+
 	private static Prop CreatePropWithModel(out ElementModel model, out ElementModel leaf)
 	{
 		var prop = new Prop("State Prop");
 		model = new ElementModel("Model", prop.RootNode);
 		leaf = new ElementModel("Leaf 1", model);
 		model.AddChild(leaf);
+		prop.RootNode.AddChild(model);
+		return prop;
+	}
+
+	private static Prop CreateServicePropWithLights(
+		out ElementModel model,
+		out ElementModel firstLeaf,
+		out ElementModel secondLeaf)
+	{
+		var prop = PropModelServices.Instance().CreateProp("State Prop");
+		model = new ElementModel("Model", prop.RootNode);
+		firstLeaf = new ElementModel("Leaf 1", model);
+		firstLeaf.Lights.Add(new Light(new WpfPoint(10, 10), ElementModel.DefaultLightSize, firstLeaf.Id));
+		secondLeaf = new ElementModel("Leaf 2", model);
+		secondLeaf.Lights.Add(new Light(new WpfPoint(20, 20), ElementModel.DefaultLightSize, secondLeaf.Id));
+		model.AddChild(firstLeaf);
+		model.AddChild(secondLeaf);
 		prop.RootNode.AddChild(model);
 		return prop;
 	}

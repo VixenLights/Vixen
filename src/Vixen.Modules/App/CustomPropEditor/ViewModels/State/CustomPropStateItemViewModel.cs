@@ -118,6 +118,34 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		}
 
 		/// <summary>
+		/// Adds element model assignments to this State item.
+		/// </summary>
+		/// <param name="elementModelIds">The element model identifiers to assign.</param>
+		/// <returns><see langword="true" /> if assignments were added; otherwise, <see langword="false" />.</returns>
+		public bool AssignElementModelIds(IEnumerable<Guid> elementModelIds)
+		{
+			var changed = false;
+			foreach (var elementModelId in elementModelIds.Where(id => id != Guid.Empty).Distinct())
+			{
+				if (StateItem.ElementModelIds.Contains(elementModelId))
+				{
+					continue;
+				}
+
+				StateItem.ElementModelIds.Add(elementModelId);
+				changed = true;
+			}
+
+			if (!changed)
+			{
+				return false;
+			}
+
+			OnAssignmentChanged();
+			return true;
+		}
+
+		/// <summary>
 		/// Clears the dirty state for this State item.
 		/// </summary>
 		public void ClearIsDirty()

@@ -55,6 +55,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				DrawingPanelViewModel = new DrawingPanelViewModel(ElementTreeViewModel);
 				ElementOrderViewModel = new ElementOrderViewModel(value);
 				StateDefinitionEditorViewModel = new StateDefinitionEditorViewModel(value);
+				StateDefinitionEditorViewModel.StateDataChanged += StateDefinitionEditorViewModel_StateDataChanged;
+				StateDefinitionEditorViewModel.StatePreviewChanged += StateDefinitionEditorViewModel_StatePreviewChanged;
 				RegisterModelEvents();
 			}
 		}
@@ -375,6 +377,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, e) => ((PropEditorViewModel) sender).OnSelectedTabIndexChanged());
 
 		/// <summary>
+		/// Gets a value that indicates whether the State Definition tab is selected.
+		/// </summary>
+		[Browsable(false)]
+		public bool IsStateDefinitionTabSelected => SelectedTabIndex == 2;
+
+		/// <summary>
 		/// Called when the SelectedTabIndex property has changed.
 		/// </summary>
 		private void OnSelectedTabIndexChanged()
@@ -391,6 +399,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				ElementOrderViewModel.DeselectAll();
 				//ElementTreeViewModel.Select(selectedModelIds);
 			}
+
+			RaisePropertyChanged(nameof(IsStateDefinitionTabSelected));
+			UpdateStatePreview();
 		}
 
 		#endregion
@@ -425,6 +436,22 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				ElementOrderViewModel.SelectedItems.CollectionChanged -= ElementOrderViewModel_SelectedItemsChanged;
 			}
 
+			if (StateDefinitionEditorViewModel != null)
+			{
+				StateDefinitionEditorViewModel.StateDataChanged -= StateDefinitionEditorViewModel_StateDataChanged;
+				StateDefinitionEditorViewModel.StatePreviewChanged -= StateDefinitionEditorViewModel_StatePreviewChanged;
+			}
+
+		}
+
+		private void StateDefinitionEditorViewModel_StateDataChanged(object sender, EventArgs e)
+		{
+			UpdateStatePreview();
+		}
+
+		private void StateDefinitionEditorViewModel_StatePreviewChanged(object sender, EventArgs e)
+		{
+			UpdateStatePreview();
 		}
 
 		private void DrawingPanelViewModelsLightModelsChanged(object sender, EventArgs e)
@@ -466,8 +493,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 				if (e.Action == NotifyCollectionChangedAction.Add)
 				{
-					var parents = e.NewItems.Cast<LightViewModel>().SelectMany(l => ElementModelLookUpService.Instance.GetModels(l.Light.ParentModelId));
+					var newLights = e.NewItems.Cast<LightViewModel>().ToList();
+					var parents = newLights.SelectMany(l => ElementModelLookUpService.Instance.GetModels(l.Light.ParentModelId));
 					ElementTreeViewModel.SelectModels(parents);
+					AssignSelectedLightsToStateItem(newLights);
 				}
 				_selectionChanging = false;
 			}
@@ -541,6 +570,39 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			ElementTreeViewModel.ClearIsDirty();
 			DrawingPanelViewModel.ClearIsDirty();
 			StateDefinitionEditorViewModel.ClearIsDirty();
+		}
+
+		private void AssignSelectedLightsToStateItem(IEnumerable<LightViewModel> selectedLights)
+		{
+			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
+			if (!IsStateDefinitionTabSelected || selectedStateItem == null)
+			{
+				return;
+			}
+
+			var elementModelIds = selectedLights.Select(light => light.Light.ParentModelId);
+			if (selectedStateItem.AssignElementModelIds(elementModelIds))
+			{
+				UpdateStatePreview();
+			}
+		}
+
+		private void UpdateStatePreview()
+		{
+			if (DrawingPanelViewModel == null)
+			{
+				return;
+			}
+
+			if (!IsStateDefinitionTabSelected)
+			{
+				DrawingPanelViewModel.ClearStatePreview();
+				return;
+			}
+
+			var selectedItem = StateDefinitionEditorViewModel?.SelectedStateItem;
+			var previewItems = selectedItem == null ? [] : new[] { selectedItem };
+			DrawingPanelViewModel.ApplyStatePreview(previewItems);
 		}
 
 		#endregion

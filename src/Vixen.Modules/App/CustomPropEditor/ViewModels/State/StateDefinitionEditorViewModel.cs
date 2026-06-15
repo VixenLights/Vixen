@@ -23,6 +23,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		private Command _moveStateItemDownCommand;
 
 		/// <summary>
+		/// Occurs when State definition data changes.
+		/// </summary>
+		public event EventHandler StateDataChanged;
+
+		/// <summary>
+		/// Occurs when the State preview selection changes.
+		/// </summary>
+		public event EventHandler StatePreviewChanged;
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="StateDefinitionEditorViewModel"/> class.
 		/// </summary>
 		/// <param name="prop">The custom prop to edit.</param>
@@ -72,6 +82,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 				RaisePropertyChanged(nameof(SelectedStateDefinition));
 				RaisePropertyChanged(nameof(SelectedStateItem));
 				RaiseCommandCanExecuteChanged();
+				StatePreviewChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -91,6 +102,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 				SelectedStateDefinition.SelectedItem = value;
 				RaisePropertyChanged(nameof(SelectedStateItem));
 				RaiseCommandCanExecuteChanged();
+				StatePreviewChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -379,6 +391,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		{
 			IsDirty = true;
 			RefreshValidation();
+			StateDataChanged?.Invoke(this, EventArgs.Empty);
+			StatePreviewChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void StateDefinitionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
