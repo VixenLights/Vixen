@@ -81,25 +81,6 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
-	public void AssignmentTree_GroupAssignmentAssignsLeafElements()
-	{
-		var prop = CreatePropWithModel(out var model, out var firstLeaf);
-		model.ModelType = ElementModelType.Model;
-		var secondLeaf = new ElementModel("Leaf 2", model);
-		model.AddChild(secondLeaf);
-		var definition = StateDefinitionModel.CreateDefault("Wave");
-		model.StateDefinitionModels.Add(definition);
-		var viewModel = new StateDefinitionEditorViewModel(prop);
-		var item = viewModel.SelectedStateItem;
-
-		item.AssignmentTree.Single().IsAssigned = true;
-
-		Assert.Equal([firstLeaf.Id, secondLeaf.Id], item.StateItem.ElementModelIds);
-		Assert.True(item.HasAssignments);
-		Assert.False(viewModel.HasValidationErrors);
-	}
-
-	[Fact]
 	public void Validation_DetectsDuplicateDefinitionNamesAndMissingAssignments()
 	{
 		var prop = CreatePropWithModel(out var model, out _);

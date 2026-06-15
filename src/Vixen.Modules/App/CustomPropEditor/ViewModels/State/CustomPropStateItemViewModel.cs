@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -34,8 +33,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			_prop = prop ?? throw new ArgumentNullException(nameof(prop));
 			_itemChanged = itemChanged ?? throw new ArgumentNullException(nameof(itemChanged));
 			RefreshValidElementModelIds();
-			AssignmentTree = new ObservableCollection<CustomPropStateAssignmentTreeNodeViewModel>(
-				[new CustomPropStateAssignmentTreeNodeViewModel(prop.RootNode, stateItem, OnAssignmentChanged)]);
 		}
 
 		/// <summary>
@@ -43,11 +40,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// </summary>
 		[Browsable(false)]
 		public StateItemModel StateItem { get; }
-
-		/// <summary>
-		/// Gets the State item assignment tree.
-		/// </summary>
-		public ObservableCollection<CustomPropStateAssignmentTreeNodeViewModel> AssignmentTree { get; }
 
 		/// <summary>
 		/// Gets or sets the State item name.
@@ -133,11 +125,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			RefreshValidElementModelIds();
 			RaisePropertyChanged(nameof(HasAssignments));
 			RaisePropertyChanged(nameof(AssignmentCount));
-
-			foreach (var rootNode in AssignmentTree)
-			{
-				rootNode.RefreshAssignmentState();
-			}
 		}
 
 		/// <summary>

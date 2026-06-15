@@ -7,7 +7,6 @@
              xmlns:interactivity="http://schemas.catelproject.com"
              xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
              xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
-             xmlns:stateViewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels.State"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              xmlns:dd="urn:gong-wpf-dragdrop"
@@ -406,8 +405,6 @@
 														<RowDefinition Height="Auto"/>
 														<RowDefinition Height="*"/>
 														<RowDefinition Height="Auto"/>
-														<RowDefinition Height="Auto"/>
-														<RowDefinition Height="*"/>
 												</Grid.RowDefinitions>
 
 												<TextBlock Grid.Row="0" Text="Items" FontWeight="Bold" Margin="0,0,0,4"/>
@@ -457,17 +454,6 @@
 														<Button Content="Up" Command="{Binding MoveStateItemUpCommand}" Margin="0,0,4,0"/>
 														<Button Content="Down" Command="{Binding MoveStateItemDownCommand}"/>
 												</StackPanel>
-
-												<TextBlock Grid.Row="3" Text="Assignments" FontWeight="Bold" Margin="0,0,0,4"/>
-												<TreeView Grid.Row="4" ItemsSource="{Binding SelectedStateItem.AssignmentTree}" MinHeight="90">
-														<TreeView.Resources>
-																<HierarchicalDataTemplate DataType="{x:Type stateViewModels:CustomPropStateAssignmentTreeNodeViewModel}" ItemsSource="{Binding Children}">
-																		<CheckBox IsThreeState="True"
-													  IsChecked="{Binding IsAssigned, Mode=TwoWay}"
-													  Content="{Binding Name}"/>
-																</HierarchicalDataTemplate>
-														</TreeView.Resources>
-												</TreeView>
 										</Grid>
 
 										<ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ValidationMessages}" Margin="0,8,0,0">

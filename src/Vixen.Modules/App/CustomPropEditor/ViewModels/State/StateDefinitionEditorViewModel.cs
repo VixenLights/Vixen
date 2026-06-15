@@ -192,7 +192,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		}
 
 		/// <summary>
-		/// Refreshes State assignment trees after the prop element model changes.
+		/// Refreshes State assignment counts after the prop element model changes.
 		/// </summary>
 		public void RefreshAssignments()
 		{
