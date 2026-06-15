@@ -195,6 +195,20 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
+	public void AssignmentCount_IgnoresAssignmentsForMissingElements()
+	{
+		var prop = CreatePropWithModel(out var model, out var leaf);
+		model.ModelType = ElementModelType.Model;
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		definition.Items[0].ElementModelIds = new ObservableCollection<Guid> { leaf.Id, Guid.NewGuid() };
+		model.StateDefinitionModels.Add(definition);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+
+		Assert.Equal(1, editorViewModel.SelectedStateItem.AssignmentCount);
+		Assert.True(editorViewModel.SelectedStateItem.HasAssignments);
+	}
+
+	[Fact]
 	public void ToggleElementModelId_AddsAndRemovesAssignment()
 	{
 		var prop = CreatePropWithModel(out var model, out var leaf);
@@ -233,7 +247,7 @@ public sealed class CustomPropStateEditorViewModelTests
 
 		Assert.True(drawingPanelViewModel.IsStatePreviewActive);
 		Assert.Equal(Color.Red.ToArgb(), drawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
-		Assert.Equal(Color.LightGray.ToArgb(), drawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.FromArgb(25, 25, 25).ToArgb(), drawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
 	}
 
 	[Fact]

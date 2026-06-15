@@ -16,6 +16,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 	{
 		private readonly Prop _prop;
 		private readonly Action _itemChanged;
+		private HashSet<Guid> _validElementModelIds;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CustomPropStateItemViewModel"/> class.
@@ -28,6 +29,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			StateItem = stateItem ?? throw new ArgumentNullException(nameof(stateItem));
 			_prop = prop ?? throw new ArgumentNullException(nameof(prop));
 			_itemChanged = itemChanged ?? throw new ArgumentNullException(nameof(itemChanged));
+			RefreshValidElementModelIds();
 			AssignmentTree = new ObservableCollection<CustomPropStateAssignmentTreeNodeViewModel>(
 				[new CustomPropStateAssignmentTreeNodeViewModel(prop.RootNode, stateItem, OnAssignmentChanged)]);
 		}
@@ -109,13 +111,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// </summary>
 		public int AssignmentCount => StateItem.ElementModelIds
 			.Distinct()
-			.Count(id => _prop.GetAll().Any(model => model.Id == id));
+			.Count(id => _validElementModelIds.Contains(id));
 
 		/// <summary>
 		/// Refreshes assignment state after external assignment changes.
 		/// </summary>
 		public void RefreshAssignments()
 		{
+			RefreshValidElementModelIds();
 			RaisePropertyChanged(nameof(HasAssignments));
 			RaisePropertyChanged(nameof(AssignmentCount));
 
@@ -187,6 +190,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			OnItemChanged(nameof(HasAssignments));
 			RaisePropertyChanged(nameof(AssignmentCount));
 			RefreshAssignments();
+		}
+
+		private void RefreshValidElementModelIds()
+		{
+			_validElementModelIds = _prop.GetAll()
+				.Select(model => model.Id)
+				.ToHashSet();
 		}
 
 		private void OnItemChanged(string propertyName)

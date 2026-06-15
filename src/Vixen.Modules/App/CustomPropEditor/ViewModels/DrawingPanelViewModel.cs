@@ -17,6 +17,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	public class DrawingPanelViewModel : ViewModelBase
 	{
+		private static readonly Color StatePreviewBaseColor = Color.FromArgb(25, 25, 25);
 		private readonly ElementTreeViewModel _elementTreeViewModel;
 		private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
 		private bool _isStatePreviewActive;
@@ -344,7 +345,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				lightViewModel.DisplayColor = colorsByElementModelId.TryGetValue(lightViewModel.Light.ParentModelId, out var color)
 					? color
-					: Color.LightGray;
+					: StatePreviewBaseColor;
 			}
 		}
 
@@ -370,7 +371,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var colorList = colors.ToList();
 			if (!colorList.Any())
 			{
-				return Color.LightGray;
+				return StatePreviewBaseColor;
 			}
 
 			return Color.FromArgb(
