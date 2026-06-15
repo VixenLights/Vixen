@@ -239,6 +239,15 @@ namespace VixenModules.App.CustomPropEditor.Controls
 				var l = p.DataContext as ISelectable;
 				if (l != null)
 				{
+					if (_propEditorViewModel != null &&
+						_propEditorViewModel.IsStateDefinitionTabSelected &&
+						l is LightViewModel lightViewModel &&
+						_propEditorViewModel.ToggleStateItemAssignment(lightViewModel))
+					{
+						e.Handled = true;
+						return;
+					}
+
 					_isSelecting = true;
 
 

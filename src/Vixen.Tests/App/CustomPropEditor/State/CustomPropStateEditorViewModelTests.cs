@@ -194,6 +194,25 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
+	public void ToggleElementModelId_AddsAndRemovesAssignment()
+	{
+		var prop = CreatePropWithModel(out var model, out var leaf);
+		model.ModelType = ElementModelType.Model;
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		model.StateDefinitionModels.Add(definition);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var item = editorViewModel.SelectedStateItem;
+
+		Assert.True(item.ToggleElementModelId(leaf.Id));
+		Assert.Equal([leaf.Id], item.StateItem.ElementModelIds);
+
+		Assert.True(item.ToggleElementModelId(leaf.Id));
+		Assert.Empty(item.StateItem.ElementModelIds);
+		Assert.False(item.HasAssignments);
+		Assert.True(editorViewModel.IsDirty);
+	}
+
+	[Fact]
 	public void DrawingPanel_ApplyStatePreviewColorsAssignedLightsAndGreysUnassignedLights()
 	{
 		var prop = CreateServicePropWithLights(out var model, out var firstLeaf, out var secondLeaf);

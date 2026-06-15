@@ -587,6 +587,27 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Toggles the State assignment for a light on the currently selected State item.
+		/// </summary>
+		/// <param name="lightViewModel">The light view model to toggle.</param>
+		/// <returns><see langword="true" /> if the click was handled as a State assignment toggle; otherwise, <see langword="false" />.</returns>
+		public bool ToggleStateItemAssignment(LightViewModel lightViewModel)
+		{
+			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
+			if (!IsStateDefinitionTabSelected || selectedStateItem == null || lightViewModel == null)
+			{
+				return false;
+			}
+
+			if (selectedStateItem.ToggleElementModelId(lightViewModel.Light.ParentModelId))
+			{
+				UpdateStatePreview();
+			}
+
+			return true;
+		}
+
 		private void UpdateStatePreview()
 		{
 			if (DrawingPanelViewModel == null)

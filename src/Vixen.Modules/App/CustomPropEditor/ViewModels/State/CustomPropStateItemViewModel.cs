@@ -146,6 +146,27 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		}
 
 		/// <summary>
+		/// Toggles an element model assignment on this State item.
+		/// </summary>
+		/// <param name="elementModelId">The element model identifier to toggle.</param>
+		/// <returns><see langword="true" /> if the assignment data changed; otherwise, <see langword="false" />.</returns>
+		public bool ToggleElementModelId(Guid elementModelId)
+		{
+			if (elementModelId == Guid.Empty)
+			{
+				return false;
+			}
+
+			if (!StateItem.ElementModelIds.Remove(elementModelId))
+			{
+				StateItem.ElementModelIds.Add(elementModelId);
+			}
+
+			OnAssignmentChanged();
+			return true;
+		}
+
+		/// <summary>
 		/// Clears the dirty state for this State item.
 		/// </summary>
 		public void ClearIsDirty()
