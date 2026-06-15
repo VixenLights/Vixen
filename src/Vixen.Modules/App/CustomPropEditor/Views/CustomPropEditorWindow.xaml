@@ -301,7 +301,7 @@
 																								</DataTemplate>
 																						</DataGridTemplateColumn.CellEditingTemplate>
 																				</DataGridTemplateColumn>
-																				<DataGridCheckBoxColumn Header="Assigned" Width="70" Binding="{Binding HasAssignments, Mode=OneWay}"/>
+																				<DataGridTextColumn Header="Assigned" Width="70" Binding="{Binding AssignmentCount, Mode=OneWay}"/>
 																		</DataGrid.Columns>
 																</DataGrid>
 																<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,8">

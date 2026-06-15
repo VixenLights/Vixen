@@ -189,6 +189,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		Assert.True(changed);
 		Assert.Equal([leaf.Id], item.StateItem.ElementModelIds);
 		Assert.True(item.HasAssignments);
+		Assert.Equal(1, item.AssignmentCount);
 		Assert.True(item.IsDirty);
 		Assert.True(editorViewModel.IsDirty);
 	}
@@ -205,10 +206,12 @@ public sealed class CustomPropStateEditorViewModelTests
 
 		Assert.True(item.ToggleElementModelId(leaf.Id));
 		Assert.Equal([leaf.Id], item.StateItem.ElementModelIds);
+		Assert.Equal(1, item.AssignmentCount);
 
 		Assert.True(item.ToggleElementModelId(leaf.Id));
 		Assert.Empty(item.StateItem.ElementModelIds);
 		Assert.False(item.HasAssignments);
+		Assert.Equal(0, item.AssignmentCount);
 		Assert.True(editorViewModel.IsDirty);
 	}
 

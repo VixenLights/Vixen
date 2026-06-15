@@ -102,7 +102,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// <summary>
 		/// Gets a value that indicates whether the State item has at least one assignment.
 		/// </summary>
-		public bool HasAssignments => StateItem.ElementModelIds.Any(id => _prop.GetAll().Any(model => model.Id == id));
+		public bool HasAssignments => AssignmentCount > 0;
+
+		/// <summary>
+		/// Gets the number of assigned element models that still exist in the prop.
+		/// </summary>
+		public int AssignmentCount => StateItem.ElementModelIds
+			.Distinct()
+			.Count(id => _prop.GetAll().Any(model => model.Id == id));
 
 		/// <summary>
 		/// Refreshes assignment state after external assignment changes.
@@ -110,6 +117,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		public void RefreshAssignments()
 		{
 			RaisePropertyChanged(nameof(HasAssignments));
+			RaisePropertyChanged(nameof(AssignmentCount));
 
 			foreach (var rootNode in AssignmentTree)
 			{
@@ -177,6 +185,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		private void OnAssignmentChanged()
 		{
 			OnItemChanged(nameof(HasAssignments));
+			RaisePropertyChanged(nameof(AssignmentCount));
 			RefreshAssignments();
 		}
 
