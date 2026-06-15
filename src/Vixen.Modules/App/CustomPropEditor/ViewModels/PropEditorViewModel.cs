@@ -465,6 +465,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			ElementOrderViewModel.RefreshElementLeafViewModels();
 			DrawingPanelViewModel.RefreshLightViewModels();
 			StateDefinitionEditorViewModel.SetProp(Prop);
+			StateDefinitionEditorViewModel.RefreshAssignments();
 		}
 
 
@@ -708,6 +709,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			DrawingPanelViewModel.DeselectAll();
 			DrawingPanelViewModel.RefreshLightViewModels();
 			ElementOrderViewModel.RefreshElementLeafViewModels();
+			StateDefinitionEditorViewModel.RefreshAssignments();
+			UpdateStatePreview();
 		}
 
 		/// <summary>

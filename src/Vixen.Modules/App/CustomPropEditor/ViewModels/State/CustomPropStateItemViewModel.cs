@@ -123,6 +123,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		public void RefreshAssignments()
 		{
 			RefreshValidElementModelIds();
+			var removedInvalidAssignments = RemoveInvalidElementModelIds();
+			if (removedInvalidAssignments)
+			{
+				IsDirty = true;
+				_itemChanged();
+			}
+
 			RaisePropertyChanged(nameof(HasAssignments));
 			RaisePropertyChanged(nameof(AssignmentCount));
 		}
@@ -232,6 +239,21 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			_validElementModelIds = _prop.GetAll()
 				.Select(model => model.Id)
 				.ToHashSet();
+		}
+
+		private bool RemoveInvalidElementModelIds()
+		{
+			var invalidElementModelIds = StateItem.ElementModelIds
+				.Where(id => !_validElementModelIds.Contains(id))
+				.Distinct()
+				.ToList();
+
+			foreach (var invalidElementModelId in invalidElementModelIds)
+			{
+				StateItem.ElementModelIds.Remove(invalidElementModelId);
+			}
+
+			return invalidElementModelIds.Count > 0;
 		}
 
 		private void OnItemChanged(string propertyName)

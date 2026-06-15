@@ -213,6 +213,26 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
+	public void RefreshAssignments_RemovesAssignmentsForDeletedElements()
+	{
+		var prop = CreatePropWithModel(out var model, out var firstLeaf);
+		model.ModelType = ElementModelType.Model;
+		var secondLeaf = new ElementModel("Leaf 2", model);
+		model.AddChild(secondLeaf);
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		definition.Items[0].ElementModelIds = new ObservableCollection<Guid> { firstLeaf.Id, secondLeaf.Id };
+		model.StateDefinitionModels.Add(definition);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+
+		model.RemoveChild(firstLeaf);
+		editorViewModel.RefreshAssignments();
+
+		Assert.Equal([secondLeaf.Id], definition.Items[0].ElementModelIds);
+		Assert.Equal(1, editorViewModel.SelectedStateItem.AssignmentCount);
+		Assert.True(editorViewModel.IsDirty);
+	}
+
+	[Fact]
 	public void SelectedStateItems_MultipleRowsDisablesCanvasAssignments()
 	{
 		var prop = CreatePropWithModel(out var model, out _);
