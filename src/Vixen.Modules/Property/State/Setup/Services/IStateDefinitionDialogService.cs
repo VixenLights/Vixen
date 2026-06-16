@@ -25,5 +25,19 @@ namespace VixenModules.Property.State.Setup.Services
 		/// <param name="name">The name of the State definition to delete.</param>
 		/// <returns><see langword="true" /> if deletion is confirmed; otherwise, <see langword="false" />.</returns>
 		Task<bool> ConfirmDeleteAsync(string name);
+
+		/// <summary>
+		/// Confirms deletion of one State item.
+		/// </summary>
+		/// <param name="name">The name of the State item to delete.</param>
+		/// <returns><see langword="true" /> if deletion is confirmed; otherwise, <see langword="false" />.</returns>
+		Task<bool> ConfirmDeleteStateItemAsync(string name);
+
+		/// <summary>
+		/// Confirms deletion of multiple State items.
+		/// </summary>
+		/// <param name="count">The number of State items to delete.</param>
+		/// <returns><see langword="true" /> if deletion is confirmed; otherwise, <see langword="false" />.</returns>
+		Task<bool> ConfirmDeleteStateItemsAsync(int count);
 	}
 }

@@ -1,4 +1,3 @@
-using System.Collections.Specialized;
 using System.Drawing;
 using System.Reflection;
 using Moq;
@@ -15,154 +14,93 @@ namespace Vixen.Tests.Property.State;
 public sealed class StateMapperPreviewTests
 {
 	[Fact]
-	public void Constructor_DefaultsPreviewOffAndBuildsOrderedGroups()
+	public void Constructor_DefaultsPreviewOffAndNoSelectedRows()
 	{
 		// Arrange
 		var fixture = CreateFixture(
 			("Open", Color.Red, Array.Empty<Guid>()),
-			("Closed", Color.Blue, Array.Empty<Guid>()),
-			("Open", Color.Green, Array.Empty<Guid>()),
-			("open", Color.Yellow, Array.Empty<Guid>()));
+			("Closed", Color.Blue, Array.Empty<Guid>()));
 
 		// Assert
 		Assert.False(fixture.ViewModel.IsPreviewEnabled);
-		Assert.True(fixture.ViewModel.IsStateItemGroupPreviewMode);
-		Assert.Equal("<ALL>", fixture.ViewModel.SelectedStateItemGroup);
-		Assert.Equal(["<ALL>", "Open", "Closed", "open"], fixture.ViewModel.AvailableStateItemGroups);
+		Assert.Empty(fixture.ViewModel.SelectedItems);
+		Assert.Empty(fixture.ViewModel.AssignedElementRoots);
 		Assert.Empty(fixture.Publisher.Operations);
 	}
 
 	[Fact]
-	public void Constructor_WithNoRows_OffersOnlyAllGroup()
-	{
-		// Arrange
-		var fixture = CreateFixture();
-
-		// Assert
-		Assert.Equal(["<ALL>"], fixture.ViewModel.AvailableStateItemGroups);
-	}
-
-	[Fact]
-	public void RenamingGroup_RebuildsAvailableGroupsWithoutCollectionReset()
-	{
-		// Arrange
-		var fixture = CreateFixture(
-			("Open", Color.Red, [Guid.Empty]),
-			("Closed", Color.Blue, [Guid.Empty]));
-		var actions = new List<NotifyCollectionChangedAction>();
-		fixture.ViewModel.AvailableStateItemGroups.CollectionChanged += (_, args) => actions.Add(args.Action);
-
-		// Act
-		fixture.ViewModel.Items[0].Name = "Opening";
-
-		// Assert
-		Assert.Equal(["<ALL>", "Opening", "Closed"], fixture.ViewModel.AvailableStateItemGroups);
-		Assert.DoesNotContain(NotifyCollectionChangedAction.Reset, actions);
-	}
-
-	[Fact]
-	public void EnablingPreview_ActivatesSelectedRowImmediately()
+	public void EnablingPreview_WithNoSelectedRows_DoesNotPublish()
 	{
 		// Arrange
 		var fixture = CreateFixture(("Open", Color.Red, [Guid.Empty]));
 
 		// Act
 		fixture.ViewModel.IsPreviewEnabled = true;
+
+		// Assert
+		Assert.Empty(fixture.Publisher.Operations);
+	}
+
+	[Fact]
+	public void SelectingOneRow_RefreshesPreviewAndShowsAssignments()
+	{
+		// Arrange
+		var fixture = CreateFixture(
+			("Open", Color.Red, [Guid.Empty]),
+			("Closed", Color.Blue, [Guid.Empty]));
+		fixture.ViewModel.IsPreviewEnabled = true;
+
+		// Act
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[0]);
 
 		// Assert
 		AssertTurnOn(fixture.Publisher, (fixture.LeafIds[0], "#FF0000"));
+		Assert.Same(fixture.ViewModel.Items[0], fixture.ViewModel.SelectedItem);
+		Assert.Same(fixture.ViewModel.Items[0].AssignmentRoots[0], Assert.Single(fixture.ViewModel.AssignedElementRoots));
 	}
 
 	[Fact]
-	public void EnablingPreview_WithNoRows_DoesNotPublish()
+	public void SelectingMultipleRows_PreviewsAllSelectedRowsAndHidesAssignments()
 	{
 		// Arrange
-		var fixture = CreateFixture();
+		var fixture = CreateFixture(
+			("Open", Color.Red, [Guid.Empty]),
+			("Closed", Color.Blue, [Guid.Empty]),
+			("Blink", Color.Green, [Guid.Empty]));
+		fixture.ViewModel.IsPreviewEnabled = true;
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[0]);
+		fixture.Publisher.Operations.Clear();
 
 		// Act
-		fixture.ViewModel.IsPreviewEnabled = true;
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[2]);
 
 		// Assert
-		Assert.Empty(fixture.Publisher.Operations);
+		var operation = Assert.Single(fixture.Publisher.Operations);
+		Assert.Equal("TurnOn", operation.Name);
+		Assert.Equal(
+			[(fixture.LeafIds[2], "#008000")],
+			ToValues(operation.Pairs));
+		Assert.Empty(fixture.ViewModel.AssignedElementRoots);
 	}
 
 	[Fact]
-	public void DisablingPreview_ClearsContext()
+	public void ClearingSelection_TurnsOffPreviewedRows()
 	{
 		// Arrange
 		var fixture = CreateFixture(("Open", Color.Red, [Guid.Empty]));
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[0]);
 		fixture.ViewModel.IsPreviewEnabled = true;
 		fixture.Publisher.Operations.Clear();
 
 		// Act
-		fixture.ViewModel.IsPreviewEnabled = false;
+		fixture.ViewModel.SelectedItems.Clear();
 
 		// Assert
-		Assert.Equal("Clear", Assert.Single(fixture.Publisher.Operations).Name);
-	}
-
-	[Fact]
-	public void SelectingAnotherRow_RefreshesSelectedItemMode()
-	{
-		// Arrange
-		var fixture = CreateFixture(
-			("Open", Color.Red, [Guid.Empty]),
-			("Closed", Color.Blue, [Guid.Empty]));
-		fixture.ViewModel.IsStateItemGroupPreviewMode = false;
-		fixture.ViewModel.IsPreviewEnabled = true;
-		fixture.Publisher.Operations.Clear();
-
-		// Act
-		fixture.ViewModel.SelectedItem = fixture.ViewModel.Items[1];
-
-		// Assert
-		Assert.Collection(
-			fixture.Publisher.Operations,
-			operation => Assert.Equal("TurnOff", operation.Name),
-			operation =>
-			{
-				Assert.Equal("TurnOn", operation.Name);
-				Assert.Equal([(fixture.LeafIds[1], "#0000FF")], ToValues(operation.Pairs));
-			});
-	}
-
-	[Fact]
-	public void SelectingAnotherRow_DoesNotRefreshGroupMode()
-	{
-		// Arrange
-		var fixture = CreateFixture(
-			("Open", Color.Red, [Guid.Empty]),
-			("Closed", Color.Blue, [Guid.Empty]));
-		fixture.ViewModel.IsPreviewEnabled = true;
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-		fixture.Publisher.Operations.Clear();
-
-		// Act
-		fixture.ViewModel.SelectedItem = fixture.ViewModel.Items[1];
-
-		// Assert
-		Assert.Empty(fixture.Publisher.Operations);
-	}
-
-	[Fact]
-	public void ChangingMode_ClearsBeforeActivatingGroup()
-	{
-		// Arrange
-		var fixture = CreateFixture(
-			("Open", Color.Red, [Guid.Empty]),
-			("Closed", Color.Blue, [Guid.Empty]));
-		fixture.ViewModel.IsStateItemGroupPreviewMode = false;
-		fixture.ViewModel.IsPreviewEnabled = true;
-		fixture.Publisher.Operations.Clear();
-
-		// Act
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-
-		// Assert
-		Assert.Collection(
-			fixture.Publisher.Operations,
-			operation => Assert.Equal("Clear", operation.Name),
-			operation => Assert.Equal(2, operation.Pairs.Count));
+		var operation = Assert.Single(fixture.Publisher.Operations);
+		Assert.Equal("TurnOff", operation.Name);
+		Assert.Equal([fixture.LeafIds[0]], operation.ElementIds);
+		Assert.Null(fixture.ViewModel.SelectedItem);
+		Assert.Empty(fixture.ViewModel.AssignedElementRoots);
 	}
 
 	[Fact]
@@ -170,6 +108,7 @@ public sealed class StateMapperPreviewTests
 	{
 		// Arrange
 		var fixture = CreateFixture(("Open", Color.Red, Array.Empty<Guid>()));
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[0]);
 		fixture.ViewModel.IsPreviewEnabled = true;
 
 		// Act
@@ -191,7 +130,7 @@ public sealed class StateMapperPreviewTests
 		var fixture = CreateFixture(
 			("Open", Color.Red, [Guid.Empty]),
 			("Closed", Color.Blue, [Guid.Empty]));
-		fixture.ViewModel.IsStateItemGroupPreviewMode = false;
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[0]);
 		fixture.ViewModel.IsPreviewEnabled = true;
 		fixture.Publisher.Operations.Clear();
 
@@ -203,147 +142,7 @@ public sealed class StateMapperPreviewTests
 	}
 
 	[Fact]
-	public void NamedGroup_PreviewsOnlyExactNameMatches()
-	{
-		// Arrange
-		var fixture = CreateFixture(
-			("Open", Color.Red, [Guid.Empty]),
-			("Open", Color.Green, [Guid.Empty]),
-			("open", Color.Blue, [Guid.Empty]));
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-		fixture.ViewModel.SelectedStateItemGroup = "Open";
-
-		// Act
-		fixture.ViewModel.IsPreviewEnabled = true;
-
-		// Assert
-		Assert.Equal(
-			new[] { (fixture.LeafIds[0], "#FF0000"), (fixture.LeafIds[1], "#008000") }
-				.OrderBy(pair => pair.Item1),
-			ToValues(Assert.Single(fixture.Publisher.Operations).Pairs));
-	}
-
-	[Fact]
-	public void ChangingNamedGroupWhileEnabled_RefreshesIncrementally()
-	{
-		// Arrange
-		var fixture = CreateFixture(
-			("Open", Color.Red, [Guid.Empty]),
-			("Closed", Color.Blue, [Guid.Empty]));
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-		fixture.ViewModel.IsPreviewEnabled = true;
-		fixture.Publisher.Operations.Clear();
-
-		// Act
-		fixture.ViewModel.SelectedStateItemGroup = "Open";
-
-		// Assert
-		var operation = Assert.Single(fixture.Publisher.Operations);
-		Assert.Equal("TurnOff", operation.Name);
-		Assert.Equal([fixture.LeafIds[1]], operation.ElementIds);
-	}
-
-	[Fact]
-	public void Rename_RetainsNamedGroupUntilFinalMatchDisappears()
-	{
-		// Arrange
-		var fixture = CreateFixture(
-			("Open", Color.Red, [Guid.Empty]),
-			("Open", Color.Green, [Guid.Empty]),
-			("Closed", Color.Blue, [Guid.Empty]));
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-		fixture.ViewModel.SelectedStateItemGroup = "Open";
-		fixture.ViewModel.IsPreviewEnabled = true;
-		fixture.Publisher.Operations.Clear();
-
-		// Act
-		fixture.ViewModel.Items[0].Name = "Opening";
-		var retainedGroup = fixture.ViewModel.SelectedStateItemGroup;
-		fixture.ViewModel.Items[1].Name = "Opening";
-
-		// Assert
-		Assert.Equal("Open", retainedGroup);
-		Assert.Equal("<ALL>", fixture.ViewModel.SelectedStateItemGroup);
-		Assert.Equal(["<ALL>", "Opening", "Closed"], fixture.ViewModel.AvailableStateItemGroups);
-		Assert.Contains(
-			fixture.Publisher.Operations,
-			operation => operation.Pairs.Any(pair => pair.ElementId == fixture.LeafIds[2]));
-	}
-
-	[Fact]
-	public void Remove_RetainsNamedGroupUntilFinalMatchDisappears()
-	{
-		// Arrange
-		var fixture = CreateFixture(
-			("Open", Color.Red, [Guid.Empty]),
-			("Open", Color.Green, [Guid.Empty]),
-			("Closed", Color.Blue, [Guid.Empty]));
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-		fixture.ViewModel.SelectedStateItemGroup = "Open";
-		fixture.ViewModel.IsPreviewEnabled = true;
-
-		// Act
-		fixture.Publisher.Operations.Clear();
-		fixture.ViewModel.Items.RemoveAt(0);
-		var retainedGroup = fixture.ViewModel.SelectedStateItemGroup;
-		fixture.Publisher.Operations.Clear();
-		fixture.ViewModel.Items.RemoveAt(0);
-
-		// Assert
-		Assert.Equal("Open", retainedGroup);
-		Assert.Equal("<ALL>", fixture.ViewModel.SelectedStateItemGroup);
-		Assert.Collection(
-			fixture.Publisher.Operations,
-			operation => Assert.Equal("TurnOff", operation.Name),
-			operation => Assert.Equal([(fixture.LeafIds[2], "#0000FF")], ToValues(operation.Pairs)));
-	}
-
-	[Fact]
-	public async Task GroupAll_RefreshesAfterAddAndRemove()
-	{
-		// Arrange
-		var fixture = CreateFixture(("Open", Color.Red, [Guid.Empty]));
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-		fixture.ViewModel.IsPreviewEnabled = true;
-		fixture.Publisher.Operations.Clear();
-
-		// Act
-		await InvokeTaskAsync(fixture.ViewModel, "AddItemAsync");
-		fixture.ViewModel.Items[1].AssignmentRoots[0].Children[1].IsChecked = true;
-		fixture.Publisher.Operations.Clear();
-		fixture.ViewModel.SelectedItem = fixture.ViewModel.Items[1];
-		await InvokeTaskAsync(fixture.ViewModel, "RemoveItemAsync");
-
-		// Assert
-		var operation = Assert.Single(fixture.Publisher.Operations);
-		Assert.Equal("TurnOff", operation.Name);
-		Assert.Equal([fixture.LeafIds[1]], operation.ElementIds);
-	}
-
-	[Fact]
-	public void OverlappingColors_RepairRemainingColorAfterDeduplication()
-	{
-		// Arrange
-		var fixture = CreateFixture(
-			("Open", Color.Red, [Guid.Empty]),
-			("Closed", Color.Green, [Guid.Empty]));
-		fixture.ViewModel.Items[1].AssignmentRoots[0].Children[0].IsChecked = true;
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-		fixture.ViewModel.IsPreviewEnabled = true;
-		fixture.Publisher.Operations.Clear();
-
-		// Act
-		fixture.ViewModel.Items[0].Color = Color.Green;
-
-		// Assert
-		Assert.Collection(
-			fixture.Publisher.Operations,
-			operation => Assert.Equal([fixture.LeafIds[0]], operation.ElementIds),
-			operation => Assert.Equal([(fixture.LeafIds[0], "#008000")], ToValues(operation.Pairs)));
-	}
-
-	[Fact]
-	public void PreviewOff_SuppressesSelectionsModesGroupsAndEdits()
+	public void PreviewOff_SuppressesSelectionsAndEdits()
 	{
 		// Arrange
 		var fixture = CreateFixture(
@@ -351,9 +150,8 @@ public sealed class StateMapperPreviewTests
 			("Closed", Color.Blue, [Guid.Empty]));
 
 		// Act
-		fixture.ViewModel.SelectedItem = fixture.ViewModel.Items[1];
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-		fixture.ViewModel.SelectedStateItemGroup = "Open";
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[0]);
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[1]);
 		fixture.ViewModel.Items[0].Color = Color.Green;
 		fixture.ViewModel.Items[0].AssignmentRoots[0].Children[0].IsChecked = false;
 
@@ -372,7 +170,7 @@ public sealed class StateMapperPreviewTests
 			[
 				("Closed", Color.Blue, [Guid.Empty])
 			]);
-		fixture.ViewModel.IsStateItemGroupPreviewMode = false;
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[0]);
 		fixture.ViewModel.IsPreviewEnabled = true;
 		fixture.Publisher.Operations.Clear();
 
@@ -382,6 +180,7 @@ public sealed class StateMapperPreviewTests
 		// Assert
 		Assert.Equal("Clear", Assert.Single(fixture.Publisher.Operations).Name);
 		Assert.Null(fixture.ViewModel.SelectedItem);
+		Assert.Empty(fixture.ViewModel.SelectedItems);
 	}
 
 	[Fact]
@@ -395,6 +194,7 @@ public sealed class StateMapperPreviewTests
 			[
 				("Closed", Color.Blue, [Guid.Empty])
 			]);
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[0]);
 
 		// Act
 		fixture.ViewModel.SelectedStateDefinition = fixture.ViewModel.StateDefinitions[1];
@@ -403,50 +203,30 @@ public sealed class StateMapperPreviewTests
 		Assert.Empty(fixture.Publisher.Operations);
 		Assert.Equal("Closed", fixture.ViewModel.Items[0].Name);
 		Assert.Null(fixture.ViewModel.SelectedItem);
+		Assert.Empty(fixture.ViewModel.SelectedItems);
 	}
 
 	[Fact]
-	public void SwitchingStateDefinition_ResetsSelectedGroupToAll()
+	public void OverlappingColors_RepairRemainingColorAfterDeduplication()
 	{
 		// Arrange
-		var fixture = CreateDefinitionFixture(
-			[
-				("Open", Color.Red, [Guid.Empty])
-			],
-			[
-				("Closed", Color.Blue, [Guid.Empty])
-			]);
-		fixture.ViewModel.IsStateItemGroupPreviewMode = true;
-		fixture.ViewModel.SelectedStateItemGroup = "Open";
-
-		// Act
-		fixture.ViewModel.SelectedStateDefinition = fixture.ViewModel.StateDefinitions[1];
-
-		// Assert
-		Assert.Equal("<ALL>", fixture.ViewModel.SelectedStateItemGroup);
-		Assert.Equal(["<ALL>", "Closed"], fixture.ViewModel.AvailableStateItemGroups);
-	}
-
-	[Fact]
-	public void InactiveStateDefinitionEdits_DoNotPublish()
-	{
-		// Arrange
-		var fixture = CreateDefinitionFixture(
-			[
-				("Open", Color.Red, [Guid.Empty])
-			],
-			[
-				("Closed", Color.Blue, [Guid.Empty])
-			]);
+		var fixture = CreateFixture(
+			("Open", Color.Red, [Guid.Empty]),
+			("Closed", Color.Green, [Guid.Empty]));
+		fixture.ViewModel.Items[1].AssignmentRoots[0].Children[0].IsChecked = true;
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[0]);
+		fixture.ViewModel.SelectedItems.Add(fixture.ViewModel.Items[1]);
 		fixture.ViewModel.IsPreviewEnabled = true;
 		fixture.Publisher.Operations.Clear();
 
 		// Act
-		fixture.ViewModel.StateDefinitions[1].Items[0].Color = Color.Green;
-		fixture.ViewModel.StateDefinitions[1].Items[0].AssignmentRoots[0].Children[1].IsChecked = true;
+		fixture.ViewModel.Items[0].Color = Color.Green;
 
 		// Assert
-		Assert.Empty(fixture.Publisher.Operations);
+		Assert.Collection(
+			fixture.Publisher.Operations,
+			operation => Assert.Equal([fixture.LeafIds[0]], operation.ElementIds),
+			operation => Assert.Equal([(fixture.LeafIds[0], "#008000")], ToValues(operation.Pairs)));
 	}
 
 	[Fact]
@@ -536,13 +316,6 @@ public sealed class StateMapperPreviewTests
 		node.SetupGet(elementNode => elementNode.Children).Returns(children);
 		node.Setup(elementNode => elementNode.GetNodeEnumerator()).Returns(children);
 		return node.Object;
-	}
-
-	private static Task InvokeTaskAsync(StateMapperViewModel viewModel, string methodName)
-	{
-		var method = typeof(StateMapperViewModel).GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-		Assert.NotNull(method);
-		return Assert.IsAssignableFrom<Task>(method.Invoke(viewModel, null));
 	}
 
 	private static async Task InvokeOnClosedAsync(StateMapperViewModel viewModel)

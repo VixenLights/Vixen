@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -17,7 +18,6 @@ namespace VixenModules.Property.State.Setup.ViewModels
 	public sealed class StateMapperViewModel : ViewModelBase
 	{
 		private const string FormTitle = "State Mapper";
-		private const string AllStateItemGroups = "<ALL>";
 		private readonly StateData _source;
 		private readonly IElementNode _rootNode;
 		private readonly Dictionary<Guid, IElementNode> _nodesById;
@@ -26,6 +26,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private readonly IStateDefinitionDialogService _stateDefinitionDialogService;
 		private readonly StatePreviewCoordinator _previewCoordinator;
 		private bool _suppressPreviewRefresh;
+		private bool _suppressSelectedItemsChanged;
 		private bool _suppressStateDefinitionSelection;
 		private StateDefinitionViewModel? _lastValidSelectedStateDefinition;
 		private TaskCommand? _addStateDefinitionCommand;
@@ -36,6 +37,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private TaskCommand? _removeItemCommand;
 		private TaskCommand? _moveItemUpCommand;
 		private TaskCommand? _moveItemDownCommand;
+		private Command<IList>? _persistStateItemSortCommand;
 		private TaskCommand<StateItemViewModel>? _editColorCommand;
 		private TaskCommand? _okCommand;
 		private TaskCommand? _cancelCommand;
@@ -95,9 +97,10 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				.Prepend(rootNode)
 				.DistinctBy(node => node.Id)
 				.ToDictionary(node => node.Id);
+			SelectedItems = [];
+			SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
 			StateDefinitions = new ObservableCollection<StateDefinitionViewModel>(
 				draft.StateDefinitions.Select(definition => new StateDefinitionViewModel(definition, _elementTree)));
-			AvailableStateItemGroups = [];
 			StateDefinitions.CollectionChanged += StateDefinitionsCollectionChanged;
 			foreach (var definition in StateDefinitions)
 			{
@@ -107,9 +110,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			Title = FormTitle;
 			Draft = draft;
 			SelectedStateDefinition = StateDefinitions.FirstOrDefault();
-			SelectItem(Items.FirstOrDefault(), false);
 			_lastValidSelectedStateDefinition = SelectedStateDefinition;
-			IsStateItemGroupPreviewMode = true;
 			Validate(true);
 		}
 
@@ -241,6 +242,19 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		public ObservableCollection<StateItemViewModel> Items => SelectedStateDefinition?.Items ?? [];
 
 		/// <summary>
+		/// Gets the State item rows selected for preview.
+		/// </summary>
+		/// <value>The State item rows selected for preview.</value>
+		public ObservableCollection<StateItemViewModel> SelectedItems { get; }
+
+		/// <summary>
+		/// Gets the assignment tree roots displayed for the editable State item row.
+		/// </summary>
+		/// <value>The selected row assignment roots when exactly one row is selected; otherwise, an empty sequence.</value>
+		public IEnumerable<StateAssignmentTreeNode> AssignedElementRoots =>
+			SelectedItems.Count == 1 ? SelectedItems[0].AssignmentRoots : [];
+
+		/// <summary>
 		/// Gets or sets the row whose assignment tree is displayed.
 		/// </summary>
 		/// <value>The row whose assignment tree is displayed.</value>
@@ -285,74 +299,6 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		/// Identifies the <see cref="IsPreviewEnabled"/> property.
 		/// </summary>
 		public static readonly IPropertyData IsPreviewEnabledProperty = RegisterProperty<bool>(nameof(IsPreviewEnabled));
-
-		/// <summary>
-		/// Gets or sets a value that indicates whether preview includes a State Item Group instead of the selected row.
-		/// </summary>
-		/// <value><see langword="true" /> if preview includes a State Item Group; otherwise, <see langword="false" />. The default is <see langword="false" />.</value>
-		public bool IsStateItemGroupPreviewMode
-		{
-			get => GetValue<bool>(IsStateItemGroupPreviewModeProperty);
-			set
-			{
-				if (GetValue<bool>(IsStateItemGroupPreviewModeProperty) == value)
-				{
-					return;
-				}
-
-				SetValue(IsStateItemGroupPreviewModeProperty, value);
-				if (!IsPreviewEnabled)
-				{
-					return;
-				}
-
-				_previewCoordinator.Clear();
-				RefreshPreview();
-			}
-		}
-
-		/// <summary>
-		/// Identifies the <see cref="IsStateItemGroupPreviewMode"/> property.
-		/// </summary>
-		public static readonly IPropertyData IsStateItemGroupPreviewModeProperty =
-			RegisterProperty<bool>(nameof(IsStateItemGroupPreviewMode));
-
-		/// <summary>
-		/// Gets the State Item Group choices available for preview.
-		/// </summary>
-		/// <value>The State Item Group choices available for preview.</value>
-		public ObservableCollection<string> AvailableStateItemGroups { get; }
-
-		/// <summary>
-		/// Gets or sets the State Item Group selected for preview.
-		/// </summary>
-		/// <value>The State Item Group selected for preview. The default is <c>&lt;ALL&gt;</c>.</value>
-		public string SelectedStateItemGroup
-		{
-			get => GetValue<string>(SelectedStateItemGroupProperty);
-			set
-			{
-				var normalizedValue = string.IsNullOrWhiteSpace(value)
-					? AllStateItemGroups
-					: value.Trim();
-				if (GetValue<string>(SelectedStateItemGroupProperty) == normalizedValue)
-				{
-					return;
-				}
-
-				SetValue(SelectedStateItemGroupProperty, normalizedValue);
-				if (IsPreviewEnabled && IsStateItemGroupPreviewMode)
-				{
-					RefreshPreview();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Identifies the <see cref="SelectedStateItemGroup"/> property.
-		/// </summary>
-		public static readonly IPropertyData SelectedStateItemGroupProperty =
-			RegisterProperty(nameof(SelectedStateItemGroup), AllStateItemGroups);
 
 		/// <summary>
 		/// Gets the command that adds a state item row.
@@ -405,6 +351,13 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		/// </summary>
 		/// <value>The command that moves the selected state item row down one position.</value>
 		public TaskCommand MoveItemDownCommand => _moveItemDownCommand ??= new TaskCommand(MoveItemDownAsync, CanMoveItemDown);
+
+		/// <summary>
+		/// Gets the command that persists the visible state item sort order.
+		/// </summary>
+		/// <value>The command that persists the visible state item sort order.</value>
+		public Command<IList> PersistStateItemSortCommand =>
+			_persistStateItemSortCommand ??= new Command<IList>(PersistStateItemSort, CanPersistStateItemSort);
 
 		/// <summary>
 		/// Gets the command that edits a state item color.
@@ -563,36 +516,53 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			return Task.CompletedTask;
 		}
 
-		private bool CanRemoveItem() => SelectedStateDefinition != null && SelectedItem != null;
+		private bool CanRemoveItem() => SelectedStateDefinition != null && GetItemsToRemove().Count > 0;
 
-		private Task RemoveItemAsync()
+		private async Task RemoveItemAsync()
 		{
-			if (SelectedItem == null)
+			var itemsToRemove = GetItemsToRemove();
+			if (itemsToRemove.Count == 0)
 			{
-				return Task.CompletedTask;
+				return;
 			}
 
+			var confirmed = itemsToRemove.Count == 1
+				? await _stateDefinitionDialogService.ConfirmDeleteStateItemAsync(itemsToRemove[0].Name)
+				: await _stateDefinitionDialogService.ConfirmDeleteStateItemsAsync(itemsToRemove.Count);
+			if (!confirmed)
+			{
+				return;
+			}
+
+			var indexes = itemsToRemove
+				.Select(item => Items.IndexOf(item))
+				.Where(index => index >= 0)
+				.OrderByDescending(index => index)
+				.ToList();
+			var nextIndex = indexes.Count == 0 ? -1 : indexes.Min();
 			_suppressPreviewRefresh = true;
 			try
 			{
-				var index = Items.IndexOf(SelectedItem);
-				Items.Remove(SelectedItem);
-				SelectedItem = Items.Count == 0
-					? null
-					: Items[Math.Min(index, Items.Count - 1)];
+				foreach (var index in indexes)
+				{
+					Items.RemoveAt(index);
+				}
 			}
 			finally
 			{
 				_suppressPreviewRefresh = false;
 			}
 
+			var nextSelection = itemsToRemove.Count == 1 && Items.Count > 0
+				? Items[Math.Min(nextIndex, Items.Count - 1)]
+				: null;
+			SelectItem(nextSelection, true);
 			RefreshPreview();
 			RaiseItemCommandCanExecuteChanged();
 			ValidateAndRefreshOkCommand();
-			return Task.CompletedTask;
 		}
 
-		private bool CanMoveItemUp() => SelectedItem != null && Items.IndexOf(SelectedItem) > 0;
+		private bool CanMoveItemUp() => SelectedItems.Count <= 1 && SelectedItem != null && Items.IndexOf(SelectedItem) > 0;
 
 		private Task MoveItemUpAsync() => MoveSelectedItemAsync(-1);
 
@@ -604,7 +574,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			}
 
 			var index = Items.IndexOf(SelectedItem);
-			return index >= 0 && index < Items.Count - 1;
+			return SelectedItems.Count <= 1 && index >= 0 && index < Items.Count - 1;
 		}
 
 		private Task MoveItemDownAsync() => MoveSelectedItemAsync(1);
@@ -636,7 +606,6 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				_suppressPreviewRefresh = previousSuppressPreviewRefresh;
 			}
 
-			RebuildAvailableStateItemGroups();
 			RefreshPreview();
 			RaiseItemCommandCanExecuteChanged();
 			ValidateAndRefreshOkCommand();
@@ -683,9 +652,20 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				_suppressPreviewRefresh = previousSuppressPreviewRefresh;
 			}
 
-			RebuildAvailableStateItemGroups();
 			RefreshPreview();
 			RaiseItemCommandCanExecuteChanged();
+		}
+
+		private static bool CanPersistStateItemSort(IList? visibleOrder) => visibleOrder != null;
+
+		private void PersistStateItemSort(IList? visibleOrder)
+		{
+			if (visibleOrder == null)
+			{
+				return;
+			}
+
+			SynchronizeStateItemOrder(visibleOrder.OfType<StateItemViewModel>().ToList());
 		}
 
 		private static bool CanEditColor(StateItemViewModel? item) => item != null;
@@ -846,23 +826,16 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			}
 
 			var isSelectedDefinitionItems = ReferenceEquals(sender, SelectedStateDefinition?.Items);
-			if (!_suppressPreviewRefresh &&
-				isSelectedDefinitionItems &&
-				SelectedItem != null &&
-				!Items.Contains(SelectedItem))
-			{
-				SelectedItem = Items.FirstOrDefault();
-			}
-
 			if (isSelectedDefinitionItems)
 			{
 				if (!_suppressPreviewRefresh)
 				{
-					RebuildAvailableStateItemGroups();
+					PruneSelectedItems();
 					RefreshPreview();
 				}
 
 				RaisePropertyChanged(nameof(Items));
+				RaisePropertyChanged(nameof(AssignedElementRoots));
 				RaiseItemCommandCanExecuteChanged();
 			}
 
@@ -883,20 +856,19 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		{
 			if (e.PropertyName == nameof(StateItemViewModel.Name))
 			{
-				if (IsSelectedDefinitionItem(sender))
-				{
-					RebuildAvailableStateItemGroups();
-				}
-
 				ValidateAndRefreshOkCommand();
 			}
 
 			if (sender is StateItemViewModel item &&
 				IsSelectedDefinitionItem(item) &&
-				(e.PropertyName == nameof(StateItemViewModel.Name) ||
-					e.PropertyName is nameof(StateItemViewModel.Color) or nameof(StateItemViewModel.AssignmentCount) &&
-					IsPreviewedItem(item)))
+				IsPreviewedItem(item) &&
+				e.PropertyName is nameof(StateItemViewModel.Name) or nameof(StateItemViewModel.Color) or nameof(StateItemViewModel.AssignmentCount))
 			{
+				if (e.PropertyName == nameof(StateItemViewModel.AssignmentCount))
+				{
+					RaisePropertyChanged(nameof(AssignedElementRoots));
+				}
+
 				RefreshPreview();
 			}
 		}
@@ -950,82 +922,6 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			_moveItemDownCommand?.RaiseCanExecuteChanged();
 		}
 
-		private void RebuildAvailableStateItemGroups()
-		{
-			var selectedGroup = SelectedStateItemGroup;
-			var groups = Items
-				.Select(item => item.Name.Trim())
-				.Where(name => !string.IsNullOrEmpty(name))
-				.Distinct(StringComparer.Ordinal)
-				.ToList();
-
-			var previousSuppressPreviewRefresh = _suppressPreviewRefresh;
-			_suppressPreviewRefresh = true;
-			try
-			{
-				SynchronizeAvailableStateItemGroups(groups);
-
-				SelectedStateItemGroup = groups.Contains(selectedGroup, StringComparer.Ordinal)
-					? selectedGroup
-					: AllStateItemGroups;
-			}
-			finally
-			{
-				_suppressPreviewRefresh = previousSuppressPreviewRefresh;
-			}
-		}
-
-		private void SynchronizeAvailableStateItemGroups(IReadOnlyList<string> groups)
-		{
-			if (AvailableStateItemGroups.Count == 0)
-			{
-				AvailableStateItemGroups.Add(AllStateItemGroups);
-			}
-			else if (!AvailableStateItemGroups[0].Equals(AllStateItemGroups, StringComparison.Ordinal))
-			{
-				AvailableStateItemGroups.Insert(0, AllStateItemGroups);
-			}
-
-			for (var desiredIndex = 0; desiredIndex < groups.Count; desiredIndex++)
-			{
-				var group = groups[desiredIndex];
-				var collectionIndex = desiredIndex + 1;
-				if (AvailableStateItemGroups.Count > collectionIndex &&
-					AvailableStateItemGroups[collectionIndex].Equals(group, StringComparison.Ordinal))
-				{
-					continue;
-				}
-
-				var existingIndex = IndexOfAvailableStateItemGroup(group, collectionIndex + 1);
-				if (existingIndex >= 0)
-				{
-					AvailableStateItemGroups.Move(existingIndex, collectionIndex);
-				}
-				else
-				{
-					AvailableStateItemGroups.Insert(collectionIndex, group);
-				}
-			}
-
-			while (AvailableStateItemGroups.Count > groups.Count + 1)
-			{
-				AvailableStateItemGroups.RemoveAt(AvailableStateItemGroups.Count - 1);
-			}
-		}
-
-		private int IndexOfAvailableStateItemGroup(string group, int startIndex)
-		{
-			for (var i = startIndex; i < AvailableStateItemGroups.Count; i++)
-			{
-				if (AvailableStateItemGroups[i].Equals(group, StringComparison.Ordinal))
-				{
-					return i;
-				}
-			}
-
-			return -1;
-		}
-
 		private void RefreshPreview()
 		{
 			if (!IsPreviewEnabled || _suppressPreviewRefresh)
@@ -1043,19 +939,12 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		private IEnumerable<StateItemViewModel> GetPreviewedItems()
 		{
-			if (!IsStateItemGroupPreviewMode)
-			{
-				return SelectedItem == null ? [] : [SelectedItem];
-			}
-
-			return SelectedStateItemGroup == AllStateItemGroups
-				? Items
-				: Items.Where(item => item.Name.Equals(SelectedStateItemGroup, StringComparison.Ordinal));
+			return SelectedItems.Count > 0 ? SelectedItems : [];
 		}
 
 		private bool IsPreviewedItem(StateItemViewModel item)
 		{
-			return GetPreviewedItems().Contains(item);
+			return SelectedItems.Contains(item);
 		}
 
 		private bool IsSelectedDefinitionItem(object? item)
@@ -1066,22 +955,28 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		private void SelectItem(StateItemViewModel? item, bool expandCheckedAssignments)
 		{
-			if (ReferenceEquals(GetValue<StateItemViewModel?>(SelectedItemProperty), item))
+			var selectedItemChanged = !ReferenceEquals(GetValue<StateItemViewModel?>(SelectedItemProperty), item);
+			if (!selectedItemChanged &&
+				(SelectedItems.Count == 1 && ReferenceEquals(SelectedItems[0], item) ||
+					SelectedItems.Count == 0 && item == null))
 			{
 				return;
 			}
 
-			SetValue(SelectedItemProperty, item);
+			if (selectedItemChanged)
+			{
+				SetValue(SelectedItemProperty, item);
+			}
+
+			SynchronizeSelectedItems(item);
 			if (expandCheckedAssignments)
 			{
 				item?.ExpandCheckedAssignments();
 			}
 
+			RaisePropertyChanged(nameof(AssignedElementRoots));
 			RaiseItemCommandCanExecuteChanged();
-			if (!IsStateItemGroupPreviewMode)
-			{
-				RefreshPreview();
-			}
+			RefreshPreview();
 		}
 
 		private void ApplySelectedStateDefinition()
@@ -1091,10 +986,10 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			_suppressPreviewRefresh = true;
 			try
 			{
-				SelectItem(null, false);
-				SelectedStateItemGroup = AllStateItemGroups;
-				RebuildAvailableStateItemGroups();
+				ClearSelectedItems();
+				SetValue<StateItemViewModel?>(SelectedItemProperty, null);
 				RaisePropertyChanged(nameof(Items));
+				RaisePropertyChanged(nameof(AssignedElementRoots));
 				RaiseOkCanExecuteChanged();
 			}
 			finally
@@ -1146,6 +1041,118 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				!StateDefinitions.Any(definition =>
 					!definition.Name.Equals(currentName, StringComparison.Ordinal) &&
 					definition.Name.Equals(candidateName, StringComparison.Ordinal));
+		}
+
+		private void SelectedItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (_suppressSelectedItemsChanged)
+			{
+				return;
+			}
+
+			if (SelectedItems.Count == 1)
+			{
+				SetValue(SelectedItemProperty, SelectedItems[0]);
+				SelectedItems[0].ExpandCheckedAssignments();
+			}
+			else if (SelectedItems.Count == 0)
+			{
+				SetValue<StateItemViewModel?>(SelectedItemProperty, null);
+			}
+
+			RaisePropertyChanged(nameof(SelectedItems));
+			RaisePropertyChanged(nameof(AssignedElementRoots));
+			RaiseItemCommandCanExecuteChanged();
+			RefreshPreview();
+		}
+
+		private void SynchronizeSelectedItems(StateItemViewModel? item)
+		{
+			if (SelectedItems.Count == 1 && ReferenceEquals(SelectedItems[0], item) ||
+				SelectedItems.Count == 0 && item == null)
+			{
+				return;
+			}
+
+			_suppressSelectedItemsChanged = true;
+			try
+			{
+				SelectedItems.Clear();
+				if (item != null)
+				{
+					SelectedItems.Add(item);
+				}
+			}
+			finally
+			{
+				_suppressSelectedItemsChanged = false;
+			}
+
+			RaisePropertyChanged(nameof(SelectedItems));
+		}
+
+		private void ClearSelectedItems()
+		{
+			_suppressSelectedItemsChanged = true;
+			try
+			{
+				SelectedItems.Clear();
+			}
+			finally
+			{
+				_suppressSelectedItemsChanged = false;
+			}
+
+			RaisePropertyChanged(nameof(SelectedItems));
+		}
+
+		private void PruneSelectedItems()
+		{
+			var selectedItems = SelectedItems
+				.Where(item => Items.Contains(item))
+				.ToList();
+			if (selectedItems.Count == SelectedItems.Count)
+			{
+				return;
+			}
+
+			_suppressSelectedItemsChanged = true;
+			try
+			{
+				SelectedItems.Clear();
+				foreach (var item in selectedItems)
+				{
+					SelectedItems.Add(item);
+				}
+			}
+			finally
+			{
+				_suppressSelectedItemsChanged = false;
+			}
+
+			if (SelectedItems.Count == 0)
+			{
+				SetValue<StateItemViewModel?>(SelectedItemProperty, null);
+			}
+
+			RaisePropertyChanged(nameof(SelectedItems));
+			RaisePropertyChanged(nameof(AssignedElementRoots));
+		}
+
+		private IReadOnlyList<StateItemViewModel> GetItemsToRemove()
+		{
+			var itemsToRemove = SelectedItems
+				.Where(item => Items.Contains(item))
+				.Distinct()
+				.ToList();
+			if (itemsToRemove.Count == 0 &&
+				SelectedItem != null &&
+				Items.Contains(SelectedItem))
+			{
+				itemsToRemove.Add(SelectedItem);
+			}
+
+			return itemsToRemove;
 		}
 	}
 }

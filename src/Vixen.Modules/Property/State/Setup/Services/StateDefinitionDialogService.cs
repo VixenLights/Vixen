@@ -64,6 +64,28 @@ namespace VixenModules.Property.State.Setup.Services
 			return result == MessageResult.Yes;
 		}
 
+		/// <inheritdoc />
+		public async Task<bool> ConfirmDeleteStateItemAsync(string name)
+		{
+			var result = await _messageService.ShowAsync(
+				$"Delete State item '{name}'?",
+				"Delete State Item",
+				MessageButton.YesNo,
+				MessageImage.Question);
+			return result == MessageResult.Yes;
+		}
+
+		/// <inheritdoc />
+		public async Task<bool> ConfirmDeleteStateItemsAsync(int count)
+		{
+			var result = await _messageService.ShowAsync(
+				$"Delete {count} State items?",
+				"Delete State Items",
+				MessageButton.YesNo,
+				MessageImage.Question);
+			return result == MessageResult.Yes;
+		}
+
 		private static Window? GetOwnerWindow()
 		{
 			return WpfApplication.Current?.Windows

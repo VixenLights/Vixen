@@ -238,6 +238,7 @@ public class StateMapperDefinitionTests
 	{
 		// Arrange
 		var viewModel = CreateViewModel(CreateItemOrderSource(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()));
+		viewModel.SelectedItem = viewModel.Items[0];
 
 		// Assert
 		Assert.False(viewModel.MoveItemUpCommand.CanExecute(null));
@@ -318,33 +319,94 @@ public class StateMapperDefinitionTests
 	}
 
 	[Fact]
-	public void MoveItem_RebuildsStateItemGroupsInFirstAppearanceOrder()
+	public async Task MoveItemAfterSort_PersistsOrderAndKeepsMovedItemSelected()
 	{
 		// Arrange
-		var source = new StateData
-		{
-			StateDefinitions =
-			[
-				new StateDefinitionData
-				{
-					Name = "Pose",
-					Items =
-					[
-						new StateItemData { Name = "Glove", Color = Color.Green },
-						new StateItemData { Name = "Arm", Color = Color.Red },
-						new StateItemData { Name = "Glove", Color = Color.Blue }
-					]
-				}
-			]
-		};
+		var openId = Guid.NewGuid();
+		var closedId = Guid.NewGuid();
+		var blinkId = Guid.NewGuid();
+		var source = CreateItemOrderSource(Guid.NewGuid(), openId, closedId, blinkId);
 		var viewModel = CreateViewModel(source);
-		viewModel.SelectedItem = viewModel.Items[1];
+		viewModel.SynchronizeStateItemOrder(
+		[
+			viewModel.Items[2],
+			viewModel.Items[1],
+			viewModel.Items[0]
+		]);
+		var selectedItem = viewModel.Items[1];
+		viewModel.SelectedItem = selectedItem;
 
 		// Act
 		viewModel.MoveItemUpCommand.Execute(null);
+		var result = await InvokeSaveAsync(viewModel);
 
 		// Assert
-		Assert.Equal(["<ALL>", "Arm", "Glove"], viewModel.AvailableStateItemGroups);
+		Assert.True(result);
+		Assert.Same(selectedItem, viewModel.SelectedItem);
+		Assert.Equal(["Closed", "Blink", "Open"], source.StateDefinitions[0].Items.Select(item => item.Name));
+		Assert.Equal([closedId, blinkId, openId], source.StateDefinitions[0].Items.Select(item => item.Id));
+	}
+
+	[Fact]
+	public async Task RemoveItem_RemovesSingleSelectedRowWithSingleConfirmation()
+	{
+		// Arrange
+		var dialogService = new FakeStateDefinitionDialogService(confirmDelete: true);
+		var viewModel = CreateViewModel(
+			CreateItemOrderSource(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
+			dialogService);
+		viewModel.SelectedItem = viewModel.Items[1];
+
+		// Act
+		await InvokeAsync(viewModel, "RemoveItemAsync");
+
+		// Assert
+		Assert.Equal(["Open", "Blink"], viewModel.Items.Select(item => item.Name));
+		Assert.Equal("Blink", Assert.Single(viewModel.SelectedItems).Name);
+		Assert.Equal(["Closed"], dialogService.StateItemDeleteConfirmations);
+		Assert.Empty(dialogService.StateItemsDeleteConfirmations);
+	}
+
+	[Fact]
+	public async Task RemoveItem_RemovesMultipleSelectedRowsWithMultiConfirmation()
+	{
+		// Arrange
+		var dialogService = new FakeStateDefinitionDialogService(confirmDelete: true);
+		var viewModel = CreateViewModel(
+			CreateItemOrderSource(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
+			dialogService);
+		viewModel.SelectedItems.Add(viewModel.Items[0]);
+		viewModel.SelectedItems.Add(viewModel.Items[2]);
+
+		// Act
+		await InvokeAsync(viewModel, "RemoveItemAsync");
+
+		// Assert
+		Assert.Equal(["Closed"], viewModel.Items.Select(item => item.Name));
+		Assert.Empty(viewModel.SelectedItems);
+		Assert.Empty(viewModel.AssignedElementRoots);
+		Assert.Empty(dialogService.StateItemDeleteConfirmations);
+		Assert.Equal([2], dialogService.StateItemsDeleteConfirmations);
+	}
+
+	[Fact]
+	public async Task RemoveItem_CancelKeepsSelectedRows()
+	{
+		// Arrange
+		var dialogService = new FakeStateDefinitionDialogService(confirmDelete: false);
+		var viewModel = CreateViewModel(
+			CreateItemOrderSource(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
+			dialogService);
+		viewModel.SelectedItems.Add(viewModel.Items[0]);
+		viewModel.SelectedItems.Add(viewModel.Items[2]);
+
+		// Act
+		await InvokeAsync(viewModel, "RemoveItemAsync");
+
+		// Assert
+		Assert.Equal(["Open", "Closed", "Blink"], viewModel.Items.Select(item => item.Name));
+		Assert.Equal(["Open", "Blink"], viewModel.SelectedItems.Select(item => item.Name));
+		Assert.Equal([2], dialogService.StateItemsDeleteConfirmations);
 	}
 
 	private static StateData CreateSource(params string[] definitionNames)
@@ -484,6 +546,10 @@ public class StateMapperDefinitionTests
 			}
 		}
 
+		public List<string> StateItemDeleteConfirmations { get; } = [];
+
+		public List<int> StateItemsDeleteConfirmations { get; } = [];
+
 		public Task<string?> RequestNameAsync(
 			string title,
 			string initialName,
@@ -495,6 +561,18 @@ public class StateMapperDefinitionTests
 
 		public Task<bool> ConfirmDeleteAsync(string name)
 		{
+			return Task.FromResult(_confirmDelete);
+		}
+
+		public Task<bool> ConfirmDeleteStateItemAsync(string name)
+		{
+			StateItemDeleteConfirmations.Add(name);
+			return Task.FromResult(_confirmDelete);
+		}
+
+		public Task<bool> ConfirmDeleteStateItemsAsync(int count)
+		{
+			StateItemsDeleteConfirmations.Add(count);
 			return Task.FromResult(_confirmDelete);
 		}
 	}

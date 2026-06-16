@@ -4,7 +4,9 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:catel="http://schemas.catelproject.com"
+		xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
 		xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+		xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
 		mc:Ignorable="d"
 		Title="{Binding Title}"
 		WindowStartupLocation="CenterOwner"
@@ -22,7 +24,6 @@
 			<converters:ColorToSolidBrushConverter x:Key="ColorToSolidBrush"/>
 			<converters:ColorToHexStringConverter x:Key="ColorToHexString"/>
 			<converters:BackgroundColorToTextBrushConverter x:Key="BackgroundColorToTextColor"/>
-			<converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
 
@@ -116,8 +117,6 @@
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 
 					<TextBlock Text="Preview" Margin="0,3,8,3" VerticalAlignment="Center"/>
@@ -138,42 +137,21 @@
 							</Style>
 						</ToggleButton.Style>
 					</ToggleButton>
-
-					<TextBlock Grid.Row="1"
-					           Text="Preview Mode"
-							   Margin="0,5,8,3"
-							   VerticalAlignment="Top"/>
-					<StackPanel Grid.Row="1" Grid.Column="1" Margin="0,4,0,4">
-						<RadioButton Content="State Item Group"
-									 GroupName="PreviewMode"
-									 IsChecked="{Binding IsStateItemGroupPreviewMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-									 IsEnabled="{Binding IsPreviewEnabled}"
-									 Margin="0,3,0,0"/>
-						<RadioButton Content="Selected State Item"
-						             GroupName="PreviewMode"
-						             IsChecked="{Binding IsStateItemGroupPreviewMode, Converter={StaticResource InverseBooleanConverter}}"
-						             IsEnabled="{Binding IsPreviewEnabled}"/>
-					</StackPanel>
-
-					<ComboBox Grid.Row="2"
-							  Grid.Column="1"
-							  ItemsSource="{Binding AvailableStateItemGroups}"
-							  SelectedItem="{Binding SelectedStateItemGroup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-							  IsEnabled="{Binding IsPreviewEnabled}"
-							  Visibility="{Binding IsStateItemGroupPreviewMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-							  Margin="0,4,0,0"/>
 				</Grid>
 
 				<TextBlock Grid.Row="1" Text="State Items" HorizontalAlignment="Center" Margin="0,0,0,4"/>
 				<DataGrid Grid.Row="2"
 						  x:Name="StateItemsGrid"
 						  ItemsSource="{Binding Items}"
-						  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
 						  AutoGenerateColumns="False"
 						  CanUserAddRows="False"
 						  SelectionUnit="FullRow"
-						  SelectionMode="Single"
-						  Sorting="StateItemsGrid_Sorting">
+						  SelectionMode="Extended">
+					<i:Interaction.Behaviors>
+						<behaviors:MultiSelectorSelectedItemsBehavior SelectedItems="{Binding SelectedItems}"/>
+						<behaviors:DataGridSortedItemsCommandBehavior SortedItemsCommand="{Binding PersistStateItemSortCommand}"
+																		ClearSortAfterCommand="True"/>
+					</i:Interaction.Behaviors>
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="Name"
 											Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
@@ -234,7 +212,7 @@
 				</Grid.RowDefinitions>
 				<TextBlock Text="Assigned Elements" HorizontalAlignment="Center" Margin="0,0,0,4"/>
 				<TreeView Grid.Row="1"
-						  ItemsSource="{Binding SelectedItem.AssignmentRoots}"
+						  ItemsSource="{Binding AssignedElementRoots}"
 						  BorderThickness="0"
 						  VirtualizingPanel.IsVirtualizing="True"
 						  VirtualizingPanel.VirtualizationMode="Recycling"
