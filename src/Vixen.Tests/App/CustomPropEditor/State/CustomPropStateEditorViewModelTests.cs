@@ -82,6 +82,34 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
+	public void PersistStateItemSortCommand_UpdatesModelItemOrder()
+	{
+		var prop = CreatePropWithModel(out var model, out _);
+		model.ModelType = ElementModelType.Model;
+		var definition = new StateDefinitionModel
+		{
+			Name = "Wave",
+			Items =
+			[
+				new StateItemModel { Name = "Charlie" },
+				new StateItemModel { Name = "Alpha" },
+				new StateItemModel { Name = "Bravo" }
+			]
+		};
+		model.StateDefinitionModels.Add(definition);
+		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var sortedItems = viewModel.SelectedStateDefinition.Items
+			.OrderBy(item => item.Name)
+			.ToList();
+
+		Execute(viewModel.PersistStateItemSortCommand, sortedItems);
+
+		Assert.Equal(["Alpha", "Bravo", "Charlie"], definition.Items.Select(item => item.Name).ToList());
+		Assert.Equal(["Alpha", "Bravo", "Charlie"], viewModel.SelectedStateDefinition.Items.Select(item => item.Name).ToList());
+		Assert.True(viewModel.IsDirty);
+	}
+
+	[Fact]
 	public void Validation_DetectsDuplicateDefinitionNamesAndMissingAssignments()
 	{
 		var prop = CreatePropWithModel(out var model, out _);
@@ -488,5 +516,11 @@ public sealed class CustomPropStateEditorViewModelTests
 	{
 		Assert.True(command.CanExecute(null));
 		command.Execute(null);
+	}
+
+	private static void Execute(ICommand command, object parameter)
+	{
+		Assert.True(command.CanExecute(parameter));
+		command.Execute(parameter);
 	}
 }

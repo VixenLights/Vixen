@@ -166,6 +166,39 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		}
 
 		/// <summary>
+		/// Reorders State items to match the supplied displayed order.
+		/// </summary>
+		/// <param name="orderedItems">The displayed State item order.</param>
+		public void ApplyItemOrder(IEnumerable<CustomPropStateItemViewModel> orderedItems)
+		{
+			var orderedItemList = (orderedItems ?? [])
+				.Where(Items.Contains)
+				.Distinct()
+				.ToList();
+
+			if (orderedItemList.Count != Items.Count || orderedItemList.SequenceEqual(Items))
+			{
+				return;
+			}
+
+			for (var targetIndex = 0; targetIndex < orderedItemList.Count; targetIndex++)
+			{
+				var item = orderedItemList[targetIndex];
+				var currentIndex = Items.IndexOf(item);
+				if (currentIndex == targetIndex)
+				{
+					continue;
+				}
+
+				Items.Move(currentIndex, targetIndex);
+				StateDefinition.Items.Move(currentIndex, targetIndex);
+			}
+
+			SelectedItem = orderedItemList.FirstOrDefault(item => Equals(item, SelectedItem)) ?? Items.FirstOrDefault();
+			OnDefinitionChanged(nameof(Items));
+		}
+
+		/// <summary>
 		/// Refreshes assignment state on every State item.
 		/// </summary>
 		public void RefreshAssignments()

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -21,6 +22,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		private Command _removeStateItemCommand;
 		private Command _moveStateItemUpCommand;
 		private Command _moveStateItemDownCommand;
+		private Command<IList> _persistStateItemSortCommand;
 
 		/// <summary>
 		/// Occurs when State definition data changes.
@@ -181,6 +183,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// </summary>
 		public Command MoveStateItemDownCommand =>
 			_moveStateItemDownCommand ??= new Command(MoveStateItemDown, CanMoveStateItemDown);
+
+		/// <summary>
+		/// Gets the command that persists the displayed State item sort order.
+		/// </summary>
+		public Command<IList> PersistStateItemSortCommand =>
+			_persistStateItemSortCommand ??= new Command<IList>(PersistStateItemSortOrder, CanPersistStateItemSortOrder);
 
 		/// <summary>
 		/// Rebinds the editor to another custom prop.
@@ -403,6 +411,21 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			OnStateDataChanged();
 		}
 
+		private void PersistStateItemSortOrder(IList sortedItems)
+		{
+			if (SelectedStateDefinition == null || sortedItems == null)
+			{
+				return;
+			}
+
+			SelectedStateDefinition.ApplyItemOrder(sortedItems.OfType<CustomPropStateItemViewModel>());
+		}
+
+		private bool CanPersistStateItemSortOrder(IList sortedItems)
+		{
+			return SelectedStateDefinition != null && sortedItems != null;
+		}
+
 		private void SelectSingleStateItem(CustomPropStateItemViewModel item)
 		{
 			SelectedStateItems.Clear();
@@ -553,6 +576,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			_removeStateItemCommand?.RaiseCanExecuteChanged();
 			_moveStateItemUpCommand?.RaiseCanExecuteChanged();
 			_moveStateItemDownCommand?.RaiseCanExecuteChanged();
+			_persistStateItemSortCommand?.RaiseCanExecuteChanged();
 		}
 	}
 }
