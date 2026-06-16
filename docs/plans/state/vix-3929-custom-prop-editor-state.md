@@ -8,7 +8,7 @@ This plan follows `.agents/PLANS.md` from the repository root. Any contributor i
 
 After this work, a Vixen user can open the Custom Prop Editor, import an xLights custom model or create a prop manually, author named State definitions directly in that editor, preview those states on the prop drawing surface, save the prop, reopen it, and import it into Vixen Preview as a real State property. This removes the current gap where xModel `stateInfo` can be imported into a prop-like structure but cannot be edited in the Custom Prop Editor in the same workflow as the Display Setup State property.
 
-The visible result is a third lower-left tab named `State Definition` next to `Prop Info` and `Element Info`. When that tab is active, the right-side prop viewer switches into State Definition preview: the full prop is shown in light gray, active State item assignments are overlaid in their colors, overlapping active colors are mixed deterministically, and selecting nodes in the viewer while a State item row is selected checks the corresponding assignment boxes for that item. Leaving the tab returns the viewer to its normal Custom Prop Editor behavior. Saving a prop persists the new state data in `ElementModel.StateDefinitionModels`, and importing the prop into Preview attaches the Vixen State property to the designated model element or to the root fallback.
+The visible result is a `State Definition` tab beside the primary `Layout` and `Order` tabs. These modes are mutually exclusive so State assignment does not conflict with layout editing. When the tab is active, the right-side prop viewer switches into State Definition preview: the full prop is shown in RGB 25,25,25, selected State item assignments are overlaid in their colors, overlapping active colors are mixed deterministically, and the canvas is the assignment UI when exactly one State item row is selected. Clicking an assigned node toggles it off, drag-box selection assigns contained nodes, and holding Control during drag-box selection removes contained nodes. Selecting multiple State item rows previews all selected rows but disables canvas assignment editing. Leaving the tab returns the viewer to its normal Custom Prop Editor behavior. Saving a prop persists the new state data in `ElementModel.StateDefinitionModels`, and importing the prop into Preview attaches the Vixen State property to the designated model element or to the root fallback.
 
 ## Progress
 
@@ -21,6 +21,7 @@ The visible result is a third lower-left tab named `State Definition` next to `P
 - [x] (2026-06-13 10:50 -05:00) Updated Preview import so `ElementModel.StateDefinitionModels` is authoritative and legacy State data remains a direct-import fallback.
 - [x] (2026-06-13 11:21 -05:00) Added the Custom Prop Editor State Definition view models, commands, validation, and save blocking.
 - [x] (2026-06-15 15:11 -05:00) Add the State Definition tab UI and viewer preview integration.
+- [x] (2026-06-15 16:55 -05:00) Revised the State Definition workflow after Milestone 6: moved the tab beside `Layout` and `Order`, removed the assignment checkbox tree, added canvas toggle and Control-drag removal, added multi-row State item preview with editing disabled, moved selected-items binding behavior to WPFCommon, and pruned deleted element IDs from State item assignments.
 - [ ] Add focused automated tests for model data, import, migration, Preview import, editor view models, and local preview behavior.
 - [ ] Run focused tests, full test suite, Debug and Release solution builds, and `git diff --check`; record validation evidence.
 
@@ -50,8 +51,8 @@ The visible result is a third lower-left tab named `State Definition` next to `P
 - Observation: Preview import can be tested without a full module descriptor load if State property creation has a direct `StateModule` fallback.
   Evidence: `PreviewCustomPropBuilder.GetOrCreateStateModule` first uses the normal property manager path and falls back to a `StateModule` with `StateDescriptor` assigned; `PreviewCustomPropStateImportTests` initializes only the Vixen system managers and module store.
 
-- Observation: The State Definition editor view models can be tested without XAML by binding directly to `ElementModel.StateDefinitionModels` and assignment tree nodes.
-  Evidence: `CustomPropStateEditorViewModelTests` exercises add, copy, delete, item reorder, assignment tree, validation, migration, and `Model Type` exposure through view models only.
+- Observation: The State Definition editor view models can be tested without XAML by binding directly to `ElementModel.StateDefinitionModels`, selected State item rows, and assignment commands.
+  Evidence: `CustomPropStateEditorViewModelTests` exercises add, copy, delete, item reorder, assignment updates, validation, migration, and `Model Type` exposure through view models only.
 
 - Observation: The Custom Prop Editor drawing surface can preview State item assignments by changing each `LightViewModel` display color locally, without touching persisted `Light` data or sending Live Preview messages.
   Evidence: `DrawingPanelViewModel.ApplyStatePreview` sets temporary `LightViewModel.DisplayColor` values and `ClearStatePreview` restores the normal configured light and selection colors.
@@ -90,9 +91,29 @@ The visible result is a third lower-left tab named `State Definition` next to `P
   Rationale: The current preview behavior is tab activation, selected State item changes, assignment updates, and local canvas color restoration. These are already owned by the editor selection coordinator and drawing panel; adding a separate coordinator would duplicate their state without reducing complexity.
   Date/Author: 2026-06-15 / Codex
 
+- Decision: Place `State Definition` beside `Layout` and `Order`, not in the lower-left metadata tab control.
+  Rationale: State Definition mode changes canvas selection semantics, so it should be mutually exclusive with layout and order editing.
+  Date/Author: 2026-06-15 / Codex
+
+- Decision: Remove the Custom Prop Editor assignment checkbox tree and make the drawing surface the State item assignment UI.
+  Rationale: Users can assign, unassign, and drag-select nodes directly in the canvas, so maintaining a second assignment tree adds complexity and competing interaction paths.
+  Date/Author: 2026-06-15 / Codex
+
+- Decision: Multi-row State item selection is preview-only.
+  Rationale: Showing all selected rows in their configured colors is useful for inspection, but canvas edits would be ambiguous when more than one State item row is active.
+  Date/Author: 2026-06-15 / Codex
+
+- Decision: Move reusable selected-items binding behavior to `Vixen.Common/WPFCommon/Behaviors`.
+  Rationale: The new `MultiSelectorSelectedItemsBehavior` is a general WPF behavior, not Custom Prop Editor-specific.
+  Date/Author: 2026-06-15 / Codex
+
+- Decision: Prune deleted element IDs from State item assignments.
+  Rationale: State item assignments store stable `ElementModel.Id` values, so deleting an element from Layout must remove its ID from every State item to avoid dangling references.
+  Date/Author: 2026-06-15 / Codex
+
 ## Outcomes & Retrospective
 
-This plan is ready for implementation. It resolves the main design questions from the requirements phase: authoritative storage is `ElementModel.StateDefinitionModels`; legacy `ElementModel.StateDefinition` and the old item-like `ElementModel.StateDefinitions` are read-only migration/fallback input; Model Type uses proper .NET naming; invalid State data blocks save with warnings; and preview is tab-activated with viewer selection updating assignments only when a specific State item row is being edited.
+This plan is ready for implementation. It resolves the main design questions from the requirements phase: authoritative storage is `ElementModel.StateDefinitionModels`; legacy `ElementModel.StateDefinition` and the old item-like `ElementModel.StateDefinitions` are read-only migration/fallback input; Model Type uses proper .NET naming; invalid State data blocks save with warnings; and preview is tab-activated with viewer selection updating assignments only when exactly one State item row is being edited.
 
 No implementation has been performed yet. Update this section after each milestone with what changed, what passed, and what remains.
 
@@ -104,9 +125,9 @@ Milestone 3 is complete. xModel import now marks imported model, submodel, faceI
 
 Milestone 4 is complete. Preview custom prop import now maps authored `ElementModel.StateDefinitionModels` into Vixen State property data, preserves the State property ID, State definition IDs, State item IDs, descriptions, colors, item order, and mapped assignments, and skips unmapped assignment IDs. New authored State data wins over both legacy imported rows and legacy element-level State fields. Older imported-row `ElementModel.StateDefinitions` and child `ElementModel.StateDefinition` data remain direct-import fallbacks when no authored State definition models are present. Focused Preview import tests pass.
 
-Milestone 5 is complete. The Custom Prop Editor now has a State Definition editor view-model layer with editable State definitions, State items, assignment tree nodes, add/delete/rename/copy commands, item add/remove/reorder commands, validation messages, and dirty tracking. `PropEditorViewModel` creates the State editor for each loaded prop, migrates legacy State data through that editor path, refreshes assignments when the element model changes, and blocks Save and Save As when State validation errors exist. `ElementModelViewModel` exposes `Model Type` and hides the legacy Element Info State fields. Focused Custom Prop Editor tests pass.
+Milestone 5 is complete. The Custom Prop Editor now has a State Definition editor view-model layer with editable State definitions, State items, selected State item tracking, add/delete/rename/copy commands, item add/remove/reorder commands, validation messages, and dirty tracking. `PropEditorViewModel` creates the State editor for each loaded prop, migrates legacy State data through that editor path, refreshes assignments when the element model changes, and blocks Save and Save As when State validation errors exist. `ElementModelViewModel` exposes `Model Type` and hides the legacy Element Info State fields. Focused Custom Prop Editor tests pass. Later revisions removed the assignment checkbox tree from the Custom Prop Editor, leaving canvas assignment as the only State item assignment UI.
 
-Milestone 6 is complete. The Custom Prop Editor lower-left panel now includes the `State Definition` tab bound to the existing State editor view model. The tab exposes definition editing, item editing, validation messages, and assignment tree checkboxes. Selecting the tab activates local drawing-surface State preview, non-assigned lights render light gray, the selected State item's assigned lights render in the item color, selecting lights while an item is selected adds those element assignments, and leaving the tab restores normal canvas colors. Focused Custom Prop Editor State tests pass.
+Milestone 6 is complete. The Custom Prop Editor originally added the `State Definition` tab and bound it to the existing State editor view model. Post-milestone revisions moved that tab beside `Layout` and `Order` so the three modes are mutually exclusive. The tab exposes definition editing, item editing, validation messages, color-cell editing, assigned counts, and selected State item rows. Selecting the tab activates local drawing-surface State preview, non-assigned lights render RGB 25,25,25, selected State item assignments render in their item colors, selecting one State item row enables canvas assignment editing, and leaving the tab restores normal canvas colors. Focused Custom Prop Editor State tests pass.
 
 ## Context and Orientation
 
@@ -120,7 +141,7 @@ The xModel import code is `src/Vixen.Modules/App/CustomPropEditor/Import/XLights
 
 The Preview import code is `src/Vixen.Modules/Preview/VixenPreview/PreviewCustomPropBuilder.cs`. It creates real Vixen `ElementNode` objects from `ElementModel` objects, maps `ElementModel.Id` to `ElementNode`, and attaches properties such as Order, Face, Color, and State. This file must be updated so `ElementModel.StateDefinitionModels` is authoritative, and legacy `ElementModel.StateDefinition` is only a fallback for older files.
 
-The main Custom Prop Editor view is `src/Vixen.Modules/App/CustomPropEditor/Views/CustomPropEditorWindow.xaml`. Its lower-left tab control currently contains `Prop Info` and `Element Info`. Its right-side viewer is `controls:PropDesigner`, backed by `DrawingPanelViewModel`, `LightViewModel`, and current selection behavior. VIX-3929 adds a third lower-left tab named `State Definition` and changes viewer rendering/selection behavior only while that tab is active.
+The main Custom Prop Editor view is `src/Vixen.Modules/App/CustomPropEditor/Views/CustomPropEditorWindow.xaml`. Its primary editor tab control contains `Layout`, `Order`, and `State Definition`; those modes are mutually exclusive. Its lower-left tab control remains focused on metadata such as `Prop Info` and `Element Info`. Its right-side viewer is `controls:PropDesigner`, backed by `DrawingPanelViewModel`, `LightViewModel`, and current selection behavior. VIX-3929 changes viewer rendering and canvas assignment behavior only while the `State Definition` primary editor tab is active.
 
 Follow the repository rules in `AGENTS.md`: read docs first, use tabs and CRLF for C# and XAML edits according to `src/.editorconfig`, do not reformat unrelated code, update XML documentation for public or protected C# APIs, and use project references rather than DLL references.
 
@@ -138,13 +159,13 @@ Milestone 3 updates xModel import. In `XModelImport.AssembleModel`, mark the cre
 
 Milestone 4 updates migration and Preview import. Add a migration helper that can read old files with legacy `ElementModel.StateDefinition` values and old item-like `ElementModel.StateDefinitions` values if LiteDB can still deserialize them. The migration should group by legacy `StateDefinitionName`, create real State definitions and items with new stable IDs where missing, preserve item names, colors, item order, and assignments, and be idempotent. Use the helper when loading props in `PropEditorViewModel.LoadPropFromPath` or immediately after `PropModelServices.Instance().LoadProp(path)` returns. Update `PreviewCustomPropBuilder.AddImportedStateDefinitions` to read the new `StateDefinitionModels` shape and map each `ElementModel.Id` assignment to the created `ElementNode.Id`. Keep the existing child `StateDefinition` scan as a fallback only when the new `StateDefinitionModels` collection is empty.
 
-Milestone 5 adds State Definition editor view models and validation. Create Custom Prop Editor-specific view models under `src/Vixen.Modules/App/CustomPropEditor/ViewModels/State` or directly under `ViewModels` with clear names such as `StateDefinitionEditorViewModel`, `CustomPropStateDefinitionViewModel`, `CustomPropStateItemViewModel`, and `CustomPropStateAssignmentTreeNodeViewModel`. These should inherit from Catel `ViewModelBase` or the existing project base patterns, expose Catel properties and commands, and keep business logic out of code-behind. Implement Add, Delete, Rename, Copy, Add Item, Remove Item, Move Up, Move Down, color edit, assignment check/uncheck, and selected row behavior. Reuse or mirror the State property validation rules: definition names are required, trimmed, exact duplicates blocked, case-only duplicates warn, short names warn, item names required and trimmed, duplicate item names allowed, and group assignment clears/greys descendants. Invalid State data must block Save and show a warning that points the user to the State Definition tab.
+Milestone 5 adds State Definition editor view models and validation. Create Custom Prop Editor-specific view models under `src/Vixen.Modules/App/CustomPropEditor/ViewModels/State` or directly under `ViewModels` with clear names such as `StateDefinitionEditorViewModel`, `CustomPropStateDefinitionViewModel`, and `CustomPropStateItemViewModel`. These should inherit from Catel `ViewModelBase` or the existing project base patterns, expose Catel properties and commands, and keep business logic out of code-behind. Implement Add, Delete, Rename, Copy, Add Item, Remove Item, Move Up, Move Down, color edit, selected row tracking, assigned count display, and canvas-backed assignment updates. Reuse or mirror the State property validation rules: definition names are required, trimmed, exact duplicates blocked, case-only duplicates warn, short names warn, item names required and trimmed, and duplicate item names allowed. Invalid State data must block Save and show a warning that points the user to the State Definition tab.
 
-Milestone 6 adds the UI. Update `CustomPropEditorWindow.xaml` to add a `State Definition` tab next to `Prop Info` and `Element Info`. Add a user control or inline layout for State Definition editing. Keep visual behavior as close as practical to `src/Vixen.Modules/Property/State/Setup/Views/StateMapperView.xaml`, but do not force reuse if it makes the Custom Prop Editor viewer integration brittle. Update the Element Info view model to remove or hide `StateDefinitionName`, `StateItemName`, and `StateItemColor` from the property grid, and add a `Model Type` property that displays and edits `ElementModel.ModelType`. Setting `Model Type = Model` must clear any previous explicit model designation and must reject invalid leaf selections.
+Milestone 6 adds the UI. Update `CustomPropEditorWindow.xaml` to add a `State Definition` tab next to `Layout` and `Order`. Add a user control or inline layout for State Definition editing. The State item grid should support multi-row selection, show the Assigned count, use the State item color as the Color cell background, adapt the Color cell foreground for readability, and open the color picker when the Color cell is double-clicked. Do not include assignment checkbox trees in the Custom Prop Editor UI. Keep visual behavior as close as practical to `src/Vixen.Modules/Property/State/Setup/Views/StateMapperView.xaml`, but do not force reuse if it makes the Custom Prop Editor viewer integration brittle. Update the Element Info view model to remove or hide `StateDefinitionName`, `StateItemName`, and `StateItemColor` from the property grid, and add a `Model Type` property that displays and edits `ElementModel.ModelType`. Setting `Model Type = Model` must clear any previous explicit model designation and must reject invalid leaf selections.
 
-Milestone 7 integrates the local preview. Add a preview coordinator for the Custom Prop Editor drawing surface, likely under `src/Vixen.Modules/App/CustomPropEditor/ViewModels/State` or `Controls`, that computes desired preview color per `LightViewModel` while the State Definition tab is active. It must not publish `Common.Broadcast` Live Preview messages. When the State Definition tab becomes active, the right-side viewer should show the full prop in light gray and overlay active State item colors according to the current preview mode. When the tab is not active, closing, opening another prop, changing model designation, or removing the model, restore normal viewer behavior and selection colors. For overlapping active State item colors on the same element, use a deterministic channel average unless implementation evidence shows a better existing color-mixing helper; document the final formula in the Decision Log. When a specific State item row is selected, selecting elements in the viewer must check those elements in that State item's assignment tree. If no item row is selected, viewer selection is view-only for State editing.
+Milestone 7 integrates the local preview. Add preview coordination for the Custom Prop Editor drawing surface that computes desired preview color per `LightViewModel` while the State Definition tab is active. It must not publish `Common.Broadcast` Live Preview messages. When the State Definition tab becomes active, the right-side viewer should show the full prop in RGB 25,25,25 and overlay selected State item colors. When the tab is not active, closing, opening another prop, changing model designation, or removing the model, restore normal viewer behavior and selection colors. For overlapping active State item colors on the same element, use a deterministic channel average unless implementation evidence shows a better existing color-mixing helper; document the final formula in the Decision Log. When exactly one State item row is selected, clicking canvas nodes toggles assignment for that item, drag-box selection assigns contained nodes, and holding Control while drag-box selecting removes contained nodes. Selection handles are disabled in State Definition mode. When no State item row or multiple State item rows are selected, the viewer is preview-only for State editing.
 
-Milestone 8 adds tests. Existing tests in `src/Vixen.Tests/App/CustomPropEditor/Import/XLights` must be updated from the old item-like `StateDefinitions` shape to the new definition/item shape. Add tests for `ElementModelType` persistence and rules, model resolver behavior, xModel Model Type assignment, xModel StateInfo mapping, migration from legacy `ElementModel.StateDefinition`, migration idempotence, Preview import from new data, Preview import fallback from legacy data, new-over-legacy precedence, State editor command behavior and validation, save blocking, assignment tree group behavior, local preview tab activation/reset, mixed color behavior, and viewer selection updating assignments. Tests should use embedded minimal xModel/prop data and should not read external `.xmodel` or `.prp` files.
+Milestone 8 adds tests. Existing tests in `src/Vixen.Tests/App/CustomPropEditor/Import/XLights` must be updated from the old item-like `StateDefinitions` shape to the new definition/item shape. Add tests for `ElementModelType` persistence and rules, model resolver behavior, xModel Model Type assignment, xModel StateInfo mapping, migration from legacy `ElementModel.StateDefinition`, migration idempotence, Preview import from new data, Preview import fallback from legacy data, new-over-legacy precedence, State editor command behavior and validation, save blocking, canvas assignment toggle and drag behavior, multi-row preview, deleted element assignment pruning, local preview tab activation/reset, mixed color behavior, and viewer selection updating assignments. Tests should use embedded minimal xModel/prop data and should not read external `.xmodel` or `.prp` files.
 
 Milestone 9 performs full validation. Run focused tests during implementation and the full validation suite at the end. Record concise transcripts in `Artifacts and Notes`. The final acceptance is not just compilation: manually verify the Custom Prop Editor tab, local preview behavior, save/reopen, xModel import, and Preview import.
 
@@ -241,7 +262,7 @@ Use `C:\Dev\Vixen` as the working directory for all commands.
     `src/Vixen.Modules/App/CustomPropEditor/ViewModels/ElementModelViewModel.cs`
     `src/Vixen.Modules/App/CustomPropEditor/ViewModels/LightViewModel.cs`
 
-   `PropEditorViewModel` should expose the State editor view model and react to lower-left tab selection so preview activates only on the State Definition tab. It should call migration after loading props. `ElementModelViewModel` should expose `ModelType` and hide legacy State fields. `DrawingPanelViewModel` and `LightViewModel` should support temporary preview color overlays without losing normal selection behavior.
+   `PropEditorViewModel` should expose the State editor view model and react to primary editor tab selection so preview activates only on the State Definition tab. It should call migration after loading props. `ElementModelViewModel` should expose `ModelType` and hide legacy State fields. `DrawingPanelViewModel` and `LightViewModel` should support temporary preview color overlays without losing normal selection behavior.
 
 9. Update views:
 
@@ -287,23 +308,25 @@ An xModel import with `stateInfo` creates one State definition per imported `sta
 
 Preview import attaches one Vixen State property to the explicit model element when present, otherwise to the root fallback. The State property contains the same definitions and items as the Custom Prop Editor model data. Assignments map from `ElementModel.Id` to created `ElementNode.Id` values. Older legacy prop files still import through the fallback path, and new StateDefinitions data wins when both new and legacy data exist.
 
-The State Definition tab can add, delete, rename, copy, validate, and reorder State definitions and items. Invalid State data blocks prop save and shows a clear warning. The assignment tree supports group selection semantics matching State property setup.
+The State Definition tab can add, delete, rename, copy, validate, and reorder State definitions and items. Invalid State data blocks prop save and shows a clear warning. The State item grid supports color-cell editing, Assigned counts, and multi-row selection for preview.
 
-The drawing surface switches to State Definition preview only when the State Definition tab is active, shows non-active nodes in light gray, overlays active item colors, mixes overlapping colors deterministically, updates when assignments or colors change, updates assignment checkboxes when the user selects viewer elements while a specific State item row is selected, and returns to normal behavior when another lower-left tab is active.
+The drawing surface switches to State Definition preview only when the State Definition tab is active, shows non-active nodes in RGB 25,25,25, overlays active item colors, mixes overlapping colors deterministically, updates when assignments or colors change, assigns or removes nodes when the user edits the canvas with exactly one State item row selected, disables canvas assignment editing for zero or multiple selected State item rows, and returns to normal behavior when another primary editor tab is active.
 
 Manual acceptance is met with this scenario:
 
 1. Start Vixen from Debug output and open the Custom Prop Editor.
 2. Import a small xModel with `stateInfo`, `faceInfo`, and `subModel`.
-3. Confirm the lower-left area has `Prop Info`, `Element Info`, and `State Definition` tabs.
+3. Confirm the primary editor tab control has `Layout`, `Order`, and `State Definition` tabs.
 4. Confirm the imported State definitions appear on the State Definition tab.
-5. Select the State Definition tab and confirm the right-side prop viewer changes to light-gray State preview mode.
-6. Select a State item row and confirm only that row's assigned nodes show the item color in Selected State Item mode.
-7. Select an unassigned node in the drawing surface and confirm that node is checked in the selected State item's assignment tree.
-8. Switch to `<ALL>` or group preview and confirm active State item colors render, with overlaps shown as a mixed color.
-9. Switch to Prop Info or Element Info and confirm the right-side viewer returns to normal behavior.
-10. Save, close, reopen, and confirm State definitions, items, colors, assignments, Model Type values, and row order persisted.
-11. Import the prop into Vixen Preview and confirm the attached element has the Vixen State property with the authored definitions.
+5. Select the State Definition tab and confirm the right-side prop viewer changes to RGB 25,25,25 State preview mode.
+6. Select a State item row and confirm only that row's assigned nodes show the item color.
+7. Select an unassigned node in the drawing surface and confirm that node is assigned to the selected State item.
+8. Select the same assigned node again and confirm it is removed from the selected State item.
+9. Drag-box select nodes and confirm contained nodes are assigned; then hold Control while drag-box selecting assigned nodes and confirm contained nodes are removed.
+10. Select multiple State item rows and confirm all selected rows preview in their configured colors, with overlaps shown as a mixed color, and that canvas assignment editing is disabled.
+11. Switch to Layout or Order and confirm the right-side viewer returns to normal behavior.
+12. Save, close, reopen, and confirm State definitions, items, colors, assignments, Model Type values, and row order persisted.
+13. Import the prop into Vixen Preview and confirm the attached element has the Vixen State property with the authored definitions.
 
 ## Idempotence and Recovery
 
@@ -329,7 +352,7 @@ Milestone 1 Jira update text:
 
     #### Requirements
 
-    - Add a `State Definition` tab next to `Prop Info` and `Element Info`.
+    - Add a `State Definition` tab next to `Layout` and `Order`.
     - Persist authoritative State data in the model element's `ElementModel.StateDefinitionModels` collection.
     - Deprecate new writes to legacy `ElementModel.StateDefinition` and hide the old Element Info fields `State Name`, `State Item`, and `State Item Color`.
     - Add a `Model Type` field with `None`, `Model`, `SubModel`, `FaceInfo`, and `StateInfo`.
@@ -338,7 +361,7 @@ Milestone 1 Jira update text:
     - Continue creating legacy State groups during xModel import while the compatibility option remains enabled for production validation.
     - Migrate older prop files with legacy element-level State data into `ElementModel.StateDefinitionModels`.
     - Import props into Preview by attaching one State property to the explicit model element, imported model element, or root fallback.
-    - Provide a local Custom Prop Editor preview that is active while the State Definition tab is active, shows the full prop in light gray, overlays active State item colors, mixes overlapping colors deterministically, lets viewer selection update assignments for the selected State item row, and does not publish Live Preview messages.
+    - Provide a local Custom Prop Editor preview that is active while the State Definition tab is active, shows the full prop in RGB 25,25,25, overlays selected State item colors, mixes overlapping colors deterministically, lets canvas selection update assignments only when exactly one State item row is selected, and does not publish Live Preview messages.
 
     #### High-Level Design
 
@@ -352,7 +375,7 @@ Milestone 1 Jira update text:
     - Older props with legacy State data migrate in the editor and still import directly into Preview.
     - Model Type values display, persist, and follow the defined rules.
     - Invalid State data blocks save with a clear warning.
-    - Local preview updates inside the Custom Prop Editor canvas, mixes overlapping colors, updates assignments from viewer selection when a State item row is selected, and restores normal viewer behavior when the tab is not active.
+    - Local preview updates inside the Custom Prop Editor canvas, mixes overlapping colors, updates assignments from viewer selection when exactly one State item row is selected, previews multiple selected State item rows without allowing ambiguous canvas edits, and restores normal viewer behavior when the tab is not active.
 
     #### Testing
 
@@ -480,5 +503,6 @@ At completion, preview coordination must be local to Custom Prop Editor. It must
 - 2026-06-11 / Codex: Completed Milestone 2 using the compatibility-safe fallback. The old item-like `ElementModel.StateDefinitions` remains as migration input, and the new authoritative collection is `ElementModel.StateDefinitionModels`.
 - 2026-06-13 / Codex: Completed Milestone 3. xModel import now writes imported `stateInfo` to `ElementModel.StateDefinitionModels`, assigns imported Model Type values, keeps legacy State groups as compatibility-only hierarchy, and tests duplicate imported State definition names.
 - 2026-06-13 / Codex: Completed Milestone 4. Preview import now creates State property data from authored `StateDefinitionModels`, preserves stable IDs and mapped assignments, and uses legacy imported rows or element-level State data only when authored State data is absent.
-- 2026-06-13 / Codex: Completed Milestone 5. State Definition editor view models now provide authoring commands, assignment tree editing, validation, dirty tracking, legacy migration on prop load, save blocking, and Element Info `Model Type` exposure.
+- 2026-06-13 / Codex: Completed Milestone 5. State Definition editor view models now provide authoring commands, assignment editing, validation, dirty tracking, legacy migration on prop load, save blocking, and Element Info `Model Type` exposure.
 - 2026-06-15 / Codex: Completed Milestone 6. Added the State Definition tab UI, local drawing-surface State preview colors, canvas-selection assignment updates for the selected State item, and focused tests for preview color behavior and assignment dirty tracking.
+- 2026-06-15 / Codex: Updated the plan for post-Milestone 6 revisions. The State Definition tab now belongs beside `Layout` and `Order`, assignment checkbox trees were removed from the Custom Prop Editor, the canvas supports assignment toggle and Control-drag removal for one selected row, multiple selected State item rows preview together with editing disabled, selected-items binding behavior moved to WPFCommon, non-active preview lights use RGB 25,25,25, color cells use readable foregrounds and double-click editing, and deleted elements prune State item assignment IDs.

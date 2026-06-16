@@ -8,7 +8,7 @@ State definitions for a custom prop before that prop is imported into Vixen Prev
 The feature must align Custom Prop Editor state authoring with the State property model completed in
 `docs/state/vix-3591-state-property-final-requirements.md` and consumed by the State effect in
 `docs/state/vix-3924-state-effect.md`. The Custom Prop Editor must author State data once in the model element's
-`ElementModel.StateDefinitions` collection and the Preview import must attach that data as a real Vixen State property on
+`ElementModel.StateDefinitionModels` collection and the Preview import must attach that data as a real Vixen State property on
 the intended model element.
 
 ## Background
@@ -26,7 +26,7 @@ The Custom Prop Editor also exposes three element-level State fields in the Elem
 Those fields write to `ElementModel.StateDefinition`. They do not model multiple State definitions per prop/model element
 and cannot represent the finalized State property shape where one property contains many State definitions and each
 definition contains many State items. They should be replaced by a State Definition workflow that edits
-`ElementModel.StateDefinitions` on the model element.
+`ElementModel.StateDefinitionModels` on the model element.
 
 ## References
 
@@ -52,7 +52,7 @@ definition contains many State items. They should be replaced by a State Definit
 - **Model Type**: A Custom Prop Editor classification assigned to an `ElementModel`. Valid values are `None`, `Model`,
   `SubModel`, `FaceInfo`, and `StateInfo`.
 - **Prop State data**: The Custom Prop Editor persisted State collection stored on the model element's
-  `ElementModel.StateDefinitions` collection and mapped directly to the State property model.
+  `ElementModel.StateDefinitionModels` collection and mapped directly to the State property model.
 - **State property**: The Vixen `State` property attached to a Preview-imported `IElementNode`.
 - **State definition**: One named definition inside State data. It has a stable ID, name, description, ordered State items,
   and preview/editing behavior.
@@ -69,7 +69,7 @@ definition contains many State items. They should be replaced by a State Definit
 1. The user imports an xModel that contains one or more `stateInfo` elements.
 2. The Custom Prop Editor creates the existing model hierarchy, including the top-level prop group, child model group,
    submodel groups, face groups, and legacy State groups while the legacy group option remains enabled.
-3. The imported `stateInfo` values are mapped into `ElementModel.StateDefinitions` on the imported model element.
+3. The imported `stateInfo` values are mapped into `ElementModel.StateDefinitionModels` on the imported model element.
 4. The imported State definitions are visible in the new State Definition tab and can be edited without using the legacy
    Element Info State fields.
 5. Saving and reopening the prop preserves State definition IDs, State item IDs, colors, assignments, and order.
@@ -90,9 +90,9 @@ definition contains many State items. They should be replaced by a State Definit
 ### Edit Older Prop With Legacy StateInfo
 
 1. The user opens an existing `.prp` file containing legacy element-level State data.
-2. The Custom Prop Editor migrates any legacy State data into `ElementModel.StateDefinitions` in memory.
+2. The Custom Prop Editor migrates any legacy State data into `ElementModel.StateDefinitionModels` in memory.
 3. The migrated State definitions are shown in the State Definition tab.
-4. Saving the prop persists the new `ElementModel.StateDefinitions` data.
+4. Saving the prop persists the new `ElementModel.StateDefinitionModels` data.
 5. The Preview import remains able to import older prop files directly even when they have not been opened and saved in the
    Custom Prop Editor.
 
@@ -101,9 +101,9 @@ definition contains many State items. They should be replaced by a State Definit
 ### In Scope
 
 - Add State Definition authoring to the Custom Prop Editor left pane.
-- Persist State data in the model element's `ElementModel.StateDefinitions` collection in Custom Prop Editor prop files.
+- Persist State data in the model element's `ElementModel.StateDefinitionModels` collection in Custom Prop Editor prop files.
 - Map Custom Prop Editor State data to the existing Vixen State property on Preview import.
-- Migrate older Custom Prop Editor legacy State data to `ElementModel.StateDefinitions`.
+- Migrate older Custom Prop Editor legacy State data to `ElementModel.StateDefinitionModels`.
 - Preserve Preview import support for older prop files that still contain only legacy State data.
 - Add Model Type display and editing for Custom Prop Editor elements.
 - Designate xModel-imported model, submodel, faceInfo, and stateInfo groups with Model Type values.
@@ -125,8 +125,8 @@ definition contains many State items. They should be replaced by a State Definit
 
 ### State Data Model
 
-- The Custom Prop Editor must persist State definitions in `ElementModel.StateDefinitions` on the designated model element.
-- `ElementModel.StateDefinitions` is the authoritative Custom Prop Editor State storage going forward.
+- The Custom Prop Editor must persist State definitions in `ElementModel.StateDefinitionModels` on the designated model element.
+- `ElementModel.StateDefinitionModels` is the authoritative Custom Prop Editor State storage going forward.
 - `ElementModel.StateDefinition` is legacy storage and must be deprecated for authoring.
 - New authoring workflows must not write authoritative State data to `ElementModel.StateDefinition`.
 - The Custom Prop Editor must persist State definitions as model-element-level data that maps directly to
@@ -213,9 +213,11 @@ plan explicitly changes naming and updates existing tests.
 
 ### State Definition Tab
 
-- Add a third tab in the lower-left tab control next to `Prop Info` and `Element Info`.
+- Add a `State Definition` tab in the same primary editor tab control as `Layout` and `Order`.
+- `Layout`, `Order`, and `State Definition` are mutually exclusive editing modes.
+- The lower-left tab control remains focused on metadata tabs such as `Prop Info` and `Element Info`.
 - The tab header must be `State Definition`.
-- The State Definition tab must edit `ElementModel.StateDefinitions` for the current model element.
+- The State Definition tab must edit `ElementModel.StateDefinitionModels` for the current model element.
 - The tab should follow the State property setup workflow in Display Setup wherever practical:
   - State definition selector;
   - Add State definition;
@@ -226,7 +228,7 @@ plan explicitly changes naming and updates existing tests.
   - State item grid;
   - State item Add and Remove;
   - State item color editing;
-  - State item assignment tree;
+  - State item assignment through the Custom Prop Editor drawing surface;
   - State item move up and move down;
   - Preview controls.
 - The State Definition tab must work whether the current prop was imported from xModel or created manually.
@@ -236,9 +238,10 @@ plan explicitly changes naming and updates existing tests.
   but the visual layout and interaction patterns should remain as consistent with State property setup as practical.
 - The State Definition tab must not require a selected element in the element tree to show the current model element's State
   definitions.
-- The assignment tree must display the model element and its descendants.
-- If an explicit Model Type `Model` element exists, the assignment tree root is that element.
-- If no explicit model element exists, the assignment tree root is the prop root element.
+- State item assignment checkbox trees are not shown in the Custom Prop Editor because assignment is performed through the
+  drawing surface.
+- If an explicit Model Type `Model` element exists, assignment and preview are scoped to that element.
+- If no explicit model element exists, assignment and preview are scoped to the prop root element.
 - The tab must show a clear empty state when no State definitions exist and must provide an Add action.
 - The tab must preserve unsaved edits in the editor until the user saves, closes, cancels through an existing dirty prompt,
   or reloads another prop.
@@ -284,49 +287,53 @@ plan explicitly changes naming and updates existing tests.
 - State item names are case-sensitive.
 - Users can edit State item names inline in the grid.
 - Users can edit State item colors through the standard Vixen color picker behavior.
-- Color cells display the selected color and a readable hex value.
-- The Count column shows the effective assigned leaf count.
+- Double-clicking a color cell opens the standard Vixen color picker behavior.
+- Color cells display the selected color as the cell background and a readable hex value.
+- Color cell foregrounds must adapt to the selected background color, using the shared
+  `BackgroundColorToTextBrushConverter` behavior.
+- The Assigned column shows the effective assigned leaf count.
+- The State item grid supports multi-row selection for preview.
 - Sorting the State item grid by a column header and saving persists the displayed row order for that State definition.
 - Manual row reorder through Move Up and Move Down must be available and must preserve IDs, names, colors, and assignments.
 - Removing a State item must remove only that item and must not affect other same-named items.
 
-### Assignment Tree
+### State Item Assignment
 
-- The assignment tree displays the model element and its descendants for the selected State item.
-- Each assignment tree node has a checkbox.
-- Checking a group node clears checked descendants, disables or grays descendants, and treats descendant leaves as included.
-- Unchecking a group node re-enables descendants without restoring prior checks.
-- Selecting a State item row displays that row's assignment tree.
-- Selecting a row expands only branches needed to reveal checked assignments.
+- The Custom Prop Editor does not show State item assignment checkbox trees.
+- Selecting exactly one State item row enables canvas assignment editing for that row.
+- Clicking an unassigned node in State Definition mode assigns that node to the selected State item.
+- Clicking an already assigned node in State Definition mode removes that assignment from the selected State item.
+- Drag-box selection in State Definition mode assigns all contained nodes to the selected State item.
+- Holding Control while drag-box selecting in State Definition mode removes the contained nodes from the selected State item.
+- Canvas assignment editing is disabled when no State item row is selected.
+- Canvas assignment editing is disabled when more than one State item row is selected.
+- Selection handles and normal layout-selection affordances are disabled while State Definition mode is active.
 - Switching State definitions clears selected State item row selection so the user explicitly chooses the row to inspect.
 - Assignments must persist as stable `ElementModel.Id` values.
-- If an assigned element no longer exists after tree edits, the assignment is ignored during preview/import and removed or
-  surfaced as invalid before the next save.
+- Deleting an element from the Layout tab must remove that element's `ElementModel.Id` from all State item assignments.
+- Refreshing or rebinding State assignments must prune element IDs that no longer exist, preventing dangling assignment
+  references before save or preview import.
 
 ### Custom Prop Editor Preview
 
 - The State Definition tab must provide a local preview using the existing Custom Prop Editor drawing surface.
 - The preview must not publish to Vixen Live Preview and must not activate external preview output.
 - Preview state is temporary editor state and is not persisted.
-- The State Definition preview is active whenever the State Definition tab is the active lower-left tab.
+- The State Definition preview is active whenever the State Definition tab is the active primary editor tab.
 - The State Definition preview must not expose a Preview on/off toggle.
 - When the State Definition tab is not active, the drawing surface must return to the existing Custom Prop Editor behavior,
   including normal colors and selection indicators.
-- While the State Definition tab is active, the canvas must show the full prop as a low-emphasis outline using light gray for
-  non-active nodes.
+- While the State Definition tab is active, the canvas must show the full prop as a low-emphasis outline using RGB
+  25,25,25 for non-active nodes.
 - Active State item nodes must overlay their configured State item colors.
-- State Item Group mode previews all exact-name matches for the selected group, or all rows when `<ALL>` is selected.
-- Selected State Item mode previews only the selected row and renders no active color when no row is selected.
+- Selecting one State item row previews only that row's assigned nodes.
+- Selecting multiple State item rows previews all selected rows in their configured colors.
+- When no State item row is selected, the preview renders no active State item color.
 - The same element assigned by multiple active State items with different colors must preview a mixed color.
 - Mixed preview color calculation must be deterministic and documented in the implementation plan.
-- When a specific State item row is selected for editing, selecting elements in the drawing surface must check the
-  corresponding assignment boxes for that State item.
-- Drawing-surface selection in the State Definition tab must follow the main viewer's normal selection mechanics where
-  practical.
-- If no specific State item row is selected, the State Definition preview is view-only and drawing-surface selection must not
+- Canvas assignment editing is available only when exactly one State item row is selected.
+- When multiple State item rows are selected, the State Definition preview is view-only and drawing-surface selection must not
   change assignments.
-- If State Item Group mode is active, drawing-surface selection is view-only unless a specific State item row is also selected
-  for assignment editing.
 - Leaving the State Definition tab, closing the editor, opening another prop, changing model element designation, or removing
   the model element must clear temporary preview state and restore normal viewer behavior.
 
@@ -345,7 +352,7 @@ plan explicitly changes naming and updates existing tests.
 
 ### xModel Import
 
-- New xModel imports must map `stateInfo` into `ElementModel.StateDefinitions` on the imported model element.
+- New xModel imports must map `stateInfo` into `ElementModel.StateDefinitionModels` on the imported model element.
 - Each imported `stateInfo` becomes one State definition.
 - Each imported state item becomes one State item in its State definition.
 - Imported State definition names must use the same normalization rules from VIX-3591:
@@ -375,15 +382,15 @@ plan explicitly changes naming and updates existing tests.
 - Empty State definitions after assignment mapping must be skipped or treated as invalid according to the implementation
   plan, but must not create broken State properties.
 - The Preview import must continue to support older prop files that contain only legacy element-level State data.
-- When both new `ElementModel.StateDefinitions` data and legacy element-level State data exist, the new StateDefinitions data
+- When both new `ElementModel.StateDefinitionModels` data and legacy element-level State data exist, the new StateDefinitionModels data
   is authoritative and legacy data is ignored for State property creation.
 - The Preview import must not modify the prop file on disk while migrating or interpreting older State data.
 
 ### Migration
 
-- Opening an older Custom Prop Editor file must migrate legacy element-level State data into `ElementModel.StateDefinitions`
+- Opening an older Custom Prop Editor file must migrate legacy element-level State data into `ElementModel.StateDefinitionModels`
   in memory.
-- Migration must write migrated data to `ElementModel.StateDefinitions`.
+- Migration must write migrated data to `ElementModel.StateDefinitionModels`.
 - Migration must not preserve or refresh redundant compatibility data in `ElementModel.StateDefinition`.
 - Migration must group legacy State items by `StateDefinitionName`.
 - Each group becomes one State definition.
@@ -392,7 +399,7 @@ plan explicitly changes naming and updates existing tests.
   assigned element set.
 - Migration must preserve color and item names.
 - Migrated data must receive non-empty stable IDs.
-- Migration must not create duplicate State definitions if equivalent `ElementModel.StateDefinitions` data already exists.
+- Migration must not create duplicate State definitions if equivalent `ElementModel.StateDefinitionModels` data already exists.
 - Migration must be idempotent across repeated load/save cycles.
 - Older props with no legacy State data must load unchanged.
 - No existing user-created prop is expected to have meaningful legacy State data, but migration must be defensive for files
@@ -400,11 +407,11 @@ plan explicitly changes naming and updates existing tests.
 
 ### Persistence
 
-- Saving a prop must persist Model Type data and `ElementModel.StateDefinitions` data.
+- Saving a prop must persist Model Type data and `ElementModel.StateDefinitionModels` data.
 - Saving a prop must not persist temporary State preview state.
 - Save As must preserve the same logical State IDs unless the whole prop copy workflow explicitly defines new IDs.
 - The design should avoid redundant persisted State data.
-- Newly saved props should prefer only `ElementModel.StateDefinitions` for State authoring data.
+- Newly saved props should prefer only `ElementModel.StateDefinitionModels` for State authoring data.
 - Older Vixen versions are not required to open newly saved props with State authoring data.
 - The structure should be friendly to a future migration from LiteDB serialization to JSON.
 
@@ -456,32 +463,39 @@ plan explicitly changes naming and updates existing tests.
 
 ### State Definition Editor
 
-- The lower-left tab control contains `Prop Info`, `Element Info`, and `State Definition`.
+- The primary editor tab control contains `Layout`, `Order`, and `State Definition` as mutually exclusive modes.
+- The lower-left tab control continues to contain metadata tabs such as `Prop Info` and `Element Info`.
 - The State Definition tab can add, delete, rename, and copy State definitions.
 - The tab can add, remove, edit, sort, and manually reorder State items.
 - State item names, colors, assignments, and counts display correctly.
-- The assignment tree roots at the explicit model element or the prop root fallback.
-- Group assignment behavior matches State property setup behavior.
+- Color cells use the State item color as their background, use a readable foreground, and open the color picker on
+  double-click.
+- The Assigned column shows the assigned node count.
+- State item assignment is performed through the drawing surface, not through assignment checkbox trees.
+- Deleting elements from the Layout tab removes their IDs from State item assignments.
 - Blocking validation prevents saving invalid State data.
 
 ### Preview
 
 - The State Definition preview is active whenever the State Definition tab is active.
 - Leaving the State Definition tab restores the normal Custom Prop Editor drawing surface behavior.
-- While the State Definition tab is active, the drawing surface shows the full prop in light gray and active State items in
+- While the State Definition tab is active, the drawing surface shows the full prop in RGB 25,25,25 and active State items in
   their configured colors.
 - Overlapping active State items on the same element preview as a mixed color.
-- Selected State Item mode previews only the selected item.
-- State Item Group mode previews exact-name matches or all rows for `<ALL>`.
+- Selecting one State item row previews only the selected item and enables canvas assignment editing.
+- Selecting multiple State item rows previews all selected rows in their configured colors and disables canvas assignment
+  editing.
 - Assignment and color edits refresh the active local preview.
-- Selecting elements in the drawing surface while a specific State item row is selected checks the corresponding assignment
-  boxes for that State item.
-- Drawing-surface selection is view-only when no specific State item row is selected for assignment editing.
+- Clicking assigned nodes toggles them off for the selected State item.
+- Drag-box selection assigns contained nodes for the selected State item.
+- Holding Control while drag-box selecting removes contained nodes from the selected State item.
+- Drawing-surface selection is view-only when no State item row or multiple State item rows are selected.
+- Selection handles are disabled in State Definition mode.
 - Preview never publishes Vixen Live Preview messages.
 
 ### xModel Import
 
-- Importing an xModel with `stateInfo` creates `ElementModel.StateDefinitions` visible in the State Definition tab.
+- Importing an xModel with `stateInfo` creates `ElementModel.StateDefinitionModels` visible in the State Definition tab.
 - Imported State definitions use normalized names and preserve case-sensitive distinct names.
 - Imported duplicate State definition names are suffixed.
 - Imported State item assignments target imported model leaves.
@@ -503,7 +517,7 @@ plan explicitly changes naming and updates existing tests.
 - Migration is idempotent.
 - Saving the migrated prop persists the new State data.
 - Preview import can interpret older prop files without saving them first.
-- Newly saved migrated props use `ElementModel.StateDefinitions` as their only authoritative State data.
+- Newly saved migrated props use `ElementModel.StateDefinitionModels` as their only authoritative State data.
 
 ## Automated Test Plan
 
@@ -527,21 +541,22 @@ git diff --check
 Automated coverage must include:
 
 - Custom Prop Editor State data default, normalize, clone/copy, and save/reopen behavior through
-  `ElementModel.StateDefinitions`.
+  `ElementModel.StateDefinitionModels`.
 - Model Type persistence and rule enforcement.
 - xModel import Model Type assignment.
-- xModel import StateInfo to `ElementModel.StateDefinitions`.
+- xModel import StateInfo to `ElementModel.StateDefinitionModels`.
 - xModel duplicate, blank, and case-only State definition names.
 - State item color, name, order, and assignment import.
 - Migration from legacy `ElementModel.StateDefinition` data.
 - Migration idempotence.
-- Preview import from new `ElementModel.StateDefinitions` data.
+- Preview import from new `ElementModel.StateDefinitionModels` data.
 - Preview import from older legacy State data.
 - New-data-over-legacy precedence.
 - Assignment mapping from `ElementModel.Id` to `ElementNode.Id`.
 - State Definition tab view-model commands and validation.
-- State item assignment tree group/leaf behavior.
-- Local preview tab activation, mode selection, color overlay state, assignment selection, and reset behavior.
+- Canvas assignment toggle, drag-box assignment, Control drag-box removal, and disabled editing for zero or multiple selected
+  State item rows.
+- Local preview tab activation, color overlay state, multi-row preview, assignment selection, and reset behavior.
 - Mixed-color local preview for overlapping active State items.
 - No Live Preview broadcast messages from Custom Prop Editor local preview.
 
@@ -556,7 +571,7 @@ Tests should use embedded minimal prop/xModel data. They should not depend on ex
 3. Add several light nodes and at least one group.
 4. Open the State Definition tab.
 5. Add a State definition and two State items.
-6. Assign one State item to a leaf and another to a group.
+6. Assign State items to visible nodes through the drawing surface.
 7. Save, close, reopen, and confirm names, colors, assignments, counts, and row order persisted.
 8. Import the prop into Preview and confirm the State property is attached to the root fallback or explicit model element.
 
@@ -581,18 +596,22 @@ Tests should use embedded minimal prop/xModel data. They should not depend on ex
 ### Local Preview
 
 1. Open a prop with at least two State items assigned to visible nodes.
-2. Confirm the drawing surface appears normal while the Prop Info or Element Info tab is active.
+2. Confirm the drawing surface appears normal while the Layout or Order tab is active.
 3. Activate the State Definition tab and confirm the drawing surface switches to State Definition preview.
-4. Select each State item row and confirm only that row's assigned nodes show its configured color in Selected State Item
-   mode.
-5. Select an unassigned visible element in the drawing surface while a State item row is selected and confirm the
-   corresponding assignment checkbox is checked for that State item.
-6. Clear the selected State item row or use a view-only preview state, select visible elements in the drawing surface, and
+4. Select each State item row and confirm only that row's assigned nodes show its configured color.
+5. Select an unassigned visible element in the drawing surface while one State item row is selected and confirm that element
+   is assigned to that State item.
+6. Select an assigned visible element again and confirm that element is removed from the State item.
+7. Drag-box select visible elements and confirm the contained elements are assigned to the selected State item.
+8. Hold Control while drag-box selecting assigned visible elements and confirm the contained elements are removed from the
+   selected State item.
+9. Select multiple State item rows and confirm all selected rows preview in their configured colors.
+10. With multiple State item rows selected, select visible elements in the drawing surface and confirm assignments do not
+   change.
+11. Clear the selected State item row, select visible elements in the drawing surface, and
    confirm assignments do not change.
-7. Switch to State Item Group mode and select `<ALL>`.
-8. Confirm all State items preview.
-9. Change an active State item color and assignment and confirm the preview refreshes.
-10. Activate another lower-left tab and confirm the normal drawing surface behavior returns.
+12. Change an active State item color and assignment and confirm the preview refreshes.
+13. Activate the Layout or Order tab and confirm the normal drawing surface behavior returns.
 
 ### Legacy Migration
 
@@ -616,26 +635,27 @@ effect.
 
 ### Requirements Summary
 
-- Add a `State Definition` tab next to `Prop Info` and `Element Info`.
-- Persist State data in `ElementModel.StateDefinitions`, compatible with `StateData`, `StateDefinitionData`, and
+- Add a `State Definition` tab next to `Layout` and `Order`.
+- Persist State data in `ElementModel.StateDefinitionModels`, compatible with `StateData`, `StateDefinitionData`, and
   `StateItemData`.
 - Remove or hide the legacy Element Info fields `State Name`, `State Item`, and `State Item Color`.
 - Add a `Model Type` field for `None`, `Model`, `SubModel`, `FaceInfo`, and `StateInfo`.
 - Enforce one explicit `Model` element at most; use the root element as the implicit model when no explicit model exists.
-- Map xModel `stateInfo` into `ElementModel.StateDefinitions`.
+- Map xModel `stateInfo` into `ElementModel.StateDefinitionModels`.
 - Continue creating legacy State groups during xModel import while the current compatibility option remains enabled.
-- Migrate older prop files with legacy element-level State data into `ElementModel.StateDefinitions`.
+- Migrate older prop files with legacy element-level State data into `ElementModel.StateDefinitionModels`.
 - Import props into Preview by attaching one State property to the explicit model element, imported model element, or root
   fallback.
-- Provide a local Custom Prop Editor preview that shows the full prop in light gray, overlays active State item colors, mixes
-  overlapping colors deterministically, and does not publish Live Preview messages.
+- Provide a local Custom Prop Editor preview that shows the full prop in RGB 25,25,25, overlays selected State item colors,
+  mixes overlapping colors deterministically, supports canvas assignment editing for one selected row, and does not publish
+  Live Preview messages.
 
 ### High-Level Design
 
 Use the State property model as the contract for Custom Prop Editor State authoring. Store State definitions on the model
-element's `ElementModel.StateDefinitions` collection, assign State items to `ElementModel.Id` values, and map those IDs to
+element's `ElementModel.StateDefinitionModels` collection, assign State items to `ElementModel.Id` values, and map those IDs to
 `ElementNode.Id` values during Preview import. Keep legacy element-level State data readable for migration and direct Preview
-import, but make `ElementModel.StateDefinitions` authoritative when both exist.
+import, but make `ElementModel.StateDefinitionModels` authoritative when both exist.
 
 ### Acceptance Criteria
 
@@ -649,7 +669,7 @@ import, but make `ElementModel.StateDefinitions` authoritative when both exist.
 
 ### Testing
 
-- Add automated tests for State data persistence through `ElementModel.StateDefinitions`, Model Type rules, xModel import
+- Add automated tests for State data persistence through `ElementModel.StateDefinitionModels`, Model Type rules, xModel import
   mapping, legacy migration, Preview import mapping, State Definition editor view-model behavior, and local preview behavior.
 - Run focused Custom Prop Editor, State property, and Preview import tests.
 - Run the full test suite, Debug and Release solution builds, and `git diff --check` before final acceptance.
