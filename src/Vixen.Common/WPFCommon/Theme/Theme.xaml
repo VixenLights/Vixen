@@ -38,6 +38,39 @@
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
     
+    <Style  BasedOn="{StaticResource {x:Type DataGridRowHeader}}" TargetType="DataGridRowHeader">
+        <Setter Property="Background" Value="{DynamicResource BackColorBrush}" />
+    </Style>
+    
+    <Style BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="DataGridCell">
+        <!-- Set the normal background color -->
+        <Setter Property="Background" Value="{DynamicResource BackColorBrush}" />
+            
+        <!-- Set the normal text color -->
+        <Setter Property="Foreground" Value="{DynamicResource ForeColorBrush}" />
+            
+        <!-- Set the text color when you select a cell -->
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Item.SelectedActive.Background}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+        <!-- Set normal row border so it does not jump when selected -->
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+            
+        <Style.Triggers>
+            <!-- Actions to take when the row is selected -->
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Item.SelectedActive.Background}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource Item.SelectedActive.Border}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style BasedOn="{StaticResource {x:Type ToolBarTray}}" TargetType="ToolBarTray">
         <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
     </Style>
