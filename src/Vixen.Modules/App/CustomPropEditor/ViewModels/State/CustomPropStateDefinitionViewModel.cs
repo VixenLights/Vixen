@@ -141,6 +141,37 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		}
 
 		/// <summary>
+		/// Removes State items from this definition.
+		/// </summary>
+		/// <param name="itemViewModels">The item view models to remove.</param>
+		public void RemoveItems(IEnumerable<CustomPropStateItemViewModel> itemViewModels)
+		{
+			var itemsToRemove = (itemViewModels ?? [])
+				.Where(Items.Contains)
+				.Distinct()
+				.ToList();
+			if (itemsToRemove.Count == 0)
+			{
+				return;
+			}
+
+			var selectedIndex = itemsToRemove
+				.Select(item => Items.IndexOf(item))
+				.Where(index => index >= 0)
+				.DefaultIfEmpty(0)
+				.Min();
+
+			foreach (var itemViewModel in itemsToRemove)
+			{
+				StateDefinition.Items.Remove(itemViewModel.StateItem);
+				Items.Remove(itemViewModel);
+			}
+
+			SelectedItem = Items.ElementAtOrDefault(Math.Min(selectedIndex, Items.Count - 1));
+			OnDefinitionChanged(nameof(Items));
+		}
+
+		/// <summary>
 		/// Moves a State item within this definition.
 		/// </summary>
 		/// <param name="itemViewModel">The item view model to move.</param>

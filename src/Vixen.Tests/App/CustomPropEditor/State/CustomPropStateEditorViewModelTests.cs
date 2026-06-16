@@ -68,6 +68,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		model.StateDefinitionModels.Add(definition);
 		var viewModel = new StateDefinitionEditorViewModel(prop);
+		viewModel.ConfirmStateItemDelete = (_, _) => true;
 
 		Execute(viewModel.AddStateItemCommand);
 		viewModel.SelectedStateItem.Name = "Arm";
@@ -79,6 +80,60 @@ public sealed class CustomPropStateEditorViewModelTests
 
 		Assert.Single(definition.Items);
 		Assert.Equal(StateItemModel.DefaultName, definition.Items[0].Name);
+	}
+
+	[Fact]
+	public void RemoveStateItemCommand_DeletesAllSelectedItems()
+	{
+		var prop = CreatePropWithModel(out var model, out _);
+		model.ModelType = ElementModelType.Model;
+		var definition = new StateDefinitionModel
+		{
+			Name = "Wave",
+			Items =
+			[
+				new StateItemModel { Name = "Arm" },
+				new StateItemModel { Name = "Leg" },
+				new StateItemModel { Name = "Hat" }
+			]
+		};
+		model.StateDefinitionModels.Add(definition);
+		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var confirmedQuestion = string.Empty;
+		viewModel.ConfirmStateItemDelete = (question, _) =>
+		{
+			confirmedQuestion = question;
+			return true;
+		};
+		viewModel.SelectedStateItems.Clear();
+		viewModel.SelectedStateItems.Add(viewModel.SelectedStateDefinition.Items[0]);
+		viewModel.SelectedStateItems.Add(viewModel.SelectedStateDefinition.Items[2]);
+
+		Execute(viewModel.RemoveStateItemCommand);
+
+		Assert.Equal("Delete 2 State items?", confirmedQuestion);
+		Assert.Equal(["Leg"], definition.Items.Select(item => item.Name).ToList());
+		Assert.Equal(["Leg"], viewModel.SelectedStateDefinition.Items.Select(item => item.Name).ToList());
+		Assert.Equal("Leg", viewModel.SelectedStateItem.Name);
+		Assert.True(viewModel.IsDirty);
+	}
+
+	[Fact]
+	public void RemoveStateItemCommand_CancelKeepsSelectedItems()
+	{
+		var prop = CreatePropWithModel(out var model, out _);
+		model.ModelType = ElementModelType.Model;
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		definition.Items.Add(new StateItemModel { Name = "Arm" });
+		model.StateDefinitionModels.Add(definition);
+		var viewModel = new StateDefinitionEditorViewModel(prop);
+		viewModel.SelectedStateItems.Add(viewModel.SelectedStateDefinition.Items[1]);
+		viewModel.ConfirmStateItemDelete = (_, _) => false;
+
+		Execute(viewModel.RemoveStateItemCommand);
+
+		Assert.Equal([StateItemModel.DefaultName, "Arm"], definition.Items.Select(item => item.Name).ToList());
+		Assert.Equal(2, viewModel.SelectedStateItems.Count);
 	}
 
 	[Fact]

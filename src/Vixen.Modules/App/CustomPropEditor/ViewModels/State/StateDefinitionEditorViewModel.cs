@@ -3,8 +3,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using Catel.MVVM;
+using Catel.Services;
+using Common.WPFCommon.Services;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using Catel.IoC;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels.State
 {
@@ -23,6 +26,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		private Command _moveStateItemUpCommand;
 		private Command _moveStateItemDownCommand;
 		private Command<IList> _persistStateItemSortCommand;
+		private Func<string, string, bool> _confirmStateItemDelete;
 
 		/// <summary>
 		/// Occurs when State definition data changes.
@@ -44,6 +48,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			SelectedStateItems = new ObservableCollection<CustomPropStateItemViewModel>();
 			SelectedStateItems.CollectionChanged += SelectedStateItemsOnCollectionChanged;
 			ValidationMessages = new ObservableCollection<string>();
+			_confirmStateItemDelete = ShowStateItemDeleteConfirmation;
 			SetProp(prop);
 		}
 
@@ -189,6 +194,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// </summary>
 		public Command<IList> PersistStateItemSortCommand =>
 			_persistStateItemSortCommand ??= new Command<IList>(PersistStateItemSortOrder, CanPersistStateItemSortOrder);
+
+		/// <summary>
+		/// Gets or sets the State item delete confirmation callback.
+		/// </summary>
+		internal Func<string, string, bool> ConfirmStateItemDelete
+		{
+			get => _confirmStateItemDelete;
+			set => _confirmStateItemDelete = value ?? ShowStateItemDeleteConfirmation;
+		}
 
 		/// <summary>
 		/// Rebinds the editor to another custom prop.
@@ -358,12 +372,18 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 
 		private void RemoveStateItem()
 		{
-			if (SelectedStateDefinition == null || SelectedStateItem == null)
+			if (SelectedStateDefinition == null)
 			{
 				return;
 			}
 
-			SelectedStateDefinition.RemoveItem(SelectedStateItem);
+			var itemsToRemove = GetSelectedStateItemsForRemoval();
+			if (itemsToRemove.Count == 0 || !ConfirmStateItemDelete(GetDeleteStateItemQuestion(itemsToRemove), "Delete State Item"))
+			{
+				return;
+			}
+
+			SelectedStateDefinition.RemoveItems(itemsToRemove);
 			SelectSingleStateItem(SelectedStateDefinition.SelectedItem);
 			RaisePropertyChanged(nameof(SelectedStateItem));
 			OnStateDataChanged();
@@ -371,7 +391,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 
 		private bool CanRemoveStateItem()
 		{
-			return SelectedStateItem != null;
+			return GetSelectedStateItemsForRemoval().Count > 0;
 		}
 
 		private void MoveStateItemUp()
@@ -424,6 +444,42 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		private bool CanPersistStateItemSortOrder(IList sortedItems)
 		{
 			return SelectedStateDefinition != null && sortedItems != null;
+		}
+
+		private IReadOnlyList<CustomPropStateItemViewModel> GetSelectedStateItemsForRemoval()
+		{
+			if (SelectedStateDefinition == null)
+			{
+				return [];
+			}
+
+			var selectedItems = SelectedStateItems
+				.Where(item => SelectedStateDefinition.Items.Contains(item))
+				.Distinct()
+				.ToList();
+			if (selectedItems.Count > 0)
+			{
+				return selectedItems;
+			}
+
+			return SelectedStateItem != null && SelectedStateDefinition.Items.Contains(SelectedStateItem)
+				? [SelectedStateItem]
+				: [];
+		}
+
+		private static string GetDeleteStateItemQuestion(IReadOnlyCollection<CustomPropStateItemViewModel> itemsToRemove)
+		{
+			return itemsToRemove.Count == 1
+				? $"Delete State item \"{GetDisplayName(itemsToRemove.Single().Name)}\"?"
+				: $"Delete {itemsToRemove.Count} State items?";
+		}
+
+		private static bool ShowStateItemDeleteConfirmation(string question, string title)
+		{
+			var dependencyResolver = ServiceLocator.Default;
+			var messageBoxService = dependencyResolver.ResolveType<IMessageBoxService>();
+			var response = messageBoxService.GetUserConfirmation(question, title);
+			return response.Result is MessageResult.OK or MessageResult.Yes;
 		}
 
 		private void SelectSingleStateItem(CustomPropStateItemViewModel item)
