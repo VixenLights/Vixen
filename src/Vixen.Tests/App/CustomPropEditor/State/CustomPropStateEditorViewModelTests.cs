@@ -10,6 +10,7 @@ using Xunit;
 
 namespace Vixen.Tests.App.CustomPropEditor.State;
 
+[Collection("CustomPropEditor")]
 public sealed class CustomPropStateEditorViewModelTests
 {
 	[Fact]
@@ -348,6 +349,70 @@ public sealed class CustomPropStateEditorViewModelTests
 		Assert.All(drawingPanelViewModel.LightNodes, light => Assert.Equal(drawingPanelViewModel.LightColor, light.DisplayColor));
 	}
 
+	[Fact]
+	public void PropEditor_ToggleStateItemAssignment_RequiresStateDefinitionTabAndSingleSelectedItem()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out var secondLeaf, out var firstLight, out var secondLight);
+		var stateEditor = viewModel.StateDefinitionEditorViewModel;
+		var firstItem = stateEditor.SelectedStateDefinition.Items[0];
+		var secondItem = stateEditor.SelectedStateDefinition.Items[1];
+
+		Assert.False(viewModel.ToggleStateItemAssignment(firstLight));
+		Assert.Empty(firstItem.StateItem.ElementModelIds);
+
+		viewModel.SelectedTabIndex = 2;
+
+		Assert.True(viewModel.ToggleStateItemAssignment(firstLight));
+		Assert.Equal([firstLeaf.Id], firstItem.StateItem.ElementModelIds);
+
+		stateEditor.SelectedStateItems.Add(secondItem);
+
+		Assert.False(viewModel.ToggleStateItemAssignment(secondLight));
+		Assert.DoesNotContain(secondLeaf.Id, firstItem.StateItem.ElementModelIds);
+		Assert.Empty(secondItem.StateItem.ElementModelIds);
+	}
+
+	[Fact]
+	public void PropEditor_AssignAndRemoveStateItemAssignment_RefreshesPreview()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out var secondLeaf, out var firstLight, out _);
+		var item = viewModel.StateDefinitionEditorViewModel.SelectedStateItem;
+		viewModel.SelectedTabIndex = 2;
+
+		Assert.True(viewModel.AssignStateItemAssignment(firstLight));
+
+		Assert.Equal([firstLeaf.Id], item.StateItem.ElementModelIds);
+		Assert.Equal(Color.Red.ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.FromArgb(25, 25, 25).ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+
+		Assert.True(viewModel.RemoveStateItemAssignment(firstLight));
+
+		Assert.Empty(item.StateItem.ElementModelIds);
+		Assert.All(viewModel.DrawingPanelViewModel.LightNodes, light => Assert.Equal(Color.FromArgb(25, 25, 25).ToArgb(), light.DisplayColor.ToArgb()));
+	}
+
+	[Fact]
+	public void PropEditor_DeleteCommand_RemovesDeletedElementFromStateAssignments()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out var secondLeaf, out _, out _);
+		var item = viewModel.StateDefinitionEditorViewModel.SelectedStateItem;
+		item.AssignElementModelIds([firstLeaf.Id, secondLeaf.Id]);
+		viewModel.SelectedTabIndex = 2;
+		var firstLeafViewModel = viewModel.ElementTreeViewModel.RootNodesViewModels
+			.Single()
+			.ChildrenViewModels
+			.Single(child => child.ElementModel.ModelType == ElementModelType.Model)
+			.ChildrenViewModels
+			.Single(child => child.ElementModel.Id == firstLeaf.Id);
+		viewModel.ElementTreeViewModel.SelectedItems.Add(firstLeafViewModel);
+
+		Execute(viewModel.DeleteCommand);
+
+		Assert.Equal([secondLeaf.Id], item.StateItem.ElementModelIds);
+		Assert.DoesNotContain(viewModel.DrawingPanelViewModel.LightNodes, light => light.Light.ParentModelId == firstLeaf.Id);
+		Assert.Contains(viewModel.DrawingPanelViewModel.LightNodes, light => light.Light.ParentModelId == secondLeaf.Id);
+	}
+
 	private static Prop CreatePropWithModel(out ElementModel model, out ElementModel leaf)
 	{
 		var prop = new Prop("State Prop");
@@ -356,6 +421,50 @@ public sealed class CustomPropStateEditorViewModelTests
 		model.AddChild(leaf);
 		prop.RootNode.AddChild(model);
 		return prop;
+	}
+
+	private static PropEditorViewModel CreatePropEditorWithState(
+		out ElementModel firstLeaf,
+		out ElementModel secondLeaf,
+		out LightViewModel firstLight,
+		out LightViewModel secondLight)
+	{
+		var viewModel = new PropEditorViewModel();
+		var model = new ElementModel("Model", viewModel.Prop.RootNode)
+		{
+			ModelType = ElementModelType.Model
+		};
+		firstLeaf = new ElementModel("Leaf 1", model);
+		firstLeaf.Lights.Add(new Light(new WpfPoint(10, 10), ElementModel.DefaultLightSize, firstLeaf.Id));
+		secondLeaf = new ElementModel("Leaf 2", model);
+		secondLeaf.Lights.Add(new Light(new WpfPoint(20, 20), ElementModel.DefaultLightSize, secondLeaf.Id));
+		model.AddChild(firstLeaf);
+		model.AddChild(secondLeaf);
+		model.StateDefinitionModels.Add(new StateDefinitionModel
+		{
+			Name = "Wave",
+			Items = new ObservableCollection<StateItemModel>
+			{
+				new()
+				{
+					Name = "Arm",
+					Color = Color.Red
+				},
+				new()
+				{
+					Name = "Leg",
+					Color = Color.Green
+				}
+			}
+		});
+		viewModel.Prop.RootNode.AddChild(model);
+		viewModel.StateDefinitionEditorViewModel.SetProp(viewModel.Prop);
+		viewModel.DrawingPanelViewModel.RefreshLightViewModels();
+		var firstLeafId = firstLeaf.Id;
+		var secondLeafId = secondLeaf.Id;
+		firstLight = viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeafId);
+		secondLight = viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeafId);
+		return viewModel;
 	}
 
 	private static Prop CreateServicePropWithLights(

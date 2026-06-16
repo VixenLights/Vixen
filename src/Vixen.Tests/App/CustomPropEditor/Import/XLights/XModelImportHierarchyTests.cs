@@ -4,6 +4,7 @@ using Xunit;
 
 namespace Vixen.Tests.App.CustomPropEditor.Import.XLights;
 
+[Collection("CustomPropEditor")]
 public class XModelImportHierarchyTests
 {
 	[Fact]

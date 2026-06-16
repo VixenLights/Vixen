@@ -22,7 +22,7 @@ The visible result is a `State Definition` tab beside the primary `Layout` and `
 - [x] (2026-06-13 11:21 -05:00) Added the Custom Prop Editor State Definition view models, commands, validation, and save blocking.
 - [x] (2026-06-15 15:11 -05:00) Add the State Definition tab UI and viewer preview integration.
 - [x] (2026-06-15 16:55 -05:00) Revised the State Definition workflow after Milestone 6: moved the tab beside `Layout` and `Order`, removed the assignment checkbox tree, added canvas toggle and Control-drag removal, added multi-row State item preview with editing disabled, moved selected-items binding behavior to WPFCommon, and pruned deleted element IDs from State item assignments.
-- [ ] Add focused automated tests for model data, import, migration, Preview import, editor view models, and local preview behavior.
+- [x] (2026-06-16 00:00 -05:00) Added focused automated coverage for PropEditor-level State canvas assignment gating, assignment/removal preview refresh, deleted element assignment pruning, and serialized singleton-sensitive Custom Prop Editor tests that share `PropModelServices`.
 - [ ] Run focused tests, full test suite, Debug and Release solution builds, and `git diff --check`; record validation evidence.
 
 ## Surprises & Discoveries
@@ -128,6 +128,8 @@ Milestone 4 is complete. Preview custom prop import now maps authored `ElementMo
 Milestone 5 is complete. The Custom Prop Editor now has a State Definition editor view-model layer with editable State definitions, State items, selected State item tracking, add/delete/rename/copy commands, item add/remove/reorder commands, validation messages, and dirty tracking. `PropEditorViewModel` creates the State editor for each loaded prop, migrates legacy State data through that editor path, refreshes assignments when the element model changes, and blocks Save and Save As when State validation errors exist. `ElementModelViewModel` exposes `Model Type` and hides the legacy Element Info State fields. Focused Custom Prop Editor tests pass. Later revisions removed the assignment checkbox tree from the Custom Prop Editor, leaving canvas assignment as the only State item assignment UI.
 
 Milestone 6 is complete. The Custom Prop Editor originally added the `State Definition` tab and bound it to the existing State editor view model. Post-milestone revisions moved that tab beside `Layout` and `Order` so the three modes are mutually exclusive. The tab exposes definition editing, item editing, validation messages, color-cell editing, assigned counts, and selected State item rows. Selecting the tab activates local drawing-surface State preview, non-assigned lights render RGB 25,25,25, selected State item assignments render in their item colors, selecting one State item row enables canvas assignment editing, and leaving the tab restores normal canvas colors. Focused Custom Prop Editor State tests pass.
+
+Milestone 8 is complete. Focused automated coverage now includes PropEditor-level canvas assignment gating, assignment/removal preview refresh, and Delete command pruning of State item assignment IDs for deleted elements. The singleton-sensitive Custom Prop Editor state and xModel import test classes are serialized in a shared xUnit collection because both use `PropModelServices.Instance()`. Focused Custom Prop Editor, State property, and Vixen Preview filters pass with only existing package advisory warnings.
 
 ## Context and Orientation
 
@@ -446,6 +448,20 @@ Milestone 6 validation:
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~CustomPropEditor.State" --no-restore
     Passed!  - Failed: 0, Passed: 17, Skipped: 0, Total: 17
 
+Milestone 8 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.State" --no-restore
+    Passed!  - Failed: 0, Passed: 25, Skipped: 0, Total: 25
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor" --no-restore
+    Passed!  - Failed: 0, Passed: 45, Skipped: 0, Total: 45
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Property.State" --no-restore
+    Passed!  - Failed: 0, Passed: 77, Skipped: 0, Total: 77
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~VixenPreview" --no-restore
+    Passed!  - Failed: 0, Passed: 5, Skipped: 0, Total: 5
+
 ## Interfaces and Dependencies
 
 Use existing Custom Prop Editor types:
@@ -506,3 +522,4 @@ At completion, preview coordination must be local to Custom Prop Editor. It must
 - 2026-06-13 / Codex: Completed Milestone 5. State Definition editor view models now provide authoring commands, assignment editing, validation, dirty tracking, legacy migration on prop load, save blocking, and Element Info `Model Type` exposure.
 - 2026-06-15 / Codex: Completed Milestone 6. Added the State Definition tab UI, local drawing-surface State preview colors, canvas-selection assignment updates for the selected State item, and focused tests for preview color behavior and assignment dirty tracking.
 - 2026-06-15 / Codex: Updated the plan for post-Milestone 6 revisions. The State Definition tab now belongs beside `Layout` and `Order`, assignment checkbox trees were removed from the Custom Prop Editor, the canvas supports assignment toggle and Control-drag removal for one selected row, multiple selected State item rows preview together with editing disabled, selected-items binding behavior moved to WPFCommon, non-active preview lights use RGB 25,25,25, color cells use readable foregrounds and double-click editing, and deleted elements prune State item assignment IDs.
+- 2026-06-16 / Codex: Completed Milestone 8 focused test coverage. Added PropEditor integration tests for State canvas assignment gating, assignment/removal preview refresh, and Delete command cleanup of State item assignments, and serialized singleton-sensitive Custom Prop Editor test classes that share `PropModelServices`.
