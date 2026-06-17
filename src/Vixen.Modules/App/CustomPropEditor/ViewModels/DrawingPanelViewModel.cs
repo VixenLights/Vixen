@@ -17,7 +17,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	public class DrawingPanelViewModel : ViewModelBase
 	{
-		private static readonly Color StatePreviewBaseColor = Color.FromArgb(25, 25, 25);
 		private readonly ElementTreeViewModel _elementTreeViewModel;
 		private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
 		private bool _isStatePreviewActive;
@@ -272,6 +271,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public static readonly IPropertyData SelectedLightColorProperty = RegisterProperty<Color>(nameof(SelectedLightColor));
 
 		#endregion
+		
+		#region StatePreviewBaseColor property
+
+		/// <summary>
+		/// Gets or sets the StatePreviewBaseColor value.
+		/// </summary>
+		[ViewModelToModel("Configuration")]
+		public Color StatePreviewBaseColor
+		{
+			get { return GetValue<Color>(StatePreviewBaseColorProperty); }
+		}
+
+		/// <summary>
+		/// StatePreviewBaseColor property data.
+		/// </summary>
+		public static readonly IPropertyData StatePreviewBaseColorProperty = RegisterProperty<Color>(nameof(StatePreviewBaseColor));
+
+		#endregion
 
 		#endregion Properties
 
@@ -366,7 +383,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
-		private static Color MixColors(IEnumerable<Color> colors)
+		private Color MixColors(IEnumerable<Color> colors)
 		{
 			var colorList = colors.ToList();
 			if (!colorList.Any())

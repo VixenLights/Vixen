@@ -5,6 +5,10 @@ namespace VixenModules.App.CustomPropEditor.Model
 {
 	public class Configuration : BindableBase
 	{
+		public static readonly Color DefaultLightColor = Color.White;
+		public static readonly Color DefaultSelectedLightColor = Color.HotPink;
+		public static readonly Color DefaultStatePreviewBaseColor = Color.FromArgb(25, 25, 25);
+		
 		private readonly CustomPropEditorData _data;
 		
 		public Configuration(CustomPropEditorData data)
@@ -29,6 +33,16 @@ namespace VixenModules.App.CustomPropEditor.Model
 			{
 				_data.SelectedLightColor = value;
 				OnPropertyChanged(nameof(SelectedLightColor));
+			}
+		}
+		
+		public Color StatePreviewBaseColor
+		{
+			get => _data.StatePreviewBaseColor;
+			set
+			{
+				_data.StatePreviewBaseColor = value;
+				OnPropertyChanged(nameof(StatePreviewBaseColor));
 			}
 		}
 

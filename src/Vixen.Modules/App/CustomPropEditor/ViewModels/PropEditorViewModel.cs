@@ -1319,6 +1319,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var uiVisualizerService = dependencyResolver.Resolve<UIVisualizerService>();
 			await uiVisualizerService.ShowDialogAsync(vm);
+			UpdateStatePreview();
 			await VixenSystem.SaveModuleConfigAsync();
 		}
 

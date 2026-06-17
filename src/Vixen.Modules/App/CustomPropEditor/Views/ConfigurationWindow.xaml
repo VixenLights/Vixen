@@ -3,7 +3,7 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:catel="http://schemas.catelproject.com"
                   xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
-                  Width="296.508" Height="175" WindowStartupLocation="CenterOwner" 
+                  Width="300" Height="200" WindowStartupLocation="CenterOwner" 
                   CanCloseUsingEscape="True" WindowStyle="ToolWindow">
 		<Window.Resources>
 				<ResourceDictionary>
@@ -24,10 +24,11 @@
 										<RowDefinition Height="Auto" />
 										<RowDefinition Height="Auto" />
 										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
 								</Grid.RowDefinitions>
 								<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto"></ColumnDefinition>
-										<ColumnDefinition Width="Auto"></ColumnDefinition>
+										<ColumnDefinition Width="*"></ColumnDefinition>
 								</Grid.ColumnDefinitions>
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Light Color"  VerticalAlignment="Center" Margin="5,5"/>
 
@@ -44,11 +45,21 @@
 	                   MinWidth="50" Height="25" Fill="{Binding SelectedLightColor,Converter={StaticResource ColorToSolidBrushConverter}}" 
 	                    Margin="6,2,2,2">
 										<Rectangle.InputBindings>
-												<MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditSelectedLightColorCommand}"></MouseBinding>
+												<MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditStatePreviewBaseColorCommand}"></MouseBinding>
 										</Rectangle.InputBindings>
 								</Rectangle>
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Default Light Size"  VerticalAlignment="Center" Margin="5,5"/>
-                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding DefaultLightSize}" Margin="6,2,2,2"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="State Preview Base Color"  VerticalAlignment="Center" Margin="5,5"/>
+
+                                <Rectangle Grid.Row="2" Grid.Column="1" x:Name="StateBasePreviewColorButton" 
+                                           MinWidth="50" Height="25" Fill="{Binding StatePreviewBaseColor ,Converter={StaticResource ColorToSolidBrushConverter}}" 
+                                           Margin="6,2,2,2">
+	                                <Rectangle.InputBindings>
+		                                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditStatePreviewBaseColorCommand}"></MouseBinding>
+	                                </Rectangle.InputBindings>
+                                </Rectangle>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Default Light Size"  VerticalAlignment="Center" Margin="5,5"/>
+                                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding DefaultLightSize}" Margin="6,2,2,2"/>
             </Grid>
 						<WrapPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
 								<Button HorizontalAlignment="Right" Width="75" Margin="6" Command="{Binding RestoreDefaultsCommand}">Defaults</Button>
