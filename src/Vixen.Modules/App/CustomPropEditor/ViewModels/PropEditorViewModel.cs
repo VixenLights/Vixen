@@ -22,6 +22,7 @@ using VixenModules.App.CustomPropEditor.ViewModels.State;
 using ModelType = VixenModules.App.CustomPropEditor.Model.InternalVendorInventory.ModelType;
 using Catel.Data;
 using VixenModules.App.Modeling;
+using VixenModules.Property.State.Setup.Services;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
@@ -54,7 +55,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				ElementTreeViewModel = new ElementTreeViewModel(value);
 				DrawingPanelViewModel = new DrawingPanelViewModel(ElementTreeViewModel);
 				ElementOrderViewModel = new ElementOrderViewModel(value);
-				StateDefinitionEditorViewModel = new StateDefinitionEditorViewModel(value);
+				var dependencyResolver = this.GetDependencyResolver();
+				var ds = dependencyResolver.Resolve<IStateDefinitionDialogService>();
+				StateDefinitionEditorViewModel = new StateDefinitionEditorViewModel(value, ds);
 				StateDefinitionEditorViewModel.StateDataChanged += StateDefinitionEditorViewModel_StateDataChanged;
 				StateDefinitionEditorViewModel.StatePreviewChanged += StateDefinitionEditorViewModel_StatePreviewChanged;
 				RegisterModelEvents();

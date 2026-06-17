@@ -5,6 +5,7 @@ using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.App.CustomPropEditor.ViewModels;
 using VixenModules.App.CustomPropEditor.ViewModels.State;
+using VixenModules.Property.State.Setup.Services;
 using WpfPoint = System.Windows.Point;
 using Xunit;
 
@@ -25,7 +26,7 @@ public sealed class CustomPropStateEditorViewModelTests
 			DefaultColor = Color.Red
 		};
 
-		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 
 		Assert.True(viewModel.IsDirty);
 		Assert.Same(model, viewModel.ModelElement);
@@ -41,7 +42,7 @@ public sealed class CustomPropStateEditorViewModelTests
 	{
 		var prop = CreatePropWithModel(out var model, out _);
 		model.ModelType = ElementModelType.Model;
-		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 
 		Execute(viewModel.AddStateDefinitionCommand);
 		var originalDefinition = Assert.Single(viewModel.StateDefinitions);
@@ -61,13 +62,33 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
+	public async Task RenameStateDefinition_PromptsForNewName()
+	{
+		var prop = CreatePropWithModel(out var model, out _);
+		model.ModelType = ElementModelType.Model;
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		model.StateDefinitionModels.Add(definition);
+		var dialogService = new FakeStateDefinitionDialogService("Pulse");
+		var viewModel = new StateDefinitionEditorViewModel(prop, dialogService);
+
+		await InvokeAsync(viewModel, "RenameStateDefinitionAsync");
+
+		Assert.Equal("Rename State Definition", dialogService.LastTitle);
+		Assert.Equal("Wave", dialogService.LastInitialName);
+		Assert.Equal("Wave", dialogService.LastCurrentName);
+		Assert.Equal("Pulse", viewModel.SelectedStateDefinition.Name);
+		Assert.Equal("Pulse", definition.Name);
+		Assert.True(viewModel.IsDirty);
+	}
+
+	[Fact]
 	public void Commands_AddRemoveAndMoveItems_UpdateModelOrder()
 	{
 		var prop = CreatePropWithModel(out var model, out _);
 		model.ModelType = ElementModelType.Model;
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		model.StateDefinitionModels.Add(definition);
-		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 		viewModel.ConfirmStateItemDelete = (_, _) => true;
 
 		Execute(viewModel.AddStateItemCommand);
@@ -98,7 +119,7 @@ public sealed class CustomPropStateEditorViewModelTests
 			]
 		};
 		model.StateDefinitionModels.Add(definition);
-		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 		var confirmedQuestion = string.Empty;
 		viewModel.ConfirmStateItemDelete = (question, _) =>
 		{
@@ -126,7 +147,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		definition.Items.Add(new StateItemModel { Name = "Arm" });
 		model.StateDefinitionModels.Add(definition);
-		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 		viewModel.SelectedStateItems.Add(viewModel.SelectedStateDefinition.Items[1]);
 		viewModel.ConfirmStateItemDelete = (_, _) => false;
 
@@ -152,7 +173,7 @@ public sealed class CustomPropStateEditorViewModelTests
 			]
 		};
 		model.StateDefinitionModels.Add(definition);
-		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 		var sortedItems = viewModel.SelectedStateDefinition.Items
 			.OrderBy(item => item.Name)
 			.ToList();
@@ -189,7 +210,7 @@ public sealed class CustomPropStateEditorViewModelTests
 				}
 			}
 		];
-		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 
 		Assert.True(viewModel.HasValidationErrors);
 		Assert.Contains("State definition name \"Wave\" is duplicated.", viewModel.ValidationMessages);
@@ -222,7 +243,7 @@ public sealed class CustomPropStateEditorViewModelTests
 			}
 		];
 
-		var viewModel = new StateDefinitionEditorViewModel(prop);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 
 		Assert.False(viewModel.HasValidationErrors);
 	}
@@ -246,7 +267,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		model.ModelType = ElementModelType.Model;
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		model.StateDefinitionModels.Add(definition);
-		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 		var item = editorViewModel.SelectedStateItem;
 
 		var changed = item.AssignElementModelIds([leaf.Id, leaf.Id, Guid.Empty]);
@@ -269,7 +290,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		definition.Items[0].ElementModelIds = new ObservableCollection<Guid> { leaf.Id, secondLeaf.Id };
 		model.StateDefinitionModels.Add(definition);
-		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 		var item = editorViewModel.SelectedStateItem;
 
 		var changed = item.RemoveElementModelIds([leaf.Id, leaf.Id, Guid.Empty]);
@@ -290,7 +311,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		definition.Items[0].ElementModelIds = new ObservableCollection<Guid> { leaf.Id, Guid.NewGuid() };
 		model.StateDefinitionModels.Add(definition);
-		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 
 		Assert.Equal(1, editorViewModel.SelectedStateItem.AssignmentCount);
 		Assert.True(editorViewModel.SelectedStateItem.HasAssignments);
@@ -306,7 +327,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		definition.Items[0].ElementModelIds = new ObservableCollection<Guid> { firstLeaf.Id, secondLeaf.Id };
 		model.StateDefinitionModels.Add(definition);
-		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 
 		model.RemoveChild(firstLeaf);
 		editorViewModel.RefreshAssignments();
@@ -324,7 +345,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		definition.Items.Add(new StateItemModel { Name = "Arm" });
 		model.StateDefinitionModels.Add(definition);
-		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 		var firstItem = editorViewModel.SelectedStateDefinition.Items[0];
 		var secondItem = editorViewModel.SelectedStateDefinition.Items[1];
 
@@ -345,7 +366,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		model.ModelType = ElementModelType.Model;
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		model.StateDefinitionModels.Add(definition);
-		var editorViewModel = new StateDefinitionEditorViewModel(prop);
+		var editorViewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
 		var item = editorViewModel.SelectedStateItem;
 
 		Assert.True(item.ToggleElementModelId(leaf.Id));
@@ -577,5 +598,58 @@ public sealed class CustomPropStateEditorViewModelTests
 	{
 		Assert.True(command.CanExecute(parameter));
 		command.Execute(parameter);
+	}
+
+	private static async Task InvokeAsync(object target, string methodName)
+	{
+		var method = target.GetType().GetMethod(
+			methodName,
+			System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+		Assert.NotNull(method);
+		var task = Assert.IsAssignableFrom<Task>(method.Invoke(target, null));
+		await task;
+	}
+
+	private sealed class FakeStateDefinitionDialogService : IStateDefinitionDialogService
+	{
+		private readonly string _name;
+
+		public FakeStateDefinitionDialogService(string name)
+		{
+			_name = name;
+		}
+
+		public string LastTitle { get; private set; } = string.Empty;
+
+		public string LastInitialName { get; private set; } = string.Empty;
+
+		public string? LastCurrentName { get; private set; }
+
+		public Task<string?> RequestNameAsync(
+			string title,
+			string initialName,
+			IReadOnlyCollection<string> existingNames,
+			string? currentName)
+		{
+			LastTitle = title;
+			LastInitialName = initialName;
+			LastCurrentName = currentName;
+			return Task.FromResult<string?>(_name);
+		}
+
+		public Task<bool> ConfirmDeleteAsync(string name)
+		{
+			return Task.FromResult(false);
+		}
+
+		public Task<bool> ConfirmDeleteStateItemAsync(string name)
+		{
+			return Task.FromResult(false);
+		}
+
+		public Task<bool> ConfirmDeleteStateItemsAsync(int count)
+		{
+			return Task.FromResult(false);
+		}
 	}
 }

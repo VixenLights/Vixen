@@ -8,6 +8,7 @@ using Common.WPFCommon.Services;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 using Catel.IoC;
+using VixenModules.Property.State.Setup.Services;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels.State
 {
@@ -16,10 +17,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 	/// </summary>
 	public sealed class StateDefinitionEditorViewModel : ViewModelBase
 	{
+		private readonly IStateDefinitionDialogService _stateDefinitionDialogService;
 		private CustomPropStateDefinitionViewModel _selectedStateDefinition;
 		private Command _addStateDefinitionCommand;
 		private Command _deleteStateDefinitionCommand;
-		private Command _renameStateDefinitionCommand;
+		private TaskCommand _renameStateDefinitionCommand;
 		private Command _copyStateDefinitionCommand;
 		private Command _addStateItemCommand;
 		private Command _removeStateItemCommand;
@@ -42,8 +44,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// Initializes a new instance of the <see cref="StateDefinitionEditorViewModel"/> class.
 		/// </summary>
 		/// <param name="prop">The custom prop to edit.</param>
-		public StateDefinitionEditorViewModel(Prop prop)
+		/// <param name="stateDefinitionDialogService"></param>
+		public StateDefinitionEditorViewModel(
+			Prop prop,
+			IStateDefinitionDialogService stateDefinitionDialogService)
 		{
+			ArgumentNullException.ThrowIfNull(stateDefinitionDialogService);
+
+			_stateDefinitionDialogService = stateDefinitionDialogService;
 			StateDefinitions = new ObservableCollection<CustomPropStateDefinitionViewModel>();
 			SelectedStateItems = new ObservableCollection<CustomPropStateItemViewModel>();
 			SelectedStateItems.CollectionChanged += SelectedStateItemsOnCollectionChanged;
@@ -156,8 +164,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// <summary>
 		/// Gets the Rename State definition command.
 		/// </summary>
-		public Command RenameStateDefinitionCommand =>
-			_renameStateDefinitionCommand ??= new Command(RenameStateDefinition, CanRenameStateDefinition);
+		public TaskCommand RenameStateDefinitionCommand =>
+			_renameStateDefinitionCommand ??= new TaskCommand(RenameStateDefinitionAsync, CanRenameStateDefinition);
 
 		/// <summary>
 		/// Gets the Copy State definition command.
@@ -301,14 +309,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			return SelectedStateDefinition != null;
 		}
 
-		private void RenameStateDefinition()
+		private async Task RenameStateDefinitionAsync()
 		{
 			if (SelectedStateDefinition == null)
 			{
 				return;
 			}
 
-			SelectedStateDefinition.Name = GetUniqueStateDefinitionName(SelectedStateDefinition.Name, SelectedStateDefinition);
+			var name = await _stateDefinitionDialogService.RequestNameAsync(
+				"Rename State Definition",
+				SelectedStateDefinition.Name,
+				GetStateDefinitionNames(),
+				SelectedStateDefinition.Name);
+			if (!TryNormalizeStateDefinitionName(name, SelectedStateDefinition.Name, out var normalizedName))
+			{
+				return;
+			}
+
+			SelectedStateDefinition.Name = normalizedName;
 			OnStateDataChanged();
 		}
 
@@ -581,6 +599,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 				.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
 			return GetUniqueName(baseName, existingNames);
+		}
+
+		private IReadOnlyCollection<string> GetStateDefinitionNames()
+		{
+			return StateDefinitions.Select(definition => definition.Name).ToList();
+		}
+
+		private bool TryNormalizeStateDefinitionName(
+			string name,
+			string currentName,
+			out string normalizedName)
+		{
+			var candidateName = name?.Trim() ?? string.Empty;
+			normalizedName = candidateName;
+			return !string.IsNullOrWhiteSpace(candidateName) &&
+				!StateDefinitions.Any(definition =>
+					!definition.Name.Equals(currentName, StringComparison.Ordinal) &&
+					definition.Name.Equals(candidateName, StringComparison.Ordinal));
 		}
 
 		private static string GetUniqueStateItemName(
