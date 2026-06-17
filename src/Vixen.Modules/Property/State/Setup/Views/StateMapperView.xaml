@@ -65,7 +65,7 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				<TextBlock Text="State Definition" Margin="0,3,8,3" VerticalAlignment="Center"/>
+				<TextBlock Text="Name" Margin="0,3,8,3" VerticalAlignment="Center"/>
 				<Grid Grid.Column="1" Margin="0,2">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
@@ -139,7 +139,7 @@
 					</ToggleButton>
 				</Grid>
 
-				<TextBlock Grid.Row="1" Text="State Items" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+				<TextBlock Grid.Row="1" Text="State Items" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,4"/>
 				<DataGrid Grid.Row="2"
 						  x:Name="StateItemsGrid"
 						  ItemsSource="{Binding Items}"
