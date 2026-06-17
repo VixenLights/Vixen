@@ -15,7 +15,7 @@ namespace VixenModules.Property.State
 		public StateData()
 		{
 			Id = Guid.NewGuid();
-			StateDefinitions = [StateDefinitionData.CreateDefault(StateDefinitionData.DefaultName)];
+			StateDefinitions = [StateDefinitionData.CreateDefault(StateNamingRules.GetNextStateDefinitionName([]))];
 		}
 
 		/// <summary>
@@ -98,7 +98,7 @@ namespace VixenModules.Property.State
 
 			if (StateDefinitions.Count == 0)
 			{
-				StateDefinitions.Add(StateDefinitionData.CreateDefault(StateDefinitionData.DefaultName));
+				StateDefinitions.Add(StateDefinitionData.CreateDefault(StateNamingRules.GetNextStateDefinitionName([])));
 			}
 
 			foreach (var definition in StateDefinitions)

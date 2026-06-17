@@ -8,15 +8,13 @@ namespace VixenModules.Property.State
 	[DataContract]
 	public sealed class StateDefinitionData
 	{
-		internal const string DefaultName = "State - 1";
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StateDefinitionData"/> class.
 		/// </summary>
 		public StateDefinitionData()
 		{
 			Id = Guid.NewGuid();
-			Name = DefaultName;
+			Name = StateNamingRules.GetNextStateDefinitionName([]);
 			Description = string.Empty;
 			Items = [];
 		}
@@ -30,7 +28,7 @@ namespace VixenModules.Property.State
 		{
 			return new StateDefinitionData
 			{
-				Name = string.IsNullOrWhiteSpace(name) ? DefaultName : name.Trim(),
+				Name = string.IsNullOrWhiteSpace(name) ? StateNamingRules.GetNextStateDefinitionName([]) : name.Trim(),
 				Items = [new StateItemData()]
 			};
 		}
@@ -101,7 +99,7 @@ namespace VixenModules.Property.State
 				Id = Guid.NewGuid();
 			}
 
-			Name = string.IsNullOrWhiteSpace(Name) ? DefaultName : Name.Trim();
+			Name = string.IsNullOrWhiteSpace(Name) ? StateNamingRules.GetNextStateDefinitionName([]) : Name.Trim();
 			Description ??= string.Empty;
 			Items ??= [];
 

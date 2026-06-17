@@ -8,15 +8,13 @@ namespace VixenModules.Property.State
 	[DataContract]
 	public sealed class StateItemData
 	{
-		internal const string DefaultName = "Item Name 1";
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StateItemData"/> class.
 		/// </summary>
 		public StateItemData()
 		{
 			Id = Guid.NewGuid();
-			Name = DefaultName;
+			Name = StateNamingRules.GetNextStateItemName([]);
 			Color = System.Drawing.Color.White;
 			ElementNodeIds = [];
 		}
@@ -86,7 +84,7 @@ namespace VixenModules.Property.State
 				Id = Guid.NewGuid();
 			}
 
-			Name ??= DefaultName;
+			Name ??= StateNamingRules.GetNextStateItemName([]);
 			ElementNodeIds ??= [];
 		}
 	}

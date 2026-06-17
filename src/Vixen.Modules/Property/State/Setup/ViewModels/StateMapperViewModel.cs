@@ -404,12 +404,15 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		private async Task AddStateDefinitionAsync()
 		{
+			var existingNames = GetStateDefinitionNames();
 			var name = await _stateDefinitionDialogService.RequestNameAsync(
 				"Add State Definition",
-				GetNextStateDefinitionName(),
-				GetStateDefinitionNames(),
+				StateNamingRules.GetNextStateDefinitionName(existingNames),
+				existingNames,
 				null);
-			if (!TryNormalizeStateDefinitionName(name, null, out var normalizedName))
+			
+			if (!StateNamingRules.TryNormalizeName(name, null, 
+				    existingNames, out var normalizedName))
 			{
 				return;
 			}
@@ -447,13 +450,15 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			{
 				return;
 			}
-
+			
+			var existingNames = GetStateDefinitionNames();
 			var name = await _stateDefinitionDialogService.RequestNameAsync(
 				"Rename State Definition",
 				SelectedStateDefinition.Name,
-				GetStateDefinitionNames(),
+				existingNames,
 				SelectedStateDefinition.Name);
-			if (!TryNormalizeStateDefinitionName(name, SelectedStateDefinition.Name, out var normalizedName))
+			if (!StateNamingRules.TryNormalizeName(name, SelectedStateDefinition.Name, 
+				    existingNames, out var normalizedName))
 			{
 				return;
 			}
@@ -471,13 +476,15 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			{
 				return;
 			}
-
+			
+			var existingNames = GetStateDefinitionNames();
 			var name = await _stateDefinitionDialogService.RequestNameAsync(
 				"Copy State Definition",
-				GetNextStateDefinitionName(),
-				GetStateDefinitionNames(),
+				StateNamingRules.GetNextStateDefinitionName(existingNames),
+				existingNames,
 				null);
-			if (!TryNormalizeStateDefinitionName(name, null, out var normalizedName))
+			if (!StateNamingRules.TryNormalizeName(name, null, 
+				    existingNames, out var normalizedName))
 			{
 				return;
 			}
@@ -498,10 +505,12 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				return Task.CompletedTask;
 			}
 
+			var name = StateNamingRules.GetNextStateItemName(GetSelectedStateDefinitionStateItemNames());
 			_suppressPreviewRefresh = true;
 			try
 			{
-				var item = new StateItemViewModel(new StateItemData(), _elementTree);
+				var item = new StateItemViewModel(
+					new StateItemData { Name = name }, _elementTree);
 				Items.Add(item);
 				SelectedItem = item;
 			}
@@ -1014,33 +1023,11 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		{
 			return StateDefinitions.Select(definition => definition.Name).ToList();
 		}
-
-		private string GetNextStateDefinitionName()
+		
+		private IReadOnlyCollection<string> GetSelectedStateDefinitionStateItemNames()
 		{
-			var index = 1;
-			var existingNames = GetStateDefinitionNames();
-			string name;
-			do
-			{
-				name = $"State - {index}";
-				index++;
-			}
-			while (existingNames.Contains(name, StringComparer.Ordinal));
-
-			return name;
-		}
-
-		private bool TryNormalizeStateDefinitionName(
-			string? name,
-			string? currentName,
-			out string normalizedName)
-		{
-			var candidateName = name?.Trim() ?? string.Empty;
-			normalizedName = candidateName;
-			return !string.IsNullOrWhiteSpace(candidateName) &&
-				!StateDefinitions.Any(definition =>
-					!definition.Name.Equals(currentName, StringComparison.Ordinal) &&
-					definition.Name.Equals(candidateName, StringComparison.Ordinal));
+			if(SelectedStateDefinition == null) return Array.Empty<string>();
+			return SelectedStateDefinition.Items.Select(item => item.Name).ToList();
 		}
 
 		private void SelectedItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
