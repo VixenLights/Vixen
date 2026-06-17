@@ -77,5 +77,20 @@ namespace VixenModules.App.CustomPropEditor.Model
 			Name = string.IsNullOrWhiteSpace(Name) ? DefaultName : Name.Trim();
 			ElementModelIds ??= new ObservableCollection<Guid>();
 		}
+		
+		/// <summary>
+		/// Creates a deep copy for a distinct State definition.
+		/// </summary>
+		/// <returns>A deep copy with a new stable identifier.</returns>
+		internal StateItemModel CloneAsNew()
+		{
+			return new StateItemModel
+			{
+				Id = Guid.NewGuid(),
+				Name = Name,
+				Color = Color,
+				ElementModelIds = [.. ElementModelIds]
+			};
+		}
 	}
 }

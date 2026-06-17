@@ -96,5 +96,21 @@ namespace VixenModules.App.CustomPropEditor.Model
 				item.Normalize();
 			}
 		}
+		
+		/// <summary>
+		/// Creates a deep copy for a distinct State definition.
+		/// </summary>
+		/// <param name="name">The name to assign to the copied State definition.</param>
+		/// <returns>A deep copy with new stable identifiers.</returns>
+		internal StateDefinitionModel CloneAsNew(string name)
+		{
+			return new StateDefinitionModel
+			{
+				Id = Guid.NewGuid(),
+				Name = string.IsNullOrWhiteSpace(name) ? Name : name.Trim(),
+				Description = Description,
+				Items = new ObservableCollection<StateItemModel>(Items.Select(item => item.CloneAsNew()).ToList())
+			};
+		}
 	}
 }

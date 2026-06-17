@@ -3,11 +3,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using Catel.MVVM;
-using Catel.Services;
-using Common.WPFCommon.Services;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
-using Catel.IoC;
 using VixenModules.Property.State.Setup.Services;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels.State
@@ -19,17 +16,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 	{
 		private readonly IStateDefinitionDialogService _stateDefinitionDialogService;
 		private CustomPropStateDefinitionViewModel _selectedStateDefinition;
-		private Command _addStateDefinitionCommand;
-		private Command _deleteStateDefinitionCommand;
+		private TaskCommand _addStateDefinitionCommand;
+		private TaskCommand _deleteStateDefinitionCommand;
 		private TaskCommand _renameStateDefinitionCommand;
-		private Command _copyStateDefinitionCommand;
+		private TaskCommand _copyStateDefinitionCommand;
 		private Command _addStateItemCommand;
-		private Command _removeStateItemCommand;
+		private TaskCommand _removeStateItemCommand;
 		private Command _moveStateItemUpCommand;
 		private Command _moveStateItemDownCommand;
 		private Command<IList> _persistStateItemSortCommand;
-		private Func<string, string, bool> _confirmStateItemDelete;
-
+		
 		/// <summary>
 		/// Occurs when State definition data changes.
 		/// </summary>
@@ -56,7 +52,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			SelectedStateItems = new ObservableCollection<CustomPropStateItemViewModel>();
 			SelectedStateItems.CollectionChanged += SelectedStateItemsOnCollectionChanged;
 			ValidationMessages = new ObservableCollection<string>();
-			_confirmStateItemDelete = ShowStateItemDeleteConfirmation;
 			SetProp(prop);
 		}
 
@@ -152,14 +147,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// <summary>
 		/// Gets the Add State definition command.
 		/// </summary>
-		public Command AddStateDefinitionCommand =>
-			_addStateDefinitionCommand ??= new Command(AddStateDefinition);
+		public TaskCommand AddStateDefinitionCommand =>
+			_addStateDefinitionCommand ??= new TaskCommand(AddStateDefinitionAsync);
 
 		/// <summary>
 		/// Gets the Delete State definition command.
 		/// </summary>
-		public Command DeleteStateDefinitionCommand =>
-			_deleteStateDefinitionCommand ??= new Command(DeleteStateDefinition, CanDeleteStateDefinition);
+		public TaskCommand DeleteStateDefinitionCommand =>
+			_deleteStateDefinitionCommand ??= new TaskCommand(DeleteStateDefinitionAsync, CanDeleteStateDefinition);
 
 		/// <summary>
 		/// Gets the Rename State definition command.
@@ -170,8 +165,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// <summary>
 		/// Gets the Copy State definition command.
 		/// </summary>
-		public Command CopyStateDefinitionCommand =>
-			_copyStateDefinitionCommand ??= new Command(CopyStateDefinition, CanCopyStateDefinition);
+		public TaskCommand CopyStateDefinitionCommand =>
+			_copyStateDefinitionCommand ??= new TaskCommand(CopyStateDefinitionAsync, CanCopyStateDefinition);
 
 		/// <summary>
 		/// Gets the Add State item command.
@@ -182,8 +177,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// <summary>
 		/// Gets the Remove State item command.
 		/// </summary>
-		public Command RemoveStateItemCommand =>
-			_removeStateItemCommand ??= new Command(RemoveStateItem, CanRemoveStateItem);
+		public TaskCommand RemoveStateItemCommand =>
+			_removeStateItemCommand ??= new TaskCommand(RemoveStateItemAsync, CanRemoveStateItem);
 
 		/// <summary>
 		/// Gets the Move State item up command.
@@ -202,15 +197,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// </summary>
 		public Command<IList> PersistStateItemSortCommand =>
 			_persistStateItemSortCommand ??= new Command<IList>(PersistStateItemSortOrder, CanPersistStateItemSortOrder);
-
-		/// <summary>
-		/// Gets or sets the State item delete confirmation callback.
-		/// </summary>
-		internal Func<string, string, bool> ConfirmStateItemDelete
-		{
-			get => _confirmStateItemDelete;
-			set => _confirmStateItemDelete = value ?? ShowStateItemDeleteConfirmation;
-		}
 
 		/// <summary>
 		/// Rebinds the editor to another custom prop.
@@ -280,9 +266,18 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			}
 		}
 
-		private void AddStateDefinition()
+		private async Task AddStateDefinitionAsync()
 		{
-			var stateDefinition = StateDefinitionModel.CreateDefault(GetUniqueStateDefinitionName(StateDefinitionModel.DefaultName));
+			var name = await _stateDefinitionDialogService.RequestNameAsync(
+				"Add State Definition",
+				GetNextStateDefinitionName(),
+				GetStateDefinitionNames(),
+				null);
+			if (!TryNormalizeStateDefinitionName(name, null, out var normalizedName))
+			{
+				return;
+			}
+			var stateDefinition = StateDefinitionModel.CreateDefault(normalizedName);
 			ModelElement.StateDefinitionModels.Add(stateDefinition);
 			var stateDefinitionViewModel = CreateDefinitionViewModel(stateDefinition);
 			StateDefinitions.Add(stateDefinitionViewModel);
@@ -290,9 +285,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			OnStateDataChanged();
 		}
 
-		private void DeleteStateDefinition()
+		private async Task DeleteStateDefinitionAsync()
 		{
-			if (SelectedStateDefinition == null)
+			if (SelectedStateDefinition == null ||
+			    !await _stateDefinitionDialogService.ConfirmDeleteAsync(SelectedStateDefinition.Name))
 			{
 				return;
 			}
@@ -335,26 +331,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			return SelectedStateDefinition != null;
 		}
 
-		private void CopyStateDefinition()
+		private async Task CopyStateDefinitionAsync()
 		{
 			if (SelectedStateDefinition == null)
 			{
 				return;
 			}
-
-			var copy = new StateDefinitionModel
+			
+			var name = await _stateDefinitionDialogService.RequestNameAsync(
+				"Copy State Definition",
+				SelectedStateDefinition.Name + @" Copy",
+				GetStateDefinitionNames(),
+				null);
+			
+			if (!TryNormalizeStateDefinitionName(name, null, out var normalizedName))
 			{
-				Name = GetUniqueStateDefinitionName($"{SelectedStateDefinition.Name} Copy"),
-				Description = SelectedStateDefinition.Description,
-				Items = new ObservableCollection<StateItemModel>(
-					SelectedStateDefinition.Items.Select(item => new StateItemModel
-					{
-						Name = item.Name,
-						Color = item.Color,
-						ElementModelIds = new ObservableCollection<Guid>(item.StateItem.ElementModelIds.Distinct())
-					}))
-			};
+				return;
+			}
 
+			var copy = SelectedStateDefinition.StateDefinition.CloneAsNew(normalizedName);
 			ModelElement.StateDefinitionModels.Add(copy);
 			var copyViewModel = CreateDefinitionViewModel(copy);
 			StateDefinitions.Add(copyViewModel);
@@ -388,7 +383,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			return SelectedStateDefinition != null;
 		}
 
-		private void RemoveStateItem()
+		private async Task RemoveStateItemAsync()
 		{
 			if (SelectedStateDefinition == null)
 			{
@@ -396,7 +391,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			}
 
 			var itemsToRemove = GetSelectedStateItemsForRemoval();
-			if (itemsToRemove.Count == 0 || !ConfirmStateItemDelete(GetDeleteStateItemQuestion(itemsToRemove), "Delete State Item"))
+			if (itemsToRemove.Count == 0)
+			{
+				return;
+			}
+
+			var confirmed = itemsToRemove.Count == 1
+				? await _stateDefinitionDialogService.ConfirmDeleteStateItemAsync(itemsToRemove[0].Name)
+				: await _stateDefinitionDialogService.ConfirmDeleteStateItemsAsync(itemsToRemove.Count);
+			
+			if (!confirmed)
 			{
 				return;
 			}
@@ -483,21 +487,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			return SelectedStateItem != null && SelectedStateDefinition.Items.Contains(SelectedStateItem)
 				? [SelectedStateItem]
 				: [];
-		}
-
-		private static string GetDeleteStateItemQuestion(IReadOnlyCollection<CustomPropStateItemViewModel> itemsToRemove)
-		{
-			return itemsToRemove.Count == 1
-				? $"Delete State item \"{GetDisplayName(itemsToRemove.Single().Name)}\"?"
-				: $"Delete {itemsToRemove.Count} State items?";
-		}
-
-		private static bool ShowStateItemDeleteConfirmation(string question, string title)
-		{
-			var dependencyResolver = ServiceLocator.Default;
-			var messageBoxService = dependencyResolver.ResolveType<IMessageBoxService>();
-			var response = messageBoxService.GetUserConfirmation(question, title);
-			return response.Result is MessageResult.OK or MessageResult.Yes;
 		}
 
 		private void SelectSingleStateItem(CustomPropStateItemViewModel item)
@@ -591,19 +580,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			}
 		}
 
-		private string GetUniqueStateDefinitionName(string baseName, CustomPropStateDefinitionViewModel excludedDefinition = null)
-		{
-			var existingNames = StateDefinitions
-				.Where(definition => !ReferenceEquals(definition, excludedDefinition))
-				.Select(definition => definition.Name)
-				.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-			return GetUniqueName(baseName, existingNames);
-		}
-
 		private IReadOnlyCollection<string> GetStateDefinitionNames()
 		{
 			return StateDefinitions.Select(definition => definition.Name).ToList();
+		}
+		
+		private string GetNextStateDefinitionName()
+		{
+			var index = 1;
+			var existingNames = GetStateDefinitionNames();
+			string name;
+			do
+			{
+				name = $"State - {index}";
+				index++;
+			}
+			while (existingNames.Contains(name, StringComparer.Ordinal));
+
+			return name;
 		}
 
 		private bool TryNormalizeStateDefinitionName(
