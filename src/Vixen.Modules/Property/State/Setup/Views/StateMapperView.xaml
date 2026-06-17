@@ -95,7 +95,7 @@
 					</Menu>
 				</Grid>
 				<TextBlock Grid.Row="1" Text="Description" Margin="0,3,8,3" VerticalAlignment="Top"/>
-				<TextBox Grid.Row="2"
+				<TextBox Grid.Row="1"
 						 Grid.Column="1"
 						 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
 						 AcceptsReturn="True"
