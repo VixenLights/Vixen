@@ -1,4 +1,4 @@
-<UserControl x:Class="VixenModules.App.CustomPropEditor.Views.ElementTree"
+﻿<UserControl x:Class="VixenModules.App.CustomPropEditor.Views.ElementTree"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,7 +8,7 @@
              xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
              xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="300" d:DesignWidth="500"
              xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:commonUtils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon"
              xmlns:behaviors1="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon">
@@ -353,7 +353,7 @@
 										</ListView.ItemTemplate>
 								</ListView>
 						</TabItem>
-						<TabItem Header="State Definition">
+						<TabItem Header="State">
 								<Grid DataContext="{Binding StateDefinitionEditorViewModel}" Margin="5">
 										<Grid.RowDefinitions>
 												<RowDefinition Height="Auto"/>
@@ -375,11 +375,13 @@
 						                         BorderBrush="{StaticResource BorderColorBrush}"
 						                         Foreground="{StaticResource ForeColorBrush}"
 						                         MinHeight="90"/>
-												<StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-														<Button Content="Add" Command="{Binding AddStateDefinitionCommand}" Margin="0,0,4,0"/>
-														<Button Content="Copy" Command="{Binding CopyStateDefinitionCommand}" Margin="0,0,4,0"/>
-														<Button Content="Delete" Command="{Binding DeleteStateDefinitionCommand}"/>
-												</StackPanel>
+												<WrapPanel Orientation="Horizontal" Style="{StaticResource RowButtonRightContainerStyle}">
+														<Button Content="Add" Command="{Binding AddStateDefinitionCommand}" Style="{StaticResource RowButtonAutoStyle}" 
+														        MinWidth="{Binding ElementName=DeleteBtn, Path=ActualWidth}"/>
+														<Button Content="Copy" Command="{Binding CopyStateDefinitionCommand}" Style="{StaticResource RowButtonAutoStyle}" 
+														        MinWidth="{Binding ElementName=DeleteBtn, Path=ActualWidth}"/>
+														<Button Name="DeleteBtn" Content="Delete" Command="{Binding DeleteStateDefinitionCommand}" Style="{StaticResource RowButtonAutoStyle}"/>
+												</WrapPanel>
 										</StackPanel>
 
 										<Grid Grid.Row="0" Grid.Column="2">
@@ -395,9 +397,10 @@
 												<TextBox Grid.Row="0" Grid.Column="1"
 										 Text="{Binding SelectedStateDefinition.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 										 Margin="0,0,0,4"/>
-												<TextBlock Grid.Row="1" Grid.Column="0" Text="Description" VerticalAlignment="Center" Margin="0,0,6,0"/>
+												<TextBlock Grid.Row="1" Grid.Column="0" Text="Description" VerticalAlignment="Top" Margin="0,0,6,0"/>
 												<TextBox Grid.Row="1" Grid.Column="1"
-										 Text="{Binding SelectedStateDefinition.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+													Text="{Binding SelectedStateDefinition.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+													MinHeight="48"/>
 										</Grid>
 
 										<Grid Grid.Row="1" Grid.Column="2" Margin="0,8,0,0">
@@ -451,15 +454,30 @@
 																				</DataTemplate>
 																		</DataGridTemplateColumn.CellEditingTemplate>
 																</DataGridTemplateColumn>
-																<DataGridTextColumn Header="Assigned" Width="70" Binding="{Binding AssignmentCount, Mode=OneWay}" SortMemberPath="AssignmentCount"/>
+																<DataGridTextColumn Header="Count" Width="70" Binding="{Binding AssignmentCount, Mode=OneWay}" SortMemberPath="AssignmentCount"/>
 														</DataGrid.Columns>
 												</DataGrid>
-												<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,8">
-														<Button Content="Add Item" Command="{Binding AddStateItemCommand}" Margin="0,0,4,0"/>
-														<Button Content="Remove" Command="{Binding RemoveStateItemCommand}" Margin="0,0,4,0"/>
-														<Button Content="Up" Command="{Binding MoveStateItemUpCommand}" Margin="0,0,4,0"/>
-														<Button Content="Down" Command="{Binding MoveStateItemDownCommand}"/>
-												</StackPanel>
+												<WrapPanel Grid.Row="2" Style="{StaticResource RowButtonRightContainerStyle}">
+														<Button Content="Add" Command="{Binding AddStateItemCommand}"
+														        Style="{StaticResource RowButtonAutoStyle}"
+														        MinWidth="{Binding ElementName=RemoveBtn, Path=ActualWidth}"/>
+														<Button Name="RemoveBtn" Content="Remove" Command="{Binding RemoveStateItemCommand}"
+														        Style="{StaticResource RowButtonAutoStyle}"/>
+														<Button Command="{Binding MoveStateItemUpCommand}"
+														        Style="{StaticResource RowButtonAutoStyle}"
+														        ToolTip="Move selected State Item up">
+															<Image Source="/Resources;component/arrow_up.png"
+															       Width="16"
+															       Height="16"/>
+														</Button>
+														<Button Command="{Binding MoveStateItemDownCommand}"
+														        Style="{StaticResource RowButtonAutoStyle}"
+														        ToolTip="Move selected State Item down">
+															<Image Source="/Resources;component/arrow_down.png"
+															       Width="16"
+															       Height="16"/>
+														</Button>
+												</WrapPanel>
 										</Grid>
 
 										<ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ValidationMessages}" Margin="0,8,0,0">
