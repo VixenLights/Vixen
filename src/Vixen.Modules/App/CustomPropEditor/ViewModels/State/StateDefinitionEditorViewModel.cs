@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using VixenModules.Property.State;
 using VixenModules.Property.State.Setup.Services;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels.State
@@ -268,12 +269,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 
 		private async Task AddStateDefinitionAsync()
 		{
+			var existingNames = GetStateDefinitionNames();
 			var name = await _stateDefinitionDialogService.RequestNameAsync(
 				"Add State Definition",
-				GetNextStateDefinitionName(),
-				GetStateDefinitionNames(),
+				StateNamingRules.GetNextStateDefinitionName(existingNames),
+				existingNames,
 				null);
-			if (!TryNormalizeStateDefinitionName(name, null, out var normalizedName))
+			if (!StateNamingRules.TryNormalizeName(name, null, 
+				    existingNames, out var normalizedName))
 			{
 				return;
 			}
@@ -311,13 +314,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			{
 				return;
 			}
-
+			
+			var existingNames = GetStateDefinitionNames();
 			var name = await _stateDefinitionDialogService.RequestNameAsync(
 				"Rename State Definition",
 				SelectedStateDefinition.Name,
-				GetStateDefinitionNames(),
+				existingNames,
 				SelectedStateDefinition.Name);
-			if (!TryNormalizeStateDefinitionName(name, SelectedStateDefinition.Name, out var normalizedName))
+			if (!StateNamingRules.TryNormalizeName(name, SelectedStateDefinition.Name, 
+				    existingNames, out var normalizedName))
 			{
 				return;
 			}
@@ -337,14 +342,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			{
 				return;
 			}
-			
+
+			var existingNames = GetStateDefinitionNames();
 			var name = await _stateDefinitionDialogService.RequestNameAsync(
 				"Copy State Definition",
 				SelectedStateDefinition.Name + @" Copy",
-				GetStateDefinitionNames(),
+				existingNames,
 				null);
 			
-			if (!TryNormalizeStateDefinitionName(name, null, out var normalizedName))
+			if (!StateNamingRules.TryNormalizeName(name, null, existingNames, out var normalizedName))
 			{
 				return;
 			}
@@ -371,7 +377,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 
 			SelectedStateDefinition.AddItem(new StateItemModel
 			{
-				Name = GetUniqueStateItemName(StateItemModel.DefaultName, SelectedStateDefinition)
+				Name = StateNamingRules.GetNextStateItemName(GetSelectedDefinitionStateItemNames())
 			});
 			SelectSingleStateItem(SelectedStateDefinition.SelectedItem);
 			RaisePropertyChanged(nameof(SelectedStateItem));
@@ -585,67 +591,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			return StateDefinitions.Select(definition => definition.Name).ToList();
 		}
 		
-		private string GetNextStateDefinitionName()
+		
+
+		private IReadOnlyCollection<string> GetSelectedDefinitionStateItemNames()
 		{
-			var index = 1;
-			var existingNames = GetStateDefinitionNames();
-			string name;
-			do
-			{
-				name = $"State - {index}";
-				index++;
-			}
-			while (existingNames.Contains(name, StringComparer.Ordinal));
-
-			return name;
-		}
-
-		private bool TryNormalizeStateDefinitionName(
-			string name,
-			string currentName,
-			out string normalizedName)
-		{
-			var candidateName = name?.Trim() ?? string.Empty;
-			normalizedName = candidateName;
-			return !string.IsNullOrWhiteSpace(candidateName) &&
-				!StateDefinitions.Any(definition =>
-					!definition.Name.Equals(currentName, StringComparison.Ordinal) &&
-					definition.Name.Equals(candidateName, StringComparison.Ordinal));
-		}
-
-		private static string GetUniqueStateItemName(
-			string baseName,
-			CustomPropStateDefinitionViewModel stateDefinition,
-			CustomPropStateItemViewModel excludedItem = null)
-		{
-			var existingNames = stateDefinition.Items
-				.Where(item => !ReferenceEquals(item, excludedItem))
-				.Select(item => item.Name)
-				.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-			return GetUniqueName(baseName, existingNames);
-		}
-
-		private static string GetUniqueName(string baseName, ISet<string> existingNames)
-		{
-			var normalizedBaseName = string.IsNullOrWhiteSpace(baseName)
-				? StateDefinitionModel.DefaultName
-				: baseName.Trim();
-			if (!existingNames.Contains(normalizedBaseName))
-			{
-				return normalizedBaseName;
-			}
-
-			var index = 2;
-			string candidate;
-			do
-			{
-				candidate = $"{normalizedBaseName} {index}";
-				index++;
-			}
-			while (existingNames.Contains(candidate));
-
-			return candidate;
+			return SelectedStateDefinition.Items.Select(item => item.Name).Distinct().ToList();
 		}
 
 		private static string GetDisplayName(string name)

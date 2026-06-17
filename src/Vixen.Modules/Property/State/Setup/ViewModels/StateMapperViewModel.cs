@@ -483,7 +483,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			var existingNames = GetStateDefinitionNames();
 			var name = await _stateDefinitionDialogService.RequestNameAsync(
 				"Copy State Definition",
-				StateNamingRules.GetNextStateDefinitionName(existingNames),
+				SelectedStateDefinition.Name + @" Copy",
 				existingNames,
 				null);
 			if (!StateNamingRules.TryNormalizeName(name, null, 
