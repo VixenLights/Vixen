@@ -361,56 +361,62 @@
 												<RowDefinition Height="Auto"/>
 										</Grid.RowDefinitions>
 										<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="170"/>
-												<ColumnDefinition Width="8"/>
 												<ColumnDefinition Width="*"/>
 										</Grid.ColumnDefinitions>
-
-										<StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
-												<TextBlock Text="Definitions" FontWeight="Bold" Margin="0,0,0,4"/>
-												<ListBox ItemsSource="{Binding StateDefinitions}"
-						                         SelectedItem="{Binding SelectedStateDefinition, Mode=TwoWay}"
-						                         DisplayMemberPath="Name"
-						                         Background="{StaticResource BackColorBrush}"
-						                         BorderBrush="{StaticResource BorderColorBrush}"
-						                         Foreground="{StaticResource ForeColorBrush}"
-						                         MinHeight="90"/>
-												<WrapPanel Orientation="Horizontal" Style="{StaticResource RowButtonRightContainerStyle}">
-														<Button Content="Add" Command="{Binding AddStateDefinitionCommand}" Style="{StaticResource RowButtonAutoStyle}" 
-														        MinWidth="{Binding ElementName=DeleteBtn, Path=ActualWidth}"/>
-														<Button Content="Copy" Command="{Binding CopyStateDefinitionCommand}" Style="{StaticResource RowButtonAutoStyle}" 
-														        MinWidth="{Binding ElementName=DeleteBtn, Path=ActualWidth}"/>
-														<Button Name="DeleteBtn" Content="Delete" Command="{Binding DeleteStateDefinitionCommand}" Style="{StaticResource RowButtonAutoStyle}"/>
-												</WrapPanel>
-										</StackPanel>
-
-										<Grid Grid.Row="0" Grid.Column="2">
-												<Grid.RowDefinitions>
-														<RowDefinition Height="Auto"/>
-														<RowDefinition Height="Auto"/>
-												</Grid.RowDefinitions>
-												<Grid.ColumnDefinitions>
+										<Grid Grid.Row="0" Grid.Column="0">
+											<Grid.RowDefinitions>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="Auto"/>
+											</Grid.RowDefinitions>
+											<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto"/>
+													<ColumnDefinition Width="*"/>
+											</Grid.ColumnDefinitions>
+												<Grid Grid.ColumnSpan="2" Margin="0,6">
+													<Grid.ColumnDefinitions>
 														<ColumnDefinition Width="Auto"/>
 														<ColumnDefinition Width="*"/>
-												</Grid.ColumnDefinitions>
-												<TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center" Margin="0,0,6,4"/>
-												<TextBox Grid.Row="0" Grid.Column="1"
-										 Text="{Binding SelectedStateDefinition.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-										 Margin="0,0,0,4"/>
-												<TextBlock Grid.Row="1" Grid.Column="0" Text="Description" VerticalAlignment="Top" Margin="0,0,6,0"/>
+														<ColumnDefinition Width="Auto"/>
+														<ColumnDefinition Width="Auto"/>
+														<ColumnDefinition Width="Auto"/>
+													</Grid.ColumnDefinitions>
+													<TextBlock Text="Name" Margin="0,0,6,4" VerticalAlignment="Center"
+													           MinWidth="{Binding ElementName=DescriptionTb, Path=ActualWidth}"/>
+													<ComboBox Grid.Column="1" ItemsSource="{Binding StateDefinitions}"
+													          SelectedItem="{Binding SelectedStateDefinition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+													          DisplayMemberPath="Name"
+													          MinWidth="100"/>
+													<Button Grid.Column="2"
+													        Content="Add"
+													        Command="{Binding AddStateDefinitionCommand}"
+													        Style="{StaticResource RowButtonAutoStyle}"
+													        MinWidth="{Binding ElementName=RemoveBtn, Path=ActualWidth}"/>
+													<Button Grid.Column="3"
+													        Name="DeleteBtn"
+													        Content="Delete"
+													        Command="{Binding DeleteStateDefinitionCommand}"
+													        Style="{StaticResource RowButtonAutoStyle}"/>
+													<Menu Grid.Column="4" Margin="6,0,0,0">
+														<MenuItem Header="...">
+															<MenuItem Header="Rename" Command="{Binding RenameStateDefinitionCommand}"/>
+															<MenuItem Header="Copy" Command="{Binding CopyStateDefinitionCommand}"/>
+														</MenuItem>
+													</Menu>
+												</Grid>
+												<TextBlock Grid.Row="1" Grid.Column="0" Name="DescriptionTb" Text="Description" VerticalAlignment="Top" Margin="0,0,6,2"/>
 												<TextBox Grid.Row="1" Grid.Column="1"
 													Text="{Binding SelectedStateDefinition.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 													MinHeight="48"/>
 										</Grid>
 
-										<Grid Grid.Row="1" Grid.Column="2" Margin="0,8,0,0">
+										<Grid Grid.Row="1" Grid.Column="0" Margin="0,8,0,0">
 												<Grid.RowDefinitions>
 														<RowDefinition Height="Auto"/>
 														<RowDefinition Height="*"/>
 														<RowDefinition Height="Auto"/>
 												</Grid.RowDefinitions>
 
-												<TextBlock Grid.Row="0" Text="Items" FontWeight="Bold" Margin="0,0,0,4"/>
+												<TextBlock Grid.Row="0" Text="State Items" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,0,0,4"/>
 												<DataGrid Grid.Row="1"
 									 ItemsSource="{Binding SelectedStateDefinition.Items}"
 									 SelectedItem="{Binding SelectedStateItem, Mode=TwoWay}"
@@ -480,7 +486,7 @@
 												</WrapPanel>
 										</Grid>
 
-										<ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ValidationMessages}" Margin="0,8,0,0">
+										<ItemsControl Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ValidationMessages}" Margin="0,8,0,0">
 												<ItemsControl.ItemTemplate>
 														<DataTemplate>
 																<TextBlock Text="{Binding}" Foreground="IndianRed" TextWrapping="Wrap"/>
