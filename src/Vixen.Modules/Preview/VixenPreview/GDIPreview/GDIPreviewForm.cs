@@ -29,6 +29,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		private bool _showStatus;
 		private bool _alwaysOnTop;
 		private bool _lockPosition;
+		private bool _transparentBackground;
+		private Label _transparentOverlay;
 
 		public GDIPreviewForm(VixenPreviewData data, Guid instanceId)
 		{
@@ -53,6 +55,10 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 			// Give the GDI control access to the display items
 			gdiControl.DisplayItems = DisplayItems;
+
+			_transparentOverlay = CreateTransparentOverlay();
+			Controls.Add(_transparentOverlay);
+			_transparentOverlay.BringToFront();
 		}
 
 		private void ConfigureAlwaysOnTop()
@@ -64,6 +70,62 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			else
 			{
 				TopMost = false;
+			}
+		}
+
+		private Label CreateTransparentOverlay()
+		{
+			var label = new Label
+			{
+				Text = @"Transparent",
+				BackColor = Color.FromArgb(40, 110, 175),
+				ForeColor = Color.White,
+				Font = new Font(Font.FontFamily, Font.Size - 2, FontStyle.Bold),
+				BorderStyle = BorderStyle.FixedSingle,
+				AutoSize = true,
+				Padding = new Padding(1),
+				Cursor = Cursors.Hand,
+				Location = new Point(2, 2),
+				Visible = false
+			};
+			label.Click += (s, e) =>
+			{
+				_transparentBackground = false;
+				gdiControl.TransparentBackground = false;
+				gdiControl.CreateAlphaBackground();
+				ConfigureTransparentBackground();
+				SaveWindowState();
+			};
+			label.MouseDown += (s, e) =>
+			{
+				if (e.Button == MouseButtons.Right) HandleContextMenu();
+			};
+			return label;
+		}
+
+		private void ConfigureTransparentBackground()
+		{
+			if (gdiControl.TransparentBackground != _transparentBackground)
+			{
+				gdiControl.TransparentBackground = _transparentBackground;
+				gdiControl.CreateAlphaBackground();
+			}
+
+			if (_transparentBackground)
+			{
+				if (!IsOnTopWhenPlaying)
+				{
+					_alwaysOnTop = true;
+					ConfigureAlwaysOnTop();
+				}
+				WinApiTransparency.EnableTransparency(Handle);
+				_transparentOverlay.Visible = true;
+				_transparentOverlay.BringToFront();
+			}
+			else
+			{
+				WinApiTransparency.DisableTransparency(Handle);
+				_transparentOverlay.Visible = false;
 			}
 		}
 
@@ -282,6 +344,24 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 			_contextMenuStrip.Items.Add(item);
 
+			item = new ToolStripMenuItem("Transparent Background");
+			item.ToolTipText = @"Make the background transparent so the desktop is visible through unlit areas. Transparent areas are click-through.";
+
+			if (_transparentBackground)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize);
+			}
+
+			item.Click += (sender, args) =>
+			{
+				_transparentBackground = !_transparentBackground;
+				gdiControl.TransparentBackground = _transparentBackground;
+				gdiControl.CreateAlphaBackground();
+				ConfigureTransparentBackground();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
 
 			item = new ToolStripMenuItem("Reset Size");
 			item.ToolTipText = @"Resets the viewable size to match the background size.";
@@ -467,6 +547,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			}
 
 			gdiControl.BackgroundAlpha = Data.BackgroundAlpha;
+			gdiControl.TransparentBackground = _transparentBackground;
 			if (string.IsNullOrEmpty(Data.BackgroundFileName))
 			{
 				gdiControl.Background = null;
@@ -564,6 +645,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), _lockPosition);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomLevel", name), ZoomLevel);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), IsOnTopWhenPlaying);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/TransparentBackground", name), _transparentBackground);
 		}
 
 		private void GDIPreviewForm_Load(object sender, EventArgs e)
@@ -586,10 +668,12 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			_lockPosition = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), false);
 			ZoomLevel = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomLevel", name), 1d);
 			IsOnTopWhenPlaying = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), false);
+			_transparentBackground = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/TransparentBackground", name), false);
 
 			ConfigureStatusBar();
 			ConfigureBorders();
 			ConfigureAlwaysOnTop();
+			ConfigureTransparentBackground();
 
 			var desktopBounds =
 				new Rectangle(

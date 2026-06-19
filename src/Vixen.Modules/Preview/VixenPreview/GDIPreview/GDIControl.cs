@@ -16,6 +16,9 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		private FastPixel.FastPixel _fastPixel;
 		private long _frameCount;
         private bool _defaultBackground = true;
+        
+        internal const int ResizeBandRightWidth = 4;
+        internal const int ResizeBandBottomHeight = 4;
 
 		public GDIControl()
 		{
@@ -79,7 +82,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 		[Bindable(true), Category("Display"), DefaultValue(50),
 		 Description("Set the alpha value for the background")]
-		public int BackgroundAlpha 
+		public int BackgroundAlpha
 		{
 			get
 			{
@@ -91,6 +94,14 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				if (Background != null) CreateAlphaBackground();
 			}
 		}
+
+		/// <summary>
+		/// When true the background image is suppressed so that the window color-key transparency
+		/// (black = transparent) is visible through unlit areas.
+		/// </summary>
+		[Bindable(true), Category("Display"), DefaultValue(false),
+		 Description("Suppress background image so black pixels become transparent")]
+		public bool TransparentBackground { get; set; }
 
 		public Size BackgroundSize => new Size((int)(_background.Width*ZoomLevel), (int)(_background.Height*ZoomLevel));
 
@@ -144,7 +155,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				return;
 			}
 			
-			if (Background != null)
+			if (Background != null && !TransparentBackground)
 			{
 				Color c = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
 
@@ -163,7 +174,13 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			{
 				_backgroundAlphaImage = new Bitmap(Width, Height, PixelFormat.Format32bppPArgb);
 				Graphics gfx = Graphics.FromImage(_backgroundAlphaImage);
-				gfx.Clear(Color.Black);
+				// Use the transparency key color rather than pure black so that Windows system
+				// chrome (borders, inactive title bar) rendered at 0,0,0 stays opaque and clickable.
+				gfx.Clear(TransparentBackground ? WinApiTransparency.KeyColor : Color.Black);
+				if (TransparentBackground)
+				{
+					DrawResizeBands(gfx);
+				}
 				gfx.Dispose();
 			}
 			{
@@ -202,6 +219,17 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		public void SetPixel(int x, int y, Color color)
 		{
 			_fastPixel.SetPixel(new Point(x, y), color);
+		}
+
+		private void DrawResizeBands(Graphics gfx)
+		{
+			var width = Math.Min(ResizeBandRightWidth, Width);
+			var height = Math.Min(ResizeBandBottomHeight, Height);
+			using (var brush = new SolidBrush(WinApiTransparency.ResizeBandColor))
+			{
+				gfx.FillRectangle(brush, Width - width, 0, width, Height);
+				gfx.FillRectangle(brush, 0, Height - height, Width, height);
+			}
 		}
 				
 		protected override void OnPaint(PaintEventArgs e)
