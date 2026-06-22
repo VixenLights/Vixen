@@ -32,14 +32,14 @@ and preview helpers without being forcibly cast or causing `InvalidCastException
 
 - [x] (2026-06-22) M1: Created JIRA issue VIX-3931; plan file renamed; Decision Log updated
 - [x] (2026-06-22) M2: Widened `IElementTemplate.SetupTemplate` and `GenerateElements` parameters to `IEnumerable<IElementNode>?`; all 8 implementations updated; build clean, 73/73 tests pass
-- [ ] M3: Widen application setup control interfaces and all implementations
+- [x] (2026-06-22) M3: All three candidate sites in the setup control interfaces are ineligible under the decision rule; zero code changes; Decision Log updated with per-site rationale
 - [ ] M4: Triage and upgrade remaining eligible files
 
 ---
 
 ## Surprises & Discoveries
 
-*(Populate as work proceeds.)*
+- **M3 yielded zero code changes.** The plan's "Interfaces and Dependencies" section listed aspirational final signatures for `ISetupElementsControl` and `ISetupPatchingControl`. After applying the decision rule to all three candidate sites, every site was found ineligible (see Decision Log). The selection and patching paths carry live-tree `ElementNode` instances exclusively; `ProxyElementNode` never reaches these APIs. The aspirational signatures in that section cannot be achieved without new casts; the section should be read as a goal template, not a guarantee.
 
 ---
 
@@ -54,6 +54,18 @@ and preview helpers without being forcibly cast or causing `InvalidCastException
   `IndexOfChild`) that are not on the interface. Widening those sites would require either casting back to
   `ElementNode` (defeating the purpose) or pulling mutation onto the interface (which would require
   `ProxyElementNode` to implement no-op stubs for tree modification — wrong).
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M3 — `ISetupPatchingControl.UpdateElementSelection` and `UpdateElementDetails` left as `IEnumerable<ElementNode>`.
+  Rationale: `SetupPatchingGraphical._updateElementDisplay` stores the incoming nodes in `List<ElementNode> rootNodes` and passes them into `_UpdateElementShapesFromElements`, which rebuilds `_elementNodeToElementShapes: Dictionary<ElementNode, List<ElementNodeShape>>`. Looking up or inserting into that dictionary requires `ElementNode` as the key. Widening the method signature to `IEnumerable<IElementNode>` would require either a `(ElementNode)` cast at the dictionary lookup (prohibited) or changing the dictionary key type to `IElementNode` — which is architecturally out of scope for this milestone and would cascade into `ElementNodeShape.Node` (typed `ElementNode`). Since both implementations of the interface must share the same signature, and one implementation (`SetupPatchingGraphical`) is ineligible, the interface method stays typed as `ElementNode`.
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M3 — `ISetupElementsControl.SelectedElements` left as `IEnumerable<ElementNode>`.
+  Rationale: The setter in `SetupElementsTree` calls `elementTree.PopulateNodeTree(value)`, where `PopulateNodeTree` takes `IEnumerable<ElementNode>`. Passing `IEnumerable<IElementNode>` to it would fail to compile without widening `PopulateNodeTree` in `ElementTree.cs` (Vixen.Common), which cascades into `GenerateEquivalentTreeNodeFullPathFromElement`. Those methods use only interface members and would widen cleanly, but expanding into `Vixen.Common` is out of scope for M3. C# does not permit a property getter and setter to declare different types, so the getter cannot be narrowed independently. The practical impact is minimal: selection in the UI tree always contains live `ElementNode` instances, never `ProxyElementNode`.
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M3 — `ElementNodesEventArgs.ElementNodes` left as `List<ElementNode>`.
+  Rationale: The field is consumed in `DisplaySetup.cs` at the `ElementSelectionChanged` handler, which passes `e.ElementNodes` directly to `_currentPatchingControl.UpdateElementSelection(...)`. Since `UpdateElementSelection` is ineligible (see above), widening `ElementNodes` to `List<IElementNode>` would make passing it to `UpdateElementSelection(IEnumerable<ElementNode>)` a compile error — `IEnumerable<IElementNode>` is not assignable to `IEnumerable<ElementNode>` in the contravariant direction. The widening is blocked by the ineligibility of its only consumer in this file.
   Date/Author: 2026-06-22 / Jeff Uchitjil
 
 - Decision: M2 widened only `SetupTemplate` and `GenerateElements` *parameters*; return types of all four `IElementTemplate` methods remain `IEnumerable<ElementNode>`.
