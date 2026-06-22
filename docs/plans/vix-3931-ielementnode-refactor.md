@@ -33,7 +33,7 @@ and preview helpers without being forcibly cast or causing `InvalidCastException
 - [x] (2026-06-22) M1: Created JIRA issue VIX-3931; plan file renamed; Decision Log updated
 - [x] (2026-06-22) M2: Widened `IElementTemplate.SetupTemplate` and `GenerateElements` parameters to `IEnumerable<IElementNode>?`; all 8 implementations updated; build clean, 73/73 tests pass
 - [x] (2026-06-22) M3: All three candidate sites in the setup control interfaces are ineligible under the decision rule; zero code changes; Decision Log updated with per-site rationale
-- [ ] M4: Triage and upgrade remaining eligible files
+- [x] (2026-06-22) M4: Triage remaining eligible files in `src/Vixen.Modules/`; one eligible site found and widened (`CountPixelsAndStrings`); all other candidates ineligible under the decision rule
 
 ---
 
@@ -66,6 +66,30 @@ and preview helpers without being forcibly cast or causing `InvalidCastException
 
 - Decision: M3 — `ElementNodesEventArgs.ElementNodes` left as `List<ElementNode>`.
   Rationale: The field is consumed in `DisplaySetup.cs` at the `ElementSelectionChanged` handler, which passes `e.ElementNodes` directly to `_currentPatchingControl.UpdateElementSelection(...)`. Since `UpdateElementSelection` is ineligible (see above), widening `ElementNodes` to `List<IElementNode>` would make passing it to `UpdateElementSelection(IEnumerable<ElementNode>)` a compile error — `IEnumerable<IElementNode>` is not assignable to `IEnumerable<ElementNode>` in the contravariant direction. The widening is blocked by the ineligibility of its only consumer in this file.
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M4 — `PreviewTools.CountPixelsAndStrings` parameter widened from `ElementNode` to `IElementNode`; foreach loop variable widened from `ElementNode` to `IElementNode`.
+  Rationale: Body uses only interface members (`ParentNode.Children`, `child.IsLeaf`). The single caller in `PreviewMultiString.cs:332` passes `inputElements: ElementNode` — covariant-safe into `IElementNode`. No new casts introduced anywhere in the call chain. XML docs updated per csharp-docs skill (fixed "Retruns" typo, added `<param>` tags).
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M4 — `PreviewTools.GetLeafNodes` and `GetParentNodes` left as `ElementNode`.
+  Rationale: Both methods accumulate iterated children into `List<ElementNode>` and return it. Widening the parameter to `IElementNode` forces the `foreach` variable to `IElementNode`, which forces the list element type to `IElementNode`, which forces the return type to `List<IElementNode>`. Every caller then receives `IElementNode` items and immediately assigns them to `PreviewPixel.Node` (typed `ElementNode`) or passes them to `PreviewLine(ElementNode selectedNode)` — both require `ElementNode`. The cascade from parameter → return type → caller forces new casts at 8+ call sites. Entire method family stays typed as `ElementNode`.
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M4 — `PreviewBaseShape.Reconfigure(ElementNode node)` virtual method family left as `ElementNode`.
+  Rationale: 13 override bodies contain at least one of these blockers: `pixel.Node = node` (`PreviewPixel.Node` is `ElementNode`); `AddPixels(node, lightCount)` (`PreviewLightBaseShape.AddPixels` takes `ElementNode`); `new PreviewLine(..., node, ZoomLevel)` (`PreviewLine` constructor takes `ElementNode`); private helpers `IsPixelTreeSelected(ElementNode)`, `IsStandardTreeSelected(ElementNode)`, `IsPixelGridSelected(ElementNode)`, `IsStandardGridSelected(ElementNode)`, `IsPixelStar(ElementNode)`, `AddAllChildren(ElementNode)` (all take `ElementNode`); `initiallyAssignedNode = node` (field typed `ElementNode`). A virtual method family must be entirely castless at every override — one blocker in any override disqualifies the whole family. The family has 13 overrides, all blocked. Stays as `ElementNode`.
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M4 — `PreviewCustomProp.AddLightNodes(ElementModel model, ElementNode node)` left as `ElementNode`.
+  Rationale: Body immediately assigns `p.Node = node` where `p.Node` (`PreviewPixel.Node`) is typed `ElementNode`. Widening the parameter to `IElementNode` makes `p.Node = node` a compile error without a cast. Ineligible.
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M4 — `ElementModeling.ElementsToSvg(ElementNode elementNode)` left as `ElementNode`.
+  Rationale: Body calls `elementNode.GetLeafEnumerator()` into `leafNodes`, then `OrderNodes(leafNodes, elementNode)`. `OrderNodes` takes `(IEnumerable<ElementNode>, ElementNode)`. If the parameter is widened to `IElementNode`, `GetLeafEnumerator()` dispatches to the interface definition returning `IEnumerable<IElementNode>`, making `leafNodes: IEnumerable<IElementNode>`. Passing that to `OrderNodes(IEnumerable<ElementNode>, ElementNode)` requires a cast. Ineligible.
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M4 — `VixenPreviewControl.HighlightNode(ElementNode node)` and `OrderModule.AddPatchingOrder(IEnumerable<ElementNode>)` not widened (no proxy value).
+  Rationale: Both are mechanically eligible (bodies use only interface members; callers pass `ElementNode` which is covariant-safe). However, `ProxyElementNode` never reaches either path: `HighlightNode` is called from UI selection events where nodes come from `ElementTree.SelectedElementNodes` (live tree only); `AddPatchingOrder` is called from element template generation which constructs real `ElementNode` objects. Widening these APIs would not enable any new proxy flow — it would be churn with no benefit, per the value filter discussed in the M4 Decision Log notes. Left as `ElementNode`.
   Date/Author: 2026-06-22 / Jeff Uchitjil
 
 - Decision: M2 widened only `SetupTemplate` and `GenerateElements` *parameters*; return types of all four `IElementTemplate` methods remain `IEnumerable<ElementNode>`.
