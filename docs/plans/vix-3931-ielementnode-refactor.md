@@ -31,7 +31,7 @@ and preview helpers without being forcibly cast or causing `InvalidCastException
 ## Progress
 
 - [x] (2026-06-22) M1: Created JIRA issue VIX-3931; plan file renamed; Decision Log updated
-- [ ] M2: Widen `IElementTemplate` interface and all implementations
+- [x] (2026-06-22) M2: Widened `IElementTemplate.SetupTemplate` and `GenerateElements` parameters to `IEnumerable<IElementNode>?`; all 8 implementations updated; build clean, 73/73 tests pass
 - [ ] M3: Widen application setup control interfaces and all implementations
 - [ ] M4: Triage and upgrade remaining eligible files
 
@@ -54,6 +54,10 @@ and preview helpers without being forcibly cast or causing `InvalidCastException
   `IndexOfChild`) that are not on the interface. Widening those sites would require either casting back to
   `ElementNode` (defeating the purpose) or pulling mutation onto the interface (which would require
   `ProxyElementNode` to implement no-op stubs for tree modification — wrong).
+  Date/Author: 2026-06-22 / Jeff Uchitjil
+
+- Decision: M2 widened only `SetupTemplate` and `GenerateElements` *parameters*; return types of all four `IElementTemplate` methods remain `IEnumerable<ElementNode>`.
+  Rationale: `ElementTemplateHelper.ProcessElementTemplate` stores `GenerateElements` output in `IEnumerable<ElementNode> createdElements` and passes its first element to an `Action<ElementNode> addToTree` callback. Widening the return type would make `createdElements.First()` return `IElementNode`, which is incompatible with `Action<ElementNode>` — requiring a cast. Similarly, `GetElementsToDelete` is iterated as `foreach (ElementNode node in ...)` and each node is passed to `treeElements.SelectElementNode(node)` which expects `ElementNode`. `GetLeafNodes` is consumed as `IEnumerable<ElementNode>` in `VixenPreviewControl`. None of these return types can be widened without introducing a new cast at the call site. The parameter widening is safe because `IEnumerable<T>` is covariant — callers passing `IEnumerable<ElementNode>` to `IEnumerable<IElementNode>?` need no cast.
   Date/Author: 2026-06-22 / Jeff Uchitjil
 
 ---

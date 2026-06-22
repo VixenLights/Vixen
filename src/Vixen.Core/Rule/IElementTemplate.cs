@@ -10,14 +10,14 @@ namespace Vixen.Rule
 		string TemplateName { get; }
 
 		/// <summary>
-		/// Tells the tempate to 'configure' itself for element generation: presumably this would
+		/// Tells the template to 'configure' itself for element generation: presumably this would
 		/// involve displaying a setup dialog to the user, or something similar, to prompt them
 		/// for parameters needed for name generation, etc.
 		/// </summary>
 		/// <param name="selectedNodes">The node(s) that have been selected by the user (if any) when called.</param>
 		/// <returns>true if the setup was successful and template generation should proceed (ie. the user selected
 		/// "OK", or everything is good to go), false if not (eg. the user cancelled the setup).</returns>
-		bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null);
+		bool SetupTemplate(IEnumerable<IElementNode>? selectedNodes = null);
 
 		/// <summary>
 		/// Generates and adds elements to the system, according to the template rules and parameters.
@@ -25,10 +25,10 @@ namespace Vixen.Rule
 		/// <param name="selectedNodes">The node(s) that have been selected by the user (if any) when called.
 		/// These may be used as the 'parent' for ths generated items, for example.</param>
 		/// <returns>The element nodes that were generated and added to the system elements during the prcess.</returns>
-		Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode> selectedNodes = null);
+		Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<IElementNode>? selectedNodes = null);
 
 		/// <summary>
-		/// True when the template was cancelled by the user.
+		/// True when the template was canceled by the user.
 		/// </summary>
 		bool Cancelled { get; }
 

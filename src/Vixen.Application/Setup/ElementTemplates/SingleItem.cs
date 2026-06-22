@@ -19,7 +19,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			get { return "Single Item"; }
 		}
 
-		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
+		public bool SetupTemplate(IEnumerable<IElementNode>? selectedNodes = null)
 		{
 			using (TextDialog td = new TextDialog("New Element Name?", "Element Name", _itemName, true))
 			{
@@ -37,7 +37,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<IElementNode>? selectedNodes = null)
 		{
 			ElementNode newNode = ElementNodeService.Instance.CreateSingle(null, _itemName);
 			return await Task.FromResult(new[] { newNode });
