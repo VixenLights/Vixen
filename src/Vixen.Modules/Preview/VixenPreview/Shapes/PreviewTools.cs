@@ -507,22 +507,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         /// <summary>
         /// Counts the direct child nodes of an element node, separating them into leaf (pixel) and non-leaf (string) counts.
         /// </summary>
-        /// <param name="ParentNode">The element node whose direct children to examine.</param>
-        /// <param name="Pixels">When this method returns, contains the number of direct leaf children. This parameter is treated as uninitialized.</param>
-        /// <param name="Strings">When this method returns, contains the number of direct non-leaf children. This parameter is treated as uninitialized.</param>
-        public static void CountPixelsAndStrings(IElementNode ParentNode, out int Pixels, out int Strings)
+        /// <param name="parentNode">The element node whose direct children to examine.</param>
+        /// <param name="pixels">When this method returns, contains the number of direct leaf children. This parameter is treated as uninitialized.</param>
+        /// <param name="strings">When this method returns, contains the number of direct non-leaf children. This parameter is treated as uninitialized.</param>
+        public static void CountPixelsAndStrings(IElementNode parentNode, out int pixels, out int strings)
         {
-            Pixels = 0;
-            Strings = 0;
-            foreach (IElementNode child in ParentNode.Children)
+            pixels = 0;
+            strings = 0;
+            foreach (IElementNode child in parentNode.Children)
             {
                 if (child.IsLeaf)
                 {
-                    Pixels++;
+                    pixels++;
                 }
                 else
                 {
-                    Strings++;
+                    strings++;
                 }
             }
         }
