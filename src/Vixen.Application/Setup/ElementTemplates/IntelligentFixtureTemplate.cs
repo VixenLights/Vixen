@@ -1215,7 +1215,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<IElementNode>? selectedNodes = null)
 		{
 			// Without this call the wizard will produce the following exception:
 			// 'Theming is not yet initialized, make sure to initialize a theme via ThemeManager first'
@@ -1315,7 +1315,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		/// <summary>
 		/// Refer to interface documentation.
 		/// </summary>		
-		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
+		public bool SetupTemplate(IEnumerable<IElementNode>? selectedNodes = null)
 		{
 			// Nothing to setup
 			return true;
