@@ -3,7 +3,7 @@ namespace VixenModules.Property.State.Setup.Models
 	/// <summary>
 	/// Manages temporary range selection for a State item assignment tree.
 	/// </summary>
-	internal sealed class StateAssignmentTreeSelectionController
+	public sealed class StateAssignmentTreeSelectionController
 	{
 		private readonly IReadOnlyCollection<StateAssignmentTreeNode> _roots;
 		private StateAssignmentTreeNode? _anchorNode;
