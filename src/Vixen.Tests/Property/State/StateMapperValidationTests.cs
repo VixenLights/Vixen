@@ -204,7 +204,7 @@ public class StateMapperValidationTests
 
 		// Assert
 		Assert.True(result);
-		Assert.Equal([leafId], source.Items[0].ElementNodeIds);
+		Assert.Equal([leafId], source.StateDefinitions[0].Items[0].ElementNodeIds);
 		Assert.Equal(1, item.AssignmentCount);
 	}
 

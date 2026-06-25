@@ -326,7 +326,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					foreach (var elementModelLight in elementModel.Lights)
 					{
 						var lvm = new LightViewModel(elementModelLight);
-						lvm.DisplayColor = LightColor;
+						lvm.DisplayColor = GetLightColor();
 						lightViewModels.Add(lvm);
 					}
 					_elementModelMap.Add(elementModel.Id, lightViewModels);
@@ -362,7 +362,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				lightViewModel.DisplayColor = colorsByElementModelId.TryGetValue(lightViewModel.Light.ParentModelId, out var color)
 					? color
-					: StatePreviewBaseColor;
+					: GetStatePreviewBaseColor();
 			}
 		}
 
@@ -379,7 +379,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			foreach (var lightViewModel in LightNodes)
 			{
-				lightViewModel.DisplayColor = lightViewModel.IsSelected ? SelectedLightColor : LightColor;
+				lightViewModel.DisplayColor = lightViewModel.IsSelected ? GetSelectedLightColor() : GetLightColor();
 			}
 		}
 
@@ -388,13 +388,39 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var colorList = colors.ToList();
 			if (!colorList.Any())
 			{
-				return StatePreviewBaseColor;
+				return GetStatePreviewBaseColor();
 			}
 
 			return Color.FromArgb(
 				(int)Math.Round(colorList.Average(color => color.R)),
 				(int)Math.Round(colorList.Average(color => color.G)),
 				(int)Math.Round(colorList.Average(color => color.B)));
+		}
+
+		private Color GetLightColor()
+		{
+			return LightColor == Color.Empty
+				? GetConfiguration()?.LightColor ?? Configuration.DefaultLightColor
+				: LightColor;
+		}
+
+		private Color GetSelectedLightColor()
+		{
+			return SelectedLightColor == Color.Empty
+				? GetConfiguration()?.SelectedLightColor ?? Configuration.DefaultSelectedLightColor
+				: SelectedLightColor;
+		}
+
+		private Color GetStatePreviewBaseColor()
+		{
+			return StatePreviewBaseColor == Color.Empty
+				? GetConfiguration()?.StatePreviewBaseColor ?? Configuration.DefaultStatePreviewBaseColor
+				: StatePreviewBaseColor;
+		}
+
+		private Configuration GetConfiguration()
+		{
+			return Configuration ?? ConfigurationService.Instance().Config;
 		}
 
 		public void DeleteSelectedLights()

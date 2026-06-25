@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Input;
+using Catel.IoC;
+using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.App.CustomPropEditor.ViewModels;
@@ -38,23 +40,24 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
-	public void Commands_AddCopyDeleteDefinitions_UpdateModelCollection()
+	public async Task Commands_AddCopyDeleteDefinitions_UpdateModelCollection()
 	{
 		var prop = CreatePropWithModel(out var model, out _);
 		model.ModelType = ElementModelType.Model;
-		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
+		var dialogService = new FakeStateDefinitionDialogService("State Definition - 1", "Wave Copy");
+		var viewModel = new StateDefinitionEditorViewModel(prop, dialogService);
 
-		Execute(viewModel.AddStateDefinitionCommand);
+		await ExecuteAsync(viewModel.AddStateDefinitionCommand);
 		var originalDefinition = Assert.Single(viewModel.StateDefinitions);
 		originalDefinition.Name = "Wave";
 
-		Execute(viewModel.CopyStateDefinitionCommand);
+		await ExecuteAsync(viewModel.CopyStateDefinitionCommand);
 
 		Assert.Equal(2, model.StateDefinitionModels.Count);
 		Assert.Equal("Wave Copy", viewModel.SelectedStateDefinition.Name);
 		Assert.NotEqual(originalDefinition.StateDefinition.Id, viewModel.SelectedStateDefinition.StateDefinition.Id);
 
-		Execute(viewModel.DeleteStateDefinitionCommand);
+		await ExecuteAsync(viewModel.DeleteStateDefinitionCommand);
 
 		var remainingDefinition = Assert.Single(viewModel.StateDefinitions);
 		Assert.Same(originalDefinition, remainingDefinition);
@@ -82,29 +85,30 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
-	public void Commands_AddRemoveAndMoveItems_UpdateModelOrder()
+	public async Task Commands_AddRemoveAndMoveItems_UpdateModelOrder()
 	{
 		var prop = CreatePropWithModel(out var model, out _);
 		model.ModelType = ElementModelType.Model;
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		model.StateDefinitionModels.Add(definition);
-		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
-		viewModel.ConfirmStateItemDelete = (_, _) => true;
-
+		var dialogService = new FakeStateDefinitionDialogService(confirmDelete: true);
+		var viewModel = new StateDefinitionEditorViewModel(prop, dialogService);
+		
 		Execute(viewModel.AddStateItemCommand);
 		viewModel.SelectedStateItem.Name = "Arm";
 		Execute(viewModel.MoveStateItemUpCommand);
 
 		Assert.Equal("Arm", definition.Items[0].Name);
 
-		Execute(viewModel.RemoveStateItemCommand);
+		await ExecuteAsync(viewModel.RemoveStateItemCommand);
 
+		Assert.Equal(["Arm"], dialogService.StateItemDeleteConfirmations);
 		Assert.Single(definition.Items);
 		Assert.Equal(StateItemModel.DefaultName, definition.Items[0].Name);
 	}
 
 	[Fact]
-	public void RemoveStateItemCommand_DeletesAllSelectedItems()
+	public async Task RemoveStateItemCommand_DeletesAllSelectedItems()
 	{
 		var prop = CreatePropWithModel(out var model, out _);
 		model.ModelType = ElementModelType.Model;
@@ -119,20 +123,16 @@ public sealed class CustomPropStateEditorViewModelTests
 			]
 		};
 		model.StateDefinitionModels.Add(definition);
-		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
-		var confirmedQuestion = string.Empty;
-		viewModel.ConfirmStateItemDelete = (question, _) =>
-		{
-			confirmedQuestion = question;
-			return true;
-		};
+		var dialogService = new FakeStateDefinitionDialogService(confirmDelete: true);
+		var viewModel = new StateDefinitionEditorViewModel(prop, dialogService);
+		
 		viewModel.SelectedStateItems.Clear();
 		viewModel.SelectedStateItems.Add(viewModel.SelectedStateDefinition.Items[0]);
 		viewModel.SelectedStateItems.Add(viewModel.SelectedStateDefinition.Items[2]);
 
-		Execute(viewModel.RemoveStateItemCommand);
+		await ExecuteAsync(viewModel.RemoveStateItemCommand);
 
-		Assert.Equal("Delete 2 State items?", confirmedQuestion);
+		Assert.Equal([2], dialogService.StateItemsDeleteConfirmations);
 		Assert.Equal(["Leg"], definition.Items.Select(item => item.Name).ToList());
 		Assert.Equal(["Leg"], viewModel.SelectedStateDefinition.Items.Select(item => item.Name).ToList());
 		Assert.Equal("Leg", viewModel.SelectedStateItem.Name);
@@ -140,21 +140,22 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
-	public void RemoveStateItemCommand_CancelKeepsSelectedItems()
+	public async Task RemoveStateItemCommand_CancelKeepsSelectedItems()
 	{
 		var prop = CreatePropWithModel(out var model, out _);
 		model.ModelType = ElementModelType.Model;
 		var definition = StateDefinitionModel.CreateDefault("Wave");
 		definition.Items.Add(new StateItemModel { Name = "Arm" });
 		model.StateDefinitionModels.Add(definition);
-		var viewModel = new StateDefinitionEditorViewModel(prop, new StateDefinitionDialogService());
+		var dialogService = new FakeStateDefinitionDialogService(confirmDelete: false);
+		var viewModel = new StateDefinitionEditorViewModel(prop, dialogService);
 		viewModel.SelectedStateItems.Add(viewModel.SelectedStateDefinition.Items[1]);
-		viewModel.ConfirmStateItemDelete = (_, _) => false;
 
-		Execute(viewModel.RemoveStateItemCommand);
+		await ExecuteAsync(viewModel.RemoveStateItemCommand);
 
 		Assert.Equal([StateItemModel.DefaultName, "Arm"], definition.Items.Select(item => item.Name).ToList());
 		Assert.Equal(2, viewModel.SelectedStateItems.Count);
+		Assert.Equal([2], dialogService.StateItemsDeleteConfirmations);
 	}
 
 	[Fact]
@@ -450,7 +451,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		drawingPanelViewModel.ClearStatePreview();
 
 		Assert.False(drawingPanelViewModel.IsStatePreviewActive);
-		Assert.All(drawingPanelViewModel.LightNodes, light => Assert.Equal(drawingPanelViewModel.LightColor, light.DisplayColor));
+		Assert.All(drawingPanelViewModel.LightNodes, light => Assert.Equal(Configuration.DefaultLightColor, light.DisplayColor));
 	}
 
 	[Fact]
@@ -533,6 +534,7 @@ public sealed class CustomPropStateEditorViewModelTests
 		out LightViewModel firstLight,
 		out LightViewModel secondLight)
 	{
+		ServiceLocator.Default.RegisterInstance<IStateDefinitionDialogService>(new FakeStateDefinitionDialogService());
 		var viewModel = new PropEditorViewModel();
 		var model = new ElementModel("Model", viewModel.Prop.RootNode)
 		{
@@ -600,6 +602,13 @@ public sealed class CustomPropStateEditorViewModelTests
 		command.Execute(parameter);
 	}
 
+	private static async Task ExecuteAsync(TaskCommand command)
+	{
+		Assert.True(command.CanExecute(null));
+		command.Execute(null);
+		await command.Task;
+	}
+
 	private static async Task InvokeAsync(object target, string methodName)
 	{
 		var method = target.GetType().GetMethod(
@@ -612,11 +621,21 @@ public sealed class CustomPropStateEditorViewModelTests
 
 	private sealed class FakeStateDefinitionDialogService : IStateDefinitionDialogService
 	{
-		private readonly string _name;
+		private readonly Queue<string?> _names = new();
+		private readonly bool _confirmDelete;
 
-		public FakeStateDefinitionDialogService(string name)
+		public FakeStateDefinitionDialogService(params string?[] names)
+			: this(true, names)
 		{
-			_name = name;
+		}
+
+		public FakeStateDefinitionDialogService(bool confirmDelete, params string?[] names)
+		{
+			_confirmDelete = confirmDelete;
+			foreach (var name in names)
+			{
+				_names.Enqueue(name);
+			}
 		}
 
 		public string LastTitle { get; private set; } = string.Empty;
@@ -624,6 +643,10 @@ public sealed class CustomPropStateEditorViewModelTests
 		public string LastInitialName { get; private set; } = string.Empty;
 
 		public string? LastCurrentName { get; private set; }
+
+		public List<string> StateItemDeleteConfirmations { get; } = [];
+
+		public List<int> StateItemsDeleteConfirmations { get; } = [];
 
 		public Task<string?> RequestNameAsync(
 			string title,
@@ -634,22 +657,24 @@ public sealed class CustomPropStateEditorViewModelTests
 			LastTitle = title;
 			LastInitialName = initialName;
 			LastCurrentName = currentName;
-			return Task.FromResult<string?>(_name);
+			return Task.FromResult(_names.Count == 0 ? (string?)null : _names.Dequeue());
 		}
 
 		public Task<bool> ConfirmDeleteAsync(string name)
 		{
-			return Task.FromResult(false);
+			return Task.FromResult(_confirmDelete);
 		}
 
 		public Task<bool> ConfirmDeleteStateItemAsync(string name)
 		{
-			return Task.FromResult(false);
+			StateItemDeleteConfirmations.Add(name);
+			return Task.FromResult(_confirmDelete);
 		}
 
 		public Task<bool> ConfirmDeleteStateItemsAsync(int count)
 		{
-			return Task.FromResult(false);
+			StateItemsDeleteConfirmations.Add(count);
+			return Task.FromResult(_confirmDelete);
 		}
 	}
 }
