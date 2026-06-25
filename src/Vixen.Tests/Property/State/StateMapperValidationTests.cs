@@ -168,6 +168,65 @@ public class StateMapperValidationTests
 	}
 
 	[Fact]
+	public void ToggleSelectedAssignmentsCommand_TogglesSelectedAssignmentNodes()
+	{
+		// Arrange
+		var rootNode = CreateRootNodeWithSiblingGroups(Guid.NewGuid());
+		var viewModel = CreateViewModel(CreateSource("Operating Mode", "Enabled"), rootNode);
+		var item = viewModel.Items[0];
+		var leaf = item.AssignmentRoots[0].Children[0].Children[0];
+
+		// Act
+		item.AssignmentSelection.SelectSingle(leaf);
+		item.ToggleSelectedAssignmentsCommand.Execute(null);
+
+		// Assert
+		Assert.True(item.ToggleSelectedAssignmentsCommand.CanExecute(null));
+		Assert.True(leaf.IsChecked);
+		Assert.Equal(1, item.AssignmentCount);
+	}
+
+	[Fact]
+	public void SelectedItemChange_ClearsPreviousAssignmentSelection()
+	{
+		// Arrange
+		var rootNode = CreateRootNodeWithSiblingGroups(Guid.NewGuid());
+		var viewModel = CreateViewModel(CreateSource("Operating Mode", "Enabled", "Disabled"), rootNode);
+		var firstItem = viewModel.Items[0];
+		var selectedLeaf = firstItem.AssignmentRoots[0].Children[0].Children[0];
+		viewModel.SelectedItem = firstItem;
+		firstItem.AssignmentSelection.SelectSingle(selectedLeaf);
+
+		// Act
+		viewModel.SelectedItem = viewModel.Items[1];
+
+		// Assert
+		Assert.False(selectedLeaf.IsSelected);
+		Assert.Equal(0, firstItem.SelectedAssignmentCount);
+	}
+
+	[Fact]
+	public void MultiRowSelection_ClearsAssignmentSelectionAndHidesTree()
+	{
+		// Arrange
+		var rootNode = CreateRootNodeWithSiblingGroups(Guid.NewGuid());
+		var viewModel = CreateViewModel(CreateSource("Operating Mode", "Enabled", "Disabled"), rootNode);
+		var firstItem = viewModel.Items[0];
+		var selectedLeaf = firstItem.AssignmentRoots[0].Children[0].Children[0];
+		viewModel.SelectedItem = firstItem;
+		firstItem.AssignmentSelection.SelectSingle(selectedLeaf);
+
+		// Act
+		viewModel.SelectedItems.Add(viewModel.Items[1]);
+
+		// Assert
+		Assert.Null(viewModel.SelectedItem);
+		Assert.Empty(viewModel.AssignedElementRoots);
+		Assert.False(selectedLeaf.IsSelected);
+		Assert.Equal(0, firstItem.SelectedAssignmentCount);
+	}
+
+	[Fact]
 	public void ItemName_TrimsWhitespaceAndBlocksOkUntilCorrected()
 	{
 		// Arrange

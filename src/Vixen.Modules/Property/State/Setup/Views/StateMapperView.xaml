@@ -210,7 +210,19 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
-				<TextBlock Text="Assigned Elements" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+				<Grid Margin="0,0,0,4">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<TextBlock Text="Assigned Elements" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					<Button Grid.Column="1"
+							Content="Toggle Selected"
+							Command="{Binding SelectedItem.ToggleSelectedAssignmentsCommand}"
+							IsEnabled="{Binding SelectedItem.HasSelectedAssignments}"
+							Style="{StaticResource RowButtonStyle}"
+							ToolTip="Toggle selected assigned elements"/>
+				</Grid>
 				<TreeView Grid.Row="1"
 						  ItemsSource="{Binding AssignedElementRoots}"
 						  BorderThickness="0"
@@ -238,20 +250,25 @@
 										</Style.Triggers>
 									</Style>
 								</Border.Style>
-								<CheckBox Content="{Binding Name}"
-										  IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-										  IsEnabled="{Binding IsEnabled}">
-									<CheckBox.Style>
-										<Style TargetType="{x:Type CheckBox}"
-											   BasedOn="{StaticResource {x:Type CheckBox}}">
-											<Style.Triggers>
-												<DataTrigger Binding="{Binding IsSelected}" Value="True">
-													<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
-												</DataTrigger>
-											</Style.Triggers>
-										</Style>
-									</CheckBox.Style>
-								</CheckBox>
+								<DockPanel LastChildFill="True">
+									<CheckBox DockPanel.Dock="Left"
+											  IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											  IsEnabled="{Binding IsEnabled}"
+											  VerticalAlignment="Center"/>
+									<TextBlock Text="{Binding Name}"
+											   Margin="4,0,0,0"
+											   VerticalAlignment="Center">
+										<TextBlock.Style>
+											<Style TargetType="TextBlock"  BasedOn="{StaticResource {x:Type TextBlock}}">
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding IsSelected}" Value="True">
+														<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</TextBlock.Style>
+									</TextBlock>
+								</DockPanel>
 							</Border>
 						</HierarchicalDataTemplate>
 					</TreeView.ItemTemplate>

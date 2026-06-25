@@ -200,7 +200,8 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			get => GetValue<StateDefinitionViewModel?>(SelectedStateDefinitionProperty);
 			set
 			{
-				if (ReferenceEquals(GetValue<StateDefinitionViewModel?>(SelectedStateDefinitionProperty), value))
+				var currentDefinition = GetValue<StateDefinitionViewModel?>(SelectedStateDefinitionProperty);
+				if (ReferenceEquals(currentDefinition, value))
 				{
 					return;
 				}
@@ -223,6 +224,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 					return;
 				}
 
+				ClearAssignmentSelections(currentDefinition?.Items);
 				SetValue(SelectedStateDefinitionProperty, value);
 				_lastValidSelectedStateDefinition = value;
 				ApplySelectedStateDefinition();
@@ -964,7 +966,8 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		private void SelectItem(StateItemViewModel? item, bool expandCheckedAssignments)
 		{
-			var selectedItemChanged = !ReferenceEquals(GetValue<StateItemViewModel?>(SelectedItemProperty), item);
+			var previousSelectedItem = GetValue<StateItemViewModel?>(SelectedItemProperty);
+			var selectedItemChanged = !ReferenceEquals(previousSelectedItem, item);
 			if (!selectedItemChanged &&
 				(SelectedItems.Count == 1 && ReferenceEquals(SelectedItems[0], item) ||
 					SelectedItems.Count == 0 && item == null))
@@ -974,6 +977,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 			if (selectedItemChanged)
 			{
+				previousSelectedItem?.AssignmentSelection.ClearSelection();
 				SetValue(SelectedItemProperty, item);
 			}
 
@@ -1039,11 +1043,23 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 			if (SelectedItems.Count == 1)
 			{
+				var previousSelectedItem = GetValue<StateItemViewModel?>(SelectedItemProperty);
+				if (!ReferenceEquals(previousSelectedItem, SelectedItems[0]))
+				{
+					previousSelectedItem?.AssignmentSelection.ClearSelection();
+				}
+
 				SetValue(SelectedItemProperty, SelectedItems[0]);
 				SelectedItems[0].ExpandCheckedAssignments();
 			}
 			else if (SelectedItems.Count == 0)
 			{
+				GetValue<StateItemViewModel?>(SelectedItemProperty)?.AssignmentSelection.ClearSelection();
+				SetValue<StateItemViewModel?>(SelectedItemProperty, null);
+			}
+			else
+			{
+				GetValue<StateItemViewModel?>(SelectedItemProperty)?.AssignmentSelection.ClearSelection();
 				SetValue<StateItemViewModel?>(SelectedItemProperty, null);
 			}
 
@@ -1119,11 +1135,25 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 			if (SelectedItems.Count == 0)
 			{
+				GetValue<StateItemViewModel?>(SelectedItemProperty)?.AssignmentSelection.ClearSelection();
 				SetValue<StateItemViewModel?>(SelectedItemProperty, null);
 			}
 
 			RaisePropertyChanged(nameof(SelectedItems));
 			RaisePropertyChanged(nameof(AssignedElementRoots));
+		}
+
+		private static void ClearAssignmentSelections(IEnumerable<StateItemViewModel>? items)
+		{
+			if (items == null)
+			{
+				return;
+			}
+
+			foreach (var item in items)
+			{
+				item.AssignmentSelection.ClearSelection();
+			}
 		}
 
 		private IReadOnlyList<StateItemViewModel> GetItemsToRemove()

@@ -10,6 +10,8 @@ namespace VixenModules.Property.State.Setup.ViewModels
 	/// </summary>
 	public sealed class StateItemViewModel : ViewModelBase
 	{
+		private TaskCommand? _toggleSelectedAssignmentsCommand;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StateItemViewModel"/> class.
 		/// </summary>
@@ -26,6 +28,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 				new StateAssignmentTreeNode(elementTree, item.ElementNodeIds.ToHashSet())
 			];
 			AssignmentSelection = new StateAssignmentTreeSelectionController(AssignmentRoots);
+			AssignmentSelection.SelectionChanged += AssignmentSelectionChanged;
 
 			foreach (var root in AssignmentRoots)
 			{
@@ -51,6 +54,25 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		/// </summary>
 		/// <value>The controller that manages temporary assignment-tree selection.</value>
 		public StateAssignmentTreeSelectionController AssignmentSelection { get; }
+
+		/// <summary>
+		/// Gets the command that toggles the checked state of selected assignment nodes.
+		/// </summary>
+		/// <value>The command that toggles the checked state of selected assignment nodes.</value>
+		public TaskCommand ToggleSelectedAssignmentsCommand =>
+			_toggleSelectedAssignmentsCommand ??= new TaskCommand(ToggleSelectedAssignmentsAsync, CanToggleSelectedAssignments);
+
+		/// <summary>
+		/// Gets the number of assignment nodes selected for a pending batch operation.
+		/// </summary>
+		/// <value>The number of assignment nodes selected for a pending batch operation.</value>
+		public int SelectedAssignmentCount => AssignmentSelection.SelectedCount;
+
+		/// <summary>
+		/// Gets a value indicating whether any assignment nodes are selected for a pending batch operation.
+		/// </summary>
+		/// <value><c>true</c> when any assignment nodes are selected; otherwise, <c>false</c>.</value>
+		public bool HasSelectedAssignments => AssignmentSelection.SelectedCount > 0;
 
 		internal void ExpandCheckedAssignments()
 		{
@@ -123,6 +145,21 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private void AssignmentChanged(object? sender, EventArgs e)
 		{
 			UpdateAssignments();
+		}
+
+		private void AssignmentSelectionChanged(object? sender, EventArgs e)
+		{
+			RaisePropertyChanged(nameof(SelectedAssignmentCount));
+			RaisePropertyChanged(nameof(HasSelectedAssignments));
+			_toggleSelectedAssignmentsCommand?.RaiseCanExecuteChanged();
+		}
+
+		private bool CanToggleSelectedAssignments() => HasSelectedAssignments;
+
+		private Task ToggleSelectedAssignmentsAsync()
+		{
+			AssignmentSelection.ToggleCheckedStateForSelectedNodes();
+			return Task.CompletedTask;
 		}
 
 		private void UpdateAssignments()

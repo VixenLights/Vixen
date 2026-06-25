@@ -26,7 +26,8 @@ The correct identifier for this enhancement is VIX-3591. The source requirement 
 - [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 1: model-level assignment-tree selection state, visible-order traversal, a UI-free selection controller, State item ownership of the controller, and focused tests.
 - [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 2: added the State-specific WPF behavior for Ctrl-click selection, Shift-click range selection, unmodified single selection, and Space-triggered explicit toggling.
 - [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 3: wired assignment-tree selection into XAML through a reusable WPFCommon behavior, bound selection visuals, and exposed the State item controller for binding.
-- [ ] Implement Milestones 4 through 6: command surface, integration tests, and manual validation.
+- [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 4: added the Toggle Selected command surface and cleared temporary assignment-tree selection when the edited row, selected definition, or row multi-selection state changes.
+- [ ] Implement Milestones 5 and 6: remaining integration tests and manual validation.
 
 ## Surprises & Discoveries
 
@@ -56,6 +57,12 @@ The correct identifier for this enhancement is VIX-3591. The source requirement 
 
 - Observation: A behavior defined only in the State project could not be resolved by `StateMapperView.xaml` during WPF markup compilation.
   Evidence: `StateAssignmentTreeSelectionBehavior` was present as a compile item and present in the previous `C:\Output\Module.Property.State.dll`, but markup compilation still failed with `MC3074` for the same-project namespace. Moving the UI event behavior to `WPFCommon` and using a narrow `ITreeViewRangeSelectionController` interface allowed the State mapper XAML to compile.
+
+- Observation: Running multiple WPF-heavy focused test commands in parallel can contend on generated build outputs.
+  Evidence: Parallel `dotnet test` runs for the State mapper and assignment-tree filters produced transient generated-file and DLL-write errors. Running the focused filters sequentially passed.
+
+- Observation: Putting the assignment node name in `CheckBox.Content` makes label clicks toggle the assignment.
+  Evidence: Manual review after Milestone 4 found that clicking the text name in the assignment tree checked the box. The item template now separates the checkbox from the text label, and the range-selection behavior ignores clicks that originate inside the checkbox.
 
 ## Decision Log
 
@@ -88,6 +95,10 @@ Milestone 1 is complete. `StateAssignmentTreeNode` now exposes temporary selecti
 Milestone 2 is complete. The tree selection behavior now attaches to a WPF `TreeView`, finds the assignment node represented by the clicked item, sends Ctrl-click to `ToggleSelection`, Shift-click to `SelectRange`, unmodified clicks to `SelectSingle`, and sends the Space key to `ToggleCheckedStateForSelectedNodes`. Ctrl-click and Shift-click mark the mouse event handled so a nested checkbox does not accidentally toggle a single node while the user is only changing the pending range selection. Ordinary checkbox clicks remain available for single-node assignment toggling. The first State-local behavior implementation was superseded during Milestone 3 by the reusable `WPFCommon` behavior because of XAML markup resolution behavior.
 
 Milestone 3 is complete. The State mapper XAML now attaches `TreeViewRangeSelectionBehavior` from `WPFCommon` to the Assigned Elements tree and binds it to `SelectedItem.AssignmentSelection`. `StateItemViewModel.AssignmentSelection` is public so WPF binding can see it. The assignment item template now highlights nodes whose `StateAssignmentTreeNode.IsSelected` is true without using native `TreeViewItem.IsSelected`, preserving multiple pending selections. The initial State-local behavior was replaced by the `WPFCommon` behavior because same-project behavior lookup failed during XAML compilation.
+
+Milestone 4 is complete. `StateItemViewModel` exposes `ToggleSelectedAssignmentsCommand`, `SelectedAssignmentCount`, and `HasSelectedAssignments`, raises command state when assignment-tree selection changes, and invokes the controller's explicit batch toggle. `StateMapperView.xaml` now shows a compact `Toggle Selected` button in the Assigned Elements header and disables it when no assignment nodes are selected. `StateMapperViewModel` clears temporary assignment-tree selection when the edited State item row changes, when the selected State definition changes, and when row multi-selection hides the assignment tree. Sequential focused validation passed for `FullyQualifiedName~StateMapperValidationTests` and `FullyQualifiedName~StateAssignmentTree`.
+
+Follow-up interaction correction: assignment node labels are no longer checkbox content. Clicking the checkbox toggles that one assignment directly, while clicking the text or row area changes the temporary assignment-tree selection used for Shift-click ranges and Toggle Selected.
 
 ## Context and Orientation
 
@@ -263,3 +274,5 @@ The main behavior risk is ordering when a selected range contains both a group a
 - 2026-06-25 / Codex: Completed Milestone 1 by adding model-level assignment selection state, visible-order traversal, a UI-free selection controller, State item controller ownership, and focused tests. Recorded that the broader Property.State suite has three unrelated default-name expectation failures.
 - 2026-06-25 / Codex: Completed Milestone 2 by adding a State-specific WPF tree selection behavior and qualifying WPF type names because the State project also references WinForms.
 - 2026-06-25 / Codex: Completed Milestone 3 by replacing the State-local behavior with a reusable `WPFCommon` behavior, wiring it into `StateMapperView.xaml`, adding selection highlight visuals, and exposing the selected State item controller for binding.
+- 2026-06-25 / Codex: Completed Milestone 4 by adding `ToggleSelectedAssignmentsCommand`, the Assigned Elements `Toggle Selected` button, selection-change command invalidation, and cleanup of temporary assignment-tree selection during State item, State definition, and row multi-selection changes.
+- 2026-06-25 / Codex: Adjusted assignment-tree hit targets so checkbox clicks perform individual assignment toggles and text/row clicks perform temporary selection and range-selection gestures.

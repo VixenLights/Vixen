@@ -22,6 +22,11 @@ namespace VixenModules.Property.State.Setup.Models
 		}
 
 		/// <summary>
+		/// Occurs when the temporary assignment-tree selection changes.
+		/// </summary>
+		public event EventHandler? SelectionChanged;
+
+		/// <summary>
 		/// Gets the number of enabled assignment nodes selected for a pending batch operation.
 		/// </summary>
 		/// <value>The number of enabled assignment nodes selected for a pending batch operation.</value>
@@ -40,11 +45,13 @@ namespace VixenModules.Property.State.Setup.Models
 			if (!node.IsEnabled)
 			{
 				_anchorNode = null;
+				SelectionChanged?.Invoke(this, EventArgs.Empty);
 				return;
 			}
 
 			node.IsSelected = true;
 			_anchorNode = node;
+			SelectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -69,6 +76,8 @@ namespace VixenModules.Property.State.Setup.Models
 			{
 				_anchorNode = GetAllNodes().FirstOrDefault(selectedNode => selectedNode.IsEnabled && selectedNode.IsSelected);
 			}
+
+			SelectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -106,6 +115,8 @@ namespace VixenModules.Property.State.Setup.Models
 			{
 				visibleNodes[index].IsSelected = true;
 			}
+
+			SelectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -113,7 +124,7 @@ namespace VixenModules.Property.State.Setup.Models
 		/// </summary>
 		public void ToggleCheckedStateForSelectedNodes()
 		{
-			var selectedNodes = GetVisibleNodes()
+			var selectedNodes = GetAllNodes()
 				.Where(node => node.IsSelected)
 				.ToList();
 
@@ -129,6 +140,7 @@ namespace VixenModules.Property.State.Setup.Models
 			}
 
 			ClearDisabledSelections();
+			SelectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -138,6 +150,7 @@ namespace VixenModules.Property.State.Setup.Models
 		{
 			ClearSelectedNodes();
 			_anchorNode = null;
+			SelectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		void ITreeViewRangeSelectionController.SelectSingle(object item)

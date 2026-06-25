@@ -59,6 +59,7 @@ namespace Common.WPFCommon.Behaviors
 		private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			if (SelectionController == null ||
+				IsCheckBoxClick(e.OriginalSource) ||
 				FindItem(e.OriginalSource) is not { } item)
 			{
 				return;
@@ -101,6 +102,12 @@ namespace Common.WPFCommon.Behaviors
 
 			var treeViewItem = source.FindVisualAncestor<TreeViewItem>();
 			return treeViewItem?.DataContext;
+		}
+
+		private static bool IsCheckBoxClick(object eventSource)
+		{
+			return eventSource is DependencyObject source &&
+				source.FindVisualAncestor<CheckBox>() != null;
 		}
 	}
 }
