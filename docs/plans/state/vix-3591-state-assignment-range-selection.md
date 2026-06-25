@@ -27,7 +27,8 @@ The correct identifier for this enhancement is VIX-3591. The source requirement 
 - [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 2: added the State-specific WPF behavior for Ctrl-click selection, Shift-click range selection, unmodified single selection, and Space-triggered explicit toggling.
 - [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 3: wired assignment-tree selection into XAML through a reusable WPFCommon behavior, bound selection visuals, and exposed the State item controller for binding.
 - [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 4: added the Toggle Selected command surface and cleared temporary assignment-tree selection when the edited row, selected definition, or row multi-selection state changes.
-- [ ] Implement Milestones 5 and 6: remaining integration tests and manual validation.
+- [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 5: filled remaining focused coverage for visible flattening, missing-anchor range selection, save-path assignment persistence, and State definition selection cleanup.
+- [ ] Implement Milestone 6: final validation and manual acceptance.
 
 ## Surprises & Discoveries
 
@@ -99,6 +100,8 @@ Milestone 3 is complete. The State mapper XAML now attaches `TreeViewRangeSelect
 Milestone 4 is complete. `StateItemViewModel` exposes `ToggleSelectedAssignmentsCommand`, `SelectedAssignmentCount`, and `HasSelectedAssignments`, raises command state when assignment-tree selection changes, and invokes the controller's explicit batch toggle. `StateMapperView.xaml` now shows a compact `Toggle Selected` button in the Assigned Elements header and disables it when no assignment nodes are selected. `StateMapperViewModel` clears temporary assignment-tree selection when the edited State item row changes, when the selected State definition changes, and when row multi-selection hides the assignment tree. Sequential focused validation passed for `FullyQualifiedName~StateMapperValidationTests` and `FullyQualifiedName~StateAssignmentTree`.
 
 Follow-up interaction correction: assignment node labels are no longer checkbox content. Clicking the checkbox toggles that one assignment directly, while clicking the text or row area changes the temporary assignment-tree selection used for Shift-click ranges and Toggle Selected.
+
+Milestone 5 is complete. `StateAssignmentTreeSelectionTests` now includes explicit coverage for visible-node flattening and direct missing-anchor range selection, in addition to the earlier Ctrl-style selection, Shift-style selection, collapsed and disabled descendant exclusion, selected-versus-checked independence, mixed toggling, group-rule preservation, and anchor clearing tests. `StateMapperValidationTests` now covers Toggle Selected persisting assigned element IDs through `SaveAsync`, row-change cleanup, State definition-change cleanup, and multi-row selection cleanup. Sequential focused validation passed for `FullyQualifiedName~StateMapperValidationTests` and `FullyQualifiedName~StateAssignmentTree`.
 
 ## Context and Orientation
 
@@ -276,3 +279,4 @@ The main behavior risk is ordering when a selected range contains both a group a
 - 2026-06-25 / Codex: Completed Milestone 3 by replacing the State-local behavior with a reusable `WPFCommon` behavior, wiring it into `StateMapperView.xaml`, adding selection highlight visuals, and exposing the selected State item controller for binding.
 - 2026-06-25 / Codex: Completed Milestone 4 by adding `ToggleSelectedAssignmentsCommand`, the Assigned Elements `Toggle Selected` button, selection-change command invalidation, and cleanup of temporary assignment-tree selection during State item, State definition, and row multi-selection changes.
 - 2026-06-25 / Codex: Adjusted assignment-tree hit targets so checkbox clicks perform individual assignment toggles and text/row clicks perform temporary selection and range-selection gestures.
+- 2026-06-25 / Codex: Completed Milestone 5 by adding the remaining focused model and ViewModel tests for visible flattening, missing-anchor range selection, assignment persistence through save, and State definition cleanup.

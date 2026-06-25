@@ -6,6 +6,27 @@ namespace Vixen.Tests.Property.State;
 public class StateAssignmentTreeSelectionTests
 {
 	[Fact]
+	public void GetVisibleNodesInDisplayOrder_ReturnsExpandedNodesInDisplayOrder()
+	{
+		// Arrange
+		var tree = CreateTree();
+		tree.Root.IsExpanded = true;
+		tree.Group.IsExpanded = true;
+		tree.SecondGroup.IsExpanded = false;
+
+		// Act
+		var visibleNames = tree.Root
+			.GetVisibleNodesInDisplayOrder()
+			.Select(node => node.Name)
+			.ToList();
+
+		// Assert
+		Assert.Equal(
+			["Root", "Group", "First", "Second", "Second Group", "Standalone"],
+			visibleNames);
+	}
+
+	[Fact]
 	public void SelectSingle_SelectsNodeWithoutCheckingAssignment()
 	{
 		// Arrange
@@ -38,6 +59,21 @@ public class StateAssignmentTreeSelectionTests
 		// Assert
 		Assert.False(firstLeaf.IsSelected);
 		Assert.Equal(0, controller.SelectedCount);
+	}
+
+	[Fact]
+	public void SelectRange_WithoutAnchorSelectsSingleNode()
+	{
+		// Arrange
+		var tree = CreateTree();
+		ExpandAll(tree.Root);
+		var controller = new StateAssignmentTreeSelectionController([tree.Root]);
+
+		// Act
+		controller.SelectRange(tree.SecondGroup.Children[0]);
+
+		// Assert
+		Assert.Equal(["Third"], GetSelectedNodeNames(tree.Root));
 	}
 
 	[Fact]

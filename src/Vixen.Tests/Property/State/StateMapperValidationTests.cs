@@ -187,6 +187,28 @@ public class StateMapperValidationTests
 	}
 
 	[Fact]
+	public async Task ToggleSelectedAssignmentsCommand_SavesSourceElementNodeIds()
+	{
+		// Arrange
+		var leafId = Guid.NewGuid();
+		var rootNode = CreateRootNodeWithSiblingGroups(leafId);
+		var source = CreateSource("Operating Mode", "Enabled");
+		var viewModel = CreateViewModel(source, rootNode);
+		var item = viewModel.Items[0];
+		var leaf = item.AssignmentRoots[0].Children[0].Children[0];
+
+		// Act
+		item.AssignmentSelection.SelectSingle(leaf);
+		item.ToggleSelectedAssignmentsCommand.Execute(null);
+		var result = await InvokeSaveAsync(viewModel);
+
+		// Assert
+		Assert.True(result);
+		Assert.Equal([leafId], source.Items[0].ElementNodeIds);
+		Assert.Equal(1, item.AssignmentCount);
+	}
+
+	[Fact]
 	public void SelectedItemChange_ClearsPreviousAssignmentSelection()
 	{
 		// Arrange
@@ -203,6 +225,54 @@ public class StateMapperValidationTests
 		// Assert
 		Assert.False(selectedLeaf.IsSelected);
 		Assert.Equal(0, firstItem.SelectedAssignmentCount);
+	}
+
+	[Fact]
+	public void SelectedStateDefinitionChange_ClearsAssignmentSelection()
+	{
+		// Arrange
+		var rootNode = CreateRootNodeWithSiblingGroups(Guid.NewGuid());
+		var source = new StateData
+		{
+			StateDefinitions =
+			[
+				new StateDefinitionData
+				{
+					Name = "First",
+					Items =
+					[
+						new StateItemData
+						{
+							Name = "Enabled",
+							Color = Color.Green
+						}
+					]
+				},
+				new StateDefinitionData
+				{
+					Name = "Second",
+					Items =
+					[
+						new StateItemData
+						{
+							Name = "Disabled",
+							Color = Color.Red
+						}
+					]
+				}
+			]
+		};
+		var viewModel = CreateViewModel(source, rootNode);
+		var selectedLeaf = viewModel.Items[0].AssignmentRoots[0].Children[0].Children[0];
+		viewModel.SelectedItem = viewModel.Items[0];
+		viewModel.Items[0].AssignmentSelection.SelectSingle(selectedLeaf);
+
+		// Act
+		viewModel.SelectedStateDefinition = viewModel.StateDefinitions[1];
+
+		// Assert
+		Assert.False(selectedLeaf.IsSelected);
+		Assert.Empty(source.StateDefinitions[0].Items[0].ElementNodeIds);
 	}
 
 	[Fact]
