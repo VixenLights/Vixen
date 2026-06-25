@@ -10,6 +10,7 @@ namespace VixenModules.Property.State.Setup.Models
 		private bool _isChecked;
 		private bool _isEnabled = true;
 		private bool _isExpanded;
+		private bool _isSelected;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StateAssignmentTreeNode"/> class.
@@ -100,6 +101,16 @@ namespace VixenModules.Property.State.Setup.Models
 			set => SetProperty(ref _isExpanded, value);
 		}
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether this node is selected for a pending batch assignment operation.
+		/// </summary>
+		/// <value><see langword="true" /> if this node is selected for a pending batch assignment operation; otherwise, <see langword="false" />.</value>
+		public bool IsSelected
+		{
+			get => _isSelected;
+			set => SetProperty(ref _isSelected, value);
+		}
+
 		internal StateElementNodeSnapshot Snapshot { get; }
 
 		/// <summary>
@@ -122,6 +133,28 @@ namespace VixenModules.Property.State.Setup.Models
 			return IsChecked
 				? Snapshot.GetLeafNodeIds()
 				: Children.SelectMany(child => child.GetEffectiveLeafNodeIds());
+		}
+
+		/// <summary>
+		/// Gets this node and its expanded descendants in display order.
+		/// </summary>
+		/// <returns>The visible assignment tree nodes in display order.</returns>
+		public IEnumerable<StateAssignmentTreeNode> GetVisibleNodesInDisplayOrder()
+		{
+			yield return this;
+
+			if (!IsExpanded)
+			{
+				yield break;
+			}
+
+			foreach (var child in Children)
+			{
+				foreach (var visibleNode in child.GetVisibleNodesInDisplayOrder())
+				{
+					yield return visibleNode;
+				}
+			}
 		}
 
 		internal bool ExpandCheckedDescendants()
@@ -154,17 +187,17 @@ namespace VixenModules.Property.State.Setup.Models
 		{
 			foreach (var child in Children)
 			{
-				child.ClearSelection();
+				child.ClearCheckedSelection();
 			}
 		}
 
-		private void ClearSelection()
+		private void ClearCheckedSelection()
 		{
 			SetProperty(ref _isChecked, false, nameof(IsChecked));
 
 			foreach (var child in Children)
 			{
-				child.ClearSelection();
+				child.ClearCheckedSelection();
 			}
 		}
 

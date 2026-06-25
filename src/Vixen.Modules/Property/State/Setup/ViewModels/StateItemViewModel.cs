@@ -25,6 +25,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			[
 				new StateAssignmentTreeNode(elementTree, item.ElementNodeIds.ToHashSet())
 			];
+			AssignmentSelection = new StateAssignmentTreeSelectionController(AssignmentRoots);
 
 			foreach (var root in AssignmentRoots)
 			{
@@ -44,6 +45,12 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		}
 
 		private static readonly IPropertyData ItemProperty = RegisterProperty<StateItemData>(nameof(Item));
+
+		/// <summary>
+		/// Gets the controller that manages temporary assignment-tree selection.
+		/// </summary>
+		/// <value>The controller that manages temporary assignment-tree selection.</value>
+		internal StateAssignmentTreeSelectionController AssignmentSelection { get; }
 
 		internal void ExpandCheckedAssignments()
 		{

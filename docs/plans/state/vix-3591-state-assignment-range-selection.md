@@ -1,4 +1,4 @@
-1# Add Range Selection to State Assignment Tree
+# Add Range Selection to State Assignment Tree
 
 This ExecPlan is a living document. The sections `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` must be kept up to date as work proceeds.
 
@@ -23,7 +23,8 @@ The correct identifier for this enhancement is VIX-3591. The source requirement 
 - [x] (2026-06-25 00:00 America/Chicago) Confirmed the correct identifier is VIX-3591 and renamed this plan accordingly.
 - [x] (2026-06-25 00:00 America/Chicago) Confirmed range toggling should use an explicit Space / Toggle Selected action unless implementation research finds strong evidence of a broader accepted application convention.
 - [x] (2026-06-25 00:00 America/Chicago) Confirmed disabled descendants under a checked group should be excluded from range selection because group rules already govern them.
-- [ ] Implement the range-selection model, WPF behavior, XAML wiring, tests, and manual validation described below.
+- [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 1: model-level assignment-tree selection state, visible-order traversal, a UI-free selection controller, State item ownership of the controller, and focused tests.
+- [ ] Implement Milestones 2 through 6: WPF behavior, XAML wiring, command surface, integration tests, and manual validation.
 
 ## Surprises & Discoveries
 
@@ -41,6 +42,12 @@ The correct identifier for this enhancement is VIX-3591. The source requirement 
 
 - Observation: The assignment tree is intentionally empty when more than one State item row is selected, so range assignment applies only while editing exactly one State item row.
   Evidence: `StateMapperViewModel.AssignedElementRoots` returns assignment roots only when `SelectedItems.Count == 1`.
+
+- Observation: The focused Property.State suite currently has unrelated default-name expectation failures.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Property.State"` compiled and ran 78 tests, with 75 passing and 3 failing because existing tests expected `Item Name 1` while the current implementation returned `State Item - 1`.
+
+- Observation: The Milestone 1 selection tests pass in isolation.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~StateAssignmentTreeSelectionTests" --no-restore` passed 9 of 9 tests.
 
 ## Decision Log
 
@@ -63,6 +70,8 @@ The correct identifier for this enhancement is VIX-3591. The source requirement 
 ## Outcomes & Retrospective
 
 This initial plan captures the implementation path. Update this section after each milestone with what changed, which tests passed, what manual behavior was observed, and whether any decisions changed.
+
+Milestone 1 is complete. `StateAssignmentTreeNode` now exposes temporary selection state separately from checked assignment state, and can enumerate visible expanded nodes in display order. `StateAssignmentTreeSelectionController` manages single selection, Ctrl-style add/remove selection, Shift-style visible range selection, explicit toggle of selected enabled nodes, and clearing selection. `StateItemViewModel` owns a controller for its assignment roots. Nine focused tests cover selection without checking, add/remove selection, visible range selection, collapsed-descendant exclusion, disabled-descendant exclusion, mixed checked-state toggling, and preservation of existing group rules.
 
 ## Context and Orientation
 
@@ -235,3 +244,4 @@ The main behavior risk is ordering when a selected range contains both a group a
 - 2026-06-25 / Codex: Created the initial ExecPlan from the available assignment enhancement document, VIX-3591 State property requirements and plans, current State assignment tree code, current State mapper XAML/ViewModels, existing row multi-select behavior, and the shared WPF tree multi-selection behavior.
 - 2026-06-25 / Codex: Renamed the plan and removed the identifier mismatch question after the user clarified that VIX-3591 is the correct identifier.
 - 2026-06-25 / Codex: Recorded user decisions that range toggling should be explicit through Space / Toggle Selected unless broader application convention research proves otherwise, and that disabled descendants under checked groups should be excluded from range selection.
+- 2026-06-25 / Codex: Completed Milestone 1 by adding model-level assignment selection state, visible-order traversal, a UI-free selection controller, State item controller ownership, and focused tests. Recorded that the broader Property.State suite has three unrelated default-name expectation failures.
