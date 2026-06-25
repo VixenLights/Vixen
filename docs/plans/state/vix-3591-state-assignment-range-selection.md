@@ -25,7 +25,8 @@ The correct identifier for this enhancement is VIX-3591. The source requirement 
 - [x] (2026-06-25 00:00 America/Chicago) Confirmed disabled descendants under a checked group should be excluded from range selection because group rules already govern them.
 - [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 1: model-level assignment-tree selection state, visible-order traversal, a UI-free selection controller, State item ownership of the controller, and focused tests.
 - [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 2: added the State-specific WPF behavior for Ctrl-click selection, Shift-click range selection, unmodified single selection, and Space-triggered explicit toggling.
-- [ ] Implement Milestones 3 through 6: XAML wiring, command surface, integration tests, and manual validation.
+- [x] (2026-06-25 00:00 America/Chicago) Implemented Milestone 3: wired assignment-tree selection into XAML through a reusable WPFCommon behavior, bound selection visuals, and exposed the State item controller for binding.
+- [ ] Implement Milestones 4 through 6: command surface, integration tests, and manual validation.
 
 ## Surprises & Discoveries
 
@@ -53,6 +54,9 @@ The correct identifier for this enhancement is VIX-3591. The source requirement 
 - Observation: The State project enables both WPF and WinForms, so new WPF behavior code must avoid ambiguous framework type names.
   Evidence: An initial compile of `StateAssignmentTreeSelectionBehavior` failed because `TreeView`, `KeyEventArgs`, and `KeyEventHandler` were ambiguous between WPF and WinForms. The behavior now uses aliases for those WPF types.
 
+- Observation: A behavior defined only in the State project could not be resolved by `StateMapperView.xaml` during WPF markup compilation.
+  Evidence: `StateAssignmentTreeSelectionBehavior` was present as a compile item and present in the previous `C:\Output\Module.Property.State.dll`, but markup compilation still failed with `MC3074` for the same-project namespace. Moving the UI event behavior to `WPFCommon` and using a narrow `ITreeViewRangeSelectionController` interface allowed the State mapper XAML to compile.
+
 ## Decision Log
 
 - Decision: Add State-specific assignment tree selection state instead of reusing `TreeViewMultipleSelectionBehavior` directly.
@@ -71,13 +75,19 @@ The correct identifier for this enhancement is VIX-3591. The source requirement 
   Rationale: Disabled descendants belong to a checked group and cannot be selected directly under the current rules. The user confirmed they should be excluded because they are already governed by the checked group rules.
   Date/Author: 2026-06-25 / Codex
 
+- Decision: Wire the assignment-tree gestures through a reusable `WPFCommon` behavior and a small controller interface instead of a State-project-local behavior.
+  Rationale: The State-project behavior compiled as C# but could not be resolved by this project’s XAML markup pass. A `WPFCommon` behavior avoids the same-assembly markup resolution issue and remains strongly typed through `ITreeViewRangeSelectionController`, while the State-specific selection rules still live in `StateAssignmentTreeSelectionController`.
+  Date/Author: 2026-06-25 / Codex
+
 ## Outcomes & Retrospective
 
 This initial plan captures the implementation path. Update this section after each milestone with what changed, which tests passed, what manual behavior was observed, and whether any decisions changed.
 
 Milestone 1 is complete. `StateAssignmentTreeNode` now exposes temporary selection state separately from checked assignment state, and can enumerate visible expanded nodes in display order. `StateAssignmentTreeSelectionController` manages single selection, Ctrl-style add/remove selection, Shift-style visible range selection, explicit toggle of selected enabled nodes, and clearing selection. `StateItemViewModel` owns a controller for its assignment roots. Nine focused tests cover selection without checking, add/remove selection, visible range selection, collapsed-descendant exclusion, disabled-descendant exclusion, mixed checked-state toggling, and preservation of existing group rules.
 
-Milestone 2 is complete. `StateAssignmentTreeSelectionBehavior` now attaches to a WPF `TreeView`, finds the assignment node represented by the clicked item, sends Ctrl-click to `ToggleSelection`, Shift-click to `SelectRange`, unmodified clicks to `SelectSingle`, and sends the Space key to `ToggleCheckedStateForSelectedNodes`. Ctrl-click and Shift-click mark the mouse event handled so a nested checkbox does not accidentally toggle a single node while the user is only changing the pending range selection. Ordinary checkbox clicks remain available for single-node assignment toggling.
+Milestone 2 is complete. The tree selection behavior now attaches to a WPF `TreeView`, finds the assignment node represented by the clicked item, sends Ctrl-click to `ToggleSelection`, Shift-click to `SelectRange`, unmodified clicks to `SelectSingle`, and sends the Space key to `ToggleCheckedStateForSelectedNodes`. Ctrl-click and Shift-click mark the mouse event handled so a nested checkbox does not accidentally toggle a single node while the user is only changing the pending range selection. Ordinary checkbox clicks remain available for single-node assignment toggling. The first State-local behavior implementation was superseded during Milestone 3 by the reusable `WPFCommon` behavior because of XAML markup resolution behavior.
+
+Milestone 3 is complete. The State mapper XAML now attaches `TreeViewRangeSelectionBehavior` from `WPFCommon` to the Assigned Elements tree and binds it to `SelectedItem.AssignmentSelection`. `StateItemViewModel.AssignmentSelection` is public so WPF binding can see it. The assignment item template now highlights nodes whose `StateAssignmentTreeNode.IsSelected` is true without using native `TreeViewItem.IsSelected`, preserving multiple pending selections. The initial State-local behavior was replaced by the `WPFCommon` behavior because same-project behavior lookup failed during XAML compilation.
 
 ## Context and Orientation
 
@@ -252,3 +262,4 @@ The main behavior risk is ordering when a selected range contains both a group a
 - 2026-06-25 / Codex: Recorded user decisions that range toggling should be explicit through Space / Toggle Selected unless broader application convention research proves otherwise, and that disabled descendants under checked groups should be excluded from range selection.
 - 2026-06-25 / Codex: Completed Milestone 1 by adding model-level assignment selection state, visible-order traversal, a UI-free selection controller, State item controller ownership, and focused tests. Recorded that the broader Property.State suite has three unrelated default-name expectation failures.
 - 2026-06-25 / Codex: Completed Milestone 2 by adding a State-specific WPF tree selection behavior and qualifying WPF type names because the State project also references WinForms.
+- 2026-06-25 / Codex: Completed Milestone 3 by replacing the State-local behavior with a reusable `WPFCommon` behavior, wiring it into `StateMapperView.xaml`, adding selection highlight visuals, and exposing the selected State item controller for binding.

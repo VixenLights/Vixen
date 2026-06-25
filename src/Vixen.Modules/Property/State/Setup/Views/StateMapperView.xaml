@@ -217,6 +217,9 @@
 						  VirtualizingPanel.IsVirtualizing="True"
 						  VirtualizingPanel.VirtualizationMode="Recycling"
 						  ScrollViewer.CanContentScroll="True">
+					<i:Interaction.Behaviors>
+						<behaviors:TreeViewRangeSelectionBehavior SelectionController="{Binding SelectedItem.AssignmentSelection}"/>
+					</i:Interaction.Behaviors>
 					<TreeView.ItemContainerStyle>
 						<Style TargetType="{x:Type TreeViewItem}">
 							<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
@@ -224,9 +227,32 @@
 					</TreeView.ItemContainerStyle>
 					<TreeView.ItemTemplate>
 						<HierarchicalDataTemplate ItemsSource="{Binding Children}">
-							<CheckBox Content="{Binding Name}"
-									  IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-									  IsEnabled="{Binding IsEnabled}"/>
+							<Border Padding="2,1">
+								<Border.Style>
+									<Style TargetType="{x:Type Border}">
+										<Setter Property="Background" Value="Transparent"/>
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding IsSelected}" Value="True">
+												<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</Border.Style>
+								<CheckBox Content="{Binding Name}"
+										  IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+										  IsEnabled="{Binding IsEnabled}">
+									<CheckBox.Style>
+										<Style TargetType="{x:Type CheckBox}"
+											   BasedOn="{StaticResource {x:Type CheckBox}}">
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding IsSelected}" Value="True">
+													<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</CheckBox.Style>
+								</CheckBox>
+							</Border>
 						</HierarchicalDataTemplate>
 					</TreeView.ItemTemplate>
 				</TreeView>

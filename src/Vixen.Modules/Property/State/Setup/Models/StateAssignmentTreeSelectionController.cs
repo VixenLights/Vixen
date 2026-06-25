@@ -1,9 +1,11 @@
+using Common.WPFCommon.Behaviors;
+
 namespace VixenModules.Property.State.Setup.Models
 {
 	/// <summary>
 	/// Manages temporary range selection for a State item assignment tree.
 	/// </summary>
-	public sealed class StateAssignmentTreeSelectionController
+	public sealed class StateAssignmentTreeSelectionController : ITreeViewRangeSelectionController
 	{
 		private readonly IReadOnlyCollection<StateAssignmentTreeNode> _roots;
 		private StateAssignmentTreeNode? _anchorNode;
@@ -136,6 +138,35 @@ namespace VixenModules.Property.State.Setup.Models
 		{
 			ClearSelectedNodes();
 			_anchorNode = null;
+		}
+
+		void ITreeViewRangeSelectionController.SelectSingle(object item)
+		{
+			if (item is StateAssignmentTreeNode node)
+			{
+				SelectSingle(node);
+			}
+		}
+
+		void ITreeViewRangeSelectionController.ToggleSelection(object item)
+		{
+			if (item is StateAssignmentTreeNode node)
+			{
+				ToggleSelection(node);
+			}
+		}
+
+		void ITreeViewRangeSelectionController.SelectRange(object item)
+		{
+			if (item is StateAssignmentTreeNode node)
+			{
+				SelectRange(node);
+			}
+		}
+
+		void ITreeViewRangeSelectionController.ToggleCheckedStateForSelectedItems()
+		{
+			ToggleCheckedStateForSelectedNodes();
 		}
 
 		private void ClearSelectedNodes()

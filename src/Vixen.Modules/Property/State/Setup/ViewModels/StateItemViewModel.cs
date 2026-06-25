@@ -50,7 +50,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		/// Gets the controller that manages temporary assignment-tree selection.
 		/// </summary>
 		/// <value>The controller that manages temporary assignment-tree selection.</value>
-		internal StateAssignmentTreeSelectionController AssignmentSelection { get; }
+		public StateAssignmentTreeSelectionController AssignmentSelection { get; }
 
 		internal void ExpandCheckedAssignments()
 		{

@@ -1,19 +1,15 @@
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Common.WPFCommon.Utils;
 using Microsoft.Xaml.Behaviors;
-using VixenModules.Property.State.Setup.Models;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using KeyEventHandler = System.Windows.Input.KeyEventHandler;
-using TreeView = System.Windows.Controls.TreeView;
-using TreeViewItem = System.Windows.Controls.TreeViewItem;
 
-namespace VixenModules.Property.State.Setup.Behaviors
+namespace Common.WPFCommon.Behaviors
 {
 	/// <summary>
-	/// Adds assignment-tree range selection gestures to a State assignment <see cref="TreeView" />.
+	/// Adds conventional range-selection gestures to a <see cref="TreeView" />.
 	/// </summary>
-	public sealed class StateAssignmentTreeSelectionBehavior : Behavior<TreeView>
+	public sealed class TreeViewRangeSelectionBehavior : Behavior<TreeView>
 	{
 		/// <summary>
 		/// Identifies the <see cref="SelectionController" /> dependency property.
@@ -21,16 +17,16 @@ namespace VixenModules.Property.State.Setup.Behaviors
 		public static readonly DependencyProperty SelectionControllerProperty =
 			DependencyProperty.Register(
 				nameof(SelectionController),
-				typeof(StateAssignmentTreeSelectionController),
-				typeof(StateAssignmentTreeSelectionBehavior));
+				typeof(ITreeViewRangeSelectionController),
+				typeof(TreeViewRangeSelectionBehavior));
 
 		/// <summary>
-		/// Gets or sets the controller that receives assignment-tree selection gestures.
+		/// Gets or sets the controller that receives tree selection gestures.
 		/// </summary>
-		/// <value>The controller that receives assignment-tree selection gestures.</value>
-		public StateAssignmentTreeSelectionController? SelectionController
+		/// <value>The controller that receives tree selection gestures.</value>
+		public ITreeViewRangeSelectionController SelectionController
 		{
-			get => (StateAssignmentTreeSelectionController?)GetValue(SelectionControllerProperty);
+			get => (ITreeViewRangeSelectionController)GetValue(SelectionControllerProperty);
 			set => SetValue(SelectionControllerProperty, value);
 		}
 
@@ -63,7 +59,7 @@ namespace VixenModules.Property.State.Setup.Behaviors
 		private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			if (SelectionController == null ||
-				FindAssignmentNode(e.OriginalSource) is not { } node)
+				FindItem(e.OriginalSource) is not { } item)
 			{
 				return;
 			}
@@ -71,15 +67,15 @@ namespace VixenModules.Property.State.Setup.Behaviors
 			switch (Keyboard.Modifiers)
 			{
 				case ModifierKeys.Control:
-					SelectionController.ToggleSelection(node);
+					SelectionController.ToggleSelection(item);
 					e.Handled = true;
 					break;
 				case ModifierKeys.Shift:
-					SelectionController.SelectRange(node);
+					SelectionController.SelectRange(item);
 					e.Handled = true;
 					break;
 				case ModifierKeys.None:
-					SelectionController.SelectSingle(node);
+					SelectionController.SelectSingle(item);
 					break;
 			}
 		}
@@ -92,11 +88,11 @@ namespace VixenModules.Property.State.Setup.Behaviors
 				return;
 			}
 
-			SelectionController.ToggleCheckedStateForSelectedNodes();
+			SelectionController.ToggleCheckedStateForSelectedItems();
 			e.Handled = true;
 		}
 
-		private static StateAssignmentTreeNode? FindAssignmentNode(object eventSource)
+		private static object FindItem(object eventSource)
 		{
 			if (eventSource is not DependencyObject source)
 			{
@@ -104,7 +100,7 @@ namespace VixenModules.Property.State.Setup.Behaviors
 			}
 
 			var treeViewItem = source.FindVisualAncestor<TreeViewItem>();
-			return treeViewItem?.DataContext as StateAssignmentTreeNode;
+			return treeViewItem?.DataContext;
 		}
 	}
 }
