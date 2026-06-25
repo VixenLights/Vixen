@@ -162,7 +162,7 @@ public class StateMapperValidationTests
 		await InvokeAsync(viewModel, "AddItemAsync");
 
 		// Assert
-		Assert.Equal("Item Name 1", viewModel.Items[1].Name);
+		Assert.Equal("State Item - 1", viewModel.Items[1].Name);
 		Assert.False(viewModel.Items[1].HasErrors);
 		Assert.True(viewModel.OkCommand.CanExecute(null));
 	}

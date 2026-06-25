@@ -44,7 +44,7 @@ public class StateMapperDefinitionTests
 		Assert.Equal("Blink", viewModel.Name);
 		Assert.Same(viewModel.StateDefinitions[1], viewModel.SelectedStateDefinition);
 		Assert.Single(viewModel.Items);
-		Assert.Equal("Item Name 1", viewModel.Items[0].Name);
+		Assert.Equal("State Item - 1", viewModel.Items[0].Name);
 	}
 
 	[Fact]

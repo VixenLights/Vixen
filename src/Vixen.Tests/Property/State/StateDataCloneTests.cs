@@ -157,7 +157,7 @@ public class StateDataCloneTests
 		// Assert
 		Assert.Equal("State - 1", data.StateDefinitions[0].Name);
 		Assert.Equal(string.Empty, data.Description);
-		Assert.Equal("Item Name 1", data.Items[0].Name);
+		Assert.Equal("State Item - 1", data.Items[0].Name);
 		Assert.NotNull(data.Items[0].ElementNodeIds);
 
 		data.StateDefinitions = null!;
