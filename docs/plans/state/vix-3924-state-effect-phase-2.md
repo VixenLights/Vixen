@@ -22,8 +22,8 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 - [x] (2026-06-29 11:00 -05:00) Completed Milestone 5 custom row option rules and cleanup. Added Default uniqueness filtering, Iterate `<None>` support, Iterate-to-Default normalization, State definition change clearing, State item selection color reset coverage, and duplicate-name disambiguation by assignment summary then ordinal.
 - [x] (2026-06-29 12:20 -05:00) Completed Milestone 7 custom render planning and rendering. Added Custom interval planning, row color overrides, blank timing slots for Iterate `<None>` and missing rows, and focused planner coverage.
 - [x] (2026-06-29 09:49 -05:00) Completed Milestone 6 row color editor capability context. Added a shared discrete color provider contract, made custom State rows report colors from the selected State item's assigned nodes, and updated EffectEditor color lookup to honor provider-backed components.
-- [ ] Update visual representation to show a Custom hint.
-- [ ] Add focused tests and run validation commands.
+- [x] (2026-06-29 14:14 -05:00) Completed Milestone 8 timeline visual Custom hint. Updated the State effect visual label to append `Custom` when `RenderSource == StateRenderSource.Custom` and added focused label tests.
+- [x] (2026-06-29 14:14 -05:00) Added focused tests and ran validation commands for milestone 8.
 - [ ] Complete manual validation and update this plan's evidence and retrospective.
 
 ## Surprises & Discoveries
@@ -95,6 +95,8 @@ Milestone 5 is complete. Custom row State item options now honor playback mode: 
 Milestone 6 is complete. Custom State rows now implement a shared discrete color provider contract that returns discrete colors only from the selected State item's assigned target nodes. The EffectEditor's color editor and drag/drop validation now honor provider-backed components before falling back to whole-effect target colors, so custom row colors use a discrete picker for discrete State item assignments and a full-color picker for full-color assignments. The focused `Effect.State` test filter passes with 43 tests. Custom rendering and timeline visual updates remain for later milestones.
 
 Milestone 7 is complete. Custom render source rows now produce render intervals without mutating State item definitions. Default mode renders one full-duration interval per valid first custom row for each State item, and Iterate mode splits the effect duration across rows times iterations while letting `<None>` and missing rows consume blank time. Rendering resolves State item assignments using the row color override when present, preserving the existing discrete-color fallback and coalescing behavior. The focused `Effect.State` test filter passes with 47 tests. Timeline visual updates remain for a later milestone.
+
+Milestone 8 is complete. The State effect visual label now includes a `Custom` hint when the Custom render source is selected, while existing State Item and Mark Collection labels continue to show the State definition without the extra hint. The label text is used for font sizing so the Custom suffix participates in the existing fit calculation. The focused `Effect.State` test filter passes with 49 tests, the focused `Property.State` test filter passes with 85 tests, and the State effect project build succeeds. Manual Vixen UI validation remains.
 
 ## Context and Orientation
 
@@ -394,6 +396,22 @@ Milestone 7 validation:
     3 Warning(s)
     0 Error(s)
 
+Milestone 8 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
+    Passed!  - Failed: 0, Passed: 49, Skipped: 0, Total: 49
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Property.State" --no-restore
+    Passed!  - Failed: 0, Passed: 85, Skipped: 0, Total: 85
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    3 Warning(s)
+    0 Error(s)
+
+    git -c core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol diff --check
+    No output.
+
 ## Interfaces and Dependencies
 
 Use the existing State property types:
@@ -490,3 +508,4 @@ The implementation should avoid new async code. If any asynchronous work is intr
 - 2026-06-29 / Codex: Completed Milestone 5 by implementing playback-mode-aware custom row options, Iterate-to-Default cleanup, State definition change clearing, duplicate-name disambiguation, and focused tests.
 - 2026-06-29 / Codex: Completed Milestone 6 by adding provider-backed discrete color lookup for custom State rows and updating the EffectEditor color lookup path to honor row-specific assigned element color capabilities.
 - 2026-06-29 / Codex: Completed Milestone 7 by adding Custom interval planning, row color override rendering, blank Iterate timing slots, and focused render planner coverage.
+- 2026-06-29 / Codex: Completed Milestone 8 by adding the timeline visual Custom hint, factoring State visual label text for focused tests, and running the planned focused validation commands.

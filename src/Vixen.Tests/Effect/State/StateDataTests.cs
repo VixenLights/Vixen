@@ -283,6 +283,33 @@ public class StateDataTests
 	}
 
 	[Fact]
+	public void VisualRepresentationText_StateItem_UsesStateDefinition()
+	{
+		// Arrange
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", CreateStateItem("Open", Color.Green)));
+
+		// Act
+		var text = effect.GetVisualRepresentationText();
+
+		// Assert
+		Assert.Equal("State - Door", text);
+	}
+
+	[Fact]
+	public void VisualRepresentationText_Custom_AddsCustomHint()
+	{
+		// Arrange
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", CreateStateItem("Open", Color.Green)));
+		effect.RenderSource = StateRenderSource.Custom;
+
+		// Act
+		var text = effect.GetVisualRepresentationText();
+
+		// Assert
+		Assert.Equal("State - Door - Custom", text);
+	}
+
+	[Fact]
 	public void CustomStateItemOptions_Default_ExcludeAlreadySelectedRows()
 	{
 		// Arrange

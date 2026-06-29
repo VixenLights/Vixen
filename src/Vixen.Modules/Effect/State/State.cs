@@ -26,7 +26,7 @@ namespace VixenModules.Effect.State
 		private EffectIntents _elementData = new();
 		private IReadOnlyList<DiscoveredStateDefinition> _stateDefinitions = [];
 		private CustomStateItemCollection _customStateItems = null!;
-		private const string VisualRepresentationText = "State";
+		private const string BaseVisualRepresentationText = "State";
 
 		public State()
 		{
@@ -72,14 +72,13 @@ namespace VixenModules.Effect.State
 		{
 			try
 			{
+				var text = GetVisualRepresentationText();
 				var adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(
 					g,
-					VisualRepresentationText,
+					text,
 					clipRectangle,
 					"Vixen.Fonts.DigitalDream.ttf",
 					48);
-
-				var text = $"{VisualRepresentationText} - {StateDefinition}";
 
 				using (var stringBrush = new SolidBrush(Color.White))
 				{
@@ -95,6 +94,14 @@ namespace VixenModules.Effect.State
 			{
 				Logging.Error(exception, "Exception rendering the visualization for the State effect.");
 			}
+		}
+
+		internal string GetVisualRepresentationText()
+		{
+			var text = $"{BaseVisualRepresentationText} - {StateDefinition}";
+			return RenderSource == StateRenderSource.Custom
+				? $"{text} - Custom"
+				: text;
 		}
 
 		#endregion
