@@ -21,7 +21,7 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 - [x] (2026-06-29 10:00 -05:00) Completed Milestone 4 Custom render source editor behavior. Added `StateRenderSource.Custom`, Custom State Items property metadata, mutually exclusive source-property browsability, render-source refresh metadata, and focused browsability tests.
 - [x] (2026-06-29 11:00 -05:00) Completed Milestone 5 custom row option rules and cleanup. Added Default uniqueness filtering, Iterate `<None>` support, Iterate-to-Default normalization, State definition change clearing, State item selection color reset coverage, and duplicate-name disambiguation by assignment summary then ordinal.
 - [ ] Add custom render planning and rendering with row color overrides.
-- [ ] Make row color editing honor the selected State item's assigned element color capabilities.
+- [x] (2026-06-29 09:49 -05:00) Completed Milestone 6 row color editor capability context. Added a shared discrete color provider contract, made custom State rows report colors from the selected State item's assigned nodes, and updated EffectEditor color lookup to honor provider-backed components.
 - [ ] Update visual representation to show a Custom hint.
 - [ ] Add focused tests and run validation commands.
 - [ ] Complete manual validation and update this plan's evidence and retrospective.
@@ -39,6 +39,9 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 
 - Observation: Hydrating the runtime custom row collection from persisted `StateData` must avoid using the public `CustomStateItems` setter.
   Evidence: The public setter intentionally marks the effect dirty for editor changes; the implementation uses a private `SetCustomStateItemModel(..., markDirty: false)` path during construction and `ModuleData` load.
+
+- Observation: The EffectEditor color picker already chooses discrete versus full-color mode from the edited property's component.
+  Evidence: `ColorTypeEditor`, gradient editor code, and color drag/drop validation call the shared discrete color lookup. Collection sub-properties use the row object as the property component, so a row-level provider can supply selected-assignment colors without State-specific editor coupling.
 
 ## Decision Log
 
@@ -85,6 +88,8 @@ Milestone 3 is complete. The State effect now has editor-facing custom row runti
 Milestone 4 is complete. The State effect now exposes `Custom` in the Render Source selector, shows `Custom State Items` only when `RenderSource == StateRenderSource.Custom`, hides the State Item and Mark Collection selectors in Custom mode, and preserves the current Playback Mode when switching to Custom. The custom collection display name and description use shared EffectDescriptorAttributes resource keys instead of literal end-user strings. The focused `Effect.State` test filter passes with 33 tests. Custom row option filtering, Iterate-to-Default cleanup, color editor capability context, rendering, and timeline visual updates remain for later milestones.
 
 Milestone 5 is complete. Custom row State item options now honor playback mode: Default hides `<None>` and excludes State items already selected by other rows, while Iterate shows `<None>` first and allows repeated State items. Switching from Iterate to Default removes `<None>` rows and duplicate State item rows while keeping the first row and its color. Changing the selected State definition clears custom rows. Duplicate State item names are disambiguated using assignment context first and ordinal fallback when assignment context is identical. The focused `Effect.State` test filter passes with 41 tests. Color editor capability context, rendering, and timeline visual updates remain for later milestones.
+
+Milestone 6 is complete. Custom State rows now implement a shared discrete color provider contract that returns discrete colors only from the selected State item's assigned target nodes. The EffectEditor's color editor and drag/drop validation now honor provider-backed components before falling back to whole-effect target colors, so custom row colors use a discrete picker for discrete State item assignments and a full-color picker for full-color assignments. The focused `Effect.State` test filter passes with 43 tests. Custom rendering and timeline visual updates remain for later milestones.
 
 ## Context and Orientation
 
@@ -359,6 +364,21 @@ Milestone 5 validation:
     3 Warning(s)
     0 Error(s)
 
+Milestone 6 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
+    Passed!  - Failed: 0, Passed: 43, Skipped: 0, Total: 43
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    3 Warning(s)
+    0 Error(s)
+
+    dotnet build src\Vixen.Modules\Editor\EffectEditor\EffectEditor.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    12 Warning(s)
+    0 Error(s)
+
 ## Interfaces and Dependencies
 
 Use the existing State property types:
@@ -453,3 +473,4 @@ The implementation should avoid new async code. If any asynchronous work is intr
 - 2026-06-29 / Codex: Completed Milestone 3 by adding the editor-facing custom row object, expandable collection, row option converter, parent/data synchronization, and focused State effect tests.
 - 2026-06-29 / Codex: Completed Milestone 4 by adding the Custom render source enum value, resource-backed property-grid metadata, mutually exclusive editor browsability, playback-mode preservation coverage, and focused tests.
 - 2026-06-29 / Codex: Completed Milestone 5 by implementing playback-mode-aware custom row options, Iterate-to-Default cleanup, State definition change clearing, duplicate-name disambiguation, and focused tests.
+- 2026-06-29 / Codex: Completed Milestone 6 by adding provider-backed discrete color lookup for custom State rows and updating the EffectEditor color lookup path to honor row-specific assigned element color capabilities.

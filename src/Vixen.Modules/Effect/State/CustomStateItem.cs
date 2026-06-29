@@ -10,7 +10,7 @@ namespace VixenModules.Effect.State
 	/// Maintains an editable custom State item row for the State effect.
 	/// </summary>
 	[ExpandableObject]
-	public sealed class CustomStateItem: ExpandoObjectBase
+	public sealed class CustomStateItem: ExpandoObjectBase, IDiscreteColorProvider
 	{
 		private Color _color = Color.White;
 		private Guid _stateItemId = Guid.Empty;
@@ -107,6 +107,12 @@ namespace VixenModules.Effect.State
 		public override string ToString()
 		{
 			return StateItem;
+		}
+
+		/// <inheritdoc />
+		public HashSet<Color> GetDiscreteColors()
+		{
+			return Parent?.GetCustomStateItemValidColors(this) ?? [];
 		}
 	}
 }

@@ -7,6 +7,10 @@ using Vixen.Sys;
 using VixenModules.Effect.State;
 using VixenModules.Property.State;
 using Xunit;
+using ColorData = VixenModules.Property.Color.ColorData;
+using ColorDescriptor = VixenModules.Property.Color.ColorDescriptor;
+using ColorModule = VixenModules.Property.Color.ColorModule;
+using ElementColorType = VixenModules.Property.Color.ElementColorType;
 using StateEffect = VixenModules.Effect.State.State;
 using StateEffectData = VixenModules.Effect.State.StateData;
 using StatePropertyDefinitionData = VixenModules.Property.State.StateDefinitionData;
@@ -440,6 +444,52 @@ public class StateDataTests
 		Assert.Equal(["Open (No assignments, 1)", "Open (No assignments, 2)"], options);
 	}
 
+	[Fact]
+	public void CustomStateItemDiscreteColors_UseSelectedStateItemAssignments()
+	{
+		// Arrange
+		var discreteElementId = Guid.NewGuid();
+		var unassignedElementId = Guid.NewGuid();
+		var item = CreateStateItem("Open", Color.Green, discreteElementId);
+		var discreteNode = CreateNode(discreteElementId, "Discrete");
+		var unassignedNode = CreateNode(unassignedElementId, "Unassigned");
+		AddSingleColorModule(discreteNode, Color.Red);
+		AddSingleColorModule(unassignedNode, Color.Blue);
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", item), discreteNode, unassignedNode);
+		var row = new CustomStateItem
+		{
+			Parent = effect,
+			StateItemId = item.Id
+		};
+
+		// Act
+		var colors = row.GetDiscreteColors();
+
+		// Assert
+		Assert.Equal([Color.Red], colors);
+	}
+
+	[Fact]
+	public void CustomStateItemDiscreteColors_FullColorAssignment_ReturnsEmpty()
+	{
+		// Arrange
+		var fullColorElementId = Guid.NewGuid();
+		var item = CreateStateItem("Open", Color.Green, fullColorElementId);
+		var fullColorNode = CreateNode(fullColorElementId, "Full Color");
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", item), fullColorNode);
+		var row = new CustomStateItem
+		{
+			Parent = effect,
+			StateItemId = item.Id
+		};
+
+		// Act
+		var colors = row.GetDiscreteColors();
+
+		// Assert
+		Assert.Empty(colors);
+	}
+
 	private static bool IsBrowsable(StateEffect effect, string propertyName)
 	{
 		var property = TypeDescriptor.GetProperties(effect)[propertyName];
@@ -513,5 +563,24 @@ public class StateDataTests
 		var propertyItems = Assert.IsType<Dictionary<Guid, IPropertyModuleInstance>>(
 			propertyItemsField.GetValue(node.Properties));
 		propertyItems[StatePropertyDescriptor.ModuleId] = stateModule;
+	}
+
+	private static void AddSingleColorModule(IElementNode node, Color color)
+	{
+		var colorModule = new ColorModule
+		{
+			ModuleData = new ColorData
+			{
+				ElementColorType = ElementColorType.SingleColor,
+				SingleColor = color
+			}
+		};
+		var propertyItemsField = typeof(PropertyManager)
+			.GetField("_items", BindingFlags.Instance | BindingFlags.NonPublic);
+		Assert.NotNull(propertyItemsField);
+
+		var propertyItems = Assert.IsType<Dictionary<Guid, IPropertyModuleInstance>>(
+			propertyItemsField.GetValue(node.Properties));
+		propertyItems[ColorDescriptor.ModuleId] = colorModule;
 	}
 }

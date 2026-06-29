@@ -706,9 +706,49 @@ namespace VixenModules.Effect.State
 			customStateItem.Color = selectedItem.Color;
 		}
 
+		/// <summary>
+		/// Gets the discrete colors supported by the selected State item's assigned elements.
+		/// </summary>
+		/// <param name="customStateItem">The custom State item row.</param>
+		/// <returns>The valid discrete colors, or an empty set when full color editing is allowed.</returns>
+		public HashSet<Color> GetCustomStateItemValidColors(CustomStateItem customStateItem)
+		{
+			var selectedDefinition = GetSelectedStateDefinition();
+			if (selectedDefinition == null || customStateItem.StateItemId == Guid.Empty)
+			{
+				return [];
+			}
+
+			var selectedItem = GetStateItems(selectedDefinition)
+				.FirstOrDefault(item => item.Id == customStateItem.StateItemId);
+			if (selectedItem == null)
+			{
+				return [];
+			}
+
+			return GetAssignedTargetNodes(selectedItem)
+				.SelectMany(node => ColorModule.getValidColorsForElementNode(node, true))
+				.ToHashSet();
+		}
+
 		private bool IsCustomStateItemSelected(Guid stateItemId, CustomStateItem currentItem)
 		{
 			return CustomStateItems.Any(item => !ReferenceEquals(item, currentItem) && item.StateItemId == stateItemId);
+		}
+
+		private IEnumerable<IElementNode> GetAssignedTargetNodes(StateItemData stateItem)
+		{
+			var targetScopeNodes = GetTargetScopeNodes()
+				.GroupBy(node => node.Id)
+				.ToDictionary(group => group.Key, group => group.First());
+
+			foreach (var elementNodeId in stateItem.ElementNodeIds ?? [])
+			{
+				if (targetScopeNodes.TryGetValue(elementNodeId, out var assignedNode))
+				{
+					yield return assignedNode;
+				}
+			}
 		}
 
 		private IReadOnlyList<DiscoveredStateDefinition> GetDiscoveredStateDefinitions()

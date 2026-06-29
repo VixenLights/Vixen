@@ -1,7 +1,5 @@
-﻿using System.Drawing;
-using Vixen.Module.Effect;
-using Vixen.Sys;
-using VixenModules.Property.Color;
+using System.Drawing;
+using VixenModules.Editor.EffectEditor.Internal;
 
 namespace VixenModules.Editor.EffectEditor.Editors
 {
@@ -12,27 +10,14 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		{
 		}
 
+		/// <summary>
+		/// Gets the discrete colors that should constrain color editing for the specified component.
+		/// </summary>
+		/// <param name="component">The component that owns the edited color property.</param>
+		/// <returns>The valid discrete colors, or an empty set when full color editing is allowed.</returns>
 		protected HashSet<Color> GetDiscreteColors(Object component)
 		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			if (component is IEffect)
-			{
-				IEffect effect = (IEffect) component;
-				validColors.AddRange(effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			}
-			else if (component is Array)
-			{
-				foreach (var item in (Array) component)
-				{
-					if (item is IEffect)
-					{
-						IEffect effect = (IEffect) item;
-						validColors.AddRange(effect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-					}
-				}
-			}
-
-			return validColors;
+			return Util.GetDiscreteColors(component);
 		}
 	}
 }
