@@ -267,6 +267,27 @@ public class StateRenderPlannerTests
 	}
 
 	[Fact]
+	public void CreateCustomIntervals_NoDefinition_ReturnsEmpty()
+	{
+		// Arrange
+		var customRows = new[]
+		{
+			CreateCustomRow(Guid.NewGuid(), Color.Blue)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			null,
+			customRows,
+			PlaybackMode.Default,
+			1,
+			TimeSpan.FromSeconds(5));
+
+		// Assert
+		Assert.Empty(intervals);
+	}
+
+	[Fact]
 	public void CreateCustomIntervals_DefaultSkipsNoneMissingAndDuplicateRows()
 	{
 		// Arrange

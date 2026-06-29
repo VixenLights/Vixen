@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using Moq;
+using Vixen.Data.Value;
 using Vixen.Module.Property;
 using Vixen.Sys;
 using VixenModules.Effect.State;
@@ -74,6 +75,26 @@ public class StateDataTests
 		// Assert
 		Assert.NotNull(data.CustomStateItems);
 		Assert.Empty(data.CustomStateItems);
+	}
+
+	[Fact]
+	public void CustomStateItemData_CreateInstanceForClone_CopiesValues()
+	{
+		// Arrange
+		var stateItemId = Guid.NewGuid();
+		var data = new CustomStateItemData
+		{
+			StateItemId = stateItemId,
+			Color = Color.Blue
+		};
+
+		// Act
+		var clone = data.CreateInstanceForClone();
+
+		// Assert
+		Assert.NotSame(data, clone);
+		Assert.Equal(stateItemId, clone.StateItemId);
+		Assert.Equal(Color.Blue, clone.Color);
 	}
 
 	[Fact]
@@ -200,6 +221,31 @@ public class StateDataTests
 		Assert.Equal(stateItemId, itemData.StateItemId);
 		Assert.Equal(Color.Yellow, itemData.Color);
 		Assert.Same(effect, item.Parent);
+	}
+
+	[Fact]
+	public void CustomStateItemCollectionAddAndRemove_UpdateModuleData()
+	{
+		// Arrange
+		var stateItemId = Guid.NewGuid();
+		var effect = new StateEffect();
+		var item = new CustomStateItem
+		{
+			StateItemId = stateItemId,
+			Color = Color.Red
+		};
+
+		// Act
+		effect.CustomStateItems.Add(item);
+		var dataAfterAdd = Assert.IsType<StateEffectData>(effect.ModuleData);
+		var addedItemData = Assert.Single(dataAfterAdd.CustomStateItems);
+		effect.CustomStateItems.Remove(item);
+
+		// Assert
+		Assert.Equal(stateItemId, addedItemData.StateItemId);
+		Assert.Same(effect, item.Parent);
+		var dataAfterRemove = Assert.IsType<StateEffectData>(effect.ModuleData);
+		Assert.Empty(dataAfterRemove.CustomStateItems);
 	}
 
 	[Fact]
@@ -517,6 +563,77 @@ public class StateDataTests
 		Assert.Empty(colors);
 	}
 
+	[Fact]
+	public void Render_CustomUsesRowColorOverride()
+	{
+		// Arrange
+		var leafElementId = Guid.NewGuid();
+		var item = CreateStateItem("Open", Color.Green, leafElementId);
+		var leafNode = CreateNode(leafElementId, "Leaf");
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", item), leafNode);
+		effect.TimeSpan = TimeSpan.FromSeconds(5);
+		effect.RenderSource = StateRenderSource.Custom;
+		effect.CustomStateItems.Add(new CustomStateItem
+		{
+			StateItemId = item.Id,
+			Color = Color.Blue
+		});
+		var data = Assert.IsType<StateEffectData>(effect.ModuleData);
+		Assert.Equal(["Door"], effect.GetStateDefinitionOptions());
+		Assert.Equal([item.Id], data.CustomStateItems.Select(row => row.StateItemId));
+
+		// Act
+		var success = effect.PreRender();
+		var intents = effect.Render();
+
+		// Assert
+		Assert.True(success);
+		var intentNode = Assert.Single(intents.GetIntentNodesForElement(leafNode.Element.Id));
+		Assert.Equal(Color.Blue, GetIntentColor(intentNode.Intent));
+		Assert.Equal(TimeSpan.Zero, intentNode.StartTime);
+		Assert.Equal(TimeSpan.FromSeconds(5), intentNode.TimeSpan);
+	}
+
+	[Fact]
+	public void Render_CustomUnsupportedDiscreteRowColor_FallsBackToValidColor()
+	{
+		// Arrange
+		var leafElementId = Guid.NewGuid();
+		var item = CreateStateItem("Open", Color.Green, leafElementId);
+		var leafNode = CreateNode(leafElementId, "Leaf");
+		AddSingleColorModule(leafNode, Color.Red);
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", item), leafNode);
+		effect.TimeSpan = TimeSpan.FromSeconds(5);
+		effect.RenderSource = StateRenderSource.Custom;
+		effect.CustomStateItems.Add(new CustomStateItem
+		{
+			StateItemId = item.Id,
+			Color = Color.Blue
+		});
+		var data = Assert.IsType<StateEffectData>(effect.ModuleData);
+		Assert.Equal(["Door"], effect.GetStateDefinitionOptions());
+		Assert.Equal([item.Id], data.CustomStateItems.Select(row => row.StateItemId));
+
+		// Act
+		var success = effect.PreRender();
+		var intents = effect.Render();
+
+		// Assert
+		Assert.True(success);
+		var intentNode = Assert.Single(intents.GetIntentNodesForElement(leafNode.Element.Id));
+		Assert.Equal(Color.Red, GetIntentColor(intentNode.Intent));
+	}
+
+	private static Color GetIntentColor(Vixen.Sys.IIntent intent)
+	{
+		return intent switch
+		{
+			Vixen.Sys.IIntent<LightingValue> lightingIntent => lightingIntent.GetStateAt(TimeSpan.Zero).Color,
+			Vixen.Sys.IIntent<DiscreteValue> discreteIntent => discreteIntent.GetStateAt(TimeSpan.Zero).Color,
+			_ => throw new InvalidOperationException($"Unsupported intent type {intent.GetType().FullName}.")
+		};
+	}
+
 	private static bool IsBrowsable(StateEffect effect, string propertyName)
 	{
 		var property = TypeDescriptor.GetProperties(effect)[propertyName];
@@ -573,8 +690,26 @@ public class StateDataTests
 		node.SetupGet(elementNode => elementNode.Id).Returns(id);
 		node.SetupGet(elementNode => elementNode.Name).Returns(name);
 		node.SetupGet(elementNode => elementNode.Children).Returns(children);
+		node.SetupGet(elementNode => elementNode.IsLeaf).Returns(children.Length == 0);
+		node.SetupProperty(elementNode => elementNode.Element, CreateElement(id, name));
 		node.SetupGet(elementNode => elementNode.Properties).Returns(propertyManager);
+		node.Setup(elementNode => elementNode.GetLeafEnumerator())
+			.Returns(() => children.Length == 0
+				? [node.Object]
+				: children.SelectMany(child => child.GetLeafEnumerator()).ToArray());
 		return node.Object;
+	}
+
+	private static Element CreateElement(Guid id, string name)
+	{
+		var element = Activator.CreateInstance(
+			typeof(Element),
+			BindingFlags.Instance | BindingFlags.NonPublic,
+			null,
+			[id, name],
+			null);
+		Assert.NotNull(element);
+		return Assert.IsType<Element>(element);
 	}
 
 	private static void AddStateModule(IElementNode node, IReadOnlyList<StatePropertyDefinitionData> definitions)
