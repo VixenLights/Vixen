@@ -7,6 +7,7 @@ namespace VixenModules.Effect.State
 	/// Stores persisted configuration for the State effect.
 	/// </summary>
 	[DataContract]
+	[KnownType(typeof(CustomStateItemData))]
 	public sealed class StateData: EffectTypeModuleData
 	{
 		internal const int MinIterations = 1;
@@ -79,11 +80,20 @@ namespace VixenModules.Effect.State
 		/// </summary>
 		[DataMember]
 		public bool ShowEffectVisual { get; set; } = true;
+
+		/// <summary>
+		/// Gets or sets the ordered custom State item rows.
+		/// </summary>
+		/// <value>The ordered custom State item rows.</value>
+		[DataMember]
+		public List<CustomStateItemData> CustomStateItems { get; set; } = [];
 		
 		#region Overrides of EffectTypeModuleData
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
+			EnsureCustomStateItems();
+
 			var result = new StateData
 			{
 				SelectedStateDefinitionId = SelectedStateDefinitionId,
@@ -93,7 +103,11 @@ namespace VixenModules.Effect.State
 				SelectedStateItemId = SelectedStateItemId,
 				MarkCollectionId = MarkCollectionId,
 				PlaybackMode = PlaybackMode,
-				Iterations = Iterations
+				Iterations = Iterations,
+				ShowEffectVisual = ShowEffectVisual,
+				CustomStateItems = CustomStateItems
+					.Select(item => item.CreateInstanceForClone())
+					.ToList()
 			};
 
 			return result;
@@ -101,7 +115,22 @@ namespace VixenModules.Effect.State
 
 		#endregion
 
+		/// <summary>
+		/// Normalizes deserialized State effect data.
+		/// </summary>
+		/// <param name="context">The serialization context.</param>
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext context)
+		{
+			EnsureCustomStateItems();
+		}
+
 		internal static int NormalizeIterations(int iterations) =>
 			Math.Clamp(iterations, MinIterations, MaxIterations);
+
+		private void EnsureCustomStateItems()
+		{
+			CustomStateItems ??= [];
+		}
 	}
 }

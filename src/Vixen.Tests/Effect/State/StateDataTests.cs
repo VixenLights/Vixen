@@ -48,4 +48,60 @@ public class StateDataTests
 		// Assert
 		Assert.Equal(7, clone.Iterations);
 	}
+
+	[Fact]
+	public void CustomStateItems_DefaultsToEmptyList()
+	{
+		// Arrange / Act
+		var data = new StateData();
+
+		// Assert
+		Assert.NotNull(data.CustomStateItems);
+		Assert.Empty(data.CustomStateItems);
+	}
+
+	[Fact]
+	public void Clone_DeepCopiesCustomStateItems()
+	{
+		// Arrange
+		var stateItemId = Guid.NewGuid();
+		var data = new StateData
+		{
+			CustomStateItems =
+			[
+				new CustomStateItemData
+				{
+					StateItemId = stateItemId,
+					Color = System.Drawing.Color.Red
+				}
+			]
+		};
+
+		// Act
+		var clone = (StateData)data.Clone();
+
+		// Assert
+		Assert.Single(clone.CustomStateItems);
+		Assert.NotSame(data.CustomStateItems[0], clone.CustomStateItems[0]);
+		Assert.Equal(stateItemId, clone.CustomStateItems[0].StateItemId);
+		Assert.Equal(System.Drawing.Color.Red, clone.CustomStateItems[0].Color);
+	}
+
+	[Fact]
+	public void Clone_NormalizesNullCustomStateItems()
+	{
+		// Arrange
+		var data = new StateData
+		{
+			CustomStateItems = null!
+		};
+
+		// Act
+		var clone = (StateData)data.Clone();
+
+		// Assert
+		Assert.NotNull(data.CustomStateItems);
+		Assert.NotNull(clone.CustomStateItems);
+		Assert.Empty(clone.CustomStateItems);
+	}
 }

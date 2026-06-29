@@ -16,7 +16,7 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 - [x] (2026-06-29 00:00 -05:00) Reviewed current State effect source locations under `src/Vixen.Modules/Effect/State` and existing expandable collection examples in Wave and Liquid.
 - [x] (2026-06-29 00:00 -05:00) Created this ExecPlan from the final phase 2 specification.
 - [x] (2026-06-29 08:20 -05:00) Completed Milestone 1. Read VIX-3924 and added the phase 2 Custom render source summary, requirements, high-level design, acceptance criteria, testing, and risks as Jira comment `40085`.
-- [ ] Implement persisted custom row data and collection runtime models.
+- [x] (2026-06-29 08:45 -05:00) Completed Milestone 2 persisted custom row data foundation. Added `CustomStateItemData`, persisted `StateData.CustomStateItems`, safe null normalization after deserialization/clone, deep clone handling, `ShowEffectVisual` clone preservation, and focused data tests.
 - [ ] Add `Custom` render source editor behavior, custom row option generation, and mode-change normalization.
 - [ ] Add custom render planning and rendering with row color overrides.
 - [ ] Make row color editing honor the selected State item's assigned element color capabilities.
@@ -69,6 +69,8 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 ## Outcomes & Retrospective
 
 Milestone 1 is complete. VIX-3924 now has a Jira comment documenting the phase 2 Custom render source enhancement discovered during validation and user testing. Code implementation has not started yet. At each milestone, add a short entry here that states what now works, what was validated, and what remains.
+
+Milestone 2 is complete. The State effect data model can now persist an ordered custom State item row list, default missing lists to empty, and deep-clone custom rows without sharing row instances. The focused `Effect.State` test filter passes with 24 tests, including the new default-list and clone coverage. Runtime editor collection objects and custom rendering remain for later milestones.
 
 ## Context and Orientation
 
@@ -313,6 +315,11 @@ Milestone 1 Jira update:
 
 Record additional Jira update evidence here if the issue description is later edited or linked to implementation work.
 
+Milestone 2 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
+    Passed!  - Failed: 0, Passed: 24, Skipped: 0, Total: 24
+
 ## Interfaces and Dependencies
 
 Use the existing State property types:
@@ -403,3 +410,4 @@ The implementation should avoid new async code. If any asynchronous work is intr
 - 2026-06-29 / Codex: Initial ExecPlan created from `docs/state/vix-3924-state-effect-phase-2.md`, `.agents/PLANS.md`, current State effect source orientation, and the project's C# skill guidance. The plan captures resolved product decisions so implementation can proceed without reopening the requirements discussion.
 - 2026-06-29 / Codex: Recorded the Milestone 1 Jira update attempt as blocked because Atlassian/Jira MCP tools were not available in the initial session. The plan still contains paste-ready Jira text for VIX-3924.
 - 2026-06-29 / Codex: Completed Milestone 1 after Rider restart exposed the Atlassian MCP. Added Jira comment 40085 to VIX-3924 and updated Progress, Surprises & Discoveries, Outcomes & Retrospective, and Artifacts and Notes.
+- 2026-06-29 / Codex: Completed Milestone 2 by adding persisted custom row data, cloning/defaulting safeguards, and focused State effect data tests.
