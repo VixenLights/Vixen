@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Collections.Specialized;
 using System.Drawing;
 using Vixen.Attributes;
 using Vixen.Marks;
@@ -23,11 +24,13 @@ namespace VixenModules.Effect.State
 		private StateData _data;
 		private EffectIntents _elementData = new();
 		private IReadOnlyList<DiscoveredStateDefinition> _stateDefinitions = [];
+		private CustomStateItemCollection _customStateItems = null!;
 		private const string VisualRepresentationText = "State";
 
 		public State()
 		{
 			_data = new StateData();
+			UpdateCustomStateItemModel();
 			SetRenderSourceBrowsables();
 		}
 
@@ -362,6 +365,17 @@ namespace VixenModules.Effect.State
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the custom State item rows.
+		/// </summary>
+		/// <value>The custom State item rows.</value>
+		[Browsable(false)]
+		public CustomStateItemCollection CustomStateItems
+		{
+			get => _customStateItems;
+			set => SetCustomStateItemModel(value, true);
+		}
+
 		#endregion
 		
 		private void CheckForInvalidColorData()
@@ -579,6 +593,90 @@ namespace VixenModules.Effect.State
 			return options;
 		}
 
+		/// <summary>
+		/// Gets the available custom State item option labels for the specified row.
+		/// </summary>
+		/// <param name="customStateItem">The custom State item row requesting options.</param>
+		/// <returns>The available custom State item option labels.</returns>
+		public List<string> GetCustomStateItemOptions(CustomStateItem customStateItem)
+		{
+			var selectedDefinition = GetSelectedStateDefinition();
+			if (selectedDefinition == null)
+			{
+				return [NoStateItemsLabel];
+			}
+
+			var items = GetStateItems(selectedDefinition);
+			if (items.Count == 0)
+			{
+				return [NoStateItemsLabel];
+			}
+
+			var labelsById = CreateCustomStateItemLabels(items);
+			var options = labelsById.Values.ToList();
+			if (customStateItem.StateItemId != Guid.Empty && !labelsById.ContainsKey(customStateItem.StateItemId))
+			{
+				options.Insert(0, CreateMissingStateItemLabel(customStateItem.StateItemId));
+			}
+
+			return options;
+		}
+
+		/// <summary>
+		/// Gets the display label for the specified custom State item row.
+		/// </summary>
+		/// <param name="customStateItem">The custom State item row.</param>
+		/// <returns>The custom State item display label.</returns>
+		public string GetCustomStateItemLabel(CustomStateItem customStateItem)
+		{
+			var selectedDefinition = GetSelectedStateDefinition();
+			if (selectedDefinition == null || !GetStateItems(selectedDefinition).Any())
+			{
+				return NoStateItemsLabel;
+			}
+
+			if (customStateItem.StateItemId == Guid.Empty)
+			{
+				return NoStateItemsLabel;
+			}
+
+			var labelsById = CreateCustomStateItemLabels(GetStateItems(selectedDefinition));
+			return labelsById.TryGetValue(customStateItem.StateItemId, out var label)
+				? label
+				: CreateMissingStateItemLabel(customStateItem.StateItemId);
+		}
+
+		/// <summary>
+		/// Selects a State item for the specified custom State item row.
+		/// </summary>
+		/// <param name="customStateItem">The custom State item row to update.</param>
+		/// <param name="label">The selected State item display label.</param>
+		public void SelectCustomStateItem(CustomStateItem customStateItem, string label)
+		{
+			var selectedDefinition = GetSelectedStateDefinition();
+			if (selectedDefinition == null)
+			{
+				return;
+			}
+
+			var items = GetStateItems(selectedDefinition);
+			var stateItem = CreateCustomStateItemLabels(items)
+				.FirstOrDefault(pair => pair.Value.Equals(label, StringComparison.Ordinal));
+			if (stateItem.Key == Guid.Empty)
+			{
+				return;
+			}
+
+			var selectedItem = items.FirstOrDefault(item => item.Id == stateItem.Key);
+			if (selectedItem == null)
+			{
+				return;
+			}
+
+			customStateItem.StateItemId = selectedItem.Id;
+			customStateItem.Color = selectedItem.Color;
+		}
+
 		private IReadOnlyList<DiscoveredStateDefinition> GetDiscoveredStateDefinitions()
 		{
 			_stateDefinitions = StateDefinitionDiscovery.Discover(TargetNodes ?? []);
@@ -681,11 +779,137 @@ namespace VixenModules.Effect.State
 			return names;
 		}
 
+		private static IReadOnlyDictionary<Guid, string> CreateCustomStateItemLabels(IReadOnlyList<StateItemData> items)
+		{
+			var duplicateNames = items
+				.GroupBy(item => item.Name, StringComparer.Ordinal)
+				.Where(group => group.Count() > 1)
+				.Select(group => group.Key)
+				.ToHashSet(StringComparer.Ordinal);
+			var nameOrdinals = new Dictionary<string, int>(StringComparer.Ordinal);
+			var labels = new Dictionary<Guid, string>();
+
+			foreach (var item in items)
+			{
+				if (!duplicateNames.Contains(item.Name))
+				{
+					labels[item.Id] = item.Name;
+					continue;
+				}
+
+				nameOrdinals.TryGetValue(item.Name, out var ordinal);
+				ordinal++;
+				nameOrdinals[item.Name] = ordinal;
+				labels[item.Id] = $"{item.Name} ({ordinal})";
+			}
+
+			return labels;
+		}
+
 		private static string CreateMissingStateDefinitionLabel(Guid stateDefinitionId) =>
 			$"<Missing State: {StateDefinitionDiscovery.ToShortId(stateDefinitionId)}>";
 
 		private static string CreateMissingStateItemLabel(Guid stateItemId) =>
 			$"<Missing State Item: {StateDefinitionDiscovery.ToShortId(stateItemId)}>";
+
+		#endregion
+
+		#region Custom State Items
+
+		private CustomStateItemCollection CreateCustomStateItemCollection()
+		{
+			var collection = new CustomStateItemCollection();
+			collection.Parent = this;
+			return collection;
+		}
+
+		private void InitializeCustomStateItemCollection(CustomStateItemCollection collection)
+		{
+			collection.Parent = this;
+			foreach (var item in collection)
+			{
+				item.Parent = this;
+			}
+
+			collection.CollectionChanged += OnCustomStateItemsCollectionChanged;
+			collection.ChildPropertyChanged += OnCustomStateItemsChildPropertyChanged;
+		}
+
+		private void UnsubscribeFromCustomStateItems(CustomStateItemCollection? collection)
+		{
+			if (collection == null)
+			{
+				return;
+			}
+
+			collection.CollectionChanged -= OnCustomStateItemsCollectionChanged;
+			collection.ChildPropertyChanged -= OnCustomStateItemsChildPropertyChanged;
+		}
+
+		private void OnCustomStateItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (sender is CustomStateItemCollection collection)
+			{
+				collection.Parent = this;
+				foreach (var item in collection)
+				{
+					item.Parent = this;
+				}
+			}
+
+			UpdateCustomStateItemData();
+			IsDirty = true;
+			OnPropertyChanged(nameof(CustomStateItems));
+		}
+
+		private void OnCustomStateItemsChildPropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			UpdateCustomStateItemData();
+			IsDirty = true;
+			OnPropertyChanged(nameof(CustomStateItems));
+		}
+
+		private void UpdateCustomStateItemData()
+		{
+			_data.CustomStateItems = CustomStateItems
+				.Select(item => item.CreateData())
+				.ToList();
+		}
+
+		private void SetCustomStateItemModel(CustomStateItemCollection? collection, bool markDirty)
+		{
+			if (ReferenceEquals(_customStateItems, collection))
+			{
+				return;
+			}
+
+			UnsubscribeFromCustomStateItems(_customStateItems);
+			_customStateItems = collection ?? CreateCustomStateItemCollection();
+			InitializeCustomStateItemCollection(_customStateItems);
+			UpdateCustomStateItemData();
+
+			if (markDirty)
+			{
+				IsDirty = true;
+				OnPropertyChanged(nameof(CustomStateItems));
+			}
+		}
+
+		private void UpdateCustomStateItemModel()
+		{
+			var collection = CreateCustomStateItemCollection();
+			foreach (var itemData in _data.CustomStateItems ?? [])
+			{
+				var item = new CustomStateItem
+				{
+					Parent = this
+				};
+				item.UpdateFromData(itemData);
+				collection.Add(item);
+			}
+
+			SetCustomStateItemModel(collection, false);
+		}
 
 		#endregion
 
@@ -734,6 +958,7 @@ namespace VixenModules.Effect.State
 				{
 					_data = (StateData)value;
 					CheckForInvalidColorData();
+					UpdateCustomStateItemModel();
 					SetRenderSourceBrowsables();
 					IsDirty = true;
 				}

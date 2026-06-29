@@ -17,7 +17,8 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 - [x] (2026-06-29 00:00 -05:00) Created this ExecPlan from the final phase 2 specification.
 - [x] (2026-06-29 08:20 -05:00) Completed Milestone 1. Read VIX-3924 and added the phase 2 Custom render source summary, requirements, high-level design, acceptance criteria, testing, and risks as Jira comment `40085`.
 - [x] (2026-06-29 08:45 -05:00) Completed Milestone 2 persisted custom row data foundation. Added `CustomStateItemData`, persisted `StateData.CustomStateItems`, safe null normalization after deserialization/clone, deep clone handling, `ShowEffectVisual` clone preservation, and focused data tests.
-- [ ] Add `Custom` render source editor behavior, custom row option generation, and mode-change normalization.
+- [x] (2026-06-29 09:25 -05:00) Completed Milestone 3 editor-facing custom row collection. Added expandable custom row runtime objects, collection parent wiring, option-label converter, data synchronization, and focused collection/model synchronization tests.
+- [ ] Add `Custom` render source editor behavior and mode-change normalization.
 - [ ] Add custom render planning and rendering with row color overrides.
 - [ ] Make row color editing honor the selected State item's assigned element color capabilities.
 - [ ] Update visual representation to show a Custom hint.
@@ -31,6 +32,12 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 
 - Observation: The Atlassian MCP became available after Rider was restarted.
   Evidence: Tool discovery exposed the `mcp__atlassian` namespace. `getAccessibleAtlassianResources` returned the `vixenlights` Jira resource with `read:jira-work` and `write:jira-work` scopes, and `addCommentToJiraIssue` created comment `40085` on VIX-3924.
+
+- Observation: The expandable collection infrastructure supports an empty collection when the collection overrides `GetMinimumItemCount()` to return `0`.
+  Evidence: `CustomStateItemCollection.GetMinimumItemCount()` is covered by `CustomStateItemCollection_AllowsEmptyCollection`, and the focused `Effect.State` test filter passes.
+
+- Observation: Hydrating the runtime custom row collection from persisted `StateData` must avoid using the public `CustomStateItems` setter.
+  Evidence: The public setter intentionally marks the effect dirty for editor changes; the implementation uses a private `SetCustomStateItemModel(..., markDirty: false)` path during construction and `ModuleData` load.
 
 ## Decision Log
 
@@ -71,6 +78,8 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 Milestone 1 is complete. VIX-3924 now has a Jira comment documenting the phase 2 Custom render source enhancement discovered during validation and user testing. Code implementation has not started yet. At each milestone, add a short entry here that states what now works, what was validated, and what remains.
 
 Milestone 2 is complete. The State effect data model can now persist an ordered custom State item row list, default missing lists to empty, and deep-clone custom rows without sharing row instances. The focused `Effect.State` test filter passes with 24 tests, including the new default-list and clone coverage. Runtime editor collection objects and custom rendering remain for later milestones.
+
+Milestone 3 is complete. The State effect now has editor-facing custom row runtime objects and a custom row collection that can be added to, removed from, and edited by the existing expandable collection infrastructure. Collection and child property changes synchronize back to `StateData.CustomStateItems`, set the effect dirty, and keep each row linked to its parent `State` effect. The focused `Effect.State` test filter passes with 28 tests. `Custom` render-source browsability, full row option rules, color editor capability context, and rendering remain for later milestones.
 
 ## Context and Orientation
 
@@ -320,6 +329,11 @@ Milestone 2 validation:
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
     Passed!  - Failed: 0, Passed: 24, Skipped: 0, Total: 24
 
+Milestone 3 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
+    Passed!  - Failed: 0, Passed: 28, Skipped: 0, Total: 28
+
 ## Interfaces and Dependencies
 
 Use the existing State property types:
@@ -411,3 +425,4 @@ The implementation should avoid new async code. If any asynchronous work is intr
 - 2026-06-29 / Codex: Recorded the Milestone 1 Jira update attempt as blocked because Atlassian/Jira MCP tools were not available in the initial session. The plan still contains paste-ready Jira text for VIX-3924.
 - 2026-06-29 / Codex: Completed Milestone 1 after Rider restart exposed the Atlassian MCP. Added Jira comment 40085 to VIX-3924 and updated Progress, Surprises & Discoveries, Outcomes & Retrospective, and Artifacts and Notes.
 - 2026-06-29 / Codex: Completed Milestone 2 by adding persisted custom row data, cloning/defaulting safeguards, and focused State effect data tests.
+- 2026-06-29 / Codex: Completed Milestone 3 by adding the editor-facing custom row object, expandable collection, row option converter, parent/data synchronization, and focused State effect tests.

@@ -1,5 +1,7 @@
+using System.Drawing;
 using VixenModules.Effect.State;
 using Xunit;
+using StateEffect = VixenModules.Effect.State.State;
 
 namespace Vixen.Tests.Effect.State;
 
@@ -103,5 +105,86 @@ public class StateDataTests
 		Assert.NotNull(data.CustomStateItems);
 		Assert.NotNull(clone.CustomStateItems);
 		Assert.Empty(clone.CustomStateItems);
+	}
+
+	[Fact]
+	public void CustomStateItemCollection_AllowsEmptyCollection()
+	{
+		// Arrange / Act
+		var collection = new CustomStateItemCollection();
+
+		// Assert
+		Assert.Equal(0, collection.GetMinimumItemCount());
+	}
+
+	[Fact]
+	public void CustomStateItem_CreateData_CopiesStateItemIdAndColor()
+	{
+		// Arrange
+		var stateItemId = Guid.NewGuid();
+		var item = new CustomStateItem
+		{
+			StateItemId = stateItemId,
+			Color = Color.Blue
+		};
+
+		// Act
+		var data = item.CreateData();
+
+		// Assert
+		Assert.Equal(stateItemId, data.StateItemId);
+		Assert.Equal(Color.Blue, data.Color);
+	}
+
+	[Fact]
+	public void ModuleData_LoadsCustomStateItemsIntoEditableCollection()
+	{
+		// Arrange
+		var stateItemId = Guid.NewGuid();
+		var effect = new StateEffect();
+		var data = new StateData
+		{
+			CustomStateItems =
+			[
+				new CustomStateItemData
+				{
+					StateItemId = stateItemId,
+					Color = Color.Green
+				}
+			]
+		};
+
+		// Act
+		effect.ModuleData = data;
+
+		// Assert
+		var item = Assert.Single(effect.CustomStateItems);
+		Assert.Equal(stateItemId, item.StateItemId);
+		Assert.Equal(Color.Green, item.Color);
+		Assert.Same(effect, item.Parent);
+	}
+
+	[Fact]
+	public void CustomStateItemCollectionChanges_UpdateModuleData()
+	{
+		// Arrange
+		var stateItemId = Guid.NewGuid();
+		var effect = new StateEffect();
+		var item = new CustomStateItem
+		{
+			StateItemId = stateItemId,
+			Color = Color.Red
+		};
+
+		// Act
+		effect.CustomStateItems.Add(item);
+		item.Color = Color.Yellow;
+
+		// Assert
+		var data = Assert.IsType<StateData>(effect.ModuleData);
+		var itemData = Assert.Single(data.CustomStateItems);
+		Assert.Equal(stateItemId, itemData.StateItemId);
+		Assert.Equal(Color.Yellow, itemData.Color);
+		Assert.Same(effect, item.Parent);
 	}
 }
