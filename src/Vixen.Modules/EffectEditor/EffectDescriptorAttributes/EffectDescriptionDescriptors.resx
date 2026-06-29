@@ -1470,6 +1470,9 @@
   <data name="StateItem" xml:space="preserve">
     <value>Selects the State item name to render.</value>
   </data>
+  <data name="CustomStateItems" xml:space="preserve">
+    <value>Defines the custom State item rows and color overrides to render.</value>
+  </data>
   <data name="StateRenderSource" xml:space="preserve">
     <value>Selects how active State items are determined.</value>
   </data>

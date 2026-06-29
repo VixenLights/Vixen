@@ -17,6 +17,12 @@ namespace VixenModules.Effect.State
 		/// Uses Mark Collection text to activate State item names over time.
 		/// </summary>
 		[Description("Mark Collection")]
-		MarkCollection
+		MarkCollection,
+
+		/// <summary>
+		/// Uses the effect-owned custom State item row collection.
+		/// </summary>
+		[Description("Custom")]
+		Custom
 	}
 }

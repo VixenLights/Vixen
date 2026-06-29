@@ -257,6 +257,7 @@ namespace VixenModules.Effect.State
 		[ProviderDisplayName(@"StateRenderSource")]
 		[ProviderDescription(@"StateRenderSource")]
 		[PropertyOrder(1)]
+		[RefreshProperties(RefreshProperties.All)]
 		public StateRenderSource RenderSource
 		{
 			get
@@ -369,7 +370,11 @@ namespace VixenModules.Effect.State
 		/// Gets or sets the custom State item rows.
 		/// </summary>
 		/// <value>The custom State item rows.</value>
-		[Browsable(false)]
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"CustomStateItems")]
+		[ProviderDescription(@"CustomStateItems")]
+		[PropertyOrder(2)]
 		public CustomStateItemCollection CustomStateItems
 		{
 			get => _customStateItems;
@@ -936,10 +941,11 @@ namespace VixenModules.Effect.State
 
 		private void SetRenderSourceBrowsables()
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
 			{
 				{nameof(StateItem), RenderSource == StateRenderSource.StateItem},
 				{nameof(MarkCollectionId), RenderSource == StateRenderSource.MarkCollection},
+				{nameof(CustomStateItems), RenderSource == StateRenderSource.Custom},
 				{nameof(Iterations), PlaybackMode == PlaybackMode.Iterate}
 			};
 

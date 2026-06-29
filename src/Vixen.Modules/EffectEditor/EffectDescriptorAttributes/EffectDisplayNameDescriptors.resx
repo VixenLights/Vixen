@@ -1398,6 +1398,9 @@
   <data name="StateItem" xml:space="preserve">
     <value>State Item</value>
   </data>
+  <data name="CustomStateItems" xml:space="preserve">
+    <value>Custom State Items</value>
+  </data>
   <data name="StateRenderSource" xml:space="preserve">
     <value>Render Source</value>
   </data>

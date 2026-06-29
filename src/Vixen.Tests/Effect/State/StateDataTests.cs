@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Drawing;
 using VixenModules.Effect.State;
 using Xunit;
@@ -186,5 +187,92 @@ public class StateDataTests
 		Assert.Equal(stateItemId, itemData.StateItemId);
 		Assert.Equal(Color.Yellow, itemData.Color);
 		Assert.Same(effect, item.Parent);
+	}
+
+	[Fact]
+	public void StateRenderSource_Custom_HasDescription()
+	{
+		// Arrange
+		var memberInfo = typeof(StateRenderSource).GetMember(nameof(StateRenderSource.Custom));
+
+		// Act
+		var description = memberInfo[0]
+			.GetCustomAttributes(typeof(DescriptionAttribute), false)
+			.Cast<DescriptionAttribute>()
+			.Single();
+
+		// Assert
+		Assert.Equal("Custom", description.Description);
+	}
+
+	[Fact]
+	public void RenderSource_DefaultBrowsability_ShowsOnlyStateItemSelector()
+	{
+		// Arrange
+		var effect = new StateEffect();
+
+		// Assert
+		Assert.True(IsBrowsable(effect, nameof(StateEffect.StateItem)));
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.MarkCollectionId)));
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.CustomStateItems)));
+	}
+
+	[Fact]
+	public void RenderSource_MarkCollectionBrowsability_ShowsOnlyMarkCollectionSelector()
+	{
+		// Arrange
+		var effect = new StateEffect();
+
+		// Act
+		effect.RenderSource = StateRenderSource.MarkCollection;
+
+		// Assert
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.StateItem)));
+		Assert.True(IsBrowsable(effect, nameof(StateEffect.MarkCollectionId)));
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.CustomStateItems)));
+	}
+
+	[Fact]
+	public void RenderSource_CustomBrowsability_ShowsOnlyCustomStateItems()
+	{
+		// Arrange
+		var effect = new StateEffect
+		{
+			PlaybackMode = PlaybackMode.Iterate
+		};
+
+		// Act
+		effect.RenderSource = StateRenderSource.Custom;
+
+		// Assert
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.StateItem)));
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.MarkCollectionId)));
+		Assert.True(IsBrowsable(effect, nameof(StateEffect.CustomStateItems)));
+		Assert.Equal(PlaybackMode.Iterate, effect.PlaybackMode);
+	}
+
+	[Fact]
+	public void CustomStateItems_UsesResourceBackedDisplayMetadata()
+	{
+		// Arrange
+		var effect = new StateEffect
+		{
+			RenderSource = StateRenderSource.Custom
+		};
+
+		// Act
+		var property = TypeDescriptor.GetProperties(effect)[nameof(StateEffect.CustomStateItems)];
+
+		// Assert
+		Assert.NotNull(property);
+		Assert.Equal("Custom State Items", property.DisplayName);
+		Assert.Equal("Defines the custom State item rows and color overrides to render.", property.Description);
+	}
+
+	private static bool IsBrowsable(StateEffect effect, string propertyName)
+	{
+		var property = TypeDescriptor.GetProperties(effect)[propertyName];
+		Assert.NotNull(property);
+		return property.IsBrowsable;
 	}
 }
