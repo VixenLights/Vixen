@@ -418,6 +418,16 @@ namespace VixenModules.Effect.State
 
 		private IReadOnlyList<StateRenderInterval> CreateRenderIntervals(StateDefinitionData? selectedDefinition)
 		{
+			if (RenderSource == StateRenderSource.Custom)
+			{
+				return StateRenderPlanner.CreateCustomIntervals(
+					selectedDefinition,
+					_data.CustomStateItems ?? [],
+					PlaybackMode,
+					Iterations,
+					TimeSpan);
+			}
+
 			if (RenderSource == StateRenderSource.MarkCollection)
 			{
 				var markCollection = GetSelectedMarkCollection();
@@ -468,7 +478,7 @@ namespace VixenModules.Effect.State
 						continue;
 					}
 
-					var resolvedColor = ResolveStateItemColor(leafNode, interval.Item.Color);
+					var resolvedColor = ResolveStateItemColor(leafNode, interval.ColorOverride ?? interval.Item.Color);
 					if (resolvedColor == null)
 					{
 						continue;

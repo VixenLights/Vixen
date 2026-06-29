@@ -84,6 +84,27 @@ namespace VixenModules.Effect.State
 			return intervals;
 		}
 
+		internal static IReadOnlyList<StateRenderInterval> CreateCustomIntervals(
+			StateDefinitionData? definition,
+			IReadOnlyList<CustomStateItemData> customStateItems,
+			PlaybackMode playbackMode,
+			int iterations,
+			TimeSpan effectDuration)
+		{
+			if (definition == null || effectDuration <= TimeSpan.Zero || customStateItems.Count == 0)
+			{
+				return [];
+			}
+
+			var itemsById = (definition.Items ?? [])
+				.GroupBy(item => item.Id)
+				.ToDictionary(group => group.Key, group => group.First());
+
+			return playbackMode == PlaybackMode.Iterate
+				? CreateIteratedCustomIntervals(itemsById, customStateItems, iterations, effectDuration)
+				: CreateDefaultCustomIntervals(itemsById, customStateItems, effectDuration);
+		}
+
 		private static IReadOnlyList<StateRenderInterval> CreateSelectedItemIntervals(
 			IReadOnlyList<StateItemData> items,
 			Guid selectedStateItemId,
@@ -133,6 +154,56 @@ namespace VixenModules.Effect.State
 				foreach (var item in items.Where(item => item.Name.Equals(name, StringComparison.Ordinal)))
 				{
 					intervals.Add(new StateRenderInterval(item, intervalStart, duration));
+				}
+
+				intervalStart += duration;
+			}
+
+			return intervals;
+		}
+
+		private static IReadOnlyList<StateRenderInterval> CreateDefaultCustomIntervals(
+			IReadOnlyDictionary<Guid, StateItemData> itemsById,
+			IEnumerable<CustomStateItemData> customStateItems,
+			TimeSpan effectDuration)
+		{
+			var intervals = new List<StateRenderInterval>();
+			var renderedItemIds = new HashSet<Guid>();
+
+			foreach (var customStateItem in customStateItems)
+			{
+				if (customStateItem.StateItemId == Guid.Empty ||
+					!renderedItemIds.Add(customStateItem.StateItemId) ||
+					!itemsById.TryGetValue(customStateItem.StateItemId, out var item))
+				{
+					continue;
+				}
+
+				intervals.Add(new StateRenderInterval(item, TimeSpan.Zero, effectDuration, customStateItem.Color));
+			}
+
+			return intervals;
+		}
+
+		private static IReadOnlyList<StateRenderInterval> CreateIteratedCustomIntervals(
+			IReadOnlyDictionary<Guid, StateItemData> itemsById,
+			IReadOnlyList<CustomStateItemData> customStateItems,
+			int iterations,
+			TimeSpan effectDuration)
+		{
+			var normalizedIterations = StateData.NormalizeIterations(iterations);
+			var intervalCount = customStateItems.Count * normalizedIterations;
+			var intervals = new List<StateRenderInterval>();
+			var intervalStart = TimeSpan.Zero;
+
+			for (var index = 0; index < intervalCount; index++)
+			{
+				var duration = GetIntervalDuration(effectDuration, intervalCount, index, intervalStart);
+				var customStateItem = customStateItems[index % customStateItems.Count];
+				if (customStateItem.StateItemId != Guid.Empty &&
+					itemsById.TryGetValue(customStateItem.StateItemId, out var item))
+				{
+					intervals.Add(new StateRenderInterval(item, intervalStart, duration, customStateItem.Color));
 				}
 
 				intervalStart += duration;
