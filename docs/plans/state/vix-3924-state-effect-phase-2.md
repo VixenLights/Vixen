@@ -19,7 +19,7 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 - [x] (2026-06-29 08:45 -05:00) Completed Milestone 2 persisted custom row data foundation. Added `CustomStateItemData`, persisted `StateData.CustomStateItems`, safe null normalization after deserialization/clone, deep clone handling, `ShowEffectVisual` clone preservation, and focused data tests.
 - [x] (2026-06-29 09:25 -05:00) Completed Milestone 3 editor-facing custom row collection. Added expandable custom row runtime objects, collection parent wiring, option-label converter, data synchronization, and focused collection/model synchronization tests.
 - [x] (2026-06-29 10:00 -05:00) Completed Milestone 4 Custom render source editor behavior. Added `StateRenderSource.Custom`, Custom State Items property metadata, mutually exclusive source-property browsability, render-source refresh metadata, and focused browsability tests.
-- [ ] Add custom row option rules and mode-change normalization.
+- [x] (2026-06-29 11:00 -05:00) Completed Milestone 5 custom row option rules and cleanup. Added Default uniqueness filtering, Iterate `<None>` support, Iterate-to-Default normalization, State definition change clearing, State item selection color reset coverage, and duplicate-name disambiguation by assignment summary then ordinal.
 - [ ] Add custom render planning and rendering with row color overrides.
 - [ ] Make row color editing honor the selected State item's assigned element color capabilities.
 - [ ] Update visual representation to show a Custom hint.
@@ -83,6 +83,8 @@ Milestone 2 is complete. The State effect data model can now persist an ordered 
 Milestone 3 is complete. The State effect now has editor-facing custom row runtime objects and a custom row collection that can be added to, removed from, and edited by the existing expandable collection infrastructure. Collection and child property changes synchronize back to `StateData.CustomStateItems`, set the effect dirty, and keep each row linked to its parent `State` effect. The focused `Effect.State` test filter passes with 28 tests. `Custom` render-source browsability, full row option rules, color editor capability context, and rendering remain for later milestones.
 
 Milestone 4 is complete. The State effect now exposes `Custom` in the Render Source selector, shows `Custom State Items` only when `RenderSource == StateRenderSource.Custom`, hides the State Item and Mark Collection selectors in Custom mode, and preserves the current Playback Mode when switching to Custom. The custom collection display name and description use shared EffectDescriptorAttributes resource keys instead of literal end-user strings. The focused `Effect.State` test filter passes with 33 tests. Custom row option filtering, Iterate-to-Default cleanup, color editor capability context, rendering, and timeline visual updates remain for later milestones.
+
+Milestone 5 is complete. Custom row State item options now honor playback mode: Default hides `<None>` and excludes State items already selected by other rows, while Iterate shows `<None>` first and allows repeated State items. Switching from Iterate to Default removes `<None>` rows and duplicate State item rows while keeping the first row and its color. Changing the selected State definition clears custom rows. Duplicate State item names are disambiguated using assignment context first and ordinal fallback when assignment context is identical. The focused `Effect.State` test filter passes with 41 tests. Color editor capability context, rendering, and timeline visual updates remain for later milestones.
 
 ## Context and Orientation
 
@@ -347,6 +349,16 @@ Milestone 4 validation:
     3 Warning(s)
     0 Error(s)
 
+Milestone 5 validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
+    Passed!  - Failed: 0, Passed: 41, Skipped: 0, Total: 41
+
+    dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    3 Warning(s)
+    0 Error(s)
+
 ## Interfaces and Dependencies
 
 Use the existing State property types:
@@ -440,3 +452,4 @@ The implementation should avoid new async code. If any asynchronous work is intr
 - 2026-06-29 / Codex: Completed Milestone 2 by adding persisted custom row data, cloning/defaulting safeguards, and focused State effect data tests.
 - 2026-06-29 / Codex: Completed Milestone 3 by adding the editor-facing custom row object, expandable collection, row option converter, parent/data synchronization, and focused State effect tests.
 - 2026-06-29 / Codex: Completed Milestone 4 by adding the Custom render source enum value, resource-backed property-grid metadata, mutually exclusive editor browsability, playback-mode preservation coverage, and focused tests.
+- 2026-06-29 / Codex: Completed Milestone 5 by implementing playback-mode-aware custom row options, Iterate-to-Default cleanup, State definition change clearing, duplicate-name disambiguation, and focused tests.

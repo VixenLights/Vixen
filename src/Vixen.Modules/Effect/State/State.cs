@@ -17,6 +17,7 @@ namespace VixenModules.Effect.State
 	public sealed class State: BaseEffect
 	{
 		internal const string AllStateItemsLabel = "<All>";
+		internal const string NoneStateItemLabel = "<None>";
 		internal const string NoStateDefinitionsLabel = "<No States Available>";
 		internal const string NoStateItemsLabel = "<No State Items Available>";
 
@@ -135,8 +136,14 @@ namespace VixenModules.Effect.State
 					return;
 				}
 
+				var previousStateDefinitionId = _data.SelectedStateDefinitionId;
 				var previousStateItemName = GetSelectedStateItemName();
 				SelectStateDefinition(selectedDefinition, previousStateItemName);
+				if (previousStateDefinitionId != selectedDefinition.StateDefinitionId)
+				{
+					ClearCustomStateItems();
+				}
+
 				IsDirty = true;
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(StateItem));
@@ -306,6 +313,11 @@ namespace VixenModules.Effect.State
 				}
 
 				_data.PlaybackMode = value;
+				if (_data.PlaybackMode == PlaybackMode.Default)
+				{
+					NormalizeCustomStateItemsForDefault();
+				}
+
 				SetRenderSourceBrowsables();
 				IsDirty = true;
 				OnPropertyChanged();
@@ -618,10 +630,16 @@ namespace VixenModules.Effect.State
 			}
 
 			var labelsById = CreateCustomStateItemLabels(items);
-			var options = labelsById.Values.ToList();
+			var options = PlaybackMode == PlaybackMode.Iterate
+				? labelsById.Values.Prepend(NoneStateItemLabel).ToList()
+				: labelsById
+					.Where(pair => pair.Key == customStateItem.StateItemId || !IsCustomStateItemSelected(pair.Key, customStateItem))
+					.Select(pair => pair.Value)
+					.ToList();
 			if (customStateItem.StateItemId != Guid.Empty && !labelsById.ContainsKey(customStateItem.StateItemId))
 			{
-				options.Insert(0, CreateMissingStateItemLabel(customStateItem.StateItemId));
+				var index = PlaybackMode == PlaybackMode.Iterate ? 1 : 0;
+				options.Insert(index, CreateMissingStateItemLabel(customStateItem.StateItemId));
 			}
 
 			return options;
@@ -642,7 +660,7 @@ namespace VixenModules.Effect.State
 
 			if (customStateItem.StateItemId == Guid.Empty)
 			{
-				return NoStateItemsLabel;
+				return PlaybackMode == PlaybackMode.Iterate ? NoneStateItemLabel : NoStateItemsLabel;
 			}
 
 			var labelsById = CreateCustomStateItemLabels(GetStateItems(selectedDefinition));
@@ -658,6 +676,12 @@ namespace VixenModules.Effect.State
 		/// <param name="label">The selected State item display label.</param>
 		public void SelectCustomStateItem(CustomStateItem customStateItem, string label)
 		{
+			if (PlaybackMode == PlaybackMode.Iterate && label.Equals(NoneStateItemLabel, StringComparison.Ordinal))
+			{
+				customStateItem.StateItemId = Guid.Empty;
+				return;
+			}
+
 			var selectedDefinition = GetSelectedStateDefinition();
 			if (selectedDefinition == null)
 			{
@@ -680,6 +704,11 @@ namespace VixenModules.Effect.State
 
 			customStateItem.StateItemId = selectedItem.Id;
 			customStateItem.Color = selectedItem.Color;
+		}
+
+		private bool IsCustomStateItemSelected(Guid stateItemId, CustomStateItem currentItem)
+		{
+			return CustomStateItems.Any(item => !ReferenceEquals(item, currentItem) && item.StateItemId == stateItemId);
 		}
 
 		private IReadOnlyList<DiscoveredStateDefinition> GetDiscoveredStateDefinitions()
@@ -784,31 +813,125 @@ namespace VixenModules.Effect.State
 			return names;
 		}
 
-		private static IReadOnlyDictionary<Guid, string> CreateCustomStateItemLabels(IReadOnlyList<StateItemData> items)
+		private IReadOnlyDictionary<Guid, string> CreateCustomStateItemLabels(IReadOnlyList<StateItemData> items)
 		{
+			var elementNamesById = GetTargetNodeNamesById();
 			var duplicateNames = items
 				.GroupBy(item => item.Name, StringComparer.Ordinal)
 				.Where(group => group.Count() > 1)
 				.Select(group => group.Key)
 				.ToHashSet(StringComparer.Ordinal);
-			var nameOrdinals = new Dictionary<string, int>(StringComparer.Ordinal);
-			var labels = new Dictionary<Guid, string>();
+			var proposedLabels = new Dictionary<Guid, string>();
 
 			foreach (var item in items)
 			{
 				if (!duplicateNames.Contains(item.Name))
 				{
-					labels[item.Id] = item.Name;
+					proposedLabels[item.Id] = item.Name;
 					continue;
 				}
 
-				nameOrdinals.TryGetValue(item.Name, out var ordinal);
-				ordinal++;
-				nameOrdinals[item.Name] = ordinal;
-				labels[item.Id] = $"{item.Name} ({ordinal})";
+				proposedLabels[item.Id] = $"{item.Name} ({CreateAssignmentSummary(item, elementNamesById)})";
 			}
 
-			return labels;
+			proposedLabels = AddOrdinalToDuplicateLabels(proposedLabels);
+			return AddShortIdToDuplicateLabels(proposedLabels);
+		}
+
+		private IReadOnlyDictionary<Guid, string> GetTargetNodeNamesById()
+		{
+			var namesById = new Dictionary<Guid, string>();
+			foreach (var node in (TargetNodes ?? []).Where(node => node != null).SelectMany(TraverseTargetNode))
+			{
+				namesById.TryAdd(node.Id, node.Name);
+			}
+
+			return namesById;
+		}
+
+		private static IEnumerable<IElementNode> TraverseTargetNode(IElementNode node)
+		{
+			yield return node;
+
+			foreach (var child in node.Children.Where(child => child != null))
+			{
+				foreach (var descendant in TraverseTargetNode(child))
+				{
+					yield return descendant;
+				}
+			}
+		}
+
+		private static string CreateAssignmentSummary(StateItemData item, IReadOnlyDictionary<Guid, string> elementNamesById)
+		{
+			var elementNodeIds = item.ElementNodeIds ?? [];
+			if (elementNodeIds.Count == 0)
+			{
+				return "No assignments";
+			}
+
+			var firstElementId = elementNodeIds[0];
+			var firstElementName = elementNamesById.TryGetValue(firstElementId, out var elementName)
+				? elementName
+				: StateDefinitionDiscovery.ToShortId(firstElementId);
+
+			return elementNodeIds.Count == 1
+				? firstElementName
+				: $"{firstElementName} + {elementNodeIds.Count - 1} more";
+		}
+
+		private static Dictionary<Guid, string> AddOrdinalToDuplicateLabels(IReadOnlyDictionary<Guid, string> labels)
+		{
+			var duplicateLabels = labels
+				.GroupBy(pair => pair.Value, StringComparer.Ordinal)
+				.Where(group => group.Count() > 1)
+				.Select(group => group.Key)
+				.ToHashSet(StringComparer.Ordinal);
+			var ordinals = new Dictionary<string, int>(StringComparer.Ordinal);
+			var uniqueLabels = new Dictionary<Guid, string>();
+
+			foreach (var pair in labels)
+			{
+				if (!duplicateLabels.Contains(pair.Value))
+				{
+					uniqueLabels[pair.Key] = pair.Value;
+					continue;
+				}
+
+				ordinals.TryGetValue(pair.Value, out var ordinal);
+				ordinal++;
+				ordinals[pair.Value] = ordinal;
+				uniqueLabels[pair.Key] = AddOrdinalToLabel(pair.Value, ordinal);
+			}
+
+			return uniqueLabels;
+		}
+
+		private static string AddOrdinalToLabel(string label, int ordinal)
+		{
+			return label.EndsWith(")", StringComparison.Ordinal)
+				? $"{label[..^1]}, {ordinal})"
+				: $"{label} ({ordinal})";
+		}
+
+		private static IReadOnlyDictionary<Guid, string> AddShortIdToDuplicateLabels(IReadOnlyDictionary<Guid, string> labels)
+		{
+			var duplicateLabels = labels
+				.GroupBy(pair => pair.Value, StringComparer.Ordinal)
+				.Where(group => group.Count() > 1)
+				.Select(group => group.Key)
+				.ToHashSet(StringComparer.Ordinal);
+
+			if (duplicateLabels.Count == 0)
+			{
+				return labels;
+			}
+
+			return labels.ToDictionary(
+				pair => pair.Key,
+				pair => duplicateLabels.Contains(pair.Value)
+					? $"{pair.Value} [{StateDefinitionDiscovery.ToShortId(pair.Key)}]"
+					: pair.Value);
 		}
 
 		private static string CreateMissingStateDefinitionLabel(Guid stateDefinitionId) =>
@@ -914,6 +1037,37 @@ namespace VixenModules.Effect.State
 			}
 
 			SetCustomStateItemModel(collection, false);
+		}
+
+		private void ClearCustomStateItems()
+		{
+			if (CustomStateItems.Count == 0)
+			{
+				return;
+			}
+
+			CustomStateItems.Clear();
+		}
+
+		private void NormalizeCustomStateItemsForDefault()
+		{
+			var selectedStateItemIds = new HashSet<Guid>();
+			var normalizedItems = CustomStateItems
+				.Where(item => item.StateItemId != Guid.Empty && selectedStateItemIds.Add(item.StateItemId))
+				.ToList();
+
+			if (normalizedItems.Count == CustomStateItems.Count)
+			{
+				return;
+			}
+
+			var collection = CreateCustomStateItemCollection();
+			foreach (var item in normalizedItems)
+			{
+				collection.Add(item);
+			}
+
+			SetCustomStateItemModel(collection, true);
 		}
 
 		#endregion
