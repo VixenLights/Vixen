@@ -335,7 +335,7 @@
 	</DataTemplate>
 
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.ICustomStateItemEditorKey}">
-		<StackPanel>
+		<StackPanel Grid.IsSharedSizeScope="True">
 			<StackPanel.Resources>
 				<Style x:Key="InlineCustomStateItemPropertyContainerStyle" TargetType="{x:Type design:PropertyContainer}">
 					<Setter Property="IsTabStop" Value="False"/>
@@ -378,7 +378,7 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto"/>
 							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="CustomStateItemColor"/>
 						</Grid.ColumnDefinitions>
 						<TextBlock Grid.Column="0" Text="State Item" Margin="0,0,8,0" VerticalAlignment="Center"/>
 						<design:PropertyContainer Grid.Column="1" Entry="{Binding SubProperties[StateItem]}"
