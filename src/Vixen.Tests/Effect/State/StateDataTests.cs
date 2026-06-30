@@ -153,6 +153,19 @@ public class StateDataTests
 	}
 
 	[Fact]
+	public void CustomStateItemCollection_CustomRenderSource_RequiresOneItem()
+	{
+		// Arrange
+		var effect = new StateEffect
+		{
+			RenderSource = StateRenderSource.Custom
+		};
+
+		// Act / Assert
+		Assert.Equal(1, effect.CustomStateItems.GetMinimumItemCount());
+	}
+
+	[Fact]
 	public void CustomStateItem_CreateData_CopiesStateItemIdAndColor()
 	{
 		// Arrange
@@ -308,6 +321,47 @@ public class StateDataTests
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.MarkCollectionId)));
 		Assert.True(IsBrowsable(effect, nameof(StateEffect.CustomStateItems)));
 		Assert.Equal(PlaybackMode.Iterate, effect.PlaybackMode);
+	}
+
+	[Fact]
+	public void RenderSource_Custom_AddsFirstStateItemWhenCollectionIsEmpty()
+	{
+		// Arrange
+		var open = CreateStateItem("Open", Color.Green);
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", open));
+
+		// Act
+		effect.RenderSource = StateRenderSource.Custom;
+
+		// Assert
+		var row = Assert.Single(effect.CustomStateItems);
+		Assert.Equal(open.Id, row.StateItemId);
+		Assert.Equal(Color.Green, row.Color);
+		var data = Assert.IsType<StateEffectData>(effect.ModuleData);
+		var itemData = Assert.Single(data.CustomStateItems);
+		Assert.Equal(open.Id, itemData.StateItemId);
+		Assert.Equal(Color.Green, itemData.Color);
+	}
+
+	[Fact]
+	public void RenderSource_Custom_KeepsExistingCustomStateItems()
+	{
+		// Arrange
+		var open = CreateStateItem("Open", Color.Green);
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", open));
+		effect.CustomStateItems.Add(new CustomStateItem
+		{
+			StateItemId = open.Id,
+			Color = Color.Blue
+		});
+
+		// Act
+		effect.RenderSource = StateRenderSource.Custom;
+
+		// Assert
+		var row = Assert.Single(effect.CustomStateItems);
+		Assert.Equal(open.Id, row.StateItemId);
+		Assert.Equal(Color.Blue, row.Color);
 	}
 
 	[Fact]
@@ -542,6 +596,29 @@ public class StateDataTests
 	}
 
 	[Fact]
+	public void StateDefinitionChange_CustomRenderSource_SeedsFirstStateItem()
+	{
+		// Arrange
+		var first = CreateDefinition("First", CreateStateItem("Open", Color.Green));
+		var closed = CreateStateItem("Closed", Color.Red);
+		var second = CreateDefinition("Second", closed);
+		var effect = CreateEffectWithDefinitions([first, second]);
+		effect.RenderSource = StateRenderSource.Custom;
+
+		// Act
+		effect.StateDefinition = "Second";
+
+		// Assert
+		var row = Assert.Single(effect.CustomStateItems);
+		Assert.Equal(closed.Id, row.StateItemId);
+		Assert.Equal(Color.Red, row.Color);
+		var data = Assert.IsType<StateEffectData>(effect.ModuleData);
+		var itemData = Assert.Single(data.CustomStateItems);
+		Assert.Equal(closed.Id, itemData.StateItemId);
+		Assert.Equal(Color.Red, itemData.Color);
+	}
+
+	[Fact]
 	public void SelectCustomStateItem_ResetsColorToSelectedStateItemColor()
 	{
 		// Arrange
@@ -654,14 +731,12 @@ public class StateDataTests
 		var effect = CreateEffectWithDefinition(CreateDefinition("Door", item), leafNode);
 		effect.TimeSpan = TimeSpan.FromSeconds(5);
 		effect.RenderSource = StateRenderSource.Custom;
-		effect.CustomStateItems.Add(new CustomStateItem
-		{
-			StateItemId = item.Id,
-			Color = Color.Blue
-		});
+		var row = Assert.Single(effect.CustomStateItems);
+		row.Color = Color.Blue;
 		var data = Assert.IsType<StateEffectData>(effect.ModuleData);
 		Assert.Equal(["Door"], effect.GetStateDefinitionOptions());
 		Assert.Equal([item.Id], data.CustomStateItems.Select(row => row.StateItemId));
+		Assert.Equal([Color.Blue], data.CustomStateItems.Select(row => row.Color));
 
 		// Act
 		var success = effect.PreRender();
@@ -686,14 +761,12 @@ public class StateDataTests
 		var effect = CreateEffectWithDefinition(CreateDefinition("Door", item), leafNode);
 		effect.TimeSpan = TimeSpan.FromSeconds(5);
 		effect.RenderSource = StateRenderSource.Custom;
-		effect.CustomStateItems.Add(new CustomStateItem
-		{
-			StateItemId = item.Id,
-			Color = Color.Blue
-		});
+		var row = Assert.Single(effect.CustomStateItems);
+		row.Color = Color.Blue;
 		var data = Assert.IsType<StateEffectData>(effect.ModuleData);
 		Assert.Equal(["Door"], effect.GetStateDefinitionOptions());
 		Assert.Equal([item.Id], data.CustomStateItems.Select(row => row.StateItemId));
+		Assert.Equal([Color.Blue], data.CustomStateItems.Select(row => row.Color));
 
 		// Act
 		var success = effect.PreRender();

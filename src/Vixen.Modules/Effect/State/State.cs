@@ -157,6 +157,7 @@ namespace VixenModules.Effect.State
 				if (previousStateDefinitionId != selectedDefinition.StateDefinitionId)
 				{
 					ClearCustomStateItems();
+					EnsureCustomStateItemRequired();
 				}
 
 				IsDirty = true;
@@ -292,6 +293,7 @@ namespace VixenModules.Effect.State
 				if (_data.RenderSource != value)
 				{
 					_data.RenderSource = value;
+					EnsureCustomStateItemRequired();
 					SetRenderSourceBrowsables();
 					IsDirty = true;
 					OnPropertyChanged();
@@ -1156,6 +1158,21 @@ namespace VixenModules.Effect.State
 			}
 
 			CustomStateItems.Clear();
+		}
+
+		private void EnsureCustomStateItemRequired()
+		{
+			if (RenderSource != StateRenderSource.Custom || CustomStateItems.Count > 0)
+			{
+				return;
+			}
+
+			if (GetFirstAvailableCustomStateItem(new CustomStateItem()) == null)
+			{
+				return;
+			}
+
+			CustomStateItems.Add(new CustomStateItem());
 		}
 
 		private void NormalizeCustomStateItemsForDefault()

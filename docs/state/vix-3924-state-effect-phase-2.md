@@ -79,6 +79,10 @@ Hidden selections and collections are retained. Switching away from `Custom` mus
 
 Switching `Render Source` to `Custom` must preserve the current `Playback Mode`. The effect must not automatically change `Playback Mode` to `Iterate`.
 
+Custom mode requires at least one custom State item row when the selected State definition has at least one real State item. When `Render Source` changes to `Custom` and the custom row collection is empty, the effect must add one row using the same defaulting rules as a user-added row: select the first real State item in the selected State definition and copy that State item's configured color. If there are no real State items in the selected State definition, the collection may remain empty because no valid State item can be selected.
+
+While `Render Source` is `Custom`, the collection editor should prevent removing the last remaining custom row when the selected State definition has at least one real State item. When `Render Source` is not `Custom`, the retained custom collection may be empty.
+
 When `Playback Mode` changes from `Iterate` to `Default`, the custom row collection must be normalized for Default mode. Remove duplicate State item rows and keep the first row found for each State item ID in collection order. Remove `<None>` rows because `<None>` is not valid in Default mode. This cleanup should mark the effect dirty and refresh the row editors.
 
 The custom row collection display name should be `Custom State Items` unless an implementation discovery shows an existing naming convention that strongly favors another label.
@@ -126,7 +130,8 @@ When the selected top-level `State` definition changes:
 
 - The custom row collection is cleared.
 - Clearing the collection prevents rows from silently pointing at unrelated State items in a different State definition.
-- The user can add new rows for the newly selected State definition.
+- If `Render Source` is `Custom` and the newly selected State definition has at least one real State item, the effect immediately adds one row using the same defaulting rules as a user-added row.
+- If `Render Source` is not `Custom`, the retained custom collection remains empty until the user switches back to `Custom` or adds rows.
 
 ## Data Model Requirements
 
@@ -235,6 +240,9 @@ Editor option tests:
 
 - `RenderSource` includes `Custom`.
 - Switching to `Custom` preserves the current `Playback Mode`.
+- Switching to `Custom` adds one custom row when the collection is empty and the selected State definition has at least one real State item.
+- Switching to `Custom` keeps existing custom rows unchanged when the collection already has rows.
+- The custom row collection requires at least one row while `Render Source` is `Custom`.
 - `Custom State Items` is visible only for `Custom`.
 - `State Item` and `Mark Collection` remain visible only for their matching render sources.
 - Custom row State item options include State item rows from the selected State definition.
@@ -244,7 +252,7 @@ Editor option tests:
 - Changing `Playback Mode` from `Iterate` to `Default` removes duplicate State item rows, keeps the first row for each State item, removes `<None>` rows, marks the effect dirty, and refreshes row editors.
 - Duplicate State item names are represented in a way that maps to stable State item IDs.
 - Missing row State item IDs display a missing placeholder and do not silently clear.
-- Changing the top-level `State` definition clears existing custom rows.
+- Changing the top-level `State` definition clears existing custom rows and, when `Render Source` is `Custom`, seeds the first real State item from the newly selected State definition.
 - Custom row color editors use the selected State item's assigned element set to choose full-color versus discrete-color picker behavior.
 
 Rendering planner tests:
@@ -284,15 +292,15 @@ Recommended focused validation commands for the eventual implementation plan:
 2. Add a State effect to the prop.
 3. Select the State definition.
 4. Set `Render Source` to `Custom`.
-5. Confirm the editor shows the custom row collection and hides the top-level `State Item` and `Mark Collection` selectors.
-6. Add rows in this order while still in `Default`: first State item, second State item. Confirm `<None>` is not offered and confirm the already-added State items are not offered for additional rows.
+5. Confirm the editor shows the custom row collection, hides the top-level `State Item` and `Mark Collection` selectors, and automatically adds one row for the first real State item when the collection was empty.
+6. Add a second row while still in `Default`. Confirm `<None>` is not offered and confirm the already-added State items are not offered for additional rows.
 7. Change the color of the first row to a color different from the State item default.
 8. Set `Playback Mode` to `Iterate` and `Iterations` to `2`.
 9. Confirm `<None>` is now offered, then add a `<None>` row between the first and second State item rows and add the first State item again.
 10. Render or play the effect.
 11. Confirm the sequence plays row 1, blank, row 2, row 1, row 1, blank, row 2, row 1 across the effect duration, and that the overridden row color is used wherever that row activates.
 12. Switch `Render Source` to `State Item`, then back to `Custom`, and confirm the custom rows and colors are still present.
-13. Change the selected State definition and confirm the custom row collection is cleared.
+13. Change the selected State definition and confirm stale custom rows are cleared and replaced with the first real State item from the newly selected State definition while `Render Source` remains `Custom`.
 14. Confirm the timeline visual representation includes a `Custom` hint when `Render Source` is `Custom`.
 
 ## Jira Update Requirement for the Future ExecPlan
@@ -327,6 +335,8 @@ Coalescing must account for row color and row identity. It must not merge across
 ## Resolved Design Decisions
 
 Custom preserves the current `Playback Mode` when selected. It does not force or default the effect to `Iterate`.
+
+Custom requires at least one row while active when the selected State definition has at least one real State item. Switching to Custom automatically seeds an empty custom collection with the first real State item and that State item's configured color.
 
 In `Default` playback mode, custom rows render like top-level `State Item` `<All>`, with the custom row list treated as the all-set.
 

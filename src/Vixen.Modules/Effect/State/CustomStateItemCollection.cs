@@ -36,12 +36,6 @@ namespace VixenModules.Effect.State
 		}
 
 		/// <inheritdoc />
-		public override int GetMinimumItemCount()
-		{
-			return 0;
-		}
-
-		/// <inheritdoc />
 		protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
 		{
 			base.OnCollectionChanged(e);
