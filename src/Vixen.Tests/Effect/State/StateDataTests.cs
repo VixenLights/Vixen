@@ -395,6 +395,30 @@ public class StateDataTests
 	}
 
 	[Fact]
+	public void CustomStateItems_AddDefaultMode_SelectsFirstAvailableStateItem()
+	{
+		// Arrange
+		var open = CreateStateItem("Open", Color.Green);
+		var closed = CreateStateItem("Closed", Color.Red);
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", open, closed));
+		var firstRow = new CustomStateItem();
+		var secondRow = new CustomStateItem();
+
+		// Act
+		effect.CustomStateItems.Add(firstRow);
+		effect.CustomStateItems.Add(secondRow);
+
+		// Assert
+		Assert.Equal(open.Id, firstRow.StateItemId);
+		Assert.Equal(Color.Green, firstRow.Color);
+		Assert.Equal(closed.Id, secondRow.StateItemId);
+		Assert.Equal(Color.Red, secondRow.Color);
+		var data = Assert.IsType<StateEffectData>(effect.ModuleData);
+		Assert.Equal([open.Id, closed.Id], data.CustomStateItems.Select(item => item.StateItemId));
+		Assert.Equal([Color.Green, Color.Red], data.CustomStateItems.Select(item => item.Color));
+	}
+
+	[Fact]
 	public void CustomStateItemOptions_Iterate_IncludeNoneAndSelectedRows()
 	{
 		// Arrange
@@ -413,6 +437,28 @@ public class StateDataTests
 
 		// Assert
 		Assert.Equal(["<None>", "Open", "Closed"], options);
+	}
+
+	[Fact]
+	public void CustomStateItems_AddIterateMode_SelectsFirstStateItem()
+	{
+		// Arrange
+		var open = CreateStateItem("Open", Color.Green);
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", open));
+		effect.PlaybackMode = PlaybackMode.Iterate;
+		var row = new CustomStateItem();
+
+		// Act
+		effect.CustomStateItems.Add(row);
+
+		// Assert
+		Assert.Equal(open.Id, row.StateItemId);
+		Assert.Equal("Open", row.StateItem);
+		Assert.Equal(Color.Green, row.Color);
+		var data = Assert.IsType<StateEffectData>(effect.ModuleData);
+		var itemData = Assert.Single(data.CustomStateItems);
+		Assert.Equal(open.Id, itemData.StateItemId);
+		Assert.Equal(Color.Green, itemData.Color);
 	}
 
 	[Fact]

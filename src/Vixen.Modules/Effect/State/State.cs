@@ -1050,9 +1050,52 @@ namespace VixenModules.Effect.State
 				}
 			}
 
+			InitializeNewCustomStateItems(e);
 			UpdateCustomStateItemData();
 			IsDirty = true;
 			OnPropertyChanged(nameof(CustomStateItems));
+		}
+
+		private void InitializeNewCustomStateItems(NotifyCollectionChangedEventArgs e)
+		{
+			if (e.NewItems == null)
+			{
+				return;
+			}
+
+			foreach (CustomStateItem item in e.NewItems)
+			{
+				InitializeNewCustomStateItem(item);
+			}
+		}
+
+		private void InitializeNewCustomStateItem(CustomStateItem customStateItem)
+		{
+			if (customStateItem.StateItemId != Guid.Empty)
+			{
+				return;
+			}
+
+			var stateItem = GetFirstAvailableCustomStateItem(customStateItem);
+			if (stateItem == null)
+			{
+				return;
+			}
+
+			customStateItem.StateItemId = stateItem.Id;
+			customStateItem.Color = stateItem.Color;
+		}
+
+		private StateItemData? GetFirstAvailableCustomStateItem(CustomStateItem customStateItem)
+		{
+			var selectedDefinition = GetSelectedStateDefinition();
+			if (selectedDefinition == null)
+			{
+				return null;
+			}
+
+			return GetStateItems(selectedDefinition)
+				.FirstOrDefault(item => !IsCustomStateItemSelected(item.Id, customStateItem));
 		}
 
 		private void OnCustomStateItemsChildPropertyChanged(object? sender, PropertyChangedEventArgs e)
