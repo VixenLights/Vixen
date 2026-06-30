@@ -376,14 +376,12 @@
 						  Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},
 						  Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='-24'}">
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto"/>
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="Auto" SharedSizeGroup="CustomStateItemColor"/>
 						</Grid.ColumnDefinitions>
-						<TextBlock Grid.Column="0" Text="State Item" Margin="0,0,8,0" VerticalAlignment="Center"/>
-						<design:PropertyContainer Grid.Column="1" Entry="{Binding SubProperties[StateItem]}"
+						<design:PropertyContainer Grid.Column="0" Entry="{Binding SubProperties[StateItem]}"
 												  Style="{StaticResource InlineCustomStateItemPropertyContainerStyle}"/>
-						<design:PropertyContainer Grid.Column="2" Entry="{Binding SubProperties[Color]}" Margin="8,0,0,0"
+						<design:PropertyContainer Grid.Column="1" Entry="{Binding SubProperties[Color]}" Margin="8,0,0,0"
 												  Style="{StaticResource InlineCustomStateItemPropertyContainerStyle}"/>
 					</Grid>
 				</DataTemplate>
