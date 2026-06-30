@@ -99,9 +99,17 @@ namespace VixenModules.Effect.State
 		internal string GetVisualRepresentationText()
 		{
 			var text = $"{BaseVisualRepresentationText} - {StateDefinition}";
-			return RenderSource == StateRenderSource.Custom
-				? $"{text} - Custom"
-				: text;
+			switch (RenderSource)
+			{
+				case StateRenderSource.Custom:
+					return $"{text} - Custom";
+				case StateRenderSource.StateItem:
+					return $"{text} - {StateItem}";
+				case StateRenderSource.MarkCollection:
+					return $"{text} - Marks";
+				default:
+					return text;
+			}
 		}
 
 		#endregion
@@ -168,7 +176,7 @@ namespace VixenModules.Effect.State
 		[ProviderDescription(@"StateItem")]
 		[TypeConverter(typeof(StateItemNameConverter))]
 		[PropertyEditor("SelectionEditor")]
-		[PropertyOrder(2)]
+		[PropertyOrder(6)]
 		public string StateItem
 		{
 			get
@@ -226,7 +234,7 @@ namespace VixenModules.Effect.State
 		[ProviderDescription(@"MarkCollection")]
 		[TypeConverter(typeof(IMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
-		[PropertyOrder(2)]
+		[PropertyOrder(6)]
 		public string MarkCollectionId
 		{
 			get
@@ -270,7 +278,7 @@ namespace VixenModules.Effect.State
 		[ProviderCategory("Config", 2)]
 		[ProviderDisplayName(@"StateRenderSource")]
 		[ProviderDescription(@"StateRenderSource")]
-		[PropertyOrder(1)]
+		[PropertyOrder(5)]
 		[RefreshProperties(RefreshProperties.All)]
 		public StateRenderSource RenderSource
 		{
@@ -307,7 +315,7 @@ namespace VixenModules.Effect.State
 		[ProviderCategory("Config", 2)]
 		[ProviderDisplayName(@"StatePlaybackMode")]
 		[ProviderDescription(@"StatePlaybackMode")]
-		[PropertyOrder(3)]
+		[PropertyOrder(1)]
 		[RefreshProperties(RefreshProperties.All)]
 		public PlaybackMode PlaybackMode
 		{
@@ -393,7 +401,7 @@ namespace VixenModules.Effect.State
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"CustomStateItems")]
 		[ProviderDescription(@"CustomStateItems")]
-		[PropertyOrder(2)]
+		[PropertyOrder(6)]
 		public CustomStateItemCollection CustomStateItems
 		{
 			get => _customStateItems;

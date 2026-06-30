@@ -333,12 +333,27 @@ public class StateDataTests
 	{
 		// Arrange
 		var effect = CreateEffectWithDefinition(CreateDefinition("Door", CreateStateItem("Open", Color.Green)));
-
+		effect.StateItem = "Open";
+		
 		// Act
 		var text = effect.GetVisualRepresentationText();
 
 		// Assert
-		Assert.Equal("State - Door", text);
+		Assert.Equal("State - Door - Open", text);
+	}
+	
+	[Fact]
+	public void VisualRepresentationText_StateItem_UsesStateDefinition_WithAll()
+	{
+		// Arrange
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", CreateStateItem("Open", Color.Green)));
+		effect.StateItem = StateEffect.AllStateItemsLabel;
+		
+		// Act
+		var text = effect.GetVisualRepresentationText();
+
+		// Assert
+		Assert.Equal($"State - Door - {StateEffect.AllStateItemsLabel}", text);
 	}
 
 	[Fact]
