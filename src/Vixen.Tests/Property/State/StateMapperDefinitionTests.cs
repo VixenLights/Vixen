@@ -1,11 +1,13 @@
 using System.Drawing;
 using System.Reflection;
 using Moq;
+using Vixen.Module.Property;
 using Vixen.Sys;
 using VixenModules.Property.State;
 using VixenModules.Property.State.Setup.Preview;
 using VixenModules.Property.State.Setup.Services;
 using VixenModules.Property.State.Setup.ViewModels;
+using ColorProperty = VixenModules.Property.Color;
 using Xunit;
 
 namespace Vixen.Tests.Property.State;
@@ -45,6 +47,25 @@ public class StateMapperDefinitionTests
 		Assert.Same(viewModel.StateDefinitions[1], viewModel.SelectedStateDefinition);
 		Assert.Single(viewModel.Items);
 		Assert.Equal("State Item - 1", viewModel.Items[0].Name);
+	}
+
+	[Fact]
+	public async Task AddStateDefinition_DefaultItemUsesFirstCommonDiscreteColor()
+	{
+		// Arrange
+		var dialogService = new FakeStateDefinitionDialogService("Blink");
+		var rootNode = CreateNode(
+			Guid.NewGuid(),
+			"Root",
+			CreateColoredLeaf(Guid.NewGuid(), "First Leaf", Color.Red, Color.Green),
+			CreateColoredLeaf(Guid.NewGuid(), "Second Leaf", Color.Green, Color.Blue));
+		var viewModel = CreateViewModel(CreateSource("Open"), rootNode, dialogService);
+
+		// Act
+		await InvokeAsync(viewModel, "AddStateDefinitionAsync");
+
+		// Assert
+		Assert.Equal(Color.Green, viewModel.Items[0].Color);
 	}
 
 	[Fact]
@@ -136,6 +157,43 @@ public class StateMapperDefinitionTests
 		Assert.NotEqual(sourceItemId, viewModel.Items[0].Item.Id);
 		Assert.Equal("Open Item", viewModel.Items[0].Name);
 		Assert.Equal(Color.Green, viewModel.Items[0].Color);
+	}
+
+	[Fact]
+	public async Task AddItem_DefaultsColorToFirstCommonDiscreteColor()
+	{
+		// Arrange
+		var rootNode = CreateNode(
+			Guid.NewGuid(),
+			"Root",
+			CreateColoredLeaf(Guid.NewGuid(), "First Leaf", Color.Red, Color.Green, Color.Blue),
+			CreateColoredLeaf(Guid.NewGuid(), "Second Leaf", Color.Green, Color.Blue));
+		var viewModel = CreateViewModel(CreateSource("Open"), rootNode);
+
+		// Act
+		await InvokeAsync(viewModel, "AddItemAsync");
+
+		// Assert
+		Assert.Equal("State Item - 1", viewModel.SelectedItem!.Name);
+		Assert.Equal(Color.Green, viewModel.SelectedItem.Color);
+	}
+
+	[Fact]
+	public async Task AddItem_KeepsWhiteDefaultWhenDiscreteLeavesHaveNoCommonColor()
+	{
+		// Arrange
+		var rootNode = CreateNode(
+			Guid.NewGuid(),
+			"Root",
+			CreateColoredLeaf(Guid.NewGuid(), "First Leaf", Color.Red),
+			CreateColoredLeaf(Guid.NewGuid(), "Second Leaf", Color.Blue));
+		var viewModel = CreateViewModel(CreateSource("Open"), rootNode);
+
+		// Act
+		await InvokeAsync(viewModel, "AddItemAsync");
+
+		// Assert
+		Assert.Equal(Color.White, viewModel.SelectedItem!.Color);
 	}
 
 	[Fact]
@@ -479,7 +537,9 @@ public class StateMapperDefinitionTests
 		rootNode.SetupGet(node => node.Id).Returns(Guid.NewGuid());
 		rootNode.SetupGet(node => node.Name).Returns("Root");
 		rootNode.SetupGet(node => node.Children).Returns([]);
+		rootNode.Setup(node => node.GetLeafEnumerator()).Returns([]);
 		rootNode.Setup(node => node.GetNodeEnumerator()).Returns([]);
+		rootNode.SetupGet(node => node.Properties).Returns(new PropertyManager(rootNode.Object));
 
 		return new StateMapperViewModel(
 			rootNode.Object,
@@ -491,24 +551,68 @@ public class StateMapperDefinitionTests
 
 	private static StateMapperViewModel CreateViewModel(
 		StateData source,
-		IElementNode rootNode)
+		IElementNode rootNode,
+		IStateDefinitionDialogService? dialogService = null)
 	{
 		return new StateMapperViewModel(
 			rootNode,
 			source,
 			Mock.Of<IStateColorPickerService>(),
 			new NoOpStatePreviewPublisher(),
-			new FakeStateDefinitionDialogService());
+			dialogService ?? new FakeStateDefinitionDialogService());
 	}
 
 	private static IElementNode CreateNode(Guid id, string name, params IElementNode[] children)
+	{
+		return CreateNode(id, name, [], children);
+	}
+
+	private static IElementNode CreateColoredLeaf(Guid id, string name, params Color[] colors)
+	{
+		return CreateNode(id, name, colors, []);
+	}
+
+	private static IElementNode CreateNode(Guid id, string name, Color[] colors, params IElementNode[] children)
 	{
 		var node = new Mock<IElementNode>();
 		node.SetupGet(elementNode => elementNode.Id).Returns(id);
 		node.SetupGet(elementNode => elementNode.Name).Returns(name);
 		node.SetupGet(elementNode => elementNode.Children).Returns(children);
-		node.Setup(elementNode => elementNode.GetNodeEnumerator()).Returns(children);
+		node.SetupGet(elementNode => elementNode.Properties).Returns(CreatePropertyManager(node.Object, colors));
+		node.Setup(elementNode => elementNode.GetLeafEnumerator()).Returns(() =>
+			children.Length == 0 ? [node.Object] : children.SelectMany(child => child.GetLeafEnumerator()));
+		node.Setup(elementNode => elementNode.GetNodeEnumerator()).Returns(() =>
+			(new[] { node.Object }).Concat(children.SelectMany(child => child.GetNodeEnumerator())));
 		return node.Object;
+	}
+
+	private static PropertyManager CreatePropertyManager(IElementNode owner, IReadOnlyCollection<Color> colors)
+	{
+		var propertyManager = new PropertyManager(owner);
+		if (colors.Count == 0)
+		{
+			return propertyManager;
+		}
+
+		var colorSetName = $"State Test Colors {Guid.NewGuid()}";
+		var staticData = new ColorProperty.ColorStaticData();
+		staticData.SetColorSet(colorSetName, [.. colors]);
+		var colorModule = new ColorProperty.ColorModule
+		{
+			Descriptor = new ColorProperty.ColorDescriptor(),
+			StaticModuleData = staticData,
+			ModuleData = new ColorProperty.ColorData
+			{
+				ElementColorType = ColorProperty.ElementColorType.MultipleDiscreteColors,
+				ColorSetName = colorSetName
+			}
+		};
+
+		var itemsField = typeof(PropertyManager).GetField("_items", BindingFlags.Instance | BindingFlags.NonPublic);
+		Assert.NotNull(itemsField);
+		var items = Assert.IsType<Dictionary<Guid, IPropertyModuleInstance>>(itemsField.GetValue(propertyManager));
+		items[ColorProperty.ColorDescriptor.ModuleId] = colorModule;
+		return propertyManager;
 	}
 
 	private static Task InvokeAsync(StateMapperViewModel viewModel, string methodName)

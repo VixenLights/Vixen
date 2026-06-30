@@ -93,6 +93,10 @@ State effect itself is out of scope for VIX-3591.
 - The selected State definition shows its description, State item grid, assignment tree, and preview controls.
 - Users can add and remove State item rows.
 - New State item rows use the current valid default item name and default color behavior.
+- When the selected element tree has discrete-color leaf elements, newly added State item rows default to the first color
+  that is available on every discrete-color leaf in that tree. If no shared discrete color exists, the default color remains
+  white.
+- The default State item row created with a newly added State definition follows the same discrete-color default rule.
 - State item names are required and trimmed when editing completes.
 - Whitespace-only State item names block OK.
 - Exact duplicate State item names are allowed.
@@ -307,6 +311,9 @@ Automated coverage must include:
 - StateModule clone/copy behavior for IDs, names, descriptions, items, colors, and assignments.
 - Setup draft OK and Cancel behavior.
 - Add, Delete, Rename, and Copy State definition behavior.
+- Default State item color selection for newly added rows and newly added State definitions on element trees with shared
+  discrete colors.
+- Default State item color fallback when discrete-color elements have no shared color.
 - Add/Rename/Copy dialog view model validation for empty names, whitespace names, exact duplicates, case-only warnings, and unique names.
 - Blocking selection changes while the current definition is invalid.
 - OK disabled while any definition or item has blocking errors.
@@ -359,7 +366,10 @@ Tests must use embedded minimal mocked data based on sample files. They must not
 5. Enter a whitespace-only State item name and confirm OK is blocked.
 6. Correct the invalid State item name and confirm OK is enabled when no other errors exist.
 7. Add duplicate State item names and confirm they are allowed.
-8. Confirm Cancel and window close remain available while errors exist and discard edits.
+8. On a prop whose leaf elements share at least one discrete color, add a State item and confirm its color defaults to the
+   first shared discrete color.
+9. On a prop whose discrete-color leaf elements have no shared color, add a State item and confirm its color defaults to white.
+10. Confirm Cancel and window close remain available while errors exist and discard edits.
 
 ### State Definition Management
 

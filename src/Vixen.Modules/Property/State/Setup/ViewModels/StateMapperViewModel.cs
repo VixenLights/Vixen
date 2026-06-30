@@ -9,6 +9,7 @@ using VixenModules.Property.State.Setup.Models;
 using VixenModules.Property.State.Setup.Preview;
 using VixenModules.Property.State.Setup.Services;
 using WPFCommon.Extensions;
+using ColorProperty = VixenModules.Property.Color;
 
 namespace VixenModules.Property.State.Setup.ViewModels
 {
@@ -420,7 +421,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			}
 
 			var definition = new StateDefinitionViewModel(
-				StateDefinitionData.CreateDefault(normalizedName),
+				CreateDefaultStateDefinition(normalizedName),
 				_elementTree);
 			StateDefinitions.Add(definition);
 			SelectedStateDefinition = definition;
@@ -512,7 +513,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			try
 			{
 				var item = new StateItemViewModel(
-					new StateItemData { Name = name }, _elementTree);
+					CreateDefaultStateItem(name), _elementTree);
 				Items.Add(item);
 				SelectedItem = item;
 			}
@@ -1170,6 +1171,61 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			}
 
 			return itemsToRemove;
+		}
+
+		private StateDefinitionData CreateDefaultStateDefinition(string name)
+		{
+			var definition = StateDefinitionData.CreateDefault(name);
+			if (definition.Items.Count > 0)
+			{
+				definition.Items[0].Color = GetDefaultStateItemColor();
+			}
+
+			return definition;
+		}
+
+		private StateItemData CreateDefaultStateItem(string name)
+		{
+			return new StateItemData
+			{
+				Name = name,
+				Color = GetDefaultStateItemColor()
+			};
+		}
+
+		private System.Drawing.Color GetDefaultStateItemColor()
+		{
+			return TryGetFirstCommonDiscreteColor(_rootNode, out var color)
+				? color
+				: System.Drawing.Color.White;
+		}
+
+		private static bool TryGetFirstCommonDiscreteColor(IElementNode rootNode, out System.Drawing.Color color)
+		{
+			var discreteLeafColors = rootNode
+				.GetLeafEnumerator()
+				.Select(leaf => ColorProperty.ColorModule.getValidColorsForElementNode(leaf, false).ToList())
+				.Where(colors => colors.Count > 0)
+				.ToList();
+			if (discreteLeafColors.Count == 0)
+			{
+				color = System.Drawing.Color.Empty;
+				return false;
+			}
+
+			var commonColors = new HashSet<System.Drawing.Color>(discreteLeafColors[0]);
+			foreach (var colors in discreteLeafColors.Skip(1))
+			{
+				commonColors.IntersectWith(colors);
+				if (commonColors.Count == 0)
+				{
+					color = System.Drawing.Color.Empty;
+					return false;
+				}
+			}
+
+			color = discreteLeafColors[0].First(commonColors.Contains);
+			return true;
 		}
 	}
 }
