@@ -55,23 +55,19 @@ it accomplishes (not HOW). Wrap at 72 characters per line.
 
 Can include multiple paragraphs, bullet points, or issue refs.
 
-Fixes #1234
+Related to VIX-XXXX
 ```
 
-### Step 4: Present to User
+### Step 4: Present to User in format to be pasted into commit message
 
 ```
-Subject line:
-Prevent token expiration race condition
+VIX-XXXX Prevent token expiration race condition
 
-Body:
 Expired tokens were accepted during brief window between
 expiry and cache invalidation, allowing unauthorized access.
 
 Add expiry validation before processing requests and
 implement immediate cache invalidation on token expiry.
-
-Fixes #1234
 ```
 
 ## Reference
@@ -82,7 +78,7 @@ See `docs\references\commit-guide.md` for detailed explanation of the seven rule
 
 **Simple change**:
 ```
-Add user email validation
+VIX-XXXX Add user email validation
 
 Email addresses were accepted without format validation,
 causing database errors when invalid emails were stored.
@@ -92,7 +88,7 @@ Add regex validation before saving to ensure valid format.
 
 **Bug fix**:
 ```
-Fix race condition in token refresh
+VIX-XXXX Fix race condition in token refresh
 
 Background token refresh could override user-initiated
 refresh, causing authentication failures.
@@ -100,17 +96,19 @@ refresh, causing authentication failures.
 Add mutex lock around refresh operations to prevent
 concurrent modifications.
 
-Fixes #456
+Related to VIX-XXXX
 ```
 
 **Feature addition**:
 ```
-Add dark mode toggle to settings
+VIX-XXXX Add dark mode toggle to settings
 
 Users requested ability to switch between light and dark
 themes without changing system preferences.
 
 Implement theme toggle in settings page with localStorage
 persistence across sessions.
+
+Depends on VIX-XXXX
 ```
 
