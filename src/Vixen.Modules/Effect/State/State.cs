@@ -333,6 +333,7 @@ namespace VixenModules.Effect.State
 					NormalizeCustomStateItemsForDefault();
 				}
 
+				RefreshCustomStateItemOptions();
 				SetRenderSourceBrowsables();
 				IsDirty = true;
 				OnPropertyChanged();
@@ -1176,6 +1177,14 @@ namespace VixenModules.Effect.State
 			}
 
 			SetCustomStateItemModel(collection, true);
+		}
+
+		private void RefreshCustomStateItemOptions()
+		{
+			foreach (var item in CustomStateItems)
+			{
+				item.RefreshStateItemOptions();
+			}
 		}
 
 		#endregion

@@ -114,5 +114,10 @@ namespace VixenModules.Effect.State
 		{
 			return Parent?.GetCustomStateItemValidColors(this) ?? [];
 		}
+
+		internal void RefreshStateItemOptions()
+		{
+			OnPropertyChanged(nameof(StateItem));
+		}
 	}
 }

@@ -440,6 +440,26 @@ public class StateDataTests
 	}
 
 	[Fact]
+	public void PlaybackMode_Iterate_RefreshesExistingCustomStateItemOptions()
+	{
+		// Arrange
+		var open = CreateStateItem("Open", Color.Green);
+		var closed = CreateStateItem("Closed", Color.Red);
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", open, closed));
+		var row = new CustomStateItem();
+		var changedProperties = new List<string?>();
+		effect.CustomStateItems.Add(row);
+		row.PropertyChanged += (_, e) => changedProperties.Add(e.PropertyName);
+
+		// Act
+		effect.PlaybackMode = PlaybackMode.Iterate;
+
+		// Assert
+		Assert.Contains(nameof(CustomStateItem.StateItem), changedProperties);
+		Assert.Equal(["<None>", "Open", "Closed"], effect.GetCustomStateItemOptions(row));
+	}
+
+	[Fact]
 	public void CustomStateItems_AddIterateMode_SelectsFirstStateItem()
 	{
 		// Arrange
