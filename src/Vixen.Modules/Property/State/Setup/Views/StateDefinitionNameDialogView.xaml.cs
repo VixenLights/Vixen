@@ -1,3 +1,5 @@
+using System.Windows.Input;
+using System.Windows.Threading;
 using VixenModules.Property.State.Setup.ViewModels;
 using WPFCommon.Extensions;
 
@@ -17,11 +19,19 @@ namespace VixenModules.Property.State.Setup.Views
 			InitializeComponent();
 			Icon = Common.Resources.Properties.Resources.Icon_Vixen3.ToImageSource();
 			DataContext = viewModel;
-			Loaded += (_, _) =>
-			{
-				NameBox.SelectAll();
-				NameBox.Focus();
-			};
+			ContentRendered += OnContentRendered;
+		}
+
+		private void OnContentRendered(object? sender, EventArgs e)
+		{
+			ContentRendered -= OnContentRendered;
+			Dispatcher.BeginInvoke(FocusNameBox, DispatcherPriority.ContextIdle);
+		}
+
+		private void FocusNameBox()
+		{
+			NameBox.Focus();
+			Keyboard.Focus(NameBox);
 		}
 	}
 }

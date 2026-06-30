@@ -4,6 +4,7 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:catel="http://schemas.catelproject.com"
+		xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
 		mc:Ignorable="d"
 		Title="{Binding Title}"
 		WindowStartupLocation="CenterOwner"
@@ -11,7 +12,8 @@
 		Width="360"
 		MinWidth="320"
 		MinHeight="120"
-		ResizeMode="NoResize">
+		ResizeMode="NoResize"
+		x:Name="StateDefinitionDialogWindow">
 
 	<Window.Resources>
 		<ResourceDictionary>
