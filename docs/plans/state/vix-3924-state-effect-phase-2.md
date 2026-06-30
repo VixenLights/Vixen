@@ -25,6 +25,7 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 - [x] (2026-06-29 14:14 -05:00) Completed Milestone 8 timeline visual Custom hint. Updated the State effect visual label to append `Custom` when `RenderSource == StateRenderSource.Custom` and added focused label tests.
 - [x] (2026-06-29 14:14 -05:00) Added focused tests and ran validation commands for milestone 8.
 - [x] (2026-06-29 14:25 -05:00) Completed Milestone 9 focused test hardening. Added direct custom row clone coverage, Custom no-definition planner coverage, add/remove data synchronization coverage, and render-path tests for row color overrides and discrete fallback.
+- [x] (2026-06-30 00:00 -05:00) Corrected missed Effect Editor collection editor registration. Added the Custom State item collection editor key, editor mapping, XAML collection template, and EffectEditor project reference to the State effect module.
 - [ ] Complete manual validation and update this plan's evidence and retrospective.
 
 ## Surprises & Discoveries
@@ -49,6 +50,9 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a p
 
 - Observation: `NotifyPropertyObservableCollection<T>.OnCollectionChanged` subscribed and unsubscribed child property events but did not forward the collection change notification to external subscribers.
   Evidence: A milestone 9 render-path test added a custom row and rendered immediately. The row never reached `StateData.CustomStateItems` until the shared collection base called `base.OnCollectionChanged(e)`, after which add/remove synchronization and render-path tests passed.
+
+- Observation: Custom State item rows need an explicit Effect Editor type editor registration before the collection can render in the property grid.
+  Evidence: Liquid and Wave register `IList<IEmitter>` and `IList<IWaveform>` in `EditorCollection` and provide matching `EditorResources.xaml` templates. `CustomStateItemCollection` is assignable to `IList<CustomStateItem>`, so the Effect Editor now maps that list type to a new `ICustomStateItemEditorKey` template.
 
 ## Decision Log
 
@@ -103,6 +107,8 @@ Milestone 7 is complete. Custom render source rows now produce render intervals 
 Milestone 8 is complete. The State effect visual label now includes a `Custom` hint when the Custom render source is selected, while existing State Item and Mark Collection labels continue to show the State definition without the extra hint. The label text is used for font sizing so the Custom suffix participates in the existing fit calculation. The focused `Effect.State` test filter passes with 49 tests, the focused `Property.State` test filter passes with 85 tests, and the State effect project build succeeds. Manual Vixen UI validation remains.
 
 Milestone 9 is complete. Focused test coverage now directly covers custom row cloning, Custom interval behavior when no State definition is selected, add/remove persistence synchronization, row color override rendering, and discrete-color fallback during rendering. The new render-path tests exposed that the shared effect collection base was not forwarding `CollectionChanged` events to subscribers; forwarding the base notification restores immediate add/remove persistence updates. The focused `Effect.State` test filter passes with 54 tests, the focused `Property.State` test filter passes with 85 tests, the shared Effect project builds with zero warnings, and the State effect project build succeeds with the existing three warnings. Manual Vixen UI validation remains.
+
+Effect Editor collection integration correction is complete. The Effect Editor now has a `CustomStateItem` collection editor registration and XAML template matching the established Liquid/Wave collection pattern, so `Custom State Items` can render with Add and Remove buttons and row subproperties when `Render Source` is `Custom`. `EffectEditor.csproj` now references the State effect module so `EditorCollection` can identify `CustomStateItem`. The EffectEditor project build succeeds and the focused `Effect.State` test filter still passes with 54 tests. Manual Vixen UI validation remains.
 
 ## Context and Orientation
 
@@ -442,6 +448,16 @@ Milestone 9 validation:
     3 Warning(s)
     0 Error(s)
 
+Effect Editor collection integration validation:
+
+    dotnet build src\Vixen.Modules\Editor\EffectEditor\EffectEditor.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Build succeeded.
+    12 Warning(s)
+    0 Error(s)
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
+    Passed!  - Failed: 0, Passed: 54, Skipped: 0, Total: 54
+
 ## Interfaces and Dependencies
 
 Use the existing State property types:
@@ -540,3 +556,4 @@ The implementation should avoid new async code. If any asynchronous work is intr
 - 2026-06-29 / Codex: Completed Milestone 7 by adding Custom interval planning, row color override rendering, blank Iterate timing slots, and focused render planner coverage.
 - 2026-06-29 / Codex: Completed Milestone 8 by adding the timeline visual Custom hint, factoring State visual label text for focused tests, and running the planned focused validation commands.
 - 2026-06-29 / Codex: Completed Milestone 9 by adding focused test hardening, restoring collection change notification forwarding in the shared effect collection base, and validating render-path row color behavior.
+- 2026-06-30 / Codex: Corrected the missed Effect Editor collection editor integration by adding a Custom State item collection editor key, editor registration, XAML template, and EffectEditor reference to the State effect module.
