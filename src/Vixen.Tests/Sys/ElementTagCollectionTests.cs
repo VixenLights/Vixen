@@ -135,4 +135,38 @@ public class ElementTagCollectionTests
 		// Assert
 		Assert.False(result);
 	}
+
+	[Fact]
+	public void ProxyElementNode_Tags_IsTheSharedEmptyInstance()
+	{
+		// Arrange
+		var node = new ProxyElementNode(Guid.NewGuid(), "proxy");
+
+		// Act & Assert
+		Assert.Same(ElementTagCollection.Empty, node.Tags);
+	}
+
+	[Fact]
+	public void ProxyElementNode_TagsAdd_ReturnsFalse()
+	{
+		// Arrange
+		var node = new ProxyElementNode(Guid.NewGuid(), "proxy");
+		var tagId = Guid.NewGuid();
+
+		// Act
+		var result = node.Tags.Add(tagId);
+
+		// Assert
+		Assert.False(result);
+	}
+
+	[Fact]
+	public void ProxyElementNode_TagsCount_IsZero()
+	{
+		// Arrange
+		var node = new ProxyElementNode(Guid.NewGuid(), "proxy");
+
+		// Act & Assert
+		Assert.Equal(0, node.Tags.Count);
+	}
 }
