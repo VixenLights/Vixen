@@ -14,7 +14,7 @@ The behavior is visible in two ways. Automated tests will show that Spiral can r
 
 - [x] (2026-07-01) Created this ExecPlan from `docs/effects/vix-3386-spiral-location-support.md` after reviewing the current Spiral implementation, `PixelEffectBase`, location frame-buffer classes, and existing location-aware effects.
 - [x] (2026-07-01 17:43Z) Updated Jira VIX-3386 with the requirements, direct per-location design notes, test plan, acceptance criteria, and ExecPlan reference before code changes began. Used the project `jira` skill for this update.
-- [ ] Add failing tests or equivalent characterization that proves Spiral does not currently expose location rendering and cannot render in location mode.
+- [x] (2026-07-01 17:48Z) Added focused characterization tests in `src/Vixen.Tests/Effects/SpiralLocationRenderTests.cs` and a Spiral project reference in `src/Vixen.Tests/Vixen.Tests.csproj`. The focused test run fails because `TargetPositioning` is hidden and `RenderEffectByLocation` throws `NotImplementedException`.
 - [ ] Enable Spiral target positioning and implement a direct per-location render path.
 - [ ] Add parity, sparse-coordinate, movement, level, and edge-case tests.
 - [ ] Run focused tests and a build or broader test command.
@@ -47,7 +47,7 @@ The behavior is visible in two ways. Automated tests will show that Spiral can r
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. Jira VIX-3386 now contains the planned scope, direct per-location design, test plan, acceptance criteria, and a reference to this ExecPlan. No code implementation has been completed yet.
+Milestones 1 and 2 are complete. Jira VIX-3386 now contains the planned scope, direct per-location design, test plan, acceptance criteria, and a reference to this ExecPlan. The test seam is in place and currently fails for the expected missing Spiral location-support behaviors. No production code implementation has been completed yet.
 
 ## Context and Orientation
 
@@ -283,6 +283,14 @@ Milestone 1 Jira evidence:
     Fields changed: description
     Description now includes: Purpose, Planned Design, Test Plan, Acceptance Criteria, and Implementation Reference.
 
+Milestone 2 focused characterization test evidence:
+
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocation --no-restore
+    Result: Failed, as expected before implementation.
+    Summary: Failed: 2, Passed: 0, Skipped: 0, Total: 2.
+    Failure 1: Spiral_DefaultConstructor_EnablesTargetPositioning expected TargetPositioning to be browsable, but it was false.
+    Failure 2: Spiral_RenderEffectByLocation_DoesNotThrow expected no exception, but reflection invocation wrapped a NotImplementedException from PixelEffectBase.RenderEffectByLocation.
+
 ## Interfaces and Dependencies
 
 At the end of implementation, `src/Vixen.Modules/Effect/Spiral/Spiral.cs` must contain:
@@ -315,3 +323,4 @@ Do not introduce new NuGet packages for this work.
 - 2026-07-01 / Codex: Created the initial ExecPlan from the reviewed VIX-3386 Spiral location-rendering specification so implementation can proceed from a self-contained plan under `docs/plans/`.
 - 2026-07-01 / Codex: Revised the plan after it was moved to `docs/plans/effects/` so updating Jira VIX-3386 is the first milestone and both Jira updates explicitly require the project `jira` skill.
 - 2026-07-01 / Codex: Completed Milestone 1 by updating Jira VIX-3386 with the planned scope, design notes, test plan, acceptance criteria, and ExecPlan reference before code implementation began.
+- 2026-07-01 / Codex: Completed Milestone 2 by adding focused characterization tests and confirming they fail against current Spiral behavior for hidden target positioning and missing location rendering.
