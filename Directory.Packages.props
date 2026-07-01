@@ -17,7 +17,7 @@
     <PackageVersion Include="LiteDB" Version="4.1.4" />
     <PackageVersion Include="LoadAssembliesOnStartup.Fody" Version="4.7.0" />
     <PackageVersion Include="MessagePack" Version="3.1.7" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
     <PackageVersion Include="Microsoft.Win32.SystemEvents" Version="10.0.9" />
     <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
     <PackageVersion Include="ModuleInit.Fody" Version="2.1.1" />
