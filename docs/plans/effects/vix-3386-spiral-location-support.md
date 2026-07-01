@@ -17,6 +17,8 @@ The behavior is visible in two ways. Automated tests will show that Spiral can r
 - [x] (2026-07-01 17:48Z) Added focused characterization tests in `src/Vixen.Tests/Effects/SpiralLocationRenderTests.cs` and a Spiral project reference in `src/Vixen.Tests/Vixen.Tests.csproj`. The focused test run fails because `TargetPositioning` is hidden and `RenderEffectByLocation` throws `NotImplementedException`.
 - [x] (2026-07-01 17:52Z) Enabled Spiral target positioning and implemented a direct per-location render path in `src/Vixen.Modules/Effect/Spiral/Spiral.cs`. The focused Spiral location tests now pass.
 - [x] (2026-07-01 18:23Z) Added Milestone 4 behavioral coverage for rectangular-grid parity with string rendering, sparse coordinate sampling, multi-frame movement, brightness level application, and empty-color safety.
+- [x] (2026-07-01 18:39Z) Benchmarked the original per-element scan, row-map sampling, and dense-buffer sampling strategies. Row-map and dense-buffer sampling did not improve the measured scenarios, so the lower-allocation per-element scanner remains the production location path.
+- [x] (2026-07-01 18:55Z) Implemented the inverted coordinate evaluator for Spiral location rendering and added wrap/overlap parity tests against dense string rendering.
 - [ ] Run focused tests and a build or broader test command.
 - [ ] Manually validate Spiral location mode in the Vixen UI.
 - [ ] Update Jira VIX-3386 with final implementation notes and validation evidence after the feature is complete. Use the project `jira` skill for this update.
@@ -29,6 +31,10 @@ The behavior is visible in two ways. Automated tests will show that Spiral can r
   Evidence: `src/Vixen.Modules/Effect/Spiral/Spiral.cs` constructor only initializes data and attributes; `PixelEffectBase.RenderEffectByLocation` throws `NotImplementedException`.
 - Observation: The focused test run for Milestone 3 still reports pre-existing compile warnings outside Spiral.
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocation --no-restore` passed with warnings in `IElementTemplate.cs`, `HardwareUpdateThread.cs`, `ProgramExecutor.cs`, and `MovingHeadSettings.cs`.
+- Observation: Benchmarks did not support replacing the original per-element location scanner with row-map or dense-buffer sampling. In Release, the original per-element scan was fastest or tied in the tested layouts and allocated much less than the row-map approach.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocationBenchmark --no-restore -c Release --logger "console;verbosity=detailed"` measured Dense 50 x 50: row-map 98.8 ms / 3.0 MB, per-element 48.1 ms / 8.5 MB, dense 54.9 ms / 8.6 MB; Sparse 5,000 over 1,000 x 500: row-map 185.5 ms / 182.0 MB, per-element 82.5 ms / 9.0 MB, dense 241.5 ms / 20.4 MB; Sparse 20,000 over 2,000 x 1,000: row-map 248.5 ms / 469.6 MB, per-element 245.2 ms / 19.0 MB, dense 289.7 ms / 64.9 MB.
+- Observation: Inverting the coordinate-to-strand calculation appears worth the added complexity. It avoids scanning every thickness candidate for each location and was substantially faster in Release for dense and sparse layouts.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocationOption1Benchmark --no-restore -c Release --logger "console;verbosity=detailed"` measured Dense 50 x 50: current 132.5 ms / 8.7 MB, inverted 37.2 ms / 8.5 MB; Sparse 5,000 over 1,000 x 500: current 164.1 ms / 9.1 MB, inverted 29.1 ms / 9.0 MB; Sparse 20,000 over 2,000 x 1,000: current 693.3 ms / 23.3 MB, inverted 64.0 ms / 22.7 MB.
 
 ## Decision Log
 
@@ -305,6 +311,31 @@ Milestone 4 focused behavioral test evidence:
     Summary: Failed: 0, Passed: 6, Skipped: 0, Total: 6.
     Coverage added: rectangular-grid parity with string rendering, sparse absolute-coordinate sampling with virtual-buffer offsets, multi-frame movement, brightness level dimming, and empty-color safety.
 
+Milestone 5 benchmark evidence:
+
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocationBenchmark --no-restore -c Release --logger "console;verbosity=detailed"
+    Result: Passed temporary benchmark harness.
+    Dense 50 x 50, 2,500 locations, 10 frames: row-map 98.8 ms / 3.0 MB; per-element 48.1 ms / 8.5 MB; dense-buffer sample 54.9 ms / 8.6 MB.
+    Sparse 5,000 over 1,000 x 500, 5 frames: row-map 185.5 ms / 182.0 MB; per-element 82.5 ms / 9.0 MB; dense-buffer sample 241.5 ms / 20.4 MB.
+    Sparse 20,000 over 2,000 x 1,000, 3 frames: row-map 248.5 ms / 469.6 MB; per-element 245.2 ms / 19.0 MB; dense-buffer sample 289.7 ms / 64.9 MB.
+    Decision: Do not keep row-map or dense-buffer sampling in production for these measured cases. The next meaningful optimization should be an inverted per-coordinate spiral evaluator rather than another dense sampling variant.
+
+Milestone 5 option 1 benchmark evidence:
+
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocationOption1Benchmark --no-restore -c Release --logger "console;verbosity=detailed"
+    Result: Passed temporary benchmark harness.
+    Dense 50 x 50, 2,500 locations, 10 frames: current per-element 132.5 ms / 8.7 MB; inverted coordinate 37.2 ms / 8.5 MB.
+    Sparse 5,000 over 1,000 x 500, 5 frames: current per-element 164.1 ms / 9.1 MB; inverted coordinate 29.1 ms / 9.0 MB.
+    Sparse 20,000 over 2,000 x 1,000, 3 frames: current per-element 693.3 ms / 23.3 MB; inverted coordinate 64.0 ms / 22.7 MB.
+    Decision: Option 1 is worth implementing next, provided parity tests cover overlap and wrap behavior.
+
+Milestone 5 option 1 implementation evidence:
+
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocation --no-restore
+    Result: Passed.
+    Summary: Failed: 0, Passed: 8, Skipped: 0, Total: 8.
+    Coverage added: wrapped movement parity and overlapping thickness parity. The overlapping thickness parity test failed against the previous per-element scanner before the inverted evaluator was implemented.
+
 ## Interfaces and Dependencies
 
 At the end of implementation, `src/Vixen.Modules/Effect/Spiral/Spiral.cs` must contain:
@@ -340,3 +371,5 @@ Do not introduce new NuGet packages for this work.
 - 2026-07-01 / Codex: Completed Milestone 2 by adding focused characterization tests and confirming they fail against current Spiral behavior for hidden target positioning and missing location rendering.
 - 2026-07-01 / Codex: Completed Milestone 3 by enabling Spiral target positioning, adding the direct location render path, and confirming the focused Spiral location tests pass.
 - 2026-07-01 / Codex: Completed Milestone 4 by expanding Spiral location tests to cover parity, sparse coordinates, movement, brightness, and empty colors.
+- 2026-07-01 / Codex: Benchmarked row-based and dense-buffer Spiral location strategies against the original per-element scan, then kept the per-element scanner because it was faster or tied with much lower allocation in measured layouts.
+- 2026-07-01 / Codex: Implemented the inverted coordinate evaluator for Spiral location rendering after benchmarks showed it substantially improved large located layouts.

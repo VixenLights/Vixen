@@ -52,23 +52,33 @@ public class SpiralLocationRenderTests
 		// Arrange
 		var stringEffect = CreateDeterministicSpiral();
 		var locationEffect = CreateDeterministicSpiral();
-		SetVirtualBuffer(stringEffect, DefaultWidth, DefaultHeight);
-		SetVirtualBuffer(locationEffect, DefaultWidth, DefaultHeight);
-		InvokeSetupRender(stringEffect);
-		InvokeSetupRender(locationEffect);
-		var stringBuffer = new PixelFrameBuffer(DefaultWidth, DefaultHeight);
-		var locationBuffer = CreateLocationBuffer(CreateGridLocations(DefaultWidth, DefaultHeight), 1);
-
-		// Act
-		InvokeRenderEffect(stringEffect, 0, stringBuffer);
-		InvokeRenderByLocation(locationEffect, 1, locationBuffer);
 
 		// Assert
-		foreach (var location in locationBuffer.ElementLocations)
-		{
-			var expectedLocalY = DefaultHeight - 1 - location.Y;
-			AssertSameRgb(stringBuffer.GetColorAt(location.X, expectedLocalY), locationBuffer.GetColorAt(location.X, location.Y));
-		}
+		AssertLocationMatchesStringRender(stringEffect, locationEffect, DefaultWidth, DefaultHeight, 0, 1);
+	}
+
+	[Fact]
+	public void Spiral_LocationRender_WrappedMovementMatchesStringRender()
+	{
+		// Arrange
+		var stringEffect = CreateDeterministicSpiral(direction: SpiralDirection.Forward, speed: 9);
+		var locationEffect = CreateDeterministicSpiral(direction: SpiralDirection.Forward, speed: 9);
+
+		// Assert
+		AssertLocationMatchesStringRender(stringEffect, locationEffect, 9, 6, 3, 4);
+	}
+
+	[Fact]
+	public void Spiral_LocationRender_OverlappingThicknessMatchesStringRender()
+	{
+		// Arrange
+		var stringEffect = CreateDeterministicSpiral();
+		stringEffect.ThicknessCurve = new Curve(100);
+		var locationEffect = CreateDeterministicSpiral();
+		locationEffect.ThicknessCurve = new Curve(100);
+
+		// Assert
+		AssertLocationMatchesStringRender(stringEffect, locationEffect, 8, 5, 0, 1);
 	}
 
 	[Fact]
@@ -194,6 +204,26 @@ public class SpiralLocationRenderTests
 	private static PixelLocationFrameBuffer CreateLocationBuffer(List<ElementLocation> locations, int numFrames)
 	{
 		return new PixelLocationFrameBuffer(locations, numFrames);
+	}
+
+	private static void AssertLocationMatchesStringRender(Spiral stringEffect, Spiral locationEffect, int width, int height, int frame, int numFrames)
+	{
+		SetVirtualBuffer(stringEffect, width, height);
+		SetVirtualBuffer(locationEffect, width, height);
+		InvokeSetupRender(stringEffect);
+		InvokeSetupRender(locationEffect);
+		var stringBuffer = new PixelFrameBuffer(width, height);
+		var locationBuffer = CreateLocationBuffer(CreateGridLocations(width, height), numFrames);
+
+		InvokeRenderEffect(stringEffect, frame, stringBuffer);
+		InvokeRenderByLocation(locationEffect, numFrames, locationBuffer);
+		locationBuffer.CurrentFrame = frame;
+
+		foreach (var location in locationBuffer.ElementLocations)
+		{
+			var expectedLocalY = height - 1 - location.Y;
+			AssertSameRgb(stringBuffer.GetColorAt(location.X, expectedLocalY), locationBuffer.GetColorAt(location.X, location.Y));
+		}
 	}
 
 	private static void SetVirtualBuffer(Spiral effect, int width, int height, int xOffset = 0, int yOffset = 0)

@@ -38,9 +38,9 @@ namespace VixenModules.Effect.Spiral
 			protected set { base.IsDirty = value; }
 		}
 
-		
+
 		#region Setup
-		
+
 		[Value]
 		public override StringOrientation StringOrientation
 		{
@@ -342,7 +342,7 @@ namespace VixenModules.Effect.Spiral
 				IsDirty = true;
 			}
 		}
-	
+
 		protected override EffectTypeModuleData EffectModuleData
 		{
 			get { return _data; }
@@ -587,50 +587,63 @@ namespace VixenModules.Effect.Spiral
 				return false;
 			}
 
-			for (int ns = 0; ns < state.SpiralCount; ns++)
+			var rowOffset = state.SpiralState / 10 + y * (int)state.AdjustRotation / BufferHt;
+			var targetStrand = PositiveModulo(x - rowOffset, BufferWi);
+
+			for (int ns = state.SpiralCount - 1; ns >= 0; ns--)
 			{
-				var strandBase = ns * state.DeltaStrands;
-				int colorIdx = ns % state.ColorCount;
-
-				for (int thick = 0; thick < state.SpiralThickness; thick++)
+				var thick = PositiveModulo(targetStrand - ns * state.DeltaStrands, BufferWi);
+				if (thick >= state.SpiralThickness)
 				{
-					var strand = (strandBase + thick) % BufferWi;
-					var candidateX = (strand + (state.SpiralState / 10) + (y * (int)state.AdjustRotation / BufferHt)) % BufferWi;
-					if (candidateX < 0) candidateX += BufferWi;
-					if (candidateX != x)
-					{
-						continue;
-					}
-
-					Color color;
-					if (Blend)
-					{
-						color = Colors[colorIdx].GetColorAt((double)(BufferHt - y - 1) / BufferHt);
-					}
-					else
-					{
-						color = Colors[colorIdx].GetColorAt((double)thick / state.SpiralThickness);
-					}
-
-					hsv = HSV.FromRGB(color);
-					if (Show3D)
-					{
-						if (Direction != SpiralDirection.Backwards)
-						{
-							hsv.V = (float)((double)(thick + 1) / state.SpiralThickness);
-						}
-						else
-						{
-							hsv.V = (float)((double)(state.SpiralThickness - thick) / state.SpiralThickness);
-						}
-					}
-
-					hsv.V = hsv.V * state.Level;
-					return true;
+					continue;
 				}
+
+				if (state.SpiralThickness > BufferWi)
+				{
+					thick += ((state.SpiralThickness - 1 - thick) / BufferWi) * BufferWi;
+				}
+
+				int colorIdx = ns % state.ColorCount;
+				hsv = CreateSpiralPixelColor(y, thick, colorIdx, state);
+				return true;
 			}
 
 			return false;
+		}
+
+		private static int PositiveModulo(int value, int modulus)
+		{
+			var result = value % modulus;
+			return result < 0 ? result + modulus : result;
+		}
+
+		private HSV CreateSpiralPixelColor(int y, int thick, int colorIdx, SpiralFrameState state)
+		{
+			Color color;
+			if (Blend)
+			{
+				color = Colors[colorIdx].GetColorAt((double)(BufferHt - y - 1) / BufferHt);
+			}
+			else
+			{
+				color = Colors[colorIdx].GetColorAt((double)thick / state.SpiralThickness);
+			}
+
+			var hsv = HSV.FromRGB(color);
+			if (Show3D)
+			{
+				if (Direction != SpiralDirection.Backwards)
+				{
+					hsv.V = (float)((double)(thick + 1) / state.SpiralThickness);
+				}
+				else
+				{
+					hsv.V = (float)((double)(state.SpiralThickness - thick) / state.SpiralThickness);
+				}
+			}
+
+			hsv.V = hsv.V * state.Level;
+			return hsv;
 		}
 
 		private int CalculateThickness(double intervalPos)
