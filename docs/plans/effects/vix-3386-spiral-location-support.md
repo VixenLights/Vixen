@@ -16,7 +16,7 @@ The behavior is visible in two ways. Automated tests will show that Spiral can r
 - [x] (2026-07-01 17:43Z) Updated Jira VIX-3386 with the requirements, direct per-location design notes, test plan, acceptance criteria, and ExecPlan reference before code changes began. Used the project `jira` skill for this update.
 - [x] (2026-07-01 17:48Z) Added focused characterization tests in `src/Vixen.Tests/Effects/SpiralLocationRenderTests.cs` and a Spiral project reference in `src/Vixen.Tests/Vixen.Tests.csproj`. The focused test run fails because `TargetPositioning` is hidden and `RenderEffectByLocation` throws `NotImplementedException`.
 - [x] (2026-07-01 17:52Z) Enabled Spiral target positioning and implemented a direct per-location render path in `src/Vixen.Modules/Effect/Spiral/Spiral.cs`. The focused Spiral location tests now pass.
-- [ ] Add parity, sparse-coordinate, movement, level, and edge-case tests.
+- [x] (2026-07-01 18:23Z) Added Milestone 4 behavioral coverage for rectangular-grid parity with string rendering, sparse coordinate sampling, multi-frame movement, brightness level application, and empty-color safety.
 - [ ] Run focused tests and a build or broader test command.
 - [ ] Manually validate Spiral location mode in the Vixen UI.
 - [ ] Update Jira VIX-3386 with final implementation notes and validation evidence after the feature is complete. Use the project `jira` skill for this update.
@@ -47,7 +47,7 @@ The behavior is visible in two ways. Automated tests will show that Spiral can r
 
 ## Outcomes & Retrospective
 
-Milestones 1, 2, and 3 are complete. Jira VIX-3386 now contains the planned scope, direct per-location design, test plan, acceptance criteria, and a reference to this ExecPlan. The initial production implementation enables target positioning and adds a direct per-location render path. Focused characterization tests now pass. Broader parity, sparse-coordinate, movement, level, and edge-case tests remain for Milestone 4.
+Milestones 1, 2, 3, and 4 are complete. Jira VIX-3386 now contains the planned scope, direct per-location design, test plan, acceptance criteria, and a reference to this ExecPlan. The production implementation enables target positioning and adds a direct per-location render path. Focused behavioral tests now cover enablement, location render invocation, rectangular-grid parity, sparse coordinate sampling, multi-frame movement, brightness level application, and empty-color safety. Broader validation, manual UI validation, and final Jira updates remain.
 
 ## Context and Orientation
 
@@ -298,6 +298,13 @@ Milestone 3 focused implementation test evidence:
     Summary: Failed: 0, Passed: 2, Skipped: 0, Total: 2.
     Notes: The run emitted existing warnings from Vixen.Core and FixtureGraphics, but no Spiral test failures.
 
+Milestone 4 focused behavioral test evidence:
+
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocation --no-restore
+    Result: Passed.
+    Summary: Failed: 0, Passed: 6, Skipped: 0, Total: 6.
+    Coverage added: rectangular-grid parity with string rendering, sparse absolute-coordinate sampling with virtual-buffer offsets, multi-frame movement, brightness level dimming, and empty-color safety.
+
 ## Interfaces and Dependencies
 
 At the end of implementation, `src/Vixen.Modules/Effect/Spiral/Spiral.cs` must contain:
@@ -332,3 +339,4 @@ Do not introduce new NuGet packages for this work.
 - 2026-07-01 / Codex: Completed Milestone 1 by updating Jira VIX-3386 with the planned scope, design notes, test plan, acceptance criteria, and ExecPlan reference before code implementation began.
 - 2026-07-01 / Codex: Completed Milestone 2 by adding focused characterization tests and confirming they fail against current Spiral behavior for hidden target positioning and missing location rendering.
 - 2026-07-01 / Codex: Completed Milestone 3 by enabling Spiral target positioning, adding the direct location render path, and confirming the focused Spiral location tests pass.
+- 2026-07-01 / Codex: Completed Milestone 4 by expanding Spiral location tests to cover parity, sparse coordinates, movement, brightness, and empty colors.
