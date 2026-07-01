@@ -15,7 +15,7 @@ The behavior is visible in two ways. Automated tests will show that Spiral can r
 - [x] (2026-07-01) Created this ExecPlan from `docs/effects/vix-3386-spiral-location-support.md` after reviewing the current Spiral implementation, `PixelEffectBase`, location frame-buffer classes, and existing location-aware effects.
 - [x] (2026-07-01 17:43Z) Updated Jira VIX-3386 with the requirements, direct per-location design notes, test plan, acceptance criteria, and ExecPlan reference before code changes began. Used the project `jira` skill for this update.
 - [x] (2026-07-01 17:48Z) Added focused characterization tests in `src/Vixen.Tests/Effects/SpiralLocationRenderTests.cs` and a Spiral project reference in `src/Vixen.Tests/Vixen.Tests.csproj`. The focused test run fails because `TargetPositioning` is hidden and `RenderEffectByLocation` throws `NotImplementedException`.
-- [ ] Enable Spiral target positioning and implement a direct per-location render path.
+- [x] (2026-07-01 17:52Z) Enabled Spiral target positioning and implemented a direct per-location render path in `src/Vixen.Modules/Effect/Spiral/Spiral.cs`. The focused Spiral location tests now pass.
 - [ ] Add parity, sparse-coordinate, movement, level, and edge-case tests.
 - [ ] Run focused tests and a build or broader test command.
 - [ ] Manually validate Spiral location mode in the Vixen UI.
@@ -27,8 +27,8 @@ The behavior is visible in two ways. Automated tests will show that Spiral can r
   Evidence: `src/Vixen.Modules/Effect/Spiral/SpiralData.cs` inherits `EffectTypeModuleData`; `src/Vixen.Modules/Effect/Effect/EffectTypeModuleData.cs` defines `TargetPositioning`.
 - Observation: Spiral does not currently call `EnableTargetPositioning(true, true)` and does not override `RenderEffectByLocation`.
   Evidence: `src/Vixen.Modules/Effect/Spiral/Spiral.cs` constructor only initializes data and attributes; `PixelEffectBase.RenderEffectByLocation` throws `NotImplementedException`.
-- Observation: The test project currently does not reference the Spiral effect project.
-  Evidence: `src/Vixen.Tests/Vixen.Tests.csproj` references Vixen.Core and a few app modules, but not `src/Vixen.Modules/Effect/Spiral/Spiral.csproj`.
+- Observation: The focused test run for Milestone 3 still reports pre-existing compile warnings outside Spiral.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocation --no-restore` passed with warnings in `IElementTemplate.cs`, `HardwareUpdateThread.cs`, `ProgramExecutor.cs`, and `MovingHeadSettings.cs`.
 
 ## Decision Log
 
@@ -47,7 +47,7 @@ The behavior is visible in two ways. Automated tests will show that Spiral can r
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. Jira VIX-3386 now contains the planned scope, direct per-location design, test plan, acceptance criteria, and a reference to this ExecPlan. The test seam is in place and currently fails for the expected missing Spiral location-support behaviors. No production code implementation has been completed yet.
+Milestones 1, 2, and 3 are complete. Jira VIX-3386 now contains the planned scope, direct per-location design, test plan, acceptance criteria, and a reference to this ExecPlan. The initial production implementation enables target positioning and adds a direct per-location render path. Focused characterization tests now pass. Broader parity, sparse-coordinate, movement, level, and edge-case tests remain for Milestone 4.
 
 ## Context and Orientation
 
@@ -291,6 +291,13 @@ Milestone 2 focused characterization test evidence:
     Failure 1: Spiral_DefaultConstructor_EnablesTargetPositioning expected TargetPositioning to be browsable, but it was false.
     Failure 2: Spiral_RenderEffectByLocation_DoesNotThrow expected no exception, but reflection invocation wrapped a NotImplementedException from PixelEffectBase.RenderEffectByLocation.
 
+Milestone 3 focused implementation test evidence:
+
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~SpiralLocation --no-restore
+    Result: Passed.
+    Summary: Failed: 0, Passed: 2, Skipped: 0, Total: 2.
+    Notes: The run emitted existing warnings from Vixen.Core and FixtureGraphics, but no Spiral test failures.
+
 ## Interfaces and Dependencies
 
 At the end of implementation, `src/Vixen.Modules/Effect/Spiral/Spiral.cs` must contain:
@@ -324,3 +331,4 @@ Do not introduce new NuGet packages for this work.
 - 2026-07-01 / Codex: Revised the plan after it was moved to `docs/plans/effects/` so updating Jira VIX-3386 is the first milestone and both Jira updates explicitly require the project `jira` skill.
 - 2026-07-01 / Codex: Completed Milestone 1 by updating Jira VIX-3386 with the planned scope, design notes, test plan, acceptance criteria, and ExecPlan reference before code implementation began.
 - 2026-07-01 / Codex: Completed Milestone 2 by adding focused characterization tests and confirming they fail against current Spiral behavior for hidden target positioning and missing location rendering.
+- 2026-07-01 / Codex: Completed Milestone 3 by enabling Spiral target positioning, adding the direct location render path, and confirming the focused Spiral location tests pass.
