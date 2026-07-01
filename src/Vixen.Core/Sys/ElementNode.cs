@@ -33,6 +33,7 @@ namespace Vixen.Sys
 			}
 			Element = element;
 			Properties = new PropertyManager(this);
+			Tags = new ElementTagCollection();
 		}
 
 		internal ElementNode(string name, Element? element, IEnumerable<ElementNode> content)
@@ -162,6 +163,9 @@ namespace Vixen.Sys
 
 		/// <inheritdoc />
 		public bool IsProxy => false;
+
+		/// <inheritdoc />
+		public ElementTagCollection Tags { get; private set; }
 
 		#region Overrides
 

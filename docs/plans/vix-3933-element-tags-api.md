@@ -19,7 +19,7 @@ A later plan will wire `ElementTagService` and `IElementNode.Tags` into Display 
 
 - [x] (2026-07-01) Milestone 1: Create JIRA issue for this work and link it to VIX-2690. Done — [VIX-3933](https://vixenlights.atlassian.net/browse/VIX-3933), issue type "New Feature", linked to [VIX-2690](https://vixenlights.atlassian.net/browse/VIX-2690) with a "Relates" link, assigned to Jeff Uchitjil, priority Normal.
 - [x] (2026-07-01) Milestone 2: Create branch `VIX-3933` off `master`. Done — branch created locally. Also discovered the design doc had been renamed/staged as `docs/vix-3933-element-tags.md` (was `docs/vix-2690-element-tags.md`) on `master` before branching; updated this plan's references to the new path accordingly.
-- [ ] Milestone 3: Core data model — `ElementTagDefinition`, `ElementTagCollection`, built-in tag constants, and the `Tags` member on `IElementNode` / `ElementNode` / `ProxyElementNode`.
+- [x] (2026-07-01) Milestone 3: Core data model — `ElementTagDefinition`, `ElementTagCollection`, built-in tag constants, and the `Tags` member on `IElementNode` / `ElementNode` / `ProxyElementNode`. Done — 18 new unit tests pass (`ElementTagCollectionTests`, `BuiltInElementTagsTests`, `ElementTagDefinitionTests`), full solution builds clean with no new warnings.
 - [ ] Milestone 4: Catalog service — `ElementTagService` with CRUD, built-in resolution, validation, and cross-node cleanup.
 - [ ] Milestone 5: Persistence — `SystemConfig.Tags`, XML serializers, `SystemConfigFilePolicy` wiring, per-node tag persistence in `XmlElementNodeSerializer`, and `VixenSystem` load/save/seed/cleanup wiring.
 - [ ] Milestone 6: Apply project skills (`csharp-docs`, `dotnet-best-practices`, `csharp-async`, `dotnet-design-pattern-review`) and address findings.
@@ -57,6 +57,10 @@ A later plan will wire `ElementTagService` and `IElementNode.Tags` into Display 
 - Decision: Built-in tag `Id` values are fixed, hard-coded GUIDs (not generated at seed time), so that a `Deprecated` tag created on one user's machine has the same `Id` as on every other machine and across every reseed.
   Rationale: The design doc requires "stable identities" for built-in tags so application code can check behavior (e.g. "is this deprecated?") without depending on editable text. If the seed logic generated a new `Guid` each time it ran, re-seeding (e.g. after a partially-corrupted `SystemConfig.xml`) would silently orphan every existing node's `Deprecated` assignment. The fixed IDs chosen for this plan are: `Deprecated` = `753115da-e27a-4261-a136-8222ccc3f22e`, `Hidden` = `2f21bfcb-07a3-4cac-bdc5-4b6e37773c04`, `Prop` = `6db1852d-71d8-449d-afa5-193a6def26a0`. These exact values must be used verbatim in `src/Vixen.Core/Sys/BuiltInElementTags.cs` (see Milestone 3) and never regenerated.
   Date/Author: 2026-07-01, planning session.
+
+- Decision: `ElementTagCollection.Empty`'s inertness is implemented with a private `_isInert` flag checked at the top of `Add`/`Remove`, not the subclass sketch in the Plan of Work's Milestone 3 pseudocode.
+  Rationale: The plan explicitly left the inheritance mechanics as an implementer's choice. A private bool flag on a single sealed class is simpler than introducing a nested subclass, keeps `ElementTagCollection` sealed (no `protected virtual` surface to reason about), and produces the identical required behavior (real collections behave normally; `Empty` never accumulates state no matter how many times `Add` is called).
+  Date/Author: 2026-07-01, Milestone 3 implementation.
 
 ## Outcomes & Retrospective
 
