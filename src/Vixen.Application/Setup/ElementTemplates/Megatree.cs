@@ -37,7 +37,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			get { return "Megatree"; }
 		}
 
-		public bool SetupTemplate(IEnumerable<ElementNode>? selectedNodes = null)
+		public bool SetupTemplate(IEnumerable<IElementNode>? selectedNodes = null)
 		{
 			DialogResult result = ShowDialog();
 
@@ -47,7 +47,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			return false;
 		}
 
-		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<ElementNode>? selectedNodes = null)
+		public async Task<IEnumerable<ElementNode>> GenerateElements(IEnumerable<IElementNode>? selectedNodes = null)
 		{
 			List<ElementNode> result = new List<ElementNode>();
 
