@@ -346,6 +346,7 @@
 			elementTree.treeviewDeselected += elementTree_treeviewDeselected;
 			elementTree.treeviewAfterSelect += elementTree_treeviewAfterSelect;
 			elementTree.ElementsChanged += elementTree_ElementsChanged;
+			elementTree.ManageTagColorsRequested += elementTree_ManageTagColorsRequested;
 			// 
 			// SetupElementsTree
 			// 

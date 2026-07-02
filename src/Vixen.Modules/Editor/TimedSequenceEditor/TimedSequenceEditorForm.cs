@@ -6,6 +6,7 @@ using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
+using Common.ElementTagColorEditor.Views;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
@@ -526,6 +527,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.DragDrop += TimelineControlGrid_DragDrop;
 			TimelineControl.grid.DragLeave += TimelineControlGrid_DragLeave;
 			TimelineControl.RowTagsChanged += TimelineControl_RowTagsChanged;
+			TimelineControl.ManageTagColorsRequested += TimelineControl_ManageTagColorsRequested;
 			Row.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
 
 			LoadAvailableEffects();
@@ -775,6 +777,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
 			TimelineControl.VisibleTimeStartChanged -= TimelineControl_VisibleTimeStartChanged;
 			TimelineControl.RowTagsChanged -= TimelineControl_RowTagsChanged;
+			TimelineControl.ManageTagColorsRequested -= TimelineControl_ManageTagColorsRequested;
 			Row.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
 			effectGroupsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			basicToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing; 
@@ -2304,6 +2307,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void TimelineControl_RowTagsChanged(object sender, EventArgs e)
 		{
 			ApplyHiddenRowFilter();
+		}
+
+		// The Sequencer has no other OK/Cancel-gated save, so the color editor is told to persist its own
+		// changes on Save (saveOnClose: true) - unlike Display Setup/Preview Setup, which pass false and
+		// let their own existing save path capture or discard the change.
+		private void TimelineControl_ManageTagColorsRequested(object sender, EventArgs e)
+		{
+			if (ElementTagColorEditorWindow.ShowAsDialog(saveOnClose: true))
+			{
+				TimelineControl.InvalidateRowLabels();
+			}
 		}
 
 		/// <summary>

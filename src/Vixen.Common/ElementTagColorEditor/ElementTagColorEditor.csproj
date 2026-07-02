@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>Common.ElementTagColorEditor</RootNamespace>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Vixen.Core\Vixen.Core.csproj" />
+		<ProjectReference Include="..\Controls\Controls.csproj" />
+		<ProjectReference Include="..\WPFCommon\WPFCommon.csproj" />
+	</ItemGroup>
+
+</Project>
