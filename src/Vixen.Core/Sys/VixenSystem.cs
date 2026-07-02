@@ -366,6 +366,7 @@ namespace Vixen.Sys
 		public static PreviewManager Previews { get; private set; }
 		public static ContextManager Contexts { get; private set; }
 		public static FilterManager Filters { get; private set; }
+		public static List<ElementTagDefinition> TagDefinitions { get; private set; } = new List<ElementTagDefinition>();
 		public static IInstrumentation Instrumentation { get; private set; }
 		public static DataFlowManager DataFlow { get; private set; }
 		public static ControllerFacade ControllerManagement { get; private set; }
