@@ -526,7 +526,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.DragDrop += TimelineControlGrid_DragDrop;
 			TimelineControl.grid.DragLeave += TimelineControlGrid_DragLeave;
 			Row.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
-			Row.RowToggled += TimeLineControl_Row_RowToggled;
 
 			LoadAvailableEffects();
 			PopulateDragBoxFilterDropDown();
@@ -775,7 +774,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
 			TimelineControl.VisibleTimeStartChanged -= TimelineControl_VisibleTimeStartChanged;
 			Row.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
-			Row.RowToggled -= TimeLineControl_Row_RowToggled;
 			effectGroupsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			basicToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing; 
 			pixelToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing; 
@@ -2280,15 +2278,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		// Row.TreeOpen cascades Visible directly to child rows without regard for the Hidden tag,
-		// so any tree expand/collapse can re-reveal a Hidden-tagged row. Re-applying the filter after
-		// every toggle keeps Hidden-tagged rows suppressed (when Show Hidden is off) regardless of
-		// which ancestor group gets expanded or collapsed.
-		private void TimeLineControl_Row_RowToggled(object sender, EventArgs e)
-		{
-			ApplyHiddenRowFilter();
-		}
-
 		private void viewToolStripButton_ShowHidden_Click(object sender, EventArgs e)
 		{
 			_showHiddenRows = viewToolStripButton_ShowHidden.Checked;
@@ -2296,32 +2285,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		/// <summary>
-		/// Recomputes row visibility from the top of the row tree down, hiding any row (and its
-		/// descendants) whose <see cref="ElementNode"/> carries the built-in <c>Hidden</c> tag, unless
-		/// the session-only "Show Hidden" toolbar toggle is on. This walk always runs top-down so each
-		/// row's own visibility overrides the cascade <see cref="Row.Visible"/>'s setter already applies
-		/// to its children, rather than fighting it.
+		/// Assigns (or clears) <see cref="Row.VisibilityFilter"/> on every root row so that rows whose
+		/// <see cref="ElementNode"/> carries the built-in <c>Hidden</c> tag are hidden, unless the
+		/// session-only "Show Hidden" toolbar toggle is on.
 		/// </summary>
+		/// <remarks>
+		/// <see cref="Row.VisibilityFilter"/> is consulted automatically every time a row's visibility
+		/// is recomputed - including when a parent's <see cref="Row.TreeOpen"/> cascades visibility down
+		/// to a child - so this only needs to run when the toggle itself changes or a sequence loads,
+		/// not on every tree expand/collapse.
+		/// </remarks>
 		private void ApplyHiddenRowFilter()
 		{
+			Func<Row, bool> filter = _showHiddenRows ? null : (Func<Row, bool>)(row => !IsHiddenByTag(row));
 			foreach (Row row in TimelineControl.Rows.Where(r => r.ParentRow == null))
 			{
-				ApplyHiddenRowFilter(row, true);
+				row.VisibilityFilter = filter;
 			}
 		}
 
-		private void ApplyHiddenRowFilter(Row row, bool parentAllowsVisible)
+		private static bool IsHiddenByTag(Row row)
 		{
-			bool hiddenByTag = !_showHiddenRows && row.Tag is ElementNode elementNode &&
+			return row.Tag is ElementNode elementNode &&
 				ElementTagService.Instance.HasTag(elementNode, BuiltInElementTags.HiddenKey);
-			bool visible = parentAllowsVisible && !hiddenByTag;
-			row.Visible = visible;
-
-			bool childrenAllowVisible = visible && row.TreeOpen;
-			foreach (Row child in row.ChildRows)
-			{
-				ApplyHiddenRowFilter(child, childrenAllowVisible);
-			}
 		}
 
 		private void TimelineControl_TimePerPixelChanged(object sender, EventArgs e)

@@ -211,27 +211,69 @@ namespace Common.Controls.Timeline
 		}
 
 		private bool m_visible;
+		private bool m_requestedVisible;
+		private Func<Row, bool> m_visibilityFilter;
 
 		public bool Visible
 		{
 			get { return m_visible; }
 			set
 			{
-				// if we're being told to show or not (ie. a tree is being closed
-				// or opened), then show or hide all our children. However, only
-				// show them if our tree is currently open as well.
-				foreach (Row row in ChildRows)
-					row.Visible = value && TreeOpen;
-
-				RowLabel.Visible = value;
-				m_visible = value;
-				if (m_visible && RowLabel.Height != Height)
-				{
-					RowLabel.Height = Height;
-				}
-				_RowChanged();
-				_RowVisibilityChanged();
+				m_requestedVisible = value;
+				RecomputeVisibility();
 			}
+		}
+
+		/// <summary>
+		/// An optional predicate that further restricts whether this row may be visible, independent of
+		/// its own <see cref="Visible"/>/<see cref="TreeOpen"/> state — for example, filtering out rows
+		/// whose element carries a particular tag.
+		/// </summary>
+		/// <remarks>
+		/// Assigning a filter propagates it to every current descendant and immediately recomputes
+		/// visibility top-down through this row's subtree; rows added as children afterward inherit
+		/// whatever filter is current on their parent at the time they're added
+		/// (<see cref="TimelineControl.AddRow(RowLabel, Row, int)"/>), not automatically thereafter.
+		/// Once set, the filter is consulted every time visibility is recomputed for this row - including
+		/// when a parent's <see cref="TreeOpen"/> cascades <see cref="Visible"/> down to this row - so
+		/// callers do not need to re-walk the tree by hand after every expand/collapse; only assigning a
+		/// new filter (or a row gaining/losing whatever the filter tests for) requires re-assigning it.
+		/// </remarks>
+		public Func<Row, bool> VisibilityFilter
+		{
+			get { return m_visibilityFilter; }
+			set
+			{
+				m_visibilityFilter = value;
+				foreach (Row row in ChildRows)
+					row.VisibilityFilter = value;
+				RecomputeVisibility();
+			}
+		}
+
+		private bool PassesVisibilityFilter()
+		{
+			return m_visibilityFilter == null || m_visibilityFilter(this);
+		}
+
+		private void RecomputeVisibility()
+		{
+			// if we're being told to show or not (ie. a tree is being closed
+			// or opened), then show or hide all our children. However, only
+			// show them if our tree is currently open as well.
+			bool effectiveVisible = m_requestedVisible && PassesVisibilityFilter();
+
+			foreach (Row row in ChildRows)
+				row.Visible = effectiveVisible && TreeOpen;
+
+			RowLabel.Visible = effectiveVisible;
+			m_visible = effectiveVisible;
+			if (m_visible && RowLabel.Height != Height)
+			{
+				RowLabel.Height = Height;
+			}
+			_RowChanged();
+			_RowVisibilityChanged();
 		}
 
 		private bool m_selected;
