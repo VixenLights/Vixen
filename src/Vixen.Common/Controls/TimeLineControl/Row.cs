@@ -214,6 +214,14 @@ namespace Common.Controls.Timeline
 		private bool m_requestedVisible;
 		private Func<Row, bool> m_visibilityFilter;
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether this row is visible.
+		/// </summary>
+		/// <value>
+		/// <see langword="true"/> if the row should be shown; otherwise, <see langword="false"/>. The effective,
+		/// gettable value also reflects <see cref="VisibilityFilter"/> — setting this to <see langword="true"/>
+		/// does not guarantee the getter returns <see langword="true"/> if a filter rejects the row.
+		/// </value>
 		public bool Visible
 		{
 			get { return m_visible; }

@@ -7,6 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Catel.Core" />
+		<PackageReference Include="Catel.MVVM" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\Vixen.Core\Vixen.Core.csproj" />
 		<ProjectReference Include="..\Controls\Controls.csproj" />
 		<ProjectReference Include="..\WPFCommon\WPFCommon.csproj" />
