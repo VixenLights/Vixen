@@ -1489,6 +1489,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					TimelineControl.grid.SupressRendering = false;
 					TimelineControl.grid.SuppressInvalidate = false;
 					TimelineControl.grid.RenderAllRows();
+					CheckDeprecatedEffects();
 				});
 
 				//This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
@@ -3953,15 +3954,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Warns the user if the sequence has effects on any element tagged <c>Deprecated</c>.
 		/// </summary>
 		/// <remarks>
-		/// Runs directly off <c>_sequence.SequenceData.EffectData</c>, the same source
-		/// <see cref="CheckMissingEffectMappings"/> reads, rather than waiting on <see cref="LoadSequence"/>'s
-		/// background row-building - the tag/effect relationship this checks doesn't depend on the timeline
-		/// rows existing yet, so there is no need to hook into that asynchronous continuation, and this
-		/// deliberately runs earlier (from <see cref="IEditorUserInterface.StartEditor"/>, before the form is
-		/// shown) so the notification appears before the timeline becomes interactive.
+		/// Called from <see cref="LoadSequence"/>'s <c>Task.Factory.ContinueWhenAll</c> completion callback,
+		/// after rendering has caught up, so the notification appears right after the sequence has fully
+		/// loaded - the Sequencer window is already visible by then (<see cref="LoadSequence"/> itself only
+		/// runs from <see cref="TimedSequenceEditorForm_Shown"/>). That callback runs on a background thread
+		/// (see the existing <c>InvokeRequired</c> guard <see cref="UpdateToolStrip4"/> needs there for the
+		/// same reason), so this method marshals itself onto the UI thread before showing a modal dialog.
 		/// </remarks>
 		private void CheckDeprecatedEffects()
 		{
+			if (InvokeRequired)
+			{
+				Invoke(new MethodInvoker(CheckDeprecatedEffects));
+				return;
+			}
+
 			List<string> deprecatedElementNames = _sequence.SequenceData.EffectData.Cast<EffectNode>()
 				.SelectMany(effectNode => effectNode.Effect.TargetNodes)
 				.Where(node => ElementTagService.Instance.HasTag(node, BuiltInElementTags.DeprecatedKey))
@@ -5669,7 +5676,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			Cursor = Cursors.WaitCursor;
 			CheckMissingEffectMappings();
-			CheckDeprecatedEffects();
 			Show();
 		}
 
