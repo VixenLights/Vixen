@@ -5,6 +5,8 @@ using VixenModules.Media.Audio;
 using Common.Controls.Scaling;
 using Common.Controls.TimelineControl;
 using Vixen.Marks;
+using Vixen.Services;
+using Vixen.Sys;
 
 namespace Common.Controls.Timeline
 {
@@ -772,8 +774,89 @@ namespace Common.Controls.Timeline
 			RowListMenuResetSelectedRowHeight.Click += ResetSelectedRowHeight_Click;
 			RowListMenu.Items.AddRange(new ToolStripItem[]
 			{RowListMenuCollapse, RowListMenuResetRowHeight, RowListMenuResetSelectedRowHeight});
+
+			// Separator marks the boundary between row-layout actions (above, act on the row itself)
+			// and element node actions (below, act on the ElementNode the row represents).
+			RowListMenu.Items.Add(new ToolStripSeparator());
+			var tagsMenuItem = new ToolStripMenuItem("Tags");
+			PopulateTagsMenu(tagsMenuItem);
+			RowListMenu.Items.Add(tagsMenuItem);
+
 			RowListMenu.Renderer = new ThemeToolStripRenderer();
 			RowListMenu.Show(MousePosition);
+		}
+
+		private List<ElementNode> SelectedRowElementNodes()
+		{
+			return SelectedRows.Select(row => row.Tag as ElementNode).Where(node => node != null).ToList();
+		}
+
+		private void PopulateTagsMenu(ToolStripMenuItem tagsMenuItem)
+		{
+			tagsMenuItem.DropDownItems.Clear();
+
+			var selectedElementNodes = SelectedRowElementNodes();
+			tagsMenuItem.Enabled = selectedElementNodes.Count > 0;
+
+			foreach (ElementTagDefinition tag in ElementTagService.Instance.GetAll())
+			{
+				Guid tagId = tag.Id;
+				var tagMenuItem = new ToolStripMenuItem(tag.Name)
+				{
+					CheckState = GetTagCheckState(selectedElementNodes, tagId)
+				};
+				tagMenuItem.Click += (sender, e) => ToggleTagOnSelectedRows(tagMenuItem, tagId);
+				tagsMenuItem.DropDownItems.Add(tagMenuItem);
+			}
+
+			tagsMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+			// The "Manage Tag Colors..." Click handler is wired up once ElementTagColorEditorWindow exists.
+			tagsMenuItem.DropDownItems.Add(new ToolStripMenuItem("Manage Tag Colors..."));
+		}
+
+		private static CheckState GetTagCheckState(List<ElementNode> selectedElementNodes, Guid tagId)
+		{
+			if (selectedElementNodes.Count == 0)
+				return CheckState.Unchecked;
+
+			int taggedCount = selectedElementNodes.Count(node => node.Tags.Contains(tagId));
+			if (taggedCount == 0)
+				return CheckState.Unchecked;
+			if (taggedCount == selectedElementNodes.Count)
+				return CheckState.Checked;
+
+			return CheckState.Indeterminate;
+		}
+
+		private async void ToggleTagOnSelectedRows(ToolStripMenuItem tagMenuItem, Guid tagId)
+		{
+			var selectedElementNodes = SelectedRowElementNodes();
+			if (selectedElementNodes.Count == 0)
+				return;
+
+			if (tagMenuItem.CheckState == CheckState.Checked)
+			{
+				foreach (ElementNode node in selectedElementNodes)
+				{
+					node.Tags.Remove(tagId);
+				}
+				tagMenuItem.CheckState = CheckState.Unchecked;
+			}
+			else
+			{
+				foreach (ElementNode node in selectedElementNodes)
+				{
+					node.Tags.Add(tagId);
+				}
+				tagMenuItem.CheckState = CheckState.Checked;
+			}
+
+			timelineRowList.Invalidate();
+
+			// The Sequencer has no OK/Cancel-gated save of its own, unlike Display Setup/Preview Setup,
+			// so a tag change made here must be persisted explicitly.
+			await VixenSystem.SaveSystemConfigAsync();
 		}
 
 		private void ResetRowHeight_Click(object sender, EventArgs e)
