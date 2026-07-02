@@ -1,5 +1,7 @@
 #nullable enable
 
+using Vixen.Extensions;
+
 namespace Vixen.Sys
 {
 	/// <summary>
@@ -18,14 +20,29 @@ namespace Vixen.Sys
 		public const string DeprecatedKey = "deprecated";
 
 		/// <summary>
+		/// The default color for the built-in <c>Deprecated</c> tag.
+		/// </summary>
+		public const string DeprecatedColor = "#FF0000";
+
+		/// <summary>
 		/// The stable semantic key for the built-in <c>Hidden</c> tag.
 		/// </summary>
 		public const string HiddenKey = "hidden";
 
 		/// <summary>
+		/// /// The default color for the built-in <c>Hidden</c> tag.
+		/// </summary>
+		public const string HiddenColor = "#000000";
+
+		/// <summary>
 		/// The stable semantic key for the built-in <c>Prop</c> tag.
 		/// </summary>
 		public const string PropKey = "prop";
+		
+		/// <summary>
+		/// The default color for the built-in <c>Prop</c> tag.
+		/// </summary>
+		public const string PropColor = "#0000FF";
 
 		/// <summary>
 		/// The fixed, stable identifier for the built-in <c>Deprecated</c> tag definition.
@@ -48,12 +65,15 @@ namespace Vixen.Sys
 		/// <returns>A list containing the <c>Deprecated</c>, <c>Hidden</c>, and <c>Prop</c> tag definitions, in that order.</returns>
 		public static IReadOnlyList<ElementTagDefinition> CreateDefaults()
 		{
-			return new[]
-			{
-				new ElementTagDefinition(DeprecatedId, DeprecatedKey, "Deprecated", isBuiltIn: true) { SortOrder = 0 },
-				new ElementTagDefinition(HiddenId, HiddenKey, "Hidden", isBuiltIn: true) { SortOrder = 1 },
-				new ElementTagDefinition(PropId, PropKey, "Prop", isBuiltIn: true) { SortOrder = 2 },
-			};
+			return
+			[
+				new ElementTagDefinition(DeprecatedId, DeprecatedKey, "Deprecated", isBuiltIn: true) 
+					{ SortOrder = 0, DisplayColor = DeprecatedColor },
+				new ElementTagDefinition(HiddenId, HiddenKey, "Hidden", isBuiltIn: true) 
+					{ SortOrder = 1, DisplayColor = HiddenColor },
+				new ElementTagDefinition(PropId, PropKey, "Prop", isBuiltIn: true) 
+					{ SortOrder = 2, DisplayColor = PropColor }
+			];
 		}
 	}
 }

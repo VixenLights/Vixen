@@ -73,6 +73,13 @@ Suggested fields:
 The exact implementation can vary, but it must preserve the distinction between stable identity, stable built-in
 semantics, and editable display text.
 
+Each built-in tag ships with a default `DisplayColor` so it is visually meaningful the moment it exists, before any
+user opens a color editor: `Deprecated` = red, `Prop` = blue, `Hidden` = black. This was originally scoped to
+VIX-2690 (the first ticket to actually render tag colors), then backported here because a tag's default appearance
+is core catalog behavior owned by this ticket's `BuiltInElementTags.cs`, not a VIX-2690 UI concern — see the
+"Default built-in tag colors" entry in the Risks And Open Questions section below for the full decision and
+implementation note.
+
 ## IElementNode API Direction
 
 Add a new public API to `IElementNode` for accessing assigned tags. The API should represent a node's tag assignments,
@@ -233,3 +240,31 @@ metadata: a node's `Tags` collection stores only stable `Guid` references into t
 no module machinery, no `ModuleStore` involvement, and no per-instance data model. `ElementTagCollection` and
 `IElementNode.Tags` should carry XML doc remarks calling out this distinction explicitly so future contributors don't
 reach for the Property module pattern when extending tags.
+
+### Default built-in tag colors
+
+**Decision:** `BuiltInElementTags.CreateDefaults()` (`src\Vixen.Core\Sys\BuiltInElementTags.cs`) sets a default
+`DisplayColor` on each built-in `ElementTagDefinition` at construction, instead of leaving `DisplayColor` unset as it
+does today: `Deprecated` = red, `Prop` = blue, `Hidden` = black. `ElementTagDefinition.DisplayColor` is a plain
+`string?` (`src\Vixen.Core\Sys\ElementTagDefinition.cs:53`) with no format enforced by the model itself; use a hex
+string consistent with however colors are already represented as strings elsewhere in this codebase (e.g.
+`System.Drawing.ColorTranslator.ToHtml(Color)` produces `"#RRGGBB"`) — confirm the exact convention against any
+existing string-color usage found during implementation rather than inventing a new one.
+
+These are only *seed* defaults, applied the first time a built-in tag definition is created — on a fresh profile, or
+when `VixenSystem.EnsureBuiltInElementTags()` adds a built-in tag that was missing from `TagDefinitions` on an
+existing profile. `EnsureBuiltInElementTags()`'s "add if missing" logic does not overwrite already-persisted
+definitions, so a profile that already has a `Deprecated`/`Hidden`/`Prop` definition from before this change keeps
+its existing (colorless) `DisplayColor` unless a user explicitly sets one through a color-editing UI — this change
+does not retroactively recolor existing profiles.
+
+Rationale: this requirement was first identified while specifying VIX-2690 (`docs\vix-2690-element-tags-workflow.md`),
+the first ticket to actually render `DisplayColor` in the UI (as per-tag colored dots and a color editor), which
+would otherwise show nothing meaningful for any built-in tag until a user manually colored it. The user decided a
+built-in tag's default appearance is core catalog behavior that belongs with `BuiltInElementTags.cs` — which this
+ticket (VIX-3933) already owns — rather than being VIX-2690 UI scope. Not retroactively recoloring existing
+profiles matches this ticket's existing seed semantics ("add if missing," not "overwrite") and avoids silently
+changing a color a user may have already customized.
+
+Date/Author: 2026-07-02, addendum recorded during VIX-2690 requirements clarification with Jeff Uchitjil. See
+`docs\plans\vix-3933-element-tags-api.md` for the corresponding addendum milestone tracking the actual code change.
