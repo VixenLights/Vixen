@@ -14,6 +14,9 @@ namespace Vixen.IO.Xml.Serializer
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_ELEMENT_ID = "channelId";
+		private const string ELEMENT_TAGS = "Tags";
+		private const string ELEMENT_TAG = "Tag";
+		private const string ATTR_TAG_ID = "id";
 
 		public XmlElementNodeSerializer(IEnumerable<Element> underlyingElementsForRead)
 		{
@@ -44,9 +47,16 @@ namespace Vixen.IO.Xml.Serializer
 			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
 			//XElement propertyDataElement = dataSetSerializer.WriteObject(value.Properties.PropertyData);
 
+			XElement tagsElement = null;
+			if (value.Tags.Any()) {
+				tagsElement = new XElement(ELEMENT_TAGS, value.Tags.Select(tagId => new XElement(ELEMENT_TAG, new XAttribute(ATTR_TAG_ID, tagId))));
+			}
+
 			XElement result = new XElement(ELEMENT_NODE, new XAttribute(ATTR_NAME, value.Name), new XAttribute(ATTR_ID, value.Id));
 			if (propertyCollectionElement != null)
 				result.Add(propertyCollectionElement);
+			if (tagsElement != null)
+				result.Add(tagsElement);
 			if (elementXmlElements != null)
 				result.Add(elementXmlElements);
 
@@ -105,6 +115,17 @@ namespace Vixen.IO.Xml.Serializer
 					IEnumerable<IPropertyModuleInstance> properties = propertyCollectionSerializer.ReadObject(element);
 					foreach (IPropertyModuleInstance instance in properties) {
 						node.Properties.Add(instance);
+					}
+
+					// Tags
+					XElement nodeTagsElement = element.Element(ELEMENT_TAGS);
+					if (nodeTagsElement != null) {
+						foreach (XElement tagElement in nodeTagsElement.Elements(ELEMENT_TAG)) {
+							Guid? tagId = XmlHelper.GetGuidAttribute(tagElement, ATTR_TAG_ID);
+							if (tagId != null) {
+								node.Tags.Add(tagId.Value);
+							}
+						}
 					}
 				}
 

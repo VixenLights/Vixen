@@ -16,6 +16,7 @@ namespace Vixen.Sys
 		private IEnumerable<IOutputDevice> _previews;
 		//private IEnumerable<IOutputDevice> _smartControllers;
 		private IEnumerable<IOutputFilterModuleInstance> _filters;
+		private IEnumerable<ElementTagDefinition> _tags;
 		private IEnumerable<DataFlowPatch> _dataFlow;
 		private List<Guid> _disabledDevicesIds;
 
@@ -109,6 +110,18 @@ namespace Vixen.Sys
 				return _filters;
 			}
 			set { _filters = value; }
+		}
+
+		public IEnumerable<ElementTagDefinition> Tags
+		{
+			get
+			{
+				if (_tags == null) {
+					_tags = new ElementTagDefinition[0];
+				}
+				return _tags;
+			}
+			set { _tags = value; }
 		}
 
 		public IEnumerable<DataFlowPatch> DataFlow

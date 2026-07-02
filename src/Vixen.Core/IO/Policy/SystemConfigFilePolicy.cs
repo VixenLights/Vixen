@@ -16,6 +16,7 @@
 			//WriteSmartControllers();
 			WritePreviews();
 			WriteFilters();
+			WriteTagDefinitions();
 			WriteDataFlowPatching();
 			WriteDisabledDevices();
 		}
@@ -32,6 +33,7 @@
 		//protected abstract void WriteSmartControllers();
 		protected abstract void WritePreviews();
 		protected abstract void WriteFilters();
+		protected abstract void WriteTagDefinitions();
 		protected abstract void WriteDataFlowPatching();
 		protected abstract void WriteDisabledDevices();
 
@@ -49,6 +51,7 @@
 			//ReadSmartControllers();
 			ReadPreviews();
 			ReadFilters();
+			ReadTagDefinitions();
 			ReadDataFlowPatching();
 			ReadDisabledDevices();
 		}
@@ -65,6 +68,7 @@
 		//protected abstract void ReadSmartControllers();
 		protected abstract void ReadPreviews();
 		protected abstract void ReadFilters();
+		protected abstract void ReadTagDefinitions();
 		protected abstract void ReadDataFlowPatching();
 		protected abstract void ReadDisabledDevices();
 	}

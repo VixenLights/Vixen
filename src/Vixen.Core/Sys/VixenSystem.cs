@@ -185,6 +185,7 @@ namespace Vixen.Sys
 				SystemConfig.Elements = Elements;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
 				SystemConfig.Filters = Filters;
+				SystemConfig.Tags = TagDefinitions;
 				SystemConfig.DataFlow = DataFlow;
 			
 				return await Task.Factory.StartNew(() =>
@@ -276,9 +277,13 @@ namespace Vixen.Sys
 			Previews.AddRange(SystemConfig.Previews.Cast<OutputPreview>());
 			Filters.AddRange(SystemConfig.Filters);
 
+			TagDefinitions = SystemConfig.Tags.ToList();
+			EnsureBuiltInElementTags();
+
 			DataFlow.Initialize(SystemConfig.DataFlow);
-			
+
 			CleanUpOrphanedPreviewModuleData();
+			CleanUpOrphanedElementTagAssignments();
         }
 
         private static void CleanUpOrphanedPreviewModuleData()
@@ -296,6 +301,32 @@ namespace Vixen.Sys
                     var model = new Tuple<Guid, Guid>(moduleDataModel.ModuleTypeId, moduleDataModel.ModuleInstanceId);
                     ModuleStore.InstanceData.RemoveDataModel( model );
 					Logging.Warn($"Removed orphaned Preview data for instance {moduleDataModel.ModuleInstanceId}");
+                }
+            }
+        }
+
+        private static void EnsureBuiltInElementTags()
+        {
+            foreach (var builtIn in BuiltInElementTags.CreateDefaults())
+            {
+                if (!TagDefinitions.Any(t => t.Id == builtIn.Id))
+                {
+                    TagDefinitions.Add(builtIn);
+                    Logging.Info($"Seeded built-in element tag '{builtIn.Name}' ({builtIn.Key}).");
+                }
+            }
+        }
+
+        private static void CleanUpOrphanedElementTagAssignments()
+        {
+            var validTagIds = new HashSet<Guid>(TagDefinitions.Select(t => t.Id));
+            foreach (var node in Nodes.GetAllNodes())
+            {
+                var orphaned = node.Tags.Where(id => !validTagIds.Contains(id)).ToList();
+                foreach (var orphanedId in orphaned)
+                {
+                    node.Tags.Remove(orphanedId);
+                    Logging.Warn($"Removed orphaned element tag assignment {orphanedId} from node '{node.Name}' ({node.Id}).");
                 }
             }
         }

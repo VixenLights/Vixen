@@ -105,6 +105,13 @@ namespace Vixen.IO.Xml.SystemConfig
 			_content.Add(element);
 		}
 
+		protected override void WriteTagDefinitions()
+		{
+			XmlElementTagDefinitionCollectionSerializer serializer = new XmlElementTagDefinitionCollectionSerializer();
+			XElement element = serializer.WriteObject(_systemConfig.Tags);
+			_content.Add(element);
+		}
+
 		protected override void WriteDataFlowPatching()
 		{
 			XmlDataFlowPatchCollectionSerializer serializer = new XmlDataFlowPatchCollectionSerializer();
@@ -196,6 +203,12 @@ namespace Vixen.IO.Xml.SystemConfig
 		{
 			XmlOutputFilterCollectionSerializer serializer = new XmlOutputFilterCollectionSerializer();
 			_systemConfig.Filters = serializer.ReadObject(_content);
+		}
+
+		protected override void ReadTagDefinitions()
+		{
+			XmlElementTagDefinitionCollectionSerializer serializer = new XmlElementTagDefinitionCollectionSerializer();
+			_systemConfig.Tags = serializer.ReadObject(_content);
 		}
 
 		protected override void ReadDataFlowPatching()
