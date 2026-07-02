@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -6,6 +6,7 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Spiral
@@ -19,6 +20,7 @@ namespace VixenModules.Effect.Spiral
 		public Spiral()
 		{
 			_data = new SpiralData();
+			EnableTargetPositioning(true, true);
 			InitAllAttributes();
 		}
 
@@ -36,9 +38,9 @@ namespace VixenModules.Effect.Spiral
 			protected set { base.IsDirty = value; }
 		}
 
-		
+
 		#region Setup
-		
+
 		[Value]
 		public override StringOrientation StringOrientation
 		{
@@ -340,7 +342,7 @@ namespace VixenModules.Effect.Spiral
 				IsDirty = true;
 			}
 		}
-	
+
 		protected override EffectTypeModuleData EffectModuleData
 		{
 			get { return _data; }
@@ -349,6 +351,7 @@ namespace VixenModules.Effect.Spiral
 		protected override void SetupRender()
 		{
 			_position = 0;
+			_negPosition = false;
 		}
 
 		protected override void CleanUpRender()
@@ -473,6 +476,176 @@ namespace VixenModules.Effect.Spiral
 			}
 		}
 
+		/// <inheritdoc />
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			if (BufferWi == 0 || BufferHt == 0 || Colors.Count == 0)
+			{
+				return;
+			}
+
+			for (int frame = 0; frame < numFrames; frame++)
+			{
+				frameBuffer.CurrentFrame = frame;
+				var state = CreateSpiralFrameState(frame);
+				if (state.SpiralCount == 0 || state.SpiralThickness == 0)
+				{
+					continue;
+				}
+
+				foreach (var elementLocation in frameBuffer.ElementLocations)
+				{
+					int localY = Math.Abs((BufferHtOffset - elementLocation.Y) + (BufferHt - 1 + BufferHtOffset));
+					localY = localY - BufferHtOffset;
+					int localX = elementLocation.X - BufferWiOffset;
+
+					if (TryGetSpiralPixelColor(localX, localY, state, out HSV hsv))
+					{
+						frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+					}
+				}
+			}
+		}
+
+		private SpiralFrameState CreateSpiralFrameState(int frame)
+		{
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			int colorCount = Colors.Count;
+			int repeat = Math.Max(Repeat, 1);
+			int spiralCount = colorCount * repeat;
+			int deltaStrands = spiralCount == 0 ? 0 : BufferWi / spiralCount;
+			int spiralThickness = spiralCount == 0 ? 0 : (deltaStrands * CalculateThickness(intervalPosFactor) / 100) + 1;
+			double adjustRotation = CalculateRotation(intervalPosFactor);
+			int spiralGap = deltaStrands - spiralThickness;
+			double position;
+
+			if (MovementType == MovementType.Iterations)
+			{
+				position = (intervalPos * Speed) % 1;
+			}
+			else
+			{
+				_position += CalculateSpeed(intervalPosFactor) / 1000;
+				if (_position < 0)
+				{
+					_negPosition = true;
+					position = -_position;
+				}
+				else
+				{
+					_negPosition = false;
+					position = _position;
+				}
+			}
+
+			int spiralState = (int)(position * BufferWi * 10);
+			switch (MovementType)
+			{
+				case MovementType.Speed:
+				{
+					if (_negPosition) spiralState = -spiralState;
+					break;
+				}
+				default:
+				{
+					if (Direction == SpiralDirection.Backwards)
+					{
+						spiralState = -spiralState;
+					}
+					else if (Direction == SpiralDirection.None) spiralState = 0;
+
+					break;
+				}
+			}
+
+			int thicknessState = 0;
+			if (Grow && Shrink)
+			{
+				thicknessState = (int)(position <= 0.5 ? spiralGap * (position * 2) : spiralGap * ((1 - position) * 2));
+			}
+			else if (Grow)
+			{
+				thicknessState = (int)(spiralGap * position);
+			}
+			else if (Shrink)
+			{
+				thicknessState = (int)(spiralGap * (1.0 - position));
+			}
+
+			spiralThickness += thicknessState;
+			double level = LevelCurve.GetValue(intervalPos * 100) / 100;
+
+			return new SpiralFrameState(colorCount, spiralCount, deltaStrands, spiralThickness, adjustRotation, spiralState, level);
+		}
+
+		private bool TryGetSpiralPixelColor(int x, int y, SpiralFrameState state, out HSV hsv)
+		{
+			hsv = new HSV();
+			if (x < 0 || y < 0 || x >= BufferWi || y >= BufferHt)
+			{
+				return false;
+			}
+
+			var rowOffset = state.SpiralState / 10 + y * (int)state.AdjustRotation / BufferHt;
+			var targetStrand = PositiveModulo(x - rowOffset, BufferWi);
+
+			for (int ns = state.SpiralCount - 1; ns >= 0; ns--)
+			{
+				var thick = PositiveModulo(targetStrand - ns * state.DeltaStrands, BufferWi);
+				if (thick >= state.SpiralThickness)
+				{
+					continue;
+				}
+
+				if (state.SpiralThickness > BufferWi)
+				{
+					thick += ((state.SpiralThickness - 1 - thick) / BufferWi) * BufferWi;
+				}
+
+				int colorIdx = ns % state.ColorCount;
+				hsv = CreateSpiralPixelColor(y, thick, colorIdx, state);
+				return true;
+			}
+
+			return false;
+		}
+
+		private static int PositiveModulo(int value, int modulus)
+		{
+			var result = value % modulus;
+			return result < 0 ? result + modulus : result;
+		}
+
+		private HSV CreateSpiralPixelColor(int y, int thick, int colorIdx, SpiralFrameState state)
+		{
+			Color color;
+			if (Blend)
+			{
+				color = Colors[colorIdx].GetColorAt((double)(BufferHt - y - 1) / BufferHt);
+			}
+			else
+			{
+				color = Colors[colorIdx].GetColorAt((double)thick / state.SpiralThickness);
+			}
+
+			var hsv = HSV.FromRGB(color);
+			if (Show3D)
+			{
+				if (Direction != SpiralDirection.Backwards)
+				{
+					hsv.V = (float)((double)(thick + 1) / state.SpiralThickness);
+				}
+				else
+				{
+					hsv.V = (float)((double)(state.SpiralThickness - thick) / state.SpiralThickness);
+				}
+			}
+
+			hsv.V = hsv.V * state.Level;
+			return hsv;
+		}
+
 		private int CalculateThickness(double intervalPos)
 		{
 			return (int)Math.Round(ScaleCurveToValue(ThicknessCurve.GetValue(intervalPos), 100, 1));
@@ -486,6 +659,34 @@ namespace VixenModules.Effect.Spiral
 		private double CalculateSpeed(double intervalPos)
 		{
 			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 80, -80) * FrameTime / 50d;
+		}
+
+		private readonly struct SpiralFrameState
+		{
+			public SpiralFrameState(int colorCount, int spiralCount, int deltaStrands, int spiralThickness, double adjustRotation, int spiralState, double level)
+			{
+				ColorCount = colorCount;
+				SpiralCount = spiralCount;
+				DeltaStrands = deltaStrands;
+				SpiralThickness = spiralThickness;
+				AdjustRotation = adjustRotation;
+				SpiralState = spiralState;
+				Level = level;
+			}
+
+			public int ColorCount { get; }
+
+			public int SpiralCount { get; }
+
+			public int DeltaStrands { get; }
+
+			public int SpiralThickness { get; }
+
+			public double AdjustRotation { get; }
+
+			public int SpiralState { get; }
+
+			public double Level { get; }
 		}
 
 	}
