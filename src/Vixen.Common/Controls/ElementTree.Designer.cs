@@ -17,9 +17,6 @@ namespace Common.Controls
 			if (disposing && (components != null)) {
 				components.Dispose();
 			}
-			if (disposing) {
-				_tagToolTip.Dispose();
-			}
 			base.Dispose(disposing);
 		}
 

@@ -21,10 +21,6 @@ namespace Common.Controls
 		private const int TagDotDiameter = 8;
 		private const int TagDotSpacing = 3;
 
-		private readonly ToolTip _tagToolTip = new ToolTip();
-		private readonly Dictionary<TreeNode, List<(Rectangle Bounds, Guid TagId)>> _tagDotBounds = new();
-		private Guid? _hoveredTagId;
-
 		public ElementTree()
 		{
 			InitializeComponent();
@@ -39,8 +35,6 @@ namespace Common.Controls
 			treeview.AfterCollapse += TreeviewOnAfterCollapse;
 			treeview.DrawMode = TreeViewDrawMode.OwnerDrawText;
 			treeview.DrawNode += Treeview_DrawNode;
-			treeview.MouseMove += Treeview_MouseMove;
-			treeview.MouseLeave += Treeview_MouseLeave;
 			AllowDragging = true;
 			AllowPropertyEdit = true;
 			AllowWireExport = true;
@@ -416,18 +410,30 @@ namespace Common.Controls
 
 		private void Treeview_DrawNode(object sender, DrawTreeNodeEventArgs e)
 		{
-			e.DrawDefault = true;
+			// MultiSelectTreeview fakes selection by setting each node's BackColor/ForeColor directly
+			// rather than using the native Win32 selected state (it always cancels base.SelectedNode).
+			// e.DrawDefault only renders using the native selected state, so with owner-drawn text that
+			// leaves "selected" nodes drawn as unselected. Paint the background/text ourselves from the
+			// node's own colors to preserve the existing selection appearance.
+			Color backColor = e.Node.BackColor != Color.Empty ? e.Node.BackColor : treeview.BackColor;
+			Color foreColor = e.Node.ForeColor != Color.Empty ? e.Node.ForeColor : treeview.ForeColor;
+
+			using (var backBrush = new SolidBrush(backColor))
+			{
+				e.Graphics.FillRectangle(backBrush, e.Bounds);
+			}
+
+			TextRenderer.DrawText(e.Graphics, e.Node.Text, treeview.Font, e.Bounds, foreColor,
+				TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
 
 			if (e.Node.Tag is not ElementNode elementNode)
 			{
-				_tagDotBounds.Remove(e.Node);
 				return;
 			}
 
 			List<ElementTagDefinition> coloredTags = GetColoredTags(elementNode);
 			if (coloredTags.Count == 0)
 			{
-				_tagDotBounds.Remove(e.Node);
 				return;
 			}
 
@@ -435,19 +441,14 @@ namespace Common.Controls
 			int x = e.Bounds.Left + textSize.Width + TagDotSpacing * 2;
 			int y = e.Bounds.Top + (e.Bounds.Height - TagDotDiameter) / 2;
 
-			var dotBounds = new List<(Rectangle Bounds, Guid TagId)>();
 			foreach (ElementTagDefinition tag in coloredTags)
 			{
-				var rect = new Rectangle(x, y, TagDotDiameter, TagDotDiameter);
 				using (var brush = new SolidBrush(ColorTranslator.FromHtml(tag.DisplayColor)))
 				{
-					e.Graphics.FillEllipse(brush, rect);
+					e.Graphics.FillEllipse(brush, x, y, TagDotDiameter, TagDotDiameter);
 				}
-				dotBounds.Add((rect, tag.Id));
 				x += TagDotDiameter + TagDotSpacing;
 			}
-
-			_tagDotBounds[e.Node] = dotBounds;
 		}
 
 		private static List<ElementTagDefinition> GetColoredTags(ElementNode elementNode)
@@ -463,39 +464,6 @@ namespace Common.Controls
 			}
 			tags.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
 			return tags;
-		}
-
-		private void Treeview_MouseMove(object sender, MouseEventArgs e)
-		{
-			TreeNode node = treeview.GetNodeAt(e.Location);
-			if (node != null && _tagDotBounds.TryGetValue(node, out List<(Rectangle Bounds, Guid TagId)> dots))
-			{
-				foreach ((Rectangle bounds, Guid tagId) in dots)
-				{
-					if (bounds.Contains(e.Location))
-					{
-						if (_hoveredTagId != tagId)
-						{
-							_hoveredTagId = tagId;
-							ElementTagDefinition tag = ElementTagService.Instance.GetById(tagId);
-							_tagToolTip.Show(tag?.Name ?? string.Empty, treeview, e.Location.X + 16, e.Location.Y + 16);
-						}
-						return;
-					}
-				}
-			}
-
-			if (_hoveredTagId != null)
-			{
-				_hoveredTagId = null;
-				_tagToolTip.Hide(treeview);
-			}
-		}
-
-		private void Treeview_MouseLeave(object sender, EventArgs e)
-		{
-			_hoveredTagId = null;
-			_tagToolTip.Hide(treeview);
 		}
 
 		#endregion
