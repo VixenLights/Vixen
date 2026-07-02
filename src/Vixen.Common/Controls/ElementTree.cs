@@ -916,7 +916,71 @@ namespace Common.Controls
 			exportWireDiagramToolStripMenuItem.Visible = AllowWireExport;
 			exportWireDiagramToolStripMenuItem.Enabled = CanExportDiagram();
 			exportElementTreeToolStripMenuItem.Enabled = treeview.Nodes.Count > 0;
+			tagsToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
+			PopulateTagsMenu();
+		}
 
+		private void PopulateTagsMenu()
+		{
+			tagsToolStripMenuItem.DropDownItems.Clear();
+
+			var selectedElementNodes = SelectedElementNodes.ToList();
+
+			foreach (ElementTagDefinition tag in ElementTagService.Instance.GetAll())
+			{
+				Guid tagId = tag.Id;
+				var tagMenuItem = new ToolStripMenuItem(tag.Name)
+				{
+					CheckState = GetTagCheckState(selectedElementNodes, tagId)
+				};
+				tagMenuItem.Click += (sender, e) => ToggleTagOnSelectedNodes(tagMenuItem, tagId);
+				tagsToolStripMenuItem.DropDownItems.Add(tagMenuItem);
+			}
+
+			tagsToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+			// The "Manage Tag Colors..." Click handler is wired up once ElementTagColorEditorWindow exists.
+			tagsToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem("Manage Tag Colors..."));
+		}
+
+		private static CheckState GetTagCheckState(List<ElementNode> selectedElementNodes, Guid tagId)
+		{
+			if (selectedElementNodes.Count == 0)
+				return CheckState.Unchecked;
+
+			int taggedCount = selectedElementNodes.Count(node => node.Tags.Contains(tagId));
+			if (taggedCount == 0)
+				return CheckState.Unchecked;
+			if (taggedCount == selectedElementNodes.Count)
+				return CheckState.Checked;
+
+			return CheckState.Indeterminate;
+		}
+
+		private void ToggleTagOnSelectedNodes(ToolStripMenuItem tagMenuItem, Guid tagId)
+		{
+			var selectedElementNodes = SelectedElementNodes.ToList();
+			if (selectedElementNodes.Count == 0)
+				return;
+
+			if (tagMenuItem.CheckState == CheckState.Checked)
+			{
+				foreach (ElementNode node in selectedElementNodes)
+				{
+					node.Tags.Remove(tagId);
+				}
+				tagMenuItem.CheckState = CheckState.Unchecked;
+			}
+			else
+			{
+				foreach (ElementNode node in selectedElementNodes)
+				{
+					node.Tags.Add(tagId);
+				}
+				tagMenuItem.CheckState = CheckState.Checked;
+			}
+
+			treeview.Invalidate();
 		}
 
 		private bool CanExportDiagram()
