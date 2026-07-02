@@ -19,16 +19,23 @@ namespace Vixen.IO.Xml.Serializer
 			XElement element = new XElement(ELEMENT_TAG,
 			                                new XAttribute(ATTR_ID, value.Id),
 			                                new XAttribute(ATTR_KEY, value.Key),
-			                                new XAttribute(ATTR_NAME, value.Name),
-			                                new XAttribute(ATTR_IS_BUILT_IN, value.IsBuiltIn),
-			                                new XAttribute(ATTR_SORT_ORDER, value.SortOrder));
-
+			                                new XAttribute(ATTR_NAME, value.Name));
+			
+			if (value.IsBuiltIn) {
+				element.Add(new XAttribute(ATTR_IS_BUILT_IN, value.IsBuiltIn));
+			}
+			
+			//Optional fields
 			if (!string.IsNullOrEmpty(value.Description)) {
 				element.Add(new XAttribute(ATTR_DESCRIPTION, value.Description));
 			}
 
 			if (!string.IsNullOrEmpty(value.DisplayColor)) {
 				element.Add(new XAttribute(ATTR_DISPLAY_COLOR, value.DisplayColor));
+			}
+			
+			if (value.SortOrder > 0) {
+				element.Add(new XAttribute(ATTR_SORT_ORDER, value.SortOrder));
 			}
 
 			return element;
