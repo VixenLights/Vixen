@@ -3950,6 +3950,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		/// <summary>
+		/// Warns the user if the sequence has effects on any element tagged <c>Deprecated</c>.
+		/// </summary>
+		/// <remarks>
+		/// Runs directly off <c>_sequence.SequenceData.EffectData</c>, the same source
+		/// <see cref="CheckMissingEffectMappings"/> reads, rather than waiting on <see cref="LoadSequence"/>'s
+		/// background row-building - the tag/effect relationship this checks doesn't depend on the timeline
+		/// rows existing yet, so there is no need to hook into that asynchronous continuation, and this
+		/// deliberately runs earlier (from <see cref="IEditorUserInterface.StartEditor"/>, before the form is
+		/// shown) so the notification appears before the timeline becomes interactive.
+		/// </remarks>
+		private void CheckDeprecatedEffects()
+		{
+			List<string> deprecatedElementNames = _sequence.SequenceData.EffectData.Cast<EffectNode>()
+				.SelectMany(effectNode => effectNode.Effect.TargetNodes)
+				.Where(node => ElementTagService.Instance.HasTag(node, BuiltInElementTags.DeprecatedKey))
+				.Select(node => node.Name)
+				.Distinct()
+				.ToList();
+
+			if (deprecatedElementNames.Count == 0)
+				return;
+
+			var message = "This sequence has effects on the following elements tagged Deprecated:\n\n" +
+				string.Join("\n", deprecatedElementNames);
+			var messageBox = new MessageBoxForm(message, @"Deprecated Elements", MessageBoxButtons.OK, SystemIcons.Warning);
+			messageBox.ShowDialog(this);
+		}
+
+		/// <summary>
 		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given EffectNode.
 		/// Will add a single TimedSequenceElement to in each row that each targeted element of
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
@@ -5640,6 +5669,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			Cursor = Cursors.WaitCursor;
 			CheckMissingEffectMappings();
+			CheckDeprecatedEffects();
 			Show();
 		}
 
