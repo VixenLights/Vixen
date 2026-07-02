@@ -12,7 +12,7 @@ Concretely, someone can see this working by: building the solution (`msbuild Vix
 
 ## Progress
 
-- [ ] Milestone 1: Update JIRA VIX-2690 with the finalized requirements, acceptance criteria, and test plan from `docs/vix-2690-element-tags-workflow.md`.
+- [x] (2026-07-02) Milestone 1: Update JIRA VIX-2690 with the finalized requirements, acceptance criteria, and test plan from `docs/vix-2690-element-tags-workflow.md`. Done — updated summary, description (Overview, In Scope items 1-8 with a note that item 9's default colors moved to VIX-3933, Deferred/Out of Scope, Acceptance Criteria, Test Plan) via `mcp__atlassian__editJiraIssue`. Issue type ("Improvement") and status ("Accepted") left unchanged; no transition performed.
 - [ ] Milestone 2: Tag assignment context menu on the shared `ElementTree` control (Display Setup + Preview Setup).
 - [ ] Milestone 3: Tag assignment context menu on the Sequencer's row labels.
 - [ ] Milestone 4: Tag color dots on the shared `ElementTree` control, with hover tooltip.
