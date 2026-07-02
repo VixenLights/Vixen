@@ -174,6 +174,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.viewToolStripButton_ZoomTimeOut = new System.Windows.Forms.ToolStripButton();
 			this.viewToolStripButton_ZoomRowIn = new System.Windows.Forms.ToolStripButton();
 			this.viewToolStripButton_ZoomRowOut = new System.Windows.Forms.ToolStripButton();
+			this.viewToolStripButton_ShowHidden = new System.Windows.Forms.ToolStripButton();
 			this.toolStripFile = new System.Windows.Forms.ToolStrip();
 			this.fileToolStripButton_Save = new System.Windows.Forms.ToolStripButton();
 			this.fileToolStripButton_SaveAs = new System.Windows.Forms.ToolStripButton();
@@ -1610,7 +1611,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.viewToolStripButton_ZoomTimeIn,
             this.viewToolStripButton_ZoomTimeOut,
             this.viewToolStripButton_ZoomRowIn,
-            this.viewToolStripButton_ZoomRowOut});
+            this.viewToolStripButton_ZoomRowOut,
+            this.viewToolStripButton_ShowHidden});
 			this.toolStripView.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.toolStripView.Location = new System.Drawing.Point(3, 25);
 			this.toolStripView.Name = "toolStripView";
@@ -1656,7 +1658,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.viewToolStripButton_ZoomRowOut.Text = "Zoom Row Out";
 			this.viewToolStripButton_ZoomRowOut.ToolTipText = "Zoom Row Out";
 			this.viewToolStripButton_ZoomRowOut.Click += new System.EventHandler(this.toolStripMenuItem_zoomRowsOut_Click);
-			// 
+			//
+			// viewToolStripButton_ShowHidden
+			//
+			this.viewToolStripButton_ShowHidden.CheckOnClick = true;
+			this.viewToolStripButton_ShowHidden.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.viewToolStripButton_ShowHidden.Name = "viewToolStripButton_ShowHidden";
+			this.viewToolStripButton_ShowHidden.Size = new System.Drawing.Size(85, 22);
+			this.viewToolStripButton_ShowHidden.Tag = "Show Hidden";
+			this.viewToolStripButton_ShowHidden.Text = "Show Hidden";
+			this.viewToolStripButton_ShowHidden.ToolTipText = "Show rows tagged Hidden for this session. Resets to off the next time a sequenc" +
+    "e is opened.";
+			this.viewToolStripButton_ShowHidden.Click += new System.EventHandler(this.viewToolStripButton_ShowHidden_Click);
+			//
 			// toolStripFile
 			// 
 			this.toolStripFile.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -2492,6 +2506,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem alignmentToolStripMenuItemCloseGap400;
 		private System.Windows.Forms.ToolStripButton viewToolStripButton_ZoomRowIn;
 		private System.Windows.Forms.ToolStripButton viewToolStripButton_ZoomRowOut;
+		private System.Windows.Forms.ToolStripButton viewToolStripButton_ShowHidden;
 		private System.Windows.Forms.ToolStrip toolStripColorLibrary;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripLibraries;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItemLibraries;
