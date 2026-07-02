@@ -866,7 +866,13 @@ namespace Common.Controls.Timeline
 				tagMenuItem.CheckState = CheckState.Checked;
 			}
 
-			timelineRowList.Invalidate();
+			// Each RowLabel is its own child control of timelineRowList, so invalidating the
+			// parent alone does not repaint them (they're outside the parent's own clipped paint
+			// region) - each affected row's label must be invalidated directly.
+			foreach (Row row in SelectedRows)
+			{
+				row.RowLabel.Invalidate();
+			}
 
 			// The Sequencer has no OK/Cancel-gated save of its own, unlike Display Setup/Preview Setup,
 			// so a tag change made here must be persisted explicitly.
