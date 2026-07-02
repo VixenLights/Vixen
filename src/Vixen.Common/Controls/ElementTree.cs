@@ -18,6 +18,12 @@ namespace Common.Controls
 												 // need one, but will have multiple in case the top node is deleted.
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const string VirtualNodeName = @"VIRT";
+		private const int TagDotDiameter = 8;
+		private const int TagDotSpacing = 3;
+
+		private readonly ToolTip _tagToolTip = new ToolTip();
+		private readonly Dictionary<TreeNode, List<(Rectangle Bounds, Guid TagId)>> _tagDotBounds = new();
+		private Guid? _hoveredTagId;
 
 		public ElementTree()
 		{
@@ -31,6 +37,10 @@ namespace Common.Controls
 
 			treeview.BeforeExpand += Treeview_BeforeExpand;
 			treeview.AfterCollapse += TreeviewOnAfterCollapse;
+			treeview.DrawMode = TreeViewDrawMode.OwnerDrawText;
+			treeview.DrawNode += Treeview_DrawNode;
+			treeview.MouseMove += Treeview_MouseMove;
+			treeview.MouseLeave += Treeview_MouseLeave;
 			AllowDragging = true;
 			AllowPropertyEdit = true;
 			AllowWireExport = true;
@@ -402,7 +412,93 @@ namespace Common.Controls
 
 		#endregion
 
+		#region Tag color dots
 
+		private void Treeview_DrawNode(object sender, DrawTreeNodeEventArgs e)
+		{
+			e.DrawDefault = true;
+
+			if (e.Node.Tag is not ElementNode elementNode)
+			{
+				_tagDotBounds.Remove(e.Node);
+				return;
+			}
+
+			List<ElementTagDefinition> coloredTags = GetColoredTags(elementNode);
+			if (coloredTags.Count == 0)
+			{
+				_tagDotBounds.Remove(e.Node);
+				return;
+			}
+
+			Size textSize = TextRenderer.MeasureText(e.Node.Text, treeview.Font);
+			int x = e.Bounds.Left + textSize.Width + TagDotSpacing * 2;
+			int y = e.Bounds.Top + (e.Bounds.Height - TagDotDiameter) / 2;
+
+			var dotBounds = new List<(Rectangle Bounds, Guid TagId)>();
+			foreach (ElementTagDefinition tag in coloredTags)
+			{
+				var rect = new Rectangle(x, y, TagDotDiameter, TagDotDiameter);
+				using (var brush = new SolidBrush(ColorTranslator.FromHtml(tag.DisplayColor)))
+				{
+					e.Graphics.FillEllipse(brush, rect);
+				}
+				dotBounds.Add((rect, tag.Id));
+				x += TagDotDiameter + TagDotSpacing;
+			}
+
+			_tagDotBounds[e.Node] = dotBounds;
+		}
+
+		private static List<ElementTagDefinition> GetColoredTags(ElementNode elementNode)
+		{
+			var tags = new List<ElementTagDefinition>();
+			foreach (Guid tagId in elementNode.Tags)
+			{
+				ElementTagDefinition tag = ElementTagService.Instance.GetById(tagId);
+				if (tag != null && !string.IsNullOrEmpty(tag.DisplayColor))
+				{
+					tags.Add(tag);
+				}
+			}
+			tags.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
+			return tags;
+		}
+
+		private void Treeview_MouseMove(object sender, MouseEventArgs e)
+		{
+			TreeNode node = treeview.GetNodeAt(e.Location);
+			if (node != null && _tagDotBounds.TryGetValue(node, out List<(Rectangle Bounds, Guid TagId)> dots))
+			{
+				foreach ((Rectangle bounds, Guid tagId) in dots)
+				{
+					if (bounds.Contains(e.Location))
+					{
+						if (_hoveredTagId != tagId)
+						{
+							_hoveredTagId = tagId;
+							ElementTagDefinition tag = ElementTagService.Instance.GetById(tagId);
+							_tagToolTip.Show(tag?.Name ?? string.Empty, treeview, e.Location.X + 16, e.Location.Y + 16);
+						}
+						return;
+					}
+				}
+			}
+
+			if (_hoveredTagId != null)
+			{
+				_hoveredTagId = null;
+				_tagToolTip.Hide(treeview);
+			}
+		}
+
+		private void Treeview_MouseLeave(object sender, EventArgs e)
+		{
+			_hoveredTagId = null;
+			_tagToolTip.Hide(treeview);
+		}
+
+		#endregion
 
 		#region Events
 
