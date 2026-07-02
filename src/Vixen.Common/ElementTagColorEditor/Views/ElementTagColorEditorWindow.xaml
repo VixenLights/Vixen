@@ -34,14 +34,16 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="Auto"/>
 						</Grid.ColumnDefinitions>
 						<TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"
 						           Foreground="{DynamicResource ForeColorBrush}"/>
-						<Border Grid.Column="1" Width="24" Height="24" Margin="0,0,8,0"
-						        BorderBrush="{DynamicResource BorderColorBrush}" BorderThickness="1"
-						        Background="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"/>
-						<Button Grid.Column="2" Content="Choose Color..." Command="{Binding PickColorCommand}"/>
+						<Rectangle Grid.Column="1" Width="32" Height="24" Cursor="Hand"
+						           Stroke="{DynamicResource BorderColorBrush}" StrokeThickness="1"
+						           Fill="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}">
+							<Rectangle.InputBindings>
+								<MouseBinding Gesture="LeftDoubleClick" Command="{Binding PickColorCommand}"/>
+							</Rectangle.InputBindings>
+						</Rectangle>
 					</Grid>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
