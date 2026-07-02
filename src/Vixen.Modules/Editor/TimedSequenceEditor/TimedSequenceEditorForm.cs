@@ -525,6 +525,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.DragEnter += TimelineControlGrid_DragEnter;
 			TimelineControl.grid.DragDrop += TimelineControlGrid_DragDrop;
 			TimelineControl.grid.DragLeave += TimelineControlGrid_DragLeave;
+			TimelineControl.RowTagsChanged += TimelineControl_RowTagsChanged;
 			Row.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
 
 			LoadAvailableEffects();
@@ -773,6 +774,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ContextSelected -= timelineControl_ContextSelected;
 			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
 			TimelineControl.VisibleTimeStartChanged -= TimelineControl_VisibleTimeStartChanged;
+			TimelineControl.RowTagsChanged -= TimelineControl_RowTagsChanged;
 			Row.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
 			effectGroupsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			basicToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing; 
@@ -1361,7 +1363,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.EnableDisableHandlers();
 
 			_showHiddenRows = false;
-			viewToolStripButton_ShowHidden.Checked = false;
+			showHiddenToolStripMenuItem.Checked = false;
 			ApplyHiddenRowFilter();
 
 			TimelineControl.LayoutRows();
@@ -2278,22 +2280,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void viewToolStripButton_ShowHidden_Click(object sender, EventArgs e)
+		private void showHiddenToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			_showHiddenRows = viewToolStripButton_ShowHidden.Checked;
+			_showHiddenRows = showHiddenToolStripMenuItem.Checked;
+			ApplyHiddenRowFilter();
+		}
+
+		// Tags can also be assigned/removed from the Sequencer's own row context menu
+		// (TimelineControl.ToggleTagOnSelectedRows); that doesn't go through this form's tag-menu code at
+		// all, so it needs its own notification to keep Hidden-tagged rows in sync when the Show Hidden
+		// toggle is off.
+		private void TimelineControl_RowTagsChanged(object sender, EventArgs e)
+		{
 			ApplyHiddenRowFilter();
 		}
 
 		/// <summary>
 		/// Assigns (or clears) <see cref="Row.VisibilityFilter"/> on every root row so that rows whose
 		/// <see cref="ElementNode"/> carries the built-in <c>Hidden</c> tag are hidden, unless the
-		/// session-only "Show Hidden" toolbar toggle is on.
+		/// session-only "Show Hidden" toggle is on.
 		/// </summary>
 		/// <remarks>
 		/// <see cref="Row.VisibilityFilter"/> is consulted automatically every time a row's visibility
 		/// is recomputed - including when a parent's <see cref="Row.TreeOpen"/> cascades visibility down
-		/// to a child - so this only needs to run when the toggle itself changes or a sequence loads,
-		/// not on every tree expand/collapse.
+		/// to a child - so this only needs to run when the toggle itself changes, a sequence loads, or a
+		/// row's tags change, not on every tree expand/collapse. Also re-lays-out the row labels
+		/// afterward: <see cref="RowList"/> only repositions label controls on <see cref="Row.RowToggled"/>/
+		/// <see cref="Row.RowHeightChanged"/>, not on a plain visibility change, so a label whose row just
+		/// became visible would otherwise sit at its last (possibly off-screen or overlapping) position
+		/// until some unrelated tree toggle forced a re-layout.
 		/// </remarks>
 		private void ApplyHiddenRowFilter()
 		{
@@ -2302,6 +2317,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				row.VisibilityFilter = filter;
 			}
+			TimelineControl.LayoutRows();
 		}
 
 		private static bool IsHiddenByTag(Row row)

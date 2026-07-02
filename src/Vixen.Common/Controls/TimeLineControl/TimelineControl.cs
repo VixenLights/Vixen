@@ -607,6 +607,12 @@ namespace Common.Controls.Timeline
 			remove { if (grid != null) grid.ElementChangedRows -= value; }
 		}
 
+		/// <summary>
+		/// Raised after a row's <c>Tags</c> submenu adds or removes a tag on one or more selected rows'
+		/// <see cref="ElementNode"/>s (<see cref="ToggleTagOnSelectedRows"/>).
+		/// </summary>
+		public event EventHandler RowTagsChanged;
+
 		public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew
 		{
 			add { grid.ElementsMovedNew += value; }
@@ -873,6 +879,8 @@ namespace Common.Controls.Timeline
 			{
 				row.RowLabel.Invalidate();
 			}
+
+			RowTagsChanged?.Invoke(this, EventArgs.Empty);
 
 			// The Sequencer has no OK/Cancel-gated save of its own, unlike Display Setup/Preview Setup,
 			// so a tag change made here must be persisted explicitly.
