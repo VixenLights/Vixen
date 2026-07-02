@@ -11,6 +11,7 @@ using NLog;
 using Vixen;
 using Vixen.Execution.Context;
 using Vixen.Marks;
+using Vixen.Services;
 using Vixen.Sys.LayerMixing;
 
 #pragma warning disable WFO1000  // This class is not a Designer type control so disabling to avoid all the noise of the hidden attribute
@@ -1947,6 +1948,15 @@ namespace Common.Controls.Timeline
 
 			if (Rows.IndexOf(destRow) == CurrentRowIndexUnderMouse)
 				return;
+
+			// Dragging an existing effect onto a Deprecated row is blocked the same way a brand-new
+			// effect drop is (TimedSequenceEditorForm's IsValidDataObject/DragDrop checks) - moving one
+			// there would be just as much "adding an effect to it" as a fresh drop would.
+			if (destRow.Tag is Vixen.Sys.ElementNode destElementNode &&
+				ElementTagService.Instance.HasTag(destElementNode, Vixen.Sys.BuiltInElementTags.DeprecatedKey))
+			{
+				return;
+			}
 
 			List<Row> visibleRows = VisibleRows;
 

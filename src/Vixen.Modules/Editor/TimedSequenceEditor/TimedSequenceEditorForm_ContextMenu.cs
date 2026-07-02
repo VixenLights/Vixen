@@ -99,6 +99,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				contextMenuItemAddEffect.DropDownItems.Add(contextMenuItemEffect);
 			}
 
+			if (IsDeprecated(e.Row))
+			{
+				contextMenuItemAddEffect.Enabled = false;
+				contextMenuItemAddEffect.ToolTipText = @"Disabled, this row is tagged Deprecated.";
+			}
+
 			_contextMenuStrip.Items.Add(contextMenuItemAddEffect);
 
 			#endregion
