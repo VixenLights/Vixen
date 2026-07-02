@@ -305,31 +305,31 @@ namespace Vixen.Sys
             }
         }
 
-        private static void EnsureBuiltInElementTags()
-        {
-            foreach (var builtIn in BuiltInElementTags.CreateDefaults())
-            {
-                if (!TagDefinitions.Any(t => t.Id == builtIn.Id))
-                {
-                    TagDefinitions.Add(builtIn);
-                    Logging.Info($"Seeded built-in element tag '{builtIn.Name}' ({builtIn.Key}).");
-                }
-            }
-        }
+		private static void EnsureBuiltInElementTags()
+		{
+			foreach (var builtIn in BuiltInElementTags.CreateDefaults())
+			{
+				if (!TagDefinitions.Any(t => t.Id == builtIn.Id))
+				{
+					TagDefinitions.Add(builtIn);
+					Logging.Info($"Seeded built-in element tag '{builtIn.Name}' ({builtIn.Key}).");
+				}
+			}
+		}
 
-        private static void CleanUpOrphanedElementTagAssignments()
-        {
-            var validTagIds = new HashSet<Guid>(TagDefinitions.Select(t => t.Id));
-            foreach (var node in Nodes.GetAllNodes())
-            {
-                var orphaned = node.Tags.Where(id => !validTagIds.Contains(id)).ToList();
-                foreach (var orphanedId in orphaned)
-                {
-                    node.Tags.Remove(orphanedId);
-                    Logging.Warn($"Removed orphaned element tag assignment {orphanedId} from node '{node.Name}' ({node.Id}).");
-                }
-            }
-        }
+		private static void CleanUpOrphanedElementTagAssignments()
+		{
+			var validTagIds = new HashSet<Guid>(TagDefinitions.Select(t => t.Id));
+			foreach (var node in Nodes.GetAllNodes())
+			{
+				var orphaned = node.Tags.Where(id => !validTagIds.Contains(id)).ToList();
+				foreach (var orphanedId in orphaned)
+				{
+					node.Tags.Remove(orphanedId);
+					Logging.Warn($"Removed orphaned element tag assignment {orphanedId} from node '{node.Name}' ({node.Id}).");
+				}
+			}
+		}
 
         public static void ReloadSystemConfig()
 		{
