@@ -56,6 +56,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void timelineControl_ContextSelected(object sender, ContextSelectedEventArgs e)
 		{
 			_contextMenuStrip.Items.Clear();
+			var rowDeprecated = IsDeprecated(e.Row);
 
 			Element element = e.ElementsUnderCursor.FirstOrDefault();
 			TimedSequenceElement tse = element as TimedSequenceElement;
@@ -97,12 +98,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				};
 
 				contextMenuItemAddEffect.DropDownItems.Add(contextMenuItemEffect);
-			}
-
-			if (IsDeprecated(e.Row))
-			{
-				contextMenuItemAddEffect.Enabled = false;
-				contextMenuItemAddEffect.ToolTipText = @"Disabled, this row is tagged Deprecated.";
 			}
 
 			_contextMenuStrip.Items.Add(contextMenuItemAddEffect);
@@ -306,7 +301,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			#endregion
 
 			#region Effect Manipulation Section
-			if (tse != null)
+			if (tse != null && !rowDeprecated)
 			{
 				ToolStripMenuItem contextMenuItemManipulation = new ToolStripMenuItem("Manipulation");
 				ToolStripMenuItem contextMenuItemManipulateDivide = new ToolStripMenuItem("Divide at cursor")
@@ -468,7 +463,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenuItem contextMenuItemDelete = new ToolStripMenuItem("Delete Effect(s)", null,
 					toolStripMenuItem_deleteElements_Click) {ShortcutKeyDisplayString = @"Del", Image = Resources.delete};
 				_contextMenuStrip.Items.Add(contextMenuItemDelete);
-				AddContextCollectionsMenu();
+				if(!rowDeprecated){
+					AddContextCollectionsMenu();
+				}
 			}
 
 			#endregion
@@ -481,6 +478,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_contextMenuStrip.Items.Add(contextMenuItemAddMark);
 			
 			#endregion
+			
+			if (rowDeprecated)
+			{
+				contextMenuItemAddEffect.Enabled = false;
+				contextMenuItemAddEffect.ToolTipText = @"Disabled, this row is tagged Deprecated.";
+				contextMenuItemAlignment.Enabled = false;
+				contextMenuItemPaste.Enabled = false;
+				contextMenuItemPasteToMarks.Enabled = false;
+				contextMenuItemPasteInvert.Enabled = false;
+			}
+
 
 			e.AutomaticallyHandleSelection = false;
 			_contextMenuStrip.Show(MousePosition);
