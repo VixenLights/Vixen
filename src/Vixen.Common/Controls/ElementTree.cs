@@ -998,6 +998,11 @@ namespace Common.Controls
 					CheckState = GetTagCheckState(selectedElementNodes, tagId)
 				};
 				tagMenuItem.Click += (sender, e) => ToggleTagOnSelectedNodes(tagMenuItem, tagId);
+				if (!string.IsNullOrEmpty(tag.DisplayColor))
+				{
+					Color dotColor = ColorTranslator.FromHtml(tag.DisplayColor);
+					tagMenuItem.Paint += (sender, e) => PaintTagColorDot(tagMenuItem, e, dotColor);
+				}
 				tagsToolStripMenuItem.DropDownItems.Add(tagMenuItem);
 			}
 
@@ -1005,6 +1010,14 @@ namespace Common.Controls
 
 			// The "Manage Tag Colors..." Click handler is wired up once ElementTagColorEditorWindow exists.
 			tagsToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem("Manage Tag Colors..."));
+		}
+
+		private static void PaintTagColorDot(ToolStripMenuItem item, PaintEventArgs e, Color dotColor)
+		{
+			var rect = new Rectangle(item.Width - TagDotDiameter - TagDotSpacing * 2,
+				(item.Height - TagDotDiameter) / 2, TagDotDiameter, TagDotDiameter);
+			using var brush = new SolidBrush(dotColor);
+			e.Graphics.FillEllipse(brush, rect);
 		}
 
 		private static CheckState GetTagCheckState(List<ElementNode> selectedElementNodes, Guid tagId)
