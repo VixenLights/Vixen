@@ -872,7 +872,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (e.Data.GetData(typeof(Guid)) is Guid g)
 					{
-						EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+						// DragEnter/DragOver already reject the drop cursor over a Deprecated row via
+						// IsValidDataObject, but DragDrop still fires regardless of e.Effect if the user
+						// drops anyway, so it needs its own check.
+						Row targetRow = TimelineControl.grid.RowAtPosition(p);
+						if (!IsDeprecated(targetRow))
+						{
+							EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), targetRow);
+						}
 					}
 					else
 					{
@@ -962,11 +969,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private (Element? element, DragDropEffects effect) _dragDropToElementEffect = (null, DragDropEffects.None);
 		private DragDropEffects IsValidDataObject(IDataObject dataObject, Point mouseLocation)
 		{
-			if (dataObject.GetDataPresent(typeof(Guid)) && TimelineControl.grid.RowAtPosition(mouseLocation)!=null)
+			if (dataObject.GetDataPresent(typeof(Guid)))
 			{
-				_dragDropToElementEffect.element = null;
-				_dragDropToElementEffect.effect = DragDropEffects.None;
-				return DragDropEffects.Copy;
+				Row targetRow = TimelineControl.grid.RowAtPosition(mouseLocation);
+				if (targetRow != null)
+				{
+					_dragDropToElementEffect.element = null;
+					_dragDropToElementEffect.effect = DragDropEffects.None;
+					return IsDeprecated(targetRow) ? DragDropEffects.None : DragDropEffects.Copy;
+				}
 			}
 			Element element = TimelineControl.grid.ElementAtPosition(mouseLocation);
 			if (element != null)
@@ -2324,6 +2335,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			return row.Tag is ElementNode elementNode &&
 				ElementTagService.Instance.HasTag(elementNode, BuiltInElementTags.HiddenKey);
+		}
+
+		private static bool IsDeprecated(Row row)
+		{
+			return row != null && row.Tag is ElementNode elementNode &&
+				ElementTagService.Instance.HasTag(elementNode, BuiltInElementTags.DeprecatedKey);
 		}
 
 		private void TimelineControl_TimePerPixelChanged(object sender, EventArgs e)
@@ -5163,6 +5180,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<Row> visibleRows = new List<Row>(TimelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 			List<EffectNode> nodesToAdd = new List<EffectNode>();
+			var skippedDeprecatedRowNames = new HashSet<string>();
 			foreach (EffectModelRecord effectModelRecord in effects)
 			{
 				EffectModelCandidate effectModelCandidate = effectModelRecord.EffectModel;
@@ -5194,6 +5212,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (targetRowIndex<0 || targetRowIndex >= visibleRows.Count)
 					continue;
 
+				Row pasteTargetRow = visibleRows[targetRowIndex];
+				if (IsDeprecated(pasteTargetRow))
+				{
+					skippedDeprecatedRowNames.Add(pasteTargetRow.Name);
+					continue;
+				}
+
 				IModuleDataModel moduleData = effectModelCandidate.GetEffectData();
 
 				if (moduleData != null)
@@ -5203,7 +5228,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					newEffect.ModuleData = moduleData;
 
-					var node = CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
+					var node = CreateEffectNode(newEffect, pasteTargetRow, targetTime, effectModelCandidate.Duration);
 					
 					if (LayerManager.ContainsLayer(effectModelCandidate.LayerId))
 					{
@@ -5242,6 +5267,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			var act = new EffectsPastedUndoAction(this, elements.Select(x => x.EffectNode));
 			_undoMgr.AddUndoAction(act);
+
+			if (skippedDeprecatedRowNames.Count > 0)
+			{
+				UpdateToolStrip4($"Skipped pasting to Deprecated row(s): {string.Join(", ", skippedDeprecatedRowNames)}.", 10);
+			}
 
 			return result;
 		}
