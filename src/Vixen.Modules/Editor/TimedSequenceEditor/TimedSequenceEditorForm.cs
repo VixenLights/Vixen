@@ -3969,18 +3969,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			List<string> deprecatedElementNames = _sequence.SequenceData.EffectData.Cast<EffectNode>()
+			var allTargetNodes = _sequence.SequenceData.EffectData.Cast<EffectNode>()
 				.SelectMany(effectNode => effectNode.Effect.TargetNodes)
-				.Where(node => ElementTagService.Instance.HasTag(node, BuiltInElementTags.DeprecatedKey))
-				.Select(node => node.Name)
-				.Distinct()
 				.ToList();
 
-			if (deprecatedElementNames.Count == 0)
+			var effectCountsByNodeName = allTargetNodes
+				.GroupBy(node => node.Name)
+				.ToDictionary(g => g.Key, g => g.Count());
+
+			var deprecatedNodes = allTargetNodes
+				.Where(node => ElementTagService.Instance.HasTag(node, BuiltInElementTags.DeprecatedKey))
+				.GroupBy(node => node.Name)
+				.Select(g => g.First());
+
+			// Include effects on the deprecated row's own elements plus any of its child elements,
+			// since a deprecated group's children are just as much impacted as the row itself.
+			var deprecatedElementCounts = deprecatedNodes
+				.Select(node => (Name: node.Name, EffectCount: node.GetNodeEnumerator()
+					.Sum(n => effectCountsByNodeName.GetValueOrDefault(n.Name))))
+				.ToList();
+
+			if (deprecatedElementCounts.Count == 0)
 				return;
 
 			var message = "This sequence has effects on the following elements tagged as Deprecated:\n\n" +
-				string.Join("\n", deprecatedElementNames);
+				string.Join("\n", deprecatedElementCounts.Select(x => $"{x.Name} ({x.EffectCount} effect{(x.EffectCount == 1 ? "" : "s")})"));
 			var messageBox = new MessageBoxForm(message, @"Deprecated Elements", MessageBoxButtons.OK, SystemIcons.Warning);
 			messageBox.ShowDialog(this);
 		}
