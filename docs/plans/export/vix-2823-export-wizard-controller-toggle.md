@@ -61,7 +61,7 @@ press, or observe to confirm that milestone is done.
   a highlighted group) reindexes once instead of once per row. Implemented via a `_reindexPending`
   guard plus `BeginInvoke` in `NetworkListView_ItemChecked`. Verified by building `ExportWizard.csproj`
   with 0 errors; manual in-app confirmation of the coalescing (e.g., no stutter toggling a long list)
-  is still outstanding.
+  completed during Milestone 4's regression pass.
 - [x] (2026-07-03) M3: Added `tableLayoutMain` (`TableLayoutPanel`, 2 rows: auto-size button row,
   percent-100 list row) and `flowLayoutButtons` (`FlowLayoutPanel`) to
   `BulkExportControllersStage.Designer.cs`, replacing `networkListView`'s fixed `Location`/`Size`/
@@ -76,7 +76,7 @@ press, or observe to confirm that milestone is done.
   `_reindexPending`/`BeginInvoke` coalescing with no changes to `NetworkListView_ItemChecked`.
   Verified by building `ExportWizard.csproj` with 0 errors. Manual in-app confirmation (resizing the
   wizard, checking both buttons ignore the current highlight, and DPI/scaling if a scaled machine is
-  available) is still outstanding.
+  available) completed during Milestone 4's regression pass.
 - [x] (2026-07-03) M3 follow-up: "Enable All" is only `Enabled` when at least one row is currently
   *unchecked* (so it disables itself once every row is already checked, not just when the list is
   empty); "Disable All" is only `Enabled` when at least one row is currently checked. Implemented via
@@ -91,26 +91,28 @@ press, or observe to confirm that milestone is done.
   `btnDisableAll.Enabled` also default to `false` in `Designer.cs` so they start correctly disabled
   during the brief window between the stage loading and `StageStart()` first populating the list.
   Verified by building `ExportWizard.csproj` with 0 errors; manual in-app
-  confirmation is still outstanding.
-- [ ] M4 (partially complete: automatable parts done, GUI regression pass still needs a human at the
-  keyboard): `msbuild Vixen.sln -m -t:restore -t:Build -p:Configuration=Debug` succeeds for the whole
-  solution (not just `ExportWizard.csproj`) with 0 errors; `dotnet test src/Vixen.Tests/Vixen.Tests.csproj`
-  passes all 81 existing tests with no regressions. Skill review performed against
-  `dotnet-best-practices`, `csharp-async`, `csharp-docs`, and `dotnet-design-pattern-review`: no
-  violations found — everything added is synchronous WinForms event handling (nothing for
-  `csharp-async` to flag), no new public/protected API surface needing XML docs (`ProcessCmdKey` is a
-  `protected override` inheriting its base documentation), and the WinForms UI additions are
-  maintenance of an already-existing legacy wizard stage, not new WinForms UI from scratch (per
-  CLAUDE.md's "legacy Winforms UI can be maintained" carve-out). Also found and fixed an unrelated
-  hygiene issue while reviewing the diff: `BulkExportControllersStage.Designer.cs` had lost its UTF-8
-  BOM and picked up bare-LF line endings when it was rewritten wholesale during Milestone 3 (via the
-  `Write` tool rather than incremental edits) — restored both to match the rest of the codebase's
-  convention (confirmed against sibling file `BulkExportSourcesStage.Designer.cs`), eliminating a
-  spurious whole-file diff. Still outstanding — requires manually operating the running application,
-  which is not possible from this environment: drag-and-drop reorder with a multi-row highlight
-  (adjacent and non-adjacent), confirming Ctrl+A/Esc/Space have no effect when focus is outside
-  `networkListView`, and the zero-controller/one-controller edge cases. See the checklist under
-  Milestone 4 below for exactly what to run through.
+  confirmation completed during Milestone 4's regression pass.
+- [x] (2026-07-03) M4: `msbuild Vixen.sln -m -t:restore -t:Build -p:Configuration=Debug` succeeds for
+  the whole solution (not just `ExportWizard.csproj`) with 0 errors; `dotnet test
+  src/Vixen.Tests/Vixen.Tests.csproj` passes all 81 existing tests with no regressions. Skill review
+  performed against `dotnet-best-practices`, `csharp-async`, `csharp-docs`, and
+  `dotnet-design-pattern-review`: no violations found — everything added is synchronous WinForms
+  event handling (nothing for `csharp-async` to flag), no new public/protected API surface needing
+  XML docs (`ProcessCmdKey` is a `protected override` inheriting its base documentation), and the
+  WinForms UI additions are maintenance of an already-existing legacy wizard stage, not new WinForms
+  UI from scratch (per CLAUDE.md's "legacy Winforms UI can be maintained" carve-out). Also found and
+  fixed an unrelated hygiene issue while reviewing the diff: `BulkExportControllersStage.Designer.cs`
+  had lost its UTF-8 BOM and picked up bare-LF line endings when it was rewritten wholesale during
+  Milestone 3 (via the `Write` tool rather than incremental edits) — restored both to match the rest
+  of the codebase's convention (confirmed against sibling file `BulkExportSourcesStage.Designer.cs`),
+  eliminating a spurious whole-file diff. Manual regression pass completed against the running
+  application by the user: drag-and-drop reorder with multi-row highlights (adjacent and
+  non-adjacent), Ctrl+A/Esc/Space correctly having no effect when focus is outside `networkListView`,
+  and the zero-controller/one-controller edge cases all "behave as expected." JIRA issue VIX-2823
+  updated: description's Requirements/Risks/Acceptance Criteria/Test Plan rewritten to match what was
+  actually implemented (see the JIRA-update note below), all acceptance criteria checked off, and a
+  closing comment added. Status intentionally left as "In Progress" rather than transitioned — per
+  user instruction, the PR/merge process will transition it, not this session.
 
 ## Surprises & Discoveries
 
@@ -330,7 +332,40 @@ press, or observe to confirm that milestone is done.
 
 ## Outcomes & Retrospective
 
-(To be completed once all milestones are implemented and validated.)
+All four milestones are complete and manually verified in the running application as of 2026-07-03.
+Against the original Purpose/Big Picture: a user on Step 3 of the Export Wizard can now Shift+Click
+or Ctrl+Click to build a multi-row highlight, Ctrl+A to highlight everything, Esc to clear the
+highlight without accidentally cancelling the wizard, Space bar (or a click on any highlighted row's
+checkbox) to flip a whole highlighted group's checkboxes together, and "Enable All"/"Disable All" to
+toggle every controller regardless of highlight — directly addressing the original bug report's
+complaint about having to un-check controllers "a lot" one at a time.
+
+The most significant divergence from the initial specification was discovered, not designed: enabling
+`MultiSelect` on a `CheckBoxes`-enabled `ListView` turns out to already give native bulk-toggle
+behavior for both Space and mouse clicks, for free, from the .NET/Win32 framework itself. This meant
+the originally-planned "focused-row-inversion" toggle logic and a rule that plain clicks should stay
+single-row were both unnecessary — and the latter was actively reversed once it became clear that
+enforcing it would mean fighting native mouse hit-testing on a shared control for a worse, less
+platform-conventional result. The lesson generalizes: turning on a stock framework flag can implicitly
+enable more behavior than the flag's name suggests, and it's worth manually poking at the running
+control before writing bespoke logic to replace something the framework might already do.
+
+The second-most consequential discovery was that `IsInputKey` and `ProcessCmdKey` are easy to
+conflate but are not interchangeable: only `ProcessCmdKey` runs early enough, at a high enough point
+in the control hierarchy, to reliably preempt a `Form.CancelButton`'s claim on Escape. The first fix
+attempt compiled cleanly and looked correct by inspection, but manual testing caught that it did not
+actually change behavior — a reminder that key-handling correctness in WinForms cannot be confirmed
+by code review alone and needs to be exercised in the running application.
+
+A minor but real process lesson: rewriting a Designer.cs file wholesale via a full-file write (rather
+than incremental edits) silently dropped its UTF-8 BOM and converted CRLF to bare LF, which produced a
+misleadingly large diff for two commits before it was caught during the Milestone 4 review pass. For
+future large Designer.cs restructuring, preferring incremental edits (or explicitly re-checking
+encoding/line-endings after a full rewrite) would avoid this.
+
+Nothing from the original specification was dropped without a documented reason — every deviation is
+recorded in the Decision Log above with its rationale, and JIRA issue VIX-2823's description has been
+rewritten to match what was actually built rather than left describing the original, superseded plan.
 
 ## Context and Orientation
 
@@ -767,14 +802,16 @@ unexpected behavior (or any unexpected behavior found has been fixed, or explici
 accepted limitation in Decision Log with rationale). VIX-2823's acceptance criteria are all checked
 off in JIRA with a comment describing verification.
 
-**Actual status (2026-07-03):** The skill review, full-solution build, and existing test suite are
-done (see above). The GUI regression scenarios (drag-reorder with multi-row highlights, focus-scoping
-for Ctrl+A/Esc/Space, and the zero-/one-controller edge cases) have not yet been manually exercised —
-doing so requires a human operating the running application. Multi-select, Ctrl+A, Space toggle, and
-Esc-clearing-the-highlight were already manually confirmed working during Milestones 1-2 (see
-Progress), but the specific regression scenarios listed above are net-new checks this milestone
-introduces and remain outstanding. JIRA has been updated with an honest accounting of this split
-rather than being marked fully verified.
+**Actual status (2026-07-03):** The skill review, full-solution build, and existing test suite were
+completed first (see above), followed by the user manually exercising every GUI regression scenario
+listed above against the running application — drag-reorder with multi-row highlights, focus-scoping
+for Ctrl+A/Esc/Space, and the zero-/one-controller edge cases — reported as "everything behaves as
+expected," with no unexpected behavior found. JIRA's description was then rewritten to match the
+Requirements/Risks/Acceptance Criteria/Test Plan actually implemented (several details evolved from
+the original spec during implementation — see the Decision Log), every acceptance-criteria box
+checked off, and a closing comment added. The user explicitly asked that the JIRA status not be
+transitioned here, since the PR/merge process will do that instead — the issue remains "In Progress"
+by design, not as an oversight.
 
 ## Concrete Steps
 
