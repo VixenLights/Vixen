@@ -92,11 +92,42 @@ press, or observe to confirm that milestone is done.
   during the brief window between the stage loading and `StageStart()` first populating the list.
   Verified by building `ExportWizard.csproj` with 0 errors; manual in-app
   confirmation is still outstanding.
-- [ ] M4: Manual regression pass (drag-and-drop reorder with multi-row highlights) and full skill
-  compliance review (dotnet-best-practices, csharp-async, csharp-docs, dotnet-design-pattern-review),
-  then final acceptance walkthrough against every criterion in VIX-2823.
+- [ ] M4 (partially complete: automatable parts done, GUI regression pass still needs a human at the
+  keyboard): `msbuild Vixen.sln -m -t:restore -t:Build -p:Configuration=Debug` succeeds for the whole
+  solution (not just `ExportWizard.csproj`) with 0 errors; `dotnet test src/Vixen.Tests/Vixen.Tests.csproj`
+  passes all 81 existing tests with no regressions. Skill review performed against
+  `dotnet-best-practices`, `csharp-async`, `csharp-docs`, and `dotnet-design-pattern-review`: no
+  violations found — everything added is synchronous WinForms event handling (nothing for
+  `csharp-async` to flag), no new public/protected API surface needing XML docs (`ProcessCmdKey` is a
+  `protected override` inheriting its base documentation), and the WinForms UI additions are
+  maintenance of an already-existing legacy wizard stage, not new WinForms UI from scratch (per
+  CLAUDE.md's "legacy Winforms UI can be maintained" carve-out). Also found and fixed an unrelated
+  hygiene issue while reviewing the diff: `BulkExportControllersStage.Designer.cs` had lost its UTF-8
+  BOM and picked up bare-LF line endings when it was rewritten wholesale during Milestone 3 (via the
+  `Write` tool rather than incremental edits) — restored both to match the rest of the codebase's
+  convention (confirmed against sibling file `BulkExportSourcesStage.Designer.cs`), eliminating a
+  spurious whole-file diff. Still outstanding — requires manually operating the running application,
+  which is not possible from this environment: drag-and-drop reorder with a multi-row highlight
+  (adjacent and non-adjacent), confirming Ctrl+A/Esc/Space have no effect when focus is outside
+  `networkListView`, and the zero-controller/one-controller edge cases. See the checklist under
+  Milestone 4 below for exactly what to run through.
 
 ## Surprises & Discoveries
+
+- Observation: Rewriting `BulkExportControllersStage.Designer.cs` wholesale via a full-file write
+  during Milestone 3 (rather than incremental edits, needed because the layout-container change
+  touched nearly every line) silently dropped the file's UTF-8 byte-order mark and converted its
+  line endings from CRLF to bare LF, which is not visible by reading the file's text content — only
+  by inspecting raw bytes. This made every `git diff` against the file show the entire file as
+  replaced rather than a targeted diff, even though the visible content differences were much
+  smaller. Caught during the Milestone 4 review pass by noticing the diff size was implausibly large
+  for the actual change, then confirming via a byte-level check against a sibling Designer.cs file
+  known to have a BOM. Fixed by rewriting the file's bytes with a UTF-8-with-BOM encoding and
+  normalizing line endings to CRLF; `.gitattributes` (`text=auto eol=crlf`) means git would have
+  auto-normalized the CRLF-vs-LF difference on the next commit regardless, but not the missing BOM.
+  Evidence: `git diff --stat` showed the whole 171-line file as changed after Milestone 3, versus 1-2
+  lines after the byte-level fix; raw byte inspection showed `6e 61 6d` (`nam`, no BOM) at the start
+  of the file where `ef bb bf` (the UTF-8 BOM) was expected, matching the sibling file.
 
 - Observation: The Milestone 1 Esc handler (`NetworkListView_KeyDown`, checking
   `e.KeyCode == Keys.Escape`) never ran in manual testing — pressing Esc closed the whole Export
@@ -686,8 +717,22 @@ introduced accidental blocking calls or async-void patterns), `csharp-docs`, and
 `dotnet-design-pattern-review` (the project's skills, found under `.agents/skills/`). Fix anything
 those skills flag directly in the same milestone rather than deferring it.
 
+**Status of the skill review** (2026-07-03): performed against all four skills — no violations found.
+`csharp-async` has nothing to flag since every new member is synchronous WinForms event handling; no
+public/protected API surface was added for `csharp-docs` to require documenting (`ProcessCmdKey` is a
+`protected override` whose XML docs are inherited from `Control.ProcessCmdKey`); the WinForms UI
+additions are maintenance of an existing legacy wizard stage rather than new WinForms UI (the
+CLAUDE.md carve-out for legacy WinForms). Also ran and passed the automatable parts of this milestone:
+`msbuild Vixen.sln -m -t:restore -t:Build -p:Configuration=Debug` builds the entire solution with 0
+errors, and `dotnet test src/Vixen.Tests/Vixen.Tests.csproj` passes all 81 existing tests. While
+reviewing the diff, also found and fixed an unrelated encoding regression: Milestone 3's full-file
+rewrite of `BulkExportControllersStage.Designer.cs` had dropped its UTF-8 BOM and converted CRLF line
+endings to bare LF; both were restored (see Surprises & Discoveries for how this was caught).
+
 Manually test the following regression scenarios that were not exercised before this plan, because
-`MultiSelect` was always `false` in production until Milestone 1:
+`MultiSelect` was always `false` in production until Milestone 1. **This part requires a human
+operating the running application — it was not possible to complete from this environment, which has
+no way to drive a live WinForms GUI (no mouse/keyboard automation into a running desktop app):**
 
 - Highlight two adjacent rows (Shift+Click) and drag them to a new position in the list using the
   mouse (the existing drag-and-drop reordering gesture). Confirm both rows move together and land in
@@ -712,12 +757,24 @@ Finally, walk through every checkbox in the "Acceptance Criteria" section of JIR
 by one and confirm each is genuinely satisfied by manual observation, then update the JIRA issue
 (using the `jira` skill) to reflect completion — for example by checking off each acceptance-criteria
 box in the issue description and adding a comment summarizing what was implemented and how it was
-verified, and transitioning the issue out of "New Ticket" status if a suitable transition exists.
+verified, and transitioning the issue out of "New Ticket" status if a suitable transition exists. If
+some criteria could only be verified by code review and automated tests rather than by hand (as
+happened here — see below), say so explicitly in the JIRA comment rather than checking them off as if
+they had been manually exercised.
 
 **Acceptance for this milestone:** All bullet points above have been manually exercised with no
 unexpected behavior (or any unexpected behavior found has been fixed, or explicitly documented as an
 accepted limitation in Decision Log with rationale). VIX-2823's acceptance criteria are all checked
 off in JIRA with a comment describing verification.
+
+**Actual status (2026-07-03):** The skill review, full-solution build, and existing test suite are
+done (see above). The GUI regression scenarios (drag-reorder with multi-row highlights, focus-scoping
+for Ctrl+A/Esc/Space, and the zero-/one-controller edge cases) have not yet been manually exercised —
+doing so requires a human operating the running application. Multi-select, Ctrl+A, Space toggle, and
+Esc-clearing-the-highlight were already manually confirmed working during Milestones 1-2 (see
+Progress), but the specific regression scenarios listed above are net-new checks this milestone
+introduces and remain outstanding. JIRA has been updated with an honest accounting of this split
+rather than being marked fully verified.
 
 ## Concrete Steps
 

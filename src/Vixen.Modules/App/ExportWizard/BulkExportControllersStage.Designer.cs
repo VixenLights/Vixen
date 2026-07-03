@@ -1,4 +1,4 @@
-namespace VixenModules.App.ExportWizard
+﻿﻿namespace VixenModules.App.ExportWizard
 {
 	partial class BulkExportControllersStage
 	{
