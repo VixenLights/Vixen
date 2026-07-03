@@ -482,7 +482,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (rowDeprecated)
 			{
 				contextMenuItemAddEffect.Enabled = false;
-				contextMenuItemAddEffect.ToolTipText = @"Disabled, this row is tagged Deprecated.";
+				contextMenuItemAddEffect.ToolTipText = @"Disabled, this row is tagged as Deprecated.";
 				contextMenuItemAlignment.Enabled = false;
 				contextMenuItemPaste.Enabled = false;
 				contextMenuItemPasteToMarks.Enabled = false;

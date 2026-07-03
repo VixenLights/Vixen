@@ -879,7 +879,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.showHiddenToolStripMenuItem.CheckOnClick = true;
 			this.showHiddenToolStripMenuItem.Name = "showHiddenToolStripMenuItem";
 			this.showHiddenToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-			this.showHiddenToolStripMenuItem.Text = "Show Hidden";
+			this.showHiddenToolStripMenuItem.Text = "Show Hidden Rows";
 			this.showHiddenToolStripMenuItem.ToolTipText = "Show rows tagged Hidden for this session. Resets to off the next time a sequenc" +
     "e is opened.";
 			this.showHiddenToolStripMenuItem.Click += new System.EventHandler(this.showHiddenToolStripMenuItem_Click);

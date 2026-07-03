@@ -2303,7 +2303,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		// Tags can also be assigned/removed from the Sequencer's own row context menu
 		// (TimelineControl.ToggleTagOnSelectedRows); that doesn't go through this form's tag-menu code at
-		// all, so it needs its own notification to keep Hidden-tagged rows in sync when the Show Hidden
+		// all, so it needs its own notification to keep Hidden-tagged rows in sync when the Show Hidden Rows
 		// toggle is off.
 		private void TimelineControl_RowTagsChanged(object sender, EventArgs e)
 		{
@@ -2324,7 +2324,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>
 		/// Assigns (or clears) <see cref="Row.VisibilityFilter"/> on every root row so that rows whose
 		/// <see cref="ElementNode"/> carries the built-in <c>Hidden</c> tag are hidden, unless the
-		/// session-only "Show Hidden" toggle is on.
+		/// session-only "Show Hidden Rows" toggle is on.
 		/// </summary>
 		/// <remarks>
 		/// <see cref="Row.VisibilityFilter"/> is consulted automatically every time a row's visibility
@@ -3979,7 +3979,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (deprecatedElementNames.Count == 0)
 				return;
 
-			var message = "This sequence has effects on the following elements tagged Deprecated:\n\n" +
+			var message = "This sequence has effects on the following elements tagged as Deprecated:\n\n" +
 				string.Join("\n", deprecatedElementNames);
 			var messageBox = new MessageBoxForm(message, @"Deprecated Elements", MessageBoxButtons.OK, SystemIcons.Warning);
 			messageBox.ShowDialog(this);
