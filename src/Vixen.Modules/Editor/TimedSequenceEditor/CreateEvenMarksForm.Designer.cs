@@ -86,6 +86,7 @@
 			updownDivide.Location = new Point(121, 74);
 			updownDivide.Name = "updownDivide";
 			updownDivide.Minimum = 1;
+			updownDivide.Maximum = 10000;
 			updownDivide.Size = new Size(116, 23);
 			updownDivide.TabIndex = 5;
 			// 
