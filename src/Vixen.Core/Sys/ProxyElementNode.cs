@@ -83,6 +83,9 @@ namespace Vixen.Sys
 		/// <inheritdoc />
 		public bool IsProxy => true;
 
+		/// <inheritdoc />
+		public ElementTagCollection Tags => ElementTagCollection.Empty;
+
 		#endregion
 	}
 }

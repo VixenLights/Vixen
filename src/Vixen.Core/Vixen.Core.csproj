@@ -13,6 +13,10 @@
 				</PackageReference>
 				<PackageReference Include="Zstandard.Net" />
 		</ItemGroup>
+
+		<ItemGroup>
+				<InternalsVisibleTo Include="Vixen.Tests" />
+		</ItemGroup>
 	<ItemGroup>
 			<None Remove="Directory.Build.props" />
 			<None Remove="Fonts\DigitalDream.ttf" />
