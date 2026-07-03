@@ -508,7 +508,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages", "src\Vixen.Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePreview", "src\Vixen.Modules\App\LivePreview\LivePreview.csproj", "{0D2F803B-50D4-46D7-9758-2954A299FF4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementTagColorEditor", "src\Vixen.Common\ElementTagColorEditor\ElementTagColorEditor.csproj", "{4F69B17A-583E-477A-809C-CDBAC76A107C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementTagManager", "src\Vixen.Common\ElementTagManager\ElementTagManager.csproj", "{4F69B17A-583E-477A-809C-CDBAC76A107C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

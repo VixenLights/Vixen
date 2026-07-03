@@ -508,15 +508,15 @@ namespace Common.Controls
 		public event EventHandler ElementsChanged;
 
 		/// <summary>
-		/// Raised when the user clicks "Manage Tag Colors..." in the Tags context submenu.
+		/// Raised when the user clicks "Manage Tags..." in the Tags context submenu.
 		/// </summary>
 		/// <remarks>
 		/// This control has no WPF-hosting capability of its own, so it cannot open
-		/// <c>ElementTagColorEditorWindow</c> itself; the host form (which already references a WPF-capable
+		/// <c>ElementTagManagerWindow</c> itself; the host form (which already references a WPF-capable
 		/// project) is expected to handle this event by opening the window and, if changes were saved, calling
 		/// <see cref="RefreshTagColors"/>.
 		/// </remarks>
-		public event EventHandler ManageTagColorsRequested;
+		public event EventHandler ManageTagsRequested;
 
 
 		public void OnDragFinished(EventArgs e = null)
@@ -1019,8 +1019,8 @@ namespace Common.Controls
 
 			tagsToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
 
-			var manageTagColorsItem = new ToolStripMenuItem("Manage Tag Colors...");
-			manageTagColorsItem.Click += (sender, e) => ManageTagColorsRequested?.Invoke(this, EventArgs.Empty);
+			var manageTagColorsItem = new ToolStripMenuItem("Manage Tags...");
+			manageTagColorsItem.Click += (sender, e) => ManageTagsRequested?.Invoke(this, EventArgs.Empty);
 			tagsToolStripMenuItem.DropDownItems.Add(manageTagColorsItem);
 		}
 
@@ -1029,8 +1029,8 @@ namespace Common.Controls
 		/// <see cref="RefreshElementTreeStatus"/> performs.
 		/// </summary>
 		/// <remarks>
-		/// Called by the host form after <c>ElementTagColorEditorWindow</c> (opened in response to
-		/// <see cref="ManageTagColorsRequested"/>) saves a tag color change, so the new color is visible
+		/// Called by the host form after <c>ElementTagManagerWindow</c> (opened in response to
+		/// <see cref="ManageTagsRequested"/>) saves a tag color change, so the new color is visible
 		/// immediately without requiring the tree to be reopened.
 		/// </remarks>
 		public void RefreshTagColors()

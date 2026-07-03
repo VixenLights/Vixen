@@ -200,11 +200,13 @@ the user's clipboard content for other, non-deprecated rows in a multi-row paste
 
 ### 6. Setting built-in tag colors
 
-Build a basic WPF window, `ElementTagColorEditorWindow` (name indicative; finalize during
-implementation), listing the three built-in tags, each with a color picker bound to that tag
-definition's `DisplayColor`. Saving updates the `ElementTagDefinition` in the catalog via
-`ElementTagService` and persists through the existing `SystemConfig.Tags` XML persistence from
-VIX-3933 — no new persistence work is needed, only a UI that calls existing service methods.
+Build a basic WPF window, `ElementTagManagerWindow` (implemented as `Common.ElementTagManager` in
+`src\Vixen.Common\ElementTagManager\` — named for the baseline of a future, broader Tag Manager
+feature rather than scoped to "color editing," even though color editing is all it does today),
+listing the three built-in tags, each with a color picker bound to that tag definition's
+`DisplayColor`. Saving updates the `ElementTagDefinition` in the catalog via `ElementTagService`
+and persists through the existing `SystemConfig.Tags` XML persistence from VIX-3933 — no new
+persistence work is needed, only a UI that calls existing service methods.
 
 This window is WPF even though its two callers (the shared `ElementTree` control and the
 Sequencer's row label context menu) are WinForms; a WPF `Window` can be shown modally from

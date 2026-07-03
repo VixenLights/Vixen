@@ -1,7 +1,7 @@
 ﻿using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
-using Common.ElementTagColorEditor.Views;
+using Common.ElementTagManager.Views;
 using Common.Resources;
 using Common.Resources.Properties;
 using Utilities;
@@ -51,15 +51,15 @@ namespace VixenModules.Preview.VixenPreview
 			treeElements.treeviewAfterSelect += treeElements_AfterSelect;
 			treeElements.treeviewDeselected += TreeElementsOnTreeviewDeselected;
 			treeElements.ElementsChanged += TreeElements_ElementsChanged;
-			treeElements.ManageTagColorsRequested += TreeElements_ManageTagColorsRequested;
+			treeElements.ManageTagsRequested += TreeElementsManageTagsRequested;
 		}
 
 		// Preview Setup already has its own OK/Cancel-gated save, so the color editor is told not to persist
 		// its own changes (saveOnClose: false) - the in-memory color change is left to be captured or
 		// discarded by that existing save path, the same as tag assignments made from this tree.
-		private void TreeElements_ManageTagColorsRequested(object sender, EventArgs e)
+		private void TreeElementsManageTagsRequested(object sender, EventArgs e)
 		{
-			if (ElementTagColorEditorWindow.ShowAsDialog(saveOnClose: false))
+			if (ElementTagManagerWindow.ShowAsDialog(saveOnClose: false))
 			{
 				treeElements.RefreshTagColors();
 			}

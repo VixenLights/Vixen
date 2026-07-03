@@ -5,21 +5,21 @@ using Catel.MVVM;
 using Vixen.Services;
 using Vixen.Sys;
 
-namespace Common.ElementTagColorEditor.ViewModels
+namespace Common.ElementTagManager.ViewModels
 {
 	/// <summary>
-	/// Backs <see cref="Views.ElementTagColorEditorWindow"/>, listing the built-in element tags for color editing.
+	/// Backs <see cref="Views.ElementTagManagerWindow"/>, listing the built-in element tags for color editing.
 	/// </summary>
 	/// <remarks>
 	/// Exposes an <see cref="ObservableCollection{T}"/> rather than fixed fields for the three built-in tags so a
 	/// future Tag Manager feature can extend this same list to include user-defined tags without changing this
 	/// view model's shape.
 	/// </remarks>
-	public class ElementTagColorEditorWindowViewModel : ViewModelBase
+	public class ElementTagManagerWindowViewModel : ViewModelBase
 	{
 		private readonly bool _saveOnClose;
 
-		public ElementTagColorEditorWindowViewModel(bool saveOnClose)
+		public ElementTagManagerWindowViewModel(bool saveOnClose)
 		{
 			_saveOnClose = saveOnClose;
 			Tags = new ObservableCollection<TagColorItem>(

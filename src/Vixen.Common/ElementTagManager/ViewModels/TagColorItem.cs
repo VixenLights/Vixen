@@ -8,10 +8,10 @@ using ColorConverter = System.Windows.Media.ColorConverter;
 using ColorPicker = Common.Controls.ColorManagement.ColorPicker.ColorPicker;
 using XYZ = Common.Controls.ColorManagement.ColorModels.XYZ;
 
-namespace Common.ElementTagColorEditor.ViewModels
+namespace Common.ElementTagManager.ViewModels
 {
 	/// <summary>
-	/// Wraps a single <see cref="ElementTagDefinition"/> for editing in <see cref="Views.ElementTagColorEditorWindow"/>.
+	/// Wraps a single <see cref="ElementTagDefinition"/> for editing in <see cref="Views.ElementTagManagerWindow"/>.
 	/// </summary>
 	/// <remarks>
 	/// Color edits are staged on <see cref="Color"/> only; the wrapped <see cref="ElementTagDefinition"/> is left

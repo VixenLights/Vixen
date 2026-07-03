@@ -1,7 +1,7 @@
 ﻿using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
-using Common.ElementTagColorEditor.Views;
+using Common.ElementTagManager.Views;
 using Common.Resources;
 using Common.Resources.Properties;
 using System.ComponentModel;
@@ -353,9 +353,9 @@ namespace VixenApplication.Setup
 		// Display Setup already has its own OK/Cancel-gated save, so the color editor is told not to persist
 		// its own changes (saveOnClose: false) - the in-memory color change is left to be captured or
 		// discarded by that existing save path, the same as tag assignments made from this tree.
-		private void elementTree_ManageTagColorsRequested(object sender, EventArgs e)
+		private void ElementTreeManageTagsRequested(object sender, EventArgs e)
 		{
-			if (ElementTagColorEditorWindow.ShowAsDialog(saveOnClose: false))
+			if (ElementTagManagerWindow.ShowAsDialog(saveOnClose: false))
 			{
 				elementTree.RefreshTagColors();
 			}
