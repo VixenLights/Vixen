@@ -3972,24 +3972,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			var allTargetNodes = _sequence.SequenceData.EffectData.Cast<EffectNode>()
+			var deprecatedElementCounts = _sequence.SequenceData.EffectData.Cast<EffectNode>()
 				.SelectMany(effectNode => effectNode.Effect.TargetNodes)
-				.ToList();
-
-			var effectCountsByNodeName = allTargetNodes
-				.GroupBy(node => node.Name)
-				.ToDictionary(g => g.Key, g => g.Count());
-
-			var deprecatedNodes = allTargetNodes
 				.Where(node => ElementTagService.Instance.HasTag(node, BuiltInElementTags.DeprecatedKey))
 				.GroupBy(node => node.Name)
-				.Select(g => g.First());
-
-			// Include effects on the deprecated row's own elements plus any of its child elements,
-			// since a deprecated group's children are just as much impacted as the row itself.
-			var deprecatedElementCounts = deprecatedNodes
-				.Select(node => (Name: node.Name, EffectCount: node.GetNodeEnumerator()
-					.Sum(n => effectCountsByNodeName.GetValueOrDefault(n.Name))))
+				.Select(g => (Name: g.Key, EffectCount: g.Count()))
 				.ToList();
 
 			if (deprecatedElementCounts.Count == 0)
