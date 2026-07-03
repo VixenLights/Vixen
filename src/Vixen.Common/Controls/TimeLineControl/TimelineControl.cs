@@ -822,7 +822,8 @@ namespace Common.Controls.Timeline
 				{
 					CheckState = GetTagCheckState(selectedElementNodes, tagId)
 				};
-				tagMenuItem.Click += (sender, e) => ToggleTagOnSelectedRows(tagMenuItem, tagId);
+				tagMenuItem.Click += (sender, e) =>
+					ToggleTagOnSelectedRows(tagMenuItem, tagId, (ModifierKeys & Keys.Control) == Keys.Control);
 				if (!string.IsNullOrEmpty(tag.DisplayColor))
 				{
 					Color dotColor = ColorTranslator.FromHtml(tag.DisplayColor);
@@ -877,15 +878,27 @@ namespace Common.Controls.Timeline
 			return CheckState.Indeterminate;
 		}
 
-		private async void ToggleTagOnSelectedRows(ToolStripMenuItem tagMenuItem, Guid tagId)
+		/// <summary>
+		/// Adds or removes <paramref name="tagId"/> on the currently selected rows' <see cref="ElementNode"/>s.
+		/// </summary>
+		/// <param name="tagMenuItem">The clicked tag submenu item, whose <see cref="ToolStripMenuItem.CheckState"/>
+		/// determines whether the tag is being added or removed and is updated to reflect the new state.</param>
+		/// <param name="tagId">The tag being toggled.</param>
+		/// <param name="cascadeToChildren">When true (the tag was clicked with Ctrl held), the tag is also
+		/// added to or removed from every descendant of each selected node, not just the selected node itself.</param>
+		private async void ToggleTagOnSelectedRows(ToolStripMenuItem tagMenuItem, Guid tagId, bool cascadeToChildren)
 		{
 			var selectedElementNodes = SelectedRowElementNodes();
 			if (selectedElementNodes.Count == 0)
 				return;
 
+			var targetNodes = cascadeToChildren
+				? selectedElementNodes.SelectMany(node => node.GetNodeEnumerator()).Distinct().ToList()
+				: selectedElementNodes;
+
 			if (tagMenuItem.CheckState == CheckState.Checked)
 			{
-				foreach (ElementNode node in selectedElementNodes)
+				foreach (ElementNode node in targetNodes)
 				{
 					node.Tags.Remove(tagId);
 				}
@@ -893,7 +906,7 @@ namespace Common.Controls.Timeline
 			}
 			else
 			{
-				foreach (ElementNode node in selectedElementNodes)
+				foreach (ElementNode node in targetNodes)
 				{
 					node.Tags.Add(tagId);
 				}
@@ -902,8 +915,9 @@ namespace Common.Controls.Timeline
 
 			// Each RowLabel is its own child control of timelineRowList, so invalidating the
 			// parent alone does not repaint them (they're outside the parent's own clipped paint
-			// region) - each affected row's label must be invalidated directly.
-			foreach (Row row in SelectedRows)
+			// region) - each affected row's label must be invalidated directly. When cascading, that
+			// includes descendant rows that were never themselves selected.
+			foreach (Row row in Rows.Where(row => row.Tag is ElementNode node && targetNodes.Contains(node)))
 			{
 				row.RowLabel.Invalidate();
 			}
