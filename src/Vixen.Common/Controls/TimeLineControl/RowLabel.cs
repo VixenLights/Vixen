@@ -96,12 +96,12 @@ namespace Common.Controls.Timeline
 				return;
 
 
-			if ((ParentRow.ChildRows.Count > 0) && IconArea.Contains(e.Location)) {
+			if (ParentRow.HasExpandableChildRows && IconArea.Contains(e.Location)) {
 				// if it's within the toggle button, toggle the tree
 				_TreeToggled();
 				Invalidate();
 			}
-			else if (LabelArea.Contains(e.Location) || ((ParentRow.ChildRows.Count == 0) && IconArea.Contains(e.Location))) {
+			else if (LabelArea.Contains(e.Location) || (!ParentRow.HasExpandableChildRows && IconArea.Contains(e.Location))) {
 				_LabelClicked(ModifierKeys);
 			}
 		}
@@ -131,7 +131,7 @@ namespace Common.Controls.Timeline
 			}
 			if (e.Button == MouseButtons.Right)
 			{
-				if (LabelArea.Contains(e.Location) || ((ParentRow.ChildRows.Count == 0) && IconArea.Contains(e.Location)))
+				if (LabelArea.Contains(e.Location) || (!ParentRow.HasExpandableChildRows && IconArea.Contains(e.Location)))
 				{
 					_LabelClicked(ModifierKeys);
 				}
@@ -197,7 +197,7 @@ namespace Common.Controls.Timeline
 							using (Font font = GetLabelFont())
 							{
 
-								if (ParentRow.ChildRows.Count > 0 || ParentRow.ParentDepth == 0)
+								if (ParentRow.HasExpandableChildRows || ParentRow.ParentDepth == 0)
 								{
 									IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
 								}

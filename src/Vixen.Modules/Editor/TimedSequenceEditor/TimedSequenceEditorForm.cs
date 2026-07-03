@@ -2334,7 +2334,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// afterward: <see cref="RowList"/> only repositions label controls on <see cref="Row.RowToggled"/>/
 		/// <see cref="Row.RowHeightChanged"/>, not on a plain visibility change, so a label whose row just
 		/// became visible would otherwise sit at its last (possibly off-screen or overlapping) position
-		/// until some unrelated tree toggle forced a re-layout.
+		/// until some unrelated tree toggle forced a re-layout. Also invalidates every row label: a row
+		/// whose children just got filtered in or out doesn't itself change visibility, so nothing else
+		/// would repaint its expander icon (<see cref="Row.HasExpandableChildRows"/>) to reflect that.
 		/// </remarks>
 		private void ApplyHiddenRowFilter()
 		{
@@ -2344,6 +2346,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				row.VisibilityFilter = filter;
 			}
 			TimelineControl.LayoutRows();
+			TimelineControl.InvalidateRowLabels();
 		}
 
 		private static bool IsHiddenByTag(Row row)

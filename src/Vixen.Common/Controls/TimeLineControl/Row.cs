@@ -253,6 +253,11 @@ namespace Common.Controls.Timeline
 		/// when a parent's <see cref="TreeOpen"/> cascades <see cref="Visible"/> down to this row - so
 		/// callers do not need to re-walk the tree by hand after every expand/collapse; only assigning a
 		/// new filter (or a row gaining/losing whatever the filter tests for) requires re-assigning it.
+		/// If every child now fails the new filter, this row is also collapsed (<see cref="TreeOpen"/>
+		/// set false): once <see cref="HasExpandableChildRows"/> goes false its expander is no longer
+		/// shown, so the user has no way to see or toggle a stale TreeOpen=true left over from before the
+		/// filter excluded everything underneath - without this, that stale value would silently resurface
+		/// as "already expanded" the next time the filter relaxes enough to reveal a child again.
 		/// </remarks>
 		public Func<Row, bool> VisibilityFilter
 		{
@@ -263,13 +268,29 @@ namespace Common.Controls.Timeline
 				foreach (Row row in ChildRows)
 					row.VisibilityFilter = value;
 				RecomputeVisibility();
+
+				if (TreeOpen && !HasExpandableChildRows)
+					TreeOpen = false;
 			}
 		}
 
-		private bool PassesVisibilityFilter()
+		public bool PassesVisibilityFilter()
 		{
 			return m_visibilityFilter == null || m_visibilityFilter(this);
 		}
+
+		/// <summary>
+		/// True if at least one direct child row currently passes its own <see cref="VisibilityFilter"/> -
+		/// ie. there is something for this row's expand/collapse toggle to actually reveal.
+		/// </summary>
+		/// <remarks>
+		/// A child that fails its own filter can never become visible regardless of <see cref="TreeOpen"/>
+		/// (<see cref="RecomputeVisibility"/> multiplies the two together), so a row whose children are
+		/// all filtered out - for example, a group whose only children carry the built-in <c>Hidden</c>
+		/// tag while "Show Hidden" is off - has nothing to expand. Re-evaluated live: once the filter
+		/// that excluded those children is cleared, this immediately reflects it.
+		/// </remarks>
+		public bool HasExpandableChildRows => ChildRows.Any(row => row.PassesVisibilityFilter());
 
 		private void RecomputeVisibility()
 		{

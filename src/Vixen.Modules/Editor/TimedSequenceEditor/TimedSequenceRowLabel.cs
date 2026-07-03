@@ -25,7 +25,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			if (ParentRow.ChildRows.Count > 0)
+			if (ParentRow.HasExpandableChildRows)
 			{
 
 				Bitmap icon;
