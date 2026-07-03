@@ -77,16 +77,20 @@ press, or observe to confirm that milestone is done.
   Verified by building `ExportWizard.csproj` with 0 errors. Manual in-app confirmation (resizing the
   wizard, checking both buttons ignore the current highlight, and DPI/scaling if a scaled machine is
   available) is still outstanding.
-- [x] (2026-07-03) M3 follow-up: "Enable All" is now only `Enabled` when the list has at least one
-  row; "Disable All" is only `Enabled` when the list has at least one row *and* at least one row is
-  currently checked. Implemented via a new `UpdateBulkToggleButtonState()` method in
-  `BulkExportControllersStage.cs`, called at the end of `UpdateNetworkList()` (covers initial
-  population and profile changes) and at the end of `ReIndexControllerChannels()` (covers every path
-  that changes a row's checked state — single-row clicks, native bulk toggles, drag-drop reorder, and
-  the two buttons themselves, since all of them eventually call `ReIndexControllerChannels()`).
-  `btnEnableAll.Enabled`/`btnDisableAll.Enabled` also default to `false` in `Designer.cs` so they
-  start correctly disabled during the brief window between the stage loading and `StageStart()`
-  first populating the list. Verified by building `ExportWizard.csproj` with 0 errors; manual in-app
+- [x] (2026-07-03) M3 follow-up: "Enable All" is only `Enabled` when at least one row is currently
+  *unchecked* (so it disables itself once every row is already checked, not just when the list is
+  empty); "Disable All" is only `Enabled` when at least one row is currently checked. Implemented via
+  a new `UpdateBulkToggleButtonState()` method in `BulkExportControllersStage.cs` — `items.Any(item
+  => !item.Checked)` and `items.Any(item => item.Checked)` respectively — which naturally also covers
+  the empty-list case (`Any()` on an empty sequence is `false`, so both buttons end up disabled with
+  no separate `hasItems` check needed, superseding an earlier, slightly more verbose version of this
+  method). Called at the end of `UpdateNetworkList()` (covers initial population and profile changes)
+  and at the end of `ReIndexControllerChannels()` (covers every path that changes a row's checked
+  state — single-row clicks, native bulk toggles, drag-drop reorder, and the two buttons themselves,
+  since all of them eventually call `ReIndexControllerChannels()`). `btnEnableAll.Enabled`/
+  `btnDisableAll.Enabled` also default to `false` in `Designer.cs` so they start correctly disabled
+  during the brief window between the stage loading and `StageStart()` first populating the list.
+  Verified by building `ExportWizard.csproj` with 0 errors; manual in-app
   confirmation is still outstanding.
 - [ ] M4: Manual regression pass (drag-and-drop reorder with multi-row highlights) and full skill
   compliance review (dotnet-best-practices, csharp-async, csharp-docs, dotnet-design-pattern-review),
@@ -612,17 +616,20 @@ collapses this into a single `ReIndexControllerChannels()` call with no further 
 that method.
 
 Also add a private `UpdateBulkToggleButtonState()` method that keeps the two buttons' `Enabled`
-state correct: "Enable All" should only be clickable when the list has at least one row at all, and
-"Disable All" should only be clickable when the list has at least one row *and* at least one of them
-is currently checked (otherwise there is nothing for either button to meaningfully do). Implement it
-as:
+state correct: "Enable All" should only be clickable when at least one row is currently *unchecked*
+(so there is something left for it to turn on), and "Disable All" should only be clickable when at
+least one row is currently *checked* (so there is something left for it to turn off) — otherwise
+either button would be a no-op click. Implement it as:
 
     private void UpdateBulkToggleButtonState()
     {
-        bool hasItems = networkListView.Items.Count > 0;
-        btnEnableAll.Enabled = hasItems;
-        btnDisableAll.Enabled = hasItems && networkListView.Items.Cast<ListViewItem>().Any(item => item.Checked);
+        var items = networkListView.Items.Cast<ListViewItem>().ToList();
+        btnEnableAll.Enabled = items.Any(item => !item.Checked);
+        btnDisableAll.Enabled = items.Any(item => item.Checked);
     }
+
+This also naturally covers the empty-list case without a separate check: `Any()` over an empty
+sequence is `false`, so both buttons end up disabled when the list has no rows at all.
 
 Call this at the end of `UpdateNetworkList()` (so the buttons start in the right state as soon as the
 list is first populated, and whenever it is rebuilt) and at the end of `ReIndexControllerChannels()`
@@ -648,9 +655,11 @@ as they do today when unchecking a single row (see `UpdateNetworkList()`'s exist
 inactive controllers). Now highlight a subset of rows (Shift+Click or Ctrl+Click) and click "Enable
 All" again: confirm every row becomes checked, including ones outside the highlighted subset — this
 confirms the buttons genuinely ignore the current highlight, as required. Confirm the enabled state of
-each button as you go: immediately after "Disable All" (everything unchecked), "Disable All" itself
-should become disabled (grayed out) since nothing is checked anymore, while "Enable All" stays
-enabled; checking even a single row's checkbox by hand should re-enable "Disable All" immediately.
+each button as you go: immediately after "Enable All" (everything checked), "Enable All" itself should
+become disabled (grayed out) since nothing is left to turn on, while "Disable All" is enabled;
+immediately after "Disable All" (everything unchecked), "Disable All" should become disabled while
+"Enable All" is enabled; unchecking or checking even a single row's checkbox by hand should
+immediately flip the two buttons' enabled state back to reflect the new mixed state (both enabled).
 Against a profile with zero controllers configured, confirm both buttons start disabled and stay that
 way. Finally, resize the wizard dialog (drag its edge larger and smaller) and confirm the button row
 stays put at the top with the list filling the rest of the space with no overlap or clipped text in
@@ -762,9 +771,10 @@ needing to re-read the whole plan.
    confirm every row in the group's checkbox flips together to one new state (native `ListView`
    behavior, re-confirmed after Milestone 1's `MultiSelect` change), and the Start/End channel
    columns are correct afterward with only a single reindex pass (Milestone 2's coalescing).
-9. Click "Enable All": confirm every row becomes checked and channel numbers renumber contiguously.
+9. Click "Enable All": confirm every row becomes checked, channel numbers renumber contiguously, and
+   "Enable All" itself becomes disabled (nothing left unchecked) while "Disable All" becomes enabled.
 10. Click "Disable All": confirm every row becomes unchecked, Start/End columns go blank, and
-    "Disable All" itself becomes disabled (nothing left checked) while "Enable All" stays enabled.
+    "Disable All" itself becomes disabled (nothing left checked) while "Enable All" becomes enabled.
 11. Drag a multi-row highlight (both adjacent and non-adjacent cases) to a new position and confirm
     reordering still works and channel numbers remain correct.
 12. Confirm Ctrl+A/Esc/Space do nothing when focus is outside `networkListView`, and that Esc does not

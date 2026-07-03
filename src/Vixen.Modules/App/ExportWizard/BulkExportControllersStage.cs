@@ -190,9 +190,9 @@ namespace VixenModules.App.ExportWizard
 
 		private void UpdateBulkToggleButtonState()
 		{
-			bool hasItems = networkListView.Items.Count > 0;
-			btnEnableAll.Enabled = hasItems;
-			btnDisableAll.Enabled = hasItems && networkListView.Items.Cast<ListViewItem>().Any(item => item.Checked);
+			var items = networkListView.Items.Cast<ListViewItem>().ToList();
+			btnEnableAll.Enabled = items.Any(item => !item.Checked);
+			btnDisableAll.Enabled = items.Any(item => item.Checked);
 		}
 	}
 }
