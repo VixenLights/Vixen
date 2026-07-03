@@ -65,6 +65,8 @@ namespace VixenModules.App.ExportWizard
 
 			networkListView.EndUpdate();
 
+			UpdateBulkToggleButtonState();
+
 			_WizardStageChanged();
 		}
 
@@ -181,7 +183,16 @@ namespace VixenModules.App.ExportWizard
 			}
 			networkListView.EndUpdate();
 
+			UpdateBulkToggleButtonState();
+
 			_WizardStageChanged();
+		}
+
+		private void UpdateBulkToggleButtonState()
+		{
+			bool hasItems = networkListView.Items.Count > 0;
+			btnEnableAll.Enabled = hasItems;
+			btnDisableAll.Enabled = hasItems && networkListView.Items.Cast<ListViewItem>().Any(item => item.Checked);
 		}
 	}
 }

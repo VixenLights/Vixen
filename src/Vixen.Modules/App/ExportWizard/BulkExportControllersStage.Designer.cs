@@ -80,6 +80,7 @@ namespace VixenModules.App.ExportWizard
 			// btnEnableAll
 			//
 			this.btnEnableAll.AutoSize = true;
+			this.btnEnableAll.Enabled = false;
 			this.btnEnableAll.Margin = new System.Windows.Forms.Padding(3);
 			this.btnEnableAll.Name = "btnEnableAll";
 			this.btnEnableAll.TabIndex = 0;
@@ -89,6 +90,7 @@ namespace VixenModules.App.ExportWizard
 			// btnDisableAll
 			//
 			this.btnDisableAll.AutoSize = true;
+			this.btnDisableAll.Enabled = false;
 			this.btnDisableAll.Margin = new System.Windows.Forms.Padding(3);
 			this.btnDisableAll.Name = "btnDisableAll";
 			this.btnDisableAll.TabIndex = 1;

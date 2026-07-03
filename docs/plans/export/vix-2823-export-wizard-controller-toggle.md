@@ -77,6 +77,17 @@ press, or observe to confirm that milestone is done.
   Verified by building `ExportWizard.csproj` with 0 errors. Manual in-app confirmation (resizing the
   wizard, checking both buttons ignore the current highlight, and DPI/scaling if a scaled machine is
   available) is still outstanding.
+- [x] (2026-07-03) M3 follow-up: "Enable All" is now only `Enabled` when the list has at least one
+  row; "Disable All" is only `Enabled` when the list has at least one row *and* at least one row is
+  currently checked. Implemented via a new `UpdateBulkToggleButtonState()` method in
+  `BulkExportControllersStage.cs`, called at the end of `UpdateNetworkList()` (covers initial
+  population and profile changes) and at the end of `ReIndexControllerChannels()` (covers every path
+  that changes a row's checked state — single-row clicks, native bulk toggles, drag-drop reorder, and
+  the two buttons themselves, since all of them eventually call `ReIndexControllerChannels()`).
+  `btnEnableAll.Enabled`/`btnDisableAll.Enabled` also default to `false` in `Designer.cs` so they
+  start correctly disabled during the brief window between the stage loading and `StageStart()`
+  first populating the list. Verified by building `ExportWizard.csproj` with 0 errors; manual in-app
+  confirmation is still outstanding.
 - [ ] M4: Manual regression pass (drag-and-drop reorder with multi-row highlights) and full skill
   compliance review (dotnet-best-practices, csharp-async, csharp-docs, dotnet-design-pattern-review),
   then final acceptance walkthrough against every criterion in VIX-2823.
@@ -600,6 +611,28 @@ Milestone 2's `_reindexPending`/`BeginInvoke` coalescing in `NetworkListView_Ite
 collapses this into a single `ReIndexControllerChannels()` call with no further changes required to
 that method.
 
+Also add a private `UpdateBulkToggleButtonState()` method that keeps the two buttons' `Enabled`
+state correct: "Enable All" should only be clickable when the list has at least one row at all, and
+"Disable All" should only be clickable when the list has at least one row *and* at least one of them
+is currently checked (otherwise there is nothing for either button to meaningfully do). Implement it
+as:
+
+    private void UpdateBulkToggleButtonState()
+    {
+        bool hasItems = networkListView.Items.Count > 0;
+        btnEnableAll.Enabled = hasItems;
+        btnDisableAll.Enabled = hasItems && networkListView.Items.Cast<ListViewItem>().Any(item => item.Checked);
+    }
+
+Call this at the end of `UpdateNetworkList()` (so the buttons start in the right state as soon as the
+list is first populated, and whenever it is rebuilt) and at the end of `ReIndexControllerChannels()`
+(so the buttons stay correct after every single-row click, native bulk toggle, drag-drop reorder, or
+click on either button itself — all of these already flow through `ReIndexControllerChannels()`, so
+no additional call sites are needed). Also set `btnEnableAll.Enabled = false;` and
+`btnDisableAll.Enabled = false;` in `BulkExportControllersStage.Designer.cs`'s `InitializeComponent()`,
+so the buttons default to correctly disabled during the brief window between the stage loading and
+`StageStart()` first calling `UpdateNetworkList()`.
+
 Per the CLAUDE.md instruction to update XML documentation for any modified public or protected API:
 `BulkExportControllersStage` itself has no public members changing shape in this plan (the new
 buttons and handlers are all private implementation details of this stage), so no XML doc updates are
@@ -614,13 +647,18 @@ as they do today when unchecking a single row (see `UpdateNetworkList()`'s exist
 `BulkExportControllersStage.cs` lines 50-54, for the existing convention of blank Start/End for
 inactive controllers). Now highlight a subset of rows (Shift+Click or Ctrl+Click) and click "Enable
 All" again: confirm every row becomes checked, including ones outside the highlighted subset — this
-confirms the buttons genuinely ignore the current highlight, as required. Finally, resize the wizard
-dialog (drag its edge larger and smaller) and confirm the button row stays put at the top with the
-list filling the rest of the space with no overlap or clipped text in either button — this confirms
-the `TableLayoutPanel`/`FlowLayoutPanel` approach is actually reflowing rather than relying on fixed
-coordinates. If a Windows machine with a non-100% display scaling setting (for example 125% or 150%,
-found under Windows Settings > Display > Scale) is available, repeat this same check there and
-confirm neither button's text is clipped and the list still fills the remaining space correctly.
+confirms the buttons genuinely ignore the current highlight, as required. Confirm the enabled state of
+each button as you go: immediately after "Disable All" (everything unchecked), "Disable All" itself
+should become disabled (grayed out) since nothing is checked anymore, while "Enable All" stays
+enabled; checking even a single row's checkbox by hand should re-enable "Disable All" immediately.
+Against a profile with zero controllers configured, confirm both buttons start disabled and stay that
+way. Finally, resize the wizard dialog (drag its edge larger and smaller) and confirm the button row
+stays put at the top with the list filling the rest of the space with no overlap or clipped text in
+either button — this confirms the `TableLayoutPanel`/`FlowLayoutPanel` approach is actually reflowing
+rather than relying on fixed coordinates. If a Windows machine with a non-100% display scaling
+setting (for example 125% or 150%, found under Windows Settings > Display > Scale) is available,
+repeat this same check there and confirm neither button's text is clipped and the list still fills
+the remaining space correctly.
 
 ### Milestone 4 — Regression pass and skill compliance review
 
@@ -725,12 +763,14 @@ needing to re-read the whole plan.
    behavior, re-confirmed after Milestone 1's `MultiSelect` change), and the Start/End channel
    columns are correct afterward with only a single reindex pass (Milestone 2's coalescing).
 9. Click "Enable All": confirm every row becomes checked and channel numbers renumber contiguously.
-10. Click "Disable All": confirm every row becomes unchecked and Start/End columns go blank.
+10. Click "Disable All": confirm every row becomes unchecked, Start/End columns go blank, and
+    "Disable All" itself becomes disabled (nothing left checked) while "Enable All" stays enabled.
 11. Drag a multi-row highlight (both adjacent and non-adjacent cases) to a new position and confirm
     reordering still works and channel numbers remain correct.
 12. Confirm Ctrl+A/Esc/Space do nothing when focus is outside `networkListView`, and that Esc does not
     close the wizard.
-13. Re-open VIX-2823 in JIRA and confirm every acceptance-criteria checkbox reflects what was just
+13. Against a profile with zero controllers, confirm both "Enable All" and "Disable All" are disabled.
+14. Re-open VIX-2823 in JIRA and confirm every acceptance-criteria checkbox reflects what was just
     observed.
 
 ## Idempotence and Recovery
@@ -767,6 +807,8 @@ following private members exist in addition to what is there today:
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
     private void BtnEnableAll_Click(object sender, EventArgs e)
     private void BtnDisableAll_Click(object sender, EventArgs e)
+    private void SetAllChecked(bool isChecked)
+    private void UpdateBulkToggleButtonState()
 
 `NetworkListView_ItemChecked` (pre-existing) changes body to defer `ReIndexControllerChannels()` via
 `_reindexPending` and `BeginInvoke` rather than calling it directly — see Milestone 2. No
