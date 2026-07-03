@@ -1,4 +1,5 @@
-﻿using Common.Controls.Theme;
+﻿using Common.Controls;
+using Common.Controls.Theme;
 using NLog;
 using Vixen.Rule;
 using Vixen.Services;
@@ -66,6 +67,12 @@ namespace VixenApplication.Setup.ElementTemplates
 			//Grabs the individual string sizes and removes any empty ones just in case the user entered something like 4,5,,9
 			string[] pixelsPerStringArray = _pixelsPerStringPattern.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
+			if (pixelsPerStringArray.Length == 0)
+			{
+				Logging.Error("pixels per string pattern is empty or invalid");
+				return await Task.FromResult(result);
+			}
+
 			//Loops through the number of Strings to be added.
 			for (int i = 0; i < _stringCount; i++)
 			{
@@ -103,6 +110,22 @@ namespace VixenApplication.Setup.ElementTemplates
 			textBoxTreeName.Text = _treeName;
 			numericUpDownStrings.Value = _stringCount;
 			textBoxStringPattern.Text = _pixelsPerStringPattern;
+		}
+
+		private void Icicles_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (DialogResult != DialogResult.OK)
+				return;
+
+			string[] pixelsPerStringArray = textBoxStringPattern.Text.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (pixelsPerStringArray.Length == 0)
+			{
+				var messageBox = new MessageBoxForm("Please enter at least one pixel count in the String Pattern field, e.g. 7,9,5.",
+					"Invalid String Pattern", MessageBoxButtons.OK, SystemIcons.Warning);
+				messageBox.ShowDialog();
+				e.Cancel = true;
+			}
 		}
 
 		private void Icicles_FormClosed(object sender, FormClosedEventArgs e)
