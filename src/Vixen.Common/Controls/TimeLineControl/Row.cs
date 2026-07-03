@@ -186,12 +186,19 @@ namespace Common.Controls.Timeline
 				if (m_treeOpen == value)
 					return;
 
-				// if we're opening a tree, show all our children, and vice versa.
-				// the Visible property will take care of the rest.
-				foreach (Row row in ChildRows)
-					row.Visible = value;
-
 				m_treeOpen = value;
+
+				// Route the child cascade through RecomputeVisibility() (the same formula used when
+				// PassesVisibilityFilter() or an ancestor's visibility changes) instead of setting
+				// children's Visible directly to the new open/closed value: this row can itself be
+				// invisible (a collapsed ancestor further up, or its own VisibilityFilter) at the
+				// moment its TreeOpen is set - eg. when a sequence's saved row settings are restored
+				// row-by-row and an ancestor hasn't been re-collapsed yet. Assigning children's Visible
+				// to a bare "value" would leak requestedVisible=true onto a Hidden-tagged child while
+				// it's still invisible, only for that to resurface later when Show Hidden is toggled or
+				// the ancestor is expanded, even though this row itself was never actually shown.
+				RecomputeVisibility();
+
 				RowLabel.Invalidate();
 				_RowToggled();
 				_RowChanged();
