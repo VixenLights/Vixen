@@ -21,6 +21,8 @@ namespace VixenModules.App.ExportWizard
 			networkListView.DragDrop += networkListView_DragDrop;
 			networkListView.ItemChecked += NetworkListView_ItemChecked;
 			networkListView.KeyDown += NetworkListView_KeyDown;
+			btnEnableAll.Click += BtnEnableAll_Click;
+			btnDisableAll.Click += BtnDisableAll_Click;
 		}
 
 		public override void StageStart()
@@ -120,6 +122,26 @@ namespace VixenModules.App.ExportWizard
 			}
 
 			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		private void BtnEnableAll_Click(object sender, EventArgs e)
+		{
+			SetAllChecked(true);
+		}
+
+		private void BtnDisableAll_Click(object sender, EventArgs e)
+		{
+			SetAllChecked(false);
+		}
+
+		private void SetAllChecked(bool isChecked)
+		{
+			networkListView.BeginUpdate();
+			foreach (ListViewItem item in networkListView.Items)
+			{
+				item.Checked = isChecked;
+			}
+			networkListView.EndUpdate();
 		}
 
 		public override bool CanMoveNext

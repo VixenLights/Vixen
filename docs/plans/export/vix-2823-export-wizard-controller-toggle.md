@@ -62,8 +62,21 @@ press, or observe to confirm that milestone is done.
   guard plus `BeginInvoke` in `NetworkListView_ItemChecked`. Verified by building `ExportWizard.csproj`
   with 0 errors; manual in-app confirmation of the coalescing (e.g., no stutter toggling a long list)
   is still outstanding.
-- [ ] M3: Add the "Enable All" / "Disable All" toolbar buttons, relying on the same coalesced
-  reindexing from M2.
+- [x] (2026-07-03) M3: Added `tableLayoutMain` (`TableLayoutPanel`, 2 rows: auto-size button row,
+  percent-100 list row) and `flowLayoutButtons` (`FlowLayoutPanel`) to
+  `BulkExportControllersStage.Designer.cs`, replacing `networkListView`'s fixed `Location`/`Size`/
+  `Anchor` with `Dock = Fill` inside the table's second row. `lblConfigureOutput` switched from a
+  fixed `Location` to `Dock = Top`, added to `Controls` *after* `tableLayoutMain` so it claims the
+  top strip first (WinForms docks the last-added control first). Added `btnEnableAll`/`btnDisableAll`
+  (`AutoSize = true`, no hardcoded `Size`) inside `flowLayoutButtons`. In the code-behind, added a
+  small private `SetAllChecked(bool isChecked)` helper (loops `networkListView.Items`, wrapped in
+  `BeginUpdate`/`EndUpdate`) called by `BtnEnableAll_Click`/`BtnDisableAll_Click` — a minor deviation
+  from the plan's original wording (which described each handler looping directly) to avoid two
+  near-identical loops; behavior is identical either way, and it still relies on Milestone 2's
+  `_reindexPending`/`BeginInvoke` coalescing with no changes to `NetworkListView_ItemChecked`.
+  Verified by building `ExportWizard.csproj` with 0 errors. Manual in-app confirmation (resizing the
+  wizard, checking both buttons ignore the current highlight, and DPI/scaling if a scaled machine is
+  available) is still outstanding.
 - [ ] M4: Manual regression pass (drag-and-drop reorder with multi-row highlights) and full skill
   compliance review (dotnet-best-practices, csharp-async, csharp-docs, dotnet-design-pattern-review),
   then final acceptance walkthrough against every criterion in VIX-2823.
@@ -179,6 +192,29 @@ press, or observe to confirm that milestone is done.
   processing. This is simpler and lower-risk than intercepting and replacing the native toggle
   logic, and it generically covers every current and future source of bulk `Checked` changes on
   this list, not just Space.
+  Date/Author: 2026-07-03 / Jeff Uchitjil
+
+- Decision: Give `lblConfigureOutput` `Dock = System.Windows.Forms.DockStyle.Top` (removing its fixed
+  `Location`), and add it to `Controls` *after* `tableLayoutMain`, rather than wrapping it in a
+  separate `Panel`.
+  Rationale: Milestone 3's plan text left this as an open choice. `tableLayoutMain` is
+  `Dock = Fill`, which would otherwise cover the entire stage including the space the label used to
+  occupy at its old fixed `Location`. WinForms docks controls in the reverse of their `Controls.Add`
+  order — the last control added claims its `Dock` space first — so adding `tableLayoutMain` first and
+  `lblConfigureOutput` last means the label's `Dock = Top` claims a strip at the top before
+  `tableLayoutMain`'s `Dock = Fill` claims everything else beneath it, with no overlap and no extra
+  wrapper `Panel` control needed.
+  Date/Author: 2026-07-03 / Jeff Uchitjil
+
+- Decision: Add a small private `SetAllChecked(bool isChecked)` helper in `BulkExportControllersStage.cs`,
+  called by both `BtnEnableAll_Click` and `BtnDisableAll_Click`, instead of writing the same
+  `BeginUpdate`/loop-over-`Items`/`EndUpdate` logic twice as Milestone 3's plan text literally
+  described.
+  Rationale: The two button handlers are otherwise identical except for the boolean they set every
+  row's `Checked` to; a two-line difference does not justify duplicating a four-line loop. Behavior
+  is unchanged from what the plan specified, and it still relies entirely on Milestone 2's
+  `_reindexPending`/`BeginInvoke` coalescing in `NetworkListView_ItemChecked` with no further changes
+  needed there.
   Date/Author: 2026-07-03 / Jeff Uchitjil
 
 - Decision: Use distinct vocabulary for "highlighted" (the blue/selected rows a user picks with the
