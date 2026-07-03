@@ -93,7 +93,17 @@ jobs:
         run: echo "${GITHUB_ENV}"
         
       - name: Update release notes
-        run: ./Build/CreateReleaseNotes.ps1 -jiraUrl "http://bugs.vixenlights.com" -project "Vixen 3" -fixVersion "${env:VIX_NOTES_FIX_VERSION}" -buildType "${env:VIX_NOTES_BUILD_TYPE}"
+        env:
+          ATLASSIAN_USER: ${{ secrets.ATLASSIAN_USER }}
+          ATLASSIAN_TOKEN: ${{ secrets.ATLASSIAN_TOKEN }}
+        run: |
+          ./Build/CreateReleaseNotes.ps1 `
+            -jiraUrl "https://vixenlights.atlassian.net" `
+            -project "Vixen 3" `
+            -fixVersion "$env:VIX_NOTES_FIX_VERSION" `
+            -buildType "$env:VIX_NOTES_BUILD_TYPE" `
+            -email "$env:ATLASSIAN_USER" `
+            -apiToken "$env:ATLASSIAN_TOKEN"
       
       - name: Upload Release Notes artifact
         uses: actions/upload-artifact@v6

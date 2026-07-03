@@ -14,8 +14,15 @@ param (
     [string[]] $statuses,
     [string] $project,
     [string] $fixVersion,
-	[string] $buildType
+	[string] $buildType,
+	[string] $email,
+	[string] $apiToken
 )
+
+$Pair        = "${email}:${apiToken}"
+$Bytes       = [System.Text.Encoding]::ASCII.GetBytes($Pair)
+$Base64      = [System.Convert]::ToBase64String($Bytes)
+$AuthHeader  = "Basic $Base64"
 
 $nl = [Environment]::NewLine
 
@@ -62,11 +69,16 @@ while($moreRecords)
 {
 	# Invoke the Rest API for the constructed JQL
 	$jiraSearchUri = ("{0}?jql=$jql&maxResults=100&fieldsByKeys=true&fields=summary,issuetype,key&nextPageToken={1}" -f $jiraRestApi, $nextPageToken)
+	
+	$Headers = @{
+        "Authorization" = $AuthHeader
+        "Accept"        = "application/json"
+    }
 
 	Write-Host $jiraSearchUri
 
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-	$result = Invoke-RestMethod -Method Get -Uri $jiraSearchUri -ContentType 'application/json'
+	$result = Invoke-RestMethod -Method Get -Uri $jiraSearchUri -Headers $Headers
 
 	if (!$?)
 	{
