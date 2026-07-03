@@ -65,7 +65,7 @@
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1});
 			this.networkListView.Location = new System.Drawing.Point(13, 41);
-			this.networkListView.MultiSelect = false;
+			this.networkListView.MultiSelect = true;
 			this.networkListView.Name = "networkListView";
 			this.networkListView.OwnerDraw = true;
 			this.networkListView.Size = new System.Drawing.Size(546, 296);

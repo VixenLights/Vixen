@@ -40,18 +40,146 @@ press, or observe to confirm that milestone is done.
   (description now includes Overview, Current Implementation, Terminology, Requirements, Out of
   Scope, Risks, Acceptance Criteria, and Test Plan). Also captured as
   `docs/export/vix-2823-selection-toggle-controller-list.md` in this repository.
-- [ ] M1: Enable multi-row highlighting and Ctrl+A / Esc keyboard shortcuts on the Step 3 list.
-- [ ] M2: Implement the Space-bar bulk checkbox toggle, batched to a single reindex pass.
-- [ ] M3: Add the "Enable All" / "Disable All" toolbar buttons, also batched to a single reindex pass.
+- [x] (2026-07-03) M1: Enable multi-row highlighting and Ctrl+A / Esc keyboard shortcuts on the Step
+  3 list. `networkListView.MultiSelect` set to `true` in
+  `BulkExportControllersStage.Designer.cs`; `NetworkListView_KeyDown` added and wired in `OnLoad` in
+  `BulkExportControllersStage.cs`, handling Ctrl+A (highlight all rows) and Esc (clear highlight).
+  Manually verified in the running application: multi-select and Ctrl+A work as designed. Esc
+  initially did not work (it closed the whole wizard instead of clearing the highlight, because
+  Escape is a WinForms "dialog key" routed to the wizard's `CancelButton` before `KeyDown` ever
+  fires). A first fix attempt — a private `ListViewEx` subclass overriding `IsInputKey` — compiled
+  but did not actually resolve the problem in manual re-testing (see Surprises & Discoveries). The
+  working fix overrides `ProcessCmdKey` directly on `BulkExportControllersStage`, which intercepts
+  Escape one step earlier in WinForms' key-processing pipeline, before `IsInputKey`/`ProcessDialogKey`
+  are even consulted. Rebuilt and confirmed 0 errors; manually re-verified in the running
+  application that Esc now clears the highlight without closing the wizard. See Surprises &
+  Discoveries and the Decision Log for the full explanation.
+- [x] (2026-07-03) M2: Originally scoped as "implement the Space-bar bulk checkbox toggle." Manual
+  testing during M1 showed this already works natively once `MultiSelect`/`CheckBoxes` are both
+  `true` — no bespoke toggle code was needed or written. Rescoped to the one real remaining gap:
+  coalescing `ReIndexControllerChannels()` so a native bulk toggle (Space, or a checkbox click across
+  a highlighted group) reindexes once instead of once per row. Implemented via a `_reindexPending`
+  guard plus `BeginInvoke` in `NetworkListView_ItemChecked`. Verified by building `ExportWizard.csproj`
+  with 0 errors; manual in-app confirmation of the coalescing (e.g., no stutter toggling a long list)
+  is still outstanding.
+- [ ] M3: Add the "Enable All" / "Disable All" toolbar buttons, relying on the same coalesced
+  reindexing from M2.
 - [ ] M4: Manual regression pass (drag-and-drop reorder with multi-row highlights) and full skill
   compliance review (dotnet-best-practices, csharp-async, csharp-docs, dotnet-design-pattern-review),
   then final acceptance walkthrough against every criterion in VIX-2823.
 
 ## Surprises & Discoveries
 
-(No implementation work has started yet. Entries will be added here as each milestone proceeds.)
+- Observation: The Milestone 1 Esc handler (`NetworkListView_KeyDown`, checking
+  `e.KeyCode == Keys.Escape`) never ran in manual testing — pressing Esc closed the whole Export
+  Wizard instead of clearing the highlight, because the wizard dialog has a `CancelButton` wired to
+  its Cancel action. WinForms treats Escape (along with Tab, Enter, and the arrow keys) as a "dialog
+  key": `Control.PreProcessMessage` checks `IsInputKey` first, and for any key that a control's
+  `IsInputKey` does not claim, the key is routed to `ContainerControl.ProcessDialogKey` — which walks
+  up the parent chain and invokes the host form's `CancelButton.PerformClick()` for Escape — before
+  the control's own `KeyDown` event ever fires. `Common.Controls.ListViewEx` (and the base
+  `System.Windows.Forms.ListView`) does not override `IsInputKey` for Escape, so this stage's
+  `networkListView` never saw the keystroke at all; Ctrl+A worked because Ctrl+A is not one of the
+  keys WinForms treats specially this way.
+  Evidence: Reported directly by manual testing — Ctrl+A and Space-bar toggle both worked as
+  designed, but Esc closed the wizard instead of clearing the highlight.
+
+- Observation: The first fix attempt for the above — a private `SelectionAwareListView` subclass of
+  `Common.Controls.ListViewEx` overriding `IsInputKey` to claim Escape only while something was
+  highlighted — compiled with 0 errors but did not fix the problem; Esc still closed the wizard in
+  manual re-testing. `IsInputKey` only controls whether `ProcessDialogKey` gets consulted for a key,
+  but WinForms' `Control.PreProcessMessage` checks `ProcessCmdKey` *before* it ever looks at
+  `IsInputKey`. `ProcessCmdKey` bubbles starting from whatever control currently has focus, up through
+  every ancestor `Control`/`ContainerControl`, independently of `IsInputKey`'s answer for any one
+  control along that chain — so nothing in the pipeline was actually consulting `IsInputKey` before
+  `ProcessCmdKey` (or something upstream of it) already decided Escape's fate. The `IsInputKey`
+  override was removed and replaced with a `ProcessCmdKey` override directly on
+  `BulkExportControllersStage` (see Decision Log), which intercepts at an earlier, more reliable
+  point in the same bubble chain.
+  Evidence: Reported directly by manual testing — "The Esc key still closes the wizard instead of
+  clearing the selections" after the `IsInputKey`-based fix had already been built and deployed.
+
+- Observation: Once `MultiSelect = true` (Milestone 1) and `CheckBoxes = true` (already set), the
+  Space bar bulk-toggling behavior originally planned for Milestone 2 turned out to already exist as
+  built-in `System.Windows.Forms.ListView` behavior — with no Milestone 2 code written yet, manual
+  testing showed that pressing Space with several rows highlighted flips every highlighted row's
+  checkbox together to one new state. The same native behavior also applies to the mouse: clicking
+  directly on any one highlighted row's checkbox toggles every highlighted row's checkbox together,
+  not just the row that was clicked.
+  Evidence: Reported directly by manual testing before any Milestone 2 code existed — "Multiselect,
+  Ctrl+A, Space Toggle of selected all work," and a follow-up confirmation that a mouse click on one
+  checkbox within a highlighted group flips the whole group.
 
 ## Decision Log
+
+- Decision (superseded — see the `ProcessCmdKey` decision immediately below for what actually
+  shipped): Fix the Esc-closes-the-wizard problem by giving `networkListView` a private,
+  stage-local subclass of `Common.Controls.ListViewEx` (`BulkExportControllersStage.SelectionAwareListView`)
+  that overrides `IsInputKey` to claim Escape as a normal input key only when
+  `SelectedItems.Count > 0`, rather than modifying the shared `ListViewEx`/`DragAndDropListView.cs`
+  control or overriding `ProcessCmdKey` on the stage/dialog itself.
+  Rationale: This keeps the earlier "shared control blast radius" decision intact — no behavior
+  change lands in `DragAndDropListView.cs`, which other parts of the codebase also use — while still
+  fixing the conflict. Claiming Escape only when something is highlighted means Esc keeps its
+  original "cancel the wizard" meaning in the common case (nothing highlighted), and only takes on
+  the new "clear the highlight" meaning when there is a highlight to clear, which is the least
+  surprising resolution of the two competing meanings of the same key. This turned out not to work
+  in manual re-testing — see Surprises & Discoveries — because `IsInputKey` only gates
+  `ProcessDialogKey`, and WinForms consults `ProcessCmdKey` first, independently of `IsInputKey`.
+  Date/Author: 2026-07-03 / Jeff Uchitjil
+
+- Decision: Fix the Esc-closes-the-wizard problem by overriding `ProcessCmdKey` directly on
+  `BulkExportControllersStage` (the `WizardStage`/`UserControl` itself, not `networkListView` or any
+  subclass of it), consuming Escape (returning `true`) only when `networkListView.Focused &&
+  networkListView.SelectedItems.Count > 0`, and clearing `SelectedItems` in that same branch before
+  returning `true`. `NetworkListView_KeyDown`'s previous Escape branch was removed as dead code —
+  once `ProcessCmdKey` consumes the key, `networkListView` never receives a `KeyDown` for it at all.
+  Rationale: `ProcessCmdKey` bubbles from whichever control currently holds focus up through every
+  ancestor `Control`/`ContainerControl` (including `BulkExportControllersStage`, since `UserControl`
+  is itself a `ContainerControl`), and this bubbling happens *before* WinForms' `PreProcessMessage`
+  ever calls `IsInputKey` or `ProcessDialogKey` on any control in the chain. Overriding it here
+  intercepts Escape at the earliest point that is still specific to this stage (rather than, for
+  example, overriding `ProcessCmdKey` on the shared `WizardForm`, which would affect every wizard in
+  the codebase, not just this one), and does not require a custom `ListViewEx` subclass at all — the
+  `Designer.cs` construction of `networkListView` reverts to plain `new Common.Controls.ListViewEx()`.
+  The `networkListView.Focused` check preserves the original design intent that this behavior only
+  applies while the list itself has keyboard focus (matching Milestone 4's regression check that
+  focus elsewhere in the wizard is unaffected), rather than whenever a highlight merely happens to
+  still exist while some other control has focus.
+  Date/Author: 2026-07-03 / Jeff Uchitjil
+
+- Decision: Reverse the earlier "clicking a single row's checkbox continues to affect only that
+  row" decision. Accept native `ListView` behavior — clicking any checkbox within a highlighted
+  group, or pressing Space, toggles the whole highlighted group together — rather than overriding
+  mouse hit-testing to force single-row-only clicks.
+  Rationale: This behavior is not something Vixen's code implements; it is `System.Windows.Forms
+  .ListView`'s own default once `MultiSelect` and `CheckBoxes` are both `true`, discovered via manual
+  testing before any Milestone 2 code was written. Suppressing it to force "a checkbox click only
+  ever affects its own row" would mean intercepting and overriding low-level mouse processing
+  (checkbox hit-testing) on `Common.Controls.ListViewEx`, a shared control, purely to produce a
+  *less* convenient behavior than what the framework already gives for free, and one further away
+  from the Explorer-style convention VIX-2823 asked for in the first place. The earlier concern
+  that this would be "too implicit" is outweighed by it being the platform's own established
+  convention (the same thing happens in Windows Explorer's checkbox-select mode) rather than a
+  custom behavior Vixen would be inventing.
+  Date/Author: 2026-07-03 / Jeff Uchitjil
+
+- Decision: Narrow Milestone 2 to only implementing coalesced reindexing in
+  `NetworkListView_ItemChecked`, instead of writing bespoke Space-key detection and a
+  `SetCheckedForItems` toggle helper.
+  Rationale: Since native `ListView` behavior already performs the actual bulk checkbox toggling
+  (previous decision), the only remaining gap from the original specification is the "long list of
+  controllers" performance concern: `ReIndexControllerChannels()` was, and still is, invoked once
+  per `ItemChecked` event, and a native bulk toggle of many rows raises that event once per row.
+  The fix implemented is to coalesce those events: `NetworkListView_ItemChecked` now sets a
+  `_reindexPending` guard and defers the actual `ReIndexControllerChannels()` call via
+  `BeginInvoke`, so every `ItemChecked` event raised synchronously within one user gesture (Space,
+  a checkbox click across a highlighted group, or — per Milestone 3 — the "Enable All"/"Disable
+  All" buttons) collapses into exactly one reindex pass after the current message finishes
+  processing. This is simpler and lower-risk than intercepting and replacing the native toggle
+  logic, and it generically covers every current and future source of bulk `Checked` changes on
+  this list, not just Space.
+  Date/Author: 2026-07-03 / Jeff Uchitjil
 
 - Decision: Use distinct vocabulary for "highlighted" (the blue/selected rows a user picks with the
   mouse or keyboard) versus "checked" (the existing on/off checkbox per row that actually controls
@@ -64,13 +192,18 @@ press, or observe to confirm that milestone is done.
   and carried into this plan.
   Date/Author: 2026-07-03 / Jeff Uchitjil
 
-- Decision: The Space bar toggles every highlighted row to the opposite of the *focused* row's
-  current checked state (not a per-row toggle, not a majority vote), where "focused row" means
-  whichever row currently has the dotted focus rectangle (`ListView.FocusedItem` in WinForms terms —
-  the one row within a highlighted group that last received keyboard/mouse focus).
+- Decision (superseded — see the "Reverse the earlier..." and "Narrow Milestone 2..." decisions
+  above, dated 2026-07-03 later the same day, for what actually shipped): The Space bar toggles
+  every highlighted row to the opposite of the *focused* row's current checked state (not a per-row
+  toggle, not a majority vote), where "focused row" means whichever row currently has the dotted
+  focus rectangle (`ListView.FocusedItem` in WinForms terms — the one row within a highlighted group
+  that last received keyboard/mouse focus).
   Rationale: A highlighted group can contain a mix of already-checked and already-unchecked rows.
   Picking one well-defined row (the focused one) as the source of truth gives a single, predictable
-  outcome every time, instead of ambiguous behavior when the group is mixed.
+  outcome every time, instead of ambiguous behavior when the group is mixed. This reasoning turned
+  out to be moot: manual testing during Milestone 1 showed native `ListView` behavior already
+  bulk-toggles the highlighted group (see Surprises & Discoveries), so no bespoke toggle logic of
+  any kind — focused-row-based or otherwise — was implemented.
   Date/Author: 2026-07-03 / Jeff Uchitjil
 
 - Decision: Reject making the ListView's column header itself a clickable "check all" checkbox
@@ -197,13 +330,14 @@ Drag-and-drop reordering (`OnDragDrop` in `DragAndDropListView.cs`, lines 68-109
 highlighted row in production, because `MultiSelect` has always been `false` on this particular list
 until this plan changes it. Milestone 4 includes an explicit manual regression pass for this reason.
 
-A native WinForms quirk to be aware of before writing Milestone 2's code: when `CheckBoxes = true`,
-pressing the Space bar while a `ListView` has keyboard focus already toggles the checkbox of
-whichever single row currently has focus — this is a built-in default behavior, not something Vixen's
-code currently implements. Milestone 2 must suppress this default behavior (by setting
-`KeyEventArgs.SuppressKeyPress = true` inside a `KeyDown` handler for the Space key) and replace it
-with the bulk-toggle behavior described in the Decision Log, or the two behaviors will conflict (the
-focused row's box would flip once from the native behavior and then again from the new bulk logic).
+A native WinForms behavior worth knowing about before touching this list: once `CheckBoxes = true`
+and `MultiSelect = true` are both set (the latter is what Milestone 1 changes), pressing the Space
+bar, or clicking directly on any highlighted row's checkbox, toggles the checkbox of every currently
+highlighted row together — not just the one row that was clicked or focused. This is entirely
+built-in `System.Windows.Forms.ListView` behavior; Vixen's code does not implement it and does not
+need to. This was discovered by manual testing during Milestone 1 (see Surprises & Discoveries) and
+means Milestone 2 does not need to write any bespoke Space-key or checkbox-click handling — see
+Milestone 2 for what its scope actually became once this was known.
 
 There is no existing precedent anywhere in this repository for Ctrl+A / Esc keyboard shortcuts on a
 `ListView`, nor for a "check all" toolbar, so this plan introduces both patterns for the first time;
@@ -242,19 +376,50 @@ existing `DragDrop` and `ItemChecked` subscriptions:
 
     networkListView.KeyDown += NetworkListView_KeyDown;
 
-Add a new private method `NetworkListView_KeyDown(object sender, KeyEventArgs e)` that handles two
-cases:
+Add a new private method `NetworkListView_KeyDown(object sender, KeyEventArgs e)` that handles one
+case:
 
 - If `e.KeyCode == Keys.A && e.Control` (Ctrl+A): call `networkListView.BeginUpdate()`, loop over
   every `ListViewItem` in `networkListView.Items` and set `.Selected = true` on each, call
   `networkListView.EndUpdate()`, and set `e.SuppressKeyPress = true` so the "ding" sound WinForms
   otherwise makes for unhandled Ctrl+A does not play.
-- If `e.KeyCode == Keys.Escape` (Esc): call `networkListView.SelectedItems.Clear()` — WinForms
-  exposes a `Clear()` method on the `SelectedListViewItemCollection` that unhighlights every row
-  without changing any checkbox — and set `e.SuppressKeyPress = true`.
 
-Space-bar handling is deliberately deferred to Milestone 2, and is described there so the batching
-logic can be explained in one place.
+Escape is deliberately *not* handled inside `NetworkListView_KeyDown` — see below for why, and see
+Surprises & Discoveries for a first attempt (a custom `ListViewEx` subclass overriding `IsInputKey`)
+that compiled but did not actually work.
+
+Instead, override `ProcessCmdKey` directly on `BulkExportControllersStage`:
+
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+        if (keyData == Keys.Escape && networkListView.Focused && networkListView.SelectedItems.Count > 0)
+        {
+            networkListView.SelectedItems.Clear();
+            return true;
+        }
+
+        return base.ProcessCmdKey(ref msg, keyData);
+    }
+
+WinForms treats Escape as a "dialog key" — like Tab, Enter, and the arrow keys — and, before a
+keystroke is delivered as an ordinary `KeyDown` event, `Control.PreProcessMessage` first calls
+`ProcessCmdKey` starting at whichever control currently has keyboard focus, then walks up through
+every ancestor `Control`/`ContainerControl` in turn, each getting a chance to consume the key by
+returning `true` from its own `ProcessCmdKey` override. Only if none of them do does WinForms move on
+to check `IsInputKey`/`ProcessDialogKey` — which is the stage where the host `WizardForm`'s
+`CancelButton` (wired in `WizardForm.Designer.cs` via `this.CancelButton = this.buttonCancel;`) would
+otherwise get invoked for Escape. Because `BulkExportControllersStage` is a `WizardStage`, and
+`WizardStage`/`UserControl` is itself a `ContainerControl`, it sits directly in that bubble chain
+between `networkListView` and the `WizardForm` — overriding `ProcessCmdKey` here intercepts Escape
+before `CancelButton` ever gets a chance to see it, whenever the list has focus and something is
+highlighted. When nothing is highlighted, this override returns `false` (falls through to
+`base.ProcessCmdKey`), so Escape continues bubbling up and cancels the wizard exactly as it always
+has — the two meanings of the key stay mutually exclusive by construction, without needing the list
+control itself to know anything special about Escape. No changes to `Common.Controls.ListViewEx` or
+`DragAndDropListView.cs` are needed for this.
+
+Space-bar handling is intentionally *not* implemented in this milestone or in Milestone 2 — see
+Milestone 2 below for why.
 
 **Acceptance for this milestone:** Build the solution (see Concrete Steps below), launch Vixen, open
 the Export Wizard against any profile with at least four or five controllers configured, and advance
@@ -264,50 +429,75 @@ rows: all three should stay highlighted, with earlier ones remaining highlighted
 `MultiSelect = true` behavior — no code changes beyond the Designer.cs flag are needed to produce it,
 which is itself a fact worth confirming by observation since it demonstrates the framework is doing
 the work for free). With several rows highlighted, press Ctrl+A: every row in the list should become
-highlighted. Press Esc: the highlight should clear completely, and every row's checkbox should be
-unchanged from before you pressed Esc.
+highlighted. Press Esc with rows highlighted: the highlight should clear completely, the wizard
+should stay open, and every row's checkbox should be unchanged. Press Esc again with nothing
+highlighted: the wizard should close/cancel as it always has.
 
-### Milestone 2 — Space-bar bulk checkbox toggle
+**Status: implemented and manually verified** (2026-07-03) — Ctrl+A, multi-select, and Esc (clearing
+the highlight without closing the wizard) all confirmed working in the running application. Escape
+went through two implementation attempts: the first (`IsInputKey` override) built cleanly but did not
+fix the problem; the second (`ProcessCmdKey` override, described above) is the one that shipped and
+was confirmed working by manual re-test. Committed as `6a8261150` ("VIX-2823 Enable multi-select and
+bulk toggle on export list"), which also includes Milestone 2's coalescing.
 
-**Scope:** Implement the actual "toggle a group of controllers on or off at once" behavior that
-VIX-2823 asked for, triggered by the Space bar while one or more rows are highlighted.
+### Milestone 2 — Bulk checkbox toggle batching
+
+**Scope:** This milestone's scope changed from what was originally planned. It no longer implements
+Space-bar detection or a bulk-toggle helper method, because manual testing during Milestone 1 (before
+any Milestone 2 code existed) revealed that `System.Windows.Forms.ListView` already implements bulk
+checkbox toggling natively once `MultiSelect` and `CheckBoxes` are both `true`: pressing Space with
+several rows highlighted flips every highlighted row's checkbox together, and clicking directly on
+any one highlighted row's checkbox does the same. See Surprises & Discoveries and the "Reverse the
+earlier..." Decision Log entry for the full reasoning. What remains from the original specification's
+"long list of controllers" performance concern is that `ReIndexControllerChannels()` still runs once
+per `ItemChecked` event, and a native bulk toggle of many rows raises that event once per row — so
+this milestone's actual scope is coalescing those events into a single reindex pass.
 
 **What to edit:**
 
-In `BulkExportControllersStage.cs`, extend the `NetworkListView_KeyDown` method added in Milestone 1
-with a third case:
+In `BulkExportControllersStage.cs`, add a private field:
 
-- If `e.KeyCode == Keys.Space`: set `e.SuppressKeyPress = true` immediately (this suppresses both the
-  "ding" sound and the native single-row checkbox toggle described in the Context section above,
-  which would otherwise fire in addition to this method's own logic). If
-  `networkListView.SelectedItems.Count == 0`, do nothing further. Otherwise, read
-  `networkListView.FocusedItem` (the WinForms property giving the one row that currently has the
-  keyboard focus rectangle, which is guaranteed non-null here because at least one item is
-  highlighted) and compute `bool target = !networkListView.FocusedItem.Checked;`. Then call a new
-  helper method, `SetCheckedForItems(networkListView.SelectedItems.Cast<ListViewItem>(), target)`,
-  described next.
+    private bool _reindexPending;
 
-Add a new private method `SetCheckedForItems(IEnumerable<ListViewItem> items, bool isChecked)` that
-implements the batching requirement from the Context section: temporarily unsubscribe
-`NetworkListView_ItemChecked` from `networkListView.ItemChecked`, wrap the loop in
-`networkListView.BeginUpdate()`/`EndUpdate()`, set `.Checked = isChecked` on every item in `items`,
-re-subscribe `NetworkListView_ItemChecked`, and then call `ReIndexControllerChannels()` exactly once.
-This guarantees that toggling ten highlighted rows recalculates the Start/End channel columns one
-time, not ten times — important for the "long list of controllers" performance concern named in the
-original bug report and the refined specification. This same helper will be reused by Milestone 3's
-"Enable All"/"Disable All" buttons, so write it to accept any collection of `ListViewItem`, not just
-the current highlight.
+and change the existing `NetworkListView_ItemChecked` method from calling `ReIndexControllerChannels()`
+directly to deferring it:
 
-**Acceptance for this milestone:** Rebuild and relaunch as in Milestone 1. On Step 3, highlight three
-rows using Shift+Click where the first is currently checked. Press Space: all three should become
-unchecked (because the logic reads the *focused* row's current state — make sure, when testing, that
-the focused row, the one with the dotted rectangle, is the checked one you expect; clicking a row
-both highlights and focuses it, so the last row you clicked while building the Shift+Click range is
-the focused one). Press Space again: all three should become checked again. Highlight a mixed group
-(some checked, some not) and press Space: every row in the group should end up matching the inverse
-of whichever row is focused — confirm this matches the Decision Log's rule, not a per-row toggle.
-After any Space-bar toggle, confirm the Start/End channel columns for the still-checked rows renumber
-correctly with no gaps, exactly as they do today when checking a single row by mouse.
+    private void NetworkListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+    {
+        if (_reindexPending)
+        {
+            return;
+        }
+
+        _reindexPending = true;
+        BeginInvoke(new Action(() =>
+        {
+            _reindexPending = false;
+            ReIndexControllerChannels();
+        }));
+    }
+
+`Control.BeginInvoke` (available here because `BulkExportControllersStage` is a `UserControl` via
+`WizardStage`) queues the given delegate to run on the UI thread after the current message finishes
+being processed. Because a native bulk-toggle gesture (Space, or a checkbox click across a
+highlighted group) raises all of its `ItemChecked` events synchronously, one after another, within
+the same message before returning control to the message loop, the `_reindexPending` guard ensures
+only the *first* of those events schedules a `ReIndexControllerChannels()` call; every subsequent
+event in the same burst sees `_reindexPending == true` and returns immediately. The queued call then
+runs once, after every row in the burst has already been updated, producing exactly one reindex pass
+no matter how many rows were toggled together. This also transparently covers Milestone 3's "Enable
+All"/"Disable All" buttons, and any other future code that sets many rows' `Checked` property in a
+loop — nothing about this coalescing is specific to Space or to mouse clicks.
+
+**Acceptance for this milestone:** Rebuild and relaunch. On Step 3, highlight three or more rows and
+press Space: confirm every highlighted row's checkbox flips together, and the Start/End channel
+columns are correct afterward (this is the existing native behavior from Milestone 1's `MultiSelect`
+change, being re-confirmed here). With a long list of controllers (a profile with 15-20+ controllers
+is a good stress case), toggle all of them at once via Shift+Click-all-then-Space (or Ctrl+A then
+Space) and confirm the UI does not noticeably stutter or lag — this is the direct test of the
+coalescing behavior added in this milestone, versus the pre-existing per-row reindex. Click a single
+row's checkbox with nothing else highlighted: confirm it still behaves exactly as it did before this
+plan (only that row's state changes, and channel numbers are still correct).
 
 ### Milestone 3 — "Enable All" / "Disable All" toolbar buttons
 
@@ -366,15 +556,19 @@ its positioning properties from fixed `Location`/`Size` to `Dock = System.Window
 In `BulkExportControllersStage.cs`, wire `btnEnableAll.Click` and `btnDisableAll.Click` (in `OnLoad`,
 alongside the other event subscriptions) to two small handlers,
 `BtnEnableAll_Click(object sender, EventArgs e)` and `BtnDisableAll_Click(object sender, EventArgs e)`,
-each of which calls the `SetCheckedForItems` helper from Milestone 2, passing
-`networkListView.Items.Cast<ListViewItem>()` (every row, not just the highlighted ones) and `true` or
-`false` respectively.
+each of which loops over `networkListView.Items.Cast<ListViewItem>()` (every row, not just the
+highlighted ones) setting `.Checked = true` or `.Checked = false` respectively, wrapped in
+`networkListView.BeginUpdate()`/`EndUpdate()`. No separate toggle helper is needed here: setting
+`Checked` on each item still raises `ItemChecked` per row exactly as a native bulk toggle does, so
+Milestone 2's `_reindexPending`/`BeginInvoke` coalescing in `NetworkListView_ItemChecked` already
+collapses this into a single `ReIndexControllerChannels()` call with no further changes required to
+that method.
 
 Per the CLAUDE.md instruction to update XML documentation for any modified public or protected API:
 `BulkExportControllersStage` itself has no public members changing shape in this plan (the new
-buttons, handlers, and helper method are all private implementation details of this stage), so no XML
-doc updates are expected to be needed; confirm this remains true once the milestone's code is written
-before marking it complete, using the `csharp-docs` skill.
+buttons and handlers are all private implementation details of this stage), so no XML doc updates are
+expected to be needed; confirm this remains true once the milestone's code is written before marking
+it complete, using the `csharp-docs` skill.
 
 **Acceptance for this milestone:** Rebuild and relaunch as before. On Step 3, with a partially-checked
 list and no rows highlighted, click "Enable All": every row's checkbox should become checked, and the
@@ -490,9 +684,10 @@ needing to re-read the whole plan.
    the rest.
 6. Press Ctrl+A: confirm every row highlights.
 7. Press Esc: confirm the highlight clears and no checkbox changed.
-8. Highlight a group of rows and press Space: confirm every row in the group's checkbox flips to the
-   opposite of the focused row's prior state, and the Start/End channel columns are correct
-   afterward.
+8. Highlight a group of rows and press Space (or click directly on one highlighted row's checkbox):
+   confirm every row in the group's checkbox flips together to one new state (native `ListView`
+   behavior, re-confirmed after Milestone 1's `MultiSelect` change), and the Start/End channel
+   columns are correct afterward with only a single reindex pass (Milestone 2's coalescing).
 9. Click "Enable All": confirm every row becomes checked and channel numbers renumber contiguously.
 10. Click "Disable All": confirm every row becomes unchecked and Start/End columns go blank.
 11. Drag a multi-row highlight (both adjacent and non-adjacent cases) to a new position and confirm
@@ -531,10 +726,19 @@ members are private to `VixenModules.App.ExportWizard.BulkExportControllersStage
 In `src/Vixen.Modules/App/ExportWizard/BulkExportControllersStage.cs`, by the end of this plan, the
 following private members exist in addition to what is there today:
 
+    private bool _reindexPending;
     private void NetworkListView_KeyDown(object sender, KeyEventArgs e)
-    private void SetCheckedForItems(IEnumerable<ListViewItem> items, bool isChecked)
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
     private void BtnEnableAll_Click(object sender, EventArgs e)
     private void BtnDisableAll_Click(object sender, EventArgs e)
+
+`NetworkListView_ItemChecked` (pre-existing) changes body to defer `ReIndexControllerChannels()` via
+`_reindexPending` and `BeginInvoke` rather than calling it directly — see Milestone 2. No
+`SetCheckedForItems` helper was introduced; the plan originally anticipated one, but Milestone 2's
+rescoping (see Decision Log) made it unnecessary. No custom `ListViewEx` subclass was introduced
+either — a first attempt at one (`SelectionAwareListView`, overriding `IsInputKey`) was tried and
+removed after it turned out not to fix the Escape problem; see Surprises & Discoveries and the
+Decision Log.
 
 In `src/Vixen.Modules/App/ExportWizard/BulkExportControllersStage.Designer.cs`, four new private
 fields exist in addition to what is there today:
@@ -544,9 +748,10 @@ fields exist in addition to what is there today:
     private System.Windows.Forms.Button btnEnableAll;
     private System.Windows.Forms.Button btnDisableAll;
 
-`networkListView`'s existing field declaration and type (`Common.Controls.ListViewEx`) do not change
-— only its parent container and positioning properties (`Dock = Fill` inside `tableLayoutMain` instead
-of a fixed `Location`/`Size`/`Anchor` directly on the stage) change, per Milestone 3.
+`networkListView`'s existing field declaration, type (`Common.Controls.ListViewEx`), and construction
+(`new Common.Controls.ListViewEx()`) do not change — only its parent container and positioning
+properties (`Dock = Fill` inside `tableLayoutMain` instead of a fixed `Location`/`Size`/`Anchor` on
+the stage) change, per Milestone 3.
 
 No project references, NuGet packages, or `Vixen.sln` changes are required — this plan only edits two
 existing files in an existing project. `TableLayoutPanel` and `FlowLayoutPanel` are both part of the
