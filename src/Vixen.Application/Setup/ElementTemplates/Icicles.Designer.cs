@@ -212,6 +212,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Icicles Setup";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Icicles_FormClosed);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Icicles_FormClosing);
 			this.Load += new System.EventHandler(this.Icicles_Load);
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStrings)).EndInit();
 			this.ResumeLayout(false);
