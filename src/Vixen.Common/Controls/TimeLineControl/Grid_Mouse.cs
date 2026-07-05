@@ -731,6 +731,7 @@ namespace Common.Controls.Timeline
 					// row its from in the generated point, so when snapping we can check against only elements from this row.
 					SnapDetails details = CalculateSnapDetailsForPoint(element.StartTime, SnapPriorityForElements, Color.Empty, false, false);
 					details.SnapRow = row;
+					details.ElementEdge = ElementSnapEdge.Start;
 
 					if (!CurrentDragSnapPoints.ContainsKey(details.SnapTime)) {
 						CurrentDragSnapPoints[details.SnapTime] = new List<SnapDetails>();
@@ -739,6 +740,7 @@ namespace Common.Controls.Timeline
 
 					details = CalculateSnapDetailsForPoint(element.EndTime, SnapPriorityForElements, Color.Empty, false, false);
 					details.SnapRow = row;
+					details.ElementEdge = ElementSnapEdge.End;
 
 					if (!CurrentDragSnapPoints.ContainsKey(details.SnapTime)) {
 						CurrentDragSnapPoints[details.SnapTime] = new List<SnapDetails>();

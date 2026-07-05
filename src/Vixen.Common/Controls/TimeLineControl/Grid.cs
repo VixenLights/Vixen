@@ -1862,6 +1862,9 @@ namespace Common.Controls.Timeline
 						if (details.SnapRow != null && details.SnapRow != thisElementsRow)
 							continue;
 
+						if (ShouldIgnoreSnapPointForResize(details, orig, resize))
+							continue;
+
 						// figure out if the element start time or end times are in the snap range; if not, skip it
 						bool startInRange = (orig.StartTime + offset > details.SnapStart && orig.StartTime + offset < details.SnapEnd);
 						bool endInRange = (orig.EndTime + offset > details.SnapStart && orig.EndTime + offset < details.SnapEnd);
@@ -1895,6 +1898,18 @@ namespace Common.Controls.Timeline
 			}
 
 			return snappedOffset;
+		}
+
+		private static bool ShouldIgnoreSnapPointForResize(SnapDetails details, ElementTimeInfo originalTimeInfo, ResizeZone resize)
+		{
+			if (details.ElementEdge == ElementSnapEdge.None)
+				return false;
+
+			return resize switch {
+				ResizeZone.Front => details.ElementEdge == ElementSnapEdge.Start && details.SnapTime == originalTimeInfo.EndTime,
+				ResizeZone.Back => details.ElementEdge == ElementSnapEdge.End && details.SnapTime == originalTimeInfo.StartTime,
+				_ => false
+			};
 		}
 
 		public void SwapElementPlacement(Dictionary<Element, ElementTimeInfo> changedElements)
@@ -2794,6 +2809,14 @@ namespace Common.Controls.Timeline
 		public Color SnapColor; // the color to draw the snap point
 		public bool SnapBold; // snap point is bold
 		public bool SnapSolidLine; // snap point is a solidline or dotted
+		internal ElementSnapEdge ElementEdge; // the element edge that created this snap point, if any
+	}
+
+	internal enum ElementSnapEdge
+	{
+		None,
+		Start,
+		End
 	}
 
 	///<summary>Maintains all necessary information during the user modification of selected Elements.</summary>
