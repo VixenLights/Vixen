@@ -256,9 +256,9 @@ namespace VixenApplication.Setup
 			// 
 			tableLayoutPanelContainer.CellBorderStyle = TableLayoutPanelCellBorderStyle.OutsetDouble;
 			tableLayoutPanelContainer.ColumnCount = 3;
+			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
 			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle());
-			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
 			tableLayoutPanelContainer.Controls.Add(tableLayoutPanelControllerSetup, 2, 0);
 			tableLayoutPanelContainer.Controls.Add(tableLayoutPanelElementSetup, 0, 0);
 			tableLayoutPanelContainer.Controls.Add(patchingPaneTableLayoutPanel, 1, 0);
