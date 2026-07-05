@@ -204,13 +204,15 @@ namespace VixenApplication.Setup
 			// 
 			// flowLayoutOkCancelButtons
 			// 
+			flowLayoutOkCancelButtons.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			flowLayoutOkCancelButtons.AutoSize = true;
+			flowLayoutOkCancelButtons.AutoSizeMode = AutoSizeMode.GrowAndShrink;
 			flowLayoutOkCancelButtons.Controls.Add(buttonOk);
 			flowLayoutOkCancelButtons.Controls.Add(buttonCancel);
 			flowLayoutOkCancelButtons.Controls.Add(buttonHelp);
-			flowLayoutOkCancelButtons.Dock = DockStyle.Fill;
-			flowLayoutOkCancelButtons.Location = new Point(3, 688);
+			flowLayoutOkCancelButtons.Location = new Point(34, 688);
 			flowLayoutOkCancelButtons.Name = "flowLayoutOkCancelButtons";
-			flowLayoutOkCancelButtons.Size = new Size(319, 34);
+			flowLayoutOkCancelButtons.Size = new Size(288, 35);
 			flowLayoutOkCancelButtons.TabIndex = 69;
 			// 
 			// buttonOk
@@ -256,9 +258,9 @@ namespace VixenApplication.Setup
 			// 
 			tableLayoutPanelContainer.CellBorderStyle = TableLayoutPanelCellBorderStyle.OutsetDouble;
 			tableLayoutPanelContainer.ColumnCount = 3;
+			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
 			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle());
-			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanelContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
 			tableLayoutPanelContainer.Controls.Add(tableLayoutPanelControllerSetup, 2, 0);
 			tableLayoutPanelContainer.Controls.Add(tableLayoutPanelElementSetup, 0, 0);
 			tableLayoutPanelContainer.Controls.Add(patchingPaneTableLayoutPanel, 1, 0);
