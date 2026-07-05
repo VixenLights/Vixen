@@ -48,7 +48,7 @@ namespace VixenModules.Effect.Meteors
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MovementType")]
-		[ProviderDescription(@"MovementType")]
+		[ProviderDescription(@"MeteorsMeteorEffect")]
 		[PropertyOrder(1)]
 		public MeteorsEffect MeteorEffect
 		{
@@ -118,7 +118,7 @@ namespace VixenModules.Effect.Meteors
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
+		[ProviderDescription(@"MeteorsCenterSpeed")]
 		[PropertyOrder(5)]
 		public Curve CenterSpeedCurve
 		{
@@ -134,7 +134,7 @@ namespace VixenModules.Effect.Meteors
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"SpeedVariation")]
-		[ProviderDescription(@"SpeedVariation")]
+		[ProviderDescription(@"MeteorsSpeedVariation")]
 		[PropertyOrder(6)]
 		public Curve SpeedVariationCurve
 		{
@@ -150,7 +150,7 @@ namespace VixenModules.Effect.Meteors
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Count")]
-		[ProviderDescription(@"Count")]
+		[ProviderDescription(@"MeteorsPixelCount")]
 		[PropertyOrder(7)]
 		public Curve PixelCountCurve
 		{
@@ -247,8 +247,8 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"GroundLevel")]
-		[ProviderDescription(@"GroundLevel")]
+		[ProviderDisplayName(@"MeteorsGroundLevel")]
+		[ProviderDescription(@"MeteorsGroundLevel")]
 		[PropertyOrder(13)]
 		public Curve GroundLevelCurve
 		{
@@ -451,8 +451,8 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Color", 3)]
-		[ProviderDisplayName(@"GroundColor")]
-		[ProviderDescription(@"GroundColor")]
+		[ProviderDisplayName(@"MeteorsGroundColor")]
+		[ProviderDescription(@"MeteorsGroundColor")]
 		[PropertyOrder(2)]
 		public ColorGradient GroundColor
 		{

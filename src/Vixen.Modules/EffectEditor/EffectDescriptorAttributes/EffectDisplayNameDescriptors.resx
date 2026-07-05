@@ -1386,4 +1386,10 @@
   <data name="Sizing" xml:space="preserve">
     <value>Sizing</value>
   </data>
+  <data name="MeteorsGroundColor" xml:space="preserve">
+    <value>Ground Color</value>
+  </data>
+  <data name="MeteorsGroundLevel" xml:space="preserve">
+    <value>Ground Level</value>
+  </data>
 </root>

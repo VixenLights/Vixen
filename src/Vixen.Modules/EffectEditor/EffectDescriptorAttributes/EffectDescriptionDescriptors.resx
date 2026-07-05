@@ -1497,4 +1497,22 @@
   <data name="PictureIncreaseBrightness" xml:space="preserve">
     <value>Adjusts the picture brightness over the effect duration. Higher values boost the image brightness, while the Intensity setting still controls the final output level.</value>
   </data>
+  <data name="MeteorsMeteorEffect" xml:space="preserve">
+    <value>Chooses the overall meteor movement style: Falling uses the selected direction, Random creates meteors within the min/max angle range, and Explode sends meteors outward from the center.</value>
+  </data>
+  <data name="MeteorsSpeedVariation" xml:space="preserve">
+    <value>Controls how much individual meteor speeds vary from the main Speed value. Higher values create a wider mix of slow and fast meteors.</value>
+  </data>
+  <data name="MeteorsGroundLevel" xml:space="preserve">
+    <value>Sets the height of the ground area across the display when ground level is enabled. Meteors stop and break up when they hit this area.</value>
+  </data>
+  <data name="MeteorsGroundColor" xml:space="preserve">
+    <value>Sets the color gradient used to draw the ground area when ground level is enabled.</value>
+  </data>
+  <data name="MeteorsCenterSpeed" xml:space="preserve">
+    <value>Controls the base speed of the meteors over the effect duration. Speed Variation is applied around this value to create slower and faster individual meteors.</value>
+  </data>
+  <data name="MeteorsPixelCount" xml:space="preserve">
+    <value>Controls how many meteors are active during the effect. Higher values create a denser meteor field.</value>
+  </data>
 </root>
