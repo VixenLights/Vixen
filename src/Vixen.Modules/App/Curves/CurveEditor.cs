@@ -14,7 +14,9 @@ namespace VixenModules.App.Curves
 		private double _previousCurveYLocation;
 		private double _tempX;
 		private bool _drawCurve;
+		private bool _suppressStartupMouseInput;
 		private string _holdFunction = String.Empty;
+		private System.Windows.Forms.Timer _startupMouseInputTimer;
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public CurveEditor()
@@ -102,8 +104,27 @@ namespace VixenModules.App.Curves
 
 		public bool ReadonlyCurve { get; private set; }
 
+		/// <inheritdoc />
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+			StartSuppressingStartupMouseInput();
+		}
+
+		/// <inheritdoc />
+		protected override void OnFormClosed(FormClosedEventArgs e)
+		{
+			StopSuppressingStartupMouseInput();
+			base.OnFormClosed(e);
+		}
+
 		private bool zedGraphControl_PreMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			if (_suppressStartupMouseInput)
+			{
+				return true;
+			}
+
 			double newX, newY;
 			if (e.Button == MouseButtons.Left && _drawCurve)
 			{
@@ -222,6 +243,11 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_PostMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			if (_suppressStartupMouseInput)
+			{
+				return true;
+			}
+
 			if (sender.DragEditingPair == null)
 				return true;
 
@@ -246,6 +272,11 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_MouseDownEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			if (_suppressStartupMouseInput)
+			{
+				return true;
+			}
+
 			if (ReadonlyCurve)
 				return false;
 
@@ -309,6 +340,11 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_MouseUpEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			if (_suppressStartupMouseInput)
+			{
+				return true;
+			}
+
 			if (_drawCurve)
 			{
 				double newX, newY;
@@ -617,6 +653,37 @@ namespace VixenModules.App.Curves
 			{
 				textBoxThreshold.Text = @"20";
 				toolTip.Show("Draw Threshold has a maximun value of 20", textBoxThreshold, 0, 30, 3000);
+			}
+		}
+
+		private void StartSuppressingStartupMouseInput()
+		{
+			StopSuppressingStartupMouseInput();
+
+			_suppressStartupMouseInput = true;
+			_startupMouseInputTimer = new System.Windows.Forms.Timer
+			{
+				Interval = 300
+			};
+			_startupMouseInputTimer.Tick += StartupMouseInputTimer_Tick;
+			_startupMouseInputTimer.Start();
+		}
+
+		private void StartupMouseInputTimer_Tick(object sender, EventArgs e)
+		{
+			StopSuppressingStartupMouseInput();
+		}
+
+		private void StopSuppressingStartupMouseInput()
+		{
+			_suppressStartupMouseInput = false;
+
+			if (_startupMouseInputTimer != null)
+			{
+				_startupMouseInputTimer.Stop();
+				_startupMouseInputTimer.Tick -= StartupMouseInputTimer_Tick;
+				_startupMouseInputTimer.Dispose();
+				_startupMouseInputTimer = null;
 			}
 		}
 	}
