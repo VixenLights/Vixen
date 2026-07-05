@@ -4,6 +4,7 @@ using Vixen.Commands;
 using System.Net.Sockets;
 using System.Windows.Forms;
 using System.Net;
+using Utilities;
 
 namespace VixenModules.Output.DDP
 {
@@ -77,6 +78,7 @@ namespace VixenModules.Output.DDP
 			if (setup.ShowDialog() == DialogResult.OK) {
 				if (setup.Address != null)
 					_data.Address = setup.Address.ToString();
+				_data.HostName = setup.HostName;
 				OpenConnection();
 				return true;
 			}
@@ -212,10 +214,26 @@ namespace VixenModules.Output.DDP
 				return false;
 			}
 
+			if (!string.IsNullOrEmpty(_data.HostName))
+			{
+				if (HostNameResolver.TryResolveToIPv4(_data.HostName, out var resolvedAddress))
+				{
+					string resolvedText = resolvedAddress.ToString();
+					if (resolvedText != _data.Address)
+					{
+						Logging.Info(LogTag + $"DDP: Host '{_data.HostName}' now resolves to {resolvedText} (was {_data.Address}); updating address.");
+						_data.Address = resolvedText;
+					}
+				}
+				else
+				{
+					Logging.Warn(LogTag + $"DDP: Could not resolve host name '{_data.HostName}'; continuing with last known address {_data.Address}.");
+				}
+			}
+
 			try {
 				_udpClient = new UdpClient(); //doesn't work when in class constructor
 				_udpClient.Connect(_data.Address, DDP_PORT);
-				//_udpClient.Connect(_data Hostname, DDP_PORT);  //Switch to add Hostname support
 			}
 			catch {
 				Logging.Warn(LogTag + "DDP: Failed connect to host");
