@@ -204,13 +204,15 @@ namespace VixenApplication.Setup
 			// 
 			// flowLayoutOkCancelButtons
 			// 
+			flowLayoutOkCancelButtons.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+			flowLayoutOkCancelButtons.AutoSize = true;
+			flowLayoutOkCancelButtons.AutoSizeMode = AutoSizeMode.GrowAndShrink;
 			flowLayoutOkCancelButtons.Controls.Add(buttonOk);
 			flowLayoutOkCancelButtons.Controls.Add(buttonCancel);
 			flowLayoutOkCancelButtons.Controls.Add(buttonHelp);
-			flowLayoutOkCancelButtons.Dock = DockStyle.Fill;
-			flowLayoutOkCancelButtons.Location = new Point(3, 688);
+			flowLayoutOkCancelButtons.Location = new Point(34, 688);
 			flowLayoutOkCancelButtons.Name = "flowLayoutOkCancelButtons";
-			flowLayoutOkCancelButtons.Size = new Size(319, 34);
+			flowLayoutOkCancelButtons.Size = new Size(288, 35);
 			flowLayoutOkCancelButtons.TabIndex = 69;
 			// 
 			// buttonOk
