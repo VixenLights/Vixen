@@ -54,7 +54,7 @@ namespace VixenModules.Effect.Spirograph
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
+		[ProviderDescription(@"SpirographSpeed")]
 		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(0)]
 		public Curve SpeedCurve
@@ -71,7 +71,7 @@ namespace VixenModules.Effect.Spirograph
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Outer Circle Radius")]
-		[ProviderDescription(@"Outer Circle Radius")]
+		[ProviderDescription(@"SpirographOuterCircleRadius")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 200, 1)]
 		[PropertyOrder(1)]
@@ -91,7 +91,7 @@ namespace VixenModules.Effect.Spirograph
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Inner Circle Radius")]
-		[ProviderDescription(@"Inner Circle Radius")]
+		[ProviderDescription(@"SpirographInnerCircleRadius")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 200, 1)]
 		[PropertyOrder(2)]
@@ -128,7 +128,7 @@ namespace VixenModules.Effect.Spirograph
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Distance")]
-		[ProviderDescription(@"Distance")]
+		[ProviderDescription(@"SpirographDistance")]
 		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(4)]
 		public Curve DistanceCurve
@@ -145,7 +145,7 @@ namespace VixenModules.Effect.Spirograph
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Color Range")]
-		[ProviderDescription(@"Color Range")]
+		[ProviderDescription(@"SpirographColorRange")]
 		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(5)]
 		public Curve RangeCurve
@@ -162,7 +162,7 @@ namespace VixenModules.Effect.Spirograph
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Animate Distance")]
-		[ProviderDescription(@"Animate Distance")]
+		[ProviderDescription(@"SpirographAnimateDistance")]
 		[PropertyOrder(6)]
 		public bool Animate
 		{
@@ -182,7 +182,7 @@ namespace VixenModules.Effect.Spirograph
 		[Value]
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"Color Type")]
-		[ProviderDescription(@"Color Type")]
+		[ProviderDescription(@"SpirographColorType")]
 		[PropertyOrder(0)]
 		public ColorType Type
 		{

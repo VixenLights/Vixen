@@ -1461,4 +1461,28 @@
   <data name="PatternPatternType" xml:space="preserve">
     <value>Selects the pattern (Weave or Brick) to animate.</value>
   </data>
+  <data name="SpirographSpeed" xml:space="preserve">
+    <value>Controls how quickly the spirograph pattern rotates and advances over the effect duration.</value>
+  </data>
+  <data name="SpirographOuterCircleRadius" xml:space="preserve">
+    <value>Sets the outer circle radius used to draw the spirograph shape. Larger values expand the pattern outward across the display.</value>
+  </data>
+  <data name="SpirographInnerCircleRadius" xml:space="preserve">
+    <value>Sets the inner circle radius used to draw the spirograph shape. Smaller values create tighter, more intricate loops.</value>
+  </data>
+  <data name="Spirographs" xml:space="preserve">
+    <value>Controls how much of the spirograph path is drawn. Higher values create longer, denser patterns.</value>
+  </data>
+  <data name="SpirographDistance" xml:space="preserve">
+    <value>Sets how far the drawing point is from the center of the inner circle, changing the size and shape of the loops.</value>
+  </data>
+  <data name="SpirographColorRange" xml:space="preserve">
+    <value>Controls how colors are spread from the center of the pattern outward. Higher values stretch the color bands over a larger area.</value>
+  </data>
+  <data name="SpirographColorType" xml:space="preserve">
+    <value>Chooses how colors are applied: Standard uses the selected colors by distance from center, Rainbow generates random rainbow colors, and Random picks randomly from the selected colors.</value>
+  </data>
+  <data name="SpirographAnimateDistance" xml:space="preserve">
+    <value>When enabled, the drawing distance changes as the effect plays, making the spirograph shape morph over time.</value>
+  </data>
 </root>
