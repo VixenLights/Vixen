@@ -1485,4 +1485,16 @@
   <data name="SpirographAnimateDistance" xml:space="preserve">
     <value>When enabled, the drawing distance changes as the effect plays, making the spirograph shape morph over time.</value>
   </data>
+  <data name="PictureColorEffect" xml:space="preserve">
+    <value>Chooses how the picture colors are handled: None keeps the original colors, Custom Color recolors the picture using the selected gradient while preserving brightness, and GreyScale converts the image to grayscale.</value>
+  </data>
+  <data name="PictureTilePictures" xml:space="preserve">
+    <value>Selects the built-in picture pattern to render when Picture Source is set to Embedded.</value>
+  </data>
+  <data name="PictureSource" xml:space="preserve">
+    <value>Chooses whether the effect uses an image file you select or one of the built-in embedded picture patterns.</value>
+  </data>
+  <data name="PictureIncreaseBrightness" xml:space="preserve">
+    <value>Adjusts the picture brightness over the effect duration. Higher values boost the image brightness, while the Intensity setting still controls the final output level.</value>
+  </data>
 </root>
