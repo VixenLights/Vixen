@@ -208,7 +208,7 @@ namespace VixenModules.Effect.Picture
 		[Value]
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Picture Source")]
-		[ProviderDescription(@"Picture Source")]
+		[ProviderDescription(@"PictureSource")]
 		[PropertyOrder(0)]
 		public PictureSource Source
 		{
@@ -241,8 +241,8 @@ namespace VixenModules.Effect.Picture
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"Embeded Pictures")]
-		[ProviderDescription(@"Embeded Pictures")]
+		[ProviderDisplayName(@"Embedded Pictures")]
+		[ProviderDescription(@"PictureTilePictures")]
 		[PropertyOrder(2)]
 		public TilePictures TilePictures
 		{
@@ -354,7 +354,7 @@ namespace VixenModules.Effect.Picture
 		[Value]
 		[ProviderCategory(@"Effect Color", 3)]
 		[ProviderDisplayName(@"Color Effect")]
-		[ProviderDescription(@"ColorEffect")]
+		[ProviderDescription(@"PictureColorEffect")]
 		[PropertyOrder(0)]
 		public ColorEffect ColorEffect
 		{
@@ -407,7 +407,7 @@ namespace VixenModules.Effect.Picture
 		[Value]
 		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Increase Brightness")]
-		[ProviderDescription(@"Increase Brightness")]
+		[ProviderDescription(@"PictureIncreaseBrightness")]
 		//[NumberRange(10, 100, 1)]
 		[PropertyOrder(1)]
 		public Curve IncreaseBrightnessCurve
