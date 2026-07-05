@@ -118,6 +118,19 @@ Also note the IPv4-selection quirk in E131's `Dns.GetHostAddresses` loops (they 
 The new DDP resolution logic should select the *first* matching IPv4 address instead, since that's the
 more conventional/expected behavior and there's no reason to reproduce the existing quirk.
 
+## Shared Resolution Utility
+
+The host-name-to-IPv4 resolution logic is implemented once, as a public utility, rather than as a
+DDP-specific class: `Utilities.HostNameResolver` (`src/Vixen.Common/Utilities/HostNameResolver.cs`, in the
+existing `Vixen.Common/Utilities` project, namespace `Utilities`, alongside other shared helpers like
+`ElementTemplateHelper`). This lets the DDP module consume it now, and lets a future ticket migrate the
+E131 controller's own ad hoc `Dns.GetHostAddresses` call sites (`E131OutputPlugin.cs`) onto the same
+mechanism instead of maintaining two separate implementations of the same "resolve a host name to an
+IPv4 address" behavior — including E131's own "last IPv4 wins" quirk described above, which that future
+migration would also fix by switching to the shared, first-IPv4-wins implementation. Migrating E131 itself
+is explicitly out of scope for this ticket; this section only records where the shared piece lives so that
+future work has an obvious, already-tested place to plug into.
+
 ## Data Model Changes
 
 `DDPData` (`src/Vixen.Modules/Controller/DDP/DDPData.cs`) gains one new `[DataMember]`:
