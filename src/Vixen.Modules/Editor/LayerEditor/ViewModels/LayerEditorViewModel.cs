@@ -5,6 +5,7 @@ using Catel.MVVM;
 using Vixen.Module.MixingFilter;
 using Vixen.Services;
 using Vixen.Sys.LayerMixing;
+using VixenModules.Editor.LayerEditor.Services;
 
 namespace VixenModules.Editor.LayerEditor.ViewModels
 {
@@ -14,6 +15,7 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 	public class LayerEditorViewModel : ViewModelBase, INotifyCollectionChanged
 	{
 		private readonly SequenceLayers _sequenceLayers;
+		private readonly ILayerEditorLayerService _layerService;
 		private readonly List<ILayerMixingFilterInstance> _filterTypes;
 		private Command _addLayerCommand;
 		private Command<ILayer> _removeLayerCommand;
@@ -25,8 +27,20 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 		/// <param name="sequenceLayers">The sequence layer collection to edit.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="sequenceLayers" /> is <see langword="null" />.</exception>
 		public LayerEditorViewModel(SequenceLayers sequenceLayers)
+			: this(sequenceLayers, new LayerEditorLayerService())
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="LayerEditorViewModel" /> class.
+		/// </summary>
+		/// <param name="sequenceLayers">The sequence layer collection to edit.</param>
+		/// <param name="layerService">The service used to mutate layers.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="sequenceLayers" /> or <paramref name="layerService" /> is <see langword="null" />.</exception>
+		public LayerEditorViewModel(SequenceLayers sequenceLayers, ILayerEditorLayerService layerService)
 		{
 			_sequenceLayers = sequenceLayers ?? throw new ArgumentNullException(nameof(sequenceLayers));
+			_layerService = layerService ?? throw new ArgumentNullException(nameof(layerService));
 			_filterTypes = LoadFilterTypes();
 			Layers = _sequenceLayers.Layers;
 			Layers.CollectionChanged += LayersCollectionChanged;
@@ -93,18 +107,7 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 		/// <param name="newIndex">The destination index.</param>
 		public void MoveLayer(ILayer layer, int newIndex)
 		{
-			if (layer == null || IsDefaultLayer(layer))
-			{
-				return;
-			}
-
-			var oldIndex = _sequenceLayers.IndexOfLayer(layer);
-			if (oldIndex < 0 || newIndex < 0 || oldIndex == newIndex)
-			{
-				return;
-			}
-
-			_sequenceLayers.MoveLayer(oldIndex, newIndex);
+			_layerService.MoveLayer(_sequenceLayers, layer, newIndex);
 		}
 
 		/// <inheritdoc />
@@ -128,7 +131,7 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 				return;
 			}
 
-			_sequenceLayers.AddLayer(LayerMixingFilterService.Instance.GetInstance(firstFilter.Descriptor.TypeId));
+			_layerService.AddLayer(_sequenceLayers, firstFilter);
 		}
 
 		private void RemoveLayer(ILayer layer)
@@ -138,7 +141,7 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 				return;
 			}
 
-			_sequenceLayers.RemoveLayerAt(_sequenceLayers.IndexOfLayer(layer));
+			_layerService.RemoveLayer(_sequenceLayers, layer);
 		}
 
 		private bool CanRemoveLayer(ILayer layer)
@@ -153,8 +156,7 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 				return;
 			}
 
-			var success = layerMixingFilterInstance.Setup();
-			if (success)
+			if (_layerService.ConfigureLayer(layerMixingFilterInstance))
 			{
 				OnLayerChanged(EventArgs.Empty);
 			}
