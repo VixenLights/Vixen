@@ -251,15 +251,16 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 			
 			if (File.Exists(result.FileName))
 			{
-				// Confirm overwrite
+				// IMessageBoxService.GetUserConfirmation shows a Yes/No dialog whose "confirm" button
+				// reports MessageResult.OK (see MessageBoxForm.Designer.cs); it never reports Cancel.
 				var messageService = dependencyResolver.Resolve<IMessageBoxService>();
 				var confirmResult = messageService.GetUserConfirmation(
 					"A file with this name already exists. Do you want to replace it?",
 					"Confirm Save As");
 
-				if (confirmResult.Result == MessageResult.Cancel)
+				if (confirmResult.Result != MessageResult.OK)
 				{
-					return; // User canceled the overwrite
+					return;
 				}
 			}
 			

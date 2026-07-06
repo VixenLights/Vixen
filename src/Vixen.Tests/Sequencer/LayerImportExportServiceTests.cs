@@ -45,6 +45,9 @@ public sealed class LayerImportExportServiceTests
 			Assert.Equal("Bottom", document.Layers[1].Name);
 			Assert.Equal(1, document.Layers[1].Order);
 			Assert.DoesNotContain(document.Layers, record => record.FilterTypeId == Guid.Empty);
+			Assert.Equal("Luma Key", document.Layers[0].FilterName);
+			Assert.Equal(0.3, document.Layers[0].FilterData.GetProperty("LowerLimit").GetDouble());
+			Assert.Equal(0.7, document.Layers[0].FilterData.GetProperty("UpperLimit").GetDouble());
 
 			foreach (var record in document.Layers)
 			{
@@ -249,6 +252,81 @@ public sealed class LayerImportExportServiceTests
 
 			Assert.Equal(0, result.ImportedCount);
 			Assert.Single(layers.Layers);
+		}
+		finally
+		{
+			File.Delete(filePath);
+		}
+	}
+
+	[Fact]
+	public async Task ReadImportPlanAsync_MissingRequiredName_ReturnsFailedPlanAndLeavesSequenceUnchanged()
+	{
+		var document = new LayerExportDocument
+		{
+			ExportedUtc = DateTime.UtcNow,
+			Layers =
+			[
+				new LayerExportRecord
+				{
+					Name = "",
+					Order = 0,
+					FilterTypeId = Guid.NewGuid(),
+					FilterName = "Luma Key",
+					FilterData = JsonDocument.Parse("null").RootElement.Clone()
+				}
+			]
+		};
+
+		var filePath = Path.GetTempFileName();
+		try
+		{
+			await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(document), TestContext.Current.CancellationToken);
+
+			var service = CreateService();
+			var plan = await service.ReadImportPlanAsync(filePath, TestContext.Current.CancellationToken);
+
+			Assert.False(plan.IsValid);
+			Assert.NotNull(plan.FailureReason);
+
+			var layers = new SequenceLayers();
+			var result = service.Import(layers, plan);
+
+			Assert.Equal(0, result.ImportedCount);
+			Assert.Single(layers.Layers);
+		}
+		finally
+		{
+			File.Delete(filePath);
+		}
+	}
+
+	[Fact]
+	public async Task Import_AssignsNewLayerIdDistinctFromSourceLayer()
+	{
+		var sourceLayers = new SequenceLayers();
+		var typeId = Guid.NewGuid();
+		var sourceLayer = _layerService.AddLayer(sourceLayers, CreateFilter(typeId, "Luma Key", new LumaKeyData()));
+		sourceLayer.LayerName = "Top";
+		var sourceLayerId = sourceLayer.Id;
+
+		var filePath = Path.GetTempFileName();
+		try
+		{
+			await CreateService().ExportAsync(sourceLayers, filePath, TestContext.Current.CancellationToken);
+
+			var resolver = new Mock<ILayerMixingFilterResolver>();
+			resolver.Setup(r => r.Resolve(typeId)).Returns(() => CreateFilter(typeId, "Luma Key", new LumaKeyData()));
+
+			var service = new LayerImportExportService(_layerService, resolver.Object);
+			var plan = await service.ReadImportPlanAsync(filePath, TestContext.Current.CancellationToken);
+
+			var targetLayers = new SequenceLayers();
+			service.Import(targetLayers, plan);
+
+			var importedLayer = targetLayers.Layers[0];
+			Assert.NotEqual(Guid.Empty, importedLayer.Id);
+			Assert.NotEqual(sourceLayerId, importedLayer.Id);
 		}
 		finally
 		{
