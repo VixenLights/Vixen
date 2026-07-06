@@ -52,6 +52,8 @@ namespace Common.Controls
 			sortToolStripMenuItem = new ToolStripMenuItem();
 			exportWireDiagramToolStripMenuItem = new ToolStripMenuItem();
 			exportElementTreeToolStripMenuItem = new ToolStripMenuItem();
+			toolStripSeparator3 = new ToolStripSeparator();
+			tagsToolStripMenuItem = new ToolStripMenuItem();
 			contextMenuStripDragging = new ContextMenuStrip(components);
 			moveHereToolStripMenuItem = new ToolStripMenuItem();
 			copyHereToolStripMenuItem = new ToolStripMenuItem();
@@ -78,7 +80,7 @@ namespace Common.Controls
 			// contextMenuStripTreeView
 			// 
 			contextMenuStripTreeView.ImageScalingSize = new Size(24, 24);
-			contextMenuStripTreeView.Items.AddRange(new ToolStripItem[] { cutNodesToolStripMenuItem, copyNodesToolStripMenuItem, pasteNodesToolStripMenuItem, pasteAsNewToolStripMenuItem, toolStripSeparator1, nodePropertiesToolStripMenuItem, toolStripSeparator2, addNewNodeToolStripMenuItem, addMultipleNewNodesToolStripMenuItem, deleteNodesToolStripMenuItem, createGroupWithNodesToolStripMenuItem, renameNodesToolStripMenuItem, patternRenameToolStripMenuItem, collapseAllToolStripMenuItem, reverseElementsToolStripMenuItem, sortToolStripMenuItem, exportWireDiagramToolStripMenuItem, exportElementTreeToolStripMenuItem });
+			contextMenuStripTreeView.Items.AddRange(new ToolStripItem[] { cutNodesToolStripMenuItem, copyNodesToolStripMenuItem, pasteNodesToolStripMenuItem, pasteAsNewToolStripMenuItem, toolStripSeparator1, nodePropertiesToolStripMenuItem, toolStripSeparator2, addNewNodeToolStripMenuItem, addMultipleNewNodesToolStripMenuItem, deleteNodesToolStripMenuItem, createGroupWithNodesToolStripMenuItem, renameNodesToolStripMenuItem, patternRenameToolStripMenuItem, collapseAllToolStripMenuItem, reverseElementsToolStripMenuItem, sortToolStripMenuItem, exportWireDiagramToolStripMenuItem, exportElementTreeToolStripMenuItem, toolStripSeparator3, tagsToolStripMenuItem });
 			contextMenuStripTreeView.Name = "contextMenuStripTreeView";
 			contextMenuStripTreeView.Size = new Size(217, 390);
 			contextMenuStripTreeView.Opening += contextMenuStripTreeView_Opening;
@@ -224,7 +226,18 @@ namespace Common.Controls
 			exportElementTreeToolStripMenuItem.Text = "Export Element Tree";
 			exportElementTreeToolStripMenuItem.ToolTipText = "Export the element tree for importing into other profiles.";
 			exportElementTreeToolStripMenuItem.Click += ExportElementTreeToolStripMenuItem_Click;
-			// 
+			//
+			// toolStripSeparator3
+			//
+			toolStripSeparator3.Name = "toolStripSeparator3";
+			toolStripSeparator3.Size = new Size(213, 6);
+			//
+			// tagsToolStripMenuItem
+			//
+			tagsToolStripMenuItem.Name = "tagsToolStripMenuItem";
+			tagsToolStripMenuItem.Size = new Size(216, 22);
+			tagsToolStripMenuItem.Text = "Tags";
+			//
 			// contextMenuStripDragging
 			// 
 			contextMenuStripDragging.ImageScalingSize = new Size(24, 24);
@@ -327,5 +340,7 @@ namespace Common.Controls
 		private ToolStripMenuItem exportElementTreeToolStripMenuItem;
 		private ToolStripMenuItem frontWireDiagramToolStripMenuItem;
 		private ToolStripMenuItem backWireDiagramToolStripMenuItem;
+		private ToolStripSeparator toolStripSeparator3;
+		private ToolStripMenuItem tagsToolStripMenuItem;
 	}
 }

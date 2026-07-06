@@ -18,6 +18,8 @@ namespace Common.Controls
 												 // need one, but will have multiple in case the top node is deleted.
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private const string VirtualNodeName = @"VIRT";
+		private const int TagDotDiameter = 8;
+		private const int TagDotSpacing = 3;
 
 		public ElementTree()
 		{
@@ -31,6 +33,8 @@ namespace Common.Controls
 
 			treeview.BeforeExpand += Treeview_BeforeExpand;
 			treeview.AfterCollapse += TreeviewOnAfterCollapse;
+			treeview.DrawMode = TreeViewDrawMode.OwnerDrawText;
+			treeview.DrawNode += Treeview_DrawNode;
 			AllowDragging = true;
 			AllowPropertyEdit = true;
 			AllowWireExport = true;
@@ -402,7 +406,67 @@ namespace Common.Controls
 
 		#endregion
 
+		#region Tag color dots
 
+		private void Treeview_DrawNode(object sender, DrawTreeNodeEventArgs e)
+		{
+			// MultiSelectTreeview fakes selection by setting each node's BackColor/ForeColor directly
+			// rather than using the native Win32 selected state (it always cancels base.SelectedNode).
+			// e.DrawDefault only renders using the native selected state, so with owner-drawn text that
+			// leaves "selected" nodes drawn as unselected. Paint the background/text ourselves from the
+			// node's own colors to preserve the existing selection appearance.
+			Color backColor = e.Node.BackColor != Color.Empty ? e.Node.BackColor : treeview.BackColor;
+			Color foreColor = e.Node.ForeColor != Color.Empty ? e.Node.ForeColor : treeview.ForeColor;
+
+			using (var backBrush = new SolidBrush(backColor))
+			{
+				e.Graphics.FillRectangle(backBrush, e.Bounds);
+			}
+
+			TextRenderer.DrawText(e.Graphics, e.Node.Text, treeview.Font, e.Bounds, foreColor,
+				TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+
+			if (e.Node.Tag is not ElementNode elementNode)
+			{
+				return;
+			}
+
+			List<ElementTagDefinition> coloredTags = GetColoredTags(elementNode);
+			if (coloredTags.Count == 0)
+			{
+				return;
+			}
+
+			Size textSize = TextRenderer.MeasureText(e.Node.Text, treeview.Font);
+			int x = e.Bounds.Left + textSize.Width + TagDotSpacing * 2;
+			int y = e.Bounds.Top + (e.Bounds.Height - TagDotDiameter) / 2;
+
+			foreach (ElementTagDefinition tag in coloredTags)
+			{
+				using (var brush = new SolidBrush(ColorTranslator.FromHtml(tag.DisplayColor)))
+				{
+					e.Graphics.FillEllipse(brush, x, y, TagDotDiameter, TagDotDiameter);
+				}
+				x += TagDotDiameter + TagDotSpacing;
+			}
+		}
+
+		private static List<ElementTagDefinition> GetColoredTags(ElementNode elementNode)
+		{
+			var tags = new List<ElementTagDefinition>();
+			foreach (Guid tagId in elementNode.Tags)
+			{
+				ElementTagDefinition tag = ElementTagService.Instance.GetById(tagId);
+				if (tag != null && !string.IsNullOrEmpty(tag.DisplayColor))
+				{
+					tags.Add(tag);
+				}
+			}
+			tags.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
+			return tags;
+		}
+
+		#endregion
 
 		#region Events
 
@@ -442,6 +506,17 @@ namespace Common.Controls
 
 		public event EventHandler DragFinished;
 		public event EventHandler ElementsChanged;
+
+		/// <summary>
+		/// Raised when the user clicks "Manage Tags..." in the Tags context submenu.
+		/// </summary>
+		/// <remarks>
+		/// This control has no WPF-hosting capability of its own, so it cannot open
+		/// <c>ElementTagManagerWindow</c> itself; the host form (which already references a WPF-capable
+		/// project) is expected to handle this event by opening the window and, if changes were saved, calling
+		/// <see cref="RefreshTagColors"/>.
+		/// </remarks>
+		public event EventHandler ManageTagsRequested;
 
 
 		public void OnDragFinished(EventArgs e = null)
@@ -916,7 +991,112 @@ namespace Common.Controls
 			exportWireDiagramToolStripMenuItem.Visible = AllowWireExport;
 			exportWireDiagramToolStripMenuItem.Enabled = CanExportDiagram();
 			exportElementTreeToolStripMenuItem.Enabled = treeview.Nodes.Count > 0;
+			tagsToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
+			PopulateTagsMenu();
+		}
 
+		private void PopulateTagsMenu()
+		{
+			tagsToolStripMenuItem.DropDownItems.Clear();
+
+			var selectedElementNodes = SelectedElementNodes.ToList();
+
+			foreach (ElementTagDefinition tag in ElementTagService.Instance.GetAll())
+			{
+				Guid tagId = tag.Id;
+				var tagMenuItem = new ToolStripMenuItem(tag.Name)
+				{
+					CheckState = GetTagCheckState(selectedElementNodes, tagId)
+				};
+				tagMenuItem.Click += (sender, e) =>
+					ToggleTagOnSelectedNodes(tagMenuItem, tagId, (ModifierKeys & Keys.Control) == Keys.Control);
+				if (!string.IsNullOrEmpty(tag.DisplayColor))
+				{
+					Color dotColor = ColorTranslator.FromHtml(tag.DisplayColor);
+					tagMenuItem.Paint += (sender, e) => PaintTagColorDot(tagMenuItem, e, dotColor);
+				}
+				tagsToolStripMenuItem.DropDownItems.Add(tagMenuItem);
+			}
+
+			tagsToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+			var manageTagColorsItem = new ToolStripMenuItem("Manage Tags...");
+			manageTagColorsItem.Click += (sender, e) => ManageTagsRequested?.Invoke(this, EventArgs.Empty);
+			tagsToolStripMenuItem.DropDownItems.Add(manageTagColorsItem);
+		}
+
+		/// <summary>
+		/// Repaints the tree's tag color dots without the heavier per-node status walk
+		/// <see cref="RefreshElementTreeStatus"/> performs.
+		/// </summary>
+		/// <remarks>
+		/// Called by the host form after <c>ElementTagManagerWindow</c> (opened in response to
+		/// <see cref="ManageTagsRequested"/>) saves a tag color change, so the new color is visible
+		/// immediately without requiring the tree to be reopened.
+		/// </remarks>
+		public void RefreshTagColors()
+		{
+			treeview.Invalidate();
+		}
+
+		private static void PaintTagColorDot(ToolStripMenuItem item, PaintEventArgs e, Color dotColor)
+		{
+			var rect = new Rectangle(item.Width - TagDotDiameter - TagDotSpacing * 2,
+				(item.Height - TagDotDiameter) / 2, TagDotDiameter, TagDotDiameter);
+			using var brush = new SolidBrush(dotColor);
+			e.Graphics.FillEllipse(brush, rect);
+		}
+
+		private static CheckState GetTagCheckState(List<ElementNode> selectedElementNodes, Guid tagId)
+		{
+			if (selectedElementNodes.Count == 0)
+				return CheckState.Unchecked;
+
+			int taggedCount = selectedElementNodes.Count(node => node.Tags.Contains(tagId));
+			if (taggedCount == 0)
+				return CheckState.Unchecked;
+			if (taggedCount == selectedElementNodes.Count)
+				return CheckState.Checked;
+
+			return CheckState.Indeterminate;
+		}
+
+		/// <summary>
+		/// Adds or removes <paramref name="tagId"/> on the currently selected <see cref="ElementNode"/>s.
+		/// </summary>
+		/// <param name="tagMenuItem">The clicked tag submenu item, whose <see cref="ToolStripMenuItem.CheckState"/>
+		/// determines whether the tag is being added or removed and is updated to reflect the new state.</param>
+		/// <param name="tagId">The tag being toggled.</param>
+		/// <param name="cascadeToChildren">When true (the tag was clicked with Ctrl held), the tag is also
+		/// added to or removed from every descendant of each selected node, not just the selected node itself.</param>
+		private void ToggleTagOnSelectedNodes(ToolStripMenuItem tagMenuItem, Guid tagId, bool cascadeToChildren)
+		{
+			var selectedElementNodes = SelectedElementNodes.ToList();
+			if (selectedElementNodes.Count == 0)
+				return;
+
+			var targetNodes = cascadeToChildren
+				? selectedElementNodes.SelectMany(node => node.GetNodeEnumerator()).Distinct().ToList()
+				: selectedElementNodes;
+
+			if (tagMenuItem.CheckState == CheckState.Checked)
+			{
+				foreach (ElementNode node in targetNodes)
+				{
+					node.Tags.Remove(tagId);
+				}
+				tagMenuItem.CheckState = CheckState.Unchecked;
+			}
+			else
+			{
+				foreach (ElementNode node in targetNodes)
+				{
+					node.Tags.Add(tagId);
+				}
+				tagMenuItem.CheckState = CheckState.Checked;
+			}
+
+			treeview.Invalidate();
 		}
 
 		private bool CanExportDiagram()

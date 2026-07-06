@@ -1,4 +1,5 @@
 ﻿using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using Common.Controls.Scaling;
 using Common.Resources;
 
@@ -244,10 +245,44 @@ namespace Common.Controls.Theme
 				{
 					image = CreateDisabledImage(image);
 				}
-				
+				else if (e.Item is ToolStripMenuItem { CheckState: CheckState.Indeterminate })
+				{
+					// A tri-state menu item (e.g. a tag assigned to only some of the current
+					// multi-selection) still reports Checked == true, so it would otherwise draw
+					// an identical checkmark to a fully-checked item. Darken it so the two states
+					// are visually distinguishable, matching the Windows convention for
+					// partial-selection checkboxes.
+					image = CreateIndeterminateImage(image);
+				}
+
 				e.Graphics.DrawImage(image, imageRect, new Rectangle(Point.Empty, imageRect.Size), GraphicsUnit.Pixel);
 			}
 
+		}
+
+		private static Image CreateIndeterminateImage(Image image)
+		{
+			var bitmap = new Bitmap(image.Width, image.Height);
+			using (Graphics g = Graphics.FromImage(bitmap))
+			{
+				var colorMatrix = new ColorMatrix(new float[][]
+				{
+					new float[] {0.45f, 0, 0, 0, 0},
+					new float[] {0, 0.45f, 0, 0, 0},
+					new float[] {0, 0, 0.45f, 0, 0},
+					new float[] {0, 0, 0, 1, 0},
+					new float[] {0, 0, 0, 0, 1}
+				});
+
+				using (var attributes = new ImageAttributes())
+				{
+					attributes.SetColorMatrix(colorMatrix);
+					g.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height), 0, 0, image.Width, image.Height,
+						GraphicsUnit.Pixel, attributes);
+				}
+			}
+
+			return bitmap;
 		}
 	}
 }

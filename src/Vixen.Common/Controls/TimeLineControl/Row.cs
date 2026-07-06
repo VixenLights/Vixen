@@ -186,12 +186,19 @@ namespace Common.Controls.Timeline
 				if (m_treeOpen == value)
 					return;
 
-				// if we're opening a tree, show all our children, and vice versa.
-				// the Visible property will take care of the rest.
-				foreach (Row row in ChildRows)
-					row.Visible = value;
-
 				m_treeOpen = value;
+
+				// Route the child cascade through RecomputeVisibility() (the same formula used when
+				// PassesVisibilityFilter() or an ancestor's visibility changes) instead of setting
+				// children's Visible directly to the new open/closed value: this row can itself be
+				// invisible (a collapsed ancestor further up, or its own VisibilityFilter) at the
+				// moment its TreeOpen is set - eg. when a sequence's saved row settings are restored
+				// row-by-row and an ancestor hasn't been re-collapsed yet. Assigning children's Visible
+				// to a bare "value" would leak requestedVisible=true onto a Hidden-tagged child while
+				// it's still invisible, only for that to resurface later when Show Hidden is toggled or
+				// the ancestor is expanded, even though this row itself was never actually shown.
+				RecomputeVisibility();
+
 				RowLabel.Invalidate();
 				_RowToggled();
 				_RowChanged();
@@ -211,27 +218,98 @@ namespace Common.Controls.Timeline
 		}
 
 		private bool m_visible;
+		private bool m_requestedVisible;
+		private Func<Row, bool> m_visibilityFilter;
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether this row is visible.
+		/// </summary>
+		/// <value>
+		/// <see langword="true"/> if the row should be shown; otherwise, <see langword="false"/>. The effective,
+		/// gettable value also reflects <see cref="VisibilityFilter"/> — setting this to <see langword="true"/>
+		/// does not guarantee the getter returns <see langword="true"/> if a filter rejects the row.
+		/// </value>
 		public bool Visible
 		{
 			get { return m_visible; }
 			set
 			{
-				// if we're being told to show or not (ie. a tree is being closed
-				// or opened), then show or hide all our children. However, only
-				// show them if our tree is currently open as well.
-				foreach (Row row in ChildRows)
-					row.Visible = value && TreeOpen;
-
-				RowLabel.Visible = value;
-				m_visible = value;
-				if (m_visible && RowLabel.Height != Height)
-				{
-					RowLabel.Height = Height;
-				}
-				_RowChanged();
-				_RowVisibilityChanged();
+				m_requestedVisible = value;
+				RecomputeVisibility();
 			}
+		}
+
+		/// <summary>
+		/// An optional predicate that further restricts whether this row may be visible, independent of
+		/// its own <see cref="Visible"/>/<see cref="TreeOpen"/> state — for example, filtering out rows
+		/// whose element carries a particular tag.
+		/// </summary>
+		/// <remarks>
+		/// Assigning a filter propagates it to every current descendant and immediately recomputes
+		/// visibility top-down through this row's subtree; rows added as children afterward inherit
+		/// whatever filter is current on their parent at the time they're added
+		/// (<see cref="TimelineControl.AddRow(RowLabel, Row, int)"/>), not automatically thereafter.
+		/// Once set, the filter is consulted every time visibility is recomputed for this row - including
+		/// when a parent's <see cref="TreeOpen"/> cascades <see cref="Visible"/> down to this row - so
+		/// callers do not need to re-walk the tree by hand after every expand/collapse; only assigning a
+		/// new filter (or a row gaining/losing whatever the filter tests for) requires re-assigning it.
+		/// If every child now fails the new filter, this row is also collapsed (<see cref="TreeOpen"/>
+		/// set false): once <see cref="HasExpandableChildRows"/> goes false its expander is no longer
+		/// shown, so the user has no way to see or toggle a stale TreeOpen=true left over from before the
+		/// filter excluded everything underneath - without this, that stale value would silently resurface
+		/// as "already expanded" the next time the filter relaxes enough to reveal a child again.
+		/// </remarks>
+		public Func<Row, bool> VisibilityFilter
+		{
+			get { return m_visibilityFilter; }
+			set
+			{
+				m_visibilityFilter = value;
+				foreach (Row row in ChildRows)
+					row.VisibilityFilter = value;
+				RecomputeVisibility();
+
+				if (TreeOpen && !HasExpandableChildRows)
+					TreeOpen = false;
+			}
+		}
+
+		public bool PassesVisibilityFilter()
+		{
+			return m_visibilityFilter == null || m_visibilityFilter(this);
+		}
+
+		/// <summary>
+		/// True if at least one direct child row currently passes its own <see cref="VisibilityFilter"/> -
+		/// ie. there is something for this row's expand/collapse toggle to actually reveal.
+		/// </summary>
+		/// <remarks>
+		/// A child that fails its own filter can never become visible regardless of <see cref="TreeOpen"/>
+		/// (<see cref="RecomputeVisibility"/> multiplies the two together), so a row whose children are
+		/// all filtered out - for example, a group whose only children carry the built-in <c>Hidden</c>
+		/// tag while "Show Hidden" is off - has nothing to expand. Re-evaluated live: once the filter
+		/// that excluded those children is cleared, this immediately reflects it.
+		/// </remarks>
+		public bool HasExpandableChildRows => ChildRows.Any(row => row.PassesVisibilityFilter());
+
+		private void RecomputeVisibility()
+		{
+			// if we're being told to show or not (ie. a tree is being closed
+			// or opened), then show or hide all our children. However, only
+			// show them if our tree is currently open as well.
+			bool effectiveVisible = m_requestedVisible && PassesVisibilityFilter();
+
+			foreach (Row row in ChildRows)
+				row.Visible = effectiveVisible && TreeOpen;
+
+			RowLabel.Visible = effectiveVisible;
+			m_visible = effectiveVisible;
+			if (m_visible && RowLabel.Height != Height)
+			{
+				RowLabel.Height = Height;
+			}
+			_RowChanged();
+			_RowVisibilityChanged();
 		}
 
 		private bool m_selected;

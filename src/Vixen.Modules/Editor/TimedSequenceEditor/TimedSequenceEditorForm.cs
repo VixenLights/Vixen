@@ -6,6 +6,7 @@ using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
+using Common.ElementTagManager.Views;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
@@ -87,6 +88,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		// a mapping of system elements to the (possibly multiple) rows that represent them in the grid.
 		private Dictionary<IElementNode, List<Row>> _elementNodeToRows;
+
+		// Session-only "Show Hidden" toolbar toggle state; always resets to off in LoadSystemNodesToRows,
+		// never persisted with the sequence.
+		private bool _showHiddenRows;
 
 		// the default time for a sequence if one is loaded with 0 time
 		private static readonly TimeSpan DefaultSequenceTime = TimeSpan.FromMinutes(1);
@@ -521,6 +526,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.DragEnter += TimelineControlGrid_DragEnter;
 			TimelineControl.grid.DragDrop += TimelineControlGrid_DragDrop;
 			TimelineControl.grid.DragLeave += TimelineControlGrid_DragLeave;
+			TimelineControl.RowTagsChanged += TimelineControl_RowTagsChanged;
+			TimelineControl.ManageTagsRequested += TimelineControlManageTagsRequested;
 			Row.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
 
 			LoadAvailableEffects();
@@ -769,6 +776,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ContextSelected -= timelineControl_ContextSelected;
 			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
 			TimelineControl.VisibleTimeStartChanged -= TimelineControl_VisibleTimeStartChanged;
+			TimelineControl.RowTagsChanged -= TimelineControl_RowTagsChanged;
+			TimelineControl.ManageTagsRequested -= TimelineControlManageTagsRequested;
 			Row.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
 			effectGroupsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			basicToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing; 
@@ -866,7 +875,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (e.Data.GetData(typeof(Guid)) is Guid g)
 					{
-						EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+						// DragEnter/DragOver already reject the drop cursor over a Deprecated row via
+						// IsValidDataObject, but DragDrop still fires regardless of e.Effect if the user
+						// drops anyway, so it needs its own check.
+						Row targetRow = TimelineControl.grid.RowAtPosition(p);
+						if (!IsDeprecated(targetRow))
+						{
+							EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), targetRow);
+						}
 					}
 					else
 					{
@@ -956,11 +972,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private (Element? element, DragDropEffects effect) _dragDropToElementEffect = (null, DragDropEffects.None);
 		private DragDropEffects IsValidDataObject(IDataObject dataObject, Point mouseLocation)
 		{
-			if (dataObject.GetDataPresent(typeof(Guid)) && TimelineControl.grid.RowAtPosition(mouseLocation)!=null)
+			if (dataObject.GetDataPresent(typeof(Guid)))
 			{
-				_dragDropToElementEffect.element = null;
-				_dragDropToElementEffect.effect = DragDropEffects.None;
-				return DragDropEffects.Copy;
+				Row targetRow = TimelineControl.grid.RowAtPosition(mouseLocation);
+				if (targetRow != null)
+				{
+					_dragDropToElementEffect.element = null;
+					_dragDropToElementEffect.effect = DragDropEffects.None;
+					return IsDeprecated(targetRow) ? DragDropEffects.None : DragDropEffects.Copy;
+				}
 			}
 			Element element = TimelineControl.grid.ElementAtPosition(mouseLocation);
 			if (element != null)
@@ -1356,6 +1376,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_suppressModifiedEvents = false;
 			TimelineControl.EnableDisableHandlers();
 
+			_showHiddenRows = false;
+			showHiddenToolStripMenuItem.Checked = false;
+			ApplyHiddenRowFilter();
+
 			TimelineControl.LayoutRows();
 			TimelineControl.ResizeGrid();
 		}
@@ -1465,6 +1489,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					TimelineControl.grid.SupressRendering = false;
 					TimelineControl.grid.SuppressInvalidate = false;
 					TimelineControl.grid.RenderAllRows();
+					CheckDeprecatedEffects();
 				});
 
 				//This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
@@ -2268,6 +2293,72 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				_editorStateModified = true;
 			}
+		}
+
+		private void showHiddenToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			_showHiddenRows = showHiddenToolStripMenuItem.Checked;
+			ApplyHiddenRowFilter();
+		}
+
+		// Tags can also be assigned/removed from the Sequencer's own row context menu
+		// (TimelineControl.ToggleTagOnSelectedRows); that doesn't go through this form's tag-menu code at
+		// all, so it needs its own notification to keep Hidden-tagged rows in sync when the Show Hidden Rows
+		// toggle is off.
+		private void TimelineControl_RowTagsChanged(object sender, EventArgs e)
+		{
+			ApplyHiddenRowFilter();
+		}
+
+		// The Sequencer has no other OK/Cancel-gated save, so the color editor is told to persist its own
+		// changes on Save (saveOnClose: true) - unlike Display Setup/Preview Setup, which pass false and
+		// let their own existing save path capture or discard the change.
+		private void TimelineControlManageTagsRequested(object sender, EventArgs e)
+		{
+			if (ElementTagManagerWindow.ShowAsDialog(saveOnClose: true))
+			{
+				TimelineControl.InvalidateRowLabels();
+			}
+		}
+
+		/// <summary>
+		/// Assigns (or clears) <see cref="Row.VisibilityFilter"/> on every root row so that rows whose
+		/// <see cref="ElementNode"/> carries the built-in <c>Hidden</c> tag are hidden, unless the
+		/// session-only "Show Hidden Rows" toggle is on.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="Row.VisibilityFilter"/> is consulted automatically every time a row's visibility
+		/// is recomputed - including when a parent's <see cref="Row.TreeOpen"/> cascades visibility down
+		/// to a child - so this only needs to run when the toggle itself changes, a sequence loads, or a
+		/// row's tags change, not on every tree expand/collapse. Also re-lays-out the row labels
+		/// afterward: <see cref="RowList"/> only repositions label controls on <see cref="Row.RowToggled"/>/
+		/// <see cref="Row.RowHeightChanged"/>, not on a plain visibility change, so a label whose row just
+		/// became visible would otherwise sit at its last (possibly off-screen or overlapping) position
+		/// until some unrelated tree toggle forced a re-layout. Also invalidates every row label: a row
+		/// whose children just got filtered in or out doesn't itself change visibility, so nothing else
+		/// would repaint its expander icon (<see cref="Row.HasExpandableChildRows"/>) to reflect that.
+		/// </remarks>
+		private void ApplyHiddenRowFilter()
+		{
+			Func<Row, bool> filter = _showHiddenRows ? null : (Func<Row, bool>)(row => !IsHiddenByTag(row));
+			foreach (Row row in TimelineControl.Rows.Where(r => r.ParentRow == null))
+			{
+				row.VisibilityFilter = filter;
+			}
+			TimelineControl.LayoutRows();
+			TimelineControl.InvalidateRowLabels();
+		}
+
+		private static bool IsHiddenByTag(Row row)
+		{
+			return row.Tag is ElementNode elementNode &&
+				ElementTagService.Instance.HasTag(elementNode, BuiltInElementTags.HiddenKey);
+		}
+
+		private static bool IsDeprecated(Row row)
+		{
+			return row != null && row.Tag is ElementNode elementNode &&
+				ElementTagService.Instance.HasTag(elementNode, BuiltInElementTags.DeprecatedKey);
 		}
 
 		private void TimelineControl_TimePerPixelChanged(object sender, EventArgs e)
@@ -3863,6 +3954,41 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		/// <summary>
+		/// Warns the user if the sequence has effects on any element tagged <c>Deprecated</c>.
+		/// </summary>
+		/// <remarks>
+		/// Called from <see cref="LoadSequence"/>'s <c>Task.Factory.ContinueWhenAll</c> completion callback,
+		/// after rendering has caught up, so the notification appears right after the sequence has fully
+		/// loaded - the Sequencer window is already visible by then (<see cref="LoadSequence"/> itself only
+		/// runs from <see cref="TimedSequenceEditorForm_Shown"/>). That callback runs on a background thread
+		/// (see the existing <c>InvokeRequired</c> guard <see cref="UpdateToolStrip4"/> needs there for the
+		/// same reason), so this method marshals itself onto the UI thread before showing a modal dialog.
+		/// </remarks>
+		private void CheckDeprecatedEffects()
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new MethodInvoker(CheckDeprecatedEffects));
+				return;
+			}
+
+			var deprecatedElementCounts = _sequence.SequenceData.EffectData.Cast<EffectNode>()
+				.SelectMany(effectNode => effectNode.Effect.TargetNodes)
+				.Where(node => ElementTagService.Instance.HasTag(node, BuiltInElementTags.DeprecatedKey))
+				.GroupBy(node => node.Name)
+				.Select(g => (Name: g.Key, EffectCount: g.Count()))
+				.ToList();
+
+			if (deprecatedElementCounts.Count == 0)
+				return;
+
+			var message = "This sequence has effects on the following elements tagged as Deprecated:\n\n" +
+				string.Join("\n", deprecatedElementCounts.Select(x => $"{x.Name} ({x.EffectCount} effect{(x.EffectCount == 1 ? "" : "s")})"));
+			var messageBox = new MessageBoxForm(message, @"Deprecated Elements", MessageBoxButtons.OK, SystemIcons.Warning);
+			messageBox.ShowDialog(this);
+		}
+
+		/// <summary>
 		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given EffectNode.
 		/// Will add a single TimedSequenceElement to in each row that each targeted element of
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
@@ -5107,6 +5233,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<Row> visibleRows = new List<Row>(TimelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 			List<EffectNode> nodesToAdd = new List<EffectNode>();
+			var skippedDeprecatedRowNames = new HashSet<string>();
 			foreach (EffectModelRecord effectModelRecord in effects)
 			{
 				EffectModelCandidate effectModelCandidate = effectModelRecord.EffectModel;
@@ -5138,6 +5265,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (targetRowIndex<0 || targetRowIndex >= visibleRows.Count)
 					continue;
 
+				Row pasteTargetRow = visibleRows[targetRowIndex];
+				if (IsDeprecated(pasteTargetRow))
+				{
+					skippedDeprecatedRowNames.Add(pasteTargetRow.Name);
+					continue;
+				}
+
 				IModuleDataModel moduleData = effectModelCandidate.GetEffectData();
 
 				if (moduleData != null)
@@ -5147,7 +5281,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					newEffect.ModuleData = moduleData;
 
-					var node = CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
+					var node = CreateEffectNode(newEffect, pasteTargetRow, targetTime, effectModelCandidate.Duration);
 					
 					if (LayerManager.ContainsLayer(effectModelCandidate.LayerId))
 					{
@@ -5186,6 +5320,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			var act = new EffectsPastedUndoAction(this, elements.Select(x => x.EffectNode));
 			_undoMgr.AddUndoAction(act);
+
+			if (skippedDeprecatedRowNames.Count > 0)
+			{
+				UpdateToolStrip4($"Skipped pasting to Deprecated row(s): {string.Join(", ", skippedDeprecatedRowNames)}.", 10);
+			}
 
 			return result;
 		}

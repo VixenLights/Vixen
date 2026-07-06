@@ -5,6 +5,8 @@ using VixenModules.Media.Audio;
 using Common.Controls.Scaling;
 using Common.Controls.TimelineControl;
 using Vixen.Marks;
+using Vixen.Services;
+using Vixen.Sys;
 
 namespace Common.Controls.Timeline
 {
@@ -605,6 +607,23 @@ namespace Common.Controls.Timeline
 			remove { if (grid != null) grid.ElementChangedRows -= value; }
 		}
 
+		/// <summary>
+		/// Raised after a row's <c>Tags</c> submenu adds or removes a tag on one or more selected rows'
+		/// <see cref="ElementNode"/>s (<see cref="ToggleTagOnSelectedRows"/>).
+		/// </summary>
+		public event EventHandler RowTagsChanged;
+
+		/// <summary>
+		/// Raised when the user clicks "Manage Tag Colors..." in a row's Tags context submenu.
+		/// </summary>
+		/// <remarks>
+		/// This control has no WPF-hosting capability of its own, so it cannot open
+		/// <c>ElementTagManagerWindow</c> itself; the host form (which already references a WPF-capable
+		/// project) is expected to handle this event by opening the window and, if changes were saved, calling
+		/// <see cref="InvalidateRowLabels"/>.
+		/// </remarks>
+		public event EventHandler ManageTagsRequested;
+
 		public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew
 		{
 			add { grid.ElementsMovedNew += value; }
@@ -772,8 +791,142 @@ namespace Common.Controls.Timeline
 			RowListMenuResetSelectedRowHeight.Click += ResetSelectedRowHeight_Click;
 			RowListMenu.Items.AddRange(new ToolStripItem[]
 			{RowListMenuCollapse, RowListMenuResetRowHeight, RowListMenuResetSelectedRowHeight});
+
+			// Separator marks the boundary between row-layout actions (above, act on the row itself)
+			// and element node actions (below, act on the ElementNode the row represents).
+			RowListMenu.Items.Add(new ToolStripSeparator());
+			var tagsMenuItem = new ToolStripMenuItem("Tags");
+			PopulateTagsMenu(tagsMenuItem);
+			RowListMenu.Items.Add(tagsMenuItem);
+
 			RowListMenu.Renderer = new ThemeToolStripRenderer();
 			RowListMenu.Show(MousePosition);
+		}
+
+		private List<ElementNode> SelectedRowElementNodes()
+		{
+			return SelectedRows.Select(row => row.Tag as ElementNode).Where(node => node != null).ToList();
+		}
+
+		private void PopulateTagsMenu(ToolStripMenuItem tagsMenuItem)
+		{
+			tagsMenuItem.DropDownItems.Clear();
+
+			var selectedElementNodes = SelectedRowElementNodes();
+			tagsMenuItem.Enabled = selectedElementNodes.Count > 0;
+
+			foreach (ElementTagDefinition tag in ElementTagService.Instance.GetAll())
+			{
+				Guid tagId = tag.Id;
+				var tagMenuItem = new ToolStripMenuItem(tag.Name)
+				{
+					CheckState = GetTagCheckState(selectedElementNodes, tagId)
+				};
+				tagMenuItem.Click += (sender, e) =>
+					ToggleTagOnSelectedRows(tagMenuItem, tagId, (ModifierKeys & Keys.Control) == Keys.Control);
+				if (!string.IsNullOrEmpty(tag.DisplayColor))
+				{
+					Color dotColor = ColorTranslator.FromHtml(tag.DisplayColor);
+					tagMenuItem.Paint += (sender, e) => PaintTagColorDot(tagMenuItem, e, dotColor);
+				}
+				tagsMenuItem.DropDownItems.Add(tagMenuItem);
+			}
+
+			tagsMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+			var manageTagColorsItem = new ToolStripMenuItem("Manage Tags...");
+			manageTagColorsItem.Click += (sender, e) => ManageTagsRequested?.Invoke(this, EventArgs.Empty);
+			tagsMenuItem.DropDownItems.Add(manageTagColorsItem);
+		}
+
+		/// <summary>
+		/// Invalidates every row label currently in the timeline, forcing them to repaint.
+		/// </summary>
+		/// <remarks>
+		/// Called by the host form after <c>ElementTagManagerWindow</c> (opened in response to
+		/// <see cref="ManageTagsRequested"/>) saves a tag color change, so the new color is visible
+		/// on every affected row's tag dots immediately, without requiring the sequence to be reopened.
+		/// </remarks>
+		public void InvalidateRowLabels()
+		{
+			foreach (Row row in Rows)
+			{
+				row.RowLabel.Invalidate();
+			}
+		}
+
+		private static void PaintTagColorDot(ToolStripMenuItem item, PaintEventArgs e, Color dotColor)
+		{
+			const int diameter = 8;
+			const int spacing = 3;
+			var rect = new Rectangle(item.Width - diameter - spacing * 2, (item.Height - diameter) / 2, diameter, diameter);
+			using var brush = new SolidBrush(dotColor);
+			e.Graphics.FillEllipse(brush, rect);
+		}
+
+		private static CheckState GetTagCheckState(List<ElementNode> selectedElementNodes, Guid tagId)
+		{
+			if (selectedElementNodes.Count == 0)
+				return CheckState.Unchecked;
+
+			int taggedCount = selectedElementNodes.Count(node => node.Tags.Contains(tagId));
+			if (taggedCount == 0)
+				return CheckState.Unchecked;
+			if (taggedCount == selectedElementNodes.Count)
+				return CheckState.Checked;
+
+			return CheckState.Indeterminate;
+		}
+
+		/// <summary>
+		/// Adds or removes <paramref name="tagId"/> on the currently selected rows' <see cref="ElementNode"/>s.
+		/// </summary>
+		/// <param name="tagMenuItem">The clicked tag submenu item, whose <see cref="ToolStripMenuItem.CheckState"/>
+		/// determines whether the tag is being added or removed and is updated to reflect the new state.</param>
+		/// <param name="tagId">The tag being toggled.</param>
+		/// <param name="cascadeToChildren">When true (the tag was clicked with Ctrl held), the tag is also
+		/// added to or removed from every descendant of each selected node, not just the selected node itself.</param>
+		private async void ToggleTagOnSelectedRows(ToolStripMenuItem tagMenuItem, Guid tagId, bool cascadeToChildren)
+		{
+			var selectedElementNodes = SelectedRowElementNodes();
+			if (selectedElementNodes.Count == 0)
+				return;
+
+			var targetNodes = cascadeToChildren
+				? selectedElementNodes.SelectMany(node => node.GetNodeEnumerator()).Distinct().ToList()
+				: selectedElementNodes;
+
+			if (tagMenuItem.CheckState == CheckState.Checked)
+			{
+				foreach (ElementNode node in targetNodes)
+				{
+					node.Tags.Remove(tagId);
+				}
+				tagMenuItem.CheckState = CheckState.Unchecked;
+			}
+			else
+			{
+				foreach (ElementNode node in targetNodes)
+				{
+					node.Tags.Add(tagId);
+				}
+				tagMenuItem.CheckState = CheckState.Checked;
+			}
+
+			// Each RowLabel is its own child control of timelineRowList, so invalidating the
+			// parent alone does not repaint them (they're outside the parent's own clipped paint
+			// region) - each affected row's label must be invalidated directly. When cascading, that
+			// includes descendant rows that were never themselves selected.
+			foreach (Row row in Rows.Where(row => row.Tag is ElementNode node && targetNodes.Contains(node)))
+			{
+				row.RowLabel.Invalidate();
+			}
+
+			RowTagsChanged?.Invoke(this, EventArgs.Empty);
+
+			// The Sequencer has no OK/Cancel-gated save of its own, unlike Display Setup/Preview Setup,
+			// so a tag change made here must be persisted explicitly.
+			await VixenSystem.SaveSystemConfigAsync();
 		}
 
 		private void ResetRowHeight_Click(object sender, EventArgs e)
