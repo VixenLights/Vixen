@@ -19,7 +19,7 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
 - [x] (2026-07-06 18:55Z) Removed obsolete routed-command and default-template files after the XAML view migration. `src/Vixen.Modules/Editor/LayerEditor/Input/LayerEditorCommands.cs` and `src/Vixen.Modules/Editor/LayerEditor/Themes/Generic.xaml` are no longer needed.
 - [x] (2026-07-06 19:25Z) Added testable layer operation services and focused unit tests for existing layer behavior. `LayerEditorViewModel` now delegates add/remove/move/configure operations to `ILayerEditorLayerService`; `LayerEditorLayerServiceTests` passed with 15 targeted tests, and the full `Vixen.Tests` project passed with 142 tests.
 - [x] (2026-07-06 19:35Z) Added the quick rename PNG resource, image-only button, and Catel command. The command delegates to the tested layer service quick rename behavior; targeted LayerEditor tests, the LayerEditor project rebuild, and the full test project passed.
-- [ ] Add `.v3l` DTOs and import/export serialization services with tests.
+- [x] (2026-07-06 20:10Z) Added `.v3l` DTOs and import/export serialization services with tests. `src/Vixen.Modules/Editor/LayerEditor/ImportExport/` gained `LayerExportDocument`, `LayerExportRecord`, `LayerImportEntry`, `LayerImportSkippedRecord`, `LayerImportPlan`, and `LayerImportResult`. `src/Vixen.Modules/Editor/LayerEditor/Services/` gained `ILayerImportExportService`/`LayerImportExportService` and `ILayerMixingFilterResolver`/`LayerMixingFilterResolver`. `src/Vixen.Tests/Sequencer/LayerImportExportServiceTests.cs` passed with 8 targeted tests, and the full `Vixen.Tests` project passed with 150 tests.
 - [ ] Add Catel file dialog and message-service command flows with tests.
 - [ ] Manually verify the Layer Editor in the Timed Sequence Editor host.
 - [ ] Update VIX-2973 in JIRA with the final refined specification, acceptance criteria, and test guidance.
@@ -59,6 +59,15 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
 
 - Observation: LayerEditor must reference the shared Resources project directly before it can use `/Resources;component/...` image pack URIs in its own XAML.
   Evidence: Milestone 4 added `..\..\..\Vixen.Common\Resources\Resources.csproj` to `src/Vixen.Modules/Editor/LayerEditor/LayerEditor.csproj`, added `layer_rename.png` as a WPF `Resource`, and `dotnet msbuild src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -t:Rebuild -p:Configuration=Debug -p:UseSharedCompilation=false` succeeded.
+
+- Observation: The LayerEditor module tree sets `<Nullable>disable</Nullable>` in `src/Vixen.Modules/Editor/Directory.Build.props`, overriding the repository-wide `<Nullable>enable</Nullable>` default. `?`-annotated reference types in that module compile but emit `CS8632` warnings.
+  Evidence: `dotnet build src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -c Debug -p:UseSharedCompilation=false` printed `CS8632` for every nullable-annotated signature added in milestone 5 until the annotations were removed; a subsequent build with plain (unannotated) reference types produced zero warnings.
+
+- Observation: `Vixen.Sys.LayerMixing.Layer.FilterTypeId` returns `Guid.Empty` whenever no `LayerMixingFilter` is attached, and `DefaultLayer` never attaches one. This makes `Guid.Empty` a safe, existing-codebase-consistent sentinel for recognizing a hand-edited default-layer record in a `.v3l` file without needing a separate "is default" field.
+  Evidence: `src/Vixen.Core/Sys/LayerMixing/Layer.cs` (`FilterTypeId` getter) and `src/Vixen.Core/Sys/LayerMixing/DefaultLayer.cs` (constructor never sets `LayerMixingFilter`).
+
+- Observation: `System.Text.Json`'s `JsonElement` can be embedded directly as a DTO property and round-trips through `JsonSerializer.Serialize`/`Deserialize` without a custom converter, letting the per-filter `DataContractJsonSerializer` output sit inside the larger `.v3l` document verbatim.
+  Evidence: `LayerImportExportServiceTests.ExportAsync_WritesNonDefaultLayersInTopToBottomOrderAsIndentedJson` and `ReadImportPlanAsync_AllLayersValid_ProducesImportableEntriesWithRestoredModuleData` passed using `LayerExportRecord.FilterData` typed as `JsonElement`.
 
 ## Decision Log
 
@@ -110,6 +119,22 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
   Rationale: The button represents a layer-specific rename-to-filter action. A small rows-plus-pencil icon keeps the compact image-only UI understandable without adding text to the row.
   Date/Author: 2026-07-06 / Codex
 
+- Decision: Introduce `ILayerMixingFilterResolver`/`LayerMixingFilterResolver` as a thin adapter around `LayerMixingFilterService.Instance.GetInstance` and inject it into `LayerImportExportService` instead of calling the static service directly.
+  Rationale: Import must be testable for the missing-filter-type scenario (a `.v3l` record referencing a module type that is not installed). A static service call cannot be mocked; the adapter interface lets tests return `null` for an arbitrary type ID without touching the real module registry.
+  Date/Author: 2026-07-06 / Codex
+
+- Decision: Store `filterDataType` in `LayerExportRecord` as `"{Type.FullName}, {Type.Assembly.GetName().Name}"` for human readability only; import resolves the concrete `IModuleDataModel` type from the freshly created filter instance's own `ModuleData.GetType()`, not by parsing `filterDataType`.
+  Rationale: Trusting a string type name from a hand-editable file to load a type would be fragile and is unnecessary: the filter type ID already identifies the correct module, and that module's own current data-model type is authoritative for `DataContractJsonSerializer`.
+  Date/Author: 2026-07-06 / Codex
+
+- Decision: Treat a `.v3l` layer record whose `filterTypeId` is `Guid.Empty` as an ignorable default-layer record, silently skipped rather than added to `LayerImportPlan.SkippedLayers`.
+  Rationale: `Guid.Empty` is exactly the value `Layer.FilterTypeId` returns for the default layer today, since the default layer never has an attached mixing filter. Treating it as an unimportable/skipped-with-warning layer would surface a confusing warning for something that isn't a real error.
+  Date/Author: 2026-07-06 / Codex
+
+- Decision: Remove nullable-reference (`?`) annotations from the milestone 5 files after discovering `src/Vixen.Modules/Editor/Directory.Build.props` sets `<Nullable>disable</Nullable>` for the whole Editor module tree.
+  Rationale: The annotations compiled but produced `CS8632` warnings inconsistent with the rest of the LayerEditor module's existing (unannotated) code; matching the module's established nullable-disabled convention keeps the build warning-free.
+  Date/Author: 2026-07-06 / Codex
+
 ## Outcomes & Retrospective
 
 Milestone 1 is complete. The implementation now has focused proof tests showing that the current layer mixing filter module data can be serialized to readable JSON and restored without losing configured values. The next milestone can build the actual import/export service on `DataContractJsonSerializer` for filter `ModuleData`, while still using a versioned top-level `.v3l` JSON document.
@@ -121,6 +146,8 @@ Milestone 2 refinement is complete. The Layer Editor UI now lives in `src/Vixen.
 Milestone 3 is complete. `src/Vixen.Modules/Editor/LayerEditor/Services/ILayerEditorLayerService.cs` defines the layer operation contract, and `LayerEditorLayerService.cs` implements add, remove, move, configure, quick rename, unique name generation, and exportability checks. `LayerEditorViewModel` now delegates mutations to that service. `src/Vixen.Tests/Sequencer/LayerEditorLayerServiceTests.cs` covers the existing add/remove/move/configure behavior and the core quick rename/exportability helpers that later UI and import/export milestones will consume.
 
 Milestone 4 is complete. `src/Vixen.Common/Resources/layer_rename.png` is included as a WPF resource, and `src/Vixen.Modules/Editor/LayerEditor/LayerEditor.csproj` references the Resources project so `LayerEditorView.xaml` can use the pack URI. `LayerEditorViewModel` now exposes `QuickRenameLayerCommand`, and the layer row has a 24px image-only button beside the name text box that invokes the command for standard layers.
+
+Milestone 5 is complete. `src/Vixen.Modules/Editor/LayerEditor/ImportExport/` has `LayerExportDocument`, `LayerExportRecord`, `LayerImportEntry`, `LayerImportSkippedRecord`, `LayerImportPlan`, and `LayerImportResult`. `src/Vixen.Modules/Editor/LayerEditor/Services/` adds `ILayerImportExportService`/`LayerImportExportService`, plus `ILayerMixingFilterResolver`/`LayerMixingFilterResolver` so import can be tested against a missing filter type without the real module registry. `ExportAsync` writes indented JSON containing every non-default layer in top-to-bottom order, embedding each filter's `DataContractJsonSerializer` output as a `JsonElement`. `ReadImportPlanAsync` validates format/version/required fields before returning a `LayerImportPlan`, classifies missing-filter and unrestorable-data layers as skipped, and silently ignores hand-edited default-layer records (`filterTypeId == Guid.Empty`). `Import` adds `LayerImportPlan.ImportableLayers` above the existing layers in their exported relative order (added bottom-to-top to compensate for `SequenceLayers.AddLayer` inserting at index 0) and renames collisions through the existing `ILayerEditorLayerService.CreateUniqueLayerName`. `src/Vixen.Tests/Sequencer/LayerImportExportServiceTests.cs` covers export ordering/shape, successful import with module-data restoration, missing-filter skipping, ignoring default-layer records, invalid JSON, unsupported format/version, and duplicate-name renaming on import.
 
 ## Context and Orientation
 
@@ -417,6 +444,20 @@ Milestone 4 validation evidence:
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore
     Passed!  - Failed:     0, Passed:   142, Skipped:     0, Total:   142, Duration: 162 ms - Vixen.Tests.dll (net10.0)
 
+Milestone 5 validation evidence:
+
+    dotnet build src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -c Debug -p:UseSharedCompilation=false
+    LayerEditor -> C:\Dev\Vixen\src\Vixen.Modules\Editor\LayerEditor\Debug\Output\LayerEditor.dll (Build succeeded, 0 warnings from new code)
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~LayerImportExportServiceTests --no-restore
+    Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 260 ms - Vixen.Tests.dll (net10.0)
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore
+    Passed!  - Failed:     0, Passed:   150, Skipped:     0, Total:   150, Duration: 220 ms - Vixen.Tests.dll (net10.0)
+
+    dotnet msbuild src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -t:Rebuild -p:Configuration=Debug
+    LayerEditor -> C:\Dev\Vixen\src\Vixen.Modules\Editor\LayerEditor\Debug\Output\LayerEditor.dll
+
 Broader host validation attempts and blockers:
 
     dotnet msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Rebuild -p:Configuration=Debug
@@ -484,3 +525,5 @@ If any new public or protected API is added or changed, update XML documentation
 2026-07-06 / Codex: Completed milestone 3 by adding `ILayerEditorLayerService`, `LayerEditorLayerService`, and `LayerEditorLayerServiceTests`; updated `LayerEditorViewModel` to delegate layer mutations to the service; recorded targeted, project, and full-test validation evidence.
 
 2026-07-06 / Codex: Completed milestone 4 by adding the `layer_rename.png` shared resource, wiring a compact image-only quick rename button into `LayerEditorView.xaml`, exposing `QuickRenameLayerCommand` from `LayerEditorViewModel`, and validating with targeted tests, the LayerEditor rebuild, and the full test project.
+
+2026-07-06 / Codex: Completed milestone 5 by adding the `.v3l` DTOs (`LayerExportDocument`, `LayerExportRecord`, `LayerImportEntry`, `LayerImportSkippedRecord`, `LayerImportPlan`, `LayerImportResult`) and the `ILayerImportExportService`/`LayerImportExportService` pair, plus an `ILayerMixingFilterResolver` adapter for testable filter-type resolution. Recorded the `Guid.Empty`-as-default-layer-sentinel decision, the `Nullable disable` Editor-module convention, and validated with 8 targeted tests, the full 150-test suite, and a clean LayerEditor rebuild.
