@@ -101,6 +101,7 @@
 				<None Include="Resources\check_box.bmp" />
 				<None Include="Resources\Reset.png" />
 				<Content Include="layers.png" />
+				<Resource Include="layer_rename.png" />
 				<None Include="Resources\layers.bmp" />
 				<None Include="Resources\LibraryLink.png" />
 				<None Include="Resources\alignStartMark.png" />
