@@ -92,6 +92,7 @@ namespace VixenModules.Output.E131
 			int iconSize = (int)(16*ScalingTools.GetScaleFactor());
 			lblDestination.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 14.25F);
             btnAddUniverse.Image = Tools.GetIcon(Resources.add, iconSize);
+            btnAddMultipleUniverses.Image = Tools.GetIcon(Resources.table_add, iconSize);
             btnDeleteUniverse.Image = Tools.GetIcon(Resources.delete, iconSize);
 
             btnAddUnicast.Image = Tools.GetIcon(Resources.add, iconSize);
@@ -1078,17 +1079,37 @@ namespace VixenModules.Output.E131
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            int maxUniverse = 0;
+			AddUniverseRow();
+		}
+
+		private void btnAddMultipleUniverses_Click(object sender, EventArgs e)
+		{
+			int maxUniversesToAdd = 64000 - GetHighestUniverseNumber();
+			if (maxUniversesToAdd < 1)
+			{
+				var messageBox = new MessageBoxForm("No additional universes can be added. Universe numbers must be between 1 and 64000 inclusive.", "Add Universes", MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.ShowDialog(this);
+				return;
+			}
+
+			using var numberDialog = new NumberDialog("Add Universes", "Number of universes to add.", 1, 1, maxUniversesToAdd);
+			if (numberDialog.ShowDialog(this) != DialogResult.OK)
+			{
+				return;
+			}
+
+			for (int i = 0; i < numberDialog.Value; i++)
+			{
+				AddUniverseRow();
+			}
+		}
+
+		private void AddUniverseRow()
+		{
+			int maxUniverse = GetHighestUniverseNumber();
 			object universeSize = univDGVN.RowCount > 0
 		        ? univDGVN.Rows[univDGVN.Rows.Count - 1].Cells[SIZE_COLUMN].Value
 		        : "510";
-	        //try to supply a more useful start value
-            foreach (DataGridViewRow r in univDGVN.Rows)
-            {
-                if (r.Cells[UNIVERSE_COLUMN].Value != null)
-                    if (Convert.ToInt16(r.Cells[UNIVERSE_COLUMN].Value.ToString()) > maxUniverse)
-                        maxUniverse = Convert.ToInt16(r.Cells[UNIVERSE_COLUMN].Value.ToString());
-            }
             maxUniverse++;
             univDGVN.Rows.Add(
 			new object[] { 0, true, maxUniverse.ToString(), universeSize });
@@ -1099,6 +1120,22 @@ namespace VixenModules.Output.E131
             univDGVN.Rows[univDGVN.Rows.Count-1].Selected = true;
 			univDGVN.FirstDisplayedScrollingRowIndex = univDGVN.RowCount -1;
 			btnDeleteUniverse.Enabled = true;
+		}
+
+		private int GetHighestUniverseNumber()
+		{
+			int maxUniverse = 0;
+
+			//try to supply a more useful start value
+			foreach (DataGridViewRow r in univDGVN.Rows)
+			{
+				if (r.Cells[UNIVERSE_COLUMN].Value != null && int.TryParse(r.Cells[UNIVERSE_COLUMN].Value.ToString(), out int universe))
+				{
+					maxUniverse = Math.Max(maxUniverse, universe);
+				}
+			}
+
+			return maxUniverse;
 		}
 
         private void UnivDgvnDeletedRow(object sender, DataGridViewRowEventArgs e)

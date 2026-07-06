@@ -63,6 +63,7 @@ namespace VixenModules.Output.E131
 			btnDeleteUnicast = new Button();
 			btnAddUnicast = new Button();
 			btnDeleteUniverse = new Button();
+			btnAddMultipleUniverses = new Button();
 			btnAddUniverse = new Button();
 			lblDestination = new Label();
 			comboDestination = new ComboBox();
@@ -219,12 +220,23 @@ namespace VixenModules.Output.E131
 			// 
 			btnDeleteUniverse.FlatAppearance.BorderSize = 0;
 			btnDeleteUniverse.FlatStyle = FlatStyle.Flat;
-			btnDeleteUniverse.Location = new Point(294, 44);
+			btnDeleteUniverse.Location = new Point(294, 78);
 			btnDeleteUniverse.Name = "btnDeleteUniverse";
 			btnDeleteUniverse.Size = new Size(27, 28);
-			btnDeleteUniverse.TabIndex = 4;
+			btnDeleteUniverse.TabIndex = 5;
 			btnDeleteUniverse.UseVisualStyleBackColor = true;
 			btnDeleteUniverse.Click += btnDelete_Click;
+			// 
+			// btnAddMultipleUniverses
+			// 
+			btnAddMultipleUniverses.FlatAppearance.BorderSize = 0;
+			btnAddMultipleUniverses.FlatStyle = FlatStyle.Flat;
+			btnAddMultipleUniverses.Location = new Point(294, 44);
+			btnAddMultipleUniverses.Name = "btnAddMultipleUniverses";
+			btnAddMultipleUniverses.Size = new Size(27, 28);
+			btnAddMultipleUniverses.TabIndex = 4;
+			btnAddMultipleUniverses.UseVisualStyleBackColor = true;
+			btnAddMultipleUniverses.Click += btnAddMultipleUniverses_Click;
 			// 
 			// btnAddUniverse
 			// 
@@ -306,6 +318,7 @@ namespace VixenModules.Output.E131
 			tabPageEX1.Controls.Add(btnAddUnicast);
 			tabPageEX1.Controls.Add(comboDestination);
 			tabPageEX1.Controls.Add(btnDeleteUniverse);
+			tabPageEX1.Controls.Add(btnAddMultipleUniverses);
 			tabPageEX1.Controls.Add(lblDestination);
 			tabPageEX1.Controls.Add(btnAddUniverse);
 			tabPageEX1.Location = new Point(4, 22);
@@ -318,10 +331,10 @@ namespace VixenModules.Output.E131
 			// btnDeleteAllUniverses
 			// 
 			btnDeleteAllUniverses.FlatAppearance.BorderSize = 0;
-			btnDeleteAllUniverses.Location = new Point(294, 78);
+			btnDeleteAllUniverses.Location = new Point(294, 112);
 			btnDeleteAllUniverses.Name = "btnDeleteAllUniverses";
 			btnDeleteAllUniverses.Size = new Size(27, 28);
-			btnDeleteAllUniverses.TabIndex = 8;
+			btnDeleteAllUniverses.TabIndex = 9;
 			btnDeleteAllUniverses.UseVisualStyleBackColor = true;
 			btnDeleteAllUniverses.Click += btnDeleteAllUniverses_Click;
 			// 
@@ -484,7 +497,8 @@ namespace VixenModules.Output.E131
         private DataGridViewCheckBoxColumn activeColumn;
         private DataGridViewTextBoxColumn universeColumn;
         private DataGridViewTextBoxColumn sizeColumn;
-        private Button btnAddUniverse;
+		private Button btnAddUniverse;
+		private Button btnAddMultipleUniverses;
         private Button btnDeleteUniverse;
         private Button btnDeleteUnicast;
         private Button btnAddUnicast;
