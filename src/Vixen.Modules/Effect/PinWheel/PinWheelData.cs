@@ -19,6 +19,7 @@ namespace VixenModules.Effect.PinWheel
 			TwistCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 56.0, 56.0 }));
 			ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 }));
 			Rotation = RotationType.Forward;
+			RotationCurve = new Curve(CurveType.Flat100);
 			SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 23.0, 23.0 }));
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
@@ -85,6 +86,12 @@ namespace VixenModules.Effect.PinWheel
 
 		[DataMember]
 		public RotationType Rotation { get; set; }
+
+		/// <summary>
+		/// Gets or sets the rotation direction and speed curve.
+		/// </summary>
+		[DataMember]
+		public Curve RotationCurve { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
 		public bool PinWheel3D { get; set; } //Deprecated
@@ -159,6 +166,13 @@ namespace VixenModules.Effect.PinWheel
 				}
 			}
 
+			if (RotationCurve == null)
+			{
+				double value = Rotation == RotationType.Forward ? 100.0 : 0.0;
+				RotationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+				Rotation = RotationType.Forward;
+			}
+
 			if (!OffsetPercentage)
 			{
 				Curve defaultCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {50.0, 50.0}));
@@ -183,6 +197,7 @@ namespace VixenModules.Effect.PinWheel
 				TwistCurve = new Curve(TwistCurve),
 				ThicknessCurve = new Curve(ThicknessCurve),
 				Rotation = Rotation,
+				RotationCurve = new Curve(RotationCurve),
 				SizeCurve = new Curve(SizeCurve),
 				LevelCurve = new Curve(LevelCurve),
 				MovementType = MovementType,

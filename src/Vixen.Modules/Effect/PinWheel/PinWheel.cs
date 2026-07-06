@@ -225,22 +225,25 @@ namespace VixenModules.Effect.PinWheel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the rotation direction and speed curve.
+		/// </summary>
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
-		[ProviderDescription(@"Direction")]
+		[ProviderDescription(@"PinWheelRotation")]
 		[PropertyOrder(10)]
-		public RotationType Rotation
+		public Curve RotationCurve
 		{
-			get { return _data.Rotation; }
+			get { return _data.RotationCurve; }
 			set
 			{
-				_data.Rotation = value;
+				_data.RotationCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
 		}
-
+		
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"BladeType")]
@@ -417,7 +420,8 @@ namespace VixenModules.Effect.PinWheel
 
 			double currentTwist = CalculateTwist(intervalPosFactor);
 
-			var arms = CreateArms(degreesPerArm, pos, frame, overallLevel);
+			var rotation = CalculateRotation(intervalPosFactor);
+			var arms = CreateArms(degreesPerArm, pos, rotation, frame, overallLevel);
 			float armsize = (float)(CalculateSize(intervalPosFactor) / 100.0);
 
 			var origin = new Point(BufferWi / 2 + BufferWiOffset + CalculateXOffset(intervalPosFactor), BufferHt / 2 + BufferHtOffset + CalculateYOffset(intervalPosFactor));
@@ -436,7 +440,7 @@ namespace VixenModules.Effect.PinWheel
 			{
 				for (int y = 0; y < BufferHt; y++)
 				{
-					RenderPoint(frameBuffer, currentTwist,  x, y, origin, maxRadius, arms, angleRange, overallLevel, true, centerStartPct);
+					RenderPoint(frameBuffer, currentTwist, rotation, x, y, origin, maxRadius, arms, angleRange, overallLevel, true, centerStartPct);
 				}
 			}
 			
@@ -461,7 +465,8 @@ namespace VixenModules.Effect.PinWheel
 
 				double currentTwist = CalculateTwist(intervalPosFactor);
 
-				var arms = CreateArms(degreesPerArm, pos, frame, overallLevel);
+				var rotation = CalculateRotation(intervalPosFactor);
+				var arms = CreateArms(degreesPerArm, pos, rotation, frame, overallLevel);
 
 				float armsize = (float)(CalculateSize(intervalPosFactor) / 100.0);
 
@@ -479,7 +484,7 @@ namespace VixenModules.Effect.PinWheel
 
 				foreach (var elementLocation in frameBuffer.ElementLocations)
 				{
-					RenderPoint(frameBuffer, currentTwist, elementLocation.X, elementLocation.Y, origin, maxRadius, arms, angleRange, overallLevel, false, centerStartPct);			
+					RenderPoint(frameBuffer, currentTwist, rotation, elementLocation.X, elementLocation.Y, origin, maxRadius, arms, angleRange, overallLevel, false, centerStartPct);
 				}
 			}			
 		}
@@ -519,6 +524,11 @@ namespace VixenModules.Effect.PinWheel
 			return ScaleCurveToValue(TwistCurve.GetValue(intervalPos), 500, -500);
 		}
 
+		private double CalculateRotation(double intervalPos)
+		{
+			return ScaleCurveToValue(RotationCurve.GetValue(intervalPos), 1, -1);
+		}
+
 		private double CalculateThickness(double intervalPos)
 		{
 			var value = ThicknessCurve.GetIntValue(intervalPos);
@@ -535,15 +545,13 @@ namespace VixenModules.Effect.PinWheel
 			return value/100.0;
 		}
 
-		private List<Tuple<int, HSV>> CreateArms(int degreesPerArm, double pos, int frame, double overallLevel)
+		private List<Tuple<int, HSV>> CreateArms(int degreesPerArm, double pos, double rotation, int frame, double overallLevel)
 		{
 			var arms = new List<Tuple<int, HSV>>();
 			int colorcnt = Colors.Count;
 			for (int a = 1; a <= Arms; a++)
 			{
-				var armAngle = (Rotation == RotationType.Backward
-					? (int) (AddDegrees((a + 1) * degreesPerArm, pos))
-					: (int) (AddDegrees((a + 1) * degreesPerArm, -pos)));
+				var armAngle = (int) AddDegrees((a + 1) * degreesPerArm, -pos * rotation);
 				var colorIdx = (a - 1) % colorcnt;
 				var hsv = GetColor(colorIdx, frame);
 				hsv.V = hsv.V * Colors[colorIdx].Curve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
@@ -553,7 +561,7 @@ namespace VixenModules.Effect.PinWheel
 			return arms;
 		}
 
-		private void RenderPoint(IPixelFrameBuffer frameBuffer, double twist, int x, int y, Point origin, double maxRadius, List<Tuple<int, HSV>> arms, double angleRange, double overallLevel, bool invertY, double centerStartPct)
+		private void RenderPoint(IPixelFrameBuffer frameBuffer, double twist, double rotation, int x, int y, Point origin, double maxRadius, List<Tuple<int, HSV>> arms, double angleRange, double overallLevel, bool invertY, double centerStartPct)
 		{
 			var radius = DistanceFromPoint(origin, x, y);
 			if (radius > maxRadius || radius <= (centerStartPct*maxRadius))
@@ -593,7 +601,7 @@ namespace VixenModules.Effect.PinWheel
 							hsv.V = hsv.V * (DegreesDiffernce(degrees, angle) / angleRange);
 							break;
 						case PinWheelBladeType.Fan:
-							var frontAngle = Rotation == RotationType.Forward ? angleRange : -angleRange;
+							var frontAngle = rotation >= 0 ? angleRange : -angleRange;
 							hsv.V = hsv.V * (DegreesDiffernce(AddDegrees(degrees, frontAngle), angle) / (2 * angleRange));
 							break;
 					}
