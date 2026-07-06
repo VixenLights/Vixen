@@ -162,7 +162,7 @@ namespace VixenModules.Effect.Spiral
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
-		[ProviderDescription(@"Rotation")]
+		[ProviderDescription(@"SpiralRotation")]
 		[PropertyOrder(6)]
 		public Curve RotationCurve
 		{
