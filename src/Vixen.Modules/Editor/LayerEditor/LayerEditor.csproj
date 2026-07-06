@@ -11,6 +11,7 @@
 
 		<ItemGroup>
 		  <ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+		  <ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
 		  <ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
 		</ItemGroup>
 

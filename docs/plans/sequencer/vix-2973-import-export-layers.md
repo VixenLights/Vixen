@@ -18,7 +18,7 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
 - [x] (2026-07-06 18:45Z) Extended milestone 2 by moving the Layer Editor UI out of `Themes/Generic.xaml` and into a proper Catel view at `src/Vixen.Modules/Editor/LayerEditor/Views/LayerEditorView.xaml` with code-behind at `Views/LayerEditorView.xaml.cs`. Updated the Timed Sequence Editor host to reference `VixenModules.Editor.LayerEditor.Views.LayerEditorView`.
 - [x] (2026-07-06 18:55Z) Removed obsolete routed-command and default-template files after the XAML view migration. `src/Vixen.Modules/Editor/LayerEditor/Input/LayerEditorCommands.cs` and `src/Vixen.Modules/Editor/LayerEditor/Themes/Generic.xaml` are no longer needed.
 - [x] (2026-07-06 19:25Z) Added testable layer operation services and focused unit tests for existing layer behavior. `LayerEditorViewModel` now delegates add/remove/move/configure operations to `ILayerEditorLayerService`; `LayerEditorLayerServiceTests` passed with 15 targeted tests, and the full `Vixen.Tests` project passed with 142 tests.
-- [ ] Add the quick rename PNG resource, image-only button, command, and tests.
+- [x] (2026-07-06 19:35Z) Added the quick rename PNG resource, image-only button, and Catel command. The command delegates to the tested layer service quick rename behavior; targeted LayerEditor tests, the LayerEditor project rebuild, and the full test project passed.
 - [ ] Add `.v3l` DTOs and import/export serialization services with tests.
 - [ ] Add Catel file dialog and message-service command flows with tests.
 - [ ] Manually verify the Layer Editor in the Timed Sequence Editor host.
@@ -56,6 +56,9 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
 
 - Observation: `Vixen.Tests` can reference the WPF LayerEditor project and run pure service tests without launching WPF.
   Evidence: Adding a project reference from `src/Vixen.Tests/Vixen.Tests.csproj` to `src/Vixen.Modules/Editor/LayerEditor/LayerEditor.csproj` allowed `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~LayerEditor --no-restore` to run 15 service tests successfully.
+
+- Observation: LayerEditor must reference the shared Resources project directly before it can use `/Resources;component/...` image pack URIs in its own XAML.
+  Evidence: Milestone 4 added `..\..\..\Vixen.Common\Resources\Resources.csproj` to `src/Vixen.Modules/Editor/LayerEditor/LayerEditor.csproj`, added `layer_rename.png` as a WPF `Resource`, and `dotnet msbuild src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -t:Rebuild -p:Configuration=Debug -p:UseSharedCompilation=false` succeeded.
 
 ## Decision Log
 
@@ -103,6 +106,10 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
   Rationale: The view model already has an available filter instance from module discovery, and tests can provide a mocked filter instance without initializing the global module registry. The GUID overload remains for later import/export code that will read filter type IDs from `.v3l` files.
   Date/Author: 2026-07-06 / Codex
 
+- Decision: Create `layer_rename.png` in the shared Resources project for the quick rename button instead of reusing an existing generic pencil icon.
+  Rationale: The button represents a layer-specific rename-to-filter action. A small rows-plus-pencil icon keeps the compact image-only UI understandable without adding text to the row.
+  Date/Author: 2026-07-06 / Codex
+
 ## Outcomes & Retrospective
 
 Milestone 1 is complete. The implementation now has focused proof tests showing that the current layer mixing filter module data can be serialized to readable JSON and restored without losing configured values. The next milestone can build the actual import/export service on `DataContractJsonSerializer` for filter `ModuleData`, while still using a versioned top-level `.v3l` JSON document.
@@ -112,6 +119,8 @@ Milestone 2 is complete. The Layer Editor now has `src/Vixen.Modules/Editor/Laye
 Milestone 2 refinement is complete. The Layer Editor UI now lives in `src/Vixen.Modules/Editor/LayerEditor/Views/LayerEditorView.xaml`, with its WPF-specific drag/drop adapter in `Views/LayerEditorView.xaml.cs`. `Themes/Generic.xaml` and `Input/LayerEditorCommands.cs` have been deleted because the view is no longer a default-template custom control and no longer uses routed commands. The Timed Sequence Editor host now uses `VixenModules.Editor.LayerEditor.Views.LayerEditorView` and no longer merges `Themes/Generic.xaml` at runtime.
 
 Milestone 3 is complete. `src/Vixen.Modules/Editor/LayerEditor/Services/ILayerEditorLayerService.cs` defines the layer operation contract, and `LayerEditorLayerService.cs` implements add, remove, move, configure, quick rename, unique name generation, and exportability checks. `LayerEditorViewModel` now delegates mutations to that service. `src/Vixen.Tests/Sequencer/LayerEditorLayerServiceTests.cs` covers the existing add/remove/move/configure behavior and the core quick rename/exportability helpers that later UI and import/export milestones will consume.
+
+Milestone 4 is complete. `src/Vixen.Common/Resources/layer_rename.png` is included as a WPF resource, and `src/Vixen.Modules/Editor/LayerEditor/LayerEditor.csproj` references the Resources project so `LayerEditorView.xaml` can use the pack URI. `LayerEditorViewModel` now exposes `QuickRenameLayerCommand`, and the layer row has a 24px image-only button beside the name text box that invokes the command for standard layers.
 
 ## Context and Orientation
 
@@ -397,6 +406,17 @@ Milestone 3 validation evidence:
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore
     Passed!  - Failed:     0, Passed:   142, Skipped:     0, Total:   142, Duration: 161 ms - Vixen.Tests.dll (net10.0)
 
+Milestone 4 validation evidence:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~LayerEditor --no-restore
+    Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 111 ms - Vixen.Tests.dll (net10.0)
+
+    dotnet msbuild src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -t:Rebuild -p:Configuration=Debug -p:UseSharedCompilation=false
+    LayerEditor -> C:\Dev\Vixen\src\Vixen.Modules\Editor\LayerEditor\Debug\Output\LayerEditor.dll
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore
+    Passed!  - Failed:     0, Passed:   142, Skipped:     0, Total:   142, Duration: 162 ms - Vixen.Tests.dll (net10.0)
+
 Broader host validation attempts and blockers:
 
     dotnet msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Rebuild -p:Configuration=Debug
@@ -462,3 +482,5 @@ If any new public or protected API is added or changed, update XML documentation
 2026-07-06 / Codex: Cleaned up the remaining obsolete LayerEditor routed-command/template artifacts by deleting `Input/LayerEditorCommands.cs` and `Themes/Generic.xaml`. The LayerEditor project still rebuilds successfully.
 
 2026-07-06 / Codex: Completed milestone 3 by adding `ILayerEditorLayerService`, `LayerEditorLayerService`, and `LayerEditorLayerServiceTests`; updated `LayerEditorViewModel` to delegate layer mutations to the service; recorded targeted, project, and full-test validation evidence.
+
+2026-07-06 / Codex: Completed milestone 4 by adding the `layer_rename.png` shared resource, wiring a compact image-only quick rename button into `LayerEditorView.xaml`, exposing `QuickRenameLayerCommand` from `LayerEditorViewModel`, and validating with targeted tests, the LayerEditor rebuild, and the full test project.

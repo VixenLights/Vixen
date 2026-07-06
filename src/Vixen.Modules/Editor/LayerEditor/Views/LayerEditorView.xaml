@@ -63,7 +63,6 @@
 									<Label Grid.Column="0" Grid.Row="0" Margin="3">Name</Label>
 									<TextBox Grid.Column="1"
 									         Grid.Row="0"
-									         Grid.ColumnSpan="2"
 									         DockPanel.Dock="Top"
 									         Margin="3"
 									         Text="{Binding LayerName}"
@@ -71,6 +70,18 @@
 									         utils:TextBoxExtender.CommitOnFocusLost="true"
 									         utils:TextBoxExtender.RollbackOnEscape="true"
 									         utils:TextBoxExtender.CommitOnTyping="false" />
+									<Button Grid.Column="2"
+									        Grid.Row="0"
+									        Width="24"
+									        Height="24"
+									        Margin="3"
+									        Padding="2"
+									        ToolTip="Rename to filter type"
+									        Visibility="{Binding Converter={StaticResource DefaultLayerVisibilityConverter}}"
+									        Command="{Binding ElementName=_lbLayers, Path=DataContext.QuickRenameLayerCommand}"
+									        CommandParameter="{Binding}">
+										<Image Source="/Resources;component/layer_rename.png" Width="16" Height="16" />
+									</Button>
 
 									<Label Grid.Column="0" Grid.Row="1" Margin="3" Visibility="{Binding Converter={StaticResource DefaultLayerVisibilityConverter}}">Type</Label>
 									<ComboBox Grid.Column="1"

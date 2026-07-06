@@ -20,6 +20,7 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 		private Command _addLayerCommand;
 		private Command<ILayer> _removeLayerCommand;
 		private Command<ILayerMixingFilterInstance> _configureLayerCommand;
+		private Command<ILayer> _quickRenameLayerCommand;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="LayerEditorViewModel" /> class.
@@ -79,6 +80,11 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 		/// Gets the ConfigureLayer command.
 		/// </summary>
 		public Command<ILayerMixingFilterInstance> ConfigureLayerCommand => _configureLayerCommand ??= new Command<ILayerMixingFilterInstance>(ConfigureLayer, CanConfigureLayer);
+
+		/// <summary>
+		/// Gets the QuickRenameLayer command.
+		/// </summary>
+		public Command<ILayer> QuickRenameLayerCommand => _quickRenameLayerCommand ??= new Command<ILayer>(QuickRenameLayer, CanQuickRenameLayer);
 
 		/// <summary>
 		/// Occurs when the layer collection changes.
@@ -167,9 +173,25 @@ namespace VixenModules.Editor.LayerEditor.ViewModels
 			return layerMixingFilterInstance != null && layerMixingFilterInstance.HasSetup;
 		}
 
+		private void QuickRenameLayer(ILayer layer)
+		{
+			if (!CanQuickRenameLayer(layer))
+			{
+				return;
+			}
+
+			_layerService.QuickRenameLayer(_sequenceLayers, layer);
+		}
+
+		private bool CanQuickRenameLayer(ILayer layer)
+		{
+			return layer != null && !IsDefaultLayer(layer) && layer.LayerMixingFilter != null;
+		}
+
 		private void LayersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			RemoveLayerCommand.RaiseCanExecuteChanged();
+			QuickRenameLayerCommand.RaiseCanExecuteChanged();
 			OnCollectionChanged(e);
 		}
 
