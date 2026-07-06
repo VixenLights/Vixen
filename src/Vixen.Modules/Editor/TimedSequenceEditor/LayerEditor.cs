@@ -1,26 +1,16 @@
-﻿using Common.Broadcast;
+using Common.Broadcast;
 using System.Windows;
 using System.Windows.Forms.Integration;
 using Vixen.Sys.LayerMixing;
+using VixenModules.Editor.LayerEditor.Views;
 using WeifenLuo.WinFormsUI.Docking;
-using Application = System.Windows.Application;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class LayerEditor : DockContent
 	{
-		private readonly Editor.LayerEditor.LayerEditorView _layerEditorView;
+		private readonly LayerEditorView _layerEditorView;
 		private ElementHost host;
-
-		static LayerEditor()
-		{
-			ResourceDictionary dict = new ResourceDictionary
-			{
-				Source = new Uri("/LayerEditor;component/Themes/Generic.xaml", UriKind.Relative)
-			};
-
-			Application.Current.Resources.MergedDictionaries.Add(dict);
-		}
 
 		public LayerEditor(SequenceLayers layers)
 		{
@@ -31,7 +21,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			BackColor = Color.Black;
 
-			_layerEditorView = new Editor.LayerEditor.LayerEditorView(layers);
+			_layerEditorView = new LayerEditorView(layers);
 
 			_layerEditorView.CollectionChanged += LayerEditorViewCollectionChanged;
 			_layerEditorView.LayerChanged += LayerEditorViewOnLayerChanged;

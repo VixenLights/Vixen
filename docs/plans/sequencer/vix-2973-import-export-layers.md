@@ -14,7 +14,9 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
 
 - [x] (2026-07-06 17:00Z) Created this initial ExecPlan from `docs/sequencer/vix-2973-import-export-layers.md` and repository research.
 - [x] (2026-07-06 18:15Z) Researched module-data JSON round-tripping and locked the serializer approach in the Decision Log. Added focused tests in `src/Vixen.Tests/Sequencer/LayerMixingFilterDataJsonSerializationTests.cs`; the targeted test command passed with 2 tests.
-- [ ] Refactor the Layer Editor to Catel MVVM while preserving current behavior.
+- [x] (2026-07-06 18:28Z) Refactored the Layer Editor to Catel MVVM while preserving the existing hosted `LayerEditorView(SequenceLayers)` construction path. Added `LayerEditorViewModel`, moved add/remove/configure commands and layer/filter state into the view model, changed XAML bindings to Catel commands, and kept WPF drag/drop in the view.
+- [x] (2026-07-06 18:45Z) Extended milestone 2 by moving the Layer Editor UI out of `Themes/Generic.xaml` and into a proper Catel view at `src/Vixen.Modules/Editor/LayerEditor/Views/LayerEditorView.xaml` with code-behind at `Views/LayerEditorView.xaml.cs`. Updated the Timed Sequence Editor host to reference `VixenModules.Editor.LayerEditor.Views.LayerEditorView`.
+- [x] (2026-07-06 18:55Z) Removed obsolete routed-command and default-template files after the XAML view migration. `src/Vixen.Modules/Editor/LayerEditor/Input/LayerEditorCommands.cs` and `src/Vixen.Modules/Editor/LayerEditor/Themes/Generic.xaml` are no longer needed.
 - [ ] Add testable layer operation services and focused unit tests for existing layer behavior.
 - [ ] Add the quick rename PNG resource, image-only button, command, and tests.
 - [ ] Add `.v3l` DTOs and import/export serialization services with tests.
@@ -26,7 +28,7 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
 ## Surprises & Discoveries
 
 - Observation: The current Layer Editor is a WPF `UserControl`, but it is not Catel MVVM. It sets `DataContext = this`, registers routed commands in the view constructor, owns drag/drop advisors, mutates `SequenceLayers` directly, and resolves layer mixing filters through global services.
-  Evidence: `src/Vixen.Modules/Editor/LayerEditor/LayerEditorView.cs` contains the constructor, command handlers, drag/drop logic, and `InitializeLayers`.
+  Evidence: Before milestone 2, `src/Vixen.Modules/Editor/LayerEditor/LayerEditorView.cs` contained the constructor, command handlers, drag/drop logic, and `InitializeLayers`. That file was replaced by `Views/LayerEditorView.xaml`, `Views/LayerEditorView.xaml.cs`, and `ViewModels/LayerEditorViewModel.cs`.
 
 - Observation: The current sequence persistence path already treats layer mixing filters specially. It stores layer/filter relationships through `LayerMixingFilterSurrogate` and stores layer mixing filter module data in `_layerMixingFilterDataModels`.
   Evidence: `src/Vixen.Core/Module/SequenceType/SequenceTypeDataModelBase.cs` builds `_layerMixingFilterSurrogates` and `_layerMixingFilterDataModels` during `SurrogateWrite`, then recreates filters and assigns module data during `SurrogateRead`.
@@ -39,6 +41,18 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
 
 - Observation: `DataContractJsonSerializer` emits compact JSON by default, but the compact JSON can be parsed with `System.Text.Json.JsonDocument` and written back with `WriteIndented = true`; the indented JSON still deserializes through `DataContractJsonSerializer`.
   Evidence: `LayerMixingFilterDataJsonSerializationTests.DataContractJsonSerializer_RestoresIndentedJson` asserts the JSON contains line breaks and restores the expected `LumaKeyData` values.
+
+- Observation: `src/Vixen.Modules/Editor/LayerEditor/LayerEditor.csproj` did not reference Catel before milestone 2, even though the surrounding Timed Sequence Editor already uses Catel MVVM.
+  Evidence: `dotnet msbuild src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -getItem:PackageReference -getProperty:UseWPF` showed `UseWPF` as `true` and no package references before adding `Catel.MVVM`.
+
+- Observation: The isolated LayerEditor project rebuilds successfully after the Catel refactor, but broader TimedSequenceEditor validation is blocked by local/environment issues before it can serve as clean evidence.
+  Evidence: `dotnet msbuild src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -t:Rebuild -p:Configuration=Debug` succeeded. `dotnet msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Rebuild -p:Configuration=Debug` failed in native C++ project imports for `Microsoft.Cpp.Default.props`. Full `msbuild` then failed on missing `Microsoft.NETCore.App.Host.win-x86` apphost pack for native-wrapper dependencies. A narrow `msbuild ... -p:BuildProjectReferences=false` reached unrelated MarkDocker XAML converter errors.
+
+- Observation: Moving the Layer Editor UI from a default control template to a XAML view compiles cleanly in the LayerEditor project.
+  Evidence: After adding `src/Vixen.Modules/Editor/LayerEditor/Views/LayerEditorView.xaml` and `Views/LayerEditorView.xaml.cs`, `dotnet msbuild src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -t:Rebuild -p:Configuration=Debug` succeeded.
+
+- Observation: The old routed command class is unused after the Catel command binding refactor.
+  Evidence: `rg -n "LayerEditorCommands|VixenModules\.Editor\.LayerEditor\.Input|clr-namespace:VixenModules.Editor.LayerEditor.Input" src\Vixen.Modules\Editor\LayerEditor src\Vixen.Modules\Editor\TimedSequenceEditor docs\plans\sequencer\vix-2973-import-export-layers.md` returned no matches after removing `LayerEditorCommands.cs`.
 
 ## Decision Log
 
@@ -70,9 +84,25 @@ The visible result is in the Timed Sequence Editor's Layer Editor. With only the
   Rationale: Vixen sequence persistence already uses data-contract serialization for module data, and the milestone-1 tests proved this serializer round-trips every current layer mixing filter data model. Prettifying through `System.Text.Json` satisfies the human-readable internal exchange format requirement without changing the data-contract semantics used by existing module data.
   Date/Author: 2026-07-06 / Codex
 
+- Decision: Superseded the temporary template-based Catel refactor and moved `LayerEditorView` to a proper XAML view under `src/Vixen.Modules/Editor/LayerEditor/Views`.
+  Rationale: Keeping all UI in `Themes/Generic.xaml` made the feature harder to navigate and did not match the requested Model/ViewModel/View organization. A normal Catel view file makes future import/export and quick rename UI edits easier to review, while still preserving the host's ability to construct `LayerEditorView` with a `SequenceLayers` instance.
+  Date/Author: 2026-07-06 / Codex
+
+- Decision: Delete `LayerEditorCommands.cs` and `Themes/Generic.xaml` instead of leaving empty compatibility files.
+  Rationale: The Catel view binds directly to `LayerEditorViewModel` commands, and the Timed Sequence Editor host no longer merges `Generic.xaml`. Keeping unused routed-command and default-template files would make future contributors search dead paths.
+  Date/Author: 2026-07-06 / Codex
+
+- Decision: Leave WPF drag/drop hit testing in `LayerEditorView`, but route the actual move operation through `LayerEditorViewModel.MoveLayer`.
+  Rationale: Hit testing `ListBoxItem` containers is view-specific WPF work. The layer mutation should live outside routed command handlers so the next milestone can move it into a testable layer operation service.
+  Date/Author: 2026-07-06 / Codex
+
 ## Outcomes & Retrospective
 
 Milestone 1 is complete. The implementation now has focused proof tests showing that the current layer mixing filter module data can be serialized to readable JSON and restored without losing configured values. The next milestone can build the actual import/export service on `DataContractJsonSerializer` for filter `ModuleData`, while still using a versioned top-level `.v3l` JSON document.
+
+Milestone 2 is complete. The Layer Editor now has `src/Vixen.Modules/Editor/LayerEditor/ViewModels/LayerEditorViewModel.cs`, which owns the layer collection, filter type list, Add Layer command, Remove Layer command, Configure Layer command, and event forwarding for collection/filter setup changes. `LayerEditorView` now inherits from Catel's `UserControl`, constructs the view model from `SequenceLayers`, and keeps only view-specific drag/drop adapter code.
+
+Milestone 2 refinement is complete. The Layer Editor UI now lives in `src/Vixen.Modules/Editor/LayerEditor/Views/LayerEditorView.xaml`, with its WPF-specific drag/drop adapter in `Views/LayerEditorView.xaml.cs`. `Themes/Generic.xaml` and `Input/LayerEditorCommands.cs` have been deleted because the view is no longer a default-template custom control and no longer uses routed commands. The Timed Sequence Editor host now uses `VixenModules.Editor.LayerEditor.Views.LayerEditorView` and no longer merges `Themes/Generic.xaml` at runtime.
 
 ## Context and Orientation
 
@@ -80,9 +110,9 @@ Vixen is a Windows desktop application built on .NET 10 and WPF, with many UI ar
 
 A sequence layer is a row-like concept that tells Vixen how to combine effects that overlap in time. The default layer always exists and is the fallback layer. Standard layers are user-created layers above the default layer. A layer mixing filter is a module instance attached to a standard layer that combines colors or intensities between layers. Examples are under `src/Vixen.Modules/LayerMixingFilter`.
 
-The current WPF control is `VixenModules.Editor.LayerEditor.LayerEditorView` in `src/Vixen.Modules/Editor/LayerEditor/LayerEditorView.cs`. It is a `System.Windows.Controls.UserControl`, not a Catel control. It creates routed command bindings for Add Layer, Remove Layer, and Configure Layer. It sets `DataContext = this`, exposes `Layers` and `FilterTypes` directly, and handles drag/drop through `Common.WPFCommon.Input.IDragSourceAdvisor` and `IDropTargetAdvisor`.
+The current WPF view is `VixenModules.Editor.LayerEditor.Views.LayerEditorView` in `src/Vixen.Modules/Editor/LayerEditor/Views/LayerEditorView.xaml` and `LayerEditorView.xaml.cs`. It is a Catel `UserControl`. The XAML renders Add Layer and Remove Layer text buttons, a `ListBox` named `_lbLayers`, a `TextBox` bound to `LayerName`, a `ComboBox` bound to `FilterTypeId`, and a Configuration button for filters that support setup. The code-behind is limited to WPF-specific drag/drop adapter work and event forwarding for the legacy WinForms host.
 
-The current control template is in `src/Vixen.Modules/Editor/LayerEditor/Themes/Generic.xaml`. It renders Add Layer and Remove Layer text buttons, a `ListBox` named `_lbLayers`, a `TextBox` bound to `LayerName`, a `ComboBox` bound to `FilterTypeId`, and a Configuration button for filters that support setup.
+The Layer Editor view model is `VixenModules.Editor.LayerEditor.ViewModels.LayerEditorViewModel` in `src/Vixen.Modules/Editor/LayerEditor/ViewModels/LayerEditorViewModel.cs`. It owns the editable `SequenceLayers` collection, the available layer mixing filter types, and the Add Layer, Remove Layer, and Configure Layer Catel commands. The module currently has no separate model classes beyond the existing domain model types in `Vixen.Core`; add a `Models` folder only when new LayerEditor-specific model types are introduced.
 
 Layer storage is in `Vixen.Sys.LayerMixing.SequenceLayers`, implemented in `src/Vixen.Core/Sys/LayerMixing/SequenceLayers.cs`. The important methods are `AddLayer(ILayer layer)`, `AddLayer(ILayerMixingFilterInstance mixer)`, `InsertLayer(int index, ILayer layer)`, `RemoveLayerAt(int index)`, `MoveLayer(int indexFrom, int indexTo)`, `IndexOfLayer(ILayer item)`, `GetLayer(string name, Guid typeId)`, and `ContainsLayer(Guid layerId)`. `AddLayer(ILayer layer)` inserts at index `0`, which means repeated imports must process the source layers in reverse order if the final imported group should keep the exported top-to-bottom order above the existing layers.
 
@@ -128,8 +158,9 @@ Before editing, inspect the relevant files:
 
     Get-Content -LiteralPath docs\sequencer\vix-2973-import-export-layers.md
     Get-Content -LiteralPath .agents\PLANS.md
-    Get-Content -LiteralPath src\Vixen.Modules\Editor\LayerEditor\LayerEditorView.cs
-    Get-Content -LiteralPath src\Vixen.Modules\Editor\LayerEditor\Themes\Generic.xaml
+    Get-Content -LiteralPath src\Vixen.Modules\Editor\LayerEditor\Views\LayerEditorView.xaml
+    Get-Content -LiteralPath src\Vixen.Modules\Editor\LayerEditor\Views\LayerEditorView.xaml.cs
+    Get-Content -LiteralPath src\Vixen.Modules\Editor\LayerEditor\ViewModels\LayerEditorViewModel.cs
     Get-Content -LiteralPath src\Vixen.Modules\Editor\TimedSequenceEditor\LayerEditor.cs
     Get-Content -LiteralPath src\Vixen.Core\Sys\LayerMixing\SequenceLayers.cs
     Get-Content -LiteralPath src\Vixen.Core\Module\SequenceType\SequenceTypeDataModelBase.cs
@@ -144,7 +175,9 @@ Milestone 1, module-data serialization proof: create focused test coverage that 
 
 Milestone 1 result: this milestone added `src/Vixen.Tests/Sequencer/LayerMixingFilterDataJsonSerializationTests.cs` and project references from `src/Vixen.Tests/Vixen.Tests.csproj` to the three existing layer mixing filter projects. The tests prove `DataContractJsonSerializer` round-trips `ChromaKeyData`, `LumaKeyData`, and `MaskAndFillData`, and prove that indented JSON produced by `System.Text.Json` remains readable by `DataContractJsonSerializer`. Do not remove these tests when implementing the import/export service; extend them or replace their helper methods with calls into the production serializer once that serializer exists.
 
-Milestone 2, Catel refactor: add a Catel view model under `src/Vixen.Modules/Editor/LayerEditor/ViewModels`, for example `LayerEditorViewModel.cs`. Add any row view models only if they remove real binding complexity; avoid creating view models that merely mirror `ILayer` property names. Convert the view to Catel's `UserControl` pattern, either by replacing `LayerEditorView.cs` plus `Generic.xaml` with a XAML-backed Catel view or by creating a new Catel view and adapting the host. Keep `TimedSequenceEditor.LayerEditor` able to construct and host the control with a `SequenceLayers` instance. The host must still forward collection and layer change notifications into its `LayersChanged` event.
+Milestone 2, Catel refactor: add a Catel view model under `src/Vixen.Modules/Editor/LayerEditor/ViewModels`, for example `LayerEditorViewModel.cs`. Add any row view models only if they remove real binding complexity; avoid creating view models that merely mirror `ILayer` property names. Convert the view to Catel's `UserControl` pattern by replacing the old root `LayerEditorView.cs` plus `Themes/Generic.xaml` template with a XAML-backed Catel view under `src/Vixen.Modules/Editor/LayerEditor/Views`. Keep `TimedSequenceEditor.LayerEditor` able to construct and host the control with a `SequenceLayers` instance. The host must still forward collection and layer change notifications into its `LayersChanged` event.
+
+Milestone 2 result: `LayerEditorViewModel` was added under `src/Vixen.Modules/Editor/LayerEditor/ViewModels`, and `LayerEditorView` now lives under `src/Vixen.Modules/Editor/LayerEditor/Views`. The existing `LayerEditorView(SequenceLayers)` constructor remains, but delegates to a second constructor that accepts `LayerEditorViewModel` and passes it to Catel's `UserControl` base constructor. The view model exposes `Layers`, `FilterTypes`, `AddLayerCommand`, `RemoveLayerCommand`, and `ConfigureLayerCommand`. It forwards collection changes through `INotifyCollectionChanged` and filter setup changes through `LayerChanged`, so the existing Timed Sequence Editor host can continue subscribing to the view's `CollectionChanged` and `LayerChanged` events. The view uses its named `_lbLayers` list box for the existing `DragDropManager` integration; it calls `LayerEditorViewModel.MoveLayer` when a drop completes.
 
 Milestone 3, layer operations: add a testable service under `src/Vixen.Modules/Editor/LayerEditor/Services`, for example `LayerEditorLayerService.cs` and `ILayerEditorLayerService.cs`. It should expose operations equivalent to:
 
@@ -332,9 +365,32 @@ Milestone 1 test evidence:
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~LayerMixingFilterDataJsonSerializationTests --no-restore
     Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 102 ms - Vixen.Tests.dll (net10.0)
 
+Milestone 2 validation evidence:
+
+    dotnet msbuild src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -t:Rebuild -p:Configuration=Debug
+    LayerEditor -> C:\Dev\Vixen\src\Vixen.Modules\Editor\LayerEditor\Debug\Output\LayerEditor.dll
+
+Milestone 2 refinement validation evidence:
+
+    dotnet msbuild src\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj -t:Rebuild -p:Configuration=Debug
+    LayerEditor -> C:\Dev\Vixen\src\Vixen.Modules\Editor\LayerEditor\Debug\Output\LayerEditor.dll
+
+Broader host validation attempts and blockers:
+
+    dotnet msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Rebuild -p:Configuration=Debug
+    error MSB4278: The imported file "$(VCTargetsPath)\Microsoft.Cpp.Default.props" does not exist
+
+    msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Rebuild -p:Configuration=Debug
+    error NETSDK1145: The Apphost pack is not installed ... Microsoft.NETCore.App.Host.win-x86
+
+    msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Build -p:Configuration=Debug -p:BuildProjectReferences=false
+    error MC3074: The tag 'ColorToSolidBrushConverter' does not exist in XML namespace 'clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon'
+
 ## Interfaces and Dependencies
 
 Use `Catel.MVVM.ViewModelBase`, `Catel.MVVM.Command`, and `Catel.MVVM.TaskCommand` for the refactored view model. Use `IOpenFileService`, `ISaveFileService`, `DetermineOpenFileContext`, `DetermineSaveFileContext`, and `IMessageService` for dialogs and user messages.
+
+Milestone 2 added a `Catel.MVVM` package reference to `src/Vixen.Modules/Editor/LayerEditor/LayerEditor.csproj` because the LayerEditor project previously had no direct Catel reference. The package version remains centrally managed by `Directory.Packages.props`.
 
 Use `Vixen.Sys.LayerMixing.SequenceLayers`, `ILayer`, `StandardLayer`, and `LayerType` for layer manipulation. Preserve the invariant that the default layer is last.
 
@@ -344,8 +400,8 @@ Use `Vixen.Module.IModuleDataModel` and existing sequence persistence code in `S
 
 Add or update these likely files:
 
-- `src/Vixen.Modules/Editor/LayerEditor/LayerEditorView.cs`
-- `src/Vixen.Modules/Editor/LayerEditor/Themes/Generic.xaml` or replacement Catel XAML view files
+- `src/Vixen.Modules/Editor/LayerEditor/Views/LayerEditorView.xaml`
+- `src/Vixen.Modules/Editor/LayerEditor/Views/LayerEditorView.xaml.cs`
 - `src/Vixen.Modules/Editor/LayerEditor/ViewModels/LayerEditorViewModel.cs`
 - `src/Vixen.Modules/Editor/LayerEditor/Services/ILayerEditorLayerService.cs`
 - `src/Vixen.Modules/Editor/LayerEditor/Services/LayerEditorLayerService.cs`
@@ -372,3 +428,9 @@ If any new public or protected API is added or changed, update XML documentation
 2026-07-06 / Codex: Initial ExecPlan created from `docs/sequencer/vix-2973-import-export-layers.md` so implementation can proceed from a self-contained plan.
 
 2026-07-06 / Codex: Completed milestone 1 by adding serialization proof tests for the current layer mixing filter module data. Recorded the decision to use `DataContractJsonSerializer` for per-filter module data and prettify its JSON output with `System.Text.Json` for the human-readable `.v3l` format.
+
+2026-07-06 / Codex: Completed milestone 2 by introducing a Catel `LayerEditorViewModel`, moving the layer commands and state out of `LayerEditorView`, preserving the existing `LayerEditorView(SequenceLayers)` host contract, and documenting the local host-build blockers encountered during validation.
+
+2026-07-06 / Codex: Refined milestone 2 after user feedback by moving the Layer Editor UI out of `Themes/Generic.xaml` and into `Views/LayerEditorView.xaml`, keeping drag/drop setup in `Views/LayerEditorView.xaml.cs`, and updating the Timed Sequence Editor host to reference the view namespace directly.
+
+2026-07-06 / Codex: Cleaned up the remaining obsolete LayerEditor routed-command/template artifacts by deleting `Input/LayerEditorCommands.cs` and `Themes/Generic.xaml`. The LayerEditor project still rebuilds successfully.

@@ -1,9 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 		<PropertyGroup>
 			<RootNamespace>VixenModules.Editor.LayerEditor</RootNamespace>
 			<UseWPF>true</UseWPF>
 		</PropertyGroup>
+
+		<ItemGroup>
+		  <PackageReference Include="Catel.MVVM" />
+		</ItemGroup>
 
 		<ItemGroup>
 		  <ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
