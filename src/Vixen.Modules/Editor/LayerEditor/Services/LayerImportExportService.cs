@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Vixen.Module;
 using Vixen.Module.MixingFilter;
 using Vixen.Sys.LayerMixing;
@@ -59,7 +60,10 @@ namespace VixenModules.Editor.LayerEditor.Services
 				}).ToList()
 			};
 
-			var json = JsonSerializer.Serialize(document, DocumentSerializerOptions);
+			var documentNode = JsonSerializer.SerializeToNode(document, DocumentSerializerOptions);
+			RemoveDefaultOptionalFilterDataProperties(documentNode);
+
+			var json = documentNode!.ToJsonString(DocumentSerializerOptions);
 			await File.WriteAllTextAsync(filePath, json, cancellationToken);
 		}
 
@@ -170,6 +174,35 @@ namespace VixenModules.Editor.LayerEditor.Services
 			return new LayerImportResult(orderedEntries.Count, plan.SkippedLayers);
 		}
 
+		private static void RemoveDefaultOptionalFilterDataProperties(JsonNode documentNode)
+		{
+			if (documentNode is not JsonObject documentObject || documentObject["layers"] is not JsonArray layersArray)
+			{
+				return;
+			}
+
+			foreach (var layerNode in layersArray)
+			{
+				if (layerNode is not JsonObject layerObject)
+				{
+					continue;
+				}
+
+				// A layer whose filter has no module data has an empty FilterDataType and a JSON-null
+				// FilterData. Omitting both keeps the exported file focused on data the import path
+				// actually uses instead of writing out placeholder defaults for every plain layer.
+				if (layerObject["filterDataType"] is JsonValue filterDataTypeValue && filterDataTypeValue.GetValue<string>().Length == 0)
+				{
+					layerObject.Remove("filterDataType");
+				}
+
+				if (layerObject.ContainsKey("filterData") && layerObject["filterData"] is null)
+				{
+					layerObject.Remove("filterData");
+				}
+			}
+		}
+
 		private static string DescribeFilterDataType(IModuleDataModel dataModel)
 		{
 			if (dataModel is null)
@@ -193,8 +226,17 @@ namespace VixenModules.Editor.LayerEditor.Services
 			serializer.WriteObject(stream, dataModel);
 			stream.Position = 0;
 
-			using var document = JsonDocument.Parse(stream);
-			return document.RootElement.Clone();
+			// ModuleTypeId and ModuleInstanceId come from ModuleDataModelBase and are not meaningful
+			// outside the live module system; the filter type and a fresh instance ID are already
+			// tracked by LayerExportRecord.FilterTypeId and the resolved filter instance on import.
+			var node = JsonNode.Parse(stream);
+			if (node is JsonObject jsonObject)
+			{
+				jsonObject.Remove(nameof(IModuleDataModel.ModuleTypeId));
+				jsonObject.Remove(nameof(IModuleDataModel.ModuleInstanceId));
+			}
+
+			return node.Deserialize<JsonElement>();
 		}
 
 		private static bool TryRestoreFilterData(ILayerMixingFilterInstance filterInstance, JsonElement filterData, out string error)

@@ -23,15 +23,27 @@
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<Button Grid.Column="0" Grid.Row="0" Content="Add Layer" Margin="5" Command="{Binding AddLayerCommand}" />
-		<Button Grid.Column="1" Grid.Row="0" Content="Remove Layer" Margin="5" Command="{Binding RemoveLayerCommand}" CommandParameter="{Binding ElementName=_lbLayers, Path=SelectedItem}" />
+		<ToolBarTray Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
+			<ToolBar>
+				<Button Command="{Binding ImportLayersCommand}" ToolTip="Import Layers">
+					<Image Source="/Resources;component/folder_go.png" Height="16" />
+				</Button>
+				<Button Command="{Binding ExportLayersCommand}" ToolTip="Export Layers">
+					<Image Source="/Resources;component/folder_open.png" Height="16" />
+				</Button>
+			</ToolBar>
+		</ToolBarTray>
+
+		<Button Grid.Column="0" Grid.Row="1" Content="Add Layer" Margin="5" Command="{Binding AddLayerCommand}" />
+		<Button Grid.Column="1" Grid.Row="1" Content="Remove Layer" Margin="5" Command="{Binding RemoveLayerCommand}" CommandParameter="{Binding ElementName=_lbLayers, Path=SelectedItem}" />
 
 		<ListBox Grid.Column="0"
 		         Grid.ColumnSpan="2"
-		         Grid.Row="1"
+		         Grid.Row="2"
 		         x:Name="_lbLayers"
 		         HorizontalAlignment="Stretch"
 		         VerticalAlignment="Stretch"

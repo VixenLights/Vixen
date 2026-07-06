@@ -29,6 +29,10 @@
 		<Setter Property="BorderBrush" Value="{DynamicResource BorderColorBrush}"/>
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
+    
+    <Style BasedOn="{StaticResource {x:Type ToolBarTray}}" TargetType="ToolBarTray">
+        <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
+    </Style>
 
 	<Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
         <Setter Property="OverridesDefaultStyle" Value="True"/>

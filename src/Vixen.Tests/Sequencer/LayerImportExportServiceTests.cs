@@ -45,6 +45,42 @@ public sealed class LayerImportExportServiceTests
 			Assert.Equal("Bottom", document.Layers[1].Name);
 			Assert.Equal(1, document.Layers[1].Order);
 			Assert.DoesNotContain(document.Layers, record => record.FilterTypeId == Guid.Empty);
+
+			foreach (var record in document.Layers)
+			{
+				Assert.False(record.FilterData.TryGetProperty("ModuleTypeId", out _));
+				Assert.False(record.FilterData.TryGetProperty("ModuleInstanceId", out _));
+			}
+		}
+		finally
+		{
+			File.Delete(filePath);
+		}
+	}
+
+	[Fact]
+	public async Task ExportAsync_OmitsFilterDataTypeAndFilterDataWhenFilterHasNoModuleData()
+	{
+		var layers = new SequenceLayers();
+		var layer = _layerService.AddLayer(layers, CreateFilter(Guid.NewGuid(), "Mask and Fill", null));
+		layer.LayerName = "Plain";
+
+		var service = CreateService();
+		var filePath = Path.GetTempFileName();
+		try
+		{
+			await service.ExportAsync(layers, filePath, TestContext.Current.CancellationToken);
+			var json = await File.ReadAllTextAsync(filePath, TestContext.Current.CancellationToken);
+
+			using var document = JsonDocument.Parse(json);
+			var layerElement = document.RootElement.GetProperty("layers")[0];
+
+			Assert.False(layerElement.TryGetProperty("filterDataType", out _));
+			Assert.False(layerElement.TryGetProperty("filterData", out _));
+
+			var importDocument = JsonSerializer.Deserialize<LayerExportDocument>(json)!;
+			Assert.Equal(string.Empty, importDocument.Layers[0].FilterDataType);
+			Assert.Equal(JsonValueKind.Undefined, importDocument.Layers[0].FilterData.ValueKind);
 		}
 		finally
 		{
