@@ -285,8 +285,8 @@
   <data name="RevolutionTime" xml:space="preserve">
     <value>Controls the duration in milliseconds at which the spin occurs.</value>
   </data>
-  <data name="Rotation" xml:space="preserve">
-    <value>The amount of twist in the spiral.</value>
+  <data name="SpiralRotation" xml:space="preserve">
+    <value>Rotation speed and direction over the duration of the effect. 50 means no rotation, values above 50 rotate forward faster as they approach 100, and values below 50 rotate backward faster as they approach 0.</value>
   </data>
   <data name="ScalePercent" xml:space="preserve">
     <value>Controls the percent of the scaling to reduce the size of large images to fit.</value>
@@ -1514,5 +1514,8 @@
   </data>
   <data name="MeteorsPixelCount" xml:space="preserve">
     <value>Controls how many meteors are active during the effect. Higher values create a denser meteor field.</value>
+  </data>
+  <data name="PinWheelRotation" xml:space="preserve">
+    <value>Rotation speed and direction over the duration of the effect. 50 means no rotation, values above 50 rotate forward faster as they approach 100, and values below 50 rotate backward faster as they approach 0.</value>
   </data>
 </root>
