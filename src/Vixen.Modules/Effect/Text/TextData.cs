@@ -39,6 +39,7 @@ namespace VixenModules.Effect.Text
 			RepeatText = false;
 			TextDuration = TextDuration.AutoFit;
 			CycleColor = false;
+			CycleColorMode = TextCycleColorMode.Character;
 			ExplodePosition = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			CycleCharacterColor = false;
 			FallSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
@@ -137,6 +138,13 @@ namespace VixenModules.Effect.Text
 		[DataMember]
 		public bool CycleColor { get; set; }
 
+		/// <summary>
+		/// Gets or sets the mode that specifies how cycle color advances through rendered text.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the color cycling granularity. The default is <see cref="TextCycleColorMode.Character" />.</value>
+		[DataMember]
+		public TextCycleColorMode CycleColorMode { get; set; }
+
 		[DataMember]
 		public bool CycleCharacterColor { get; set; }
 		
@@ -207,6 +215,16 @@ namespace VixenModules.Effect.Text
 				ExplodePosition = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 				FallSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			}
+
+			if (CycleCharacterColor)
+			{
+				CycleColor = true;
+				CycleColorMode = TextCycleColorMode.Character;
+			}
+			else if (CycleColor && TextSource != TextSource.None)
+			{
+				CycleColorMode = TextCycleColorMode.Word;
+			}
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -241,6 +259,7 @@ namespace VixenModules.Effect.Text
 				RepeatText = RepeatText,
 				TextDuration = TextDuration,
 				CycleColor = CycleColor,
+				CycleColorMode = CycleColorMode,
 				ExplodePosition = new Curve(ExplodePosition),
 				CycleCharacterColor = CycleCharacterColor,
 				FallSpeedCurve = new Curve(FallSpeedCurve)

@@ -15,7 +15,7 @@ The same control pair also applies when Text is driven by a mark collection. Mar
 - [x] (2026-07-07) Created this ExecPlan from `docs/effects/vix-2681-text-color-per-word.md` after reviewing `.agents/PLANS.md`, the project `dotnet-best-practices`, `csharp-docs`, `csharp-async`, and `dotnet-design-pattern-review` skills, `src/Vixen.Modules/Effect/Text/Text.cs`, `src/Vixen.Modules/Effect/Text/TextData.cs`, `src/Vixen.Modules/Effect/Text/Text.csproj`, and `src/Vixen.Tests/Vixen.Tests.csproj`.
 - [x] (2026-07-07 19:50Z) Updated Jira VIX-2681 with the original request, planning references, unified `Cycle Color`/`Cycle Mode` requirements, Mark mode timing rule, migration rules, acceptance criteria, automated test plan, manual validation plan, and implementation-not-started status.
 - [x] (2026-07-07 20:08Z) Added `src/Vixen.Tests/Effects/TextCycleColorModeTests.cs` and a Text project reference in `src/Vixen.Tests/Vixen.Tests.csproj`. The focused test command compiles and runs, then fails with five expected characterization failures: missing `CycleColorMode`, legacy per-character data not migrating `CycleColor` to true, and `CycleCharacterColor` still browsable.
-- [ ] Add the cycle mode data model and compatibility migration.
+- [x] (2026-07-07 20:23Z) Added `TextCycleColorMode`, serialized `TextData.CycleColorMode`, constructor defaulting, clone copying, and compatibility migration for legacy `CycleCharacterColor` and Mark mode `CycleColor`. Focused test run now reports `Passed: 4, Failed: 1`; the remaining failure is the Milestone 4 UI/property visibility work.
 - [ ] Replace the exposed `CycleCharacterColor` UI setting with unified `Cycle Color` and `Cycle Mode` properties.
 - [ ] Implement Character and Word rendering behavior across normal Text, generated thumbnails, and mark-driven Text.
 - [ ] Complete focused automated tests and run validation commands.
@@ -31,6 +31,8 @@ The same control pair also applies when Text is driven by a mark collection. Mar
   Evidence: Text effect rendering, property editing, data migration, and tests use synchronous effect lifecycle and data-contract APIs. The project `csharp-async` skill is still noted because the source specification required it, but this feature should not introduce async methods unless Jira tooling or future test helpers require them.
 - Observation: Milestone 2 focused tests compile and fail as intended before implementation.
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TextCycleColorMode --no-restore` built the Text module and Vixen.Tests, then reported `Failed: 5, Passed: 0, Skipped: 0`. Failures were assertion failures for missing `CycleColorMode`, legacy character migration leaving `CycleColor` false, and `CycleCharacterColor` being browsable.
+- Observation: Milestone 3 data-model implementation satisfies the focused data and migration tests while leaving the planned UI failure.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TextCycleColorMode --no-restore` reported `Failed: 1, Passed: 4, Skipped: 0`. The remaining failure is `TextProperties_ShowCycleModeOnlyWhenCycleColorIsEnabled`, which still sees `CycleCharacterColor` as browsable.
 
 ## Decision Log
 
@@ -52,6 +54,8 @@ The same control pair also applies when Text is driven by a mark collection. Mar
 Milestone 1 is complete. Jira VIX-2681 now contains the plan's requirements, design notes, migration rules, acceptance criteria, and test plan before code changes began.
 
 Milestone 2 is complete. Focused tests now describe the missing data model, migration, and property visibility behavior without requiring production code changes. The tests compile and fail by assertion, so Milestone 3 can make them pass by adding `TextCycleColorMode` and migration logic.
+
+Milestone 3 is complete. The Text data model now has a documented `TextCycleColorMode` enum, serialized `CycleColorMode` state, constructor defaulting to `Character`, clone preservation, and compatibility migration. The focused data tests pass; the remaining focused failure is the expected Milestone 4 property visibility change.
 
 ## Context and Orientation
 
