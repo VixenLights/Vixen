@@ -37,6 +37,8 @@ The same control pair also applies when Text is driven by a mark collection. Mar
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TextCycleColorMode --no-restore` reported `Passed: 5, Failed: 0`; `CycleCharacterColor` is not browsable, `CycleColorMode` starts hidden, and enabling `CycleColor` makes `CycleColorMode` browsable.
 - Observation: Milestone 5 rendering now routes cycle behavior through `CycleColorMode`.
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TextCycleColorMode --no-restore` reported `Passed: 8, Failed: 0`. The added tests cover literal-space-preserving word runs, mode helper behavior, mark Word mode gating, and empty-color visual representation safety.
+- Observation: A modern save with `CycleColor = false` could reload as enabled when stale legacy `CycleCharacterColor = true` was still serialized.
+  Evidence: A focused regression test initially failed with `Assert.False() Failure` because `TextData.OnDeserialized(...)` treated `CycleCharacterColor = true` as authoritative even though `CycleColorMode` was present in the saved data.
 
 ## Decision Log
 
@@ -50,6 +52,8 @@ The same control pair also applies when Text is driven by a mark collection. Mar
   Rationale: Per-character compatibility must preserve existing visual output. Mark mode's existing `CycleColor` behavior acts like word/mark-position cycling, so Word is the compatibility-preserving mode for those effects.
 - Decision: Empty Text color lists render no cycling text for that draw path instead of falling back to an arbitrary color.
   Rationale: The Text effect cannot choose a configured gradient when none exist. Returning early avoids modulo-by-zero exceptions and keeps the failure mode visually quiet until the user restores a color.
+- Decision: Apply legacy `CycleCharacterColor` and Mark-mode migration only when serialized data does not contain `CycleColorMode`.
+  Rationale: Absence of `CycleColorMode` identifies old sequence data. If modern saved data contains the mode, `CycleColor` must remain the authoritative enabled/disabled flag so disabled Cycle Color does not turn itself back on during reload.
   Date/Author: 2026-07-07 / Codex
 - Decision: Do not introduce new asynchronous APIs for this feature.
   Rationale: Effect rendering and setup property changes are synchronous in the current Text module. Adding async would increase complexity without any I/O or long-running operation to await.

@@ -517,6 +517,11 @@ namespace VixenModules.Effect.Text
 			set
 			{
 				_data.CycleColor = value;
+				if (!value)
+				{
+					_data.CycleCharacterColor = false;
+				}
+
 				IsDirty = true;
 				UpdateTextModeAttributes();
 				OnPropertyChanged();

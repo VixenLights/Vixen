@@ -10,6 +10,9 @@ namespace VixenModules.Effect.Text
 	[KnownType(typeof (SerializableFont))]
 	public class TextData: EffectTypeModuleData
 	{
+		private TextCycleColorMode _cycleColorMode;
+		private bool _cycleColorModeDeserialized;
+
 		public TextData()
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red)};
@@ -143,16 +146,31 @@ namespace VixenModules.Effect.Text
 		/// </summary>
 		/// <value>One of the enumeration values that specifies the color cycling granularity. The default is <see cref="TextCycleColorMode.Character" />.</value>
 		[DataMember]
-		public TextCycleColorMode CycleColorMode { get; set; }
+		public TextCycleColorMode CycleColorMode
+		{
+			get { return _cycleColorMode; }
+			set
+			{
+				_cycleColorMode = value;
+				_cycleColorModeDeserialized = true;
+			}
+		}
 
 		[DataMember]
 		public bool CycleCharacterColor { get; set; }
-		
+
 		[DataMember]
 		public Curve ExplodePosition { get; set; }
 
 		[DataMember]
 		public Curve FallSpeedCurve { get; set; }
+
+		[OnDeserializing]
+		private void OnDeserializing(StreamingContext c)
+		{
+			_cycleColorMode = TextCycleColorMode.Character;
+			_cycleColorModeDeserialized = false;
+		}
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
@@ -216,12 +234,12 @@ namespace VixenModules.Effect.Text
 				FallSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			}
 
-			if (CycleCharacterColor)
+			if (CycleCharacterColor && !_cycleColorModeDeserialized)
 			{
 				CycleColor = true;
 				CycleColorMode = TextCycleColorMode.Character;
 			}
-			else if (CycleColor && TextSource != TextSource.None)
+			else if (CycleColor && TextSource != TextSource.None && !_cycleColorModeDeserialized)
 			{
 				CycleColorMode = TextCycleColorMode.Word;
 			}

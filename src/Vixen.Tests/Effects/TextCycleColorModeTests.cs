@@ -46,15 +46,10 @@ public sealed class TextCycleColorModeTests
 	public void TextData_MigratesLegacyCharacterCycleToCharacterMode()
 	{
 		// Arrange
-		var legacyData = new TextData
-		{
-			CycleCharacterColor = true,
-			CycleColor = false,
-			TextSource = TextSource.None
-		};
+		const string legacyJson = @"{""CycleCharacterColor"":true,""CycleColor"":false,""TextSource"":0}";
 
 		// Act
-		var migratedData = RoundTrip(legacyData);
+		var migratedData = DeserializeJson(legacyJson);
 
 		// Assert
 		Assert.True(migratedData.CycleColor);
@@ -65,19 +60,52 @@ public sealed class TextCycleColorModeTests
 	public void TextData_MigratesLegacyMarkCycleToWordMode()
 	{
 		// Arrange
-		var legacyData = new TextData
-		{
-			CycleCharacterColor = false,
-			CycleColor = true,
-			TextSource = TextSource.MarkCollection
-		};
+		const string legacyJson = @"{""CycleCharacterColor"":false,""CycleColor"":true,""TextSource"":1}";
 
 		// Act
-		var migratedData = RoundTrip(legacyData);
+		var migratedData = DeserializeJson(legacyJson);
 
 		// Assert
 		Assert.True(migratedData.CycleColor);
 		Assert.Equal("Word", GetCycleColorModeValue(migratedData));
+	}
+
+	[Fact]
+	public void TextData_PreservesDisabledCycleColorWhenLegacyCharacterFlagRemainsTrue()
+	{
+		// Arrange
+		var savedData = new TextData
+		{
+			CycleCharacterColor = true,
+			CycleColor = false,
+			TextSource = TextSource.None
+		};
+		SetCycleColorModeValue(savedData, "Character");
+
+		// Act
+		var reloadedData = RoundTrip(savedData);
+
+		// Assert
+		Assert.False(reloadedData.CycleColor);
+		Assert.Equal("Character", GetCycleColorModeValue(reloadedData));
+	}
+
+	[Fact]
+	public void TextProperties_DisablingCycleColorClearsLegacyCharacterFlag()
+	{
+		// Arrange
+		var effect = new Text
+		{
+			CycleCharacterColor = true,
+			CycleColor = true
+		};
+
+		// Act
+		effect.CycleColor = false;
+
+		// Assert
+		Assert.False(effect.CycleColor);
+		Assert.False(effect.CycleCharacterColor);
 	}
 
 	[Fact]
@@ -174,6 +202,12 @@ public sealed class TextCycleColorModeTests
 		serializer.WriteObject(stream, data);
 		var json = Encoding.UTF8.GetString(stream.ToArray());
 
+		return DeserializeJson(json);
+	}
+
+	private static TextData DeserializeJson(string json)
+	{
+		var serializer = new DataContractJsonSerializer(typeof(TextData));
 		using var readStream = new MemoryStream(Encoding.UTF8.GetBytes(json));
 		return (TextData)serializer.ReadObject(readStream)!;
 	}
