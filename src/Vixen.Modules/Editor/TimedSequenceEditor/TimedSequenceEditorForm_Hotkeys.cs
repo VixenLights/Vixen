@@ -93,6 +93,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						TimelineControl.VerticalOffset += (TimelineControl.VisibleHeight / 2);
 					break;
 
+				case Keys.Up:
+					if (!e.Control && !e.Shift && !e.Alt && TimelineControl.MoveActiveRow(-1))
+					{
+						e.Handled = true;
+						e.SuppressKeyPress = true;
+					}
+					break;
+
+				case Keys.Down:
+					if (!e.Control && !e.Shift && !e.Alt && TimelineControl.MoveActiveRow(1))
+					{
+						e.Handled = true;
+						e.SuppressKeyPress = true;
+					}
+					break;
+
 				case Keys.Space:
 					if (e.Shift)
 					{
@@ -291,6 +307,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// This was causing serious slowdowns if random keys were pressed.
 			//e.SuppressKeyPress = true;
 //			base.OnKeyDown(e);
+		}
+
+		/// <inheritdoc />
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			if (!IgnoreKeyDownEvents && IsActiveRowNavigationKey(keyData))
+			{
+				var keyEventArgs = new KeyEventArgs(keyData);
+				HandleQuickKeySWF(keyEventArgs);
+				return true;
+			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		private static bool IsActiveRowNavigationKey(Keys keyData)
+		{
+			Keys keyCode = keyData & Keys.KeyCode;
+			Keys modifiers = keyData & Keys.Modifiers;
+
+			return modifiers == Keys.None && (keyCode == Keys.Up || keyCode == Keys.Down);
 		}
 
 	}
