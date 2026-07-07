@@ -480,10 +480,15 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether legacy sequence data cycles color per character.
+		/// </summary>
+		/// <value><see langword="true" /> if legacy sequence data cycles color per character; otherwise, <see langword="false" />. The default is <see langword="false" />.</value>
 		[Value]
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"CycleCharacterColor")]
 		[ProviderDescription(@"CycleCharacterColor")]
+		[Browsable(false)]
 		[PropertyOrder(1)]
 		public bool CycleCharacterColor
 		{
@@ -497,10 +502,14 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether rendered text cycles through the configured colors.
+		/// </summary>
+		/// <value><see langword="true" /> if rendered text cycles through the configured colors; otherwise, <see langword="false" />. The default is <see langword="false" />.</value>
 		[Value]
 		[ProviderCategory(@"Color", 3)]
-		[ProviderDisplayName(@"CycleColor")]
-		[ProviderDescription(@"CycleColor")]
+		[ProviderDisplayName(@"Cycle Color")]
+		[ProviderDescription(@"Cycle Color")]
 		[PropertyOrder(2)]
 		public bool CycleColor
 		{
@@ -508,6 +517,27 @@ namespace VixenModules.Effect.Text
 			set
 			{
 				_data.CycleColor = value;
+				IsDirty = true;
+				UpdateTextModeAttributes();
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the mode that specifies how cycle color advances through rendered text.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies whether cycle color advances per character or per word. The default is <see cref="TextCycleColorMode.Character" />.</value>
+		[Value]
+		[ProviderCategory(@"Color", 3)]
+		[ProviderDisplayName(@"Cycle Mode")]
+		[ProviderDescription(@"Selects whether Cycle Color advances per character or per word, including text displayed from marks.")]
+		[PropertyOrder(3)]
+		public TextCycleColorMode CycleColorMode
+		{
+			get { return _data.CycleColorMode; }
+			set
+			{
+				_data.CycleColorMode = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -517,7 +547,7 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"GradientMode")]
 		[ProviderDescription(@"GradientMode")]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public GradientMode GradientMode
 		{
 			get { return _data.GradientMode; }
@@ -537,7 +567,7 @@ namespace VixenModules.Effect.Text
 		[BoolDescription("Yes", "No")]
 		[PropertyEditor("SelectionEditor")]
 		[Browsable(true)]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public override bool UseBaseColor
 		{
 			get { return _data.UseBaseColor; }
@@ -554,7 +584,7 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"BaseColor")]
 		[ProviderDescription(@"BaseColor")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public override Color BaseColor
 		{
 			get { return _data.BaseColor; }
@@ -640,7 +670,8 @@ namespace VixenModules.Effect.Text
 		}
 		private void UpdateTextModeAttributes(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(10)
+			bool cycleColorVisible = true;
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(12)
 			{
 				{"MarkCollectionId", TextSource != TextSource.None},
 
@@ -660,7 +691,11 @@ namespace VixenModules.Effect.Text
 
 				{"TextLines", TextSource != TextSource.MarkCollectionLabels},
 
-				{"CycleColor", TextSource != TextSource.None && !CycleCharacterColor || Direction == TextDirection.Rotate}
+				{"CycleCharacterColor", false},
+
+				{"CycleColor", cycleColorVisible},
+
+				{"CycleColorMode", cycleColorVisible && CycleColor}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -698,7 +733,8 @@ namespace VixenModules.Effect.Text
 					hideYOffsetCurve = true;
 					break;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(10)
+			bool cycleColorVisible = true;
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(11)
 			{
 				{"XOffsetCurve", !hideXOffsetCurve},
 
@@ -718,9 +754,11 @@ namespace VixenModules.Effect.Text
 
 				{"FallSpeedCurve", Direction == TextDirection.Fall},
 
-				{"CycleCharacterColor", Direction != TextDirection.Rotate},
+				{"CycleCharacterColor", false},
 
-				{"CycleColor", TextSource != TextSource.None && !CycleCharacterColor || Direction == TextDirection.Rotate }
+				{"CycleColor", cycleColorVisible},
+
+				{"CycleColorMode", cycleColorVisible && CycleColor}
 			};
 			SetBrowsable(propertyStates);
 
