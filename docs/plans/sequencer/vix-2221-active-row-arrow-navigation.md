@@ -15,11 +15,12 @@ The visible result is in `src/Vixen.Modules/Editor/TimedSequenceEditor`. Click a
 - [x] (2026-07-07 13:35Z) Read `.agents/PLANS.md`, `TimedSequenceEditorForm_Hotkeys.cs`, `LayerEditor.cs`, and the timeline row/active-row implementation in `src/Vixen.Common/Controls/TimeLineControl`.
 - [x] (2026-07-07 13:45Z) Created this initial ExecPlan with implementation milestones, validation steps, and open clarification questions.
 - [x] (2026-07-07 13:55Z) Confirmed product choices: use only plain Up/Down, do nothing when no row is active, auto-scroll the newly active row into view, do not wrap at row edges, and allow during playback unless implementation reveals a conflict.
-- [ ] Implement a focused timeline-control API that moves the active row by visible row position.
-- [ ] Wire unmodified Up and Down keys through `TimedSequenceEditorForm_Hotkeys.cs`.
-- [ ] Add or update tests where practical and run targeted validation.
+- [x] (2026-07-07 13:51Z) Implemented `MoveActiveRow(int direction)` in `Grid` and exposed it through `TimelineControl`. The method requires an existing visible active row, moves by one visible row in the requested direction, clamps at row edges, scrolls the target row into view, and leaves row/effect selection unchanged.
+- [x] (2026-07-07 13:51Z) Wired unmodified Up and Down keys in `TimedSequenceEditorForm_Hotkeys.cs` to `TimelineControl.MoveActiveRow(-1)` and `TimelineControl.MoveActiveRow(1)`.
+- [x] (2026-07-07 13:51Z) Added focused automated tests in `src/Vixen.Tests/Sequencer/TimelineActiveRowNavigationTests.cs`. `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineActiveRowNavigation --no-restore` passed with 7 tests. `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore` passed with 170 tests.
+- [x] (2026-07-07 14:05Z) Fixed WinForms command-key preprocessing for plain Up/Down by routing unmodified arrow keys through `ProcessCmdKey`. User validation showed plain arrows did not reach `OnKeyDown` without this, while modified arrows did.
 - [ ] Manually verify the behavior in the Timed Sequence Editor.
-- [ ] Update JIRA issue VIX-2221 with finalized requirements, acceptance criteria, and testing procedures after implementation details and validation results are known.
+- [x] (2026-07-07 13:52Z) Updated JIRA issue VIX-2221 with finalized requirements, acceptance criteria, implementation notes, and testing procedures/results in comment `40128`.
 
 ## Surprises & Discoveries
 
@@ -34,6 +35,18 @@ The visible result is in `src/Vixen.Modules/Editor/TimedSequenceEditor`. Click a
 
 - Observation: Visible row order is already available and should be used instead of all row order.
   Evidence: `Grid.VisibleRows` returns `Rows.Where(x => x.Visible).ToList()` and is used by existing paste and movement logic to respect collapsed or hidden rows.
+
+- Observation: Direct automated tests can instantiate `TimelineControl`, add visible rows, and exercise active-row navigation through the public wrapper without launching the full Timed Sequence Editor.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineActiveRowNavigation --no-restore` passed on 2026-07-07 with `Passed: 7, Failed: 0`.
+
+- Observation: The TimedSequenceEditor project rebuild is still blocked by local/environment issues unrelated to this change.
+  Evidence: `dotnet msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Rebuild -p:Configuration=Debug -p:UseSharedCompilation=false` failed before editor compilation on missing C++ imports for `Microsoft.Cpp.Default.props` in `QMLibrary.vcxproj` and `LiquidLiquidFunWrapper.vcxproj`. Retrying with `-p:BuildProjectReferences=false` reached pre-existing MarkDocker XAML converter errors for `ColorToSolidBrushConverter` in WPFCommon.
+
+- Observation: VIX-2221 was updated in JIRA with the final behavior and validation notes.
+  Evidence: Added JIRA comment `40128` on 2026-07-07 with finalized requirements, acceptance criteria, implementation notes, focused test results, full test results, and local TimedSequenceEditor build blocker notes.
+
+- Observation: Plain Up/Down arrow keys did not reach `TimedSequenceEditorForm.OnKeyDown`, while modified arrow keys did.
+  Evidence: User placed breakpoints in `TimedSequenceEditorForm_Hotkeys.cs` and observed that plain arrow keys were ignored unless a modifier was present. WinForms treats plain arrows as command/navigation keys, so `TimedSequenceEditorForm.ProcessCmdKey` now intercepts unmodified Up/Down and routes them through the existing hotkey handler.
 
 ## Decision Log
 
@@ -63,7 +76,9 @@ The visible result is in `src/Vixen.Modules/Editor/TimedSequenceEditor`. Click a
 
 ## Outcomes & Retrospective
 
-No implementation has been completed yet. This plan captures the repository context and a concrete implementation path. Update this section after each milestone is completed, especially after manual validation in the Timed Sequence Editor.
+Implementation, automated validation, and JIRA update are complete. Active-row movement is implemented in the shared timeline control and wired into the Timed Sequence Editor hotkey path. Focused tests cover normal up/down movement, hidden-row skipping, first/last-row clamping, no-row behavior, and no-active-row behavior. Full `Vixen.Tests` also passes. Manual validation in the Timed Sequence Editor remains.
+
+After initial user validation, plain Up/Down were found to bypass `OnKeyDown` because they are WinForms command/navigation keys. The hotkey file now also overrides `ProcessCmdKey` for unmodified Up/Down and delegates to the same `OnKeyDown` path, preserving the original modifier behavior.
 
 ## Open Questions
 
@@ -303,3 +318,6 @@ At the end of implementation, `TimedSequenceEditorForm.OnKeyDown` in `src/Vixen.
 - 2026-07-07 / Codex: Initial plan created after repository research. The plan records proposed defaults for unresolved product choices and identifies the implementation points in the timeline control and Timed Sequence Editor hotkey bridge.
 - 2026-07-07 / Codex: Updated the plan with user-confirmed requirements: no modifier keys, no fallback when there is no active row, auto-scroll enabled, no wrapping, and playback allowed unless a conflict is found.
 - 2026-07-07 / Codex: Added a JIRA Update section with final requirements, acceptance criteria, and testing procedures to copy into VIX-2221 after implementation and validation.
+- 2026-07-07 / Codex: Recorded implementation completion, automated test evidence, and the TimedSequenceEditor build blockers encountered during validation.
+- 2026-07-07 / Codex: Recorded the VIX-2221 JIRA update comment after posting finalized requirements, acceptance criteria, implementation notes, and validation results.
+- 2026-07-07 / Codex: Recorded the follow-up `ProcessCmdKey` fix after user validation showed plain arrow keys did not reach `OnKeyDown`.

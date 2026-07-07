@@ -333,6 +333,16 @@ namespace Common.Controls.Timeline
 			timelineRowList.DoLayout();
 		}
 
+		/// <summary>
+		/// Moves the active row by the specified number of visible rows.
+		/// </summary>
+		/// <param name="direction">A negative value to move upward; a positive value to move downward.</param>
+		/// <returns><see langword="true" /> if the active row changed; otherwise, <see langword="false" />.</returns>
+		public bool MoveActiveRow(int direction)
+		{
+			return grid.MoveActiveRow(direction);
+		}
+
 		// Zoom in or out (ie. change the visible time span): give a scale < 1.0
 		// and it zooms in, > 1.0 and it zooms out.
 		public void Zoom(double scale)

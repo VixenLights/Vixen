@@ -744,6 +744,51 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
+		/// Moves the active row by the specified number of visible rows.
+		/// </summary>
+		/// <param name="direction">A negative value to move upward; a positive value to move downward.</param>
+		/// <returns><see langword="true" /> if the active row changed; otherwise, <see langword="false" />.</returns>
+		public bool MoveActiveRow(int direction)
+		{
+			if (direction == 0)
+				return false;
+
+			List<Row> visibleRows = VisibleRows;
+			Row activeRow = ActiveRow;
+			int activeRowIndex = visibleRows.IndexOf(activeRow);
+
+			if (activeRowIndex < 0)
+				return false;
+
+			int targetRowIndex = Math.Max(0, Math.Min(visibleRows.Count - 1, activeRowIndex + Math.Sign(direction)));
+			if (targetRowIndex == activeRowIndex)
+				return false;
+
+			Row targetRow = visibleRows[targetRowIndex];
+			ClearActiveRows(targetRow);
+			targetRow.Active = true;
+			EnsureRowVisible(targetRow);
+			Invalidate();
+			return true;
+		}
+
+		private void EnsureRowVisible(Row row)
+		{
+			if (row.DisplayTop < VerticalOffset)
+			{
+				VerticalOffset = row.DisplayTop;
+				return;
+			}
+
+			int rowBottom = row.DisplayTop + row.Height;
+			int visibleBottom = VerticalOffset + ClientSize.Height;
+			if (rowBottom > visibleBottom)
+			{
+				VerticalOffset = rowBottom - ClientSize.Height;
+			}
+		}
+
+		/// <summary>
 		/// Add a row to the Grid
 		/// </summary>
 		/// <param name="row"></param>
