@@ -13,7 +13,7 @@ The same control pair also applies when Text is driven by a mark collection. Mar
 ## Progress
 
 - [x] (2026-07-07) Created this ExecPlan from `docs/effects/vix-2681-text-color-per-word.md` after reviewing `.agents/PLANS.md`, the project `dotnet-best-practices`, `csharp-docs`, `csharp-async`, and `dotnet-design-pattern-review` skills, `src/Vixen.Modules/Effect/Text/Text.cs`, `src/Vixen.Modules/Effect/Text/TextData.cs`, `src/Vixen.Modules/Effect/Text/Text.csproj`, and `src/Vixen.Tests/Vixen.Tests.csproj`.
-- [ ] Update Jira VIX-2681 with this plan's requirements, design notes, acceptance criteria, and test plan before code changes.
+- [x] (2026-07-07 19:50Z) Updated Jira VIX-2681 with the original request, planning references, unified `Cycle Color`/`Cycle Mode` requirements, Mark mode timing rule, migration rules, acceptance criteria, automated test plan, manual validation plan, and implementation-not-started status.
 - [ ] Add characterization tests for current Text color-cycling visibility, data defaults, cloning, and migration behavior.
 - [ ] Add the cycle mode data model and compatibility migration.
 - [ ] Replace the exposed `CycleCharacterColor` UI setting with unified `Cycle Color` and `Cycle Mode` properties.
@@ -47,7 +47,7 @@ The same control pair also applies when Text is driven by a mark collection. Mar
 
 ## Outcomes & Retrospective
 
-This plan has been created but not implemented. No production code or tests have been changed as part of this plan authoring step. Record implementation outcomes here after each milestone, especially any deviation from the migration rules or rendering approach.
+Milestone 1 is complete. Jira VIX-2681 now contains the plan's requirements, design notes, migration rules, acceptance criteria, and test plan before code changes began. No production code or tests have been changed as part of this plan authoring and tracking update. Record further implementation outcomes here after each milestone, especially any deviation from the migration rules or rendering approach.
 
 ## Context and Orientation
 
