@@ -13,6 +13,7 @@ using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 using VixenModules.App.Modeling;
+using VixenModules.Property.Color;
 
 namespace VixenApplication.Setup
 {
@@ -218,7 +219,15 @@ namespace VixenApplication.Setup
 				if (property != null)
 				{
 
-					if (property.HasSetup)
+					// This is a bit of a hack to ensure the color property edits update any color breakdown patching
+					if (property is ColorModule cm)
+					{
+						ColorSetupHelper helper = new ColorSetupHelper();
+						helper.SetupColors(cm.ColorType, cm.ColorSetName, cm.SingleColor);
+						helper.Perform(SelectedElements);
+						OnElementsChanged(new ElementsChangedEventArgs(ElementsChangedEventArgs.ElementsChangedAction.Edit));
+					}
+					else if (property.HasSetup)
 					{
 						result = property.Setup();
 						if (result)
