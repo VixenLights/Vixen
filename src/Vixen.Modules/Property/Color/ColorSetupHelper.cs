@@ -17,6 +17,7 @@ namespace VixenModules.Property.Color
 		private const string Green = "Green";
 		private const string Blue = "Blue";
 		private const string White = "White";
+		private string _colorSetNameSelectedItem = string.Empty;
 
 		public ColorSetupHelper()
 		{
@@ -301,6 +302,24 @@ namespace VixenModules.Property.Color
 			}
 		}
 
+		public void SetupColors(ElementColorType colorType, string colorSetName, System.Drawing.Color singleColor)
+		{
+			switch (colorType)
+			{
+				case ElementColorType.FullColor:
+					radioButtonOptionFullColor.Checked = true;
+					break;
+				case ElementColorType.MultipleDiscreteColors:
+					radioButtonOptionMultiple.Checked = true;
+					_colorSetNameSelectedItem = colorSetName;
+					break;
+				default:
+					radioButtonOptionSingle.Checked = true;
+					colorPanelSingleColor.Color = singleColor;
+					break;
+			}
+		}
+
 		public void SetColorType(ElementColorType colorType)
 		{
 			switch (colorType)
@@ -354,6 +373,11 @@ namespace VixenModules.Property.Color
 
 			if (comboBoxColorSet.SelectedIndex < 0) {
 				comboBoxColorSet.SelectedIndex = 0;
+			}
+
+			if (_colorSetNameSelectedItem != string.Empty)
+			{
+				comboBoxColorSet.SelectedItem = _colorSetNameSelectedItem;
 			}
 
 			comboBoxColorSet.EndUpdate();
