@@ -540,7 +540,7 @@ namespace VixenModules.Effect.PinWheel
 		private double CalculateCenterStartPct(double intervalPos)
 		{
 			var value = CenterHubCurve.GetValue(intervalPos);
-			if (value < 1) value = 1;
+			if (value < 0) value = 0;
 
 			return value/100.0;
 		}
