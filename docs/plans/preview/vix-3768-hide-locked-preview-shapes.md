@@ -14,10 +14,12 @@ After this work, a user can lock completed preview shapes, click `Hide Locked`, 
 - [x] (2026-07-08 19:47Z) Applied the project `dotnet-design-pattern-review` skill for planning. The design keeps the new behavior scoped to Preview Setup view state and avoids changing the preview shape lock model or persisted data model.
 - [x] (2026-07-08 19:50Z) Updated Jira issue `VIX-3768` with the refined specification, acceptance criteria, test plan, and ExecPlan path. The issue remains in `New Ticket`; no workflow transition was performed.
 - [x] (2026-07-08 19:55Z) Updated `docs/preview/vix-3768-hide-locked-preview-shapes.md` so it is the canonical product specification; this ExecPlan now serves as the implementation plan for that specification.
-- [ ] Implement the transient hide-locked state, toolbar toggle, Edit menu toggle, rendering filter, selection filter, and button/menu state updates.
-- [ ] Add generated hide/show icon resources that visually match the existing lock toolbar icons.
-- [ ] Add focused unit tests for the visibility rules and run the focused test command.
-- [ ] Run manual Preview Setup verification and record results in this plan and Jira.
+- [x] (2026-07-08 20:18Z) Implemented the transient hide-locked state, toolbar toggle, Edit menu toggle, rendering filter, selection filter, and button/menu state updates.
+- [x] (2026-07-08 20:18Z) Added generated `HideLocked.png` and `ShowLocked.png` resources under `src/Vixen.Modules/Preview/VixenPreview/Resources` and wired them through the preview module resources.
+- [x] (2026-07-08 20:18Z) Added focused unit tests for the visibility, command-state, and selection-retention rules. `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~HideLockedPreview --no-restore` passed 12/12 tests.
+- [x] (2026-07-08 20:18Z) Ran broader preview-filtered validation. `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Preview --no-restore` passed 31/31 tests.
+- [x] (2026-07-08 20:20Z) Ran preview module build validation. `dotnet build src\Vixen.Modules\Preview\VixenPreview\VixenPreview.csproj --no-restore` succeeded with 5 pre-existing warnings and 0 errors.
+- [x] (2026-07-08 20:28Z) Manual Preview Setup verification confirmed by the user and recorded in Jira `VIX-3768`.
 
 ## Surprises & Discoveries
 
@@ -27,6 +29,8 @@ After this work, a user can lock completed preview shapes, click `Hide Locked`, 
   Evidence: User answer on 2026-07-08: hidden locked shapes should be excluded from mouse hit testing, marquee selection, drag operations, context menus, and keyboard actions so "it should appear like they do not exist."
 - Observation: The current lock behavior is implemented as a shape property and already participates in selection rules.
   Evidence: `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewBaseShape.cs` exposes `Locked`; `src/Vixen.Modules/Preview/VixenPreview/VixenPreviewControl.cs` has `DisplayItemAtPoint(...)` skip locked shapes unless selected or override selection is active.
+- Observation: Adding the preview module reference to `Vixen.Tests` compiled successfully, so focused helper tests can live in the existing test project.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~HideLockedPreview --no-restore` built `VixenPreview` and passed 12/12 tests.
 
 ## Decision Log
 
@@ -56,7 +60,7 @@ After this work, a user can lock completed preview shapes, click `Hide Locked`, 
 
 ## Outcomes & Retrospective
 
-No implementation has been completed yet. This initial plan captures the refined behavior and implementation path so code work can begin from a self-contained document.
+The implementation milestone is complete. The code now keeps hide/show state transient in `VixenPreviewControl`, exposes one toolbar/menu toggle from `VixenPreviewSetup3`, filters hidden locked items from drawing, info overlays, hit testing, marquee selection, dragging, and edit commands, and adds focused tests for the pure visibility rules. Automated focused tests, broader preview-filtered tests, preview module build validation, and user-confirmed manual Preview Setup validation are complete.
 
 ## Context and Orientation
 
@@ -204,3 +208,5 @@ No new persistence field should be added to `VixenPreviewData`. No undo action s
 2026-07-08 / Codex: Updated Jira `VIX-3768` with the refined specification, acceptance criteria, test plan, and ExecPlan path before implementation so the tracker matches the planned scope.
 
 2026-07-08 / Codex: Updated `docs/preview/vix-3768-hide-locked-preview-shapes.md` to contain the refined product specification directly. The ExecPlan remains focused on implementation details and points back to that specification as the source of truth.
+
+2026-07-08 / Codex: Recorded user-confirmed manual Preview Setup validation after implementation and automated test validation completed.
