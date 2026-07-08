@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -129,5 +129,11 @@
   </data>
   <data name="InsertMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\InsertMode.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HideLocked" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\HideLocked.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ShowLocked" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ShowLocked.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

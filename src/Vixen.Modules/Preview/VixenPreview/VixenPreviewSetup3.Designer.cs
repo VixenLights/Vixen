@@ -1,4 +1,4 @@
-﻿using Common.Controls.Theme;
+using Common.Controls.Theme;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -43,6 +43,7 @@ namespace VixenModules.Preview.VixenPreview
 			btnLock = new Button();
 			btnUnlock = new Button();
 			btnUnlockAll = new Button();
+			btnToggleHideLocked = new Button();
 			tableLayoutPanel2 = new TableLayoutPanel();
 			buttonDistributeVertical = new Button();
 			buttonMatchProperties = new Button();
@@ -94,6 +95,7 @@ namespace VixenModules.Preview.VixenPreview
 			lockToolStripMenuItem = new ToolStripMenuItem();
 			unlockToolStripMenuItem = new ToolStripMenuItem();
 			unlockAllToolStripMenuItem = new ToolStripMenuItem();
+			hideLockedToolStripMenuItem = new ToolStripMenuItem();
 			toolStripSeparator4 = new ToolStripSeparator();
 			backgroundPropertiesToolStripMenuItem = new ToolStripMenuItem();
 			toolStripSeparator5 = new ToolStripSeparator();
@@ -233,7 +235,7 @@ namespace VixenModules.Preview.VixenPreview
 			lblLock.Location = new Point(1049, 0);
 			lblLock.Margin = new Padding(4, 0, 4, 0);
 			lblLock.Name = "lblLock";
-			lblLock.Size = new Size(113, 22);
+			lblLock.Size = new Size(147, 22);
 			lblLock.TabIndex = 0;
 			lblLock.Text = "Lock/Unlock";
 			lblLock.TextAlign = ContentAlignment.MiddleCenter;
@@ -247,13 +249,14 @@ namespace VixenModules.Preview.VixenPreview
 			pnlLock.Location = new Point(1049, 25);
 			pnlLock.Margin = new Padding(4, 3, 4, 3);
 			pnlLock.Name = "pnlLock";
-			pnlLock.Size = new Size(113, 81);
+			pnlLock.Size = new Size(147, 81);
 			pnlLock.TabIndex = 28;
 			// 
 			// tableLayoutPanel6
 			// 
 			tableLayoutPanel6.AutoSize = true;
-			tableLayoutPanel6.ColumnCount = 3;
+			tableLayoutPanel6.ColumnCount = 4;
+			tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle());
 			tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle());
 			tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle());
 			tableLayoutPanel6.ColumnStyles.Add(new ColumnStyle());
@@ -261,12 +264,13 @@ namespace VixenModules.Preview.VixenPreview
 			tableLayoutPanel6.Controls.Add(btnLock, 0, 0);
 			tableLayoutPanel6.Controls.Add(btnUnlock, 1, 0);
 			tableLayoutPanel6.Controls.Add(btnUnlockAll, 2, 0);
+			tableLayoutPanel6.Controls.Add(btnToggleHideLocked, 3, 0);
 			tableLayoutPanel6.Location = new Point(4, 1);
 			tableLayoutPanel6.Margin = new Padding(4, 3, 4, 3);
 			tableLayoutPanel6.Name = "tableLayoutPanel6";
 			tableLayoutPanel6.RowCount = 1;
 			tableLayoutPanel6.RowStyles.Add(new RowStyle());
-			tableLayoutPanel6.Size = new Size(102, 33);
+			tableLayoutPanel6.Size = new Size(136, 33);
 			tableLayoutPanel6.TabIndex = 23;
 			// 
 			// btnLock
@@ -322,6 +326,24 @@ namespace VixenModules.Preview.VixenPreview
 			toolTip.SetToolTip(btnUnlockAll, "Unlock All");
 			btnUnlockAll.UseVisualStyleBackColor = false;
 			btnUnlockAll.Click += unlockAllButton_ButtonClick;
+			// 
+			// btnToggleHideLocked
+			// 
+			btnToggleHideLocked.BackColor = Color.Transparent;
+			btnToggleHideLocked.BackgroundImageLayout = ImageLayout.Stretch;
+			btnToggleHideLocked.Enabled = false;
+			btnToggleHideLocked.FlatAppearance.BorderSize = 0;
+			btnToggleHideLocked.FlatAppearance.MouseOverBackColor = Color.FromArgb(80, 80, 80);
+			btnToggleHideLocked.FlatStyle = FlatStyle.Flat;
+			btnToggleHideLocked.Location = new Point(106, 3);
+			btnToggleHideLocked.Margin = new Padding(4, 3, 4, 3);
+			btnToggleHideLocked.Name = "btnToggleHideLocked";
+			btnToggleHideLocked.Size = new Size(26, 27);
+			btnToggleHideLocked.TabIndex = 33;
+			btnToggleHideLocked.Tag = "";
+			toolTip.SetToolTip(btnToggleHideLocked, "Hide Locked");
+			btnToggleHideLocked.UseVisualStyleBackColor = false;
+			btnToggleHideLocked.Click += toggleHideLockedButton_Click;
 			// 
 			// tableLayoutPanel2
 			// 
@@ -869,7 +891,7 @@ namespace VixenModules.Preview.VixenPreview
 			// 
 			// editToolStripMenuItem
 			// 
-			editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { copyToolStripMenuItem, copyToolStripMenuItem1, pasteToolStripMenuItem, deleteToolStripMenuItem, toolStripMenuItem1, undoToolStripMenuItem, redoToolStripMenuItem, toolStripSeparator3, lockToolStripMenuItem, unlockToolStripMenuItem, unlockAllToolStripMenuItem, toolStripSeparator4, backgroundPropertiesToolStripMenuItem, toolStripSeparator5, addTemplateMenu });
+			editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { copyToolStripMenuItem, copyToolStripMenuItem1, pasteToolStripMenuItem, deleteToolStripMenuItem, toolStripMenuItem1, undoToolStripMenuItem, redoToolStripMenuItem, toolStripSeparator3, lockToolStripMenuItem, unlockToolStripMenuItem, unlockAllToolStripMenuItem, hideLockedToolStripMenuItem, toolStripSeparator4, backgroundPropertiesToolStripMenuItem, toolStripSeparator5, addTemplateMenu });
 			editToolStripMenuItem.Name = "editToolStripMenuItem";
 			editToolStripMenuItem.Size = new Size(39, 20);
 			editToolStripMenuItem.Text = "&Edit";
@@ -964,6 +986,13 @@ namespace VixenModules.Preview.VixenPreview
 			unlockAllToolStripMenuItem.Size = new Size(203, 22);
 			unlockAllToolStripMenuItem.Text = "&Unlock All";
 			unlockAllToolStripMenuItem.Click += unlockAllButton_ButtonClick;
+			// 
+			// hideLockedToolStripMenuItem
+			// 
+			hideLockedToolStripMenuItem.Name = "hideLockedToolStripMenuItem";
+			hideLockedToolStripMenuItem.Size = new Size(203, 22);
+			hideLockedToolStripMenuItem.Text = "&Hide Locked";
+			hideLockedToolStripMenuItem.Click += toggleHideLockedButton_Click;
 			// 
 			// toolStripSeparator4
 			// 
@@ -1827,12 +1856,14 @@ namespace VixenModules.Preview.VixenPreview
 		private System.Windows.Forms.Button btnLock;
 		private System.Windows.Forms.Button btnUnlock;
 		private System.Windows.Forms.Button btnUnlockAll;
+		private System.Windows.Forms.Button btnToggleHideLocked;
 		private System.Windows.Forms.Button btnAddCustomProp;
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem lockToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem unlockToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem unlockAllToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem hideLockedToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;

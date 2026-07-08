@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.IO;
@@ -53,6 +53,7 @@ namespace VixenModules.Preview.VixenPreview
 		internal int ItemBulbSize = 0;
 
 		private bool _holdRender;
+		private bool _hideLockedDisplayItems;
 		private static Cursor _rotateCursor = new Cursor(new MemoryStream(Properties.Resources.Rotate));
 		private static Cursor _insertModeCursor = new Cursor(new MemoryStream(Properties.Resources.InsertMode));
 
@@ -231,6 +232,44 @@ namespace VixenModules.Preview.VixenPreview
 		public bool IsSingleItemSelected => _selectedDisplayItem != null;
 		public DisplayItem SingleItemSelected => _selectedDisplayItem;
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether locked display items are hidden on the Preview Setup canvas.
+		/// </summary>
+		/// <value><see langword="true" /> if locked display items are hidden; otherwise, <see langword="false" />. The default is <see langword="false" />.</value>
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public bool HideLockedDisplayItems
+		{
+			get { return _hideLockedDisplayItems; }
+			set
+			{
+				if (_hideLockedDisplayItems == value)
+				{
+					return;
+				}
+
+				_hideLockedDisplayItems = value;
+				RemoveHiddenDisplayItemsFromSelection();
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+				EndUpdate();
+			}
+		}
+
+		/// <summary>
+		/// Determines whether a display item should be visible on the Preview Setup canvas.
+		/// </summary>
+		/// <param name="displayItem">The display item to evaluate.</param>
+		/// <returns><see langword="true" /> if the display item should be visible; otherwise, <see langword="false" />.</returns>
+		public bool IsDisplayItemVisibleOnCanvas(DisplayItem displayItem)
+		{
+			if (displayItem == null)
+			{
+				return false;
+			}
+
+			return PreviewCanvasVisibility.IsDisplayItemVisible(HideLockedDisplayItems, displayItem.Shape.Locked);
+		}
+
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<DisplayItem> SelectedDisplayItems
@@ -242,6 +281,21 @@ namespace VixenModules.Preview.VixenPreview
 				return _selectedDisplayItems;
 			}
 			set { _selectedDisplayItems = value; }
+		}
+
+		private void RemoveHiddenDisplayItemsFromSelection()
+		{
+			if (_selectedDisplayItem != null && !IsDisplayItemVisibleOnCanvas(_selectedDisplayItem))
+			{
+				DeSelectSelectedDisplayItem();
+			}
+
+			if (_selectedDisplayItems == null || _selectedDisplayItems.Count == 0)
+			{
+				return;
+			}
+
+			SelectedDisplayItems.RemoveAll(item => !IsDisplayItemVisibleOnCanvas(item));
 		}
 
 		[Bindable(true), Category("Display"), DefaultValue(255),
@@ -585,7 +639,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			foreach (DisplayItem item in SelectedDisplayItems)
 			{
-				if (item.Shape.PointInShape(new PreviewPoint(X, Y)))
+				if (IsDisplayItemVisibleOnCanvas(item) && item.Shape.PointInShape(new PreviewPoint(X, Y)))
 				{
 					return true;
 				}
@@ -597,7 +651,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			// First, deselect any currently selected item
 			DeSelectSelectedDisplayItem();
-			SelectedDisplayItems.AddRange(displayItems);
+			SelectedDisplayItems.AddRange(displayItems.Where(IsDisplayItemVisibleOnCanvas));
 			OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			EndUpdate();
 		}
@@ -735,7 +789,7 @@ namespace VixenModules.Preview.VixenPreview
 						}
 					}
 
-					else if (_selectedDisplayItem != null && _selectedDisplayItem.Shape.PointInShape(translatedPoint) &&
+					else if (_selectedDisplayItem != null && IsDisplayItemVisibleOnCanvas(_selectedDisplayItem) && _selectedDisplayItem.Shape.PointInShape(translatedPoint) &&
 					         !_selectedDisplayItem.Shape.Creating)
 					{
 						StartMove(translatedPoint.X, translatedPoint.Y);
@@ -1176,7 +1230,10 @@ namespace VixenModules.Preview.VixenPreview
 					// Are we moving a single display item?
 					if (_mouseCaptured && _selectedDisplayItem != null)
 					{
-						_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
+						if (IsDisplayItemVisibleOnCanvas(_selectedDisplayItem))
+						{
+							_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
+						}
 						EndUpdate();
 					}
 					// If we get here, we're drawing a rubber band
@@ -1191,6 +1248,12 @@ namespace VixenModules.Preview.VixenPreview
 
 						foreach (DisplayItem item in DisplayItems)
 						{
+							if (!IsDisplayItemVisibleOnCanvas(item))
+							{
+								SelectedDisplayItems.Remove(item);
+								continue;
+							}
+
 							if (item.Shape.ShapeInRect(_bandRect, changeX > 0))
 							{
 								if (!SelectedDisplayItems.Contains(item) && 
@@ -1214,7 +1277,10 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						foreach (DisplayItem item in SelectedDisplayItems)
 						{
-							item.Shape.MouseMove(zoomPoint.X, zoomPoint.Y, changeX, changeY);
+							if (IsDisplayItemVisibleOnCanvas(item))
+							{
+								item.Shape.MouseMove(zoomPoint.X, zoomPoint.Y, changeX, changeY);
+							}
 						}
 						EndUpdate();
 					}
@@ -1321,7 +1387,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					foreach (DisplayItem item in DisplayItems)
 					{
-						if (SelectedDisplayItems.Contains(item))
+						if (SelectedDisplayItems.Contains(item) && IsDisplayItemVisibleOnCanvas(item))
 							item.Shape.Nudge(0, -1);
 					}
 
@@ -1337,7 +1403,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					foreach (DisplayItem item in DisplayItems)
 					{
-						if (SelectedDisplayItems.Contains(item))
+						if (SelectedDisplayItems.Contains(item) && IsDisplayItemVisibleOnCanvas(item))
 							item.Shape.Nudge(0, 1);
 					}
 
@@ -1353,7 +1419,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					foreach (DisplayItem item in DisplayItems)
 					{
-						if (SelectedDisplayItems.Contains(item))
+						if (SelectedDisplayItems.Contains(item) && IsDisplayItemVisibleOnCanvas(item))
 							item.Shape.Nudge(1, 0);
 					}
 
@@ -1369,7 +1435,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					foreach (DisplayItem item in DisplayItems)
 					{
-						if (SelectedDisplayItems.Contains(item))
+						if (SelectedDisplayItems.Contains(item) && IsDisplayItemVisibleOnCanvas(item))
 							item.Shape.Nudge(-1, 0);
 					}
 
@@ -1697,6 +1763,11 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			foreach (DisplayItem displayItem in DisplayItems)
 			{
+				if (!IsDisplayItemVisibleOnCanvas(displayItem))
+				{
+					continue;
+				}
+
 				bool selected;
 				if (_selectedDisplayItems?.Count > 0)
 				{
@@ -2063,6 +2134,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void Cut()
 		{
+			RemoveHiddenDisplayItemsFromSelection();
 			Copy();
 			Delete();
 		}
@@ -2112,6 +2184,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void Delete()
 		{
+			RemoveHiddenDisplayItemsFromSelection();
 			List<DisplayItem> selected = new List<DisplayItem>(SelectedDisplayItems.ToArray());
 			if (SelectedDisplayItems != null && SelectedDisplayItems.Count > 0)
 			{
@@ -2140,6 +2213,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void Lock()
 		{
+			RemoveHiddenDisplayItemsFromSelection();
 			if (SelectedDisplayItems?.Count > 0)
 			{
 				var action = new PreviewItemsLockUndoAction(this, SelectedDisplayItems);//Start Undo Action.
@@ -2182,6 +2256,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void Unlock(bool all = false)
 		{
+			RemoveHiddenDisplayItemsFromSelection();
 			if (all)
 			{
 				var action = new PreviewItemsLockUndoAction(this, SelectedDisplayItems);//Start Undo Action.
@@ -2193,6 +2268,7 @@ namespace VixenModules.Preview.VixenPreview
 				}
 
 				EndUpdate();
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			}
 			else if (SelectedDisplayItems?.Count > 0)
 			{
@@ -2242,6 +2318,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void Copy()
 		{
+			RemoveHiddenDisplayItemsFromSelection();
 			if (SelectedDisplayItems.Count() > 0)
 			{
 				string xml = PreviewTools.SerializeToString(SelectedDisplayItems);
@@ -2950,6 +3027,11 @@ namespace VixenModules.Preview.VixenPreview
 				fp.Lock();
 				foreach (DisplayItem displayItem in DisplayItems)
 				{
+					if (!IsDisplayItemVisibleOnCanvas(displayItem))
+					{
+						continue;
+					}
+
 					if (_editMode)
 					{
 						displayItem.Draw(fp, true, HighlightedElements, displayItem.Shape.Selected || SelectedDisplayItems.Contains(displayItem), displayItem.Shape.Locked, false);
@@ -2965,6 +3047,11 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					foreach (DisplayItem displayItem in DisplayItems)
 					{
+						if (!IsDisplayItemVisibleOnCanvas(displayItem))
+						{
+							continue;
+						}
+
 						Graphics g = Graphics.FromImage(fp.Bitmap);
 						displayItem.DrawInfo(g);
 					}

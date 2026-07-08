@@ -1,4 +1,4 @@
-﻿using Common.Controls;
+using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
@@ -32,6 +32,7 @@ namespace VixenModules.Preview.VixenPreview
 		public static string DrawShape;
 		// Undo manager
 		private UndoManager _undoMgr;
+		private int _iconSize;
 
 		public event EventHandler<PreviewItemMoveEventArgs> PreviewItemsAlignNew;
 
@@ -60,33 +61,35 @@ namespace VixenModules.Preview.VixenPreview
 			int imageSize = (int)(16 * scaleFactor);
 			menuStrip.ImageScalingSize = new Size(imageSize, imageSize);
 
-			int iconSize = (int)(24 * scaleFactor);
-			undoButton.Image = Tools.GetIcon(Resources.arrow_undo, iconSize);
+			_iconSize = (int)(24 * scaleFactor);
+			undoButton.Image = Tools.GetIcon(Resources.arrow_undo, _iconSize);
 			undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			redoButton.Image = Tools.GetIcon(Resources.arrow_redo, iconSize);
+			redoButton.Image = Tools.GetIcon(Resources.arrow_redo, _iconSize);
 			redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			redoButton.ButtonType = UndoButtonType.RedoButton;
 
-			btnBulbIncrease.Image = Tools.GetIcon(Resources.buttonBulbBigger, iconSize);
-			btnBulbDecrease.Image = Tools.GetIcon(Resources.buttonBulbSmaller, iconSize);
+			btnBulbIncrease.Image = Tools.GetIcon(Resources.buttonBulbBigger, _iconSize);
+			btnBulbDecrease.Image = Tools.GetIcon(Resources.buttonBulbSmaller, _iconSize);
 
-			btnLock.Image = Tools.GetIcon(Resources.locked, iconSize);
-			btnUnlock.Image = Tools.GetIcon(Resources.unlocked, iconSize);
-			btnUnlockAll.Image = Tools.GetIcon(Resources.unlockedAll, iconSize);
+			btnLock.Image = Tools.GetIcon(Resources.locked, _iconSize);
+			btnUnlock.Image = Tools.GetIcon(Resources.unlocked, _iconSize);
+			btnUnlockAll.Image = Tools.GetIcon(Resources.unlockedAll, _iconSize);
+			btnToggleHideLocked.Image = Tools.GetIcon(Properties.Resources.HideLocked, _iconSize);
+			hideLockedToolStripMenuItem.Image = Properties.Resources.HideLocked;
 
-			btnAddCustomProp.Image = Tools.GetIcon(Resources.Prop_Add, iconSize);
-			btnCustomPropEditor.Image = Tools.GetIcon(Resources.Prop_Edit, iconSize);
-			btnCustomPropLibrary.Image = Tools.GetIcon(Resources.folder_explore, iconSize);
+			btnAddCustomProp.Image = Tools.GetIcon(Resources.Prop_Add, _iconSize);
+			btnCustomPropEditor.Image = Tools.GetIcon(Resources.Prop_Edit, _iconSize);
+			btnCustomPropLibrary.Image = Tools.GetIcon(Resources.folder_explore, _iconSize);
 
-			buttonAlignLeft.Image = Tools.GetIcon(Resources.buttonAlignLeft_BackgroundImage, iconSize);
-			buttonAlignBottom.Image = Tools.GetIcon(Resources.buttonAlignBottom_BackgroundImage, iconSize);
-			buttonAlignHorizMid.Image = Tools.GetIcon(Resources.buttonAlignHorizMid_BackgroundImage, iconSize);
-			buttonAlignRight.Image = Tools.GetIcon(Resources.buttonAlignRight_BackgroundImage, iconSize);
-			buttonAlignTop.Image = Tools.GetIcon(Resources.buttonAlignTop_BackgroundImage, iconSize);
-			buttonAlignVertMid.Image = Tools.GetIcon(Resources.buttonAlignVertMid_BackgroundImage, iconSize);
-			buttonDistributeHorizontal.Image = Tools.GetIcon(Resources.buttonDistributeHorizontal_BackgroundImage, iconSize);
-			buttonDistributeVertical.Image = Tools.GetIcon(Resources.buttonDistributeVertical_BackgroundImage, iconSize);
-			buttonMatchProperties.Image = Tools.GetIcon(Resources.buttonMatchProperties_BackgroundImage, iconSize);
+			buttonAlignLeft.Image = Tools.GetIcon(Resources.buttonAlignLeft_BackgroundImage, _iconSize);
+			buttonAlignBottom.Image = Tools.GetIcon(Resources.buttonAlignBottom_BackgroundImage, _iconSize);
+			buttonAlignHorizMid.Image = Tools.GetIcon(Resources.buttonAlignHorizMid_BackgroundImage, _iconSize);
+			buttonAlignRight.Image = Tools.GetIcon(Resources.buttonAlignRight_BackgroundImage, _iconSize);
+			buttonAlignTop.Image = Tools.GetIcon(Resources.buttonAlignTop_BackgroundImage, _iconSize);
+			buttonAlignVertMid.Image = Tools.GetIcon(Resources.buttonAlignVertMid_BackgroundImage, _iconSize);
+			buttonDistributeHorizontal.Image = Tools.GetIcon(Resources.buttonDistributeHorizontal_BackgroundImage, _iconSize);
+			buttonDistributeVertical.Image = Tools.GetIcon(Resources.buttonDistributeVertical_BackgroundImage, _iconSize);
+			buttonMatchProperties.Image = Tools.GetIcon(Resources.buttonMatchProperties_BackgroundImage, _iconSize);
 
 			ThemeUpdateControls.UpdateControls(this);
 			panel10.BackColor = Color.Black;
@@ -105,6 +108,7 @@ namespace VixenModules.Preview.VixenPreview
 			lockToolStripMenuItem.Enabled = false;
 			unlockToolStripMenuItem.Enabled = false;
 			unlockAllToolStripMenuItem.Enabled = false;
+			hideLockedToolStripMenuItem.Enabled = false;
 
 			trackerZoom.Maximum = Environment.Is64BitProcess ? 400 : 200;
 		}
@@ -150,6 +154,7 @@ namespace VixenModules.Preview.VixenPreview
 			SetZoomTextAndTracker(previewForm.Preview.ZoomLevel);
 			
 			InitUndo();
+			SetButtonEnabledState();
 
 			VerifyPreviewShapeLocations();
 
@@ -299,13 +304,13 @@ namespace VixenModules.Preview.VixenPreview
 			SetButtonEnabledState();
 		}
 
-		private void SetButtonEnabledState()
+	    private void SetButtonEnabledState()
 	    {
 		    btnBulbIncrease.Enabled = btnBulbDecrease.Enabled = previewForm.Preview.IsSingleItemSelected || previewForm.Preview.SelectedDisplayItems.Any();
 
 			btnLock.Enabled = btnUnlock.Enabled = false;
 			btnUnlock.Enabled = btnUnlock.Enabled = false;
-			btnUnlockAll.Enabled = btnUnlock.Enabled = false;
+			btnUnlockAll.Enabled = false;
 			lockToolStripMenuItem.Enabled = false;
 			unlockToolStripMenuItem.Enabled = false;
 			unlockAllToolStripMenuItem.Enabled = false;
@@ -331,6 +336,8 @@ namespace VixenModules.Preview.VixenPreview
 			if (previewForm.Preview.DisplayItems.FindIndex(x => x.Shape.Locked) >= 0)
 				btnUnlockAll.Enabled = unlockAllToolStripMenuItem.Enabled = true;
 
+			UpdateHideLockedCommandState();
+
 			var multiSelect = previewForm.Preview.SelectedDisplayItems.Count > 1;
 			//btnBulbMatch.Enabled = multiSelect;
 		    buttonAlignBottom.Enabled = multiSelect;
@@ -342,6 +349,27 @@ namespace VixenModules.Preview.VixenPreview
 		    buttonDistributeHorizontal.Enabled = buttonDistributeVertical.Enabled = multiSelect;
 		    buttonMatchProperties.Enabled = multiSelect;
 	    }
+
+		private void UpdateHideLockedCommandState()
+		{
+			if (previewForm?.Preview == null)
+			{
+				return;
+			}
+
+			var hideLockedDisplayItems = previewForm.Preview.HideLockedDisplayItems;
+			var anyLockedDisplayItems = previewForm.Preview.DisplayItems?.Any(x => x.Shape.Locked) == true;
+			var enabled = PreviewCanvasVisibility.IsHideLockedCommandEnabled(hideLockedDisplayItems, anyLockedDisplayItems);
+			var text = hideLockedDisplayItems ? "Show Locked" : "Hide Locked";
+			var image = hideLockedDisplayItems ? Properties.Resources.ShowLocked : Properties.Resources.HideLocked;
+
+			btnToggleHideLocked.Enabled = enabled;
+			hideLockedToolStripMenuItem.Enabled = enabled;
+			hideLockedToolStripMenuItem.Text = hideLockedDisplayItems ? "&Show Locked" : "&Hide Locked";
+			toolTip.SetToolTip(btnToggleHideLocked, text);
+			btnToggleHideLocked.Image = Tools.GetIcon(image, _iconSize);
+			hideLockedToolStripMenuItem.Image = image;
+		}
 
 	    private void VixenPreviewSetup3_ChangeZoomLevel(object sender, double zoomLevel) 
         {
@@ -876,6 +904,7 @@ namespace VixenModules.Preview.VixenPreview
 			previewForm.Preview.BeginUpdate();
 			previewForm.Preview.Lock();
 			previewForm.Preview.EndUpdate();
+			SetButtonEnabledState();
 		}
 
 		private void unlockButton_ButtonClick(object sender, EventArgs e)
@@ -883,6 +912,7 @@ namespace VixenModules.Preview.VixenPreview
 			previewForm.Preview.BeginUpdate();
 			previewForm.Preview.Unlock();
 			previewForm.Preview.EndUpdate();
+			SetButtonEnabledState();
 		}
 
 		private void unlockAllButton_ButtonClick(object sender, EventArgs e)
@@ -891,6 +921,13 @@ namespace VixenModules.Preview.VixenPreview
 			foreach (var previewDisplayItem in previewForm.Preview.DisplayItems)
 				previewDisplayItem.Shape.Locked = false;
 			previewForm.Preview.EndUpdate();
+			SetButtonEnabledState();
+		}
+
+		private void toggleHideLockedButton_Click(object sender, EventArgs e)
+		{
+			previewForm.Preview.HideLockedDisplayItems = !previewForm.Preview.HideLockedDisplayItems;
+			SetButtonEnabledState();
 		}
 
 		private void redoButton_ItemChosen(object sender, UndoMultipleItemsEventArgs e)

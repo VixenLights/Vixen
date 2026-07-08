@@ -28,6 +28,7 @@
 		<ProjectReference Include="..\Vixen.Modules\Effect\Spiral\Spiral.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Text\Text.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj" />
+		<ProjectReference Include="..\Vixen.Modules\Preview\VixenPreview\VixenPreview.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\LayerMixingFilter\ChromaKey\ChromaKey.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\LayerMixingFilter\LumaKey\LumaKey.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\LayerMixingFilter\MaskFill\MaskFill.csproj" />
