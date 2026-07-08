@@ -39,6 +39,8 @@ The same control pair also applies when Text is driven by a mark collection. Mar
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TextCycleColorMode --no-restore` reported `Passed: 8, Failed: 0`. The added tests cover literal-space-preserving word runs, mode helper behavior, mark Word mode gating, and empty-color visual representation safety.
 - Observation: A modern save with `CycleColor = false` could reload as enabled when stale legacy `CycleCharacterColor = true` was still serialized.
   Evidence: A focused regression test initially failed with `Assert.False() Failure` because `TextData.OnDeserialized(...)` treated `CycleCharacterColor = true` as authoritative even though `CycleColorMode` was present in the saved data.
+- Observation: Character-cycle rendering had an existing leading offset compared with non-cycle and word-cycle rendering.
+  Evidence: The character-cycle paths use `MeasureCharacterRanges(...)` and then draw each single character back into the measured bounds. `MeasureCharacterRanges(...)` already includes the GDI+ leading inset, so drawing a single character at that measured X position applies the inset again. A focused visual-representation bounds test covers character-cycle alignment against non-cycle rendering.
 
 ## Decision Log
 
@@ -54,6 +56,8 @@ The same control pair also applies when Text is driven by a mark collection. Mar
   Rationale: The Text effect cannot choose a configured gradient when none exist. Returning early avoids modulo-by-zero exceptions and keeps the failure mode visually quiet until the user restores a color.
 - Decision: Apply legacy `CycleCharacterColor` and Mark-mode migration only when serialized data does not contain `CycleColorMode`.
   Rationale: Absence of `CycleColorMode` identifies old sequence data. If modern saved data contains the mode, `CycleColor` must remain the authoritative enabled/disabled flag so disabled Cycle Color does not turn itself back on during reload.
+- Decision: Compensate character-cycle drawing by subtracting the measured first-character leading inset from each per-character draw rectangle.
+  Rationale: This keeps the existing character-range layout, color selection, and explode/fall behavior intact while aligning the rendered text origin with the non-cycle and word-cycle draw paths.
   Date/Author: 2026-07-07 / Codex
 - Decision: Do not introduce new asynchronous APIs for this feature.
   Rationale: Effect rendering and setup property changes are synchronous in the current Text module. Adding async would increase complexity without any I/O or long-running operation to await.

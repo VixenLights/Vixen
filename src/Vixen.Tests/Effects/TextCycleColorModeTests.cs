@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -195,6 +196,34 @@ public sealed class TextCycleColorModeTests
 		Assert.Null(exception);
 	}
 
+	[Fact]
+	public void TextRendering_CharacterCycleVisualRepresentationAlignsWithNonCycle()
+	{
+		// Arrange
+		var textLines = new List<string> { "One two" };
+		using var font = new Font("Arial", 24);
+		var nonCycleEffect = new Text
+		{
+			TextLines = textLines,
+			Font = font,
+			CycleColor = false
+		};
+		var characterCycleEffect = new Text
+		{
+			TextLines = textLines,
+			Font = font,
+			CycleColor = true
+		};
+		SetCycleColorModeValue(characterCycleEffect, "Character");
+
+		// Act
+		var nonCycleBounds = RenderVisualRepresentationBounds(nonCycleEffect);
+		var characterCycleBounds = RenderVisualRepresentationBounds(characterCycleEffect);
+
+		// Assert
+		Assert.True(Math.Abs(nonCycleBounds.Left - characterCycleBounds.Left) <= 1);
+	}
+
 	private static TextData RoundTrip(TextData data)
 	{
 		var serializer = new DataContractJsonSerializer(typeof(TextData));
@@ -244,6 +273,40 @@ public sealed class TextCycleColorModeTests
 
 		Assert.NotNull(method);
 		return (bool)method.Invoke(effect, [])!;
+	}
+
+	private static Rectangle RenderVisualRepresentationBounds(Text effect)
+	{
+		using var bitmap = new Bitmap(300, 100, PixelFormat.Format32bppArgb);
+		using (var graphics = Graphics.FromImage(bitmap))
+		{
+			graphics.Clear(Color.Transparent);
+			effect.GenerateVisualRepresentation(graphics, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+		}
+
+		var left = bitmap.Width;
+		var top = bitmap.Height;
+		var right = -1;
+		var bottom = -1;
+		for (var y = 0; y < bitmap.Height; y++)
+		{
+			for (var x = 0; x < bitmap.Width; x++)
+			{
+				if (bitmap.GetPixel(x, y).A == 0)
+				{
+					continue;
+				}
+
+				left = Math.Min(left, x);
+				top = Math.Min(top, y);
+				right = Math.Max(right, x);
+				bottom = Math.Max(bottom, y);
+			}
+		}
+
+		Assert.True(right >= left);
+		Assert.True(bottom >= top);
+		return Rectangle.FromLTRB(left, top, right + 1, bottom + 1);
 	}
 
 	private static PropertyInfo GetCycleColorModeProperty()

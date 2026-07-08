@@ -1293,18 +1293,20 @@ namespace VixenModules.Effect.Text
 						// Measure the word to see where each character range goes.
 						Region[] regions = g.MeasureCharacterRanges(word, _newfont,
 							new RectangleF(p.X, p.Y, size.Width, size.Height), string_format);
+						float leadingOffset = regions.Length > 0 ? regions[0].GetBounds(g).X - p.X : 0;
 
 						// Draw the characters one at a time.
 						for (int i = 0; i < word.Length; i++)
 						{
 							// See where this character would be drawn.
 							RectangleF rectf = regions[i].GetBounds(g);
+							int rectX = (int)(rectf.X - leadingOffset);
 							Rectangle rect;
 							switch (Direction)
 							{
 								case TextDirection.Explode:
 									rect = new Rectangle(
-										(int) ((int) rectf.X + _directionClass[_characterNumber].XOffset *
+										(int) (rectX + _directionClass[_characterNumber].XOffset *
 										       _explodePosition),
 										(int) (p.Y + _directionClass[_characterNumber].YOffset *
 										       _explodePosition),
@@ -1313,12 +1315,12 @@ namespace VixenModules.Effect.Text
 								case TextDirection.Fall:
 									_directionClass[_characterNumber].Delta += (RandDouble() * _fallSpeed);
 									rect = new Rectangle(
-										(int) rectf.X,
+										rectX,
 										(int) (p.Y + _directionClass[_characterNumber].Delta % BufferHt),
 										(int)((rectf.Width + 1) * 1.6), (int) rectf.Height + 1);
 									break;
 								default:
-									rect = new Rectangle((int) rectf.X, p.Y, (int) ((rectf.Width + 1) * 1.6),
+									rect = new Rectangle(rectX, p.Y, (int) ((rectf.Width + 1) * 1.6),
 										(int) rectf.Height + 1);
 									break;
 							}
@@ -1706,6 +1708,7 @@ namespace VixenModules.Effect.Text
 						Region[] regions = g.MeasureCharacterRanges(word, adjustedFont,
 							new RectangleF(adjustedStartPosition, 2, (int) adjustedSizeNew.Width + 25,
 								(int) adjustedSizeNew.Height), string_format);
+						float leadingOffset = regions.Length > 0 ? regions[0].GetBounds(g).X - adjustedStartPosition : 0;
 
 						// Draw the characters one at a time.
 						for (int i = 0; i < word.Length; i++)
@@ -1713,7 +1716,7 @@ namespace VixenModules.Effect.Text
 							// See where this character would be drawn.
 							RectangleF rectf = regions[i].GetBounds(g);
 							Rectangle rect;
-							rect = new Rectangle((int) rectf.X, (int) rectf.Y, (int) ((rectf.Width + 1) * 1.6),
+							rect = new Rectangle((int)(rectf.X - leadingOffset), (int) rectf.Y, (int) ((rectf.Width + 1) * 1.6),
 								(int) rectf.Height + 1);
 
 							// Create a brush with cycling color.
