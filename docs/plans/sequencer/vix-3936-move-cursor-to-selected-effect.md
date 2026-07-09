@@ -21,8 +21,8 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
 - [x] (2026-07-09) Completed Milestone 3: added focused `TimelineCursorSelection` tests for public selection APIs and ran focused/full validation successfully.
 - [x] (2026-07-09) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineCursorSelection --no-restore`; build succeeded and 5 tests passed. Warnings were pre-existing package/compiler warnings unrelated to VIX-3936.
 - [x] (2026-07-09) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore`; build succeeded and 198 tests passed. Warnings were pre-existing package/compiler warnings unrelated to VIX-3936.
-- [ ] Manually validate the Timed Sequence Editor behavior.
-- [ ] Update Jira issue `VIX-3936` with implementation notes and validation evidence.
+- [x] (2026-07-09) Manually validated the Timed Sequence Editor behavior; the feature behaves correctly.
+- [x] (2026-07-09) Updated Jira issue `VIX-3936` with implementation notes and validation evidence in comment `40164`.
 
 ## Surprises & Discoveries
 
@@ -81,7 +81,7 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
 
 Milestones 1, 2, and 3 are complete. The grid now exposes `MoveCursorToSelectedEffect`, the Timed Sequence Editor Edit menu has a persisted `Move Cursor To Selected Effect` toggle, and the toggle synchronizes to the grid property. Selection paths now move the cursor when the preference is enabled, the legacy popup selection path moves the cursor only after a concrete effect is selected if that path is ever triggered, and right-click cursor assignment is suppressed only for effect right-clicks while the preference is enabled.
 
-Focused validation after Milestones 1 and 2 passed with 7 `TimelineActiveRowNavigation` tests. Milestone 3 added 5 `TimelineCursorSelection` tests and both focused and full `Vixen.Tests` validation pass. Manual validation and Jira implementation evidence remain incomplete.
+Focused validation after Milestones 1 and 2 passed with 7 `TimelineActiveRowNavigation` tests. Milestone 3 added 5 `TimelineCursorSelection` tests and both focused and full `Vixen.Tests` validation pass. Manual Timed Sequence Editor validation confirms the behavior is correct. Jira issue `VIX-3936` has been updated with implementation and validation evidence.
 
 ## Context and Orientation
 
@@ -267,3 +267,5 @@ No undo service, sequence model, playback service, or rendering service dependen
 
 - 2026-07-09: Initial ExecPlan created from `docs/sequencer/vix-3936-move-cursor-to-selected-effect.md`, incorporating the clarified requirement that effect right-click behavior remains unchanged when the preference is disabled and does not move the cursor when the preference is enabled.
 - 2026-07-09: Milestone 3 completed with focused `TimelineCursorSelection` tests and full `Vixen.Tests` validation.
+- 2026-07-09: Manual Timed Sequence Editor validation completed successfully.
+- 2026-07-09: Jira issue `VIX-3936` updated with implementation and validation evidence in comment `40164`.
