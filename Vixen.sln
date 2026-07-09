@@ -513,6 +513,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePreview", "src\Vixen.Modules\App\LivePreview\LivePreview.csproj", "{0D2F803B-50D4-46D7-9758-2954A299FF4C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementTagManager", "src\Vixen.Common\ElementTagManager\ElementTagManager.csproj", "{4F69B17A-583E-477A-809C-CDBAC76A107C}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "State", "src\Vixen.Modules\Effect\State\State.csproj", "{011C7353-839B-4D5C-A673-482D47D5BE78}"
 EndProject
 Global
@@ -3402,6 +3403,7 @@ Global
 		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Release|x64.ActiveCfg = Release|x64
 		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Release|x86.ActiveCfg = Release|x86
 		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Release|x86.Build.0 = Release|x86
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Release|x64.Build.0 = Release|x64
 		{4E9D03F3-E85D-4796-AADD-A75497E15F07}.Debug|x64.ActiveCfg = Debug|x64
 		{4E9D03F3-E85D-4796-AADD-A75497E15F07}.Debug|x64.Build.0 = Debug|x64
 		{4E9D03F3-E85D-4796-AADD-A75497E15F07}.Debug|x86.ActiveCfg = Debug|x86
