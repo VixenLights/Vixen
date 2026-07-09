@@ -135,6 +135,23 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(new[] { firstLeaf.Element.Id, secondLeaf.Element.Id }.OrderBy(id => id), intents.ElementIds.OrderBy(id => id));
 	}
 
+	[Fact]
+	public void WipeDepthConverter_ExcludesZeroAndMaximumDepth()
+	{
+		// Arrange
+		var effect = new WipeModule();
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(3)]);
+		var context = new Mock<ITypeDescriptorContext>();
+		context.SetupGet(typeDescriptorContext => typeDescriptorContext.Instance).Returns(effect);
+		var converter = new WipeTargetElementDepthConverter();
+
+		// Act
+		var values = converter.GetStandardValues(context.Object).Cast<string>().ToArray();
+
+		// Assert
+		Assert.Equal(["1", "2"], values);
+	}
+
 	private static WipeData DeserializeJson(string json)
 	{
 		var serializer = new DataContractJsonSerializer(typeof(WipeData));

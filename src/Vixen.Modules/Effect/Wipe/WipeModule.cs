@@ -38,6 +38,8 @@ namespace VixenModules.Effect.Wipe
 		protected override void TargetNodesChanged()
 		{
 			CheckForInvalidColorData();
+			UpdateAttributes();
+			TypeDescriptor.Refresh(this);
 		}
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
@@ -912,6 +914,50 @@ namespace VixenModules.Effect.Wipe
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets how the wipe applies to the selected target nodes.
+		/// </summary>
+		/// <value>The target-node handling mode. The default is <see cref="TargetNodeSelection.Group" />.</value>
+		[Value]
+		[ProviderCategory(@"Behavior", 0)]
+		[ProviderDisplayName(@"WipeTargetNodeSelection")]
+		[ProviderDescription(@"WipeTargetNodeSelection")]
+		public TargetNodeSelection TargetNodeHandling
+		{
+			get { return _data.TargetNodeSelection; }
+			set
+			{
+				_data.TargetNodeSelection = value;
+				IsDirty = true;
+				OnPropertyChanged();
+				UpdateAttributes();
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the target hierarchy depth used when target-node handling is individual.
+		/// </summary>
+		/// <value>The selected target hierarchy depth. The default is <c>0</c>.</value>
+		[Value]
+		[ProviderCategory(@"Depth", 20)]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
+		[TypeConverter(typeof(WipeTargetElementDepthConverter))]
+		[PropertyEditor("SelectionEditor")]
+		public int DepthOfEffect
+		{
+			get { return _data.DepthOfEffect; }
+			set
+			{
+				_data.DepthOfEffect = value;
+				IsDirty = true;
+				OnPropertyChanged();
+				UpdateAttributes();
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
 		#region Information
 
 		public override string Information
@@ -930,7 +976,9 @@ namespace VixenModules.Effect.Wipe
 
 		private void UpdateAttributes()
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(9)
+			UpdateTargetingAttributes();
+
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(13)
 			{
 				{"PassCount", WipeMovement == WipeMovement.Count},
 				{"PulsePercent", WipeMovement != WipeMovement.PulseLength},
@@ -947,6 +995,49 @@ namespace VixenModules.Effect.Wipe
 				{"XOffset",  Direction > (WipeDirection) 3}
 			};
 			SetBrowsable(propertyStates);
+		}
+
+		private void UpdateTargetingAttributes()
+		{
+			var depth = DetermineDepth();
+			var hasUsefulIntermediateDepth = HasUsefulIntermediateDepth(depth);
+			var targetNodeHandlingVisible = TargetNodes.Any() && (TargetNodes.Length > 1 || depth > 2);
+
+			if (!targetNodeHandlingVisible && TargetNodeHandling == TargetNodeSelection.Individual)
+			{
+				_data.TargetNodeSelection = TargetNodeSelection.Group;
+			}
+
+			if (TargetNodes.Length > 1 || TargetNodeHandling == TargetNodeSelection.Group)
+			{
+				_data.DepthOfEffect = 0;
+			}
+			else if (TargetNodeHandling == TargetNodeSelection.Individual && !IsUsefulIntermediateDepth(DepthOfEffect, depth))
+			{
+				_data.DepthOfEffect = GetFirstUsefulIntermediateDepth(depth);
+			}
+
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{nameof(TargetNodeHandling), targetNodeHandlingVisible},
+				{nameof(DepthOfEffect), TargetNodeHandling == TargetNodeSelection.Individual && TargetNodes.Length == 1 && hasUsefulIntermediateDepth}
+			};
+			SetBrowsable(propertyStates);
+		}
+
+		private static bool HasUsefulIntermediateDepth(int depth)
+		{
+			return depth > 2;
+		}
+
+		private static bool IsUsefulIntermediateDepth(int selectedDepth, int availableDepth)
+		{
+			return selectedDepth > 0 && selectedDepth < availableDepth;
+		}
+
+		private static int GetFirstUsefulIntermediateDepth(int depth)
+		{
+			return HasUsefulIntermediateDepth(depth) ? 1 : 0;
 		}
 
 		#endregion

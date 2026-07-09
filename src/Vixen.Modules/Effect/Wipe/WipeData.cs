@@ -25,6 +25,8 @@ namespace VixenModules.Effect.Wipe {
 			ReverseColorDirection = true;
 			XOffset = 0.0;
 			YOffset = 0.0;
+			DepthOfEffect = 0;
+			TargetNodeSelection = TargetNodeSelection.Group;
 		}
 		[DataMember]
 		public ColorHandling ColorHandling { get; set; }
@@ -73,6 +75,34 @@ namespace VixenModules.Effect.Wipe {
 
 		[DataMember]
 		public double YOffset { get; set; }
+
+		/// <summary>
+		/// Gets or sets the target hierarchy depth used for individual target rendering.
+		/// </summary>
+		/// <value>The selected target hierarchy depth. The default is <c>0</c>.</value>
+		[DataMember]
+		public int DepthOfEffect { get; set; }
+
+		/// <summary>
+		/// Gets or sets the target-node handling mode for the wipe.
+		/// </summary>
+		/// <value>The target-node handling mode. The default is <see cref="TargetNodeSelection.Group" />.</value>
+		[DataMember]
+		public TargetNodeSelection TargetNodeSelection { get; set; }
+
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
+		{
+			if (!Enum.IsDefined(typeof(TargetNodeSelection), TargetNodeSelection))
+			{
+				TargetNodeSelection = TargetNodeSelection.Group;
+			}
+
+			if (DepthOfEffect < 0)
+			{
+				DepthOfEffect = 0;
+			}
+		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
