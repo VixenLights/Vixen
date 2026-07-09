@@ -44,5 +44,11 @@ namespace VixenModules.Effect.State
 				item.Parent = Parent;
 			}
 		}
+
+		/// <inheritdoc />
+		public override int GetMinimumItemCount()
+		{
+			return Parent?.RenderSource == StateRenderSource.Custom ? 1 : 0;
+		}
 	}
 }

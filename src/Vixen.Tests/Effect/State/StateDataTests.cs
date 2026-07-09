@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using Moq;
+using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Module.Property;
 using Vixen.Sys;
@@ -64,6 +65,32 @@ public class StateDataTests
 
 		// Assert
 		Assert.Equal(7, clone.Iterations);
+	}
+
+	[Fact]
+	public void CycleIndividually_DefaultsToTrue()
+	{
+		// Arrange / Act
+		var data = new StateEffectData();
+
+		// Assert
+		Assert.True(data.CycleIndividually);
+	}
+
+	[Fact]
+	public void Clone_CopiesCycleIndividually()
+	{
+		// Arrange
+		var data = new StateEffectData
+		{
+			CycleIndividually = false
+		};
+
+		// Act
+		var clone = (StateEffectData)data.Clone();
+
+		// Assert
+		Assert.False(clone.CycleIndividually);
 	}
 
 	[Fact]
@@ -287,6 +314,7 @@ public class StateDataTests
 		Assert.True(IsBrowsable(effect, nameof(StateEffect.StateItem)));
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.MarkCollectionId)));
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.CustomStateItems)));
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.CycleIndividually)));
 	}
 
 	[Fact]
@@ -302,10 +330,28 @@ public class StateDataTests
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.StateItem)));
 		Assert.True(IsBrowsable(effect, nameof(StateEffect.MarkCollectionId)));
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.CustomStateItems)));
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.CycleIndividually)));
 	}
 
 	[Fact]
-	public void RenderSource_CustomBrowsability_ShowsOnlyCustomStateItems()
+	public void RenderSource_CustomDefaultBrowsability_HidesCycleIndividually()
+	{
+		// Arrange
+		var effect = new StateEffect();
+
+		// Act
+		effect.RenderSource = StateRenderSource.Custom;
+
+		// Assert
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.StateItem)));
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.MarkCollectionId)));
+		Assert.True(IsBrowsable(effect, nameof(StateEffect.CustomStateItems)));
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.CycleIndividually)));
+		Assert.Equal(PlaybackMode.Default, effect.PlaybackMode);
+	}
+
+	[Fact]
+	public void RenderSource_CustomIterateBrowsability_ShowsCycleIndividuallyBeforeCustomStateItems()
 	{
 		// Arrange
 		var effect = new StateEffect
@@ -320,6 +366,9 @@ public class StateDataTests
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.StateItem)));
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.MarkCollectionId)));
 		Assert.True(IsBrowsable(effect, nameof(StateEffect.CustomStateItems)));
+		Assert.True(IsBrowsable(effect, nameof(StateEffect.CycleIndividually)));
+		Assert.True(GetPropertyOrder(effect, nameof(StateEffect.CycleIndividually)) <
+			GetPropertyOrder(effect, nameof(StateEffect.CustomStateItems)));
 		Assert.Equal(PlaybackMode.Iterate, effect.PlaybackMode);
 	}
 
@@ -383,6 +432,27 @@ public class StateDataTests
 	}
 
 	[Fact]
+	public void CycleIndividually_UsesResourceBackedDisplayMetadata()
+	{
+		// Arrange
+		var effect = new StateEffect
+		{
+			PlaybackMode = PlaybackMode.Iterate,
+			RenderSource = StateRenderSource.Custom
+		};
+
+		// Act
+		var property = TypeDescriptor.GetProperties(effect)[nameof(StateEffect.CycleIndividually)];
+
+		// Assert
+		Assert.NotNull(property);
+		Assert.Equal("Cycle Individually", property.DisplayName);
+		Assert.Equal(
+			"Cycles each custom State item row independently instead of grouping consecutive rows with the same State item name.",
+			property.Description);
+	}
+
+	[Fact]
 	public void VisualRepresentationText_StateItem_UsesStateDefinition()
 	{
 		// Arrange
@@ -422,6 +492,22 @@ public class StateDataTests
 
 		// Assert
 		Assert.Equal("State - Door - Custom", text);
+	}
+
+	[Fact]
+	public void VisualRepresentationText_CustomGrouped_AddsGroupHint()
+	{
+		// Arrange
+		var effect = CreateEffectWithDefinition(CreateDefinition("Door", CreateStateItem("Open", Color.Green)));
+		effect.PlaybackMode = PlaybackMode.Iterate;
+		effect.RenderSource = StateRenderSource.Custom;
+		effect.CycleIndividually = false;
+
+		// Act
+		var text = effect.GetVisualRepresentationText();
+
+		// Assert
+		Assert.Equal("State - Door - Custom Group", text);
 	}
 
 	[Fact]
@@ -793,6 +879,14 @@ public class StateDataTests
 		var property = TypeDescriptor.GetProperties(effect)[propertyName];
 		Assert.NotNull(property);
 		return property.IsBrowsable;
+	}
+
+	private static int GetPropertyOrder(StateEffect effect, string propertyName)
+	{
+		var property = TypeDescriptor.GetProperties(effect)[propertyName];
+		Assert.NotNull(property);
+		var attribute = Assert.IsType<PropertyOrderAttribute>(property.Attributes[typeof(PropertyOrderAttribute)]);
+		return attribute.Order;
 	}
 
 	private static StateEffect CreateEffectWithDefinition(StatePropertyDefinitionData definition, params IElementNode[] children)

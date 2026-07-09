@@ -74,6 +74,13 @@ namespace VixenModules.Effect.State
 			get => NormalizeIterations(_iterations);
 			set => _iterations = NormalizeIterations(value);
 		}
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether custom State item rows cycle in individual timing slots.
+		/// </summary>
+		/// <value><see langword="true" /> if each custom row cycles independently; otherwise, <see langword="false" /> to group consecutive custom rows with the same State item name. The default is <see langword="true" />.</value>
+		[DataMember]
+		public bool CycleIndividually { get; set; } = true;
 		
 		/// <summary>
 		/// Gets or sets whether the timeline renders the full visual or text
@@ -104,6 +111,7 @@ namespace VixenModules.Effect.State
 				MarkCollectionId = MarkCollectionId,
 				PlaybackMode = PlaybackMode,
 				Iterations = Iterations,
+				CycleIndividually = CycleIndividually,
 				ShowEffectVisual = ShowEffectVisual,
 				CustomStateItems = CustomStateItems
 					.Select(item => item.CreateInstanceForClone())

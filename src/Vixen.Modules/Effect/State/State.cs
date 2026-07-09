@@ -102,7 +102,7 @@ namespace VixenModules.Effect.State
 			switch (RenderSource)
 			{
 				case StateRenderSource.Custom:
-					return $"{text} - Custom";
+					return IsCustomGroupedMode() ? $"{text} - Custom Group" : $"{text} - Custom";
 				case StateRenderSource.StateItem:
 					return $"{text} - {StateItem}";
 				case StateRenderSource.MarkCollection:
@@ -110,6 +110,13 @@ namespace VixenModules.Effect.State
 				default:
 					return text;
 			}
+		}
+
+		private bool IsCustomGroupedMode()
+		{
+			return RenderSource == StateRenderSource.Custom &&
+				PlaybackMode == PlaybackMode.Iterate &&
+				!CycleIndividually;
 		}
 
 		#endregion
@@ -369,6 +376,32 @@ namespace VixenModules.Effect.State
 				OnPropertyChanged();
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether custom State item rows cycle in individual timing slots.
+		/// </summary>
+		/// <value><see langword="true" /> if each custom row cycles independently; otherwise, <see langword="false" /> to group consecutive custom rows with the same State item name. The default is <see langword="true" />.</value>
+		[Value]
+		[ProviderCategory("Config", 2)]
+		[ProviderDisplayName(@"Cycle Individually")]
+		[ProviderDescription(@"Cycles each custom State item row independently instead of grouping consecutive rows with the same State item name.")]
+		[PropertyOrder(6)]
+		public bool CycleIndividually
+		{
+			get => _data.CycleIndividually;
+			set
+			{
+				if (_data.CycleIndividually == value)
+				{
+					return;
+				}
+
+				_data.CycleIndividually = value;
+				IsDirty = true;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(ForceGenerateVisualRepresentation));
+			}
+		}
 		
 		/// <summary>
 		/// Gets or sets the playback behavior used when multiple State item names are active.
@@ -404,7 +437,7 @@ namespace VixenModules.Effect.State
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"CustomStateItems")]
 		[ProviderDescription(@"CustomStateItems")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public CustomStateItemCollection CustomStateItems
 		{
 			get => _customStateItems;
@@ -1234,7 +1267,8 @@ namespace VixenModules.Effect.State
 				{nameof(StateItem), RenderSource == StateRenderSource.StateItem},
 				{nameof(MarkCollectionId), RenderSource == StateRenderSource.MarkCollection},
 				{nameof(CustomStateItems), RenderSource == StateRenderSource.Custom},
-				{nameof(Iterations), PlaybackMode == PlaybackMode.Iterate}
+				{nameof(Iterations), PlaybackMode == PlaybackMode.Iterate},
+				{nameof(CycleIndividually), RenderSource == StateRenderSource.Custom && PlaybackMode == PlaybackMode.Iterate}
 			};
 
 			SetBrowsable(propertyStates);
