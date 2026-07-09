@@ -14,8 +14,9 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
 
 - [x] (2026-07-09) Read `.agents/PLANS.md`, the VIX-3936 specification, the timeline grid selection code, the Timed Sequence Editor menu persistence code, and existing sequencer tests.
 - [x] (2026-07-09) Created this initial ExecPlan with implementation milestones, validation steps, and the clarified right-click behavior.
+- [x] (2026-07-09) Completed Milestone 1: added `Grid.MoveCursorToSelectedEffect`, the Timed Sequence Editor Edit menu toggle, click synchronization, and `XMLProfileSettings` load/save using `{Name}/MoveCursorToSelectedEffect`.
+- [x] (2026-07-09) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineActiveRowNavigation --no-restore`; build succeeded and 7 tests passed. Warnings were pre-existing package/compiler warnings unrelated to Milestone 1.
 - [ ] Implement the grid preference, cursor target helpers, and selection-path cursor updates.
-- [ ] Add the Timed Sequence Editor Edit menu toggle and settings persistence.
 - [ ] Add focused automated tests where practical and run the focused/full test commands.
 - [ ] Manually validate the Timed Sequence Editor behavior.
 - [ ] Update Jira issue `VIX-3936` with implementation notes and validation evidence.
@@ -55,7 +56,9 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
 
 ## Outcomes & Retrospective
 
-This plan has not yet been implemented. After implementation, update this section with the behavior delivered, automated test results, manual validation results, any build limitations, and the Jira update reference.
+Milestone 1 is complete. The grid now exposes `MoveCursorToSelectedEffect`, the Timed Sequence Editor Edit menu has a persisted `Move Cursor To Selected Effect` toggle, and the toggle synchronizes to the grid property. No selection behavior has changed yet; Milestone 2 remains responsible for cursor movement and right-click behavior.
+
+Focused validation after Milestone 1 passed with 7 `TimelineActiveRowNavigation` tests. Full VIX-3936 behavior, manual validation, and Jira implementation evidence remain incomplete.
 
 ## Context and Orientation
 

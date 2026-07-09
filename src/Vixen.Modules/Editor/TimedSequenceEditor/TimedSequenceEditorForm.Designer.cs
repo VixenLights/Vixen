@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 	partial class TimedSequenceEditorForm
@@ -77,6 +77,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_RIColor_White = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_RIColor_Red = new System.Windows.Forms.ToolStripMenuItem();
 			this.cADStyleSelectionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.moveCursorToSelectedEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeIn = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeOut = new System.Windows.Forms.ToolStripMenuItem();
@@ -567,7 +568,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripSeparator10,
             this.toolStripMenuItem_SnapTo,
             this.toolStripMenuItem_ResizeIndicator,
-            this.cADStyleSelectionBoxToolStripMenuItem});
+            this.cADStyleSelectionBoxToolStripMenuItem,
+            this.moveCursorToSelectedEffectToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
@@ -753,6 +755,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.cADStyleSelectionBoxToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.cADStyleSelectionBoxToolStripMenuItem.Text = "CAD Style Selection Box";
 			this.cADStyleSelectionBoxToolStripMenuItem.Click += new System.EventHandler(this.cADStyleSelectionBoxToolStripMenuItem_Click);
+			// 
+			// moveCursorToSelectedEffectToolStripMenuItem
+			// 
+			this.moveCursorToSelectedEffectToolStripMenuItem.CheckOnClick = true;
+			this.moveCursorToSelectedEffectToolStripMenuItem.Name = "moveCursorToSelectedEffectToolStripMenuItem";
+			this.moveCursorToSelectedEffectToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.moveCursorToSelectedEffectToolStripMenuItem.Text = "Move Cursor To Selected Effect";
+			this.moveCursorToSelectedEffectToolStripMenuItem.Click += new System.EventHandler(this.moveCursorToSelectedEffectToolStripMenuItem_Click);
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -2406,6 +2416,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem helpDocumentationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem bulkEffectMoveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem cADStyleSelectionBoxToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem moveCursorToSelectedEffectToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem audioToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem beatBarDetectionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem divideMarksEvenlyToolStripMenuItem;

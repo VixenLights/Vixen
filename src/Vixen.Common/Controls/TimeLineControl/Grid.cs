@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -363,6 +363,14 @@ namespace Common.Controls.Timeline
 		public Rectangle SelectionArea { get; set; }
 		public Rectangle DrawingArea { get; set; }
 		public bool ClickingGridSetsCursor { get; set; }
+		/// <summary>
+		/// Gets or sets a value that indicates whether selecting effects moves the timeline cursor to an effect start.
+		/// </summary>
+		/// <value>
+		/// <see langword="true" /> if effect selection moves the timeline cursor to an effect start; otherwise, <see langword="false" />.
+		/// The default is <see langword="false" />.
+		/// </value>
+		public bool MoveCursorToSelectedEffect { get; set; }
 
 		// drawing colours, information, etc.
 		public Color RowSeparatorColor { get; set; }

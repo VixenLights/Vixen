@@ -1,4 +1,4 @@
-﻿using Common.Controls;
+using Common.Controls;
 using Common.Controls.Timeline;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
@@ -271,6 +271,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void cADStyleSelectionBoxToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			TimelineControl.grid.aCadStyleSelectionBox = cADStyleSelectionBoxToolStripMenuItem.Checked;
+		}
+
+		private void moveCursorToSelectedEffectToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TimelineControl.grid.MoveCursorToSelectedEffect = moveCursorToSelectedEffectToolStripMenuItem.Checked;
 		}
 
 		#endregion
