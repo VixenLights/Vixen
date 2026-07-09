@@ -3392,6 +3392,16 @@ Global
 		{4E9D03F3-E85D-4796-AADD-A75497E15F07}.Release|x64.Build.0 = Release|x64
 		{4E9D03F3-E85D-4796-AADD-A75497E15F07}.Release|x86.ActiveCfg = Release|x86
 		{4E9D03F3-E85D-4796-AADD-A75497E15F07}.Release|x86.Build.0 = Release|x86
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Debug|x64.ActiveCfg = Debug|x64
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Debug|x64.Build.0 = Debug|x64
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Debug|x86.ActiveCfg = Debug|x86
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Debug|x86.Build.0 = Debug|x86
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Deploy|Any CPU.ActiveCfg = Release|x64
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Deploy|x64.ActiveCfg = Release|x64
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Deploy|x64.Build.0 = Release|x64
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Release|x64.ActiveCfg = Release|x64
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Release|x86.ActiveCfg = Release|x86
+		{4F69B17A-583E-477A-809C-CDBAC76A107C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
