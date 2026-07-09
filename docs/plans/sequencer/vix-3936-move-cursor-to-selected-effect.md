@@ -18,7 +18,9 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
 - [x] (2026-07-09) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineActiveRowNavigation --no-restore`; build succeeded and 7 tests passed. Warnings were pre-existing package/compiler warnings unrelated to Milestone 1.
 - [x] (2026-07-09) Completed Milestone 2: added private cursor target helpers, moved the cursor from effect selection paths when the preference is enabled, routed popup selection through `SelectElement`, and preserved/suppressed right-click cursor assignment according to the preference.
 - [x] (2026-07-09) Re-ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineActiveRowNavigation --no-restore` after Milestone 2; build succeeded and 7 tests passed. Warnings were pre-existing package/compiler warnings unrelated to VIX-3936.
-- [ ] Add focused automated tests where practical and run the focused/full test commands.
+- [x] (2026-07-09) Completed Milestone 3: added focused `TimelineCursorSelection` tests for public selection APIs and ran focused/full validation successfully.
+- [x] (2026-07-09) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineCursorSelection --no-restore`; build succeeded and 5 tests passed. Warnings were pre-existing package/compiler warnings unrelated to VIX-3936.
+- [x] (2026-07-09) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore`; build succeeded and 198 tests passed. Warnings were pre-existing package/compiler warnings unrelated to VIX-3936.
 - [ ] Manually validate the Timed Sequence Editor behavior.
 - [ ] Update Jira issue `VIX-3936` with implementation notes and validation evidence.
 
@@ -38,6 +40,12 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
 
 - Observation: Shift range selection calls `SelectElementsBetween(...)` during mouse-down, but the active row for Ctrl/Shift interactions is set later in the mouse-up branch.
   Evidence: `Grid_Mouse.cs` calls `SelectElementsBetween(m_lastSingleSelectedElementLocation, gridLocation)` in `OnMouseDown`, while the later `OnMouseUp` branch checks `ShiftPressed || CtrlPressed`, clears active rows, and sets `row.Active = true`.
+
+- Observation: Automated right-click coverage would require direct WinForms mouse simulation or exposing additional grid internals.
+  Evidence: Milestone 3 tests cover deterministic public selection APIs. Right-click behavior remains in the manual validation checklist to avoid screen-position-dependent tests.
+
+- Observation: Disposing `TimelineControl` from the new tests can hit an existing parallel-test cleanup race in `cEventHelper`.
+  Evidence: An initial full-suite run passed the cursor assertion but failed during `TimelineControl.Dispose(Boolean)` with `System.ArgumentException: An item with the same key has already been added. Key: Common.Controls.Timeline.TimeInfo`. The final tests avoid that dispose path and close only the `TimeLineGlobalStateManager` instance created for each test.
 
 ## Decision Log
 
@@ -71,9 +79,9 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. The grid now exposes `MoveCursorToSelectedEffect`, the Timed Sequence Editor Edit menu has a persisted `Move Cursor To Selected Effect` toggle, and the toggle synchronizes to the grid property. Selection paths now move the cursor when the preference is enabled, the legacy popup selection path moves the cursor only after a concrete effect is selected if that path is ever triggered, and right-click cursor assignment is suppressed only for effect right-clicks while the preference is enabled.
+Milestones 1, 2, and 3 are complete. The grid now exposes `MoveCursorToSelectedEffect`, the Timed Sequence Editor Edit menu has a persisted `Move Cursor To Selected Effect` toggle, and the toggle synchronizes to the grid property. Selection paths now move the cursor when the preference is enabled, the legacy popup selection path moves the cursor only after a concrete effect is selected if that path is ever triggered, and right-click cursor assignment is suppressed only for effect right-clicks while the preference is enabled.
 
-Focused validation after Milestones 1 and 2 passed with 7 `TimelineActiveRowNavigation` tests. New VIX-3936-specific tests, manual validation, full test validation, and Jira implementation evidence remain incomplete.
+Focused validation after Milestones 1 and 2 passed with 7 `TimelineActiveRowNavigation` tests. Milestone 3 added 5 `TimelineCursorSelection` tests and both focused and full `Vixen.Tests` validation pass. Manual validation and Jira implementation evidence remain incomplete.
 
 ## Context and Orientation
 
@@ -229,11 +237,13 @@ The setting key to use is:
 
     {Name}/MoveCursorToSelectedEffect
 
-Expected focused test output after implementation should resemble:
+Actual focused test output after implementation:
 
-    Passed!  - Failed: 0, Passed: <N>, Skipped: 0, Total: <N>
+    Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5
 
-Update this section with actual command output excerpts during implementation.
+Actual full test output after implementation:
+
+    Passed!  - Failed:     0, Passed:   198, Skipped:     0, Total:   198
 
 ## Interfaces and Dependencies
 
@@ -256,3 +266,4 @@ No undo service, sequence model, playback service, or rendering service dependen
 ## Revision Notes
 
 - 2026-07-09: Initial ExecPlan created from `docs/sequencer/vix-3936-move-cursor-to-selected-effect.md`, incorporating the clarified requirement that effect right-click behavior remains unchanged when the preference is disabled and does not move the cursor when the preference is enabled.
+- 2026-07-09: Milestone 3 completed with focused `TimelineCursorSelection` tests and full `Vixen.Tests` validation.
