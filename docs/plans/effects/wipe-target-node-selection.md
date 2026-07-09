@@ -16,6 +16,7 @@ The behavior is visible in the Vixen effect editor and sequencer. Existing Wipe 
 - [x] (2026-07-09 21:06Z) Created Jira issue VIX-3938 as a New Feature with purpose, compatibility requirements, design notes, automated test plan, manual testing steps, acceptance criteria, and ExecPlan reference.
 - [x] (2026-07-10 03:28Z) Added focused Wipe target-node selection tests for module defaults, data defaults, serialized data members, legacy payload defaults, deep-target property visibility, and default group-mode rendering. The focused test command builds, passes the group-mode rendering characterization, and fails because Wipe does not yet expose the target/depth properties or data fields.
 - [x] (2026-07-10 03:52Z) Implemented Wipe data compatibility and UI properties for target-node handling and depth selection. Added Wipe-specific filtered depth converter and localization resource entries. Focused tests now pass for Milestone 3 property/data behavior.
+- [x] (2026-07-10 04:12Z) Implemented Wipe individual-mode rendering by resolving target render groups and running the existing location render pipeline independently for each group. Added focused coverage proving each child group restarts from local bounds.
 - [ ] Add or adopt the narrow shared depth helper if it reduces duplication without changing Chase or Spin behavior.
 - [ ] Run focused and broader validation, then update Jira and this plan with final evidence.
 
@@ -31,6 +32,8 @@ The behavior is visible in the Vixen effect editor and sequencer. Existing Wipe 
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~WipeTargetNodeSelection --no-restore` built `Vixen.Tests.dll`, passed 1 group-mode render test, and failed 6 tests because `WipeModule.TargetNodeHandling`, `WipeModule.DepthOfEffect`, `WipeData.TargetNodeSelection`, and `WipeData.DepthOfEffect` are absent.
 - Observation: Milestone 3 property/data implementation satisfies the focused tests without changing Wipe's render path.
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~WipeTargetNodeSelection --no-restore` passed 8 tests after adding `WipeData` fields, `WipeModule` properties, target visibility updates, and `WipeTargetElementDepthConverter`.
+- Observation: Wipe individual mode can reuse the current bounds, grouping, and movement dispatch when those steps are extracted behind a target-root helper.
+  Evidence: `WipeModule._PreRender()` now calls `RenderWipeForTargets()` once for group mode and once per resolved individual render group. `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~WipeTargetNodeSelection --no-restore` passed 9 tests, including `WipeRender_IndividualModeRestartsForEachDepthGroup`.
 
 ## Decision Log
 
@@ -57,6 +60,8 @@ Milestone 1 is complete. Jira VIX-3938 now tracks the planned feature scope, com
 Milestone 2 is complete. `src/Vixen.Tests/Effects/WipeTargetNodeSelectionTests.cs` now contains focused characterization tests, and `src/Vixen.Tests/Vixen.Tests.csproj` references the Wipe and Location modules. The focused test command builds successfully, passes 1 default group-mode rendering test, and currently fails 6 tests for the expected missing Wipe target/depth feature surface.
 
 Milestone 3 is complete. Wipe now persists `TargetNodeSelection` and `DepthOfEffect`, defaults legacy and new data to `Group` and depth `0`, exposes `TargetNodeHandling` and `DepthOfEffect` in the property grid, hides depth outside useful single-target individual mode, resets depth to `0` for group and multiple-target modes, and filters Wipe depth choices to exclude `0` and the maximum offered target depth. The render path still uses the existing group behavior; individual rendering remains for Milestone 4.
+
+Milestone 4 is complete. Group mode still runs the current combined-location behavior once across the selected targets. Individual mode resolves the selected depth under a single target, or each selected target when multiple targets are selected, and runs the same Wipe location pipeline independently for each group so each group computes local bounds and restarts timing. The new focused test verifies two separated child groups both start their local wipe at `TimeSpan.Zero` while their own second leaves start later.
 
 ## Context and Orientation
 

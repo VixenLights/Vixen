@@ -136,6 +136,37 @@ public sealed class WipeTargetNodeSelectionTests
 	}
 
 	[Fact]
+	public void WipeRender_IndividualModeRestartsForEachDepthGroup()
+	{
+		// Arrange
+		var firstGroupStartLeaf = CreateLocatedLeaf("Group 1 Leaf 1", 1, 1);
+		var firstGroupEndLeaf = CreateLocatedLeaf("Group 1 Leaf 2", 3, 1);
+		var secondGroupStartLeaf = CreateLocatedLeaf("Group 2 Leaf 1", 101, 1);
+		var secondGroupEndLeaf = CreateLocatedLeaf("Group 2 Leaf 2", 103, 1);
+		var firstGroup = CreateGroupNode("Group 1", firstGroupStartLeaf, firstGroupEndLeaf);
+		var secondGroup = CreateGroupNode("Group 2", secondGroupStartLeaf, secondGroupEndLeaf);
+		var root = CreateGroupNode("Root", [firstGroup, secondGroup], 3);
+		var effect = new WipeModule
+		{
+			TimeSpan = TimeSpan.FromMilliseconds(1000)
+		};
+		SetTargetNodesWithoutPropertyValidation(effect, [root]);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+		SetPropertyValue(effect, "DepthOfEffect", 1);
+
+		// Act
+		var preRenderSucceeded = effect.PreRender();
+		var intents = effect.Render();
+
+		// Assert
+		Assert.True(preRenderSucceeded);
+		Assert.Equal(TimeSpan.Zero, GetFirstIntentStartTime(intents, firstGroupStartLeaf));
+		Assert.Equal(TimeSpan.Zero, GetFirstIntentStartTime(intents, secondGroupStartLeaf));
+		Assert.True(GetFirstIntentStartTime(intents, firstGroupEndLeaf) > TimeSpan.Zero);
+		Assert.True(GetFirstIntentStartTime(intents, secondGroupEndLeaf) > TimeSpan.Zero);
+	}
+
+	[Fact]
 	public void WipeDepthConverter_ExcludesZeroAndMaximumDepth()
 	{
 		// Arrange
@@ -205,12 +236,17 @@ public sealed class WipeTargetNodeSelectionTests
 
 	private static IElementNode CreateGroupNode(string name, params IElementNode[] children)
 	{
+		return CreateGroupNode(name, children, children.Any() ? children.Max(child => child.GetMaxChildDepth()) + 1 : 0);
+	}
+
+	private static IElementNode CreateGroupNode(string name, IElementNode[] children, int maxChildDepth)
+	{
 		var targetNode = new Mock<IElementNode>();
 		targetNode.SetupGet(node => node.Name).Returns(name);
 		targetNode.SetupGet(node => node.Children).Returns(children);
 		targetNode.SetupGet(node => node.Properties).Returns(new PropertyManager(targetNode.Object));
 		targetNode.Setup(node => node.GetLeafEnumerator()).Returns(children.SelectMany(child => child.GetLeafEnumerator()));
-		targetNode.Setup(node => node.GetMaxChildDepth()).Returns(1);
+		targetNode.Setup(node => node.GetMaxChildDepth()).Returns(maxChildDepth);
 
 		return targetNode.Object;
 	}
@@ -261,6 +297,14 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.NotNull(itemsField);
 		var items = (Dictionary<Guid, IPropertyModuleInstance>)itemsField.GetValue(properties)!;
 		items[property.TypeId] = property;
+	}
+
+	private static TimeSpan GetFirstIntentStartTime(EffectIntents intents, IElementNode node)
+	{
+		var intentNodes = intents.GetIntentNodesForElement(node.Element.Id);
+		Assert.NotNull(intentNodes);
+
+		return intentNodes.Min(intentNode => intentNode.StartTime);
 	}
 
 	private static void SetTargetNodesWithoutPropertyValidation(WipeModule effect, IElementNode[] targetNodes)
