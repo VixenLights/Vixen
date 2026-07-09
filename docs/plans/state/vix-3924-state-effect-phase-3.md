@@ -14,9 +14,9 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a t
 
 - [x] (2026-07-09 00:00 -05:00) Created this ExecPlan from `docs/state/vix-3924-state-effect-phase-3.md`, current State effect source, and `.agents/PLANS.md`.
 - [x] (2026-07-09 00:35 -05:00) Implemented persisted `CycleIndividually` data, editor property, conditional visibility, editor order, and `Custom Group` visual text.
-- [ ] Implement grouped Custom Iterate scheduling while preserving current individual and Default behavior.
+- [x] (2026-07-09 01:05 -05:00) Implemented grouped Custom Iterate scheduling while preserving current individual and Default behavior.
 - [x] (2026-07-09 00:35 -05:00) Added focused Milestone 1 tests for data defaults/cloning, editor visibility/order, metadata text, and visual text.
-- [ ] Add focused tests for grouped interval scheduling and unchanged Custom Default behavior.
+- [x] (2026-07-09 01:05 -05:00) Added focused tests for grouped interval scheduling, unchanged Custom Default behavior, no name expansion, silent timing groups, missing row grouping, and grouped iterations.
 - [x] (2026-07-09 00:40 -05:00) Ran Milestone 1 focused tests, State effect build, and whitespace checks; recorded evidence below.
 
 ## Surprises & Discoveries
@@ -35,6 +35,9 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a t
 
 - Observation: The Effect Editor display/description provider falls back to the supplied key when a resource entry is missing.
   Evidence: `EffectResourceManager.GetDisplayNameString` and `GetDescriptionString` return `ResourceManager.GetString(key) ?? key`, so `ProviderDisplayName(@"Cycle Individually")` and a sentence-valued `ProviderDescription` avoid broad shared `.resx` edits while still displaying user-facing text.
+
+- Observation: The grouped planner can reuse the existing tick allocation helper without changing rounding behavior.
+  Evidence: `CreateGroupedCustomIntervals` calls `GetIntervalDuration` with the grouped slot count, so the final grouped slot receives any leftover ticks exactly like the existing row-by-row Iterate path.
 
 ## Decision Log
 
@@ -60,7 +63,9 @@ The behavior is visible in the standard Effect Editor. Add a State effect to a t
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. The State effect now persists and clones `CycleIndividually`, exposes `Cycle Individually` in the Effect Editor only for Custom Iterate mode, orders it before `Custom State Items`, and changes Custom Iterate grouped visual text to `Custom Group` when unchecked. Focused tests cover the data, editor descriptor, and visual text behavior. The main remaining risks are preserving exact existing behavior when `Cycle Individually = true` and correctly consuming timing for silent groups during Milestone 2.
+Milestone 1 is complete. The State effect now persists and clones `CycleIndividually`, exposes `Cycle Individually` in the Effect Editor only for Custom Iterate mode, orders it before `Custom State Items`, and changes Custom Iterate grouped visual text to `Custom Group` when unchecked. Focused tests cover the data, editor descriptor, and visual text behavior.
+
+Milestone 2 is complete. Custom Iterate scheduling now uses `CycleIndividually` to choose between the existing row-by-row sequence and the new consecutive grouped sequence. Grouped mode groups valid rows by exact State item name, groups consecutive `<None>` rows together, groups missing rows by missing ID, emits only rows present in `Custom State Items`, and repeats grouped slots for `Iterations`. Focused tests cover compatibility and the Phase 3 examples. The remaining work is Milestone 3 validation and final plan evidence.
 
 ## Context and Orientation
 
@@ -242,12 +247,15 @@ Record validation evidence here as implementation proceeds. Keep transcripts con
 
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
     Milestone 1: Passed! - Failed: 0, Passed: 67, Skipped: 0, Total: 67.
+    Milestone 2: Passed! - Failed: 0, Passed: 74, Skipped: 0, Total: 74.
 
     dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
     Milestone 1: Build succeeded with 0 warnings and 0 errors.
+    Milestone 2: Build succeeded with 5 existing warnings outside the State effect and 0 errors.
 
     git diff --check
     Milestone 1: Exited successfully. Git printed the expected local warning that `src/Vixen.Modules/Effect/State/State.cs` will be normalized from LF to CRLF the next time Git touches it; no whitespace errors were reported.
+    Milestone 2: Exited successfully with no output.
 
 ## Interfaces and Dependencies
 
@@ -285,3 +293,4 @@ The grouped helper must remain internal or private. If any new public or protect
 
 - 2026-07-09 / Codex: Initial ExecPlan created from the reviewed Phase 3 design specification. The plan records the key design choices for default compatibility, grouped Custom timing, missing row grouping, editor visibility, visual text, and focused validation.
 - 2026-07-09 / Codex: Completed Milestone 1 by adding the persisted/editor-facing `CycleIndividually` option, conditional browsability, visual `Custom Group` text, focused data/editor/visual tests, and validation evidence.
+- 2026-07-09 / Codex: Completed Milestone 2 by adding grouped Custom Iterate interval planning, routing the State effect through `CycleIndividually`, and adding focused planner tests for compatibility, grouping, silent slots, missing IDs, no name expansion, and iterations.

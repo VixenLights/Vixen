@@ -91,6 +91,23 @@ namespace VixenModules.Effect.State
 			int iterations,
 			TimeSpan effectDuration)
 		{
+			return CreateCustomIntervals(
+				definition,
+				customStateItems,
+				playbackMode,
+				iterations,
+				cycleIndividually: true,
+				effectDuration);
+		}
+
+		internal static IReadOnlyList<StateRenderInterval> CreateCustomIntervals(
+			StateDefinitionData? definition,
+			IReadOnlyList<CustomStateItemData> customStateItems,
+			PlaybackMode playbackMode,
+			int iterations,
+			bool cycleIndividually,
+			TimeSpan effectDuration)
+		{
 			if (definition == null || effectDuration <= TimeSpan.Zero || customStateItems.Count == 0)
 			{
 				return [];
@@ -101,7 +118,7 @@ namespace VixenModules.Effect.State
 				.ToDictionary(group => group.Key, group => group.First());
 
 			return playbackMode == PlaybackMode.Iterate
-				? CreateIteratedCustomIntervals(itemsById, customStateItems, iterations, effectDuration)
+				? CreateIteratedCustomIntervals(itemsById, customStateItems, iterations, cycleIndividually, effectDuration)
 				: CreateDefaultCustomIntervals(itemsById, customStateItems, effectDuration);
 		}
 
@@ -189,8 +206,14 @@ namespace VixenModules.Effect.State
 			IReadOnlyDictionary<Guid, StateItemData> itemsById,
 			IReadOnlyList<CustomStateItemData> customStateItems,
 			int iterations,
+			bool cycleIndividually,
 			TimeSpan effectDuration)
 		{
+			if (!cycleIndividually)
+			{
+				return CreateGroupedCustomIntervals(itemsById, customStateItems, iterations, effectDuration);
+			}
+
 			var normalizedIterations = StateData.NormalizeIterations(iterations);
 			var intervalCount = customStateItems.Count * normalizedIterations;
 			var intervals = new List<StateRenderInterval>();
@@ -210,6 +233,80 @@ namespace VixenModules.Effect.State
 			}
 
 			return intervals;
+		}
+
+		private static IReadOnlyList<StateRenderInterval> CreateGroupedCustomIntervals(
+			IReadOnlyDictionary<Guid, StateItemData> itemsById,
+			IReadOnlyList<CustomStateItemData> customStateItems,
+			int iterations,
+			TimeSpan effectDuration)
+		{
+			var groups = CreateCustomStateItemGroups(itemsById, customStateItems);
+			var normalizedIterations = StateData.NormalizeIterations(iterations);
+			var intervalCount = groups.Count * normalizedIterations;
+			var intervals = new List<StateRenderInterval>();
+			var intervalStart = TimeSpan.Zero;
+
+			for (var index = 0; index < intervalCount; index++)
+			{
+				var duration = GetIntervalDuration(effectDuration, intervalCount, index, intervalStart);
+				var group = groups[index % groups.Count];
+				foreach (var customStateItem in group)
+				{
+					if (customStateItem.StateItemId != Guid.Empty &&
+						itemsById.TryGetValue(customStateItem.StateItemId, out var item))
+					{
+						intervals.Add(new StateRenderInterval(item, intervalStart, duration, customStateItem.Color));
+					}
+				}
+
+				intervalStart += duration;
+			}
+
+			return intervals;
+		}
+
+		private static IReadOnlyList<IReadOnlyList<CustomStateItemData>> CreateCustomStateItemGroups(
+			IReadOnlyDictionary<Guid, StateItemData> itemsById,
+			IReadOnlyList<CustomStateItemData> customStateItems)
+		{
+			var groups = new List<IReadOnlyList<CustomStateItemData>>();
+			var currentGroup = new List<CustomStateItemData>();
+			string? currentKey = null;
+
+			foreach (var customStateItem in customStateItems)
+			{
+				var key = GetCustomStateItemGroupKey(itemsById, customStateItem);
+				if (currentGroup.Count > 0 && !key.Equals(currentKey, StringComparison.Ordinal))
+				{
+					groups.Add(currentGroup);
+					currentGroup = [];
+				}
+
+				currentGroup.Add(customStateItem);
+				currentKey = key;
+			}
+
+			if (currentGroup.Count > 0)
+			{
+				groups.Add(currentGroup);
+			}
+
+			return groups;
+		}
+
+		private static string GetCustomStateItemGroupKey(
+			IReadOnlyDictionary<Guid, StateItemData> itemsById,
+			CustomStateItemData customStateItem)
+		{
+			if (customStateItem.StateItemId == Guid.Empty)
+			{
+				return "None:";
+			}
+
+			return itemsById.TryGetValue(customStateItem.StateItemId, out var item)
+				? $"Name:{item.Name}"
+				: $"Missing:{customStateItem.StateItemId:N}";
 		}
 
 		private static TimeSpan GetIntervalDuration(

@@ -476,6 +476,7 @@ namespace VixenModules.Effect.State
 					_data.CustomStateItems ?? [],
 					PlaybackMode,
 					Iterations,
+					_data.CycleIndividually,
 					TimeSpan);
 			}
 

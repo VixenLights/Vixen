@@ -317,6 +317,41 @@ public class StateRenderPlannerTests
 	}
 
 	[Fact]
+	public void CreateCustomIntervals_DefaultIgnoresCycleIndividually()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+		var customRows = new[]
+		{
+			CreateCustomRow(Guid.Empty, Color.White),
+			CreateCustomRow(open.Id, Color.Blue),
+			CreateCustomRow(Guid.NewGuid(), Color.Red),
+			CreateCustomRow(open.Id, Color.Yellow),
+			CreateCustomRow(closed.Id, Color.Purple)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Default,
+			1,
+			cycleIndividually: false,
+			TimeSpan.FromSeconds(5));
+
+		// Assert
+		Assert.Equal([open.Id, closed.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal([Color.Blue, Color.Purple], intervals.Select(interval => interval.ColorOverride));
+		Assert.All(intervals, interval =>
+		{
+			Assert.Equal(TimeSpan.Zero, interval.Start);
+			Assert.Equal(TimeSpan.FromSeconds(5), interval.Duration);
+		});
+	}
+
+	[Fact]
 	public void CreateCustomIntervals_IteratePreservesNoneAndMissingRowTiming()
 	{
 		// Arrange
@@ -373,6 +408,219 @@ public class StateRenderPlannerTests
 			intervals.Select(interval => interval.Start));
 		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(2), interval.Duration));
 		Assert.Equal([Color.Blue, Color.Yellow, Color.Blue, Color.Yellow], intervals.Select(interval => interval.ColorOverride));
+	}
+
+	[Fact]
+	public void CreateCustomIntervals_IterateCycleIndividuallyPreservesRowTiming()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+		var customRows = new[]
+		{
+			CreateCustomRow(open.Id, Color.Blue),
+			CreateCustomRow(Guid.Empty, Color.White),
+			CreateCustomRow(Guid.NewGuid(), Color.Red),
+			CreateCustomRow(closed.Id, Color.Yellow)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			1,
+			cycleIndividually: true,
+			TimeSpan.FromSeconds(4));
+
+		// Assert
+		Assert.Equal([open.Id, closed.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal([TimeSpan.Zero, TimeSpan.FromSeconds(3)], intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(1), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateCustomIntervals_GroupedIterateCollapsesConsecutiveNamesAndNone()
+	{
+		// Arrange
+		var item2First = CreateItem(Guid.NewGuid(), "Item 2");
+		var item2Second = CreateItem(Guid.NewGuid(), "Item 2");
+		var item2Third = CreateItem(Guid.NewGuid(), "Item 2");
+		var item4First = CreateItem(Guid.NewGuid(), "Item 4");
+		var item4Second = CreateItem(Guid.NewGuid(), "Item 4");
+		var item4Third = CreateItem(Guid.NewGuid(), "Item 4");
+		var definition = CreateDefinition(item2First, item2Second, item2Third, item4First, item4Second, item4Third);
+		var customRows = new[]
+		{
+			CreateCustomRow(item2First.Id, Color.Blue),
+			CreateCustomRow(item2Second.Id, Color.Green),
+			CreateCustomRow(item2Third.Id, Color.Red),
+			CreateCustomRow(Guid.Empty, Color.White),
+			CreateCustomRow(item4First.Id, Color.Yellow),
+			CreateCustomRow(item4Second.Id, Color.Purple),
+			CreateCustomRow(item4Third.Id, Color.Orange)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			1,
+			cycleIndividually: false,
+			TimeSpan.FromSeconds(6));
+
+		// Assert
+		Assert.Equal(
+			[item2First.Id, item2Second.Id, item2Third.Id, item4First.Id, item4Second.Id, item4Third.Id],
+			intervals.Select(interval => interval.Item.Id));
+		Assert.Equal(
+			[Color.Blue, Color.Green, Color.Red, Color.Yellow, Color.Purple, Color.Orange],
+			intervals.Select(interval => interval.ColorOverride));
+		Assert.Equal(
+			[
+				TimeSpan.Zero,
+				TimeSpan.Zero,
+				TimeSpan.Zero,
+				TimeSpan.FromSeconds(4),
+				TimeSpan.FromSeconds(4),
+				TimeSpan.FromSeconds(4)
+			],
+			intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(2), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateCustomIntervals_GroupedIterateDoesNotMergeNonConsecutiveNames()
+	{
+		// Arrange
+		var item2First = CreateItem(Guid.NewGuid(), "Item 2");
+		var item2Second = CreateItem(Guid.NewGuid(), "Item 2");
+		var item5First = CreateItem(Guid.NewGuid(), "Item 5");
+		var item2Third = CreateItem(Guid.NewGuid(), "Item 2");
+		var item5Second = CreateItem(Guid.NewGuid(), "Item 5");
+		var definition = CreateDefinition(item2First, item2Second, item5First, item2Third, item5Second);
+		var customRows = new[]
+		{
+			CreateCustomRow(item2First.Id, Color.Blue),
+			CreateCustomRow(item2Second.Id, Color.Green),
+			CreateCustomRow(item5First.Id, Color.Red),
+			CreateCustomRow(item2Third.Id, Color.Yellow),
+			CreateCustomRow(item5Second.Id, Color.Purple)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			1,
+			cycleIndividually: false,
+			TimeSpan.FromSeconds(4));
+
+		// Assert
+		Assert.Equal(
+			[item2First.Id, item2Second.Id, item5First.Id, item2Third.Id, item5Second.Id],
+			intervals.Select(interval => interval.Item.Id));
+		Assert.Equal(
+			[TimeSpan.Zero, TimeSpan.Zero, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3)],
+			intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(1), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateCustomIntervals_GroupedIterateDoesNotExpandToDefinitionItemsWithSameName()
+	{
+		// Arrange
+		var selected = CreateItem(Guid.NewGuid(), "Open");
+		var notSelected = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(selected, notSelected, closed);
+		var customRows = new[]
+		{
+			CreateCustomRow(selected.Id, Color.Blue),
+			CreateCustomRow(closed.Id, Color.Yellow)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			1,
+			cycleIndividually: false,
+			TimeSpan.FromSeconds(2));
+
+		// Assert
+		Assert.Equal([selected.Id, closed.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.DoesNotContain(intervals, interval => interval.Item.Id == notSelected.Id);
+	}
+
+	[Fact]
+	public void CreateCustomIntervals_GroupedIterateNoneAndMissingRowsConsumeTiming()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var missingId = Guid.NewGuid();
+		var otherMissingId = Guid.NewGuid();
+		var definition = CreateDefinition(open, closed);
+		var customRows = new[]
+		{
+			CreateCustomRow(open.Id, Color.Blue),
+			CreateCustomRow(Guid.Empty, Color.White),
+			CreateCustomRow(Guid.Empty, Color.Red),
+			CreateCustomRow(missingId, Color.Green),
+			CreateCustomRow(missingId, Color.Yellow),
+			CreateCustomRow(otherMissingId, Color.Purple),
+			CreateCustomRow(closed.Id, Color.Orange)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			1,
+			cycleIndividually: false,
+			TimeSpan.FromSeconds(5));
+
+		// Assert
+		Assert.Equal([open.Id, closed.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal([TimeSpan.Zero, TimeSpan.FromSeconds(4)], intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(1), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateCustomIntervals_GroupedIterateRepeatsGroupsForIterations()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+		var customRows = new[]
+		{
+			CreateCustomRow(open.Id, Color.Blue),
+			CreateCustomRow(Guid.Empty, Color.White),
+			CreateCustomRow(closed.Id, Color.Yellow)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			2,
+			cycleIndividually: false,
+			TimeSpan.FromSeconds(6));
+
+		// Assert
+		Assert.Equal([open.Id, closed.Id, open.Id, closed.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal(
+			[TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(5)],
+			intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(1), interval.Duration));
 	}
 
 	private static StateDefinitionData CreateDefinition(params StateItemData[] items)
