@@ -1410,4 +1410,10 @@
   <data name="EffectVisual" xml:space="preserve">
     <value>Effect Timeline Visual</value>
   </data>
+  <data name="StateCycleIndividually" xml:space="preserve">
+    <value>Cycle Individually</value>
+  </data>
+  <data name="StateIterations" xml:space="preserve">
+    <value>Cycles</value>
+  </data>
 </root>

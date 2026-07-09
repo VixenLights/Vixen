@@ -1539,4 +1539,10 @@
   <data name="PinWheelRotation" xml:space="preserve">
     <value>Rotation speed and direction over the duration of the effect. 50 means no rotation, values above 50 rotate forward faster as they approach 100, and values below 50 rotate backward faster as they approach 0.</value>
   </data>
+  <data name="StateCycleIndividually" xml:space="preserve">
+    <value>Cycles each custom State item row independently instead of grouping consecutive rows with the same State item name.</value>
+  </data>
+  <data name="StateIterations" xml:space="preserve">
+    <value>Controls the number of times the pattern repeats over the timespan.</value>
+  </data>
 </root>

@@ -355,8 +355,8 @@ namespace VixenModules.Effect.State
 		/// <value>The number of Iterate playback repetitions. The default is 1.</value>
 		[Value]
 		[ProviderCategory("Config", 2)]
-		[ProviderDisplayName(@"Iterations")]
-		[ProviderDescription(@"Iterations")]
+		[ProviderDisplayName(@"StateIterations")]
+		[ProviderDescription(@"StateIterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(StateData.MinIterations, StateData.MaxIterations, 1)]
 		[PropertyOrder(4)]
@@ -383,8 +383,8 @@ namespace VixenModules.Effect.State
 		/// <value><see langword="true" /> if each custom row cycles independently; otherwise, <see langword="false" /> to group consecutive custom rows with the same State item name. The default is <see langword="true" />.</value>
 		[Value]
 		[ProviderCategory("Config", 2)]
-		[ProviderDisplayName(@"Cycle Individually")]
-		[ProviderDescription(@"Cycles each custom State item row independently instead of grouping consecutive rows with the same State item name.")]
+		[ProviderDisplayName(@"StateCycleIndividually")]
+		[ProviderDescription(@"StateCycleIndividually")]
 		[PropertyOrder(6)]
 		public bool CycleIndividually
 		{

@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace VixenModules.Effect.State
 {
 	/// <summary>
@@ -13,6 +15,7 @@ namespace VixenModules.Effect.State
 		/// <summary>
 		/// Renders active State item names sequentially across the selected duration.
 		/// </summary>
+		[Description("Cycle")]
 		Iterate
 		// Future implementation
 		//[Description("Count Down")]
