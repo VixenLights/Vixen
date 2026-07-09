@@ -56,7 +56,7 @@ When multiple effects become selected in a single selection operation, the defau
 
 When the user clicks an effect that is already selected, the cursor still moves to that effect's start time if the enabled preference is on.
 
-When the user clicks an area where multiple effects overlap, Vixen currently opens an effect selection popup rather than immediately selecting one effect. In this case the cursor must not move when the popup opens. It moves only after the user chooses a specific effect from the popup, using that chosen effect's start time.
+The codebase still contains a legacy overlapping-effects selection popup path, but normal grid drawing stacks overlapping effects so this path is not expected to be reachable through ordinary user interaction. If the legacy popup path is triggered, the cursor must not move when the popup opens. It moves only after the user chooses a specific effect from the popup, using that chosen effect's start time.
 
 When the new preference is disabled, right-click behavior remains exactly as it is today, including any existing cursor movement caused by right-click context selection. When the new preference is enabled and the user right-clicks on any effect, the cursor must not move because of this feature. The effect context menu behavior and active row behavior remain intact. When the user right-clicks empty grid space, the existing behavior remains: the cursor moves to the clicked grid time.
 
@@ -76,7 +76,7 @@ For a selection operation that selects multiple effects without Ctrl or Shift, s
 
 For Ctrl-click and Shift-click selection operations, set `CursorPosition` to the start time of the last selected effect for that operation. If the operation selects a range, the last selected effect should be the effect that corresponds to the user's latest clicked location. If the implementation cannot identify a single last selected effect for a non-mouse range operation, use the latest action's selected effect set and choose the effect with the greatest row/time ordering closest to the latest user action, then document that decision in the ExecPlan.
 
-For overlapping effects handled by `timelineControl_ElementsSelected`, no cursor movement occurs when `AutomaticallyHandleSelection` is set to false and the popup is shown. When `contextMenuStripElementSelectionItem_Click` later selects the chosen `TimedSequenceElement`, the cursor moves to that chosen effect's `StartTime`.
+For the legacy overlapping-effects popup path handled by `timelineControl_ElementsSelected`, no cursor movement occurs when `AutomaticallyHandleSelection` is set to false and the popup is shown. When `contextMenuStripElementSelectionItem_Click` later selects the chosen `TimedSequenceElement`, the cursor moves to that chosen effect's `StartTime`. This is fallback behavior only, not a required manual validation scenario.
 
 For right-click context selection, preserve existing behavior when `MoveCursorToSelectedEffect` is disabled. When `MoveCursorToSelectedEffect` is enabled and `m_mouseDownElements` or equivalent hit-test state contains one or more elements under the cursor, do not change `CursorPosition` for this feature. If no effect is under the cursor, keep the existing empty-grid behavior that sets `CursorPosition` to `PixelsToTime(gridLocation.X)`.
 
@@ -108,7 +108,7 @@ In `Grid_Mouse.cs`, the most important current selection paths are:
 - Ctrl and Shift paths that keep or extend the selection and set active row.
 - Right-click context handling that sets active row, may set `CursorPosition`, and raises `_ContextSelected`. Existing right-click behavior must remain unchanged while `MoveCursorToSelectedEffect` is disabled. When the preference is enabled, it must suppress cursor movement only for right-clicks on effects; empty-grid right-clicks keep the current cursor placement behavior.
 
-In `TimedSequenceEditorForm.cs`, the overlapping-effects popup path must be preserved. The popup is shown when `timelineControl_ElementsSelected` sees more than one element under the cursor and sets `AutomaticallyHandleSelection = false`. Cursor movement for that path belongs after a concrete element is chosen in `contextMenuStripElementSelectionItem_Click`, not at popup-open time.
+In `TimedSequenceEditorForm.cs`, the legacy overlapping-effects popup path must be preserved if it is triggered. The popup is shown when `timelineControl_ElementsSelected` sees more than one element under the cursor and sets `AutomaticallyHandleSelection = false`. Cursor movement for that path belongs after a concrete element is chosen in `contextMenuStripElementSelectionItem_Click`, not at popup-open time. Because current row drawing stacks overlapping effects, do not require a manual validation scenario that tries to trigger this popup through ordinary grid clicking.
 
 Prefer changing shared grid behavior where the active row is already updated, rather than adding Timed Sequence Editor-only cursor behavior for ordinary grid clicks. The grid already owns `CursorPosition` and active-row update logic, so keeping ordinary selection-driven movement in `Grid` reduces duplicate event handling. The Timed Sequence Editor host should only need explicit handling for the overlapping-effects popup selection because it suppresses automatic grid selection.
 
@@ -128,10 +128,9 @@ Manual acceptance should be performed in the Timed Sequence Editor with a sequen
 2. Check `Edit > Move Cursor To Selected Effect`. Click a single effect. The active row changes to that effect row, and the timeline cursor moves to the effect's start time.
 3. Click an already-selected effect. The cursor moves to that effect's start time again.
 4. Select multiple effects in one operation. The cursor moves according to the rules in this document: earliest selected effect for general multi-select, last selected effect for Ctrl or Shift selection.
-5. Click overlapping effects that show the selection popup. The cursor does not move when the popup opens. After choosing one effect, the cursor moves to the chosen effect's start time.
-6. With `Move Cursor To Selected Effect` unchecked, right-click an effect and confirm existing right-click behavior is unchanged. With the preference checked, right-click an effect and confirm the active row and context menu behavior remain intact but the cursor does not move because of the new preference. Right-click empty grid space still moves the cursor to the clicked time.
-7. Select an effect whose start time is outside the currently visible timeline range through an existing non-scrolling selection path, if available. The cursor position changes, but the timeline does not scroll horizontally because of this feature.
-8. Close and reopen the Timed Sequence Editor. The menu item retains its prior checked state. A fresh profile or missing setting defaults to unchecked.
+5. With `Move Cursor To Selected Effect` unchecked, right-click an effect and confirm existing right-click behavior is unchanged. With the preference checked, right-click an effect and confirm the active row and context menu behavior remain intact but the cursor does not move because of the new preference. Right-click empty grid space still moves the cursor to the clicked time.
+6. Select an effect whose start time is outside the currently visible timeline range through an existing non-scrolling selection path, if available. The cursor position changes, but the timeline does not scroll horizontally because of this feature.
+7. Close and reopen the Timed Sequence Editor. The menu item retains its prior checked state. A fresh profile or missing setting defaults to unchecked.
 
 The core acceptance criterion is: when the preference is enabled and a user selects an effect in the timeline grid, the timeline cursor moves to the selected effect's start time, while the active row continues to update to the selected effect's row.
 
@@ -166,8 +165,8 @@ No open product questions remain from the specification discussion. If implement
   Date/Author: 2026-07-08 / Codex from user direction.
 
 - Decision: Overlapping-effects popup selection moves the cursor only after the user chooses an effect.
-  Rationale: Opening the popup has not yet identified the user's intended effect.
-  Date/Author: 2026-07-08 / Codex from user direction.
+  Rationale: Opening the popup has not yet identified the user's intended effect. On 2026-07-09 the user clarified that this popup is likely obsolete because overlapping effects are drawn in a stacked manner, so this remains fallback behavior and is not a required manual validation activity.
+  Date/Author: 2026-07-08 / Codex from user direction; updated 2026-07-09 / user clarification recorded by Codex.
 
 - Decision: Existing right-click behavior remains unchanged when the new preference is disabled. When the new preference is enabled, right-clicking an effect does not move the cursor; right-clicking empty grid keeps raw grid-time behavior.
   Rationale: The user clarified that the no-move rule is only for the enabled preference state. With the preference disabled, Vixen must preserve today's right-click behavior exactly.

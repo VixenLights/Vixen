@@ -1,4 +1,4 @@
-﻿using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl;
 using System.ComponentModel;
 using Timer = System.Windows.Forms.Timer;
 
@@ -161,6 +161,7 @@ namespace Common.Controls.Timeline
 								Row row = rowAt(gridLocation);
 								if (row != null) row.Active = true;
 								_SelectionChanged();
+								MoveCursorForSelectedEffects(m_mouseDownElements, CtrlPressed ? CursorSelectionTarget.LastActionElement : CursorSelectionTarget.EarliestSelected);
 							}
 							else if (!CtrlPressed)
 							{
@@ -257,6 +258,7 @@ namespace Common.Controls.Timeline
 								_SelectionChanged();
 								Row row = rowAt(gridLocation);
 								if (row != null) row.Active = true;
+								MoveCursorForSelectedEffects(new[] { m_mouseDownElements.First() }, CursorSelectionTarget.LastActionElement);
 							}
 						}
 						if (m_mouseDownElements != null && m_mouseDownElements.Any() && ShiftPressed ||
@@ -265,6 +267,7 @@ namespace Common.Controls.Timeline
 							ClearActiveRows();
 							Row row = rowAt(gridLocation);
 							if (row != null) row.Active = true;
+							MoveCursorForSelectedEffects(m_mouseDownElements, CursorSelectionTarget.LastActionElement);
 						}
 						break;
 				}
@@ -275,7 +278,7 @@ namespace Common.Controls.Timeline
 				if (row == null)
 					return;
 				row.Active = true;
-				if (ClickingGridSetsCursor)
+				if (ClickingGridSetsCursor && (!MoveCursorToSelectedEffect || !m_mouseDownElements.Any()))
 					CursorPosition = PixelsToTime(gridLocation.X);
 				_ContextSelected(m_mouseDownElements, PixelsToTime(gridLocation.X), row);
 			}

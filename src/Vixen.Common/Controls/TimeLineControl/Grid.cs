@@ -411,6 +411,12 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
+		private enum CursorSelectionTarget
+		{
+			EarliestSelected,
+			LastActionElement
+		}
+
 		#region Events
 
 		public event EventHandler SelectionChanged;
@@ -429,6 +435,34 @@ namespace Common.Controls.Timeline
 			if (SupressSelectionEvents) return;
 			if (SelectionChanged != null)
 				SelectionChanged(this, EventArgs.Empty);
+		}
+
+		private void MoveCursorForSelectedEffects(IEnumerable<Element> actionElements, CursorSelectionTarget target)
+		{
+			if (!MoveCursorToSelectedEffect)
+			{
+				return;
+			}
+
+			if (actionElements == null)
+			{
+				return;
+			}
+
+			List<Element> actionElementList = actionElements.Where(element => element != null).ToList();
+			if (!actionElementList.Any())
+			{
+				return;
+			}
+
+			Element targetElement = target == CursorSelectionTarget.LastActionElement
+				? actionElementList.LastOrDefault()
+				: SelectedElements.OrderBy(element => element.StartTime).FirstOrDefault();
+
+			if (targetElement != null)
+			{
+				CursorPosition = targetElement.StartTime;
+			}
 		}
 
 		private void _ElementDoubleClicked(Element te)
@@ -2288,10 +2322,18 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Selects the specified element.
+		/// </summary>
+		/// <param name="element">The element to select.</param>
+		/// <remarks>
+		/// When <see cref="MoveCursorToSelectedEffect" /> is enabled, selecting the element also moves the timeline cursor to the element start.
+		/// </remarks>
 		public void SelectElement(Element element)
 		{
 			element.Selected = true;
 			_SelectionChanged();
+			MoveCursorForSelectedEffects(new[] { element }, CursorSelectionTarget.LastActionElement);
 		}
 
 		public void DeselectElement(Element element)
@@ -2300,10 +2342,19 @@ namespace Common.Controls.Timeline
 			_SelectionChanged();
 		}
 
+		/// <summary>
+		/// Selects the specified elements.
+		/// </summary>
+		/// <param name="elements">The elements to select.</param>
+		/// <remarks>
+		/// When <see cref="MoveCursorToSelectedEffect" /> is enabled, selecting elements also moves the timeline cursor to the earliest selected element start.
+		/// </remarks>
 		public void SelectElements(IEnumerable<Element> elements)
 		{
-			elements.All(x => x.Selected = true);
+			List<Element> elementList = elements.ToList();
+			elementList.ForEach(element => element.Selected = true);
 			_SelectionChanged();
+			MoveCursorForSelectedEffects(elementList, CursorSelectionTarget.EarliestSelected);
 		}
 
 		public void ToggleElementSelection(Element element)
