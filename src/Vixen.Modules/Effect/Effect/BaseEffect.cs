@@ -179,6 +179,39 @@ namespace VixenModules.Effect.Effect
 		{
 			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
 		}
+
+		/// <summary>
+		/// Gets the element nodes selected by a depth setting for the specified target node.
+		/// </summary>
+		/// <param name="node">The target node to traverse.</param>
+		/// <param name="depthOfEffect">The depth value where <c>0</c> means leaf elements.</param>
+		/// <returns>The distinct nodes selected by the requested depth, or distinct leaf elements when the depth has no nodes.</returns>
+		protected List<IElementNode> GetNodesAtEffectDepth(IElementNode node, int depthOfEffect)
+		{
+			List<IElementNode> renderNodes;
+			if (depthOfEffect == 0)
+			{
+				renderNodes = node.GetLeafEnumerator().Distinct().ToList();
+			}
+			else
+			{
+				renderNodes = [node];
+				for (int i = 0; i < depthOfEffect; i++)
+				{
+					renderNodes = renderNodes.SelectMany(x => x.Children).Distinct().ToList();
+				}
+			}
+
+			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
+			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
+			if (!renderNodes.Any())
+			{
+				renderNodes = node.GetLeafEnumerator().Distinct().ToList();
+			}
+
+			return renderNodes;
+		}
+
 		protected int DetermineDepth()
 		{
 			int tempDepth = Int32.MaxValue;

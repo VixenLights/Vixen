@@ -51,7 +51,7 @@ namespace VixenModules.Effect.Wipe
 		{
 			var depth = GetDepth(context);
 			var values = new List<string>();
-			for (var i = 1; i < depth; i++)
+			for (var i = 1; i < depth - 1; i++)
 			{
 				values.Add(i.ToString());
 			}

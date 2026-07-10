@@ -66,7 +66,7 @@ namespace VixenModules.Effect.Wipe
 
 			if (TargetNodes.Length == 1)
 			{
-				return GetNodesToRenderOn(TargetNodes.First())
+				return GetNodesAtEffectDepth(TargetNodes.First(), DepthOfEffect)
 					.Select(node => new[] { node })
 					.ToList();
 			}
@@ -138,30 +138,6 @@ namespace VixenModules.Effect.Wipe
 					RenderMovement(renderNodes, tokenSource);
 					break;
 			}
-		}
-
-		private List<IElementNode> GetNodesToRenderOn(IElementNode node)
-		{
-			List<IElementNode> renderNodes;
-			if (DepthOfEffect == 0)
-			{
-				renderNodes = node.GetLeafEnumerator().Distinct().ToList();
-			}
-			else
-			{
-				renderNodes = [node];
-				for (int i = 0; i < DepthOfEffect; i++)
-				{
-					renderNodes = renderNodes.SelectMany(x => x.Children).Distinct().ToList();
-				}
-			}
-
-			if (!renderNodes.Any())
-			{
-				renderNodes = node.GetLeafEnumerator().Distinct().ToList();
-			}
-
-			return renderNodes;
 		}
 
 		private List<IElementNode[]> GetRenderedCircle(List<Tuple<IElementNode, int, int, int>> renderedNodes)
@@ -1088,7 +1064,7 @@ namespace VixenModules.Effect.Wipe
 
 		private static bool IsUsefulIntermediateDepth(int selectedDepth, int availableDepth)
 		{
-			return selectedDepth > 0 && selectedDepth < availableDepth;
+			return selectedDepth > 0 && selectedDepth < availableDepth - 1;
 		}
 
 		private static int GetFirstUsefulIntermediateDepth(int depth)

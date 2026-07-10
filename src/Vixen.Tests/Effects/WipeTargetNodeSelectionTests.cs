@@ -171,7 +171,7 @@ public sealed class WipeTargetNodeSelectionTests
 	{
 		// Arrange
 		var effect = new WipeModule();
-		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(3)]);
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
 		var context = new Mock<ITypeDescriptorContext>();
 		context.SetupGet(typeDescriptorContext => typeDescriptorContext.Instance).Returns(effect);
 		var converter = new WipeTargetElementDepthConverter();
@@ -181,6 +181,23 @@ public sealed class WipeTargetNodeSelectionTests
 
 		// Assert
 		Assert.Equal(["1", "2"], values);
+	}
+
+	[Fact]
+	public void WipeProperties_IndividualModeResetsMaximumDepthToFirstUsefulDepth()
+	{
+		// Arrange
+		var effect = new WipeModule();
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+		SetPropertyValue(effect, "DepthOfEffect", 3);
+
+		// Act
+		TypeDescriptor.GetProperties(effect);
+		var depthOfEffect = GetIntValue(effect, "DepthOfEffect");
+
+		// Assert
+		Assert.Equal(1, depthOfEffect);
 	}
 
 	private static WipeData DeserializeJson(string json)
