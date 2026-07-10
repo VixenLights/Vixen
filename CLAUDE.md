@@ -24,13 +24,12 @@ Unit tests live in `src/Vixen.Tests/`. Run them with `dotnet test src/Vixen.Test
 
 Defined in `src/.editorconfig`. Key rules:
 - **Tabs** (not spaces) for indentation
-- CRLF line endings
+- LF line endings
 - PascalCase for types and members; `I`-prefix for interfaces
 - Nullable and ImplicitUsings enabled; C# 12+ features enabled
 
 Avoid reformatting unrelated code in a commit. If a reformat is necessary, put it in a separate commit clearly marked as such.
 Research the codebase before editing. Never change code you haven't read.
-Always use Windows (CRLF) line endings when inserting or updating code. Preserve \r\n line-breaks.
 
 ## Architecture
 

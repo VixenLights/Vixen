@@ -1,2 +1,15 @@
-* text=auto eol=crlf
+# Force global project fallback to LF
+* text=auto eol=lf
+
+# Explicitly lock down C# assets
+*.cs text eol=lf
+*.csproj text eol=lf
+*.sln text eol=lf
+
+# Documentation & Scripting
+*.md text eol=lf
 *.sh text eol=lf
+
+# Explicitly keep PowerShell scripts as CRLF on local machines
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
