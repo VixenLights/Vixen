@@ -1,4 +1,4 @@
-using Common.Controls.TimelineControl;
+﻿using Common.Controls.TimelineControl;
 using System.ComponentModel;
 using Timer = System.Windows.Forms.Timer;
 
@@ -383,12 +383,14 @@ namespace Common.Controls.Timeline
 			Point gridLocation = TranslateLocation(e.Location);
 			if (m_mouseDownElements != null)
 			{
-				if (ModifierKeys == Keys.Shift && m_mouseDownElements.Any())
+				bool verticalOnlyDrag =
+					ModifierKeys == Keys.Shift ||
+					ModifierKeys == (Keys.Control | Keys.Shift) ||
+					ModifierKeys == (Keys.Alt | Keys.Control);
+				
+				if (verticalOnlyDrag && m_mouseDownElements.Any())
 					gridLocation.X = m_lastGridLocation.X;
-
-				if (ModifierKeys == (Keys.Alt | Keys.Control) && m_mouseDownElements.Any())
-					gridLocation.X = m_lastGridLocation.X;
-
+				
 				if (ModifierKeys == (Keys.Shift | Keys.Alt) && m_mouseDownElements.Any())
 					gridLocation.Y = m_lastGridLocation.Y;	
 			}
