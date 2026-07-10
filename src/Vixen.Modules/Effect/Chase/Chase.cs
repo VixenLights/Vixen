@@ -65,7 +65,7 @@ namespace VixenModules.Effect.Chase
 			{
 				if (TargetNodes.Length == 1)
 				{
-					var renderNodes = GetNodesToRenderOn(TargetNodes.First());
+					var renderNodes = GetNodesAtEffectDepth(TargetNodes.First(), DepthOfEffect);
 					DoRendering(renderNodes, tokenSource);
 				}
 				else
@@ -78,10 +78,10 @@ namespace VixenModules.Effect.Chase
 			{
 				if (TargetNodes.Length == 1)
 				{
-					var targetNodes = GetNodesToRenderOn(TargetNodes.First());
+					var targetNodes = GetNodesAtEffectDepth(TargetNodes.First(), DepthOfEffect);
 					foreach (var elementNode in targetNodes)
 					{
-						var renderNodes = GetNodesToRenderOn(elementNode);
+						var renderNodes = GetNodesAtEffectDepth(elementNode, DepthOfEffect);
 						DoRendering(renderNodes, tokenSource);
 					}
 				}
@@ -89,7 +89,7 @@ namespace VixenModules.Effect.Chase
 				{
 					foreach (var elementNode in TargetNodes)
 					{
-						var renderNodes = GetNodesToRenderOn(elementNode);
+						var renderNodes = GetNodesAtEffectDepth(elementNode, DepthOfEffect);
 						DoRendering(renderNodes, tokenSource);
 					}
 				}
@@ -561,29 +561,6 @@ namespace VixenModules.Effect.Chase
 			}
 
 			_elementData = EffectIntents.Restrict(_elementData, TimeSpan.Zero, TimeSpan);
-		}
-
-		private List<IElementNode> GetNodesToRenderOn(IElementNode node)
-		{
-			IEnumerable<IElementNode> renderNodes;
-
-			if (DepthOfEffect == 0) {
-				renderNodes = node.GetLeafEnumerator().Distinct();
-			}
-			else
-			{
-				renderNodes = new[] {node};
-				for (int i = 0; i < DepthOfEffect; i++) {
-					renderNodes = renderNodes.SelectMany(x => x.Children).Distinct();
-				}
-			}
-
-			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
-			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
-			if (!renderNodes.Any())
-				renderNodes = node.GetLeafEnumerator().Distinct();
-
-			return renderNodes.ToList();
 		}
 
 		//private void GenerateExtendedStaticPulse(ElementNode target, IIntentNode intentNode, ColorGradient gradient=null)
