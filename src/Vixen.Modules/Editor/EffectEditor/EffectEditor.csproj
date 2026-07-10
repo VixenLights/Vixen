@@ -22,6 +22,7 @@
 				<ProjectReference Include="..\..\Effect\Fixture\FixtureEffect\FixtureEffect.csproj" />
 				<ProjectReference Include="..\..\Effect\Liquid\Emitter\Emitter.csproj" />
 				<ProjectReference Include="..\..\Effect\Morph\IMorphPolygon\IMorphPolygon.csproj" />
+				<ProjectReference Include="..\..\Effect\State\State.csproj" />
 				<ProjectReference Include="..\..\Effect\Wave\IWaveform\IWaveform.csproj" />
 				<ProjectReference Include="..\..\Effect\Wave\Wave\Wave.csproj" />
 				<ProjectReference Include="..\..\Effect\Whirlpool\Whirl\IWhirl.csproj" />

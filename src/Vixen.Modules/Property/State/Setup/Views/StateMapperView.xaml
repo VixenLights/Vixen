@@ -1,0 +1,279 @@
+<catel:Window x:Class="VixenModules.Property.State.Setup.Views.StateMapperView"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:catel="http://schemas.catelproject.com"
+		xmlns:behaviors="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon"
+		xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+		xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+		mc:Ignorable="d"
+		Title="{Binding Title}"
+		WindowStartupLocation="CenterOwner"
+		Height="560"
+		Width="920"
+		MinHeight="420"
+		MinWidth="720"
+		Background="{DynamicResource BackColorBrush}">
+
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+			<converters:ColorToSolidBrushConverter x:Key="ColorToSolidBrush"/>
+			<converters:ColorToHexStringConverter x:Key="ColorToHexString"/>
+			<converters:BackgroundColorToTextBrushConverter x:Key="BackgroundColorToTextColor"/>
+		</ResourceDictionary>
+	</Window.Resources>
+
+	<DockPanel Background="{DynamicResource BackColorBrush}" Margin="5,0, 5, 0">
+		<catel:WarningAndErrorValidator DockPanel.Dock="Top"
+										Source="{Binding}"
+										Margin="0,0,0,8"/>
+
+		<WrapPanel DockPanel.Dock="Bottom"
+				   Margin="0,8,8,8"
+				   Style="{StaticResource RowButtonRightContainerStyle}">
+			<Button Content="OK"
+					Command="{Binding OkCommand}"
+					IsDefault="True"
+					Style="{StaticResource RowButtonStyle}"/>
+			<Button Content="Cancel"
+					Command="{Binding CancelCommand}"
+					IsCancel="True"
+					Style="{StaticResource RowButtonStyle}"/>
+		</WrapPanel>
+
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="8"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+
+			<Grid Grid.ColumnSpan="3" Margin="0, 0,0,8">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<TextBlock Text="Name" Margin="0,3,8,3" VerticalAlignment="Center"/>
+				<Grid Grid.Column="1" Margin="0,2">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<ComboBox ItemsSource="{Binding StateDefinitions}"
+							  SelectedItem="{Binding SelectedStateDefinition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+							  DisplayMemberPath="Name"
+							  MinWidth="180"/>
+					<Button Grid.Column="1"
+							Content="Add"
+							Command="{Binding AddStateDefinitionCommand}"
+							Style="{StaticResource RowButtonStyle}"
+							Margin="6,0,0,0"/>
+					<Button Grid.Column="2"
+							Content="Delete"
+							Command="{Binding DeleteStateDefinitionCommand}"
+							Style="{StaticResource RowButtonStyle}"
+							Margin="6,0,0,0"/>
+					<Menu Grid.Column="3" Margin="6,0,0,0">
+						<MenuItem Header="...">
+							<MenuItem Header="Rename" Command="{Binding RenameStateDefinitionCommand}"/>
+							<MenuItem Header="Copy" Command="{Binding CopyStateDefinitionCommand}"/>
+						</MenuItem>
+					</Menu>
+				</Grid>
+				<TextBlock Grid.Row="1" Text="Description" Margin="0,3,8,3" VerticalAlignment="Top"/>
+				<TextBox Grid.Row="1"
+						 Grid.Column="1"
+						 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+						 AcceptsReturn="True"
+						 MinHeight="48"
+						 Margin="0,2"/>
+			</Grid>
+
+			<Grid Grid.Row="1" Grid.Column="0" Margin="5,0, 5, 0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<Grid Margin="0,0,0,8">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<TextBlock Text="Preview" Margin="0,3,8,3" VerticalAlignment="Center"/>
+					<ToggleButton Grid.Column="1"
+					              IsChecked="{Binding IsPreviewEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+					              HorizontalAlignment="Left"
+					              MinWidth="48"
+					              Padding="8,2">
+						<ToggleButton.Style>
+							<Style TargetType="{x:Type ToggleButton}"
+								   BasedOn="{StaticResource {x:Type ToggleButton}}">
+								<Setter Property="Content" Value="Off"/>
+								<Style.Triggers>
+									<Trigger Property="IsChecked" Value="True">
+										<Setter Property="Content" Value="On"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</ToggleButton.Style>
+					</ToggleButton>
+				</Grid>
+
+				<TextBlock Grid.Row="1" Text="State Items" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+				<DataGrid Grid.Row="2"
+						  x:Name="StateItemsGrid"
+						  ItemsSource="{Binding Items}"
+						  AutoGenerateColumns="False"
+						  CanUserAddRows="False"
+						  SelectionUnit="FullRow"
+						  SelectionMode="Extended">
+					<i:Interaction.Behaviors>
+						<behaviors:MultiSelectorSelectedItemsBehavior SelectedItems="{Binding SelectedItems}"/>
+						<behaviors:DataGridSortedItemsCommandBehavior SortedItemsCommand="{Binding PersistStateItemSortCommand}"
+																		ClearSortAfterCommand="True"/>
+					</i:Interaction.Behaviors>
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Name"
+											Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+											Width="*"/>
+						<DataGridTemplateColumn Header="Color" Width="120">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Color, Converter={StaticResource ColorToHexString}}"
+											   Foreground="{Binding Color, Converter={StaticResource BackgroundColorToTextColor}}"
+											   Background="{Binding Color, Converter={StaticResource ColorToSolidBrush}}"
+											   TextAlignment="Center"
+											   Padding="4,2">
+										<TextBlock.InputBindings>
+											<MouseBinding Gesture="LeftDoubleClick"
+														  Command="{Binding DataContext.EditColorCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+														  CommandParameter="{Binding}"/>
+										</TextBlock.InputBindings>
+									</TextBlock>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTextColumn Header="Count"
+											Binding="{Binding AssignmentCount}"
+											IsReadOnly="True"
+											Width="72"/>
+					</DataGrid.Columns>
+				</DataGrid>
+				<WrapPanel Grid.Row="3" Style="{StaticResource RowButtonRightContainerStyle}" Margin="0,6,0,0">
+					<Button Content="Add" Command="{Binding AddItemCommand}" Style="{StaticResource RowButtonStyle}"/>
+					<Button Content="Remove" Command="{Binding RemoveItemCommand}" Style="{StaticResource RowButtonStyle}"/>
+					<Button Command="{Binding MoveItemUpCommand}"
+							Style="{StaticResource RowButtonStyle}"
+							ToolTip="Move selected State Item up">
+						<Image Source="/Resources;component/arrow_up.png"
+							   Width="16"
+							   Height="16"/>
+					</Button>
+					<Button Command="{Binding MoveItemDownCommand}"
+							Style="{StaticResource RowButtonStyle}"
+							ToolTip="Move selected State Item down">
+						<Image Source="/Resources;component/arrow_down.png"
+							   Width="16"
+							   Height="16"/>
+					</Button>
+				</WrapPanel>
+			</Grid>
+
+			<GridSplitter Grid.Row="1"
+						  Grid.Column="1"
+						  Width="1"
+						  HorizontalAlignment="Center"
+						  VerticalAlignment="Stretch"/>
+
+			<Grid Grid.Row="1" Grid.Column="2">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<Grid Margin="0,0,0,4">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<TextBlock Text="Assigned Elements" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					<Button Grid.Column="1"
+							Content="Toggle Selected"
+							Command="{Binding SelectedItem.ToggleSelectedAssignmentsCommand}"
+							IsEnabled="{Binding SelectedItem.HasSelectedAssignments}"
+							Style="{StaticResource RowButtonStyle}"
+							ToolTip="Toggle selected assigned elements"/>
+				</Grid>
+				<TreeView Grid.Row="1"
+						  ItemsSource="{Binding AssignedElementRoots}"
+						  BorderThickness="0"
+						  VirtualizingPanel.IsVirtualizing="True"
+						  VirtualizingPanel.VirtualizationMode="Recycling"
+						  ScrollViewer.CanContentScroll="True">
+					<i:Interaction.Behaviors>
+						<behaviors:TreeViewRangeSelectionBehavior SelectionController="{Binding SelectedItem.AssignmentSelection}"/>
+					</i:Interaction.Behaviors>
+					<TreeView.ItemContainerStyle>
+						<Style TargetType="{x:Type TreeViewItem}">
+							<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+						</Style>
+					</TreeView.ItemContainerStyle>
+					<TreeView.ItemTemplate>
+						<HierarchicalDataTemplate ItemsSource="{Binding Children}">
+							<Border Padding="2,1">
+								<Border.Style>
+									<Style TargetType="{x:Type Border}">
+										<Setter Property="Background" Value="Transparent"/>
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding IsSelected}" Value="True">
+												<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</Border.Style>
+								<DockPanel LastChildFill="True">
+									<CheckBox DockPanel.Dock="Left"
+											  IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+											  IsEnabled="{Binding IsEnabled}"
+											  VerticalAlignment="Center"/>
+									<TextBlock Text="{Binding Name}"
+											   Margin="4,0,0,0"
+											   VerticalAlignment="Center">
+										<TextBlock.Style>
+											<Style TargetType="TextBlock"  BasedOn="{StaticResource {x:Type TextBlock}}">
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding IsSelected}" Value="True">
+														<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</TextBlock.Style>
+									</TextBlock>
+								</DockPanel>
+							</Border>
+						</HierarchicalDataTemplate>
+					</TreeView.ItemTemplate>
+				</TreeView>
+			</Grid>
+		</Grid>
+	</DockPanel>
+</catel:Window>

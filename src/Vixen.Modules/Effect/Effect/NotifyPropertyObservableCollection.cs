@@ -82,6 +82,8 @@ namespace VixenModules.Effect.Effect
 					System.Diagnostics.Debug.Assert(false, "Unsupported NotifyCollectionChangeAction enumeration");
 					break;					
 			}
+
+			base.OnCollectionChanged(e);
 		}
 
 		/// <summary>

@@ -3,6 +3,7 @@ using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
+using DrawingColor = System.Drawing.Color;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
@@ -156,6 +157,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// IsSelected property data.
 		/// </summary>
 		public static readonly IPropertyData IsSelectedProperty = RegisterProperty<bool>(nameof(IsSelected));
+
+		#endregion
+
+		#region DisplayColor property
+
+		/// <summary>
+		/// Gets or sets the current display color for this light in the editor canvas.
+		/// </summary>
+		public DrawingColor DisplayColor
+		{
+			get { return GetValue<DrawingColor>(DisplayColorProperty); }
+			set { SetValue(DisplayColorProperty, value); }
+		}
+
+		/// <summary>
+		/// DisplayColor property data.
+		/// </summary>
+		public static readonly IPropertyData DisplayColorProperty = RegisterProperty<DrawingColor>(nameof(DisplayColor));
 
 		#endregion
 

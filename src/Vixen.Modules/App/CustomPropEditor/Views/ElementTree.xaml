@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:interactivity="http://schemas.catelproject.com"
+             xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
              xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="500"
              xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:commonUtils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon"
              xmlns:behaviors1="clr-namespace:Common.WPFCommon.Behaviors;assembly=WPFCommon">
@@ -20,6 +21,8 @@
 						</ResourceDictionary.MergedDictionaries>
 
 						<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+						<commonConverters:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
+						<commonConverters:BackgroundColorToTextBrushConverter x:Key="BackgroundColorToTextBrushConverter"/>
 
 
 						<Style x:Key="ElementListViewItemContainerStyle" TargetType="{x:Type ListViewItem}">
@@ -349,6 +352,148 @@
 												</DataTemplate>
 										</ListView.ItemTemplate>
 								</ListView>
+						</TabItem>
+						<TabItem Header="State">
+								<Grid DataContext="{Binding StateDefinitionEditorViewModel}" Margin="5">
+										<Grid.RowDefinitions>
+												<RowDefinition Height="Auto"/>
+												<RowDefinition Height="*"/>
+												<RowDefinition Height="Auto"/>
+										</Grid.RowDefinitions>
+										<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="*"/>
+										</Grid.ColumnDefinitions>
+										<Grid Grid.Row="0" Grid.Column="0">
+											<Grid.RowDefinitions>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="Auto"/>
+											</Grid.RowDefinitions>
+											<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto"/>
+													<ColumnDefinition Width="*"/>
+											</Grid.ColumnDefinitions>
+												<Grid Grid.ColumnSpan="2" Margin="0,6">
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="Auto"/>
+														<ColumnDefinition Width="*"/>
+														<ColumnDefinition Width="Auto"/>
+														<ColumnDefinition Width="Auto"/>
+														<ColumnDefinition Width="Auto"/>
+													</Grid.ColumnDefinitions>
+													<TextBlock Text="Name" Margin="0,0,6,4" VerticalAlignment="Center"
+													           MinWidth="{Binding ElementName=DescriptionTb, Path=ActualWidth}"/>
+													<ComboBox Grid.Column="1" ItemsSource="{Binding StateDefinitions}"
+													          SelectedItem="{Binding SelectedStateDefinition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+													          DisplayMemberPath="Name"
+													          MinWidth="100"/>
+													<Button Grid.Column="2"
+													        Content="Add"
+													        Command="{Binding AddStateDefinitionCommand}"
+													        Style="{StaticResource RowButtonAutoStyle}"
+													        MinWidth="{Binding ElementName=RemoveBtn, Path=ActualWidth}"/>
+													<Button Grid.Column="3"
+													        Name="DeleteBtn"
+													        Content="Delete"
+													        Command="{Binding DeleteStateDefinitionCommand}"
+													        Style="{StaticResource RowButtonAutoStyle}"/>
+													<Menu Grid.Column="4" Margin="6,0,0,0">
+														<MenuItem Header="...">
+															<MenuItem Header="Rename" Command="{Binding RenameStateDefinitionCommand}"/>
+															<MenuItem Header="Copy" Command="{Binding CopyStateDefinitionCommand}"/>
+														</MenuItem>
+													</Menu>
+												</Grid>
+												<TextBlock Grid.Row="1" Grid.Column="0" Name="DescriptionTb" Text="Description" VerticalAlignment="Top" Margin="0,0,6,2"/>
+												<TextBox Grid.Row="1" Grid.Column="1"
+													Text="{Binding SelectedStateDefinition.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+													MinHeight="48"/>
+										</Grid>
+
+										<Grid Grid.Row="1" Grid.Column="0" Margin="0,8,0,0">
+												<Grid.RowDefinitions>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="*"/>
+														<RowDefinition Height="Auto"/>
+												</Grid.RowDefinitions>
+
+												<TextBlock Grid.Row="0" Text="State Items" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,0,0,4"/>
+												<DataGrid Grid.Row="1"
+									 ItemsSource="{Binding SelectedStateDefinition.Items}"
+									 SelectedItem="{Binding SelectedStateItem, Mode=TwoWay}"
+									 SelectionMode="Extended"
+									 SelectionUnit="FullRow"
+									 AutoGenerateColumns="False"
+									 CanUserAddRows="False"
+									 HeadersVisibility="Column"
+									 MinHeight="90">
+														<i:Interaction.Behaviors>
+																<behaviors1:MultiSelectorSelectedItemsBehavior SelectedItems="{Binding SelectedStateItems}"/>
+																<behaviors1:DataGridSortedItemsCommandBehavior SortedItemsCommand="{Binding PersistStateItemSortCommand}"/>
+														</i:Interaction.Behaviors>
+														<DataGrid.Columns>
+																<DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+																<DataGridTemplateColumn Header="Color" Width="75" SortMemberPath="ColorHex">
+																		<DataGridTemplateColumn.CellStyle>
+																				<Style TargetType="{x:Type DataGridCell}">
+																						<Setter Property="Background" Value="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"/>
+																				</Style>
+																		</DataGridTemplateColumn.CellStyle>
+																		<DataGridTemplateColumn.CellTemplate>
+																				<DataTemplate>
+																						<TextBlock Text="{Binding ColorHex}"
+														 Background="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"
+														 Foreground="{Binding Color, Converter={StaticResource BackgroundColorToTextBrushConverter}}"
+														 Padding="4,1">
+																								<TextBlock.InputBindings>
+																										<MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditColorCommand}"/>
+																								</TextBlock.InputBindings>
+																						</TextBlock>
+																				</DataTemplate>
+																		</DataGridTemplateColumn.CellTemplate>
+																		<DataGridTemplateColumn.CellEditingTemplate>
+																				<DataTemplate>
+																						<TextBox Text="{Binding ColorHex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+													 Background="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}"
+													 Foreground="{Binding Color, Converter={StaticResource BackgroundColorToTextBrushConverter}}"
+													 BorderThickness="0"
+													 Padding="4,1"/>
+																				</DataTemplate>
+																		</DataGridTemplateColumn.CellEditingTemplate>
+																</DataGridTemplateColumn>
+																<DataGridTextColumn Header="Count" Width="70" Binding="{Binding AssignmentCount, Mode=OneWay}" SortMemberPath="AssignmentCount"/>
+														</DataGrid.Columns>
+												</DataGrid>
+												<WrapPanel Grid.Row="2" Style="{StaticResource RowButtonRightContainerStyle}">
+														<Button Content="Add" Command="{Binding AddStateItemCommand}"
+														        Style="{StaticResource RowButtonAutoStyle}"
+														        MinWidth="{Binding ElementName=RemoveBtn, Path=ActualWidth}"/>
+														<Button Name="RemoveBtn" Content="Remove" Command="{Binding RemoveStateItemCommand}"
+														        Style="{StaticResource RowButtonAutoStyle}"/>
+														<Button Command="{Binding MoveStateItemUpCommand}"
+														        Style="{StaticResource RowButtonAutoStyle}"
+														        ToolTip="Move selected State Item up">
+															<Image Source="/Resources;component/arrow_up.png"
+															       Width="16"
+															       Height="16"/>
+														</Button>
+														<Button Command="{Binding MoveStateItemDownCommand}"
+														        Style="{StaticResource RowButtonAutoStyle}"
+														        ToolTip="Move selected State Item down">
+															<Image Source="/Resources;component/arrow_down.png"
+															       Width="16"
+															       Height="16"/>
+														</Button>
+												</WrapPanel>
+										</Grid>
+
+										<ItemsControl Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ValidationMessages}" Margin="0,8,0,0">
+												<ItemsControl.ItemTemplate>
+														<DataTemplate>
+																<TextBlock Text="{Binding}" Foreground="IndianRed" TextWrapping="Wrap"/>
+														</DataTemplate>
+												</ItemsControl.ItemTemplate>
+										</ItemsControl>
+								</Grid>
 						</TabItem>
 				</TabControl>
 

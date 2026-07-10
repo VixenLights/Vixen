@@ -286,6 +286,8 @@
                             LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
                             TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
                             IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}"
+                            IsStateDefinitionMode="{Binding IsStateDefinitionTabSelected}"
+                            IsStateAssignmentEnabled="{Binding StateDefinitionEditorViewModel.CanEditCanvasAssignments}"
                             AddLightCommand="{Binding AddLightCommand}"
                             SelectedModels="{Binding DrawingPanelViewModel.SelectedItems}">
 														<i:Interaction.Behaviors>
@@ -300,12 +302,7 @@
 																						</Path.Data>
 																						<Path.Style>
 																								<Style TargetType="Path">
-																										<Setter Property="Fill" Value="{Binding Path=DataContext.DrawingPanelViewModel.LightColor, RelativeSource={RelativeSource AncestorType=ItemsControl}, Mode=OneWay, Converter={StaticResource ColorToSolidBrushConverter}}"/>
-																										<Style.Triggers>
-																												<DataTrigger Binding="{Binding IsSelected}" Value="True">
-																														<Setter Property="Fill" Value="{Binding Path=DataContext.DrawingPanelViewModel.SelectedLightColor, RelativeSource={RelativeSource AncestorType=ItemsControl}, Mode=OneWay,Converter={StaticResource ColorToSolidBrushConverter}}"></Setter>
-																												</DataTrigger>
-																										</Style.Triggers>
+																										<Setter Property="Fill" Value="{Binding DisplayColor, Mode=OneWay, Converter={StaticResource ColorToSolidBrushConverter}}"/>
 																								</Style>
 																						</Path.Style>
 																				</Path>

@@ -18,9 +18,11 @@ using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Model.ExternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Model.InternalVendorInventory;
 using VixenModules.App.CustomPropEditor.Services;
+using VixenModules.App.CustomPropEditor.ViewModels.State;
 using ModelType = VixenModules.App.CustomPropEditor.Model.InternalVendorInventory.ModelType;
 using Catel.Data;
 using VixenModules.App.Modeling;
+using VixenModules.Property.State.Setup.Services;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
@@ -53,6 +55,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				ElementTreeViewModel = new ElementTreeViewModel(value);
 				DrawingPanelViewModel = new DrawingPanelViewModel(ElementTreeViewModel);
 				ElementOrderViewModel = new ElementOrderViewModel(value);
+				var dependencyResolver = this.GetDependencyResolver();
+				var ds = dependencyResolver.Resolve<IStateDefinitionDialogService>();
+				StateDefinitionEditorViewModel = new StateDefinitionEditorViewModel(value, ds);
+				StateDefinitionEditorViewModel.StateDataChanged += StateDefinitionEditorViewModel_StateDataChanged;
+				StateDefinitionEditorViewModel.StatePreviewChanged += StateDefinitionEditorViewModel_StatePreviewChanged;
 				RegisterModelEvents();
 			}
 		}
@@ -316,6 +323,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region StateDefinitionEditorViewModel property
+
+		/// <summary>
+		/// Gets or sets the StateDefinitionEditorViewModel value.
+		/// </summary>
+		[Browsable(false)]
+		public StateDefinitionEditorViewModel StateDefinitionEditorViewModel
+		{
+			get { return GetValue<StateDefinitionEditorViewModel>(StateDefinitionEditorViewModelProperty); }
+			set { SetValue(StateDefinitionEditorViewModelProperty, value); }
+		}
+
+		/// <summary>
+		/// StateDefinitionEditorViewModel property data.
+		/// </summary>
+		public static readonly IPropertyData StateDefinitionEditorViewModelProperty = RegisterProperty<StateDefinitionEditorViewModel>(nameof(StateDefinitionEditorViewModel));
+
+		#endregion
+
 		#region FilePath property
 
 		/// <summary>
@@ -354,6 +380,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, e) => ((PropEditorViewModel) sender).OnSelectedTabIndexChanged());
 
 		/// <summary>
+		/// Gets a value that indicates whether the State Definition tab is selected.
+		/// </summary>
+		[Browsable(false)]
+		public bool IsStateDefinitionTabSelected => SelectedTabIndex == 2;
+
+		/// <summary>
 		/// Called when the SelectedTabIndex property has changed.
 		/// </summary>
 		private void OnSelectedTabIndexChanged()
@@ -370,6 +402,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				ElementOrderViewModel.DeselectAll();
 				//ElementTreeViewModel.Select(selectedModelIds);
 			}
+
+			RaisePropertyChanged(nameof(IsStateDefinitionTabSelected));
+			UpdateStatePreview();
 		}
 
 		#endregion
@@ -404,17 +439,36 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				ElementOrderViewModel.SelectedItems.CollectionChanged -= ElementOrderViewModel_SelectedItemsChanged;
 			}
 
+			if (StateDefinitionEditorViewModel != null)
+			{
+				StateDefinitionEditorViewModel.StateDataChanged -= StateDefinitionEditorViewModel_StateDataChanged;
+				StateDefinitionEditorViewModel.StatePreviewChanged -= StateDefinitionEditorViewModel_StatePreviewChanged;
+			}
+
+		}
+
+		private void StateDefinitionEditorViewModel_StateDataChanged(object sender, EventArgs e)
+		{
+			UpdateStatePreview();
+		}
+
+		private void StateDefinitionEditorViewModel_StatePreviewChanged(object sender, EventArgs e)
+		{
+			UpdateStatePreview();
 		}
 
 		private void DrawingPanelViewModelsLightModelsChanged(object sender, EventArgs e)
 		{
 			ElementOrderViewModel.RefreshElementLeafViewModels();
+			StateDefinitionEditorViewModel.RefreshAssignments();
 		}
 
 		private void ElementTreeViewModel_ModelsChanged(object sender, EventArgs e)
 		{
 			ElementOrderViewModel.RefreshElementLeafViewModels();
 			DrawingPanelViewModel.RefreshLightViewModels();
+			StateDefinitionEditorViewModel.SetProp(Prop);
+			StateDefinitionEditorViewModel.RefreshAssignments();
 		}
 
 
@@ -443,8 +497,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 				if (e.Action == NotifyCollectionChangedAction.Add)
 				{
-					var parents = e.NewItems.Cast<LightViewModel>().SelectMany(l => ElementModelLookUpService.Instance.GetModels(l.Light.ParentModelId));
+					var newLights = e.NewItems.Cast<LightViewModel>().ToList();
+					var parents = newLights.SelectMany(l => ElementModelLookUpService.Instance.GetModels(l.Light.ParentModelId));
 					ElementTreeViewModel.SelectModels(parents);
+					AssignSelectedLightsToStateItem(newLights);
 				}
 				_selectionChanging = false;
 			}
@@ -509,7 +565,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		private bool TestIsDirty()
 		{
-			return IsDirty || ElementTreeViewModel.IsElementsDirty || DrawingPanelViewModel.IsLightsDirty;
+			return IsDirty || ElementTreeViewModel.IsElementsDirty || DrawingPanelViewModel.IsLightsDirty || StateDefinitionEditorViewModel.IsDirty;
 		}
 
 		internal void ClearDirtyFlag()
@@ -517,6 +573,116 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			IsDirty = false;
 			ElementTreeViewModel.ClearIsDirty();
 			DrawingPanelViewModel.ClearIsDirty();
+			StateDefinitionEditorViewModel.ClearIsDirty();
+		}
+
+		private void AssignSelectedLightsToStateItem(IEnumerable<LightViewModel> selectedLights)
+		{
+			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
+			if (!IsStateDefinitionTabSelected || selectedStateItem == null)
+			{
+				return;
+			}
+
+			var elementModelIds = selectedLights.Select(light => light.Light.ParentModelId);
+			if (selectedStateItem.AssignElementModelIds(elementModelIds))
+			{
+				UpdateStatePreview();
+			}
+		}
+
+		/// <summary>
+		/// Assigns a light to the currently selected State item.
+		/// </summary>
+		/// <param name="lightViewModel">The light view model to assign.</param>
+		/// <returns><see langword="true" /> if the assignment was handled in State Definition mode; otherwise, <see langword="false" />.</returns>
+		public bool AssignStateItemAssignment(LightViewModel lightViewModel)
+		{
+			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
+			if (!IsStateDefinitionTabSelected ||
+				!StateDefinitionEditorViewModel.CanEditCanvasAssignments ||
+				selectedStateItem == null ||
+				lightViewModel == null)
+			{
+				return false;
+			}
+
+			if (selectedStateItem.AssignElementModelIds([lightViewModel.Light.ParentModelId]))
+			{
+				UpdateStatePreview();
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Removes a light from the currently selected State item.
+		/// </summary>
+		/// <param name="lightViewModel">The light view model to remove.</param>
+		/// <returns><see langword="true" /> if the removal was handled in State Definition mode; otherwise, <see langword="false" />.</returns>
+		public bool RemoveStateItemAssignment(LightViewModel lightViewModel)
+		{
+			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
+			if (!IsStateDefinitionTabSelected ||
+				!StateDefinitionEditorViewModel.CanEditCanvasAssignments ||
+				selectedStateItem == null ||
+				lightViewModel == null)
+			{
+				return false;
+			}
+
+			if (selectedStateItem.RemoveElementModelIds([lightViewModel.Light.ParentModelId]))
+			{
+				UpdateStatePreview();
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Toggles the State assignment for a light on the currently selected State item.
+		/// </summary>
+		/// <param name="lightViewModel">The light view model to toggle.</param>
+		/// <returns><see langword="true" /> if the click was handled as a State assignment toggle; otherwise, <see langword="false" />.</returns>
+		public bool ToggleStateItemAssignment(LightViewModel lightViewModel)
+		{
+			var selectedStateItem = StateDefinitionEditorViewModel.SelectedStateItem;
+			if (!IsStateDefinitionTabSelected ||
+				!StateDefinitionEditorViewModel.CanEditCanvasAssignments ||
+				selectedStateItem == null ||
+				lightViewModel == null)
+			{
+				return false;
+			}
+
+			if (selectedStateItem.ToggleElementModelId(lightViewModel.Light.ParentModelId))
+			{
+				UpdateStatePreview();
+			}
+
+			return true;
+		}
+
+		private void UpdateStatePreview()
+		{
+			if (DrawingPanelViewModel == null)
+			{
+				return;
+			}
+
+			if (!IsStateDefinitionTabSelected)
+			{
+				DrawingPanelViewModel.ClearStatePreview();
+				return;
+			}
+
+			var selectedItems = StateDefinitionEditorViewModel?.SelectedStateItems;
+			var previewItems = selectedItems is { Count: > 0 }
+				? selectedItems.ToArray()
+				: StateDefinitionEditorViewModel?.SelectedStateItem == null
+					? []
+					: [StateDefinitionEditorViewModel.SelectedStateItem];
+			DrawingPanelViewModel.ApplyStatePreview(previewItems);
 		}
 
 		#endregion
@@ -546,6 +712,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			DrawingPanelViewModel.DeselectAll();
 			DrawingPanelViewModel.RefreshLightViewModels();
 			ElementOrderViewModel.RefreshElementLeafViewModels();
+			StateDefinitionEditorViewModel.RefreshAssignments();
+			UpdateStatePreview();
 		}
 
 		/// <summary>
@@ -622,6 +790,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void SaveModel()
 		{
+			if (!TryValidateStateBeforeSave())
+			{
+				return;
+			}
+
 			ModifiedDate = DateTime.Now;
 			if (string.IsNullOrEmpty(FilePath))
 			{
@@ -654,6 +827,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private async void SaveModelAs()
 		{
+			if (!TryValidateStateBeforeSave())
+			{
+				return;
+			}
+
 			ModifiedDate = DateTime.Now;
 			var dependencyResolver = this.GetDependencyResolver();
 			var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
@@ -1141,6 +1319,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var uiVisualizerService = dependencyResolver.Resolve<UIVisualizerService>();
 			await uiVisualizerService.ShowDialogAsync(vm);
+			UpdateStatePreview();
 			await VixenSystem.SaveModuleConfigAsync();
 		}
 
@@ -1161,6 +1340,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				//Alert user
 			}
+		}
+
+		private bool TryValidateStateBeforeSave()
+		{
+			StateDefinitionEditorViewModel.RefreshValidation();
+			if (!StateDefinitionEditorViewModel.HasValidationErrors)
+			{
+				return true;
+			}
+
+			var dependencyResolver = this.GetDependencyResolver();
+			var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+			mbs.ShowError(StateDefinitionEditorViewModel.SaveValidationMessage, "Invalid State Definitions");
+			return false;
 		}
 
 		private async Task<Tuple<bool, ModelType>> LoadVendorModel(ModelLink modelLink)

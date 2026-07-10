@@ -1,0 +1,59 @@
+<catel:Window x:Class="VixenModules.Property.State.Setup.Views.StateDefinitionNameDialogView"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:catel="http://schemas.catelproject.com"
+		xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+		mc:Ignorable="d"
+		Title="{Binding Title}"
+		WindowStartupLocation="CenterOwner"
+		SizeToContent="Height"
+		Width="360"
+		MinWidth="320"
+		MinHeight="120"
+		ResizeMode="NoResize"
+		x:Name="StateDefinitionDialogWindow">
+
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Window.Resources>
+
+	<DockPanel>
+		<WrapPanel DockPanel.Dock="Bottom"
+				   Margin="0,8,8,8"
+				   Style="{StaticResource RowButtonRightContainerStyle}">
+			<Button Content="OK"
+					Command="{Binding OkCommand}"
+					IsDefault="True"
+					Style="{StaticResource RowButtonStyle}"/>
+			<Button Content="Cancel"
+					Command="{Binding CancelCommand}"
+					IsCancel="True"
+					Style="{StaticResource RowButtonStyle}"/>
+		</WrapPanel>
+
+		<Grid Margin="8">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<TextBlock Text="Name"
+					   Margin="0,8,8,3"
+					   VerticalAlignment="Center"/>
+			<TextBox x:Name="NameBox"
+					 Grid.Column="1"
+					 Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+					 MinWidth="220"
+					 Margin="0,8,8,4"/>
+		</Grid>
+	</DockPanel>
+</catel:Window>

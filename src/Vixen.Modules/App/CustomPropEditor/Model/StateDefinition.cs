@@ -20,6 +20,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			StateDefinitionName = "State Name 1";
 			Name = "Item 1";
 			DefaultColor = Color.White;
+			ElementModelIds = [];
 		}
 
 		/// <summary>
@@ -77,5 +78,11 @@ namespace VixenModules.App.CustomPropEditor.Model
 				OnPropertyChanged(nameof(Index));
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the element model identifiers assigned to this imported State item.
+		/// </summary>
+		/// <value>The element model identifiers assigned to this imported State item.</value>
+		public List<Guid> ElementModelIds { get; set; }
 	}
 }

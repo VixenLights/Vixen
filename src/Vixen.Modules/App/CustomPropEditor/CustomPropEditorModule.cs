@@ -5,6 +5,7 @@ using Vixen.Module.App;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Views;
+using VixenModules.Property.State.Setup.Services;
 using ConfigurationService = VixenModules.App.CustomPropEditor.Services.ConfigurationService;
 
 namespace VixenModules.App.CustomPropEditor
@@ -19,6 +20,7 @@ namespace VixenModules.App.CustomPropEditor
 			var serviceLocator = ServiceLocator.Default;
 			serviceLocator.RegisterType<IDownloadService, DownloadService>();
 			serviceLocator.RegisterType<IMessageBoxService, MessageBoxService>();
+			serviceLocator.RegisterType<IStateDefinitionDialogService, StateDefinitionDialogService>();
 			
 			AddApplicationMenu();
 			Configuration config = new Configuration((CustomPropEditorData)StaticModuleData);

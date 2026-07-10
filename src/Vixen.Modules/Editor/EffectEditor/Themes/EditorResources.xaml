@@ -334,6 +334,71 @@
 		</StackPanel>
 	</DataTemplate>
 
+	<DataTemplate x:Key="{x:Static editors:EditorKeys.ICustomStateItemEditorKey}">
+		<StackPanel Grid.IsSharedSizeScope="True">
+			<StackPanel.Resources>
+				<Style x:Key="InlineCustomStateItemPropertyContainerStyle" TargetType="{x:Type design:PropertyContainer}">
+					<Setter Property="IsTabStop" Value="False"/>
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate>
+								<design:PropertyEditorContentPresenter VerticalAlignment="Center"/>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</StackPanel.Resources>
+			<controls:CollectionView
+				x:Name="PART_editor"
+				Style="{DynamicResource {x:Type ListView}}"
+				PropertyValue="{Binding }"
+				IsEnabled="{Binding IsEditable}"
+				KeyboardNavigation.TabNavigation="Continue"
+				ItemContainerStyle="{StaticResource ListViewItemOutlineHover}">
+				<i:Interaction.Behaviors>
+					<behaviors:IgnoreMouseWheelBehavior/>
+				</i:Interaction.Behaviors>
+				<ListView.Resources>
+					<Style TargetType="ListViewItem">
+						<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+						<Setter Property="VerticalContentAlignment" Value="Top" />
+					</Style>
+				</ListView.Resources>
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}},
+							Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='-10'}"></WrapPanel>
+					</ItemsPanelTemplate>
+			</ListView.ItemsPanel>
+			<ListView.ItemTemplate>
+				<DataTemplate DataType="{x:Type internal:CollectionItemValue}">
+					<Grid Margin="4,3" HorizontalAlignment="Stretch"
+						  Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},
+						  Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='-24'}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="CustomStateItemColor"/>
+						</Grid.ColumnDefinitions>
+						<design:PropertyContainer Grid.Column="0" Entry="{Binding SubProperties[StateItem]}"
+												  Style="{StaticResource InlineCustomStateItemPropertyContainerStyle}"/>
+						<design:PropertyContainer Grid.Column="1" Entry="{Binding SubProperties[Color]}" Margin="8,0,0,0"
+												  Style="{StaticResource InlineCustomStateItemPropertyContainerStyle}"/>
+					</Grid>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</controls:CollectionView>
+			<WrapPanel Orientation="Horizontal">
+				<Button Margin="5" Content="Add" HorizontalAlignment="Left" Padding="5,2"
+					  Command="input:PropertyEditorCommands.AddCollectionItem"
+					  CommandParameter="{Binding}"
+					  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+				<Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
+					  Command="input:PropertyEditorCommands.RemoveCollectionItem"
+					  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+			</WrapPanel>
+		</StackPanel>
+	</DataTemplate>
+
 
 	<DataTemplate x:Key="{x:Static editors:EditorKeys.IMorphPolygonEditorKey}">
 		<StackPanel>

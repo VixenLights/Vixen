@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 using Catel.Collections;
 using Common.WPFCommon.ViewModel;
 
@@ -19,6 +20,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 		private int _lightSize;
 		private FaceDefinition _faceDefinition;
 		private StateDefinition _stateDefinition;
+		private ElementModelType _modelType;
 
 		#region Constructors
 
@@ -26,8 +28,11 @@ namespace VixenModules.App.CustomPropEditor.Model
 		{
 			Lights = new ObservableCollection<Light>();
 			Children = new ObservableCollection<ElementModel>();
+			StateDefinitions = new ObservableCollection<StateDefinition>();
+			StateDefinitionModels = new ObservableCollection<StateDefinitionModel>();
 			Parents = new ObservableCollection<Guid>();
 			Id = Guid.NewGuid();
+			StatePropertyId = Guid.NewGuid();
 			LightSize = DefaultLightSize;
 			FaceDefinition = new FaceDefinition();
 		}
@@ -59,6 +64,33 @@ namespace VixenModules.App.CustomPropEditor.Model
 		#region Id
 
 		public Guid Id { get; internal set; }
+
+		#endregion
+
+		#region State Property Id
+
+		/// <summary>
+		/// Gets or sets the stable identifier used when this model's State data is imported as a Vixen State property.
+		/// </summary>
+		public Guid StatePropertyId { get; set; }
+
+		#endregion
+
+		#region Model Type
+
+		/// <summary>
+		/// Gets or sets the custom prop model role for this element.
+		/// </summary>
+		public ElementModelType ModelType
+		{
+			get => _modelType;
+			set
+			{
+				if (value == _modelType) return;
+				_modelType = value;
+				OnPropertyChanged(nameof(ModelType));
+			}
+		}
 
 		#endregion
 
@@ -180,6 +212,26 @@ namespace VixenModules.App.CustomPropEditor.Model
 				OnPropertyChanged(nameof(StateDefinition));
 			}
 		}
+
+		#endregion
+
+		#region State Definitions
+
+		/// <summary>
+		/// Gets or sets legacy imported State rows attached to this model group.
+		/// </summary>
+		/// <value>The legacy imported State rows attached to this model group.</value>
+		public ObservableCollection<StateDefinition> StateDefinitions { get; set; }
+
+		#endregion
+
+		#region State Definition Models
+
+		/// <summary>
+		/// Gets or sets the authored State definitions attached to this model group.
+		/// </summary>
+		/// <value>The authored State definitions attached to this model group.</value>
+		public ObservableCollection<StateDefinitionModel> StateDefinitionModels { get; set; }
 
 		#endregion
 
@@ -420,6 +472,27 @@ namespace VixenModules.App.CustomPropEditor.Model
 			return Id.GetHashCode();
 		}
 
-		
+		internal void NormalizeStateModelData()
+		{
+			if (StatePropertyId == Guid.Empty)
+			{
+				StatePropertyId = Guid.NewGuid();
+			}
+
+			StateDefinitions ??= new ObservableCollection<StateDefinition>();
+			StateDefinitionModels ??= new ObservableCollection<StateDefinitionModel>();
+
+			foreach (var stateDefinition in StateDefinitionModels)
+			{
+				stateDefinition.Normalize();
+			}
+		}
+
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
+		{
+			NormalizeStateModelData();
+		}
+
 	}
 }

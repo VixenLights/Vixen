@@ -939,6 +939,7 @@ namespace VixenModules.Editor.EffectEditor
 						// clear our property hashes
 						//DoReload();
 						UpdateBrowsable();
+						ComponentChanged();
 						return;
 					}
 				}

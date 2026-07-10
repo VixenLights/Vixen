@@ -27,10 +27,13 @@ namespace VixenModules.App.CustomPropEditor
 		}
 
 		[DataMember]
-		public Color LightColor { get; set; } = Color.White;
+		public Color LightColor { get; set; } = Configuration.DefaultLightColor;
 
 		[DataMember]
-		public Color SelectedLightColor { get; set; } = Color.HotPink;
+		public Color SelectedLightColor { get; set; } = Configuration.DefaultSelectedLightColor;
+		
+		[DataMember]
+		public Color StatePreviewBaseColor { get; set; } = Configuration.DefaultStatePreviewBaseColor;
 
 		[DataMember]
 		public uint DefaultLightSize { get; set; } = ElementModel.DefaultLightSize;
@@ -40,12 +43,17 @@ namespace VixenModules.App.CustomPropEditor
 		{
 			if (LightColor == Color.Empty)
 			{
-				LightColor = Color.White;
+				LightColor = Configuration.DefaultLightColor;
 			}
 
 			if (SelectedLightColor == Color.Empty)
 			{
-				SelectedLightColor = Color.HotPink;
+				SelectedLightColor = Configuration.DefaultSelectedLightColor;
+			}
+			
+			if (StatePreviewBaseColor == Color.Empty)
+			{
+				StatePreviewBaseColor = Configuration.DefaultStatePreviewBaseColor;
 			}
 
 			if (DefaultLightSize == 0)

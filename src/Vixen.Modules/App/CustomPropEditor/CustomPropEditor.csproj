@@ -48,6 +48,7 @@
 				<ProjectReference Include="..\..\..\Vixen.Common\WpfPropertyGrid\WpfPropertyGrid.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
 				<ProjectReference Include="..\Modeling\Modeling.csproj" />
+				<ProjectReference Include="..\..\Property\State\State.csproj" />
 		</ItemGroup>
 
 		<ItemGroup>
@@ -70,6 +71,12 @@
 				<Resource Include="Images\copy.png" />
 				<Resource Include="Images\cut.png" />
 				<Resource Include="Images\paste.png" />
+		</ItemGroup>
+
+		<ItemGroup>
+			<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+				<_Parameter1>Vixen.Tests</_Parameter1>
+			</AssemblyAttribute>
 		</ItemGroup>
 
 		<ItemGroup>

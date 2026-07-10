@@ -22,6 +22,7 @@ using VixenModules.App.ColorGradients;
 using VixenModules.Effect.Fixture;
 using VixenModules.Effect.Liquid;
 using VixenModules.Effect.Morph;
+using VixenModules.Effect.State;
 using VixenModules.Effect.Wave;
 using VixenModules.Effect.Whirlpool;
 
@@ -51,6 +52,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 			{typeof(IList<IEmitter>), new TypeEditor(typeof(IList<IEmitter>), EditorKeys.IEmitterEditorKey)},
 			{KnownTypes.Vixen.Emitter, new TypeEditor()},
 			{typeof(IList<IWaveform>), new TypeEditor(typeof(IList<IWaveform>), EditorKeys.IWaveformEditorKey)},
+			{typeof(IList<CustomStateItem>), new TypeEditor(typeof(IList<CustomStateItem>), EditorKeys.ICustomStateItemEditorKey)},
 			{typeof(IList<IFixtureFunctionExpando>), new TypeEditor(typeof(IList<IFixtureFunctionExpando>), EditorKeys.IFixtureFunctionEditorKey)},
 			{typeof(IList<IWhirl>), new TypeEditor(typeof(IList<IWhirl>), EditorKeys.IWhirlEditorKey)},
 			{KnownTypes.Vixen.Whirl, new TypeEditor()},

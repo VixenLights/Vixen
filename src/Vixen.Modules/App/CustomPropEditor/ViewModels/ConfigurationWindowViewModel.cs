@@ -24,6 +24,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			LightColor = Config.LightColor;
 			SelectedLightColor = Config.SelectedLightColor;
 			DefaultLightSize = Config.DefaultLightSize;
+			StatePreviewBaseColor = Config.StatePreviewBaseColor;
 		}
 
 
@@ -99,6 +100,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public static readonly IPropertyData SelectedLightColorProperty = RegisterProperty<Color>(nameof(SelectedLightColor));
 
 		#endregion
+		
+		#region StatePreviewBaseColor property
+
+		/// <summary>
+		/// Gets or sets the StatePreviewBaseColor value.
+		/// </summary>
+		public Color StatePreviewBaseColor
+		{
+			get { return GetValue<Color>(StatePreviewBaseColorProperty); }
+			set { SetValue(StatePreviewBaseColorProperty, value); }
+		}
+
+		/// <summary>
+		/// StatePreviewBaseColor property data.
+		/// </summary>
+		public static readonly IPropertyData StatePreviewBaseColorProperty = RegisterProperty<Color>(nameof(StatePreviewBaseColor));
+
+		#endregion
 
 		#region EditLightColor command
 
@@ -143,6 +162,26 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		}
 
 		#endregion
+		
+		#region EditStatePreviewBaseColor command
+
+		/// <summary>
+		/// Gets the EditStatePreviewBaseColorCommand command.
+		/// </summary>
+		public Command EditStatePreviewBaseColorCommand
+		{
+			get { return field ??= new Command(EditStatePreviewBaseColor); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the EditSelectedLightColor command is executed.
+		/// </summary>
+		private void EditStatePreviewBaseColor()
+		{
+			StatePreviewBaseColor = EditColor(StatePreviewBaseColor);
+		}
+
+		#endregion
 
 		#region RestoreDefaults command
 
@@ -161,8 +200,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void RestoreDefaults()
 		{
-			LightColor = Color.White;
-			SelectedLightColor = Color.HotPink;
+			LightColor = Configuration.DefaultLightColor;
+			SelectedLightColor = Configuration.DefaultSelectedLightColor;
+			StatePreviewBaseColor = Configuration.DefaultStatePreviewBaseColor;
 			DefaultLightSize = ElementModel.DefaultLightSize;
 		}
 
@@ -221,7 +261,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			Config.LightColor = LightColor;
 			Config.SelectedLightColor = SelectedLightColor;
 			Config.DefaultLightSize = DefaultLightSize;
-		
+			Config.StatePreviewBaseColor = StatePreviewBaseColor;
+			
 			return Task.FromResult(true);
 		}
 

@@ -65,6 +65,48 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			set { SetValue(IsDrawingProperty, value); }
 		}
 
+		public static readonly DependencyProperty IsStateDefinitionModeProperty =
+			DependencyProperty.Register(nameof(IsStateDefinitionMode), typeof(bool), typeof(PropDesigner),
+				new FrameworkPropertyMetadata(false, IsStateDefinitionMode_PropertyChanged));
+
+		private static void IsStateDefinitionMode_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var p = d as PropDesigner;
+			if (p != null)
+			{
+				if (p.IsStateDefinitionMode)
+				{
+					p.RemoveResizeAdorner();
+				}
+				else
+				{
+					p.UpdateResizeAdorner();
+				}
+			}
+		}
+
+		public bool IsStateDefinitionMode
+		{
+			get { return (bool)GetValue(IsStateDefinitionModeProperty); }
+			set { SetValue(IsStateDefinitionModeProperty, value); }
+		}
+
+		/// <summary>
+		/// Identifies the <see cref="IsStateAssignmentEnabled" /> dependency property.
+		/// </summary>
+		public static readonly DependencyProperty IsStateAssignmentEnabledProperty =
+			DependencyProperty.Register(nameof(IsStateAssignmentEnabled), typeof(bool), typeof(PropDesigner),
+				new FrameworkPropertyMetadata(true));
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether State Definition canvas assignment edits are enabled.
+		/// </summary>
+		public bool IsStateAssignmentEnabled
+		{
+			get { return (bool)GetValue(IsStateAssignmentEnabledProperty); }
+			set { SetValue(IsStateAssignmentEnabledProperty, value); }
+		}
+
 		public static readonly DependencyProperty LightNodeViewModelsSourceProperty =
 			DependencyProperty.Register("LightNodeViewModelsSource", typeof(IEnumerable), typeof(PropDesigner),
 				new FrameworkPropertyMetadata(LightNodeViewModelsSource_PropertyChanged));
@@ -188,10 +230,14 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
 		private void Selected_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (!IsDrawing)
+			if (!IsDrawing && !IsStateDefinitionMode)
 			{
 				RemoveResizeAdorner();
 				UpdateResizeAdorner();
+			}
+			else
+			{
+				RemoveResizeAdorner();
 			}
 		}
 
@@ -218,9 +264,19 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			//if we are source of event, we are rubberband selecting
 			if (e.Source == _drawingCanvas)
 			{
+				if (IsStateDefinitionMode && !IsStateAssignmentEnabled)
+				{
+					_isSelecting = false;
+					e.Handled = true;
+					return;
+				}
+
 				if (!IsDrawing && !(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
 				{
-					ClearSelections();
+					if (!IsStateDefinitionMode)
+					{
+						ClearSelections();
+					}
 				}
 
 				if (_propEditorViewModel.DrawingPanelViewModel.IsDrawing)
@@ -239,6 +295,23 @@ namespace VixenModules.App.CustomPropEditor.Controls
 				var l = p.DataContext as ISelectable;
 				if (l != null)
 				{
+					if (IsStateDefinitionMode &&
+						IsStateAssignmentEnabled &&
+						l is LightViewModel lightViewModel &&
+						_propEditorViewModel != null &&
+						_propEditorViewModel.ToggleStateItemAssignment(lightViewModel))
+					{
+						RemoveResizeAdorner();
+						e.Handled = true;
+						return;
+					}
+
+					if (IsStateDefinitionMode && !IsStateAssignmentEnabled)
+					{
+						e.Handled = true;
+						return;
+					}
+
 					_isSelecting = true;
 
 
@@ -284,6 +357,11 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			}
 
 			if (IsDrawing)
+			{
+				return;
+			}
+
+			if (IsStateDefinitionMode && !IsStateAssignmentEnabled)
 			{
 				return;
 			}
@@ -427,13 +505,28 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
 			foreach (ISelectable item in ItemsSource)
 			{
-				DependencyObject container = ItemContainerGenerator.ContainerFromItem(item);
-
-				Rect itemRect = VisualTreeHelper.GetDescendantBounds((Visual)container);
-				Rect itemBounds = ((Visual)container).TransformToAncestor(_drawingCanvas).TransformBounds(itemRect);
-
-				if (rubberBand.Contains(itemBounds))
+				var itemBounds = GetItemBounds(item);
+				if (!itemBounds.HasValue)
 				{
+					continue;
+				}
+
+				if (rubberBand.Contains(itemBounds.Value))
+				{
+					if (IsStateDefinitionMode && item is LightViewModel lightViewModel && _propEditorViewModel != null)
+					{
+						if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+						{
+							_propEditorViewModel.RemoveStateItemAssignment(lightViewModel);
+						}
+						else
+						{
+							_propEditorViewModel.AssignStateItemAssignment(lightViewModel);
+						}
+
+						continue;
+					}
+
 					if (!item.IsSelected)
 					{
 						item.IsSelected = true;
@@ -443,6 +536,11 @@ namespace VixenModules.App.CustomPropEditor.Controls
 				}
 				else
 				{
+					if (IsStateDefinitionMode)
+					{
+						continue;
+					}
+
 					if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
 					{
 						SelectedModels.Remove(item);
@@ -454,7 +552,11 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
 		private void UpdateResizeAdorner()
 		{
-			if (IsDrawing) return;
+			if (IsDrawing || IsStateDefinitionMode)
+			{
+				RemoveResizeAdorner();
+				return;
+			}
 
 			if (_dragging && !_isSelecting) return;
 
@@ -526,6 +628,18 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			}
 
 			return GetCombinedBounds(bounds);
+		}
+
+		private Rect? GetItemBounds(ISelectable item)
+		{
+			DependencyObject container = ItemContainerGenerator.ContainerFromItem(item);
+			if (container == null)
+			{
+				return null;
+			}
+
+			Rect itemRect = VisualTreeHelper.GetDescendantBounds((Visual)container);
+			return ((Visual)container).TransformToAncestor(_drawingCanvas).TransformBounds(itemRect);
 		}
 
 		private static Rect GetCombinedBounds(List<Rect> recs)

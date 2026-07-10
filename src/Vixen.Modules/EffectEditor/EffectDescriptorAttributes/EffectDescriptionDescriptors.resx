@@ -1464,6 +1464,24 @@
   <data name="PatternPatternType" xml:space="preserve">
     <value>Selects the pattern (Weave or Brick) to animate.</value>
   </data>
+  <data name="StateDefinition" xml:space="preserve">
+    <value>Selects the State definition to render.</value>
+  </data>
+  <data name="StateItem" xml:space="preserve">
+    <value>Selects the State item name to render.</value>
+  </data>
+  <data name="CustomStateItems" xml:space="preserve">
+    <value>Defines the custom State item rows and color overrides to render.</value>
+  </data>
+  <data name="StateRenderSource" xml:space="preserve">
+    <value>Selects how active State items are determined.</value>
+  </data>
+  <data name="StatePlaybackMode" xml:space="preserve">
+    <value>Selects how multiple active State item names are scheduled.</value>
+  </data>
+  <data name="EffectVisual" xml:space="preserve">
+    <value>How the Effects rendering will appear in the Seqencer Timeline. Default render or text.</value>
+  </data>
   <data name="SpirographSpeed" xml:space="preserve">
     <value>Controls how quickly the spirograph pattern rotates and advances over the effect duration.</value>
   </data>
@@ -1520,5 +1538,11 @@
   </data>
   <data name="PinWheelRotation" xml:space="preserve">
     <value>Rotation speed and direction over the duration of the effect. 50 means no rotation, values above 50 rotate forward faster as they approach 100, and values below 50 rotate backward faster as they approach 0.</value>
+  </data>
+  <data name="StateCycleIndividually" xml:space="preserve">
+    <value>Cycles each custom State item row independently instead of grouping consecutive rows with the same State item name.</value>
+  </data>
+  <data name="StateIterations" xml:space="preserve">
+    <value>Controls the number of times the pattern repeats over the timespan.</value>
   </data>
 </root>

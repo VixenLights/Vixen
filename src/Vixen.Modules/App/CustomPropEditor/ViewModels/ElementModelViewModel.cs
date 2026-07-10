@@ -251,12 +251,39 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region ModelType property
+
+		/// <summary>
+		/// Gets or sets the model type value.
+		/// </summary>
+		[PropertyOrder(3)]
+		[DisplayName("Model Type")]
+		[Description("Custom prop role for this element when State definitions are authored.")]
+		public ElementModelType ModelType
+		{
+			get => ElementModel.ModelType;
+			set
+			{
+				if (ElementModel.ModelType == value)
+				{
+					return;
+				}
+
+				ElementModel.ModelType = value;
+				IsDirty = true;
+				RaisePropertyChanged(nameof(ModelType));
+			}
+		}
+
+		#endregion
+
 		#region StateDefinitionName property
 
 		/// <summary>
 		/// Gets or sets the StateDefinitionName value.
 		/// </summary>
-		[PropertyOrder(3)]
+		[Browsable(false)]
+		[PropertyOrder(4)]
 		[DisplayName("State Name")]
 		[Description("State name for grouping state items together. This should be the same for any state items that are intended to work together.")]
 		public String StateDefinitionName
@@ -303,7 +330,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the State Item name value.
 		/// </summary>
-		[PropertyOrder(4)]
+		[Browsable(false)]
+		[PropertyOrder(5)]
 		[DisplayName("State Item")]
 		[Description("Name of the item state for this element/group. All associated state items should have the same State name.")]
 		public String StateItemName
@@ -350,7 +378,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the StateDefinition Color value.
 		/// </summary>
-		[PropertyOrder(5)]
+		[Browsable(false)]
+		[PropertyOrder(6)]
 		[DisplayName("State Item Color")]
 		[Description("Color in Hex (#FFFFFF) for this state item.")]
 		public String StateItemColor
