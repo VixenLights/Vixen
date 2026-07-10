@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Common.Controls.Theme;
 using VixenModules.Media.Audio;
@@ -548,6 +548,13 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Selects the specified element in the timeline grid.
+		/// </summary>
+		/// <param name="element">The element to select.</param>
+		/// <remarks>
+		/// When <see cref="Grid.LegacyCursorActiveRow" /> is disabled, selecting the element also moves the timeline cursor to the element start.
+		/// </remarks>
 		public void SelectElement(Element element)
 		{
 			grid.SelectElement(element);

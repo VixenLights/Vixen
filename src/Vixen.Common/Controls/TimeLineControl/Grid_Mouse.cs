@@ -1,4 +1,4 @@
-﻿using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl;
 using System.ComponentModel;
 using Timer = System.Windows.Forms.Timer;
 
@@ -161,6 +161,7 @@ namespace Common.Controls.Timeline
 								Row row = rowAt(gridLocation);
 								if (row != null) row.Active = true;
 								_SelectionChanged();
+								MoveCursorForSelectedEffects(m_mouseDownElements, CtrlPressed ? CursorSelectionTarget.LastActionElement : CursorSelectionTarget.EarliestSelected);
 							}
 							else if (!CtrlPressed)
 							{
@@ -257,6 +258,7 @@ namespace Common.Controls.Timeline
 								_SelectionChanged();
 								Row row = rowAt(gridLocation);
 								if (row != null) row.Active = true;
+								MoveCursorForSelectedEffects(new[] { m_mouseDownElements.First() }, CursorSelectionTarget.LastActionElement);
 							}
 						}
 						if (m_mouseDownElements != null && m_mouseDownElements.Any() && ShiftPressed ||
@@ -265,6 +267,7 @@ namespace Common.Controls.Timeline
 							ClearActiveRows();
 							Row row = rowAt(gridLocation);
 							if (row != null) row.Active = true;
+							MoveCursorForSelectedEffects(m_mouseDownElements, CursorSelectionTarget.LastActionElement);
 						}
 						break;
 				}
@@ -275,7 +278,7 @@ namespace Common.Controls.Timeline
 				if (row == null)
 					return;
 				row.Active = true;
-				if (ClickingGridSetsCursor)
+				if (ClickingGridSetsCursor && (LegacyCursorActiveRow || !m_mouseDownElements.Any()))
 					CursorPosition = PixelsToTime(gridLocation.X);
 				_ContextSelected(m_mouseDownElements, PixelsToTime(gridLocation.X), row);
 			}
@@ -634,7 +637,10 @@ namespace Common.Controls.Timeline
 			if (!ShiftPressed && SelectedElements.Any()) ClearSelectedElements();
 			else tempSelectedElements = SelectedElements.ToList();
 			ClearSelectedRows(m_mouseDownElementRow);
-			ClearActiveRows(m_mouseDownElementRow);
+			if (LegacyCursorActiveRow)
+			{
+				ClearActiveRows(m_mouseDownElementRow);
+			}
 			SelectionArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
 			m_selectionRectangleStart = gridLocation;
 		}
@@ -656,10 +662,19 @@ namespace Common.Controls.Timeline
 
 		private void MouseUp_DragSelect(Point gridLocation)
 		{
+			bool selectionBoxDrawn = SelectionArea.Width >= 2 || SelectionArea.Height >= 2;
 			// we will only be Selecting if we clicked on the grid background, so on mouse up, check if
 			// we didn't move (or very far): if so, consider it just a background click.
 			if (SelectionArea.Width < 2 && SelectionArea.Height < 2) {
+				if (!LegacyCursorActiveRow)
+				{
+					ClearActiveRows(m_mouseDownElementRow);
+				}
 				OnBackgroundClick(new TimelineEventArgs(rowAt(gridLocation), PixelsToTime(gridLocation.X)));
+			}
+			else if (selectionBoxDrawn)
+			{
+				FinalizeMoveCursorLassoSelection(m_mouseDownElementRow, SelectedElements.ToList());
 			}
 
 			// done with the selection rectangle.

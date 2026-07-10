@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -363,6 +363,14 @@ namespace Common.Controls.Timeline
 		public Rectangle SelectionArea { get; set; }
 		public Rectangle DrawingArea { get; set; }
 		public bool ClickingGridSetsCursor { get; set; }
+		/// <summary>
+		/// Gets or sets a value that indicates whether effect selection uses legacy cursor and active-row behavior.
+		/// </summary>
+		/// <value>
+		/// <see langword="true" /> if effect selection uses legacy cursor and active-row behavior; otherwise, <see langword="false" />.
+		/// The default is <see langword="false" />.
+		/// </value>
+		public bool LegacyCursorActiveRow { get; set; }
 
 		// drawing colours, information, etc.
 		public Color RowSeparatorColor { get; set; }
@@ -403,6 +411,12 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
+		private enum CursorSelectionTarget
+		{
+			EarliestSelected,
+			LastActionElement
+		}
+
 		#region Events
 
 		public event EventHandler SelectionChanged;
@@ -421,6 +435,51 @@ namespace Common.Controls.Timeline
 			if (SupressSelectionEvents) return;
 			if (SelectionChanged != null)
 				SelectionChanged(this, EventArgs.Empty);
+		}
+
+		private void MoveCursorForSelectedEffects(IEnumerable<Element> actionElements, CursorSelectionTarget target)
+		{
+			if (LegacyCursorActiveRow)
+			{
+				return;
+			}
+
+			if (actionElements == null)
+			{
+				return;
+			}
+
+			List<Element> actionElementList = actionElements.Where(element => element != null).ToList();
+			if (!actionElementList.Any())
+			{
+				return;
+			}
+
+			Element targetElement = target == CursorSelectionTarget.LastActionElement
+				? actionElementList.LastOrDefault()
+				: SelectedElements.OrderBy(element => element.StartTime).FirstOrDefault();
+
+			if (targetElement != null)
+			{
+				CursorPosition = targetElement.StartTime;
+			}
+		}
+
+		private void FinalizeMoveCursorLassoSelection(Row lassoOriginRow, IEnumerable<Element> finalSelectedElements)
+		{
+			if (LegacyCursorActiveRow)
+			{
+				return;
+			}
+
+			if (lassoOriginRow != null)
+			{
+				ClearActiveRows(lassoOriginRow);
+				lassoOriginRow.Active = true;
+				Invalidate();
+			}
+
+			MoveCursorForSelectedEffects(finalSelectedElements, CursorSelectionTarget.EarliestSelected);
 		}
 
 		private void _ElementDoubleClicked(Element te)
@@ -2280,10 +2339,18 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Selects the specified element.
+		/// </summary>
+		/// <param name="element">The element to select.</param>
+		/// <remarks>
+		/// When <see cref="LegacyCursorActiveRow" /> is disabled, selecting the element also moves the timeline cursor to the element start.
+		/// </remarks>
 		public void SelectElement(Element element)
 		{
 			element.Selected = true;
 			_SelectionChanged();
+			MoveCursorForSelectedEffects(new[] { element }, CursorSelectionTarget.LastActionElement);
 		}
 
 		public void DeselectElement(Element element)
@@ -2292,10 +2359,19 @@ namespace Common.Controls.Timeline
 			_SelectionChanged();
 		}
 
+		/// <summary>
+		/// Selects the specified elements.
+		/// </summary>
+		/// <param name="elements">The elements to select.</param>
+		/// <remarks>
+		/// When <see cref="LegacyCursorActiveRow" /> is disabled, selecting elements also moves the timeline cursor to the earliest selected element start.
+		/// </remarks>
 		public void SelectElements(IEnumerable<Element> elements)
 		{
-			elements.All(x => x.Selected = true);
+			List<Element> elementList = elements.ToList();
+			elementList.ForEach(element => element.Selected = true);
 			_SelectionChanged();
+			MoveCursorForSelectedEffects(elementList, CursorSelectionTarget.EarliestSelected);
 		}
 
 		public void ToggleElementSelection(Element element)
