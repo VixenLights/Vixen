@@ -25,7 +25,9 @@
 		<ProjectReference Include="..\Vixen.Modules\App\FPPClient\FPPClient.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\App\ExportWizard\ExportWizard.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\App\LivePreview\LivePreview.csproj" />
+		<ProjectReference Include="..\Vixen.Modules\Effect\Chase\Chase.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Spiral\Spiral.csproj" />
+		<ProjectReference Include="..\Vixen.Modules\Effect\Spin\Spin.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Text\Text.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Wipe\Wipe.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj" />

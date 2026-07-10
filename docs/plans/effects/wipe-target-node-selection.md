@@ -19,6 +19,7 @@ The behavior is visible in the Vixen effect editor and sequencer. Existing Wipe 
 - [x] (2026-07-10 04:12Z) Implemented Wipe individual-mode rendering by resolving target render groups and running the existing location render pipeline independently for each group. Added focused coverage proving each child group restarts from local bounds.
 - [x] (2026-07-10 04:28Z) Added the narrow protected `BaseEffect.GetNodesAtEffectDepth()` helper with XML documentation and moved Wipe to use it. Chase and Spin behavior remains unchanged.
 - [x] (2026-07-10 14:58Z) Fixed the Wipe depth picker filter so the terminal picker value, `GetMaxChildDepth() - 1`, is excluded along with `0`. Added focused regression coverage and reran the Wipe target-node selection test filter successfully.
+- [x] (2026-07-10 15:18Z) Refactored Chase and Spin to use `BaseEffect.GetNodesAtEffectDepth()` after explicit follow-up approval. Added focused shared-helper characterization tests and verified the Chase and Spin projects compile through the test project references.
 - [ ] Run focused and broader validation, then update Jira and this plan with final evidence.
 
 ## Surprises & Discoveries
@@ -39,6 +40,8 @@ The behavior is visible in the Vixen effect editor and sequencer. Existing Wipe 
   Evidence: `BaseEffect.GetNodesAtEffectDepth(IElementNode node, int depthOfEffect)` now contains the traversal behavior Wipe needs, Wipe calls it for individual target resolution, and the focused Wipe tests still pass.
 - Observation: The initial Wipe depth filter excluded `GetMaxChildDepth()` instead of the terminal user-visible value `GetMaxChildDepth() - 1`.
   Evidence: `TargetElementDepthConverter` offers normal values using `i < depth`, so the maximum selectable value is `depth - 1`. `WipeTargetElementDepthConverter` now loops only while `i < depth - 1`, and `WipeModule.IsUsefulIntermediateDepth()` uses the same boundary.
+- Observation: Chase and Spin can use the shared helper as a direct replacement for their private helpers.
+  Evidence: `BaseEffectDepthTests` covers depth `0`, intermediate depth, deeper traversal, duplicate de-duplication, and over-deep fallback. `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~BaseEffectDepthTests|FullyQualifiedName~WipeTargetNodeSelection" --no-restore` passed 14 tests after Chase and Spin were refactored.
 
 ## Decision Log
 
@@ -60,6 +63,9 @@ The behavior is visible in the Vixen effect editor and sequencer. Existing Wipe 
 - Decision: Add `BaseEffect.GetNodesAtEffectDepth(IElementNode node, int depthOfEffect)` and use it only from Wipe in this ticket.
   Rationale: This removes the new Wipe copy of the Chase/Spin traversal logic and creates a documented reusable primitive for future effects, while avoiding behavior changes in Chase or Spin.
   Date/Author: 2026-07-10 / Codex
+- Decision: Refactor Chase and Spin to use `BaseEffect.GetNodesAtEffectDepth()` after the Wipe implementation.
+  Rationale: The user explicitly approved broadening this small refactor after confirming the helper is a direct replacement. Focused characterization tests now protect the shared traversal behavior.
+  Date/Author: 2026-07-10 / Codex
 
 ## Outcomes & Retrospective
 
@@ -72,6 +78,8 @@ Milestone 3 is complete. Wipe now persists `TargetNodeSelection` and `DepthOfEff
 Milestone 4 is complete. Group mode still runs the current combined-location behavior once across the selected targets. Individual mode resolves the selected depth under a single target, or each selected target when multiple targets are selected, and runs the same Wipe location pipeline independently for each group so each group computes local bounds and restarts timing. The new focused test verifies two separated child groups both start their local wipe at `TimeSpan.Zero` while their own second leaves start later.
 
 Milestone 5 is complete. `BaseEffect` now provides a documented protected depth traversal helper, and Wipe uses it when resolving individual-mode render groups. Chase and Spin were intentionally left unchanged to avoid widening the behavioral scope of this feature.
+
+Follow-up refactor is complete. After explicit approval, Chase and Spin now use `BaseEffect.GetNodesAtEffectDepth()` instead of maintaining duplicate private traversal helpers. The shared helper has focused characterization coverage for the behavior Chase and Spin previously implemented locally.
 
 ## Context and Orientation
 
