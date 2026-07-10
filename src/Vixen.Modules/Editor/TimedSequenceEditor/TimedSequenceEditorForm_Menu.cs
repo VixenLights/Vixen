@@ -273,9 +273,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.aCadStyleSelectionBox = cADStyleSelectionBoxToolStripMenuItem.Checked;
 		}
 
-		private void moveCursorToSelectedEffectToolStripMenuItem_Click(object sender, EventArgs e)
+		private void legacyCursorActiveRowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TimelineControl.grid.MoveCursorToSelectedEffect = moveCursorToSelectedEffectToolStripMenuItem.Checked;
+			TimelineControl.grid.LegacyCursorActiveRow = legacyCursorActiveRowToolStripMenuItem.Checked;
 		}
 
 		#endregion

@@ -278,7 +278,7 @@ namespace Common.Controls.Timeline
 				if (row == null)
 					return;
 				row.Active = true;
-				if (ClickingGridSetsCursor && (!MoveCursorToSelectedEffect || !m_mouseDownElements.Any()))
+				if (ClickingGridSetsCursor && (LegacyCursorActiveRow || !m_mouseDownElements.Any()))
 					CursorPosition = PixelsToTime(gridLocation.X);
 				_ContextSelected(m_mouseDownElements, PixelsToTime(gridLocation.X), row);
 			}
@@ -637,7 +637,7 @@ namespace Common.Controls.Timeline
 			if (!ShiftPressed && SelectedElements.Any()) ClearSelectedElements();
 			else tempSelectedElements = SelectedElements.ToList();
 			ClearSelectedRows(m_mouseDownElementRow);
-			if (!MoveCursorToSelectedEffect)
+			if (LegacyCursorActiveRow)
 			{
 				ClearActiveRows(m_mouseDownElementRow);
 			}
@@ -666,7 +666,7 @@ namespace Common.Controls.Timeline
 			// we will only be Selecting if we clicked on the grid background, so on mouse up, check if
 			// we didn't move (or very far): if so, consider it just a background click.
 			if (SelectionArea.Width < 2 && SelectionArea.Height < 2) {
-				if (MoveCursorToSelectedEffect)
+				if (!LegacyCursorActiveRow)
 				{
 					ClearActiveRows(m_mouseDownElementRow);
 				}

@@ -5,15 +5,15 @@ using Xunit;
 
 namespace Vixen.Tests.Sequencer;
 
+[Collection(TimelineControlTestCollection.Name)]
 public sealed class TimelineCursorSelectionTests
 {
 	[Fact]
-	public void SelectElement_WhenMoveCursorEnabled_MovesCursorToElementStart()
+	public void SelectElement_ByDefault_MovesCursorToElementStart()
 	{
 		TimelineControl timelineControl = CreateTimelineControl(out Guid id, "Row 1");
 		Element element = AddElement(timelineControl.Rows.ElementAt(0), TimeSpan.FromSeconds(12));
 		TimeLineGlobalStateManager manager = TimeLineGlobalStateManager.Manager(id);
-		timelineControl.grid.MoveCursorToSelectedEffect = true;
 
 		timelineControl.SelectElement(element);
 
@@ -21,14 +21,14 @@ public sealed class TimelineCursorSelectionTests
 	}
 
 	[Fact]
-	public void SelectElement_WhenMoveCursorDisabled_DoesNotMoveCursor()
+	public void SelectElement_WhenLegacyCursorEnabled_DoesNotMoveCursor()
 	{
 		TimelineControl timelineControl = CreateTimelineControl(out Guid id, "Row 1");
 		Element element = AddElement(timelineControl.Rows.ElementAt(0), TimeSpan.FromSeconds(12));
 		TimeSpan originalCursorPosition = TimeSpan.FromSeconds(3);
 		TimeLineGlobalStateManager manager = TimeLineGlobalStateManager.Manager(id);
 		manager.CursorPosition = originalCursorPosition;
-		timelineControl.grid.MoveCursorToSelectedEffect = false;
+		timelineControl.grid.LegacyCursorActiveRow = true;
 
 		timelineControl.SelectElement(element);
 
@@ -36,13 +36,13 @@ public sealed class TimelineCursorSelectionTests
 	}
 
 	[Fact]
-	public void SelectElements_WhenMoveCursorEnabled_MovesCursorToEarliestSelectedStart()
+	public void SelectElements_WhenLegacyCursorDisabled_MovesCursorToEarliestSelectedStart()
 	{
 		TimelineControl timelineControl = CreateTimelineControl(out Guid id, "Row 1", "Row 2");
 		Element laterElement = AddElement(timelineControl.Rows.ElementAt(0), TimeSpan.FromSeconds(18));
 		Element earlierElement = AddElement(timelineControl.Rows.ElementAt(1), TimeSpan.FromSeconds(7));
 		TimeLineGlobalStateManager manager = TimeLineGlobalStateManager.Manager(id);
-		timelineControl.grid.MoveCursorToSelectedEffect = true;
+		timelineControl.grid.LegacyCursorActiveRow = false;
 
 		timelineControl.grid.SelectElements([laterElement, earlierElement]);
 
@@ -50,7 +50,7 @@ public sealed class TimelineCursorSelectionTests
 	}
 
 	[Fact]
-	public void SelectElements_WhenMoveCursorDisabled_DoesNotMoveCursor()
+	public void SelectElements_WhenLegacyCursorEnabled_DoesNotMoveCursor()
 	{
 		TimelineControl timelineControl = CreateTimelineControl(out Guid id, "Row 1", "Row 2");
 		Element firstElement = AddElement(timelineControl.Rows.ElementAt(0), TimeSpan.FromSeconds(18));
@@ -58,7 +58,7 @@ public sealed class TimelineCursorSelectionTests
 		TimeSpan originalCursorPosition = TimeSpan.FromSeconds(3);
 		TimeLineGlobalStateManager manager = TimeLineGlobalStateManager.Manager(id);
 		manager.CursorPosition = originalCursorPosition;
-		timelineControl.grid.MoveCursorToSelectedEffect = false;
+		timelineControl.grid.LegacyCursorActiveRow = true;
 
 		timelineControl.grid.SelectElements([firstElement, secondElement]);
 
@@ -72,7 +72,7 @@ public sealed class TimelineCursorSelectionTests
 		TimeSpan originalCursorPosition = TimeSpan.FromSeconds(3);
 		TimeLineGlobalStateManager manager = TimeLineGlobalStateManager.Manager(id);
 		manager.CursorPosition = originalCursorPosition;
-		timelineControl.grid.MoveCursorToSelectedEffect = true;
+		timelineControl.grid.LegacyCursorActiveRow = false;
 
 		timelineControl.grid.SelectElements([]);
 
@@ -80,7 +80,7 @@ public sealed class TimelineCursorSelectionTests
 	}
 
 	[Fact]
-	public void LassoFinalization_WhenMoveCursorEnabled_ActivatesOriginRowAndMovesCursorToEarliestSelectedStart()
+	public void LassoFinalization_WhenLegacyCursorDisabled_ActivatesOriginRowAndMovesCursorToEarliestSelectedStart()
 	{
 		TimelineControl timelineControl = CreateTimelineControl(out Guid id, "Row 1", "Row 2", "Row 3");
 		Row originRow = timelineControl.Rows.ElementAt(1);
@@ -91,7 +91,7 @@ public sealed class TimelineCursorSelectionTests
 		earlierElement.Selected = true;
 		previouslyActiveRow.Active = true;
 		TimeLineGlobalStateManager manager = TimeLineGlobalStateManager.Manager(id);
-		timelineControl.grid.MoveCursorToSelectedEffect = true;
+		timelineControl.grid.LegacyCursorActiveRow = false;
 
 		FinalizeMoveCursorLassoSelection(timelineControl.grid, originRow, [laterElement, earlierElement]);
 
@@ -101,7 +101,7 @@ public sealed class TimelineCursorSelectionTests
 	}
 
 	[Fact]
-	public void LassoFinalization_WhenMoveCursorDisabled_DoesNotChangeActiveRowOrCursor()
+	public void LassoFinalization_WhenLegacyCursorEnabled_DoesNotChangeActiveRowOrCursor()
 	{
 		TimelineControl timelineControl = CreateTimelineControl(out Guid id, "Row 1", "Row 2");
 		Row originRow = timelineControl.Rows.ElementAt(0);
@@ -112,7 +112,7 @@ public sealed class TimelineCursorSelectionTests
 		previouslyActiveRow.Active = true;
 		TimeLineGlobalStateManager manager = TimeLineGlobalStateManager.Manager(id);
 		manager.CursorPosition = originalCursorPosition;
-		timelineControl.grid.MoveCursorToSelectedEffect = false;
+		timelineControl.grid.LegacyCursorActiveRow = true;
 
 		FinalizeMoveCursorLassoSelection(timelineControl.grid, originRow, [selectedElement]);
 

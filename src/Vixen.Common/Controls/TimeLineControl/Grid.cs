@@ -364,13 +364,13 @@ namespace Common.Controls.Timeline
 		public Rectangle DrawingArea { get; set; }
 		public bool ClickingGridSetsCursor { get; set; }
 		/// <summary>
-		/// Gets or sets a value that indicates whether selecting effects moves the timeline cursor to an effect start.
+		/// Gets or sets a value that indicates whether effect selection uses legacy cursor and active-row behavior.
 		/// </summary>
 		/// <value>
-		/// <see langword="true" /> if effect selection moves the timeline cursor to an effect start; otherwise, <see langword="false" />.
+		/// <see langword="true" /> if effect selection uses legacy cursor and active-row behavior; otherwise, <see langword="false" />.
 		/// The default is <see langword="false" />.
 		/// </value>
-		public bool MoveCursorToSelectedEffect { get; set; }
+		public bool LegacyCursorActiveRow { get; set; }
 
 		// drawing colours, information, etc.
 		public Color RowSeparatorColor { get; set; }
@@ -439,7 +439,7 @@ namespace Common.Controls.Timeline
 
 		private void MoveCursorForSelectedEffects(IEnumerable<Element> actionElements, CursorSelectionTarget target)
 		{
-			if (!MoveCursorToSelectedEffect)
+			if (LegacyCursorActiveRow)
 			{
 				return;
 			}
@@ -467,7 +467,7 @@ namespace Common.Controls.Timeline
 
 		private void FinalizeMoveCursorLassoSelection(Row lassoOriginRow, IEnumerable<Element> finalSelectedElements)
 		{
-			if (!MoveCursorToSelectedEffect)
+			if (LegacyCursorActiveRow)
 			{
 				return;
 			}
@@ -2344,7 +2344,7 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="element">The element to select.</param>
 		/// <remarks>
-		/// When <see cref="MoveCursorToSelectedEffect" /> is enabled, selecting the element also moves the timeline cursor to the element start.
+		/// When <see cref="LegacyCursorActiveRow" /> is disabled, selecting the element also moves the timeline cursor to the element start.
 		/// </remarks>
 		public void SelectElement(Element element)
 		{
@@ -2364,7 +2364,7 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="elements">The elements to select.</param>
 		/// <remarks>
-		/// When <see cref="MoveCursorToSelectedEffect" /> is enabled, selecting elements also moves the timeline cursor to the earliest selected element start.
+		/// When <see cref="LegacyCursorActiveRow" /> is disabled, selecting elements also moves the timeline cursor to the earliest selected element start.
 		/// </remarks>
 		public void SelectElements(IEnumerable<Element> elements)
 		{

@@ -3,6 +3,7 @@ using Xunit;
 
 namespace Vixen.Tests.Sequencer;
 
+[Collection(TimelineControlTestCollection.Name)]
 public sealed class TimelineActiveRowNavigationTests
 {
 	[Fact]

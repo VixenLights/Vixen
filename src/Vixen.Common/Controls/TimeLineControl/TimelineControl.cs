@@ -553,7 +553,7 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="element">The element to select.</param>
 		/// <remarks>
-		/// When <see cref="Grid.MoveCursorToSelectedEffect" /> is enabled, selecting the element also moves the timeline cursor to the element start.
+		/// When <see cref="Grid.LegacyCursorActiveRow" /> is disabled, selecting the element also moves the timeline cursor to the element start.
 		/// </remarks>
 		public void SelectElement(Element element)
 		{
