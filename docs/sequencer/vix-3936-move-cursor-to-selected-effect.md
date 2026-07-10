@@ -27,6 +27,7 @@ The implementation must:
 - Add an Edit menu toggle similar to `CAD Style Selection Box`.
 - Persist the toggle through `XMLProfileSettings` app settings.
 - Move the cursor to a deterministic effect start time using the selection rules in this specification.
+- When `Move Cursor To Selected Effect` is enabled, finalize lasso cursor placement and active row together only after mouse release, when the selected effects are known.
 - Treat cursor movement caused by selection as UI-only state, with no undo entry and no sequence modified flag.
 - Preserve existing selection, active row, drag, resize, context menu, and playback behavior except where explicitly changed by the enabled preference.
 
@@ -54,6 +55,14 @@ When the user clicks one effect with the left mouse button, the cursor moves to 
 
 When multiple effects become selected in a single selection operation, the default target is the earliest selected effect start time. The Ctrl and Shift cases have a more specific rule: when Ctrl or Shift selection adds or changes the selection, the cursor moves to the last selected effect associated with that user action. In mouse-driven selection this means the effect or effects under the latest click, not the earliest item already present in the previous selection.
 
+When `Move Cursor To Selected Effect` is enabled and the user uses a lasso selection box to select multiple effects, the cursor target is the earliest `StartTime` among the effects in the final lasso selection. The cursor must not move while the user is drawing the lasso. It moves only after the user releases the mouse button and the final selected effect set is known.
+
+When `Move Cursor To Selected Effect` is enabled during a lasso multi-select, the active row target is the row where the lasso operation started, not necessarily the row containing the earliest selected effect. The active row must not change while the user is drawing the lasso. The active row is set at the same finalization point as cursor movement: after mouse release, when the final lasso selection is known.
+
+When `Move Cursor To Selected Effect` is unchecked, all lasso behavior remains as it is today. The added deferred cursor placement and lasso-origin active-row behavior do not apply.
+
+When `Move Cursor To Selected Effect` is enabled, the lasso requirements apply to both selection-box styles: the normal selection box and the CAD Style Selection Box controlled by the existing `CAD Style Selection Box` preference.
+
 When the user clicks an effect that is already selected, the cursor still moves to that effect's start time if the enabled preference is on.
 
 The codebase still contains a legacy overlapping-effects selection popup path, but normal grid drawing stacks overlapping effects so this path is not expected to be reachable through ordinary user interaction. If the legacy popup path is triggered, the cursor must not move when the popup opens. It moves only after the user chooses a specific effect from the popup, using that chosen effect's start time.
@@ -73,6 +82,8 @@ For plain single-effect selection, set `CursorPosition` to the selected effect's
 For selecting an already-selected effect without Ctrl or Shift, set `CursorPosition` to the clicked effect's `StartTime`, even if the selection collection does not change.
 
 For a selection operation that selects multiple effects without Ctrl or Shift, set `CursorPosition` to the earliest `StartTime` among the effects selected by that operation.
+
+For a lasso selection operation while `MoveCursorToSelectedEffect` is enabled, treat mouse-up as the selection action boundary. While the lasso is being drawn, do not change `CursorPosition` and do not change `Row.Active`. At mouse-up, after the lasso has produced the final selected element set, set the active row to the row where the lasso began and, when the final selected set is not empty, set `CursorPosition` to the smallest `StartTime` among the selected effects. This rule applies identically to normal lasso selection and CAD-style lasso selection. When `MoveCursorToSelectedEffect` is disabled, preserve the existing lasso cursor and active-row behavior exactly.
 
 For Ctrl-click and Shift-click selection operations, set `CursorPosition` to the start time of the last selected effect for that operation. If the operation selects a range, the last selected effect should be the effect that corresponds to the user's latest clicked location. If the implementation cannot identify a single last selected effect for a non-mouse range operation, use the latest action's selected effect set and choose the effect with the greatest row/time ordering closest to the latest user action, then document that decision in the ExecPlan.
 
@@ -106,6 +117,7 @@ In `Grid_Mouse.cs`, the most important current selection paths are:
 - Left-click effect selection where `_ElementsSelected(m_mouseDownElements)` returns true, selected elements are marked selected, and the row under the click is made active.
 - Mouse-up handling for clicking one of multiple selected elements, where selection is reduced to the clicked element and active row is set.
 - Ctrl and Shift paths that keep or extend the selection and set active row.
+- Normal and CAD-style lasso selection paths that update selected elements while the user drags a selection box. When `MoveCursorToSelectedEffect` is enabled, these paths must defer both cursor movement and active-row assignment until mouse-up, then set active row to the lasso-origin row and move the cursor to the earliest selected effect start in the final selection. When `MoveCursorToSelectedEffect` is disabled, these paths must keep existing lasso behavior.
 - Right-click context handling that sets active row, may set `CursorPosition`, and raises `_ContextSelected`. Existing right-click behavior must remain unchanged while `MoveCursorToSelectedEffect` is disabled. When the preference is enabled, it must suppress cursor movement only for right-clicks on effects; empty-grid right-clicks keep the current cursor placement behavior.
 
 In `TimedSequenceEditorForm.cs`, the legacy overlapping-effects popup path must be preserved if it is triggered. The popup is shown when `timelineControl_ElementsSelected` sees more than one element under the cursor and sets `AutomaticallyHandleSelection = false`. Cursor movement for that path belongs after a concrete element is chosen in `contextMenuStripElementSelectionItem_Click`, not at popup-open time. Because current row drawing stacks overlapping effects, do not require a manual validation scenario that tries to trigger this popup through ordinary grid clicking.
@@ -128,15 +140,20 @@ Manual acceptance should be performed in the Timed Sequence Editor with a sequen
 2. Check `Edit > Move Cursor To Selected Effect`. Click a single effect. The active row changes to that effect row, and the timeline cursor moves to the effect's start time.
 3. Click an already-selected effect. The cursor moves to that effect's start time again.
 4. Select multiple effects in one operation. The cursor moves according to the rules in this document: earliest selected effect for general multi-select, last selected effect for Ctrl or Shift selection.
-5. With `Move Cursor To Selected Effect` unchecked, right-click an effect and confirm existing right-click behavior is unchanged. With the preference checked, right-click an effect and confirm the active row and context menu behavior remain intact but the cursor does not move because of the new preference. Right-click empty grid space still moves the cursor to the clicked time.
-6. Select an effect whose start time is outside the currently visible timeline range through an existing non-scrolling selection path, if available. The cursor position changes, but the timeline does not scroll horizontally because of this feature.
-7. Close and reopen the Timed Sequence Editor. The menu item retains its prior checked state. A fresh profile or missing setting defaults to unchecked.
+5. With the menu item checked, draw a normal lasso around effects on multiple rows. While drawing, neither the cursor nor the active row changes. On mouse release, the cursor moves to the earliest selected effect start time and the active row becomes the row where the lasso began.
+6. Repeat the prior lasso validation with `CAD Style Selection Box` enabled. The same mouse-up timing, earliest-start cursor placement, and lasso-origin active row behavior apply.
+7. With `Move Cursor To Selected Effect` unchecked, perform normal and CAD-style lasso selections and confirm existing lasso cursor and active-row behavior is unchanged.
+8. With `Move Cursor To Selected Effect` unchecked, right-click an effect and confirm existing right-click behavior is unchanged. With the preference checked, right-click an effect and confirm the active row and context menu behavior remain intact but the cursor does not move because of the new preference. Right-click empty grid space still moves the cursor to the clicked time.
+9. Select an effect whose start time is outside the currently visible timeline range through an existing non-scrolling selection path, if available. The cursor position changes, but the timeline does not scroll horizontally because of this feature.
+10. Close and reopen the Timed Sequence Editor. The menu item retains its prior checked state. A fresh profile or missing setting defaults to unchecked.
 
 The core acceptance criterion is: when the preference is enabled and a user selects an effect in the timeline grid, the timeline cursor moves to the selected effect's start time, while the active row continues to update to the selected effect's row.
 
 ## Testing Guidance
 
 Add unit tests where feasible for any new helper that chooses the target cursor time. The tests should cover single selection, multi-selection earliest-start behavior, Ctrl/Shift last-selected behavior, preference-enabled right-click-on-effect no-op behavior, preference-disabled right-click preservation, and empty selection no-op behavior.
+
+Add automated coverage for lasso finalization if the lasso selection code can be exercised without brittle mouse simulation. The preferred coverage is a focused test around any helper introduced for enabled lasso finalization: given a lasso-origin row and a final selected effect set with multiple start times, it sets active row to the origin row and chooses the smallest selected start time for cursor movement only when `MoveCursorToSelectedEffect` is enabled. Add disabled-preference coverage that confirms the new lasso finalization helper does not change cursor or active row and existing lasso behavior is preserved. If the existing lasso implementation can only be validated through WinForms mouse interaction, keep automated tests focused on the target-selection helper and document manual validation for normal and CAD-style lasso.
 
 If direct `Grid` interaction tests are impractical because the control is WinForms-heavy, keep the target-time selection logic isolated enough to test without launching the full UI. Avoid relying solely on manual testing for the ordering rules because regressions in Ctrl/Shift behavior are easy to miss.
 
@@ -164,6 +181,14 @@ No open product questions remain from the specification discussion. If implement
   Rationale: Earliest start gives a stable start point for multi-effect operations; Ctrl/Shift should follow the latest user action.
   Date/Author: 2026-07-08 / Codex from user direction.
 
+- Decision: Enabled lasso multi-select moves the cursor to the earliest selected effect only after mouse release, and active row becomes the lasso-origin row at that same finalization point.
+  Rationale: The user requested that cursor and active row remain stable while drawing the lasso, then update after the final selection is known. On 2026-07-10 the user clarified that all of these new lasso behaviors are contained in `Move Cursor To Selected Effect` enablement and must not apply when the preference is disabled.
+  Date/Author: 2026-07-10 / user direction recorded by Codex; updated 2026-07-10 / user clarification recorded by Codex.
+
+- Decision: Normal lasso and CAD-style lasso share the same cursor and active-row behavior.
+  Rationale: The user explicitly requested identical behavior for either style lasso.
+  Date/Author: 2026-07-10 / user direction recorded by Codex.
+
 - Decision: Overlapping-effects popup selection moves the cursor only after the user chooses an effect.
   Rationale: Opening the popup has not yet identified the user's intended effect. On 2026-07-09 the user clarified that this popup is likely obsolete because overlapping effects are drawn in a stacked manner, so this remains fallback behavior and is not a required manual validation activity.
   Date/Author: 2026-07-08 / Codex from user direction; updated 2026-07-09 / user clarification recorded by Codex.
@@ -184,4 +209,4 @@ Use this concise JIRA summary:
 
 Use this acceptance text:
 
-    When the new Edit menu preference is enabled, selecting an effect in the timeline grid moves the timeline cursor to the selected effect's start time while preserving active row behavior. The preference is off by default, persists between editor sessions, does not scroll the viewport, and does not mark the sequence modified or create undo history.
+    When the new Edit menu preference is enabled, selecting an effect in the timeline grid moves the timeline cursor to the selected effect's start time while preserving active row behavior. With the preference enabled, normal and CAD-style lasso multi-select do not change the cursor or active row while drawing; after mouse release, the cursor moves to the earliest selected effect start and the active row becomes the row where the lasso began. With the preference disabled, existing lasso behavior is unchanged. The preference is off by default, persists between editor sessions, does not scroll the viewport, and does not mark the sequence modified or create undo history.

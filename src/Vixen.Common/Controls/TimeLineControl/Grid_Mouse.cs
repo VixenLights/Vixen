@@ -637,7 +637,10 @@ namespace Common.Controls.Timeline
 			if (!ShiftPressed && SelectedElements.Any()) ClearSelectedElements();
 			else tempSelectedElements = SelectedElements.ToList();
 			ClearSelectedRows(m_mouseDownElementRow);
-			ClearActiveRows(m_mouseDownElementRow);
+			if (!MoveCursorToSelectedEffect)
+			{
+				ClearActiveRows(m_mouseDownElementRow);
+			}
 			SelectionArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
 			m_selectionRectangleStart = gridLocation;
 		}
@@ -659,10 +662,19 @@ namespace Common.Controls.Timeline
 
 		private void MouseUp_DragSelect(Point gridLocation)
 		{
+			bool selectionBoxDrawn = SelectionArea.Width >= 2 || SelectionArea.Height >= 2;
 			// we will only be Selecting if we clicked on the grid background, so on mouse up, check if
 			// we didn't move (or very far): if so, consider it just a background click.
 			if (SelectionArea.Width < 2 && SelectionArea.Height < 2) {
+				if (MoveCursorToSelectedEffect)
+				{
+					ClearActiveRows(m_mouseDownElementRow);
+				}
 				OnBackgroundClick(new TimelineEventArgs(rowAt(gridLocation), PixelsToTime(gridLocation.X)));
+			}
+			else if (selectionBoxDrawn)
+			{
+				FinalizeMoveCursorLassoSelection(m_mouseDownElementRow, SelectedElements.ToList());
 			}
 
 			// done with the selection rectangle.

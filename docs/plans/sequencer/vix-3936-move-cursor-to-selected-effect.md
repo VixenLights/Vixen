@@ -8,7 +8,7 @@ This plan follows `.agents/PLANS.md` from the repository root. The source requir
 
 Vixen users often select an effect in the Timed Sequence Editor and then perform cursor-dependent work such as pasting, previewing, or editing around that effect. Today, selecting an effect changes the active row but does not move the timeline cursor to the selected effect; users must click empty grid space separately to place the cursor. After this change, users can opt into `Edit > Move Cursor To Selected Effect`. When enabled, selecting an effect moves the timeline cursor to the selected effect start while preserving the existing active-row behavior.
 
-The visible result is in the Timed Sequence Editor. With the new menu item unchecked, selecting effects and right-clicking effects behave as they do today. With the menu item checked, left-click selection moves the cursor to the selected effect start; right-clicking an effect does not move the cursor under the new preference; and right-clicking empty grid space keeps the current clicked-time cursor placement. The code still preserves the legacy overlapping-effects popup path if it is ever triggered, but that path is not expected to be reachable through ordinary grid interaction because overlapping effects are drawn stacked.
+The visible result is in the Timed Sequence Editor. With the new menu item unchecked, selecting effects, lasso-selecting effects, and right-clicking effects behave as they do today. With the menu item checked, left-click selection moves the cursor to the selected effect start; right-clicking an effect does not move the cursor under the new preference; and right-clicking empty grid space keeps the current clicked-time cursor placement. With the menu item checked, normal and CAD-style lasso multi-select keep the cursor and active row unchanged while the user draws the lasso, then update them together after mouse release when the final selected effect set is known. The code still preserves the legacy overlapping-effects popup path if it is ever triggered, but that path is not expected to be reachable through ordinary grid interaction because overlapping effects are drawn stacked.
 
 ## Progress
 
@@ -23,6 +23,14 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
 - [x] (2026-07-09) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore`; build succeeded and 198 tests passed. Warnings were pre-existing package/compiler warnings unrelated to VIX-3936.
 - [x] (2026-07-09) Manually validated the Timed Sequence Editor behavior; the feature behaves correctly.
 - [x] (2026-07-09) Updated Jira issue `VIX-3936` with implementation notes and validation evidence in comment `40164`.
+- [x] (2026-07-10) Updated the source specification and this ExecPlan with additional normal and CAD-style lasso requirements: when `Move Cursor To Selected Effect` is enabled, do not move cursor or active row while drawing, move cursor after mouse-up to the earliest selected effect start, and set active row after mouse-up to the lasso-origin row.
+- [x] (2026-07-10) Updated the source specification and this ExecPlan after user clarification that all new lasso cursor and active-row behavior is contained in `Move Cursor To Selected Effect` enablement and must not apply when the preference is disabled.
+- [x] (2026-07-10) Implemented the new enabled-only lasso finalization behavior in `Grid_Mouse.cs` and a shared private grid helper. With `MoveCursorToSelectedEffect` disabled, the selection-box active-row path remains unchanged; with it enabled, selection-box mouse-down no longer clears active row and mouse-up sets the lasso-origin row active and moves the cursor to the earliest selected effect start.
+- [x] (2026-07-10) Added focused `TimelineCursorSelection` tests for enabled lasso finalization and disabled no-op behavior.
+- [x] (2026-07-10) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineCursorSelection --no-restore`; build succeeded and 7 tests passed. Warnings were pre-existing package/compiler warnings unrelated to VIX-3936.
+- [x] (2026-07-10) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore`; build succeeded and 430 tests passed. Warnings were pre-existing package/compiler warnings unrelated to VIX-3936.
+- [x] (2026-07-10) User confirmed the implemented lasso changes work as expected in the Timed Sequence Editor.
+- [ ] Update Jira with the added lasso behavior and validation evidence.
 
 ## Surprises & Discoveries
 
@@ -46,6 +54,15 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
 
 - Observation: Disposing `TimelineControl` from the new tests can hit an existing parallel-test cleanup race in `cEventHelper`.
   Evidence: An initial full-suite run passed the cursor assertion but failed during `TimelineControl.Dispose(Boolean)` with `System.ArgumentException: An item with the same key has already been added. Key: Common.Controls.Timeline.TimeInfo`. The final tests avoid that dispose path and close only the `TimeLineGlobalStateManager` instance created for each test.
+
+- Observation: Additional VIX-3936 requirements were requested after the initial implementation and validation were completed.
+  Evidence: User direction on 2026-07-10 requires normal and CAD-style lasso multi-select, when `Move Cursor To Selected Effect` is enabled, to defer cursor and active-row changes until mouse-up, then move the cursor to the earliest selected effect start and set active row to the row where the lasso began. The user then clarified that these new features must not apply when the preference is disabled.
+
+- Observation: Normal and CAD-style lasso share one drag-selection path in `Grid_Mouse.cs`.
+  Evidence: `MouseMove_DragSelect` always calls `selectElementsWithin(SelectionArea, true)`, and `selectElementsWithin` applies the CAD behavior internally from `aCadStyleSelectionBox`. A single finalization point in `MouseUp_DragSelect` covers both styles.
+
+- Observation: The existing cursor selection tests were sensitive to removing timeline global managers during the full parallel test run.
+  Evidence: The first full-suite run after adding lasso tests failed `SelectElement_WhenMoveCursorEnabled_MovesCursorToElementStart` with expected `00:00:12` and actual `00:00:00`, even though the focused cursor test run passed. `TimeLineGlobalStateManager` stores managers in a static `Dictionary<Guid, TimeLineGlobalStateManager>`. The tests now keep a local manager reference and do not call `CloseManager` during parallel test execution. The subsequent focused run passed 7 tests and the subsequent full run passed 430 tests.
 
 ## Decision Log
 
@@ -77,11 +94,21 @@ The visible result is in the Timed Sequence Editor. With the new menu item unche
   Rationale: This mirrors the active-row update point and avoids moving the cursor during range-selection calculation before the grid has finalized the interaction's active row.
   Date/Author: 2026-07-09 / Codex.
 
+- Decision: For normal and CAD-style lasso multi-select, defer both cursor movement and active-row assignment until mouse-up only when `Move Cursor To Selected Effect` is enabled.
+  Rationale: The user explicitly requested that neither the cursor nor active row change while the lasso is being drawn and that the cursor not move until the final effect selection is known. The user then clarified that all of these new behaviors are contained in the `Move Cursor To Selected Effect` enablement.
+  Date/Author: 2026-07-10 / user direction recorded by Codex; updated 2026-07-10 / user clarification recorded by Codex.
+
+- Decision: Enabled normal and CAD-style lasso multi-select use the earliest selected effect start for cursor placement and the lasso-origin row for active row.
+  Rationale: The earliest start gives a deterministic cursor target across all selected effects, while the lasso-origin row preserves the row context where the user began the lasso operation. When the preference is disabled, existing lasso behavior must be preserved.
+  Date/Author: 2026-07-10 / user direction recorded by Codex; updated 2026-07-10 / user clarification recorded by Codex.
+
 ## Outcomes & Retrospective
 
 Milestones 1, 2, and 3 are complete. The grid now exposes `MoveCursorToSelectedEffect`, the Timed Sequence Editor Edit menu has a persisted `Move Cursor To Selected Effect` toggle, and the toggle synchronizes to the grid property. Selection paths now move the cursor when the preference is enabled, the legacy popup selection path moves the cursor only after a concrete effect is selected if that path is ever triggered, and right-click cursor assignment is suppressed only for effect right-clicks while the preference is enabled.
 
 Focused validation after Milestones 1 and 2 passed with 7 `TimelineActiveRowNavigation` tests. Milestone 3 added 5 `TimelineCursorSelection` tests and both focused and full `Vixen.Tests` validation pass. Manual Timed Sequence Editor validation confirms the behavior is correct. Jira issue `VIX-3936` has been updated with implementation and validation evidence.
+
+On 2026-07-10, new lasso requirements were added after that completed implementation. The enabled-only lasso behavior is now implemented and covered by focused automated tests around lasso finalization. The user confirmed the implemented lasso changes work as expected in the Timed Sequence Editor. The remaining gap is a Jira update with the added validation evidence.
 
 ## Context and Orientation
 
@@ -96,6 +123,8 @@ The grid is `Common.Controls.Timeline.Grid`, split across `Grid.cs` and `Grid_Mo
 The current effect click selection path is in `Grid_Mouse.cs`, `OnMouseDown`. When the user left-clicks one or more elements, the grid stores those elements in `m_mouseDownElements`. If the editor does not suppress automatic selection through `_ElementsSelected`, the grid sets `element.Selected = true`, sets `m_lastSingleSelectedElementLocation`, sets the row under the click active, and calls `_SelectionChanged()`.
 
 The current mouse-up path in `Grid_Mouse.cs`, `OnMouseUp`, has another single-click case for a click on one of multiple selected elements. It clears selected elements, selects the first element under the click, calls `_SelectionChanged()`, and sets the row active. It also sets the row active for Ctrl/Shift clicks.
+
+The lasso selection box is the drag rectangle the user draws in the grid to select multiple effects. Vixen has two lasso styles: the normal selection box and the CAD Style Selection Box controlled by the `CAD Style Selection Box` menu preference. Both styles must now share the same VIX-3936 finalization behavior, but only when `MoveCursorToSelectedEffect` is true. While the user is dragging either lasso with `MoveCursorToSelectedEffect` enabled, selected effects may visually update according to existing selection behavior, but `CursorPosition` and `Row.Active` must remain unchanged. On mouse-up, after the selected effects are final, the active row must become the row where the lasso drag began and, if at least one effect is selected by the lasso, the cursor must move to the smallest `StartTime` among the final selected effects. If `MoveCursorToSelectedEffect` is false, the new lasso finalization behavior must not run; preserve existing lasso cursor and active-row behavior exactly.
 
 Right-click handling is also in `Grid_Mouse.cs`, `OnMouseUp`. It clears active rows, sets the row under the click active, assigns `CursorPosition = PixelsToTime(gridLocation.X)` when `ClickingGridSetsCursor` is true, and raises `_ContextSelected`. VIX-3936 must not change this behavior while the new preference is off. With the preference on, the cursor assignment must be skipped only when the right-click is on one or more effects.
 
@@ -147,6 +176,10 @@ If either command fails for an environment reason unrelated to this change, capt
 
 Milestone 4 performs manual validation and Jira update. Open or create a Timed Sequence Editor sequence with at least two rows and several effects. Validate every acceptance criterion below. Do not spend time trying to trigger the legacy overlapping-effects popup through ordinary grid clicking; current drawing stacks overlapping effects, so that path is fallback behavior only. Then update Jira issue `VIX-3936` with a comment summarizing implementation decisions, automated test results, manual validation results, and any limitations.
 
+Milestone 5 implements the added lasso behavior. In `Grid_Mouse.cs`, inspect the normal selection-box and CAD-style selection-box paths. Identify where the lasso drag starts, where the lasso selection mutates during drag, and where the lasso final selection is committed on mouse-up. Store the lasso-origin row at the start of the lasso operation if the current code does not already preserve it. When `MoveCursorToSelectedEffect` is false, do not change existing lasso cursor or active-row behavior. When `MoveCursorToSelectedEffect` is true, do not set active row or move cursor from the intermediate drag-update path. At mouse-up, after the final selected element set is known, set exactly the lasso-origin row active and leave other rows inactive. Then, if the final lasso-selected effect set is not empty, move `CursorPosition` to the minimum selected `StartTime`. Apply this through shared helper logic so normal lasso and CAD-style lasso cannot drift.
+
+Milestone 5 acceptance is observable in the editor. With `Move Cursor To Selected Effect` checked, start a lasso on one row and drag across effects on multiple rows, including at least one effect on an earlier time than another selected effect. While the mouse button is down, the cursor and active-row highlight do not change. After mouse release, the active row becomes the row where the lasso began and the cursor moves to the earliest selected effect start. Repeat the same scenario with `CAD Style Selection Box` toggled on and observe identical behavior. With `Move Cursor To Selected Effect` unchecked, normal and CAD-style lasso retain existing cursor and active-row behavior.
+
 ## Concrete Steps
 
 Work from repository root `C:\Dev\Vixen`.
@@ -168,6 +201,8 @@ Add the grid preference in `src/Vixen.Common/Controls/TimeLineControl/Grid.cs`. 
 
 Add the private helper and use it from the relevant `Grid_Mouse.cs` and `Grid.cs` selection paths. Keep helper names and enum names private unless they need to be called from `TimelineControl`. Prefer materializing enumerables with `ToList()` once before selecting or computing target times.
 
+For the added lasso requirement, extend or add helper logic so enabled lasso finalization can be expressed as one operation: given a lasso-origin row and the final selected elements, clear other active rows, set the origin row active, and set `CursorPosition` to the minimum selected `StartTime`. Call this only when `MoveCursorToSelectedEffect` is true and only from the mouse-up/finalization path for normal and CAD-style lasso selection. Do not call it from the mouse-move or drag-update path. When `MoveCursorToSelectedEffect` is false, bypass this new helper and preserve existing lasso behavior.
+
 Add the Edit menu item in `TimedSequenceEditorForm.Designer.cs`. Because this is designer-generated code, follow the style already present for `cADStyleSelectionBoxToolStripMenuItem`: declare the field near the existing menu item field, instantiate it near the top initializer block, add it to `editToolStripMenuItem.DropDownItems.AddRange`, set `CheckOnClick`, `Name`, `Size`, `Text`, and `Click`.
 
 Load the setting in `TimedSequenceEditorForm.cs` near the CAD load line:
@@ -188,6 +223,8 @@ Add the click handler in `TimedSequenceEditorForm_Menu.cs` near `cADStyleSelecti
 
 Add tests in `src/Vixen.Tests/Sequencer/TimelineCursorSelectionTests.cs`. A minimal setup should look like the active-row navigation tests: create a `Guid id`, create `TimelineControl timelineControl = new TimelineControl(id)`, add rows, add `Element` objects with `StartTime` and `Duration` to rows with `row.AddElement(element)`, set `timelineControl.grid.MoveCursorToSelectedEffect`, call the public selection method, and assert `TimeLineGlobalStateManager.Manager(id).CursorPosition`.
 
+Add lasso finalization tests if the implementation can expose the behavior without brittle WinForms mouse simulation. A good focused test creates at least two rows, marks final lasso-selected elements with different start times, calls the helper or public path used by lasso mouse-up, and asserts that the active row is the lasso-origin row while `CursorPosition` is the earliest selected start when `MoveCursorToSelectedEffect` is true. Add a disabled-preference case that verifies the new lasso finalization behavior does not run and the existing active-row and cursor behavior is preserved. If direct tests would require screen-coordinate-dependent mouse simulation, record that limitation in `Surprises & Discoveries` and rely on manual validation for the UI path.
+
 Run focused and full validation:
 
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineCursorSelection --no-restore
@@ -205,10 +242,13 @@ Manual validation in the Timed Sequence Editor must show these behaviors:
 2. With the menu item checked, clicking a single effect updates the active row and moves the timeline cursor to that effect's start time.
 3. With the menu item checked, clicking an already-selected effect moves the cursor to that effect's start time again.
 4. With the menu item checked, selecting multiple effects in one operation moves to the earliest selected effect start for general multi-select, and Ctrl/Shift selection moves to the latest clicked or last selected effect for that action.
-5. With the menu item unchecked, right-clicking an effect preserves today's behavior exactly. With the menu item checked, right-clicking an effect preserves active row and context menu behavior but does not move the cursor because of this feature. Right-clicking empty grid space still moves the cursor to the clicked time.
-6. Moving the cursor to an effect start does not change `VisibleTimeStart` and does not horizontally scroll the grid.
-7. Closing and reopening the Timed Sequence Editor preserves the menu item checked state. A missing setting defaults to unchecked.
-8. Cursor movement caused by this feature does not call `SequenceModified()`, does not add undo history, and does not write sequence content.
+5. With the menu item checked and `CAD Style Selection Box` unchecked, start a lasso on one row and drag across multiple rows. While drawing, neither cursor nor active row changes. On mouse release, the cursor moves to the earliest selected effect start and active row becomes the row where the lasso began.
+6. With the menu item checked and `CAD Style Selection Box` checked, repeat the same lasso scenario. The timing, cursor target, and active-row target are identical to normal lasso.
+7. With the menu item unchecked, repeat normal and CAD-style lasso scenarios. Existing lasso cursor and active-row behavior is unchanged; the new lasso-origin active-row rule and earliest-start cursor rule do not apply.
+8. With the menu item unchecked, right-clicking an effect preserves today's behavior exactly. With the menu item checked, right-clicking an effect preserves active row and context menu behavior but does not move the cursor because of this feature. Right-clicking empty grid space still moves the cursor to the clicked time.
+9. Moving the cursor to an effect start does not change `VisibleTimeStart` and does not horizontally scroll the grid.
+10. Closing and reopening the Timed Sequence Editor preserves the menu item checked state. A missing setting defaults to unchecked.
+11. Cursor movement caused by this feature does not call `SequenceModified()`, does not add undo history, and does not write sequence content.
 
 Legacy fallback acceptance: if a test or unusual path triggers `contextMenuStripElementSelection`, opening that popup does not move the cursor; choosing one effect from the popup moves the cursor to the chosen effect's start time when the preference is enabled. This is not required for manual validation.
 
@@ -239,11 +279,15 @@ The setting key to use is:
 
 Actual focused test output after implementation:
 
-    Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5
+    Passed!  - Failed:     0, Passed:     7, Skipped:     0, Total:     7
 
 Actual full test output after implementation:
 
-    Passed!  - Failed:     0, Passed:   198, Skipped:     0, Total:   198
+    Passed!  - Failed:     0, Passed:   430, Skipped:     0, Total:   430
+
+Additional lasso requirements added on 2026-07-10:
+
+    When MoveCursorToSelectedEffect is enabled during normal or CAD-style lasso multi-select, do not move the cursor or active row while the lasso is being drawn. On mouse-up, after the final effect selection is known, set active row to the row where the lasso began and move the cursor to the smallest StartTime among the final selected effects. When the preference is disabled, preserve existing lasso cursor and active-row behavior.
 
 ## Interfaces and Dependencies
 
@@ -269,3 +313,7 @@ No undo service, sequence model, playback service, or rendering service dependen
 - 2026-07-09: Milestone 3 completed with focused `TimelineCursorSelection` tests and full `Vixen.Tests` validation.
 - 2026-07-09: Manual Timed Sequence Editor validation completed successfully.
 - 2026-07-09: Jira issue `VIX-3936` updated with implementation and validation evidence in comment `40164`.
+- 2026-07-10: Added new normal and CAD-style lasso requirements from user direction. The plan now includes Milestone 5 for lasso finalization behavior and records that the previous completed outcome is not final until this new behavior is implemented and validated.
+- 2026-07-10: Updated the lasso requirements after user clarification that all new lasso cursor and active-row behavior is contained in `Move Cursor To Selected Effect` enablement. When the preference is disabled, existing lasso behavior must remain unchanged.
+- 2026-07-10: Implemented enabled-only lasso finalization behavior, added automated lasso finalization tests, and recorded focused/full test evidence. Manual Timed Sequence Editor validation and Jira update remain.
+- 2026-07-10: Recorded user confirmation that the implemented lasso changes work as expected in the Timed Sequence Editor. Jira update remains.

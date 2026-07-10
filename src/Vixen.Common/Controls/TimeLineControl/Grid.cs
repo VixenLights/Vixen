@@ -465,6 +465,23 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		private void FinalizeMoveCursorLassoSelection(Row lassoOriginRow, IEnumerable<Element> finalSelectedElements)
+		{
+			if (!MoveCursorToSelectedEffect)
+			{
+				return;
+			}
+
+			if (lassoOriginRow != null)
+			{
+				ClearActiveRows(lassoOriginRow);
+				lassoOriginRow.Active = true;
+				Invalidate();
+			}
+
+			MoveCursorForSelectedEffects(finalSelectedElements, CursorSelectionTarget.EarliestSelected);
+		}
+
 		private void _ElementDoubleClicked(Element te)
 		{
 			if (ElementDoubleClicked != null)
