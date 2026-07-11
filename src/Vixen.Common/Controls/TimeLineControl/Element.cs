@@ -469,11 +469,39 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Draws the element image for a visible timeline range.
+		/// </summary>
+		/// <param name="imageSize">The image size to draw.</param>
+		/// <param name="g">The graphics context for the timeline grid.</param>
+		/// <param name="visibleStartTime">The visible start time of the timeline grid.</param>
+		/// <param name="visibleEndTime">The visible end time of the timeline grid.</param>
+		/// <param name="overallWidth">The width of the complete element image.</param>
+		/// <param name="redBorder"><see langword="true" /> to draw a red border; otherwise, <see langword="false" />.</param>
+		/// <returns>The image to draw.</returns>
+		[Obsolete("Use DrawV2 instead.")]
 		public Bitmap Draw(Size imageSize, Graphics g, TimeSpan visibleStartTime, TimeSpan visibleEndTime, int overallWidth, bool redBorder)
 		{
 
-			return IsRendered ? DrawImage(imageSize, visibleStartTime, visibleEndTime, overallWidth, redBorder) : DrawPlaceholder(imageSize, redBorder);
+			return DrawV2(imageSize, g, visibleStartTime, visibleEndTime, overallWidth, redBorder).Image;
 		
+		}
+
+		/// <summary>
+		/// Draws the element image for a visible timeline range and returns its ownership information.
+		/// </summary>
+		/// <param name="imageSize">The image size to draw.</param>
+		/// <param name="g">The graphics context for the timeline grid.</param>
+		/// <param name="visibleStartTime">The visible start time of the timeline grid.</param>
+		/// <param name="visibleEndTime">The visible end time of the timeline grid.</param>
+		/// <param name="overallWidth">The width of the complete element image.</param>
+		/// <param name="redBorder"><see langword="true" /> to draw a red border; otherwise, <see langword="false" />.</param>
+		/// <returns>The image to draw and a value that indicates whether the caller owns and should dispose the image after drawing.</returns>
+		public (Bitmap Image, bool DisposeAfterDraw) DrawV2(Size imageSize, Graphics g, TimeSpan visibleStartTime, TimeSpan visibleEndTime, int overallWidth, bool redBorder)
+		{
+			return IsRendered
+				? (DrawImage(imageSize, visibleStartTime, visibleEndTime, overallWidth, redBorder), false)
+				: (DrawPlaceholder(imageSize, redBorder), true);
 		}
 
 		#endregion
