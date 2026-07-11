@@ -23,6 +23,7 @@ The visible result is in the Timed Sequence Editor. Opening a sequence, scrollin
 - [x] (2026-07-11) Milestone 4: Changed `Grid.DrawElement(...)` and `_drawElements(...)` to report draw success, abort the current paint pass after an element image draw failure, add element geometry/ownership context to the failure log, and throttle the generic `OnPaint` modal dialog until a later paint pass succeeds.
 - [x] (2026-07-11) Reran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore`; 8 tests passed. The run emitted pre-existing LiteDB/package/compiler warnings only.
 - [x] (2026-07-11) Manual Timed Sequence Editor testing after Milestone 4 showed no visible drawing issues.
+- [x] (2026-07-11) Stabilized `DrawLock_WhenHeld_DelaysSelectionCacheInvalidation` after a reported unit test failure by replacing the scheduler-dependent `Task.Run`/`Task.Delay` assertion with a dedicated thread and explicit start/completion signals. Reran the focused `TimelineGridDrawing` filter; 8 tests passed.
 - [ ] Milestone 5: Run focused and full validation, then manually exercise the Timed Sequence Editor.
 - [ ] Milestone 6: Update Jira issue `VIX-3705` with the final implementation notes, validation results, and any residual risk.
 
@@ -332,3 +333,4 @@ No sequence file format, effect data model, or module descriptor should change f
 - 2026-07-11 / Codex: Completed Milestone 2 by adding ownership-aware `Element.DrawV2(...)`, marking `Element.Draw(...)` obsolete, disposing temporary placeholder images from `Grid.DrawElement`, extending `TimelineGridDrawingTests` to cover ownership flags, and recording focused validation.
 - 2026-07-11 / Codex: Completed Milestone 3 by synchronizing `_cachedImage` creation/replacement/disposal and grid drawing with the same per-element lock, making `DrawV2(...)` internal with strong lock/ownership documentation, adding a focused draw-lock test that uses `InternalsVisibleTo` instead of reflection, and recording focused validation.
 - 2026-07-11 / Codex: Completed Milestone 4 by aborting the current paint pass after logged element image draw failures, adding contextual draw failure logging, throttling repeated generic paint dialogs until a full paint succeeds, and recording focused validation.
+- 2026-07-11 / Codex: Stabilized the Milestone 3 draw-lock unit test after a reported failure by removing the task-scheduler timing dependency and validating the lock with a dedicated thread plus explicit start/completion signals.

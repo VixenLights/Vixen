@@ -101,26 +101,46 @@ public sealed class TimelineGridDrawingTests
 	}
 
 	[Fact]
-	public async Task DrawLock_WhenHeld_DelaysSelectionCacheInvalidation()
+	public void DrawLock_WhenHeld_DelaysSelectionCacheInvalidation()
 	{
 		TestTimelineElement element = CreateElement(isDirty: false);
-		Task selectionTask;
+		element.DrawV2(CreateImageSize(), null, TimeSpan.Zero, element.EndTime, 100, false);
 		object drawLock = element.DrawLock;
+		using ManualResetEventSlim selectionStarted = new ManualResetEventSlim();
+		using ManualResetEventSlim selectionCompleted = new ManualResetEventSlim();
+		Exception? selectionException = null;
+		Thread selectionThread = new Thread(() =>
+		{
+			try
+			{
+				selectionStarted.Set();
+				element.Selected = true;
+			}
+			catch (Exception ex)
+			{
+				selectionException = ex;
+			}
+			finally
+			{
+				selectionCompleted.Set();
+			}
+		});
 
 		Monitor.Enter(drawLock);
 		try
 		{
-			selectionTask = Task.Run(() => element.Selected = true, TestContext.Current.CancellationToken);
+			selectionThread.Start();
 
-			Task completedTask = await Task.WhenAny(selectionTask, Task.Delay(TimeSpan.FromMilliseconds(100), TestContext.Current.CancellationToken));
-			Assert.NotSame(selectionTask, completedTask);
+			Assert.True(selectionStarted.Wait(TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken));
+			Assert.False(selectionCompleted.Wait(TimeSpan.FromMilliseconds(100), TestContext.Current.CancellationToken));
 		}
 		finally
 		{
 			Monitor.Exit(drawLock);
 		}
 
-		await selectionTask.WaitAsync(TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken);
+		Assert.True(selectionCompleted.Wait(TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken));
+		Assert.Null(selectionException);
 	}
 
 	private static TestTimelineElement CreateElement(bool isDirty)
