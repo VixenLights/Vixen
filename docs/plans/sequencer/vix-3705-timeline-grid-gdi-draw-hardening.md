@@ -20,7 +20,9 @@ The visible result is in the Timed Sequence Editor. Opening a sequence, scrollin
 - [x] (2026-07-11) Added `TimelineGridDrawing` coverage for the new ownership flags and obsolete-wrapper delegation, then reran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore`; 7 tests passed. The run emitted pre-existing package/compiler warnings only.
 - [x] (2026-07-11) Milestone 3: Added a lazily initialized nonserialized cached-image lock to `Element`, synchronized cached image creation/replacement/disposal on that lock, and updated `Grid.DrawElement(...)` to hold the same lock before calling `DrawV2(...)` and while drawing the returned image.
 - [x] (2026-07-11) Added `TimelineGridDrawing` coverage proving selection-driven cache invalidation waits while the draw lock is held, then reran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore`; 8 tests passed. The run emitted pre-existing package/compiler warnings only.
-- [ ] Milestone 4: Reduce cascading paint failures and improve diagnostics around the failing draw operation.
+- [x] (2026-07-11) Milestone 4: Changed `Grid.DrawElement(...)` and `_drawElements(...)` to report draw success, abort the current paint pass after an element image draw failure, add element geometry/ownership context to the failure log, and throttle the generic `OnPaint` modal dialog until a later paint pass succeeds.
+- [x] (2026-07-11) Reran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore`; 8 tests passed. The run emitted pre-existing LiteDB/package/compiler warnings only.
+- [x] (2026-07-11) Manual Timed Sequence Editor testing after Milestone 4 showed no visible drawing issues.
 - [ ] Milestone 5: Run focused and full validation, then manually exercise the Timed Sequence Editor.
 - [ ] Milestone 6: Update Jira issue `VIX-3705` with the final implementation notes, validation results, and any residual risk.
 
@@ -84,9 +86,17 @@ The visible result is in the Timed Sequence Editor. Opening a sequence, scrollin
   Rationale: The draw lock should remain internal production surface, but the focused concurrency test should be compile-time checked instead of using reflection. `InternalsVisibleTo` follows the existing test access pattern used by other Vixen projects.
   Date/Author: 2026-07-11 / Codex.
 
+- Decision: Stop the current grid paint pass after an element image draw failure.
+  Rationale: The reported failure sequence logs a native image draw failure, then continues into later paint layers where `_drawCursors(...)` reports a misleading second exception. Returning a Boolean failure from `DrawElement(...)` and `_drawElements(...)` lets `OnPaint(...)` stop before cursor and resize drawing without throwing a generic paint exception or showing a modal dialog for a failure already logged with element context.
+  Date/Author: 2026-07-11 / Codex.
+
+- Decision: Throttle the generic grid paint exception dialog after the first display.
+  Rationale: If a non-element paint failure repeats on every invalidation, showing the same modal dialog repeatedly can trap the user. The error is still logged every time; the dialog remains suppressed until a full paint pass succeeds, then a later independent failure can show the dialog again.
+  Date/Author: 2026-07-11 / Codex.
+
 ## Outcomes & Retrospective
 
-Milestones 1, 2, and 3 are complete. Focused tests now document the current `Element.DrawV2(...)` behavior: rendered effects reuse a cached bitmap for the same visible slice, selection invalidates that rendered cache, unrendered effects return independent placeholder bitmaps, and disposing a placeholder does not poison a later rendered image. Milestone 2 adds an internal ownership-aware drawing contract so `Grid.DrawElement(...)` disposes temporary placeholder images after drawing without disposing cached rendered images, while the obsolete public `Element.Draw(...)` wrapper is marked as a hard do-not-use compatibility API until it is retired. Milestone 3 synchronizes cached bitmap creation, replacement, disposal, and grid drawing on the same per-element lock.
+Milestones 1, 2, 3, and 4 are complete. Focused tests now document the current `Element.DrawV2(...)` behavior: rendered effects reuse a cached bitmap for the same visible slice, selection invalidates that rendered cache, unrendered effects return independent placeholder bitmaps, and disposing a placeholder does not poison a later rendered image. Milestone 2 adds an internal ownership-aware drawing contract so `Grid.DrawElement(...)` disposes temporary placeholder images after drawing without disposing cached rendered images, while the obsolete public `Element.Draw(...)` wrapper is marked as a hard do-not-use compatibility API until it is retired. Milestone 3 synchronizes cached bitmap creation, replacement, disposal, and grid drawing on the same per-element lock. Milestone 4 prevents a logged element image draw failure from cascading into later cursor/resize drawing in the same paint pass and adds more context to the element draw failure log.
 
 The main expected implementation outcome remains fewer native GDI+ paint failures caused by image lifetime races or handle pressure. Because the original failure is rare, success should be demonstrated through focused tests for the deterministic ownership bugs, full test-suite validation, and manual Timed Sequence Editor exercise rather than relying on reproducing the exact user crash.
 
@@ -159,7 +169,7 @@ Milestone 4 reduces cascading paint failures and improves diagnostics. Review th
 
 Choose the smallest approach that fits existing code style. Avoid showing repeated modal `MessageBoxForm` dialogs for repeated paint failures. If the modal dialog remains, add throttling or state so one bad paint does not trap the user in repeated dialogs. Record the decision and rationale.
 
-Also replace `Pens.Green` in `_drawCursors` with a local `using Pen` if it is touched in this milestone. This is a low-risk cleanup that removes one shared static GDI object from a frequently called path, but it is not expected to be the primary fix.
+Leave `Pens.Green` in `_drawCursors` unless there is concrete evidence it contributes to the failure. The shared static pen is intended for this kind of draw call, and replacing it does not materially address the reported image draw failure.
 
 Milestone 5 runs validation. Use focused tests first, then the full test project. Manual validation should open a timed sequence in the Timed Sequence Editor, scroll horizontally and vertically, select effects, resize an effect, trigger background rendering by changing an effect that becomes dirty, and verify that effect images, placeholders, cursor lines, selection rectangles, and resize indicators still draw correctly.
 
@@ -282,6 +292,14 @@ Milestone 3 focused validation:
 
 The focused validation run emitted pre-existing LiteDB/package warnings and existing compiler warnings unrelated to VIX-3705.
 
+Milestone 4 focused validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore
+
+    Passed!  - Failed: 0, Passed: 8, Skipped: 0, Total: 8
+
+The focused validation run emitted pre-existing LiteDB/package warnings and existing compiler warnings unrelated to VIX-3705. No new direct unit test was added for the private `Grid.DrawElement(...)`/`OnPaint(...)` control-flow change because exercising it would require reflection or broader WinForms paint harness setup; the change remains private and was validated through compile coverage plus inspection of the paint path.
+
 ## Interfaces and Dependencies
 
 Do not introduce new third-party dependencies for this work. Use `System.Drawing`, existing WinForms types, and the current `Vixen.Tests` framework.
@@ -313,3 +331,4 @@ No sequence file format, effect data model, or module descriptor should change f
 - 2026-07-11 / Codex: Completed Milestone 1 by adding `TimelineGridDrawingTests` for current rendered-cache and placeholder-image behavior, then recorded the focused validation result. No production drawing code changed in this milestone.
 - 2026-07-11 / Codex: Completed Milestone 2 by adding ownership-aware `Element.DrawV2(...)`, marking `Element.Draw(...)` obsolete, disposing temporary placeholder images from `Grid.DrawElement`, extending `TimelineGridDrawingTests` to cover ownership flags, and recording focused validation.
 - 2026-07-11 / Codex: Completed Milestone 3 by synchronizing `_cachedImage` creation/replacement/disposal and grid drawing with the same per-element lock, making `DrawV2(...)` internal with strong lock/ownership documentation, adding a focused draw-lock test that uses `InternalsVisibleTo` instead of reflection, and recording focused validation.
+- 2026-07-11 / Codex: Completed Milestone 4 by aborting the current paint pass after logged element image draw failures, adding contextual draw failure logging, throttling repeated generic paint dialogs until a full paint succeeds, and recording focused validation.
