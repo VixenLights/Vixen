@@ -56,7 +56,6 @@
 				RowLabels.Clear();
 				RowLabels= null;
 			}
-			Row.RowToggled -= RowLabelChangedHandler;
 			base.Dispose(disposing);
 		}
 		#region Events
@@ -108,14 +107,11 @@
 				return;
 
 			if (enabled) {
-				Row.RowToggled -= RowLabelChangedHandler;
-				Row.RowToggled += RowLabelChangedHandler;
 				foreach (var rowLabel in RowLabels)
 				{
 					AttachRowEvents(rowLabel);
 				}
 			} else {
-				Row.RowToggled -= RowLabelChangedHandler;
 				foreach (var rowLabel in RowLabels)
 				{
 					DetachRowEvents(rowLabel);
@@ -129,8 +125,11 @@
 			{
 				rowLabel.ParentRow.RowHeightChanged -= RowLabelChangedHandler;
 				rowLabel.ParentRow.RowHeightResized -= RowLabelResizedHandler;
+				// EnableDisableHandlers can re-enable row toggle handling repeatedly for the same rows.
+				rowLabel.ParentRow.RowToggled -= RowLabelChangedHandler;
 				rowLabel.ParentRow.RowHeightChanged += RowLabelChangedHandler;
 				rowLabel.ParentRow.RowHeightResized += RowLabelResizedHandler;
+				rowLabel.ParentRow.RowToggled += RowLabelChangedHandler;
 			}
 		}
 
@@ -140,6 +139,7 @@
 			{
 				rowLabel.ParentRow.RowHeightChanged -= RowLabelChangedHandler;
 				rowLabel.ParentRow.RowHeightResized -= RowLabelResizedHandler;
+				rowLabel.ParentRow.RowToggled -= RowLabelChangedHandler;
 			}
 		}
 

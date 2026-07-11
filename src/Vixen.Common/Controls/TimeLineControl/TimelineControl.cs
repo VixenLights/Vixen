@@ -33,6 +33,7 @@ namespace Common.Controls.Timeline
 		#endregion
 
 		private bool _sequenceLoading = false;
+		private bool _rowToggledEventsEnabled = true;
 
 		public bool ZoomToMousePosition { get; set; }
 
@@ -64,18 +65,21 @@ namespace Common.Controls.Timeline
 
 			// Reasonable defaults
 			TotalTime = TimeSpan.FromMinutes(2);
-
-			// Event handlers for Row class static events
-			Row.RowToggled += RowToggledHandler;
 		}
 	 
 		public void EnableDisableHandlers(bool enabled = true)
 		{
+			_rowToggledEventsEnabled = enabled;
 			if (enabled) {
-				Row.RowToggled -= RowToggledHandler;
-				Row.RowToggled += RowToggledHandler;
+				foreach (Row row in Rows)
+				{
+					AttachRowToggledEvent(row);
+				}
 			} else {
-				Row.RowToggled -= RowToggledHandler;
+				foreach (Row row in Rows)
+				{
+					DetachRowToggledEvent(row);
+				}
 			}
 			timelineRowList.EnableDisableHandlers(enabled);
 		}
@@ -83,7 +87,6 @@ namespace Common.Controls.Timeline
 		protected override void Dispose(bool disposing)
 		{
 			
-			Row.RowToggled -= RowToggledHandler;
 			foreach (Row row in Rows)
 			{
 				DetachRowEvents(row);
@@ -437,6 +440,10 @@ namespace Common.Controls.Timeline
 			row.RowHeightChanged += RowHeightChangedHandler;
 			row.RowHeightResized += RowHeightResizedHandler;
 			row.RowLabelContextMenuSelect += RowLabelContextMenuHandler;
+			if (_rowToggledEventsEnabled)
+			{
+				AttachRowToggledEvent(row);
+			}
 		}
 
 		private void DetachRowEvents(Row row)
@@ -444,6 +451,19 @@ namespace Common.Controls.Timeline
 			row.RowHeightChanged -= RowHeightChangedHandler;
 			row.RowHeightResized -= RowHeightResizedHandler;
 			row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
+			DetachRowToggledEvent(row);
+		}
+
+		private void AttachRowToggledEvent(Row row)
+		{
+			// EnableDisableHandlers can re-enable row toggle handling repeatedly for the same rows.
+			row.RowToggled -= RowToggledHandler;
+			row.RowToggled += RowToggledHandler;
+		}
+
+		private void DetachRowToggledEvent(Row row)
+		{
+			row.RowToggled -= RowToggledHandler;
 		}
 
 		// adds a given row to the control, optionally as a child of the given parent
