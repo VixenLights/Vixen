@@ -16,7 +16,8 @@ The visible result is in the Timed Sequence Editor. Opening a sequence, scrollin
 - [x] (2026-07-11) Created this initial ExecPlan for VIX-3705 with incremental milestones and narrow validation points.
 - [x] (2026-07-11) Milestone 1: Established focused test coverage in `src/Vixen.Tests/Sequencer/TimelineGridDrawingTests.cs` using a test-only `Element` subclass and a mocked `IEffectModuleInstance`; no production test seam or public API change was needed.
 - [x] (2026-07-11) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore`; 4 tests passed. The final run emitted pre-existing LiteDB/package warnings only. An earlier passing run also emitted transient copy retry warnings for `SharpFont.dll`/`QuickFont.dll` locked by .NET Host and Microsoft Defender, but completed successfully.
-- [ ] Milestone 2: Dispose non-cached placeholder images after drawing without disposing cached rendered images.
+- [x] (2026-07-11) Milestone 2: Added ownership-aware drawing through `Element.DrawV2(...)`, marked the old `Element.Draw(...)` API obsolete, and updated `Grid.DrawElement(...)` to dispose only images marked `DisposeAfterDraw`, which covers temporary placeholders while leaving cached rendered images owned by `Element`.
+- [x] (2026-07-11) Added `TimelineGridDrawing` coverage for the new ownership flags and obsolete-wrapper delegation, then reran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore`; 7 tests passed. The run emitted pre-existing package/compiler warnings only.
 - [ ] Milestone 3: Synchronize cached image read, replace, and dispose operations in `Element`.
 - [ ] Milestone 4: Reduce cascading paint failures and improve diagnostics around the failing draw operation.
 - [ ] Milestone 5: Run focused and full validation, then manually exercise the Timed Sequence Editor.
@@ -42,6 +43,9 @@ The visible result is in the Timed Sequence Editor. Opening a sequence, scrollin
 - Observation: Element rendered content is covered by a border overlay, so tests must avoid sampling edge pixels when asserting canvas content.
   Evidence: The initial `Draw_DisposedPlaceholder_DoesNotAffectLaterRenderedImage` assertion sampled pixel `(0, 0)` and saw black from `AddSelectionOverlayToCanvas`; sampling interior pixel `(3, 2)` correctly observes the red content drawn by the test subclass.
 
+- Observation: `Element.Draw(...)` had no production callers other than `Grid.DrawElement(...)`.
+  Evidence: `rg` found only `Grid.cs` calling the visible-slice overload of `Draw(...)`, plus the tests added for VIX-3705. This allowed Milestone 2 to route grid drawing through an internal ownership-aware method while preserving the old public method for compatibility.
+
 ## Decision Log
 
 - Decision: Treat the element-image path as the primary root-cause area, not `_drawCursors`.
@@ -56,9 +60,13 @@ The visible result is in the Timed Sequence Editor. Opening a sequence, scrollin
   Rationale: The problem is internal drawing resource ownership. If tests need visibility into whether an image is cached or temporary, use internal helpers or narrowly scoped test-only patterns where possible. If a public or protected C# API must change, use the project `csharp-docs` skill and update XML documentation in the same change.
   Date/Author: 2026-07-11 / Codex.
 
+- Decision: Use tuple-returning `Element.DrawV2(...)` and mark the existing `Element.Draw(...)` method obsolete.
+  Rationale: The ownership-aware result is the replacement for the old public drawing contract. Keeping `Draw(...)` as an obsolete wrapper gives existing callers a migration path while allowing `Grid.DrawElement(...)` and future code to use the ownership-aware API immediately.
+  Date/Author: 2026-07-11 / Codex.
+
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. Focused tests now document the current `Element.Draw(...)` behavior: rendered effects reuse a cached bitmap for the same visible slice, selection invalidates that rendered cache, unrendered effects return independent placeholder bitmaps, and disposing a placeholder does not poison a later rendered image. No production drawing behavior has changed yet.
+Milestones 1 and 2 are complete. Focused tests now document the current `Element.DrawV2(...)` behavior: rendered effects reuse a cached bitmap for the same visible slice, selection invalidates that rendered cache, unrendered effects return independent placeholder bitmaps, and disposing a placeholder does not poison a later rendered image. Milestone 2 adds an ownership-aware drawing contract so `Grid.DrawElement(...)` disposes temporary placeholder images after drawing without disposing cached rendered images, while the obsolete `Element.Draw(...)` wrapper delegates to `DrawV2(...)` until it is retired.
 
 The main expected implementation outcome remains fewer native GDI+ paint failures caused by image lifetime races or handle pressure. Because the original failure is rare, success should be demonstrated through focused tests for the deterministic ownership bugs, full test-suite validation, and manual Timed Sequence Editor exercise rather than relying on reproducing the exact user crash.
 
@@ -238,27 +246,28 @@ Milestone 1 focused validation:
 
 The final focused validation run emitted only pre-existing LiteDB/package warnings. An earlier passing run also showed transient MSBuild copy retry warnings for `SharpFont.dll` and `QuickFont.dll` under `C:\Output`, with locks attributed to `.NET Host` and `Microsoft Defender Antivirus Service`. The retries succeeded and did not block the test run.
 
+Milestone 2 focused validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore
+
+    Passed!  - Failed: 0, Passed: 7, Skipped: 0, Total: 7
+
+The focused validation run emitted pre-existing LiteDB/package warnings and existing compiler warnings unrelated to VIX-3705.
+
 ## Interfaces and Dependencies
 
 Do not introduce new third-party dependencies for this work. Use `System.Drawing`, existing WinForms types, and the current `Vixen.Tests` framework.
 
-Expected implementation surfaces are internal or private unless investigation proves a public API is necessary:
+Milestone 2 made a public API change because the ownership-aware result replaces the existing public drawing contract:
 
-`src/Vixen.Common/Controls/TimeLineControl/Element.cs` should expose an ownership-aware drawing path for `Grid.DrawElement`. A suitable internal shape is:
+`src/Vixen.Common/Controls/TimeLineControl/Element.cs` exposes:
 
-    internal readonly struct ElementImageDrawResult
-    {
-        internal ElementImageDrawResult(Bitmap image, bool disposeAfterDraw)
-        {
-            Image = image;
-            DisposeAfterDraw = disposeAfterDraw;
-        }
+    [Obsolete("Use DrawV2 instead.")]
+    public Bitmap Draw(Size imageSize, Graphics g, TimeSpan visibleStartTime, TimeSpan visibleEndTime, int overallWidth, bool redBorder)
 
-        internal Bitmap Image { get; }
-        internal bool DisposeAfterDraw { get; }
-    }
+    public (Bitmap Image, bool DisposeAfterDraw) DrawV2(Size imageSize, Graphics g, TimeSpan visibleStartTime, TimeSpan visibleEndTime, int overallWidth, bool redBorder)
 
-The final shape may differ if a callback-based draw method better protects the cache lock. Whatever shape is chosen must make these rules explicit: rendered cached images remain owned by `Element`; placeholder images are temporary and disposed by the consumer; cached image disposal and drawing cannot race.
+The obsolete `Draw(...)` wrapper delegates to `DrawV2(...)` and returns only `Image`. `Grid.DrawElement(...)` calls `DrawV2(...)` so it can dispose images whose `DisposeAfterDraw` value is `true`. Rendered cached images remain owned by `Element`; placeholder images are temporary and disposed by the consumer. Milestone 3 still must prevent cached image disposal and drawing from racing.
 
 If a lock is added to `Element`, it must be stable for the lifetime of the element after normal construction and after deserialization. If `[NonSerialized]` is used, verify or implement lazy initialization so deserialized elements do not have a null lock.
 
@@ -268,3 +277,4 @@ No sequence file format, effect data model, or module descriptor should change f
 
 - 2026-07-11 / Codex: Initial ExecPlan created for VIX-3705 after inspecting the reported stack trace, current `Grid.cs` paint flow, `Element.cs` bitmap cache ownership, and background rendering paths. The plan intentionally separates placeholder disposal, cache synchronization, and paint failure isolation so each can be validated narrowly.
 - 2026-07-11 / Codex: Completed Milestone 1 by adding `TimelineGridDrawingTests` for current rendered-cache and placeholder-image behavior, then recorded the focused validation result. No production drawing code changed in this milestone.
+- 2026-07-11 / Codex: Completed Milestone 2 by adding ownership-aware `Element.DrawV2(...)`, marking `Element.Draw(...)` obsolete, disposing temporary placeholder images from `Grid.DrawElement`, extending `TimelineGridDrawingTests` to cover ownership flags, and recording focused validation.
