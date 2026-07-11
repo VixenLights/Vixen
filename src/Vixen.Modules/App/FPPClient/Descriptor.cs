@@ -26,7 +26,4 @@ public class Descriptor : AppModuleDescriptorBase
 
 	/// <inheritdoc />
 	public override Type ModuleClass => typeof(Module);
-
-	/// <inheritdoc />
-	public override Type ModuleStaticDataClass => typeof(Data);
 }
