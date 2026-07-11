@@ -39,11 +39,6 @@ namespace VixenModules.Property.Orientation {
 		{
 			get { return "1.0"; }
 		}
-
-		public override Type ModuleStaticDataClass
-		{
-			get { return typeof (OrientationData); }
-		}
 	}
 }
 
