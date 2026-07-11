@@ -574,6 +574,9 @@ namespace Common.Controls.Timeline
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
 		{
 			Row selectedRow = sender as Row;
+			if (selectedRow == null || !Rows.Contains(selectedRow))
+				return;
+
 			//Handle full selection logic
 			if (e.ModifierKeys.HasFlag(Keys.Control) || e.ModifierKeys.HasFlag(Keys.Shift))
 			{
@@ -606,6 +609,38 @@ namespace Common.Controls.Timeline
 					//Multi select.
 					int indexFirst = Rows.IndexOf(FirstSelectedRow);
 					int indexSelected = Rows.IndexOf(selectedRow);
+					if (indexFirst < 0 || indexSelected < 0)
+					{
+						if (selectedRow.Selected)
+						{
+							if (DragBoxFilterEnabled)
+							{
+								foreach (Element element in selectedRow)
+								{
+									element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+								}
+							}
+							else
+							{
+								selectedRow.SelectAllElements();
+							}
+
+							FirstSelectedRow = selectedRow;
+						}
+						else
+						{
+							if (!SelectedRows.Any())
+							{
+								FirstSelectedRow = null;
+							}
+
+							selectedRow.DeselectAllElements();
+						}
+
+						_SelectionChanged();
+						return;
+					}
+
 					if (indexSelected > indexFirst) //Selecting down in the grid
 					{
 						for (int i = indexFirst; i <= indexSelected; i++)
