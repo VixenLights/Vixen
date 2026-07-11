@@ -358,7 +358,10 @@ namespace Common.Controls.Timeline
 		public static event EventHandler RowHeightChanged;
 		public static event EventHandler RowHeightResized;
 		public static event EventHandler RowLabelContextMenuSelect;
-		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
+		/// <summary>
+		/// Occurs when this row's label selection changes.
+		/// </summary>
+		public event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 		public static event EventHandler RowVisibilityChanged;
 
 		private void _ElementAdded(Element te)

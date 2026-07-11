@@ -91,10 +91,9 @@ namespace Common.Controls.Timeline
 
 			InitAutoScrollTimer();
 
-			// thse changed events are static for the class. If we make them per element or row
+			// These changed events are static for the class. If we make them per element or row
 			//  later, we will need to attach/detach from each event manually.
 			Row.RowChanged += RowChangedHandler;
-			Row.RowSelectedChanged += RowSelectedChangedHandler;
 			Row.RowToggled += RowToggledHandler;
             Row.RowHeightChanged += RowHeightChangedHandler;
 			Row.RowVisibilityChanged += RowVisibilityChangedHandler;
@@ -137,6 +136,7 @@ namespace Common.Controls.Timeline
 			if (m_rows != null) {
 				foreach (var mRow in m_rows)
 				{
+					DetachRowEvents(mRow);
 					mRow.Dispose();
 				}
 			}
@@ -144,7 +144,6 @@ namespace Common.Controls.Timeline
 			m_autoScrollTimer.Enabled = false;
 			m_autoScrollTimer.Tick -= m_autoScrollTimer_Tick;
 			Row.RowChanged -= RowChangedHandler;
-			Row.RowSelectedChanged -= RowSelectedChangedHandler;
 			Row.RowToggled -= RowToggledHandler;
 			Row.RowHeightChanged -= RowHeightChangedHandler;
 			Row.RowVisibilityChanged -= RowVisibilityChangedHandler;
@@ -574,6 +573,9 @@ namespace Common.Controls.Timeline
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
 		{
 			Row selectedRow = sender as Row;
+			if (selectedRow == null || !Rows.Contains(selectedRow))
+				return;
+
 			//Handle full selection logic
 			if (e.ModifierKeys.HasFlag(Keys.Control) || e.ModifierKeys.HasFlag(Keys.Shift))
 			{
@@ -606,6 +608,38 @@ namespace Common.Controls.Timeline
 					//Multi select.
 					int indexFirst = Rows.IndexOf(FirstSelectedRow);
 					int indexSelected = Rows.IndexOf(selectedRow);
+					if (indexFirst < 0 || indexSelected < 0)
+					{
+						if (selectedRow.Selected)
+						{
+							if (DragBoxFilterEnabled)
+							{
+								foreach (Element element in selectedRow)
+								{
+									element.Selected = DragBoxFilterTypes.Contains(element.EffectNode.Effect.TypeId);
+								}
+							}
+							else
+							{
+								selectedRow.SelectAllElements();
+							}
+
+							FirstSelectedRow = selectedRow;
+						}
+						else
+						{
+							if (!SelectedRows.Any())
+							{
+								FirstSelectedRow = null;
+							}
+
+							selectedRow.DeselectAllElements();
+						}
+
+						_SelectionChanged();
+						return;
+					}
+
 					if (indexSelected > indexFirst) //Selecting down in the grid
 					{
 						for (int i = indexFirst; i <= indexSelected; i++)
@@ -853,6 +887,7 @@ namespace Common.Controls.Timeline
 		/// <param name="row"></param>
 		public void AddRow(Row row)
 		{
+			AttachRowEvents(row);
 			Rows.Add(row);
 			ResizeGridHeight();
 			if (!SuppressInvalidate) Invalidate();
@@ -866,9 +901,24 @@ namespace Common.Controls.Timeline
 		public bool RemoveRow(Row row)
 		{
 			bool rv = Rows.Remove(row);
+			if (rv)
+			{
+				DetachRowEvents(row);
+			}
+
 			ResizeGridHeight();
 			if (!SuppressInvalidate) Invalidate();
 			return rv;
+		}
+
+		private void AttachRowEvents(Row row)
+		{
+			row.RowSelectedChanged += RowSelectedChangedHandler;
+		}
+
+		private void DetachRowEvents(Row row)
+		{
+			row.RowSelectedChanged -= RowSelectedChangedHandler;
 		}
 
 		//Determines if the count of selected elements per row is an acecptable level for use by the alignment helpers
