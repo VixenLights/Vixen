@@ -353,16 +353,34 @@ namespace Common.Controls.Timeline
 
 		public event EventHandler<ElementEventArgs> ElementAdded;
 		public event EventHandler<ElementEventArgs> ElementRemoved;
-		public static event EventHandler RowToggled;
-		public static event EventHandler RowChanged;
-		public static event EventHandler RowHeightChanged;
-		public static event EventHandler RowHeightResized;
-		public static event EventHandler RowLabelContextMenuSelect;
+		/// <summary>
+		/// Occurs when this row's expanded or collapsed state changes.
+		/// </summary>
+		public event EventHandler RowToggled;
+		/// <summary>
+		/// Occurs when this row's display state changes.
+		/// </summary>
+		public event EventHandler RowChanged;
+		/// <summary>
+		/// Occurs when this row's height changes.
+		/// </summary>
+		public event EventHandler RowHeightChanged;
+		/// <summary>
+		/// Occurs when this row's label resize operation completes.
+		/// </summary>
+		public event EventHandler RowHeightResized;
+		/// <summary>
+		/// Occurs when this row's label requests its context menu.
+		/// </summary>
+		public event EventHandler RowLabelContextMenuSelect;
 		/// <summary>
 		/// Occurs when this row's label selection changes.
 		/// </summary>
 		public event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
-		public static event EventHandler RowVisibilityChanged;
+		/// <summary>
+		/// Occurs when this row's effective visibility changes.
+		/// </summary>
+		public event EventHandler RowVisibilityChanged;
 
 		private void _ElementAdded(Element te)
 		{
@@ -376,12 +394,12 @@ namespace Common.Controls.Timeline
 
 		private void _RowToggled()
 		{
-			if (RowToggled != null) RowToggled(this, EventArgs.Empty);
+			RowToggled?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void _RowChanged()
 		{
-			if (RowChanged != null) RowChanged(this, EventArgs.Empty);
+			RowChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void _RowHeightChanged()

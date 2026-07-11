@@ -529,7 +529,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.DragLeave += TimelineControlGrid_DragLeave;
 			TimelineControl.RowTagsChanged += TimelineControl_RowTagsChanged;
 			TimelineControl.ManageTagsRequested += TimelineControlManageTagsRequested;
-			Row.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
+			TimelineControl.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
 
 			LoadAvailableEffects();
 			PopulateDragBoxFilterDropDown();
@@ -779,7 +779,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.VisibleTimeStartChanged -= TimelineControl_VisibleTimeStartChanged;
 			TimelineControl.RowTagsChanged -= TimelineControl_RowTagsChanged;
 			TimelineControl.ManageTagsRequested -= TimelineControlManageTagsRequested;
-			Row.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
+			TimelineControl.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
 			effectGroupsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			basicToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing; 
 			pixelToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing; 
@@ -2333,7 +2333,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// to a child - so this only needs to run when the toggle itself changes, a sequence loads, or a
 		/// row's tags change, not on every tree expand/collapse. Also re-lays-out the row labels
 		/// afterward: <see cref="RowList"/> only repositions label controls on <see cref="Row.RowToggled"/>/
-		/// <see cref="Row.RowHeightChanged"/>, not on a plain visibility change, so a label whose row just
+		/// row height changes, not on a plain visibility change, so a label whose row just
 		/// became visible would otherwise sit at its last (possibly off-screen or overlapping) position
 		/// until some unrelated tree toggle forced a re-layout. Also invalidates every row label: a row
 		/// whose children just got filtered in or out doesn't itself change visibility, so nothing else

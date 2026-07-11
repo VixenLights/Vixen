@@ -33,6 +33,7 @@ namespace Common.Controls.Timeline
 		#endregion
 
 		private bool _sequenceLoading = false;
+		private bool _rowToggledEventsEnabled = true;
 
 		public bool ZoomToMousePosition { get; set; }
 
@@ -64,28 +65,21 @@ namespace Common.Controls.Timeline
 
 			// Reasonable defaults
 			TotalTime = TimeSpan.FromMinutes(2);
-
-			// Event handlers for Row class static events
-			Row.RowToggled += RowToggledHandler;
-			Row.RowHeightChanged += RowHeightChangedHandler;
-			Row.RowHeightResized += RowHeightResizedHandler;
 		}
 	 
 		public void EnableDisableHandlers(bool enabled = true)
 		{
+			_rowToggledEventsEnabled = enabled;
 			if (enabled) {
-				Row.RowToggled -= RowToggledHandler;
-				Row.RowHeightChanged -= RowHeightChangedHandler;
-				Row.RowHeightResized -= RowHeightResizedHandler;
-				Row.RowToggled += RowToggledHandler;
-				Row.RowHeightChanged += RowHeightChangedHandler;
-				Row.RowHeightResized += RowHeightResizedHandler;
-				Row.RowLabelContextMenuSelect += RowLabelContextMenuHandler;
+				foreach (Row row in Rows)
+				{
+					AttachRowToggledEvent(row);
+				}
 			} else {
-				Row.RowToggled -= RowToggledHandler;
-				Row.RowHeightChanged -= RowHeightChangedHandler;
-				Row.RowHeightResized -= RowHeightResizedHandler;
-				Row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
+				foreach (Row row in Rows)
+				{
+					DetachRowToggledEvent(row);
+				}
 			}
 			timelineRowList.EnableDisableHandlers(enabled);
 		}
@@ -93,10 +87,10 @@ namespace Common.Controls.Timeline
 		protected override void Dispose(bool disposing)
 		{
 			
-			Row.RowToggled -= RowToggledHandler;
-			Row.RowHeightChanged -= RowHeightChangedHandler;
-			Row.RowHeightResized -= RowHeightResizedHandler;
-			Row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
+			foreach (Row row in Rows)
+			{
+				DetachRowEvents(row);
+			}
 			cEventHelper.RemoveAllEventHandlers(this);
 			cEventHelper.RemoveAllEventHandlers(TimeInfo);
 			TimeInfo = null;
@@ -121,6 +115,8 @@ namespace Common.Controls.Timeline
 
 			ruler?.Dispose();
 			ruler = null;
+
+			RowListMenu.Dispose();
 
 			base.Dispose(disposing);
 		}
@@ -427,14 +423,47 @@ namespace Common.Controls.Timeline
 
 		private void AddRowToControls(Row row, RowLabel label)
 		{
+			AttachRowEvents(row);
 			grid.AddRow(row);
 			timelineRowList.AddRowLabel(label);
 		}
 
 		private void RemoveRowFromControls(Row row)
 		{
+			DetachRowEvents(row);
 			grid.RemoveRow(row);
 			timelineRowList.RemoveRowLabel(row.RowLabel);
+		}
+
+		private void AttachRowEvents(Row row)
+		{
+			row.RowHeightChanged += RowHeightChangedHandler;
+			row.RowHeightResized += RowHeightResizedHandler;
+			row.RowLabelContextMenuSelect += RowLabelContextMenuHandler;
+			if (_rowToggledEventsEnabled)
+			{
+				AttachRowToggledEvent(row);
+			}
+		}
+
+		private void DetachRowEvents(Row row)
+		{
+			row.RowHeightChanged -= RowHeightChangedHandler;
+			row.RowHeightResized -= RowHeightResizedHandler;
+			row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
+			DetachRowToggledEvent(row);
+		}
+
+		private void AttachRowToggledEvent(Row row)
+		{
+			// EnableDisableHandlers can re-enable row toggle handling repeatedly for the same rows.
+			row.RowToggled -= RowToggledHandler;
+			row.RowToggled += RowToggledHandler;
+		}
+
+		private void DetachRowToggledEvent(Row row)
+		{
+			row.RowToggled -= RowToggledHandler;
 		}
 
 		// adds a given row to the control, optionally as a child of the given parent
@@ -631,6 +660,11 @@ namespace Common.Controls.Timeline
 		public event EventHandler RowTagsChanged;
 
 		/// <summary>
+		/// Raised when a row owned by this timeline changes height.
+		/// </summary>
+		public event EventHandler RowHeightChanged;
+
+		/// <summary>
 		/// Raised when the user clicks "Manage Tag Colors..." in a row's Tags context submenu.
 		/// </summary>
 		/// <remarks>
@@ -772,7 +806,7 @@ namespace Common.Controls.Timeline
 
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
-				
+			RowHeightChanged?.Invoke(sender, e);
 		}
 
 		private void RowHeightResizedHandler(object sender, EventArgs e)
@@ -791,7 +825,7 @@ namespace Common.Controls.Timeline
 		}
 
 
-		public static readonly ContextMenuStrip RowListMenu = new ContextMenuStrip();
+		private readonly ContextMenuStrip RowListMenu = new ContextMenuStrip();
 
 		#region RowLabel Context Menu Strip
 
