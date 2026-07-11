@@ -21,6 +21,8 @@ namespace Common.Controls.Timeline
 		private Size _cachedImageSize= new Size(0,0);
 		private TimeSpan _elementVisibleStartTime;
 		private TimeSpan _elementVisibleEndTime;
+		[NonSerialized]
+		private object _cachedImageLock = new object();
 		private bool _inAdjoiningUpdate = false;
 		public Element()
 		{
@@ -197,11 +199,7 @@ namespace Common.Controls.Timeline
 					return;
 
 				_selected = value;
-				if (_cachedImage != null)
-				{
-					_cachedImage.Dispose();
-					_cachedImage = null;
-				}
+				DisposeCachedImage();
 				OnSelectedChanged();
 			}
 		}
@@ -209,6 +207,30 @@ namespace Common.Controls.Timeline
 		public bool IsRendered
 		{
 			get { return !EffectNode.Effect.IsDirty; }
+		}
+
+		private object CachedImageLock
+		{
+			get
+			{
+				if (_cachedImageLock == null)
+				{
+					_cachedImageLock = new object();
+				}
+
+				return _cachedImageLock;
+			}
+		}
+
+		/// <summary>
+		/// Gets the synchronization object that protects cached image drawing and invalidation.
+		/// </summary>
+		/// <remarks>
+		/// Callers that use <see cref="DrawV2" /> for rendered element images must hold this lock before calling <see cref="DrawV2" /> and keep it held until the returned image has been drawn.
+		/// </remarks>
+		internal object DrawLock
+		{
+			get { return CachedImageLock; }
 		}
 
 		#endregion
@@ -346,12 +368,20 @@ namespace Common.Controls.Timeline
 			if (!IsRendered)
 			{
 				EffectNode.Effect.PreRender();
+				DisposeCachedImage();
+				
+			}
+		}
+
+		private void DisposeCachedImage()
+		{
+			lock (CachedImageLock)
+			{
 				if (_cachedImage != null)
 				{
 					_cachedImage.Dispose();
 					_cachedImage = null;
 				}
-				
 			}
 		}
 
@@ -384,23 +414,26 @@ namespace Common.Controls.Timeline
 				visibleEndOffset = TimeSpan.FromMilliseconds(visibleEndOffset.TotalMilliseconds * factor);
 			}
 
-			if (_cachedImage == null || visibleStartOffset != _elementVisibleStartTime || 
-				visibleEndOffset != _elementVisibleEndTime || _cachedImageSize.Height != imageSize.Height || 
-				_cachedImageSize.Width != imageSize.Width)
+			lock (CachedImageLock)
 			{
-				var image = new Bitmap(imageSize.Width, imageSize.Height);
-				using (Graphics g = Graphics.FromImage(image))
+				if (_cachedImage == null || visibleStartOffset != _elementVisibleStartTime ||
+					visibleEndOffset != _elementVisibleEndTime || _cachedImageSize.Height != imageSize.Height ||
+					_cachedImageSize.Width != imageSize.Width)
 				{
-					DrawCanvasContent(g, visibleStartOffset, visibleEndOffset, overallWidth, redBorder);
-					AddSelectionOverlayToCanvas(g, _selected, startTime <= StartTime, endTime >= EndTime, redBorder);
+					var image = new Bitmap(imageSize.Width, imageSize.Height);
+					using (Graphics g = Graphics.FromImage(image))
+					{
+						DrawCanvasContent(g, visibleStartOffset, visibleEndOffset, overallWidth, redBorder);
+						AddSelectionOverlayToCanvas(g, _selected, startTime <= StartTime, endTime >= EndTime, redBorder);
+					}
+					_elementVisibleStartTime = visibleStartOffset;
+					_elementVisibleEndTime = visibleEndOffset;
+					_cachedImageSize = image.Size;
+					_cachedImage = image;
 				}
-				_elementVisibleStartTime = visibleStartOffset;
-				_elementVisibleEndTime = visibleEndOffset;
-				_cachedImageSize = image.Size;
-				_cachedImage = image;
-			}
 			
-			return _cachedImage;
+				return _cachedImage;
+			}
 		}
 
 		public Bitmap DrawPlaceholder(Size imageSize, bool redBorder)
@@ -472,6 +505,9 @@ namespace Common.Controls.Timeline
 		/// <summary>
 		/// Draws the element image for a visible timeline range.
 		/// </summary>
+		/// <remarks>
+		/// Do not use this method for new drawing code. It cannot expose image ownership or synchronization requirements and is retained only for binary/source compatibility until it is removed.
+		/// </remarks>
 		/// <param name="imageSize">The image size to draw.</param>
 		/// <param name="g">The graphics context for the timeline grid.</param>
 		/// <param name="visibleStartTime">The visible start time of the timeline grid.</param>
@@ -479,7 +515,7 @@ namespace Common.Controls.Timeline
 		/// <param name="overallWidth">The width of the complete element image.</param>
 		/// <param name="redBorder"><see langword="true" /> to draw a red border; otherwise, <see langword="false" />.</param>
 		/// <returns>The image to draw.</returns>
-		[Obsolete("Use DrawV2 instead.")]
+		[Obsolete("Do not use. Timeline element drawing is internal and this compatibility API will be removed.")]
 		public Bitmap Draw(Size imageSize, Graphics g, TimeSpan visibleStartTime, TimeSpan visibleEndTime, int overallWidth, bool redBorder)
 		{
 
@@ -490,6 +526,12 @@ namespace Common.Controls.Timeline
 		/// <summary>
 		/// Draws the element image for a visible timeline range and returns its ownership information.
 		/// </summary>
+		/// <remarks>
+		/// This method is coupled to <see cref="DrawLock" />. A caller that may consume a rendered element image must enter <see cref="DrawLock" /> before calling this method and must keep that lock held until it has finished using the returned image.
+		/// Rendered elements return the element-owned cached bitmap with <c>DisposeAfterDraw</c> set to <see langword="false" />. That cached bitmap can be disposed and replaced by selection changes, rendering invalidation, or cache regeneration, all of which synchronize on <see cref="DrawLock" />.
+		/// Placeholder images return caller-owned bitmaps with <c>DisposeAfterDraw</c> set to <see langword="true" />. The caller must dispose those placeholder images after drawing them.
+		/// Do not make this method public without also providing a public synchronization and ownership contract that prevents cached images from being disposed while they are being drawn.
+		/// </remarks>
 		/// <param name="imageSize">The image size to draw.</param>
 		/// <param name="g">The graphics context for the timeline grid.</param>
 		/// <param name="visibleStartTime">The visible start time of the timeline grid.</param>
@@ -497,11 +539,17 @@ namespace Common.Controls.Timeline
 		/// <param name="overallWidth">The width of the complete element image.</param>
 		/// <param name="redBorder"><see langword="true" /> to draw a red border; otherwise, <see langword="false" />.</param>
 		/// <returns>The image to draw and a value that indicates whether the caller owns and should dispose the image after drawing.</returns>
-		public (Bitmap Image, bool DisposeAfterDraw) DrawV2(Size imageSize, Graphics g, TimeSpan visibleStartTime, TimeSpan visibleEndTime, int overallWidth, bool redBorder)
+		internal (Bitmap Image, bool DisposeAfterDraw) DrawV2(Size imageSize, Graphics g, TimeSpan visibleStartTime, TimeSpan visibleEndTime, int overallWidth, bool redBorder)
 		{
 			return IsRendered
 				? (DrawImage(imageSize, visibleStartTime, visibleEndTime, overallWidth, redBorder), false)
-				: (DrawPlaceholder(imageSize, redBorder), true);
+				: CreatePlaceholderDrawResult(imageSize, redBorder);
+		}
+
+		private (Bitmap Image, bool DisposeAfterDraw) CreatePlaceholderDrawResult(Size imageSize, bool redBorder)
+		{
+			Bitmap image = DrawPlaceholder(imageSize, redBorder);
+			return (image, true);
 		}
 
 		#endregion
