@@ -357,7 +357,10 @@ namespace Common.Controls.Timeline
 		/// Occurs when this row's expanded or collapsed state changes.
 		/// </summary>
 		public event EventHandler RowToggled;
-		public static event EventHandler RowChanged;
+		/// <summary>
+		/// Occurs when this row's display state changes.
+		/// </summary>
+		public event EventHandler RowChanged;
 		/// <summary>
 		/// Occurs when this row's height changes.
 		/// </summary>
@@ -396,7 +399,7 @@ namespace Common.Controls.Timeline
 
 		private void _RowChanged()
 		{
-			if (RowChanged != null) RowChanged(this, EventArgs.Empty);
+			RowChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void _RowHeightChanged()
