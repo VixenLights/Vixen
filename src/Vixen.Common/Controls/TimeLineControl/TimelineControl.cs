@@ -67,23 +67,15 @@ namespace Common.Controls.Timeline
 
 			// Event handlers for Row class static events
 			Row.RowToggled += RowToggledHandler;
-			Row.RowHeightChanged += RowHeightChangedHandler;
-			Row.RowHeightResized += RowHeightResizedHandler;
 		}
 	 
 		public void EnableDisableHandlers(bool enabled = true)
 		{
 			if (enabled) {
 				Row.RowToggled -= RowToggledHandler;
-				Row.RowHeightChanged -= RowHeightChangedHandler;
-				Row.RowHeightResized -= RowHeightResizedHandler;
 				Row.RowToggled += RowToggledHandler;
-				Row.RowHeightChanged += RowHeightChangedHandler;
-				Row.RowHeightResized += RowHeightResizedHandler;
 			} else {
 				Row.RowToggled -= RowToggledHandler;
-				Row.RowHeightChanged -= RowHeightChangedHandler;
-				Row.RowHeightResized -= RowHeightResizedHandler;
 			}
 			timelineRowList.EnableDisableHandlers(enabled);
 		}
@@ -92,8 +84,6 @@ namespace Common.Controls.Timeline
 		{
 			
 			Row.RowToggled -= RowToggledHandler;
-			Row.RowHeightChanged -= RowHeightChangedHandler;
-			Row.RowHeightResized -= RowHeightResizedHandler;
 			foreach (Row row in Rows)
 			{
 				DetachRowEvents(row);
@@ -444,11 +434,15 @@ namespace Common.Controls.Timeline
 
 		private void AttachRowEvents(Row row)
 		{
+			row.RowHeightChanged += RowHeightChangedHandler;
+			row.RowHeightResized += RowHeightResizedHandler;
 			row.RowLabelContextMenuSelect += RowLabelContextMenuHandler;
 		}
 
 		private void DetachRowEvents(Row row)
 		{
+			row.RowHeightChanged -= RowHeightChangedHandler;
+			row.RowHeightResized -= RowHeightResizedHandler;
 			row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
 		}
 
@@ -646,6 +640,11 @@ namespace Common.Controls.Timeline
 		public event EventHandler RowTagsChanged;
 
 		/// <summary>
+		/// Raised when a row owned by this timeline changes height.
+		/// </summary>
+		public event EventHandler RowHeightChanged;
+
+		/// <summary>
 		/// Raised when the user clicks "Manage Tag Colors..." in a row's Tags context submenu.
 		/// </summary>
 		/// <remarks>
@@ -787,7 +786,7 @@ namespace Common.Controls.Timeline
 
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
-				
+			RowHeightChanged?.Invoke(sender, e);
 		}
 
 		private void RowHeightResizedHandler(object sender, EventArgs e)

@@ -41,17 +41,21 @@
 		// to be a list (and therefore ordered), it's not adding controls in the order
 		// we add them. So we're keeping our own list of controls.
 		private List<RowLabel> RowLabels { get; set; }
+		private bool _rowEventsEnabled = true;
 
 		#endregion
 
 		protected override void Dispose(bool disposing)
 		{
 			if (RowLabels != null) {
+				EnableDisableHandlers(false);
+				foreach (var rowLabel in RowLabels)
+				{
+					rowLabel.VisibleChanged -= LabelVisibleChangedHandler;
+				}
 				RowLabels.Clear();
 				RowLabels= null;
 			}
-			Row.RowHeightChanged -= RowLabelChangedHandler;
-			Row.RowHeightResized -= RowLabelResizedHandler;
 			Row.RowToggled -= RowLabelChangedHandler;
 			base.Dispose(disposing);
 		}
@@ -99,19 +103,46 @@
 		#region Methods
 		public void EnableDisableHandlers(bool enabled = true)
 		{
+			_rowEventsEnabled = enabled;
+			if (RowLabels == null)
+				return;
+
 			if (enabled) {
 				Row.RowToggled -= RowLabelChangedHandler;
-				Row.RowHeightChanged -= RowLabelChangedHandler;
-				Row.RowHeightResized -= RowLabelResizedHandler;
 				Row.RowToggled += RowLabelChangedHandler;
-				Row.RowHeightChanged += RowLabelChangedHandler;
-				Row.RowHeightResized += RowLabelResizedHandler;
+				foreach (var rowLabel in RowLabels)
+				{
+					AttachRowEvents(rowLabel);
+				}
 			} else {
 				Row.RowToggled -= RowLabelChangedHandler;
-				Row.RowHeightChanged -= RowLabelChangedHandler;
-				Row.RowHeightResized -= RowLabelResizedHandler;
+				foreach (var rowLabel in RowLabels)
+				{
+					DetachRowEvents(rowLabel);
+				}
 			}
 		}
+
+		private void AttachRowEvents(RowLabel rowLabel)
+		{
+			if (rowLabel.ParentRow != null)
+			{
+				rowLabel.ParentRow.RowHeightChanged -= RowLabelChangedHandler;
+				rowLabel.ParentRow.RowHeightResized -= RowLabelResizedHandler;
+				rowLabel.ParentRow.RowHeightChanged += RowLabelChangedHandler;
+				rowLabel.ParentRow.RowHeightResized += RowLabelResizedHandler;
+			}
+		}
+
+		private void DetachRowEvents(RowLabel rowLabel)
+		{
+			if (rowLabel.ParentRow != null)
+			{
+				rowLabel.ParentRow.RowHeightChanged -= RowLabelChangedHandler;
+				rowLabel.ParentRow.RowHeightResized -= RowLabelResizedHandler;
+			}
+		}
+
 		private delegate void AddRowLabelDelegate(RowLabel trl);
 
 		public void AddRowLabel(RowLabel trl)
@@ -121,6 +152,10 @@
 			}
 			else {
 				RowLabels.Add(trl);
+				if (_rowEventsEnabled)
+				{
+					AttachRowEvents(trl);
+				}
 				// Addint a control is VERY slow!
 				if (trl.Visible)
 				{
@@ -135,6 +170,7 @@
 
 		public void RemoveRowLabel(RowLabel trl)
 		{
+			DetachRowEvents(trl);
 			RowLabels.Remove(trl);
 			Controls.Remove(trl);
 			trl.VisibleChanged -= LabelVisibleChangedHandler;

@@ -95,7 +95,6 @@ namespace Common.Controls.Timeline
 			//  later, we will need to attach/detach from each event manually.
 			Row.RowChanged += RowChangedHandler;
 			Row.RowToggled += RowToggledHandler;
-            Row.RowHeightChanged += RowHeightChangedHandler;
 			Row.RowVisibilityChanged += RowVisibilityChangedHandler;
 			
 			_timelineGlobalEventManager.AlignmentActivity += TimeLineAlignmentHandler;
@@ -145,7 +144,6 @@ namespace Common.Controls.Timeline
 			m_autoScrollTimer.Tick -= m_autoScrollTimer_Tick;
 			Row.RowChanged -= RowChangedHandler;
 			Row.RowToggled -= RowToggledHandler;
-			Row.RowHeightChanged -= RowHeightChangedHandler;
 			Row.RowVisibilityChanged -= RowVisibilityChangedHandler;
 			_timelineGlobalEventManager.AlignmentActivity -= TimeLineAlignmentHandler;
 
@@ -913,11 +911,13 @@ namespace Common.Controls.Timeline
 
 		private void AttachRowEvents(Row row)
 		{
+			row.RowHeightChanged += RowHeightChangedHandler;
 			row.RowSelectedChanged += RowSelectedChangedHandler;
 		}
 
 		private void DetachRowEvents(Row row)
 		{
+			row.RowHeightChanged -= RowHeightChangedHandler;
 			row.RowSelectedChanged -= RowSelectedChangedHandler;
 		}
 

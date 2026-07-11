@@ -355,8 +355,14 @@ namespace Common.Controls.Timeline
 		public event EventHandler<ElementEventArgs> ElementRemoved;
 		public static event EventHandler RowToggled;
 		public static event EventHandler RowChanged;
-		public static event EventHandler RowHeightChanged;
-		public static event EventHandler RowHeightResized;
+		/// <summary>
+		/// Occurs when this row's height changes.
+		/// </summary>
+		public event EventHandler RowHeightChanged;
+		/// <summary>
+		/// Occurs when this row's label resize operation completes.
+		/// </summary>
+		public event EventHandler RowHeightResized;
 		/// <summary>
 		/// Occurs when this row's label requests its context menu.
 		/// </summary>
