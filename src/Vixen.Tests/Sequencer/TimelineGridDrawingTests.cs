@@ -84,7 +84,7 @@ public sealed class TimelineGridDrawingTests
 		var drawResult = element.DrawV2(CreateImageSize(), null, TimeSpan.Zero, element.EndTime, 100, false);
 
 		Assert.False(drawResult.DisposeAfterDraw);
-		drawResult.Image.Dispose();
+		element.Selected = true;
 	}
 
 	[Fact]
@@ -98,6 +98,29 @@ public sealed class TimelineGridDrawingTests
 
 		Assert.Equal(1, element.DrawCanvasContentCallCount);
 		Assert.Equal(Color.Red.ToArgb(), image.GetPixel(3, 2).ToArgb());
+	}
+
+	[Fact]
+	public async Task DrawLock_WhenHeld_DelaysSelectionCacheInvalidation()
+	{
+		TestTimelineElement element = CreateElement(isDirty: false);
+		Task selectionTask;
+		object drawLock = element.DrawLock;
+
+		Monitor.Enter(drawLock);
+		try
+		{
+			selectionTask = Task.Run(() => element.Selected = true, TestContext.Current.CancellationToken);
+
+			Task completedTask = await Task.WhenAny(selectionTask, Task.Delay(TimeSpan.FromMilliseconds(100), TestContext.Current.CancellationToken));
+			Assert.NotSame(selectionTask, completedTask);
+		}
+		finally
+		{
+			Monitor.Exit(drawLock);
+		}
+
+		await selectionTask.WaitAsync(TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken);
 	}
 
 	private static TestTimelineElement CreateElement(bool isDirty)

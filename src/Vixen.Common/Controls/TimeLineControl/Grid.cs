@@ -2797,26 +2797,26 @@ namespace Common.Controls.Timeline
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, currentElement.DisplayHeight);
 			currentElement.DisplayRect = destRect;
 
-			var drawResult = currentElement.DrawV2(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration), redBorder);
-			Bitmap elementImage = drawResult.Image;
-			if (elementImage == null) return;
-
-			try
+			lock (currentElement.DrawLock)
 			{
-				lock (elementImage)
+				var drawResult = currentElement.DrawV2(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration), redBorder);
+				Bitmap elementImage = drawResult.Image;
+				if (elementImage == null) return;
+
+				try
 				{
 					g.DrawImage(elementImage,destRect);
 				}
-			}
-			catch (Exception e)
-			{
-				Logging.Error(e, "Unable to draw element image.");
-			}
-			finally
-			{
-				if (drawResult.DisposeAfterDraw)
+				catch (Exception e)
 				{
-					elementImage.Dispose();
+					Logging.Error(e, "Unable to draw element image.");
+				}
+				finally
+				{
+					if (drawResult.DisposeAfterDraw)
+					{
+						elementImage.Dispose();
+					}
 				}
 			}
 			
