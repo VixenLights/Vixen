@@ -10,17 +10,8 @@ namespace VixenModules.App.FPPClient;
 /// </summary>
 public class Module : AppModuleInstanceBase
 {
-	private Data _data = new();
-
 	/// <inheritdoc />
 	public override IApplication Application { set { } }
-
-	/// <inheritdoc />
-	public override Vixen.Module.IModuleDataModel StaticModuleData
-	{
-		get => _data;
-		set => _data = (Data)value;
-	}
 
 	/// <inheritdoc />
 	public override void Loading() { }
