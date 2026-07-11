@@ -80,12 +80,10 @@ namespace Common.Controls.Timeline
 				Row.RowToggled += RowToggledHandler;
 				Row.RowHeightChanged += RowHeightChangedHandler;
 				Row.RowHeightResized += RowHeightResizedHandler;
-				Row.RowLabelContextMenuSelect += RowLabelContextMenuHandler;
 			} else {
 				Row.RowToggled -= RowToggledHandler;
 				Row.RowHeightChanged -= RowHeightChangedHandler;
 				Row.RowHeightResized -= RowHeightResizedHandler;
-				Row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
 			}
 			timelineRowList.EnableDisableHandlers(enabled);
 		}
@@ -96,7 +94,10 @@ namespace Common.Controls.Timeline
 			Row.RowToggled -= RowToggledHandler;
 			Row.RowHeightChanged -= RowHeightChangedHandler;
 			Row.RowHeightResized -= RowHeightResizedHandler;
-			Row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
+			foreach (Row row in Rows)
+			{
+				DetachRowEvents(row);
+			}
 			cEventHelper.RemoveAllEventHandlers(this);
 			cEventHelper.RemoveAllEventHandlers(TimeInfo);
 			TimeInfo = null;
@@ -121,6 +122,8 @@ namespace Common.Controls.Timeline
 
 			ruler?.Dispose();
 			ruler = null;
+
+			RowListMenu.Dispose();
 
 			base.Dispose(disposing);
 		}
@@ -427,14 +430,26 @@ namespace Common.Controls.Timeline
 
 		private void AddRowToControls(Row row, RowLabel label)
 		{
+			AttachRowEvents(row);
 			grid.AddRow(row);
 			timelineRowList.AddRowLabel(label);
 		}
 
 		private void RemoveRowFromControls(Row row)
 		{
+			DetachRowEvents(row);
 			grid.RemoveRow(row);
 			timelineRowList.RemoveRowLabel(row.RowLabel);
+		}
+
+		private void AttachRowEvents(Row row)
+		{
+			row.RowLabelContextMenuSelect += RowLabelContextMenuHandler;
+		}
+
+		private void DetachRowEvents(Row row)
+		{
+			row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
 		}
 
 		// adds a given row to the control, optionally as a child of the given parent
@@ -791,7 +806,7 @@ namespace Common.Controls.Timeline
 		}
 
 
-		public static readonly ContextMenuStrip RowListMenu = new ContextMenuStrip();
+		private readonly ContextMenuStrip RowListMenu = new ContextMenuStrip();
 
 		#region RowLabel Context Menu Strip
 
