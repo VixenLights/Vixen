@@ -374,7 +374,10 @@ namespace Common.Controls.Timeline
 		/// Occurs when this row's label selection changes.
 		/// </summary>
 		public event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
-		public static event EventHandler RowVisibilityChanged;
+		/// <summary>
+		/// Occurs when this row's effective visibility changes.
+		/// </summary>
+		public event EventHandler RowVisibilityChanged;
 
 		private void _ElementAdded(Element te)
 		{

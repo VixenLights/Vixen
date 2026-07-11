@@ -91,10 +91,9 @@ namespace Common.Controls.Timeline
 
 			InitAutoScrollTimer();
 
-			// These changed events are static for the class. If we make them per element or row
+			// This changed event is static for the class. If we make it per element or row
 			// later, we will need to attach/detach from each event manually.
 			Row.RowChanged += RowChangedHandler;
-			Row.RowVisibilityChanged += RowVisibilityChangedHandler;
 			
 			_timelineGlobalEventManager.AlignmentActivity += TimeLineAlignmentHandler;
 
@@ -142,7 +141,6 @@ namespace Common.Controls.Timeline
 			m_autoScrollTimer.Enabled = false;
 			m_autoScrollTimer.Tick -= m_autoScrollTimer_Tick;
 			Row.RowChanged -= RowChangedHandler;
-			Row.RowVisibilityChanged -= RowVisibilityChangedHandler;
 			_timelineGlobalEventManager.AlignmentActivity -= TimeLineAlignmentHandler;
 
 			TimeInfo= null;
@@ -914,6 +912,7 @@ namespace Common.Controls.Timeline
 			// EnableDisableHandlers can re-enable row toggle handling repeatedly for the same rows.
 			row.RowToggled -= RowToggledHandler;
 			row.RowToggled += RowToggledHandler;
+			row.RowVisibilityChanged += RowVisibilityChangedHandler;
 		}
 
 		private void DetachRowEvents(Row row)
@@ -921,6 +920,7 @@ namespace Common.Controls.Timeline
 			row.RowHeightChanged -= RowHeightChangedHandler;
 			row.RowSelectedChanged -= RowSelectedChangedHandler;
 			row.RowToggled -= RowToggledHandler;
+			row.RowVisibilityChanged -= RowVisibilityChangedHandler;
 		}
 
 		//Determines if the count of selected elements per row is an acecptable level for use by the alignment helpers
