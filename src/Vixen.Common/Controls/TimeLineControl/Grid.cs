@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Drawing.Drawing2D;
+using System.Windows.Media;
 using Common.Controls.Theme;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
@@ -13,6 +13,10 @@ using Vixen.Execution.Context;
 using Vixen.Marks;
 using Vixen.Services;
 using Vixen.Sys.LayerMixing;
+using Brushes = System.Drawing.Brushes;
+using Color = System.Drawing.Color;
+using DashStyle = System.Drawing.Drawing2D.DashStyle;
+using Pen = System.Drawing.Pen;
 
 #pragma warning disable WFO1000  // This class is not a Designer type control so disabling to avoid all the noise of the hidden attribute
 
@@ -32,6 +36,7 @@ namespace Common.Controls.Timeline
 		private Point m_selectionRectangleStart; // the location (on the grid canvas) where the selection box starts.
 		private Point m_drawingRectangleStart; // the location (on the grid canvas) where the drawing box starts.
 		private Rectangle m_ignoreDragArea; // the area in which move movements should be ignored, before we start dragging
+		private bool _paintExceptionDialogShown;
 		private Point m_waitingBeginGridLocation;
 		private List<Element> m_mouseDownElements; // the elements under the cursor on a mouse click
 		private Point m_lastSingleSelectedElementLocation;
@@ -2748,7 +2753,7 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-		private void DrawElement(Graphics g, Row row, Element currentElement, int top)
+		private bool DrawElement(Graphics g, Row row, Element currentElement, int top)
 		{
 			int width;
 			bool redBorder = false;
@@ -2789,7 +2794,7 @@ namespace Common.Controls.Timeline
 					width = (int)(timeToPixels(VisibleTimeEnd) - timeToPixels(VisibleTimeStart));
 				}	
 			}
-			if (width <= 0) return;
+			if (width <= 0) return true;
 			Size size = new Size(width, currentElement.DisplayHeight);
 
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime>VisibleTimeStart?currentElement.StartTime:VisibleTimeStart)), currentElement.DisplayTop);
@@ -2801,7 +2806,7 @@ namespace Common.Controls.Timeline
 			{
 				var drawResult = currentElement.DrawV2(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration), redBorder);
 				Bitmap elementImage = drawResult.Image;
-				if (elementImage == null) return;
+				if (elementImage == null) return true;
 
 				try
 				{
@@ -2809,7 +2814,10 @@ namespace Common.Controls.Timeline
 				}
 				catch (Exception e)
 				{
-					Logging.Error(e, "Unable to draw element image.");
+					string effectName = currentElement.EffectNode?.Effect?.EffectName ?? "<unknown>";
+					Logging.Error(e, "Unable to draw element image. Effect={0}, Start={1}, End={2}, IsRendered={3}, ImageSize={4}, Destination={5}, DisposeAfterDraw={6}",
+						effectName, currentElement.StartTime, currentElement.EndTime, currentElement.IsRendered, size, destRect, drawResult.DisposeAfterDraw);
+					return false;
 				}
 				finally
 				{
@@ -2819,6 +2827,8 @@ namespace Common.Controls.Timeline
 					}
 				}
 			}
+
+			return true;
 			
 		}
 
@@ -2841,7 +2851,7 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		private void _drawElements(Graphics g)
+		private bool _drawElements(Graphics g)
 		{
 			// Draw each row
 			foreach (Row row in VisibleRows) {
@@ -2855,10 +2865,15 @@ namespace Common.Controls.Timeline
 						break;
 					}
 					
-					DrawElement(g, row, currentElement, row.DisplayTop);
+					if (!DrawElement(g, row, currentElement, row.DisplayTop))
+					{
+						return false;
+					}
 				}
 
 			}
+
+			return true;
 		}
 
 		private void _drawSelection(Graphics g)
@@ -2963,18 +2978,28 @@ namespace Common.Controls.Timeline
 					_drawGridlines(e.Graphics);
 					_drawRows(e.Graphics);
 					_drawSnapPoints(e.Graphics);
-					_drawElements(e.Graphics);
+					if (!_drawElements(e.Graphics))
+					{
+						return;
+					}
 					_drawInfo(e.Graphics);
 					_drawSelection(e.Graphics);
 					_drawDrawBox(e.Graphics);
 					_drawCursors(e.Graphics);
 					_drawResizeIndicator(e.Graphics);
+					_paintExceptionDialogShown = false;
 
 					//s.Stop();
 					//Logging.Info("OnPaint: " + s.ElapsedMilliseconds);
 				}
 				catch (Exception ex) {
 					Logging.Error(ex, "Exception in TimelineGrid.OnPaint()");
+					if (_paintExceptionDialogShown)
+					{
+						return;
+					}
+
+					_paintExceptionDialogShown = true;
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("An unexpected error occurred while drawing the grid. Please notify the Vixen team and provide the error logs.",
