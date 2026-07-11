@@ -14,7 +14,8 @@ The visible result is in the Timed Sequence Editor. Opening a sequence, scrollin
 
 - [x] (2026-07-11) Investigated the current `Grid.DrawElement`, `_drawCursors`, `OnPaint`, background rendering, and `Element` image-cache code paths after a reported VIX-3705 stack trace.
 - [x] (2026-07-11) Created this initial ExecPlan for VIX-3705 with incremental milestones and narrow validation points.
-- [ ] Milestone 1: Establish focused test coverage or a small test seam around element image ownership and placeholder disposal.
+- [x] (2026-07-11) Milestone 1: Established focused test coverage in `src/Vixen.Tests/Sequencer/TimelineGridDrawingTests.cs` using a test-only `Element` subclass and a mocked `IEffectModuleInstance`; no production test seam or public API change was needed.
+- [x] (2026-07-11) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore`; 4 tests passed. The final run emitted pre-existing LiteDB/package warnings only. An earlier passing run also emitted transient copy retry warnings for `SharpFont.dll`/`QuickFont.dll` locked by .NET Host and Microsoft Defender, but completed successfully.
 - [ ] Milestone 2: Dispose non-cached placeholder images after drawing without disposing cached rendered images.
 - [ ] Milestone 3: Synchronize cached image read, replace, and dispose operations in `Element`.
 - [ ] Milestone 4: Reduce cascading paint failures and improve diagnostics around the failing draw operation.
@@ -35,6 +36,12 @@ The visible result is in the Timed Sequence Editor. Opening a sequence, scrollin
 - Observation: Background rendering mutates element render state and image cache state off the UI thread.
   Evidence: `Grid.renderWorker_DoWork` calls `element.RenderElement()` inside `Parallel.ForEach`, and `Grid.RenderElement(Element element)` can call `Task.Factory.StartNew(() => { element.RenderElement(); Invalidate(); })`.
 
+- Observation: Direct unit coverage for `Element.Draw(...)` is feasible without launching the Timed Sequence Editor.
+  Evidence: `TimelineGridDrawingTests` creates a test-only subclass of `Common.Controls.Timeline.Element`, assigns an `EffectNode` built from a mocked `IEffectModuleInstance`, and controls the rendered versus placeholder path by changing `IEffectModuleInstance.IsDirty`.
+
+- Observation: Element rendered content is covered by a border overlay, so tests must avoid sampling edge pixels when asserting canvas content.
+  Evidence: The initial `Draw_DisposedPlaceholder_DoesNotAffectLaterRenderedImage` assertion sampled pixel `(0, 0)` and saw black from `AddSelectionOverlayToCanvas`; sampling interior pixel `(3, 2)` correctly observes the red content drawn by the test subclass.
+
 ## Decision Log
 
 - Decision: Treat the element-image path as the primary root-cause area, not `_drawCursors`.
@@ -51,7 +58,9 @@ The visible result is in the Timed Sequence Editor. Opening a sequence, scrollin
 
 ## Outcomes & Retrospective
 
-The plan has been created but no production code has changed yet. The main expected implementation outcome is fewer native GDI+ paint failures caused by image lifetime races or handle pressure. Because the original failure is rare, success should be demonstrated through focused tests for the deterministic ownership bugs, full test-suite validation, and manual Timed Sequence Editor exercise rather than relying on reproducing the exact user crash.
+Milestone 1 is complete. Focused tests now document the current `Element.Draw(...)` behavior: rendered effects reuse a cached bitmap for the same visible slice, selection invalidates that rendered cache, unrendered effects return independent placeholder bitmaps, and disposing a placeholder does not poison a later rendered image. No production drawing behavior has changed yet.
+
+The main expected implementation outcome remains fewer native GDI+ paint failures caused by image lifetime races or handle pressure. Because the original failure is rare, success should be demonstrated through focused tests for the deterministic ownership bugs, full test-suite validation, and manual Timed Sequence Editor exercise rather than relying on reproducing the exact user crash.
 
 ## Context and Orientation
 
@@ -221,6 +230,14 @@ Reported VIX-3705 signature:
        at Common.Controls.Timeline.Grid._drawCursors(Graphics g)
        at Common.Controls.Timeline.Grid.OnPaint(PaintEventArgs e)
 
+Milestone 1 focused validation:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~TimelineGridDrawing --no-restore
+
+    Passed!  - Failed: 0, Passed: 4, Skipped: 0, Total: 4
+
+The final focused validation run emitted only pre-existing LiteDB/package warnings. An earlier passing run also showed transient MSBuild copy retry warnings for `SharpFont.dll` and `QuickFont.dll` under `C:\Output`, with locks attributed to `.NET Host` and `Microsoft Defender Antivirus Service`. The retries succeeded and did not block the test run.
+
 ## Interfaces and Dependencies
 
 Do not introduce new third-party dependencies for this work. Use `System.Drawing`, existing WinForms types, and the current `Vixen.Tests` framework.
@@ -250,3 +267,4 @@ No sequence file format, effect data model, or module descriptor should change f
 ## Revision Notes
 
 - 2026-07-11 / Codex: Initial ExecPlan created for VIX-3705 after inspecting the reported stack trace, current `Grid.cs` paint flow, `Element.cs` bitmap cache ownership, and background rendering paths. The plan intentionally separates placeholder disposal, cache synchronization, and paint failure isolation so each can be validated narrowly.
+- 2026-07-11 / Codex: Completed Milestone 1 by adding `TimelineGridDrawingTests` for current rendered-cache and placeholder-image behavior, then recorded the focused validation result. No production drawing code changed in this milestone.
