@@ -634,8 +634,13 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 				return;
 			}
 
-			VisibleTimeStart = ClampVisibleTimeStart(VisibleTimeStart + PixelsToTime(_mouseOutsideX / AutoScrollPxScaleFactor));
+			VisibleTimeStart = CalculateAutoScrollVisibleTimeStart(VisibleTimeStart, _mouseOutsideX);
 			HandleMouseMove(_lastMouseMove);
+		}
+
+		private TimeSpan CalculateAutoScrollVisibleTimeStart(TimeSpan currentVisibleStart, int mouseOutsideX)
+		{
+			return ClampVisibleTimeStart(currentVisibleStart + PixelsToTime(mouseOutsideX / AutoScrollPxScaleFactor));
 		}
 
 		private TimeSpan ClampVisibleTimeStart(TimeSpan candidate)
