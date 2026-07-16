@@ -18,10 +18,10 @@ After this change, the Marks Docker will assign unique default names when adding
 - [x] (2026-07-16 00:00Z) Identified the effect property converter `src/Vixen.Core/TypeConverters/IMarkCollectionNameConverter.cs` as one reason duplicate names are ambiguous: it exposes only names, not collection ids.
 - [x] (2026-07-16 14:32Z) Implemented shared mark collection naming helper and focused unit tests.
 - [x] (2026-07-16 14:42Z) Prevented duplicate creation and import paths by applying `MarkCollectionNameService.GetUniqueName` in the Marks Docker add command, editor-created collection helper, phoneme child collection creation, and Mark import add paths.
-- [ ] Add inline rename validation and duplicate-name visual feedback.
+- [x] (2026-07-16 20:00Z) Added inline rename validation and duplicate-name visual feedback.
 - [ ] Repair duplicate mark collection names on sequence load and show a post-load summary.
 - [ ] Update Jira issue VIX-3947 with the final requirements, acceptance criteria, and automated and manual test plan.
-- [ ] Run targeted unit tests and a build or practical editor validation. Completed: `MarkCollectionNameService` targeted tests pass; broader `Sequencer` test slice passes. Remaining: practical editor validation after UI/editor integration. Timed Sequence Editor project build is currently blocked in this shell by missing x86 apphost/native dependency setup.
+- [ ] Run targeted unit tests and a build or practical editor validation. Completed: `MarkCollectionNameService` targeted tests pass after milestones 2 and 3; broader `Sequencer` test slice passes after milestones 2 and 3. Remaining: practical editor validation after UI/editor integration. Timed Sequence Editor project build is currently blocked in this shell by missing x86 apphost/native dependency setup.
 
 ## Surprises & Discoveries
 
@@ -45,6 +45,9 @@ After this change, the Marks Docker will assign unique default names when adding
 
 - Observation: Building the Timed Sequence Editor project in this environment currently fails before compiling the editor project because native dependency projects require the x86 .NET apphost pack.
   Evidence: `msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj /t:Build /p:Configuration=Debug /p:UseAppHost=false /m` fails in `QMLibrary.vcxproj` and `LiquidLiquidFunWrapper.vcxproj` with `NETSDK1145` for missing `Microsoft.NETCore.App.Host.win-x86`.
+
+- Observation: Inline rename validation needs a separate edit buffer because the existing edit TextBox was bound directly to the model-backed `Name` property.
+  Evidence: milestone 3 changed `MarkCollectionView.xaml` to bind the edit TextBox to `EditableName` and only writes the trimmed value to `Name` after `MarkCollectionNameService.IsUniqueName(...)` accepts it.
 
 ## Decision Log
 
@@ -73,6 +76,10 @@ The targeted command `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter Fu
 Milestone 2 updated future creation paths so they no longer add duplicate Mark Collection names. The Marks Docker add command now names repeated new collections as `Mark Collection`, `Mark Collection - 2`, and later suffixes. The Timed Sequence Editor's mark-creation helper now uses case-insensitive trimmed lookup when reusing an existing named collection and a separate unique-create helper when a linked phoneme/word collection must be newly created. Mark import paths now add imported Vixen, migrated legacy, Audacity, xTiming, Papagayo, and Singing Faces collections through a shared `AddUniqueCollection` helper that assigns a unique name before adding the collection.
 
 Validation for milestone 2: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarkCollectionNameService --no-restore` passed with 12 tests, and `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Sequencer --no-restore` passed with 67 tests. `dotnet build src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj --no-restore`, `dotnet build ... -p:BuildProjectReferences=false`, and MSBuild project builds were attempted but could not complete in this shell because required native/x86 apphost dependencies are missing before the Timed Sequence Editor project can be compiled.
+
+Milestone 3 updated the inline rename workflow so editing uses an `EditableName` buffer rather than writing directly to the model-backed `Name` property. Duplicate names are detected against the parent collection set while excluding the current collection id, the edit remains active when a duplicate is entered, and the row shows inline feedback with a warning border, message, and tooltip. Empty names keep the prior behavior of reverting to the original name and ending edit mode.
+
+Validation for milestone 3: `git diff --check` passed, `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarkCollectionNameService --no-restore` passed with 12 tests, and `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Sequencer --no-restore` passed with 67 tests. `msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj /t:Build /p:Configuration=Debug /p:UseAppHost=false /m` still fails in this environment before editor validation because `Microsoft.NETCore.App.Host.win-x86` is missing for native dependency projects.
 
 ## Context and Orientation
 
@@ -276,3 +283,5 @@ Initial plan created for VIX-3947 after inspecting the Marks Docker, Timed Seque
 2026-07-16: Completed the first implementation slice by adding the shared Mark Collection naming service, rename record DTO, unit tests, and the test project reference to the Marks module.
 
 2026-07-16: Completed the second implementation slice by wiring unique Mark Collection naming into Marks Docker creation, editor-created collections, linked phoneme collection creation, and import add paths. Recorded passing targeted tests and the environment-specific Timed Sequence Editor build blocker.
+
+2026-07-16: Completed the third implementation slice by adding an inline rename edit buffer, duplicate-name validation, and non-modal visual feedback in the Marks Docker row editor. Recorded passing targeted tests and the continuing environment-specific Timed Sequence Editor build blocker.
