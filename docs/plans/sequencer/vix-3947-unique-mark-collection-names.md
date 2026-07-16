@@ -19,9 +19,9 @@ After this change, the Marks Docker will assign unique default names when adding
 - [x] (2026-07-16 14:32Z) Implemented shared mark collection naming helper and focused unit tests.
 - [x] (2026-07-16 14:42Z) Prevented duplicate creation and import paths by applying `MarkCollectionNameService.GetUniqueName` in the Marks Docker add command, editor-created collection helper, phoneme child collection creation, and Mark import add paths.
 - [x] (2026-07-16 20:00Z) Added inline rename validation and duplicate-name visual feedback.
-- [ ] Repair duplicate mark collection names on sequence load and show a post-load summary.
+- [x] (2026-07-16 20:35Z) Repaired duplicate mark collection names on sequence load and added a post-load summary.
 - [ ] Update Jira issue VIX-3947 with the final requirements, acceptance criteria, and automated and manual test plan.
-- [ ] Run targeted unit tests and a build or practical editor validation. Completed: `MarkCollectionNameService` targeted tests pass after milestones 2 and 3; broader `Sequencer` test slice passes after milestones 2 and 3. Remaining: practical editor validation after UI/editor integration. Timed Sequence Editor project build is currently blocked in this shell by missing x86 apphost/native dependency setup.
+- [ ] Run targeted unit tests and a build or practical editor validation. Completed: `MarkCollectionNameService` targeted tests pass after milestones 2, 3, and 4; broader `Sequencer` test slice passes after milestones 2, 3, and 4. Remaining: practical editor validation. Timed Sequence Editor project build is currently blocked in this shell by missing x86 apphost/native dependency setup, and the no-project-reference compile is blocked by missing Debug output DLLs for editor dependencies.
 
 ## Surprises & Discoveries
 
@@ -48,6 +48,9 @@ After this change, the Marks Docker will assign unique default names when adding
 
 - Observation: Inline rename validation needs a separate edit buffer because the existing edit TextBox was bound directly to the model-backed `Name` property.
   Evidence: milestone 3 changed `MarkCollectionView.xaml` to bind the edit TextBox to `EditableName` and only writes the trimmed value to `Name` after `MarkCollectionNameService.IsUniqueName(...)` accepts it.
+
+- Observation: Load-time duplicate repair must explicitly re-mark existing sequences as modified after the load path resets saved state.
+  Evidence: `LoadSequence()` calls `SequenceNotModified()` for sequences with a file path, so milestone 4 calls `SequenceModified()` when duplicate repair records exist after that normal load-state decision.
 
 ## Decision Log
 
@@ -80,6 +83,10 @@ Validation for milestone 2: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --fi
 Milestone 3 updated the inline rename workflow so editing uses an `EditableName` buffer rather than writing directly to the model-backed `Name` property. Duplicate names are detected against the parent collection set while excluding the current collection id, the edit remains active when a duplicate is entered, and the row shows inline feedback with a warning border, message, and tooltip. Empty names keep the prior behavior of reverting to the original name and ending edit mode.
 
 Validation for milestone 3: `git diff --check` passed, `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarkCollectionNameService --no-restore` passed with 12 tests, and `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Sequencer --no-restore` passed with 67 tests. `msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj /t:Build /p:Configuration=Debug /p:UseAppHost=false /m` still fails in this environment before editor validation because `Microsoft.NETCore.App.Host.win-x86` is missing for native dependency projects.
+
+Milestone 4 updated `TimedSequenceEditorForm` to repair duplicate Mark Collection names as soon as a `TimedSequence` is assigned, before mark collection change handlers are attached. The returned rename records are retained for the current load, the sequence is marked modified after the normal load-state reset when repair occurred, and a post-load information dialog summarizes each `old name -> new name` rename before deprecated-element warnings are shown.
+
+Validation for milestone 4: `git diff --check` passed, `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarkCollectionNameService --no-restore -m:1` passed with 12 tests, and `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Sequencer --no-restore -m:1` passed with 67 tests. The full Timed Sequence Editor project build remains blocked by missing `Microsoft.NETCore.App.Host.win-x86` for native dependency projects. A no-project-reference compile attempt reached the editor temporary assembly but could not complete because `Module.App.TimedSequenceMapper.dll`, `Module.Effect.Liquid.dll`, and `Module.SequenceType.Timed.dll` were not present in Debug output.
 
 ## Context and Orientation
 
@@ -285,3 +292,5 @@ Initial plan created for VIX-3947 after inspecting the Marks Docker, Timed Seque
 2026-07-16: Completed the second implementation slice by wiring unique Mark Collection naming into Marks Docker creation, editor-created collections, linked phoneme collection creation, and import add paths. Recorded passing targeted tests and the environment-specific Timed Sequence Editor build blocker.
 
 2026-07-16: Completed the third implementation slice by adding an inline rename edit buffer, duplicate-name validation, and non-modal visual feedback in the Marks Docker row editor. Recorded passing targeted tests and the continuing environment-specific Timed Sequence Editor build blocker.
+
+2026-07-16: Completed the fourth implementation slice by repairing duplicate Mark Collection names during sequence assignment, preserving rename records, marking repaired sequences modified, and showing a post-load summary before deprecated-effect warnings. Recorded passing targeted tests and the remaining environment-specific editor build blockers.

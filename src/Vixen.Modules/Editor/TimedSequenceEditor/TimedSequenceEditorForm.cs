@@ -71,6 +71,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		// the sequence.
 		private TimedSequence _sequence;
+		private IReadOnlyList<MarkCollectionRenameRecord> _markCollectionRenameRecords = Array.Empty<MarkCollectionRenameRecord>();
 
 		// the program context we will be playing this sequence in: used to interact with the execution engine.
 		private ISequenceContext _context;
@@ -1490,6 +1491,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					TimelineControl.grid.SupressRendering = false;
 					TimelineControl.grid.SuppressInvalidate = false;
 					TimelineControl.grid.RenderAllRows();
+					ShowMarkCollectionRenameSummary();
 					CheckDeprecatedEffects();
 				});
 
@@ -1508,7 +1510,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					SequenceNotModified();
 				}
-
+				
 				if (_sequence.TimePerPixel > TimeSpan.Zero)
 				{
 					TimelineControl.TimePerPixel = _sequence.TimePerPixel;
@@ -3997,6 +3999,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			messageBox.ShowDialog(this);
 		}
 
+		private void ShowMarkCollectionRenameSummary()
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new MethodInvoker(ShowMarkCollectionRenameSummary));
+				return;
+			}
+
+			if (_markCollectionRenameRecords.Count == 0)
+				return;
+
+			var renamedCollections = string.Join("\n",
+				_markCollectionRenameRecords.Select(record =>
+					$"{FormatMarkCollectionName(record.OldName)} -> {FormatMarkCollectionName(record.NewName)}"));
+			var message = "The following duplicate Mark Collections were renamed so effects can select them correctly:\n\n" +
+				renamedCollections;
+			var messageBox = new MessageBoxForm(message, @"Mark Collections Renamed", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog(this);
+
+			_markCollectionRenameRecords = null;
+			SequenceModified();
+		}
+
+		private static string FormatMarkCollectionName(string name)
+		{
+			return string.IsNullOrWhiteSpace(name) ? "(blank)" : name.Trim();
+		}
+
 		/// <summary>
 		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given EffectNode.
 		/// Will add a single TimedSequenceElement to in each row that each targeted element of
@@ -5534,6 +5564,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					SequenceRemoved();
 					_sequence = (TimedSequence)value;
+					_markCollectionRenameRecords = MarkCollectionNameService.RenameDuplicates(_sequence.LabeledMarkCollections);
 					SequenceAdded();
 				}
 				else
