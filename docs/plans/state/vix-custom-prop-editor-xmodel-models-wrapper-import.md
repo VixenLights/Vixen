@@ -19,6 +19,7 @@ After this change, importing an `.xmodel` file with a root `models` wrapper will
 - [x] (2026-07-16 22:03Z) Confirmed Jira issue key `VIX-3943` and updated this plan with the exact key.
 - [x] (2026-07-16 22:05Z) Updated Jira issue `VIX-3943` description with background, requirements, acceptance criteria, test plan, and implementation-plan reference.
 - [x] (2026-07-16 22:09Z) Incorporated the clarification that non-custom `DisplayAs` values resolve to their corresponding model type and should be handled as unsupported unless that type is implemented.
+- [x] (2026-07-16 22:28Z) Completed Milestone 2 parser refactor: the importer now loads the XML into an `XDocument`, routes root `custommodel` elements through a reusable `XElement` custom-model parser, treats `model DisplayAs="Custom"` as custommodel when passed to that parser, resolves non-custom `DisplayAs` values to unsupported model types, and logs ignored `modelGroup` elements at info level.
 - [ ] Implement wrapper detection, model discovery, model selection, and normal-flow import routing.
 - [ ] Add focused automated tests for wrapper import, single-child wrapper import, multi-child wrapper selection, cancel behavior, and non-wrapper regression.
 - [ ] Run focused tests, full Custom Prop Editor tests as practical, and final build/check commands.
@@ -32,6 +33,8 @@ After this change, importing an `.xmodel` file with a root `models` wrapper will
   Evidence: `src/Vixen.Modules/App/CustomPropEditor/Import/XLights/XModelImport.cs` checks `if ("custommodel".Equals(reader.Name) && reader.HasAttributes)` and otherwise shows `Unsupported model type: {reader.Name}`.
 - Observation: Existing focused tests already exercise xModel import under `src/Vixen.Tests/App/CustomPropEditor/Import/XLights/XModelImportHierarchyTests.cs` using embedded temporary `.xmodel` strings rather than external reference files.
   Evidence: `XModelImportHierarchyTests.ImportAsync` writes the supplied XML string to a temporary `.xmodel` file and calls `new XModelImport().ImportAsync(filePath)`.
+- Observation: The parser can be refactored to `XDocument` without changing existing direct custommodel behavior.
+  Evidence: After the refactor, `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore` passed all 20 focused xLights importer tests.
 
 ## Decision Log
 
@@ -62,10 +65,15 @@ After this change, importing an `.xmodel` file with a root `models` wrapper will
 - Decision: Map non-custom wrapped `model` elements by `DisplayAs` to their corresponding xLights model type and handle them through the normal unsupported-model path when that type is not implemented.
   Rationale: The user clarified that `DisplayAs="Circle"` resolves to `circlemodel`, and `circlemodel` is not supported today. This keeps wrapped non-custom models consistent with standalone unsupported model roots instead of silently filtering or pretending they are custom models.
   Date/Author: 2026-07-16 / Codex
+- Decision: Use `XDocument`/`XElement` for the importer refactor.
+  Rationale: Wrapper selection needs to pass a chosen embedded model through the same parse path as a root custommodel. Element-based parsing keeps that path reusable while preserving the existing attribute and child-element semantics.
+  Date/Author: 2026-07-16 / Codex
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. Jira issue `VIX-3943` now contains the scoped requirements, acceptance criteria, and test plan for importing wrapped custom xModels. The description preserves the original `circlemodel` report as out-of-scope context so future work can address it separately if desired. Implementation has not started.
+Milestone 1 is complete. Jira issue `VIX-3943` now contains the scoped requirements, acceptance criteria, and test plan for importing wrapped custom xModels. The description preserves the original `circlemodel` report as out-of-scope context so future work can address it separately if desired.
+
+Milestone 2 is complete. `XModelImport` now has a reusable custom-model import method that accepts an `XElement`, allowing a future selected wrapper child model to follow the same code path as a standalone `custommodel`. Existing direct custommodel tests pass after the refactor, and `modelGroup` children are ignored with info-level logging.
 
 ## Clarifying Questions
 
@@ -271,3 +279,4 @@ The default public constructor should continue to work for `PropEditorViewModel`
 2026-07-16 / Codex: Updated the plan with confirmed Jira issue key `VIX-3943`.
 2026-07-16 / Codex: Completed Milestone 1 by updating Jira issue `VIX-3943` with the requirements, acceptance criteria, test plan, and implementation-plan reference.
 2026-07-16 / Codex: Updated the plan after user clarification that non-custom wrapped `DisplayAs` values resolve to their corresponding unsupported model type, such as `Circle` to `circlemodel`.
+2026-07-16 / Codex: Completed Milestone 2 by refactoring the importer to reusable `XElement` custom-model parsing and adding unsupported non-custom resolution plus info-only `modelGroup` logging in that path.

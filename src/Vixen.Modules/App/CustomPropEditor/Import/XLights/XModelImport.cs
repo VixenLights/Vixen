@@ -3,7 +3,8 @@ using Catel.Services;
 using NLog;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Xml;
+using System.IO;
+using System.Xml.Linq;
 using VixenModules.App.CustomPropEditor.Import.XLights.Faces;
 using VixenModules.App.CustomPropEditor.Import.XLights.Ranges;
 using VixenModules.App.CustomPropEditor.Model;
@@ -26,234 +27,261 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		private async Task<Prop> LoadModelFileAsync(string filePath)
 		{
-			Prop p = null;
-			XmlReaderSettings settings = new XmlReaderSettings();
-			settings.Async = true;
-			using (XmlReader reader = XmlReader.Create(filePath, settings))
+			await using var fileStream = File.OpenRead(filePath);
+			var document = await XDocument.LoadAsync(fileStream, LoadOptions.None, CancellationToken.None);
+			var root = document.Root;
+			if (root == null)
 			{
-				await reader.MoveToContentAsync();
+				await ShowModelErrorAsync("The xModel file does not contain a model definition.", "Model import error");
+				return null;
+			}
 
-				if ("custommodel".Equals(reader.Name) && reader.HasAttributes)
+			if (IsCustomModelElement(root))
+			{
+				return await ImportCustomModelElementAsync(root);
+			}
+
+			await ShowUnsupportedModelTypeAsync(ResolveModelType(root));
+			return null;
+		}
+
+		private async Task<Prop> ImportCustomModelElementAsync(XElement modelElement)
+		{
+			if (!IsCustomModelElement(modelElement))
+			{
+				await ShowUnsupportedModelTypeAsync(ResolveModelType(modelElement));
+				return null;
+			}
+
+			var name = GetAttributeValue(modelElement, "name");
+			var cm = new CustomModel(name);
+
+			//These are the size of the grid near as I can tell
+			//We will use them to gauge a scale.
+			int.TryParse(GetAttributeValue(modelElement, "parm1"), out var x);
+			int.TryParse(GetAttributeValue(modelElement, "parm2"), out var y);
+
+			cm.X = x;
+			cm.Y = y;
+
+			var prop = x < 800 && y < 600
+				//Ensure a minimum size by using the default
+				? PropModelServices.Instance().CreateProp($"{name} {{1}}")
+				: PropModelServices.Instance().CreateProp($"{name} {{1}}", x + 20, y + 20);
+
+			prop.CreatedBy = @"xModel Import";
+
+			int.TryParse(GetAttributeValue(modelElement, "PixelSize"), out var nodeSize);
+			cm.PixelSize = nodeSize;
+
+			cm.StringType = GetAttributeValue(modelElement, "StringType");
+			cm.StrandNames = GetAttributeValue(modelElement, "StrandNames");
+			cm.NodeNames = GetAttributeValue(modelElement, "NodeNames");
+			var compressedModel = GetAttributeValue(modelElement, "CustomModelCompressed");
+			var customModel = GetAttributeValue(modelElement, "CustomModel");
+			if (!await TryResolveModelNodesAsync(cm, compressedModel, customModel))
+			{
+				return null;
+			}
+
+			foreach (var childElement in modelElement.Elements())
+			{
+				if (ElementNameEquals(childElement, "subModel"))
 				{
-					string name = reader.GetAttribute("name");
-
-					CustomModel cm = new CustomModel(name);
-					
-					//These are the size of the grid near as I can tell
-					//We will use them to gauge a scale.
-					int.TryParse(reader.GetAttribute("parm1"), out var x);
-					int.TryParse(reader.GetAttribute("parm2"), out var y);
-
-					cm.X = x;  
-					cm.Y = y;
-
-					if (x < 800 && y < 600)
-					{
-						//Ensure a minimum size by using the default
-						p = PropModelServices.Instance().CreateProp($"{name} {{1}}");
-					}
-					else
-					{
-						p = PropModelServices.Instance().CreateProp($"{name} {{1}}", x + 20, y + 20);
-					}
-
-					p.CreatedBy = @"xModel Import";
-
-					int.TryParse(reader.GetAttribute("PixelSize"), out var nodeSize);
-					cm.PixelSize = nodeSize;
-
-					cm.StringType = reader.GetAttribute("StringType");
-					cm.StrandNames = reader.GetAttribute("StrandNames");
-					cm.NodeNames = reader.GetAttribute("NodeNames");
-					var compressedModel = reader.GetAttribute("CustomModelCompressed");
-					var customModel = reader.GetAttribute("CustomModel");
-					if (!await TryResolveModelNodesAsync(cm, compressedModel, customModel))
-					{
-						return null;
-					}
-
-					while (reader.Read())
-					{
-						if(reader.NodeType != XmlNodeType.Element) continue;
-
-						if ("subModel".Equals(reader.Name))
-						{
-							SubModel sm = new SubModel(reader.GetAttribute("name"))
-							{
-								Layout = reader.GetAttribute("layout")
-							};
-							var type = reader.GetAttribute("type");
-							switch (type)
-							{
-								case "ranges":
-									sm.Type = ModelType.Ranges;
-                                    sm.Ranges = ProcessRanges(reader);//ParseRanges(reader.GetAttribute("line0"));
-									cm.SubModels.Add(sm);
-									break;
-								case "subbuffer":
-									//There is currently no equivalent for this option
-									break;
-							}
-						}
-						else if("faceInfo".Equals(reader.Name))
-						{
-							var type = reader.GetAttribute("Type");
-							if (!string.IsNullOrEmpty(type) && type.Equals("NodeRange"))
-							{
-								var fi = new FaceInfo(reader.GetAttribute("Name"));
-								
-								foreach (var attribute in FaceInfo.Attributes)
-								{
-									var range = reader.GetAttribute(attribute.Key);
-									if (!string.IsNullOrEmpty(range))
-									{
-										FaceItem fd = new FaceItem
-										{
-											FaceComponent = attribute.Value,
-											RangeGroup = ParseRanges(range)
-										};
-										
-										var color = reader.GetAttribute(attribute.Key + "-Color");
-										if (!String.IsNullOrEmpty(color))
-										{
-											fd.Color = ColorTranslator.FromHtml(color);
-										}
-
-										fd.Name = attribute.Key;
-										fi.FaceDefinitions.Add(fd);
-									}
-								}
-								cm.FaceInfos.Add(fi);
-								
-							}
-							
-						}
-						else if ("stateInfo".Equals(reader.Name))
-						{
-							if (reader.HasAttributes)
-							{
-								var type = reader.GetAttribute("Type");
-								if (!string.IsNullOrEmpty(type) && type.Equals("NodeRange") || type.Equals("SingleNode"))
-								{
-									var stateInfo = new StateInfo(
-										XLightsStateNameNormalizer.NormalizeStateName(
-											reader.GetAttribute("Name"),
-											cm.StateInfos.Count + 1));
-									
-									//Parse the state values
-									Dictionary<string, StateItem> states = new ();
-
-									while (reader.MoveToNextAttribute())
-									{
-										switch (reader.Name)
-										{
-											case "Type":
-											case "NodeRange":
-											case "Name":
-											case "CustomColors":
-												continue;
-										}
-
-										if (reader.Name.StartsWith("s"))
-										{
-											var parts = reader.Name.Split('-');
-											if (parts.Length > 0)
-											{
-												if (!states.ContainsKey(parts[0]))
-												{
-													if (int.TryParse(parts[0].Substring(1), out var index))
-													{
-														StateItem si = new StateItem(
-															index,
-															XLightsStateNameNormalizer.NormalizeStateItemName(null, parts[0]));
-														states.Add(parts[0], si);
-													}
-												}
-												
-												if (parts.Length == 1)
-												{
-													var ranges = reader.Value;
-													if (states.ContainsKey(parts[0]))
-													{
-														if (type == "NodeRange")
-														{
-															states[parts[0]].RangeGroup = ParseRanges(ranges);
-														}
-														else if(type == "SingleNode")
-														{
-															var nodeInfo = ranges.Split(' ');
-															if (nodeInfo.Length == 2)
-															{
-																if (int.TryParse(nodeInfo[1],  out var nodeNumber))
-																{
-																	//we have a valid node, so send it to the range parser to create a range of one.
-																	states[parts[0]].RangeGroup = ParseRanges(nodeInfo[1]);
-																}
-															}
-														}
-														
-													}
-												}
-												else if (parts.Length == 2)
-												{
-													if ("Color".Equals(parts[1]))
-													{
-														var color = reader.Value;
-														if (!String.IsNullOrEmpty(color))
-														{
-															if (states.ContainsKey(parts[0]))
-															{
-																states[parts[0]].Color = ColorTranslator.FromHtml(color);
-															}
-														}
-													}
-
-													if ("Name".Equals(parts[1]))
-													{
-														var stateItemName = XLightsStateNameNormalizer.NormalizeStateItemName(
-															reader.Value,
-															parts[0]);
-														
-														if (states.ContainsKey(parts[0]))
-														{
-															states[parts[0]].Name = stateItemName;
-														}
-														
-													}
-												}
-											}
-										}
-									}
-
-									foreach (var stateItem in states)
-									{
-										if (stateItem.Value.RangeGroup == null)
-										{
-											continue;
-										}
-										stateInfo.StateItems.Add(stateItem.Value);
-									}
-									
-									cm.StateInfos.Add(stateInfo);
-								}
-							}
-							
-						}
-					}
-
-					
-					await Assemble(cm);
-
+					ImportSubModel(cm, childElement);
 				}
-				else
+				else if (ElementNameEquals(childElement, "faceInfo"))
 				{
-					var dependencyResolver = this.GetDependencyResolver();
-					var ms = dependencyResolver.Resolve<IMessageService>();
-					await ms.ShowErrorAsync($"Unsupported model type: {reader.Name}. \nImport only supports custom model types at this time.", "Model import error");
+					ImportFaceInfo(cm, childElement);
+				}
+				else if (ElementNameEquals(childElement, "stateInfo"))
+				{
+					ImportStateInfo(cm, childElement);
+				}
+				else if (ElementNameEquals(childElement, "modelGroup"))
+				{
+					Logging.Info(
+						"Skipping xModel modelGroup {ModelGroupName} in model {ModelName}; modelGroup import is not supported.",
+						GetAttributeValue(childElement, "name"),
+						cm.Name);
 				}
 			}
 
-			return p;
+			await Assemble(cm);
+			return prop;
+		}
+
+		private void ImportSubModel(CustomModel customModel, XElement subModelElement)
+		{
+			var subModel = new SubModel(GetAttributeValue(subModelElement, "name"))
+			{
+				Layout = GetAttributeValue(subModelElement, "layout")
+			};
+			var type = GetAttributeValue(subModelElement, "type");
+			switch (type)
+			{
+				case "ranges":
+					subModel.Type = ModelType.Ranges;
+					subModel.Ranges = ProcessRanges(subModelElement);
+					customModel.SubModels.Add(subModel);
+					break;
+				case "subbuffer":
+					//There is currently no equivalent for this option
+					break;
+			}
+		}
+
+		private void ImportFaceInfo(CustomModel customModel, XElement faceInfoElement)
+		{
+			var type = GetAttributeValue(faceInfoElement, "Type");
+			if (string.IsNullOrEmpty(type) || !type.Equals("NodeRange"))
+			{
+				return;
+			}
+
+			var faceInfo = new FaceInfo(GetAttributeValue(faceInfoElement, "Name"));
+			foreach (var attribute in FaceInfo.Attributes)
+			{
+				var range = GetAttributeValue(faceInfoElement, attribute.Key);
+				if (string.IsNullOrEmpty(range))
+				{
+					continue;
+				}
+
+				var faceItem = new FaceItem
+				{
+					FaceComponent = attribute.Value,
+					RangeGroup = ParseRanges(range)
+				};
+
+				var color = GetAttributeValue(faceInfoElement, attribute.Key + "-Color");
+				if (!string.IsNullOrEmpty(color))
+				{
+					faceItem.Color = ColorTranslator.FromHtml(color);
+				}
+
+				faceItem.Name = attribute.Key;
+				faceInfo.FaceDefinitions.Add(faceItem);
+			}
+
+			customModel.FaceInfos.Add(faceInfo);
+		}
+
+		private void ImportStateInfo(CustomModel customModel, XElement stateInfoElement)
+		{
+			if (!stateInfoElement.HasAttributes)
+			{
+				return;
+			}
+
+			var type = GetAttributeValue(stateInfoElement, "Type");
+			if (string.IsNullOrEmpty(type) || !type.Equals("NodeRange") && !type.Equals("SingleNode"))
+			{
+				return;
+			}
+
+			var stateInfo = new StateInfo(
+				XLightsStateNameNormalizer.NormalizeStateName(
+					GetAttributeValue(stateInfoElement, "Name"),
+					customModel.StateInfos.Count + 1));
+
+			//Parse the state values
+			Dictionary<string, StateItem> states = new();
+
+			foreach (var attribute in stateInfoElement.Attributes())
+			{
+				switch (attribute.Name.LocalName)
+				{
+					case "Type":
+					case "NodeRange":
+					case "Name":
+					case "CustomColors":
+						continue;
+				}
+
+				if (!attribute.Name.LocalName.StartsWith("s"))
+				{
+					continue;
+				}
+
+				var parts = attribute.Name.LocalName.Split('-');
+				if (parts.Length <= 0)
+				{
+					continue;
+				}
+
+				if (!states.ContainsKey(parts[0]))
+				{
+					if (int.TryParse(parts[0].Substring(1), out var index))
+					{
+						var stateItem = new StateItem(
+							index,
+							XLightsStateNameNormalizer.NormalizeStateItemName(null, parts[0]));
+						states.Add(parts[0], stateItem);
+					}
+				}
+
+				if (parts.Length == 1)
+				{
+					var ranges = attribute.Value;
+					if (states.ContainsKey(parts[0]))
+					{
+						if (type == "NodeRange")
+						{
+							states[parts[0]].RangeGroup = ParseRanges(ranges);
+						}
+						else if (type == "SingleNode")
+						{
+							var nodeInfo = ranges.Split(' ');
+							if (nodeInfo.Length == 2)
+							{
+								if (int.TryParse(nodeInfo[1], out var nodeNumber))
+								{
+									//we have a valid node, so send it to the range parser to create a range of one.
+									states[parts[0]].RangeGroup = ParseRanges(nodeInfo[1]);
+								}
+							}
+						}
+					}
+				}
+				else if (parts.Length == 2)
+				{
+					if ("Color".Equals(parts[1]))
+					{
+						var color = attribute.Value;
+						if (!string.IsNullOrEmpty(color))
+						{
+							if (states.ContainsKey(parts[0]))
+							{
+								states[parts[0]].Color = ColorTranslator.FromHtml(color);
+							}
+						}
+					}
+
+					if ("Name".Equals(parts[1]))
+					{
+						var stateItemName = XLightsStateNameNormalizer.NormalizeStateItemName(
+							attribute.Value,
+							parts[0]);
+
+						if (states.ContainsKey(parts[0]))
+						{
+							states[parts[0]].Name = stateItemName;
+						}
+					}
+				}
+			}
+
+			foreach (var stateItem in states)
+			{
+				if (stateItem.Value.RangeGroup == null)
+				{
+					continue;
+				}
+				stateInfo.StateItems.Add(stateItem.Value);
+			}
+
+			customModel.StateInfos.Add(stateInfo);
 		}
 
 		private async Task<bool> TryResolveModelNodesAsync(
@@ -322,29 +350,65 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			await messageService.ShowErrorAsync(message, title);
 		}
 
-        private List<RangeGroup> ProcessRanges(XmlReader reader)
-        {
-            int line = 0;
-            bool found = true;
-            List<RangeGroup> rangeGroups = new List<RangeGroup>();
-            while (found)
-            {
-                var range = reader.GetAttribute($"line{line}");
-                if (!string.IsNullOrEmpty(range))
-                {
-                    rangeGroups.Add(ParseRanges(range));
-                    line++;
+		private async Task ShowUnsupportedModelTypeAsync(string modelType)
+		{
+			await ShowModelErrorAsync($"Unsupported model type: {modelType}. \nImport only supports custom model types at this time.", "Model import error");
+		}
+
+		private static bool IsCustomModelElement(XElement modelElement)
+		{
+			return modelElement.HasAttributes &&
+				(ElementNameEquals(modelElement, "custommodel") ||
+				ElementNameEquals(modelElement, "model") &&
+				"Custom".Equals(GetAttributeValue(modelElement, "DisplayAs"), StringComparison.OrdinalIgnoreCase));
+		}
+
+		private static string ResolveModelType(XElement modelElement)
+		{
+			if (!ElementNameEquals(modelElement, "model"))
+			{
+				return modelElement.Name.LocalName;
+			}
+
+			var displayAs = GetAttributeValue(modelElement, "DisplayAs");
+			return string.IsNullOrWhiteSpace(displayAs)
+				? modelElement.Name.LocalName
+				: $"{displayAs.ToLowerInvariant()}model";
+		}
+
+		private static bool ElementNameEquals(XElement element, string name)
+		{
+			return name.Equals(element.Name.LocalName, StringComparison.Ordinal);
+		}
+
+		private static string GetAttributeValue(XElement element, string name)
+		{
+			return element.Attribute(name)?.Value;
+		}
+
+		private List<RangeGroup> ProcessRanges(XElement element)
+		{
+			int line = 0;
+			bool found = true;
+			List<RangeGroup> rangeGroups = new List<RangeGroup>();
+			while (found)
+			{
+				var range = GetAttributeValue(element, $"line{line}");
+				if (!string.IsNullOrEmpty(range))
+				{
+					rangeGroups.Add(ParseRanges(range));
+					line++;
 				}
-                else
-                {
-                    found = false;
-                }
-            }
+				else
+				{
+					found = false;
+				}
+			}
 
-            return rangeGroups;
-        }
+			return rangeGroups;
+		}
 
-        private async Task Assemble(CustomModel cm)
+		private async Task Assemble(CustomModel cm)
 		{
 			//Create the list of light Node candidates.
 			var modelNodes = await cm.CreateModelNodesAsync();
