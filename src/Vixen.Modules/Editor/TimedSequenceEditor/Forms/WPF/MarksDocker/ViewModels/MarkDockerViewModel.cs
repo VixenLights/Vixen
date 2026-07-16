@@ -93,7 +93,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void AddCollection()
 		{
-			var mc = new MarkCollection();
+			var mc = new MarkCollection { Name = MarkCollectionNameService.GetUniqueName("Mark Collection", MarkCollections) };
 			if (!MarkCollections.Any())
 			{
 				mc.IsDefault = true;

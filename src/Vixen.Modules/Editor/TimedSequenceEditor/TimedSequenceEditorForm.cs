@@ -3015,7 +3015,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						name = $"{phraseParent.Name} {type}";
 					}
 				}
-				var mc = GetOrAddNewMarkCollection(parent.Decorator.Color, name);
+				var mc = CreateNewMarkCollection(parent.Decorator.Color, name);
 				mc.LinkedMarkCollectionId = parent.Id;
 				mc.CollectionType = type;
 				mc.ShowMarkBar = true;
@@ -3094,21 +3094,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private IMarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
 		{
-			IMarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
+			var normalizedName = name?.Trim() ?? string.Empty;
+			IMarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection =>
+				string.Equals(mCollection.Name?.Trim(), normalizedName, StringComparison.OrdinalIgnoreCase));
 			if (mc == null)
 			{
-				MarkCollection newCollection = new MarkCollection {Name = name};
-				newCollection.Decorator.Color = color;
-				if (!_sequence.LabeledMarkCollections.Any())
-				{
-					newCollection.IsDefault = true;
-				}
-				_sequence.LabeledMarkCollections.Add(newCollection);
-				mc = newCollection;
-				SequenceModified();
+				mc = CreateNewMarkCollection(color, name);
 			}
 
 			return mc;
+		}
+
+		private IMarkCollection CreateNewMarkCollection(Color color, string name)
+		{
+			MarkCollection newCollection = new MarkCollection {Name = MarkCollectionNameService.GetUniqueName(name, _sequence.LabeledMarkCollections)};
+			newCollection.Decorator.Color = color;
+			if (!_sequence.LabeledMarkCollections.Any())
+			{
+				newCollection.IsDefault = true;
+			}
+			_sequence.LabeledMarkCollections.Add(newCollection);
+			SequenceModified();
+
+			return newCollection;
 		}
 
 		private void TimeLineGlobalTextChanged(object sender, MarksTextChangedEventArgs e)

@@ -17,11 +17,11 @@ After this change, the Marks Docker will assign unique default names when adding
 - [x] (2026-07-16 00:00Z) Inspected Timed Sequence Editor sequence load, mark collection hooks, mark creation, and duplicate-name warning paths in `TimedSequenceEditorForm.cs` and `Form_AddMultipleEffects.cs`.
 - [x] (2026-07-16 00:00Z) Identified the effect property converter `src/Vixen.Core/TypeConverters/IMarkCollectionNameConverter.cs` as one reason duplicate names are ambiguous: it exposes only names, not collection ids.
 - [x] (2026-07-16 14:32Z) Implemented shared mark collection naming helper and focused unit tests.
-- [ ] Prevent duplicate creation and import paths.
+- [x] (2026-07-16 14:42Z) Prevented duplicate creation and import paths by applying `MarkCollectionNameService.GetUniqueName` in the Marks Docker add command, editor-created collection helper, phoneme child collection creation, and Mark import add paths.
 - [ ] Add inline rename validation and duplicate-name visual feedback.
 - [ ] Repair duplicate mark collection names on sequence load and show a post-load summary.
 - [ ] Update Jira issue VIX-3947 with the final requirements, acceptance criteria, and automated and manual test plan.
-- [ ] Run targeted unit tests and a build or practical editor validation. Completed: `MarkCollectionNameService` targeted tests pass; remaining: broader sequencer tests and practical editor validation after UI/editor integration.
+- [ ] Run targeted unit tests and a build or practical editor validation. Completed: `MarkCollectionNameService` targeted tests pass; broader `Sequencer` test slice passes. Remaining: practical editor validation after UI/editor integration. Timed Sequence Editor project build is currently blocked in this shell by missing x86 apphost/native dependency setup.
 
 ## Surprises & Discoveries
 
@@ -42,6 +42,9 @@ After this change, the Marks Docker will assign unique default names when adding
 
 - Observation: The duplicate repair helper also needs to handle blank persisted names without creating a duplicate of an existing `Mark Collection` name.
   Evidence: `MarkCollectionNameServiceTests.RenameDuplicates_BlankNameUsesAvailableDefaultName` covers a blank name plus an existing `Mark Collection` and expects the blank name to become `Mark Collection - 2`.
+
+- Observation: Building the Timed Sequence Editor project in this environment currently fails before compiling the editor project because native dependency projects require the x86 .NET apphost pack.
+  Evidence: `msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj /t:Build /p:Configuration=Debug /p:UseAppHost=false /m` fails in `QMLibrary.vcxproj` and `LiquidLiquidFunWrapper.vcxproj` with `NETSDK1145` for missing `Microsoft.NETCore.App.Host.win-x86`.
 
 ## Decision Log
 
@@ -66,6 +69,10 @@ After this change, the Marks Docker will assign unique default names when adding
 Milestone 1 added `src/Vixen.Core/Marks/MarkCollectionNameService.cs` and `src/Vixen.Core/Marks/MarkCollectionRenameRecord.cs`, plus focused tests in `src/Vixen.Tests/Sequencer/MarkCollectionNameServiceTests.cs`. The helper validates unique names, generates ` - 2` and later suffixes, excludes a current collection id for rename validation, and repairs duplicate names while returning rename records. The test project now references `src/Vixen.Modules/App/Marks/Marks.csproj` so tests use the real `MarkCollection` implementation.
 
 The targeted command `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarkCollectionNameService --no-restore` passed with 12 tests. Existing package and compiler warnings were present, including the known `LiteDB` vulnerability warning and pre-existing nullable/obsolete warnings outside this change.
+
+Milestone 2 updated future creation paths so they no longer add duplicate Mark Collection names. The Marks Docker add command now names repeated new collections as `Mark Collection`, `Mark Collection - 2`, and later suffixes. The Timed Sequence Editor's mark-creation helper now uses case-insensitive trimmed lookup when reusing an existing named collection and a separate unique-create helper when a linked phoneme/word collection must be newly created. Mark import paths now add imported Vixen, migrated legacy, Audacity, xTiming, Papagayo, and Singing Faces collections through a shared `AddUniqueCollection` helper that assigns a unique name before adding the collection.
+
+Validation for milestone 2: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarkCollectionNameService --no-restore` passed with 12 tests, and `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Sequencer --no-restore` passed with 67 tests. `dotnet build src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj --no-restore`, `dotnet build ... -p:BuildProjectReferences=false`, and MSBuild project builds were attempted but could not complete in this shell because required native/x86 apphost dependencies are missing before the Timed Sequence Editor project can be compiled.
 
 ## Context and Orientation
 
@@ -267,3 +274,5 @@ Initial plan created for VIX-3947 after inspecting the Marks Docker, Timed Seque
 2026-07-16: Added an explicit implementation step to update Jira issue VIX-3947 with requirements, acceptance criteria, and automated/manual test plan so the tracker stays aligned with the planned behavior.
 
 2026-07-16: Completed the first implementation slice by adding the shared Mark Collection naming service, rename record DTO, unit tests, and the test project reference to the Marks module.
+
+2026-07-16: Completed the second implementation slice by wiring unique Mark Collection naming into Marks Docker creation, editor-created collections, linked phoneme collection creation, and import add paths. Recorded passing targeted tests and the environment-specific Timed Sequence Editor build blocker.
