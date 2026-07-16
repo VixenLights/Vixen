@@ -20,8 +20,8 @@ After this change, the Marks Docker will assign unique default names when adding
 - [x] (2026-07-16 14:42Z) Prevented duplicate creation and import paths by applying `MarkCollectionNameService.GetUniqueName` in the Marks Docker add command, editor-created collection helper, phoneme child collection creation, and Mark import add paths.
 - [x] (2026-07-16 20:00Z) Added inline rename validation and duplicate-name visual feedback.
 - [x] (2026-07-16 20:35Z) Repaired duplicate mark collection names on sequence load and added a post-load summary.
-- [ ] Update Jira issue VIX-3947 with the final requirements, acceptance criteria, and automated and manual test plan.
-- [ ] Run targeted unit tests and a build or practical editor validation. Completed: `MarkCollectionNameService` targeted tests pass after milestones 2, 3, and 4; broader `Sequencer` test slice passes after milestones 2, 3, and 4. Remaining: practical editor validation. Timed Sequence Editor project build is currently blocked in this shell by missing x86 apphost/native dependency setup, and the no-project-reference compile is blocked by missing Debug output DLLs for editor dependencies.
+- [x] (2026-07-16 20:43Z) Updated Jira issue VIX-3947 with the final requirements, acceptance criteria, and automated and manual test plan.
+- [x] (2026-07-16 20:50Z) Ran targeted automated tests, manual validation, and full build; all passed.
 
 ## Surprises & Discoveries
 
@@ -87,6 +87,10 @@ Validation for milestone 3: `git diff --check` passed, `dotnet test src\Vixen.Te
 Milestone 4 updated `TimedSequenceEditorForm` to repair duplicate Mark Collection names as soon as a `TimedSequence` is assigned, before mark collection change handlers are attached. The returned rename records are retained for the current load, the sequence is marked modified after the normal load-state reset when repair occurred, and a post-load information dialog summarizes each `old name -> new name` rename before deprecated-element warnings are shown.
 
 Validation for milestone 4: `git diff --check` passed, `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarkCollectionNameService --no-restore -m:1` passed with 12 tests, and `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Sequencer --no-restore -m:1` passed with 67 tests. The full Timed Sequence Editor project build remains blocked by missing `Microsoft.NETCore.App.Host.win-x86` for native dependency projects. A no-project-reference compile attempt reached the editor temporary assembly but could not complete because `Module.App.TimedSequenceMapper.dll`, `Module.Effect.Liquid.dll`, and `Module.SequenceType.Timed.dll` were not present in Debug output.
+
+Milestone 5 updated Jira issue VIX-3947 with an implementation comment containing the final requirements, acceptance criteria, automated test plan, and manual test plan. The comment records the expected unique-name behavior for new, imported, editor-created, inline-renamed, and load-repaired Mark Collections, plus the post-load summary and modified-sequence expectations.
+
+Final validation completed with all automated tests, manual tests, and the full build passing. This closes the VIX-3947 implementation plan.
 
 ## Context and Orientation
 
@@ -294,3 +298,7 @@ Initial plan created for VIX-3947 after inspecting the Marks Docker, Timed Seque
 2026-07-16: Completed the third implementation slice by adding an inline rename edit buffer, duplicate-name validation, and non-modal visual feedback in the Marks Docker row editor. Recorded passing targeted tests and the continuing environment-specific Timed Sequence Editor build blocker.
 
 2026-07-16: Completed the fourth implementation slice by repairing duplicate Mark Collection names during sequence assignment, preserving rename records, marking repaired sequences modified, and showing a post-load summary before deprecated-effect warnings. Recorded passing targeted tests and the remaining environment-specific editor build blockers.
+
+2026-07-16: Completed the fifth implementation slice by adding Jira comment 40203 to VIX-3947 with the final requirements, acceptance criteria, and automated/manual test plan.
+
+2026-07-16: Completed final validation. Manual tests, automated tests, and the full build all passed.
