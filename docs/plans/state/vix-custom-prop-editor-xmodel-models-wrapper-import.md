@@ -20,7 +20,7 @@ After this change, importing an `.xmodel` file with a root `models` wrapper will
 - [x] (2026-07-16 22:05Z) Updated Jira issue `VIX-3943` description with background, requirements, acceptance criteria, test plan, and implementation-plan reference.
 - [x] (2026-07-16 22:09Z) Incorporated the clarification that non-custom `DisplayAs` values resolve to their corresponding model type and should be handled as unsupported unless that type is implemented.
 - [x] (2026-07-16 22:28Z) Completed Milestone 2 parser refactor: the importer now loads the XML into an `XDocument`, routes root `custommodel` elements through a reusable `XElement` custom-model parser, treats `model DisplayAs="Custom"` as custommodel when passed to that parser, resolves non-custom `DisplayAs` values to unsupported model types, and logs ignored `modelGroup` elements at info level.
-- [ ] Implement wrapper detection, model discovery, model selection, and normal-flow import routing.
+- [x] (2026-07-16 22:35Z) Completed Milestone 3 wrapper discovery and selection routing: root `models` imports enumerate direct child `model` elements, build stable selection items with name fallback and duplicate disambiguation, auto-import a single supported custom model, report unsupported all-non-custom wrappers through the normal unsupported-model path, route selected supported models through the reusable import flow, and cancel when the selection service returns no selection.
 - [ ] Add focused automated tests for wrapper import, single-child wrapper import, multi-child wrapper selection, cancel behavior, and non-wrapper regression.
 - [ ] Run focused tests, full Custom Prop Editor tests as practical, and final build/check commands.
 - [ ] Record implementation results in `Outcomes & Retrospective`.
@@ -35,6 +35,8 @@ After this change, importing an `.xmodel` file with a root `models` wrapper will
   Evidence: `XModelImportHierarchyTests.ImportAsync` writes the supplied XML string to a temporary `.xmodel` file and calls `new XModelImport().ImportAsync(filePath)`.
 - Observation: The parser can be refactored to `XDocument` without changing existing direct custommodel behavior.
   Evidence: After the refactor, `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore` passed all 20 focused xLights importer tests.
+- Observation: The Custom Prop Editor project exposes internals to `Vixen.Tests`, so the xModel selection boundary can remain internal and still be faked by automated tests.
+  Evidence: `src/Vixen.Modules/App/CustomPropEditor/CustomPropEditor.csproj` contains `InternalsVisibleToAttribute` for `Vixen.Tests`.
 
 ## Decision Log
 
@@ -68,12 +70,17 @@ After this change, importing an `.xmodel` file with a root `models` wrapper will
 - Decision: Use `XDocument`/`XElement` for the importer refactor.
   Rationale: Wrapper selection needs to pass a chosen embedded model through the same parse path as a root custommodel. Element-based parsing keeps that path reusable while preserving the existing attribute and child-element semantics.
   Date/Author: 2026-07-16 / Codex
+- Decision: Keep the selection contract internal and injectable through an internal settable importer property until the WPF dialog is added.
+  Rationale: Milestone 3 needs testable selection routing without changing the public importer API. The production selection service intentionally returns no selection until Milestone 4 provides the dialog implementation.
+  Date/Author: 2026-07-16 / Codex
 
 ## Outcomes & Retrospective
 
 Milestone 1 is complete. Jira issue `VIX-3943` now contains the scoped requirements, acceptance criteria, and test plan for importing wrapped custom xModels. The description preserves the original `circlemodel` report as out-of-scope context so future work can address it separately if desired.
 
 Milestone 2 is complete. `XModelImport` now has a reusable custom-model import method that accepts an `XElement`, allowing a future selected wrapper child model to follow the same code path as a standalone `custommodel`. Existing direct custommodel tests pass after the refactor, and `modelGroup` children are ignored with info-level logging.
+
+Milestone 3 is complete. `XModelImport` now detects a root `models` element, gathers direct child `model` elements, creates internal `XModelSelectionItem` values for selection, imports a single supported custom model without prompting, reports unsupported all-non-custom wrappers through the normal unsupported model path, and routes multi-model wrappers through `IXModelSelectionService`. The default production service returns no selection until Milestone 4 adds the user-facing dialog.
 
 ## Clarifying Questions
 
@@ -280,3 +287,4 @@ The default public constructor should continue to work for `PropEditorViewModel`
 2026-07-16 / Codex: Completed Milestone 1 by updating Jira issue `VIX-3943` with the requirements, acceptance criteria, test plan, and implementation-plan reference.
 2026-07-16 / Codex: Updated the plan after user clarification that non-custom wrapped `DisplayAs` values resolve to their corresponding unsupported model type, such as `Circle` to `circlemodel`.
 2026-07-16 / Codex: Completed Milestone 2 by refactoring the importer to reusable `XElement` custom-model parsing and adding unsupported non-custom resolution plus info-only `modelGroup` logging in that path.
+2026-07-16 / Codex: Completed Milestone 3 by adding wrapper discovery, internal selection items and service boundary, single supported model auto-import, unsupported non-custom wrapper handling, and cancel behavior for no selection.

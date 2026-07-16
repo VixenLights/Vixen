@@ -19,6 +19,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 		protected static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const int Offset = 7;
 		private const bool CreateLegacyStateGroups = true;
+
+		internal IXModelSelectionService SelectionService { private get; set; } = new XModelSelectionService();
 		
 		public async Task<Prop> ImportAsync(string filePath)
 		{
@@ -41,8 +43,105 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				return await ImportCustomModelElementAsync(root);
 			}
 
+			if (ElementNameEquals(root, "models"))
+			{
+				return await ImportModelsWrapperAsync(root);
+			}
+
 			await ShowUnsupportedModelTypeAsync(ResolveModelType(root));
 			return null;
+		}
+
+		private async Task<Prop> ImportModelsWrapperAsync(XElement modelsElement)
+		{
+			var modelCandidates = modelsElement.Elements()
+				.Where(element => ElementNameEquals(element, "model"))
+				.Select((element, index) => new XModelCandidate(
+					element,
+					new XModelSelectionItem(
+						index,
+						GetModelDisplayName(element, index),
+						ResolveModelType(element),
+						IsCustomModelElement(element))))
+				.ToList();
+
+			if (!modelCandidates.Any())
+			{
+				await ShowModelErrorAsync("No models were found in the xModel file.", "Model import error");
+				return null;
+			}
+
+			if (modelCandidates.All(candidate => !candidate.SelectionItem.IsSupported))
+			{
+				await ShowUnsupportedModelTypeAsync(modelCandidates[0].SelectionItem.ModelType);
+				return null;
+			}
+
+			var selectionItems = DisambiguateSelectionItems(modelCandidates.Select(candidate => candidate.SelectionItem).ToList());
+			modelCandidates = modelCandidates
+				.Zip(selectionItems, (candidate, selectionItem) => candidate with { SelectionItem = selectionItem })
+				.ToList();
+
+			var selectedCandidate = modelCandidates.Count == 1
+				? modelCandidates[0]
+				: await SelectModelCandidateAsync(modelCandidates);
+
+			if (selectedCandidate == null)
+			{
+				return null;
+			}
+
+			if (!selectedCandidate.SelectionItem.IsSupported)
+			{
+				await ShowUnsupportedModelTypeAsync(selectedCandidate.SelectionItem.ModelType);
+				return null;
+			}
+
+			return await ImportCustomModelElementAsync(selectedCandidate.Element);
+		}
+
+		private async Task<XModelCandidate> SelectModelCandidateAsync(IReadOnlyList<XModelCandidate> modelCandidates)
+		{
+			var selection = await SelectionService.SelectModelAsync(modelCandidates.Select(candidate => candidate.SelectionItem).ToList());
+			if (selection == null)
+			{
+				return null;
+			}
+
+			return modelCandidates.SingleOrDefault(candidate => candidate.SelectionItem.Index == selection.Index);
+		}
+
+		private static string GetModelDisplayName(XElement modelElement, int index)
+		{
+			var modelName = GetAttributeValue(modelElement, "name");
+			return string.IsNullOrWhiteSpace(modelName)
+				? $"Unnamed model {index + 1}"
+				: modelName.Trim();
+		}
+
+		private static List<XModelSelectionItem> DisambiguateSelectionItems(IReadOnlyList<XModelSelectionItem> selectionItems)
+		{
+			var nameCounts = selectionItems
+				.GroupBy(selectionItem => selectionItem.DisplayName, StringComparer.Ordinal)
+				.ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
+			var usedNames = new Dictionary<string, int>(StringComparer.Ordinal);
+			var disambiguatedItems = new List<XModelSelectionItem>();
+
+			foreach (var selectionItem in selectionItems)
+			{
+				var displayName = selectionItem.DisplayName;
+				if (nameCounts[displayName] > 1)
+				{
+					usedNames.TryGetValue(displayName, out var usedCount);
+					usedCount++;
+					usedNames[displayName] = usedCount;
+					displayName = $"{displayName} ({usedCount})";
+				}
+
+				disambiguatedItems.Add(selectionItem with { DisplayName = displayName });
+			}
+
+			return disambiguatedItems;
 		}
 
 		private async Task<Prop> ImportCustomModelElementAsync(XElement modelElement)
