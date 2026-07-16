@@ -16,12 +16,12 @@ After this change, the Marks Docker will assign unique default names when adding
 - [x] (2026-07-16 00:00Z) Inspected the Marks Docker WPF view and view models in `src/Vixen.Modules/Editor/TimedSequenceEditor/Forms/WPF/MarksDocker`.
 - [x] (2026-07-16 00:00Z) Inspected Timed Sequence Editor sequence load, mark collection hooks, mark creation, and duplicate-name warning paths in `TimedSequenceEditorForm.cs` and `Form_AddMultipleEffects.cs`.
 - [x] (2026-07-16 00:00Z) Identified the effect property converter `src/Vixen.Core/TypeConverters/IMarkCollectionNameConverter.cs` as one reason duplicate names are ambiguous: it exposes only names, not collection ids.
-- [ ] Implement shared mark collection naming helper and tests.
+- [x] (2026-07-16 14:32Z) Implemented shared mark collection naming helper and focused unit tests.
 - [ ] Prevent duplicate creation and import paths.
 - [ ] Add inline rename validation and duplicate-name visual feedback.
 - [ ] Repair duplicate mark collection names on sequence load and show a post-load summary.
 - [ ] Update Jira issue VIX-3947 with the final requirements, acceptance criteria, and automated and manual test plan.
-- [ ] Run targeted unit tests and a build or practical editor validation.
+- [ ] Run targeted unit tests and a build or practical editor validation. Completed: `MarkCollectionNameService` targeted tests pass; remaining: broader sequencer tests and practical editor validation after UI/editor integration.
 
 ## Surprises & Discoveries
 
@@ -36,6 +36,12 @@ After this change, the Marks Docker will assign unique default names when adding
 
 - Observation: `TimedSequenceEditorForm.GetOrAddNewMarkCollection()` already uses name lookup and returns the first matching collection, so existing duplicate names can route new marks or generated phoneme collections to the wrong collection.
   Evidence: `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm.cs` uses `_sequence.LabeledMarkCollections.FirstOrDefault(mCollection => mCollection.Name == name)`.
+
+- Observation: `Vixen.Core` already has a generic `NamingUtilities.Uniquify` helper and tests, but it only works on a `HashSet<string>` and does not return rename records or support excluding the current collection during inline rename validation.
+  Evidence: `src/Vixen.Core/Utility/NamingUtilities.cs` and `src/Vixen.Tests/Utility/NamingUtilitiesTests.cs`.
+
+- Observation: The duplicate repair helper also needs to handle blank persisted names without creating a duplicate of an existing `Mark Collection` name.
+  Evidence: `MarkCollectionNameServiceTests.RenameDuplicates_BlankNameUsesAvailableDefaultName` covers a blank name plus an existing `Mark Collection` and expects the blank name to become `Mark Collection - 2`.
 
 ## Decision Log
 
@@ -57,7 +63,9 @@ After this change, the Marks Docker will assign unique default names when adding
 
 ## Outcomes & Retrospective
 
-Not yet implemented. At completion, update this section with the final behavior, any test gaps, and whether the load-time repair changed the sequence modified state as intended.
+Milestone 1 added `src/Vixen.Core/Marks/MarkCollectionNameService.cs` and `src/Vixen.Core/Marks/MarkCollectionRenameRecord.cs`, plus focused tests in `src/Vixen.Tests/Sequencer/MarkCollectionNameServiceTests.cs`. The helper validates unique names, generates ` - 2` and later suffixes, excludes a current collection id for rename validation, and repairs duplicate names while returning rename records. The test project now references `src/Vixen.Modules/App/Marks/Marks.csproj` so tests use the real `MarkCollection` implementation.
+
+The targeted command `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarkCollectionNameService --no-restore` passed with 12 tests. Existing package and compiler warnings were present, including the known `LiteDB` vulnerability warning and pre-existing nullable/obsolete warnings outside this change.
 
 ## Context and Orientation
 
@@ -257,3 +265,5 @@ No new NuGet packages are required. No solution file changes are expected unless
 Initial plan created for VIX-3947 after inspecting the Marks Docker, Timed Sequence Editor load path, mark collection model, and effect Mark Collection name converter.
 
 2026-07-16: Added an explicit implementation step to update Jira issue VIX-3947 with requirements, acceptance criteria, and automated/manual test plan so the tracker stays aligned with the planned behavior.
+
+2026-07-16: Completed the first implementation slice by adding the shared Mark Collection naming service, rename record DTO, unit tests, and the test project reference to the Marks module.

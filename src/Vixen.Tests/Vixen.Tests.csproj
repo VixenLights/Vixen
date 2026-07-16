@@ -26,6 +26,7 @@
 		<ProjectReference Include="..\Vixen.Modules\App\FPPClient\FPPClient.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\App\ExportWizard\ExportWizard.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\App\LivePreview\LivePreview.csproj" />
+		<ProjectReference Include="..\Vixen.Modules\App\Marks\Marks.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Chase\Chase.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Property\State\State.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\State\State.csproj" />
