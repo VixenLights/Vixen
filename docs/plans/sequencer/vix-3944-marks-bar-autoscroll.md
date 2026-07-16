@@ -17,7 +17,7 @@ The visible result is in the Timed Sequence Editor. With one or more visible Mar
 - [x] (2026-07-16 16:09 -05:00) Milestone 1: Updated Jira issue VIX-3944 with requirements, high-level design, acceptance criteria, and test plan in planning comment `40204`.
 - [x] (2026-07-16 16:24 -05:00) Milestone 2: Added horizontal auto-scroll support to `MarksBar` during Mark move and resize operations, including timer setup, edge detection, `VisibleTimeStart` clamping, last-mouse-move replay, drag cleanup, and timer disposal.
 - [x] (2026-07-16 16:43 -05:00) Milestone 3: Added focused `MarksBarAutoScrollTests` coverage for edge-distance calculation, visible-start clamping, whole-sequence-visible behavior, and positive/negative scroll deltas. Focused test run passed 8 tests.
-- [ ] Milestone 4: Run focused and full validation, manually verify the Timed Sequence Editor workflow, and update Jira with final evidence.
+- [x] (2026-07-16 16:25 -05:00) Milestone 4: Full automated validation and manual Timed Sequence Editor validation passed per final user confirmation. Added Jira closeout comment `40205` with implementation and validation evidence.
 
 ## Surprises & Discoveries
 
@@ -63,6 +63,10 @@ Milestone 1 is complete. VIX-3944 now has planning comment `40204` containing th
 Milestone 2 is complete. `MarksBar` now starts a UI-thread auto-scroll timer while Mark move or horizontal resize is active near the left or right edge of the visible control, updates `VisibleTimeStart` within the valid sequence range, and replays the last mouse move so existing Mark move/resize constraint logic continues to own the actual Mark time updates. Focused project build validation for `src\Vixen.Common\Controls\Controls.csproj` passed with zero warnings and zero errors.
 
 Milestone 3 is complete. The new `MarksBarAutoScrollTests` file verifies the deterministic edge-distance and visible-start calculations used by the timer tick. The tests intentionally avoid real timer ticks and mouse capture because those belong in manual validation. The focused command `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarksBarAutoScroll --no-restore` passed 8 tests.
+
+Milestone 4 is complete. Full automated validation and manual Timed Sequence Editor validation passed per final user confirmation. VIX-3944 was updated with Jira closeout comment `40205`, summarizing implementation scope, focused test evidence, full automated pass, and manual validation pass.
+
+VIX-3944 is complete against the original purpose. Users can now continue moving or resizing Marks at the visible timeline edges because the Marks Bar scrolls horizontally while the operation remains active. The implementation stayed local to the reusable timeline Marks Bar, kept existing Mark timing constraints and undo events intact, and added deterministic automated coverage for the scroll calculations while leaving pointer/timer workflow verification to manual Timed Sequence Editor validation.
 
 ## Context and Orientation
 
@@ -268,6 +272,12 @@ Milestone 3 focused test validation:
     Passed!  - Failed: 0, Passed: 8, Skipped: 0, Total: 8
     Notes: The run emitted existing package vulnerability warnings for LiteDB; no VIX-3944 test failed.
 
+Milestone 4 final validation:
+
+    2026-07-16 / User confirmation: Full automated tests pass.
+    2026-07-16 / User confirmation: Manual Timed Sequence Editor validation passes.
+    2026-07-16 / Codex: Added Jira closeout comment 40205 to VIX-3944 with implementation summary and validation evidence.
+
 ## Interfaces and Dependencies
 
 This work should use existing .NET WinForms APIs and existing Vixen timeline types only. Use `System.Windows.Forms.Timer` for UI-thread timer ticks. Do not introduce a new package.
@@ -288,3 +298,4 @@ Exact names may differ to match local style, but the responsibilities must remai
 - 2026-07-16 / Codex: Completed Milestone 1 by adding Jira planning comment 40204 to VIX-3944, then updated this ExecPlan's living sections with the Jira evidence and the reason the update was a comment rather than an issue-description edit.
 - 2026-07-16 / Codex: Completed Milestone 2 by implementing private `MarksBar` auto-scroll timer logic and validating the owning `Controls.csproj` build.
 - 2026-07-16 / Codex: Completed Milestone 3 by adding focused `MarksBarAutoScrollTests` and recording the passing focused test run.
+- 2026-07-16 / Codex: Completed Milestone 4 after the user confirmed full automated and manual validation passed. Added Jira closeout comment 40205 and recorded the final evidence in this ExecPlan.
