@@ -75,7 +75,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 									
 								}
 
-								collections.AddRange(imc);
+								foreach (var markCollection in imc ?? Enumerable.Empty<IMarkCollection>())
+								{
+									AddUniqueCollection(collections, markCollection);
+								}
 							}
 							else
 							{
@@ -126,7 +129,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					IsSolidLine = markCollection.SolidLine
 				};
 				markCollection.Marks.ForEach(x => lmc.AddMark(new Mark(x)));
-				collections.Add(lmc);
+				AddUniqueCollection(collections, lmc);
 			}
 
 			if (!collections.Any(x => x.IsDefault))
@@ -212,7 +215,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 							});
 						}
 
-						collections.Add(mc);
+						AddUniqueCollection(collections, mc);
 						if (!collections.Any(x => x.IsDefault))
 						{
 							SetDefaultCollection(collections);
@@ -270,7 +273,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 							marks[beatNumber - 1].AddMark(new Mark(time));
 						}
 						
-						collections.AddRange(marks);
+						foreach (var markCollection in marks)
+						{
+							AddUniqueCollection(collections, markCollection);
+						}
 					}
 
 					if (!collections.Any(x => x.IsDefault))
@@ -409,7 +415,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					if (mc.Marks.Any())
 					{
 						counter++;
-						collections.Add(mc);
+						AddUniqueCollection(collections, mc);
 					}
 				}
 			}
@@ -469,13 +475,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				}
 
 				phraseCollection.CollectionType = MarkCollectionType.Phrase;
-				markCollection.Add(phraseCollection);
+				AddUniqueCollection(markCollection, phraseCollection);
 				wordCollection.CollectionType = MarkCollectionType.Word;
 				wordCollection.LinkedMarkCollectionId = phraseCollection.Id;
-				markCollection.Add(wordCollection);
+				AddUniqueCollection(markCollection, wordCollection);
 				phonemeCollection.CollectionType = MarkCollectionType.Phoneme;
 				phonemeCollection.LinkedMarkCollectionId = wordCollection.Id;
-				markCollection.Add(phonemeCollection);
+				AddUniqueCollection(markCollection, phonemeCollection);
 
 
 				//phonemeCollection = new MarkCollection();
@@ -646,6 +652,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		public static string ToBGRHex(Color color)
 		{
 			return $"#{color.B:X2}{color.G:X2}{color.R:X2}";
+		}
+
+		private static void AddUniqueCollection(ICollection<IMarkCollection> collections, IMarkCollection markCollection)
+		{
+			var desiredName = string.IsNullOrWhiteSpace(markCollection.Name) ? "Mark Collection" : markCollection.Name;
+			markCollection.Name = MarkCollectionNameService.GetUniqueName(desiredName, collections);
+			collections.Add(markCollection);
 		}
 
 	}

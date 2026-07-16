@@ -31,6 +31,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		private void ParentMarkCollections_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			SetupLinkedToCheckboxes();
+			if (IsEditing)
+			{
+				ValidateEditableName();
+			}
 		}
 
 		#region Overrides of ViewModelBase
@@ -264,6 +268,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			{ // Equal: (e.ClickCount == 2)
 				_nameclickTimer.Stop();
 				_textHold = Name;
+				EditableName = Name;
+				ClearNameValidation();
 				IsEditing = true;
 			}
 
@@ -274,6 +280,67 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			_nameclickTimer.Stop();
 
 		}
+
+		#endregion
+
+		#region EditableName property
+
+		/// <summary>
+		/// Gets or sets the edit buffer used while renaming the Mark Collection.
+		/// </summary>
+		public string EditableName
+		{
+			get { return GetValue<string>(EditableNameProperty); }
+			set
+			{
+				SetValue(EditableNameProperty, value);
+				if (IsEditing)
+				{
+					ValidateEditableName();
+				}
+			}
+		}
+
+		/// <summary>
+		/// EditableName property data.
+		/// </summary>
+		public static readonly IPropertyData EditableNameProperty = RegisterProperty<string>(nameof(EditableName));
+
+		#endregion
+
+		#region HasNameValidationError property
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the edited Mark Collection name is invalid.
+		/// </summary>
+		public bool HasNameValidationError
+		{
+			get { return GetValue<bool>(HasNameValidationErrorProperty); }
+			set { SetValue(HasNameValidationErrorProperty, value); }
+		}
+
+		/// <summary>
+		/// HasNameValidationError property data.
+		/// </summary>
+		public static readonly IPropertyData HasNameValidationErrorProperty = RegisterProperty<bool>(nameof(HasNameValidationError));
+
+		#endregion
+
+		#region NameValidationMessage property
+
+		/// <summary>
+		/// Gets or sets the message describing why the edited Mark Collection name is invalid.
+		/// </summary>
+		public string NameValidationMessage
+		{
+			get { return GetValue<string>(NameValidationMessageProperty); }
+			set { SetValue(NameValidationMessageProperty, value); }
+		}
+
+		/// <summary>
+		/// NameValidationMessage property data.
+		/// </summary>
+		public static readonly IPropertyData NameValidationMessageProperty = RegisterProperty<string>(nameof(NameValidationMessage));
 
 		#endregion
 
@@ -313,12 +380,28 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void DoneEditing()
 		{
-			if (string.IsNullOrEmpty(Name))
+			var proposedName = EditableName?.Trim() ?? string.Empty;
+			if (string.IsNullOrEmpty(proposedName))
 			{
-				Name = _textHold;
+				EditableName = _textHold;
+				ClearNameValidation();
+				IsEditing = false;
+				return;
 			}
+
+			if (!ValidateEditableName())
+			{
+				return;
+			}
+
+			if (!string.Equals(Name, proposedName, StringComparison.Ordinal))
+			{
+				Name = proposedName;
+				IsDirty = true;
+			}
+
+			ClearNameValidation();
 			IsEditing = false;
-			IsDirty = true;
 		}
 
 		#endregion
@@ -340,11 +423,38 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void CancelEditing()
 		{
-			Name = _textHold;
+			EditableName = _textHold;
+			ClearNameValidation();
 			IsEditing = false;
 		}
 
 		#endregion	
+
+		private bool ValidateEditableName()
+		{
+			var proposedName = EditableName?.Trim() ?? string.Empty;
+			if (string.IsNullOrEmpty(proposedName))
+			{
+				ClearNameValidation();
+				return true;
+			}
+
+			if (MarkCollectionNameService.IsUniqueName(_markCollections, proposedName, MarkCollection.Id))
+			{
+				ClearNameValidation();
+				return true;
+			}
+
+			HasNameValidationError = true;
+			NameValidationMessage = $"A Mark Collection named \"{proposedName}\" already exists.";
+			return false;
+		}
+
+		private void ClearNameValidation()
+		{
+			HasNameValidationError = false;
+			NameValidationMessage = string.Empty;
+		}
 
 		#region Decorator property
 

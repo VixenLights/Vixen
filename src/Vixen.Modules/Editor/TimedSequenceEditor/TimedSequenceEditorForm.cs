@@ -71,6 +71,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		// the sequence.
 		private TimedSequence _sequence;
+		private IReadOnlyList<MarkCollectionRenameRecord> _markCollectionRenameRecords = Array.Empty<MarkCollectionRenameRecord>();
 
 		// the program context we will be playing this sequence in: used to interact with the execution engine.
 		private ISequenceContext _context;
@@ -1490,6 +1491,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					TimelineControl.grid.SupressRendering = false;
 					TimelineControl.grid.SuppressInvalidate = false;
 					TimelineControl.grid.RenderAllRows();
+					ShowMarkCollectionRenameSummary();
 					CheckDeprecatedEffects();
 				});
 
@@ -1508,7 +1510,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					SequenceNotModified();
 				}
-
+				
 				if (_sequence.TimePerPixel > TimeSpan.Zero)
 				{
 					TimelineControl.TimePerPixel = _sequence.TimePerPixel;
@@ -3015,7 +3017,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						name = $"{phraseParent.Name} {type}";
 					}
 				}
-				var mc = GetOrAddNewMarkCollection(parent.Decorator.Color, name);
+				var mc = CreateNewMarkCollection(parent.Decorator.Color, name);
 				mc.LinkedMarkCollectionId = parent.Id;
 				mc.CollectionType = type;
 				mc.ShowMarkBar = true;
@@ -3094,21 +3096,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private IMarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
 		{
-			IMarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
+			var normalizedName = name?.Trim() ?? string.Empty;
+			IMarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection =>
+				string.Equals(mCollection.Name?.Trim(), normalizedName, StringComparison.OrdinalIgnoreCase));
 			if (mc == null)
 			{
-				MarkCollection newCollection = new MarkCollection {Name = name};
-				newCollection.Decorator.Color = color;
-				if (!_sequence.LabeledMarkCollections.Any())
-				{
-					newCollection.IsDefault = true;
-				}
-				_sequence.LabeledMarkCollections.Add(newCollection);
-				mc = newCollection;
-				SequenceModified();
+				mc = CreateNewMarkCollection(color, name);
 			}
 
 			return mc;
+		}
+
+		private IMarkCollection CreateNewMarkCollection(Color color, string name)
+		{
+			MarkCollection newCollection = new MarkCollection {Name = MarkCollectionNameService.GetUniqueName(name, _sequence.LabeledMarkCollections)};
+			newCollection.Decorator.Color = color;
+			if (!_sequence.LabeledMarkCollections.Any())
+			{
+				newCollection.IsDefault = true;
+			}
+			_sequence.LabeledMarkCollections.Add(newCollection);
+			SequenceModified();
+
+			return newCollection;
 		}
 
 		private void TimeLineGlobalTextChanged(object sender, MarksTextChangedEventArgs e)
@@ -3987,6 +3997,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				string.Join("\n", deprecatedElementCounts.Select(x => $"{x.Name} ({x.EffectCount} effect{(x.EffectCount == 1 ? "" : "s")})"));
 			var messageBox = new MessageBoxForm(message, @"Deprecated Elements", MessageBoxButtons.OK, SystemIcons.Warning);
 			messageBox.ShowDialog(this);
+		}
+
+		private void ShowMarkCollectionRenameSummary()
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new MethodInvoker(ShowMarkCollectionRenameSummary));
+				return;
+			}
+
+			if (_markCollectionRenameRecords.Count == 0)
+				return;
+
+			var renamedCollections = string.Join("\n",
+				_markCollectionRenameRecords.Select(record =>
+					$"{FormatMarkCollectionName(record.OldName)} -> {FormatMarkCollectionName(record.NewName)}"));
+			var message = "The following duplicate Mark Collections were renamed so effects can select them correctly:\n\n" +
+				renamedCollections;
+			var messageBox = new MessageBoxForm(message, @"Mark Collections Renamed", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog(this);
+
+			_markCollectionRenameRecords = null;
+			SequenceModified();
+		}
+
+		private static string FormatMarkCollectionName(string name)
+		{
+			return string.IsNullOrWhiteSpace(name) ? "(blank)" : name.Trim();
 		}
 
 		/// <summary>
@@ -5526,6 +5564,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					SequenceRemoved();
 					_sequence = (TimedSequence)value;
+					_markCollectionRenameRecords = MarkCollectionNameService.RenameDuplicates(_sequence.LabeledMarkCollections);
 					SequenceAdded();
 				}
 				else
