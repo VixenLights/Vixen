@@ -26,10 +26,15 @@ namespace Common.Controls.TimelineControl
 		private Rectangle _ignoreDragArea;
 		private const int DragThreshold = 8;
 		private const int MinMarkWidthPx = 12;
+		private const int AutoScrollMarginPx = 24;
+		private const int AutoScrollPxScaleFactor = 4;
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
 		private ObservableCollection<IMarkCollection> _markCollections;
 		private readonly Font _textFont;
 		private List<IMark> _clipboard = new List<IMark>();
+		private System.Windows.Forms.Timer _autoScrollTimer;
+		private MouseEventArgs _lastMouseMove;
+		private int _mouseOutsideX;
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo, Guid instanceId) : base(timeinfo)
@@ -45,6 +50,7 @@ namespace Common.Controls.TimelineControl
 			_marksSelectionManager.SelectionChanged += MarksSelectionManager_SelectionChanged;
 			_rows = new List<MarkRow>();
 			MarkRow.MarkRowChanged += MarkRow_MarkRowChanged;
+			InitAutoScrollTimer();
 		}
 		
 		public ObservableCollection<IMarkCollection> MarkCollections
@@ -431,6 +437,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 		{
 			if (e.Button == MouseButtons.Right) return;
 			HandleMouseMove(e);
+			UpdateAutoScrollState(e);
 		}
 
 		private void HandleMouseMove(MouseEventArgs e)
@@ -556,9 +563,111 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 
 		private void EndAllDrag()
 		{
+			StopAutoScroll();
 			_dragState = DragState.Normal;
 			Cursor = Cursors.Default;
 			_mouseDownMark = null;
+		}
+
+		#endregion
+
+		#region Auto Scroll
+
+		private void InitAutoScrollTimer()
+		{
+			_autoScrollTimer = new System.Windows.Forms.Timer();
+			_autoScrollTimer.Interval = 50;
+			_autoScrollTimer.Tick += AutoScrollTimer_Tick;
+		}
+
+		private void UpdateAutoScrollState(MouseEventArgs e)
+		{
+			if (!IsAutoScrollDragState())
+			{
+				StopAutoScroll();
+				return;
+			}
+
+			_lastMouseMove = e;
+			_mouseOutsideX = GetHorizontalAutoScrollDistance(e.X);
+
+			if (_mouseOutsideX == 0)
+			{
+				if (_autoScrollTimer.Enabled)
+				{
+					_autoScrollTimer.Stop();
+				}
+				return;
+			}
+
+			if (!_autoScrollTimer.Enabled)
+			{
+				_autoScrollTimer.Start();
+			}
+		}
+
+		private bool IsAutoScrollDragState()
+		{
+			return _dragState == DragState.Moving || _dragState == DragState.HResizing;
+		}
+
+		private int GetHorizontalAutoScrollDistance(int x)
+		{
+			if (x <= AutoScrollMarginPx)
+			{
+				return -(AutoScrollMarginPx - x);
+			}
+
+			if (x > ClientSize.Width - AutoScrollMarginPx)
+			{
+				return x - ClientSize.Width + AutoScrollMarginPx;
+			}
+
+			return 0;
+		}
+
+		private void AutoScrollTimer_Tick(object sender, EventArgs e)
+		{
+			if (!IsAutoScrollDragState() || _lastMouseMove == null || _mouseOutsideX == 0)
+			{
+				StopAutoScroll();
+				return;
+			}
+
+			VisibleTimeStart = CalculateAutoScrollVisibleTimeStart(VisibleTimeStart, _mouseOutsideX);
+			HandleMouseMove(_lastMouseMove);
+		}
+
+		private TimeSpan CalculateAutoScrollVisibleTimeStart(TimeSpan currentVisibleStart, int mouseOutsideX)
+		{
+			return ClampVisibleTimeStart(currentVisibleStart + PixelsToTime(mouseOutsideX / AutoScrollPxScaleFactor));
+		}
+
+		private TimeSpan ClampVisibleTimeStart(TimeSpan candidate)
+		{
+			if (candidate < TimeSpan.Zero || VisibleTimeSpan >= TotalTime)
+			{
+				return TimeSpan.Zero;
+			}
+
+			TimeSpan latestVisibleStart = TotalTime - VisibleTimeSpan;
+			if (candidate > latestVisibleStart)
+			{
+				return latestVisibleStart;
+			}
+
+			return candidate;
+		}
+
+		private void StopAutoScroll()
+		{
+			if (_autoScrollTimer?.Enabled == true)
+			{
+				_autoScrollTimer.Stop();
+			}
+
+			_lastMouseMove = null;
+			_mouseOutsideX = 0;
 		}
 
 		#endregion
@@ -1217,6 +1326,13 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 				MarkRow.MarkRowChanged -= MarkRow_MarkRowChanged;
 
 				UnConfigureMarks();
+				if (_autoScrollTimer != null)
+				{
+					StopAutoScroll();
+					_autoScrollTimer.Tick -= AutoScrollTimer_Tick;
+					_autoScrollTimer.Dispose();
+					_autoScrollTimer = null;
+				}
 			}
 			base.Dispose(disposing);
 		}
