@@ -15,7 +15,7 @@ The visible result is in the Timed Sequence Editor. With one or more visible Mar
 - [x] (2026-07-16 00:00 -05:00) Researched the current Marks Bar drag and resize code, the existing effect-grid auto-scroll implementation, and the timeline shared time/scroll APIs.
 - [x] (2026-07-16 00:00 -05:00) Created this initial ExecPlan for VIX-3944 with implementation milestones, Jira update text, acceptance criteria, and validation steps.
 - [x] (2026-07-16 16:09 -05:00) Milestone 1: Updated Jira issue VIX-3944 with requirements, high-level design, acceptance criteria, and test plan in planning comment `40204`.
-- [ ] Milestone 2: Add horizontal auto-scroll support to `MarksBar` during Mark move and resize operations.
+- [x] (2026-07-16 16:24 -05:00) Milestone 2: Added horizontal auto-scroll support to `MarksBar` during Mark move and resize operations, including timer setup, edge detection, `VisibleTimeStart` clamping, last-mouse-move replay, drag cleanup, and timer disposal.
 - [ ] Milestone 3: Add focused automated coverage for scroll calculation and behavior that can be tested without brittle mouse simulation.
 - [ ] Milestone 4: Run focused and full validation, manually verify the Timed Sequence Editor workflow, and update Jira with final evidence.
 
@@ -56,6 +56,8 @@ The visible result is in the Timed Sequence Editor. With one or more visible Mar
 This plan has been created, but implementation has not started. The current expected outcome is that VIX-3944 will update Jira before coding, add horizontal auto-scroll to Mark move and resize operations, preserve all existing Mark timing constraints, and validate with both automated tests and manual Timed Sequence Editor scenarios.
 
 Milestone 1 is complete. VIX-3944 now has planning comment `40204` containing the requirements, high-level design, acceptance criteria, and test plan from this ExecPlan. Code implementation has not started.
+
+Milestone 2 is complete. `MarksBar` now starts a UI-thread auto-scroll timer while Mark move or horizontal resize is active near the left or right edge of the visible control, updates `VisibleTimeStart` within the valid sequence range, and replays the last mouse move so existing Mark move/resize constraint logic continues to own the actual Mark time updates. Focused project build validation for `src\Vixen.Common\Controls\Controls.csproj` passed with zero warnings and zero errors.
 
 ## Context and Orientation
 
@@ -248,6 +250,13 @@ Record validation transcripts here as implementation proceeds. Keep them concise
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MarksBarAutoScroll --no-restore
     Passed!  - Failed: 0, Passed: N, Skipped: 0, Total: N
 
+Milestone 2 build validation:
+
+    dotnet build src\Vixen.Common\Controls\Controls.csproj --no-restore
+    Build succeeded.
+        0 Warning(s)
+        0 Error(s)
+
 ## Interfaces and Dependencies
 
 This work should use existing .NET WinForms APIs and existing Vixen timeline types only. Use `System.Windows.Forms.Timer` for UI-thread timer ticks. Do not introduce a new package.
@@ -266,3 +275,4 @@ Exact names may differ to match local style, but the responsibilities must remai
 
 - 2026-07-16 / Codex: Initial ExecPlan created from VIX-3944 requirements and current source research in `MarksBar.cs`, `Grid_Mouse.cs`, `Grid.cs`, and `TimelineControlBase.cs`. The plan resolves the open scope questions as horizontal-only auto-scroll with effect-grid-like timing and focused helper tests plus manual UI validation.
 - 2026-07-16 / Codex: Completed Milestone 1 by adding Jira planning comment 40204 to VIX-3944, then updated this ExecPlan's living sections with the Jira evidence and the reason the update was a comment rather than an issue-description edit.
+- 2026-07-16 / Codex: Completed Milestone 2 by implementing private `MarksBar` auto-scroll timer logic and validating the owning `Controls.csproj` build.
