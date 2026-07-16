@@ -28,8 +28,8 @@ Defined in `src/.editorconfig`. Key rules:
 - PascalCase for types and members; `I`-prefix for interfaces
 - Nullable and ImplicitUsings enabled; C# 12+ features enabled
 
-Avoid reformatting unrelated code in a commit. If a reformat is necessary, put it in a separate commit clearly marked as such.
-Research the codebase before editing. Never change code you haven't read.
+Avoid reformatting unrelated code in a commit, instead put it in a separate commit clearly marked as such.
+Research the codebase before editing. Never change code you haven't read, instead read the code.
 
 ## Architecture
 

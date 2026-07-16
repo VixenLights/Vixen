@@ -16,7 +16,7 @@ msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release
 msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug
 ```
 
-Build output lands in `/Release/Output/` (Release) or `/Debug/Output/` (Debug). Modules build into subdirectories named `Module.{ModuleType}.{ModuleName}/`.
+Build output lands in `Release/Output/` (Release) or `Debug/Output/` (Debug). Modules build into subdirectories named **Module.[ModuleType].[ModuleName].**
 
 Unit tests live in `src/Vixen.Tests/`. Run them with `dotnet test src/Vixen.Tests/Vixen.Tests.csproj`.
 
@@ -28,7 +28,7 @@ Defined in `src/.editorconfig`. Key rules:
 - PascalCase for types and members; `I`-prefix for interfaces
 - Nullable and ImplicitUsings enabled; C# 12+ features enabled
 
-Avoid reformatting unrelated code in a commit. If a reformat is necessary, put it in a separate commit clearly marked as such.
+Avoid reformatting unrelated code in a commit, instead put it in a separate commit clearly marked as such.
 Research the codebase before editing. Never change code you haven't read.
 
 ## Architecture
@@ -64,12 +64,12 @@ src/
 
 Vixen is built around a descriptor-based plugin architecture. Every capability — effects, controllers, editors, output filters, previews — is a module.
 
-**Three core interfaces in `Vixen.Core/Module/`:**
+**Three core interfaces in `src/Vixen.Core/Module/`:**
 - `IModuleDescriptor` — static metadata: `TypeId` (GUID), author, version, `ModuleClass` (the concrete type to instantiate), declared `Dependencies`
 - `IModuleInstance` — runtime instance: holds `InstanceId`, `ModuleData`, `StaticModuleData`
 - `IModuleDataModel` — serializable per-instance configuration
 
-**Module folder convention under `src/Vixen.Modules/{ModuleType}/{ModuleName}/`:**
+**Module folder convention under** **src/Vixen.Modules/[ModuleType]/[ModuleName]**:
 ```
 MyEffect.cs              # IEffect implementation
 MyEffectDescriptor.cs    # Inherits EffectModuleDescriptorBase
@@ -77,9 +77,9 @@ MyEffectData.cs          # Inherits ModuleDataModel (serialized state)
 MyEffect.csproj
 ```
 
-**Namespace convention:** `VixenModules.{ModuleType}.{ModuleName}`
+**Namespace convention:** VixenModules.[ModuleType].[ModuleName]
 
-**Module types** (each a subdirectory under `Vixen.Modules/`):
+**Module types** (each a subdirectory under `src/Vixen.Modules/`):
 - `Effect` — visual effects rendered onto element timelines (50+ effects)
 - `Editor` — UI editors (TimedSequenceEditor, LayerEditor, FixtureWizard)
 - `App` — application-level modules (ColorGradients, Curves, Shows, WebServer, Modeling)
@@ -110,7 +110,7 @@ After running `dotnet sln add`, the generated `Any CPU` platform entries in `Vix
 {GUID}.Release|Any CPU.Build.0 = Release|x64
 ```
 
-**`dotnet sln add` creates spurious solution folders.** The command generates new `Project` entries of type `{2150E333...}` (Solution Folder) mirroring the filesystem path (e.g. `src`, `Vixen.Modules`, `App`) and nests the new project inside them. These duplicate folders must be removed manually:
+**`dotnet sln add` creates spurious solution folders.** The command generates new `Project` entries of type {2150E333...} (Solution Folder) mirroring the filesystem path (e.g. `src`, `src/Vixen.Modules`, `App`) and nests the new project inside them. These duplicate folders must be removed manually:
 
 1. Delete the auto-generated `Project`/`EndProject` blocks for the spurious folders.
 2. In `GlobalSection(NestedProjects)`, update the new project's entry to point at the correct pre-existing solution folder GUID instead of the auto-generated one.
@@ -156,4 +156,9 @@ Available skills:
 | `summarize-changes` | `.agents/skills/summarize-changes/SKILL.md` | Summarizing a changeset or PR |
 | `jira` | `.agents/skills/jira/SKILL.md` | Use when asked to "create JIRA ticket", "search JIRA", "update JIRA issue", "transition issue", "sprint planning", or "epic management". |
 
-Task documents that say "use the X skill" always refer to the project version at `.agents/skills/X/SKILL.md`.
+Task documents that say "use the X skill" always refer to the project version found in the skills directory.
+
+- Path pattern: .agents/skills/[skill-name]/SKILL.md
+
+
+
