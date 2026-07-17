@@ -30,6 +30,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private bool _selectionChanging;
+		private static string _lastFolder = string.Empty;
 		
 		public PropEditorViewModel()
 		{
@@ -946,9 +947,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				IsMultiSelect = false,
 				Filter = "xModel (*.xmodel)|*.xmodel",
-				FileName = String.Empty,
-				InitialDirectory = Paths.DataRootPath
+				FileName = String.Empty
 			};
+
+			if (string.IsNullOrEmpty(_lastFolder))
+			{
+				determineFileContext.InitialDirectory = Paths.DataRootPath;
+			}
 
 			var result = await openFileService.DetermineFileAsync(determineFileContext);
 
@@ -957,6 +962,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				string path = result.FileName;
 				if (!string.IsNullOrEmpty(path))
 				{
+					_lastFolder = Path.GetDirectoryName(path);
 					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 					pleaseWaitService.Show();
 					await ImportProp(path);
