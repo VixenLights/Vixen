@@ -181,17 +181,182 @@ public class XModelImportHierarchyTests
 			modelGroup.StateDefinitionModels.Select(definition => definition.Name).ToList());
 	}
 
-	private static async Task<Prop> ImportAsync(string modelXml)
+	[Fact]
+	public async Task Import_WithSingleWrappedCustomModel_ImportsWithoutSelection()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<models type="exported">
+				<model name="Wrapped Snowman" DisplayAs="Custom" CustomWidth="300" CustomHeight="300" PixelSize="1" CustomModelCompressed="1,0,0;2,1,0" />
+			</models>
+			""";
+		var selectionService = new FakeXModelSelectionService
+		{
+			ThrowOnSelection = true
+		};
+
+		// Act
+		var prop = await ImportAsync(modelXml, selectionService);
+
+		// Assert
+		Assert.Equal("Wrapped Snowman {1}", prop.Name);
+		var modelGroup = Assert.Single(prop.RootNode.Children);
+		Assert.Equal("Wrapped Snowman {1} - Model", modelGroup.Name);
+		Assert.Equal([1, 2], modelGroup.Children.Select(child => child.Order).Order());
+		Assert.Equal(0, selectionService.CallCount);
+	}
+
+	[Fact]
+	public async Task Import_WithMultipleWrappedCustomModels_ImportsSelectedModel()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<models type="exported">
+				<model name="First" DisplayAs="Custom" CustomWidth="300" CustomHeight="300" PixelSize="1" CustomModelCompressed="1,0,0" />
+				<model name="Second" DisplayAs="Custom" CustomWidth="300" CustomHeight="300" PixelSize="1" CustomModelCompressed="1,1,0;2,2,0" />
+			</models>
+			""";
+		var selectionService = new FakeXModelSelectionService
+		{
+			SelectedIndex = 1
+		};
+
+		// Act
+		var prop = await ImportAsync(modelXml, selectionService);
+
+		// Assert
+		Assert.Equal("Second {1}", prop.Name);
+		Assert.Equal(1, selectionService.CallCount);
+		Assert.Equal(["First", "Second"], selectionService.SeenModels.Select(model => model.DisplayName).ToList());
+		var modelGroup = Assert.Single(prop.RootNode.Children);
+		Assert.Equal([1, 2], modelGroup.Children.Select(child => child.Order).Order());
+	}
+
+	[Fact]
+	public async Task Import_WithMultipleWrappedCustomModelsAndCanceledSelection_ReturnsNull()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<models type="exported">
+				<model name="First" DisplayAs="Custom" CustomWidth="300" CustomHeight="300" PixelSize="1" CustomModelCompressed="1,0,0" />
+				<model name="Second" DisplayAs="Custom" CustomWidth="300" CustomHeight="300" PixelSize="1" CustomModelCompressed="1,1,0" />
+			</models>
+			""";
+		var selectionService = new FakeXModelSelectionService
+		{
+			CancelSelection = true
+		};
+
+		// Act
+		var prop = await ImportAsync(modelXml, selectionService);
+
+		// Assert
+		Assert.Null(prop);
+		Assert.Equal(1, selectionService.CallCount);
+	}
+
+	[Fact]
+	public async Task Import_WithDuplicateWrappedModelNames_DisambiguatesSelectionNames()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<models type="exported">
+				<model name="Duplicate" DisplayAs="Custom" CustomWidth="300" CustomHeight="300" PixelSize="1" CustomModelCompressed="1,0,0" />
+				<model name="Duplicate" DisplayAs="Custom" CustomWidth="300" CustomHeight="300" PixelSize="1" CustomModelCompressed="1,1,0" />
+			</models>
+			""";
+		var selectionService = new FakeXModelSelectionService
+		{
+			SelectedIndex = 1
+		};
+
+		// Act
+		var prop = await ImportAsync(modelXml, selectionService);
+
+		// Assert
+		Assert.Equal("Duplicate {1}", prop.Name);
+		Assert.Equal(["Duplicate (1)", "Duplicate (2)"], selectionService.SeenModels.Select(model => model.DisplayName).ToList());
+	}
+
+	[Fact]
+	public async Task Import_WithWrappedModelGroup_IgnoresModelGroupElements()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<models type="exported">
+				<model name="Grouped" DisplayAs="Custom" CustomWidth="300" CustomHeight="300" PixelSize="1" CustomModelCompressed="1,0,0">
+					<modelGroup name="Ignored Group" models="Grouped/SubModel" />
+				</model>
+			</models>
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		Assert.Equal("Grouped {1}", prop.Name);
+		Assert.DoesNotContain(prop.RootNode.GetNodeEnumerator(), node => node.Name.Contains("Ignored Group"));
+		var modelGroup = Assert.Single(prop.RootNode.Children);
+		Assert.Equal("Grouped {1} - Model", modelGroup.Name);
+		Assert.Single(modelGroup.Children);
+	}
+
+	private static Task<Prop> ImportAsync(string modelXml)
+	{
+		var import = new XModelImport();
+		return ImportAsync(modelXml, import);
+	}
+
+	private static Task<Prop> ImportAsync(string modelXml, IXModelSelectionService selectionService)
+	{
+		var import = new XModelImport
+		{
+			SelectionService = selectionService
+		};
+		return ImportAsync(modelXml, import);
+	}
+
+	private static async Task<Prop> ImportAsync(string modelXml, XModelImport import)
 	{
 		var filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xmodel");
 		await File.WriteAllTextAsync(filePath, modelXml);
 		try
 		{
-			return await new XModelImport().ImportAsync(filePath);
+			return await import.ImportAsync(filePath);
 		}
 		finally
 		{
 			File.Delete(filePath);
+		}
+	}
+
+	private sealed class FakeXModelSelectionService : IXModelSelectionService
+	{
+		public int CallCount { get; private set; }
+
+		public int SelectedIndex { get; set; }
+
+		public bool CancelSelection { get; set; }
+
+		public bool ThrowOnSelection { get; set; }
+
+		public IReadOnlyList<XModelSelectionItem> SeenModels { get; private set; } = [];
+
+		public Task<XModelSelectionItem> SelectModelAsync(IReadOnlyList<XModelSelectionItem> models)
+		{
+			if (ThrowOnSelection)
+			{
+				throw new InvalidOperationException("Selection service should not be called.");
+			}
+
+			CallCount++;
+			SeenModels = models;
+			return Task.FromResult(CancelSelection ? null! : models.Single(model => model.Index == SelectedIndex));
 		}
 	}
 }

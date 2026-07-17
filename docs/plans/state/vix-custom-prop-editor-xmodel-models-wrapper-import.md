@@ -22,7 +22,7 @@ After this change, importing an `.xmodel` file with a root `models` wrapper will
 - [x] (2026-07-16 22:28Z) Completed Milestone 2 parser refactor: the importer now loads the XML into an `XDocument`, routes root `custommodel` elements through a reusable `XElement` custom-model parser, treats `model DisplayAs="Custom"` as custommodel when passed to that parser, resolves non-custom `DisplayAs` values to unsupported model types, and logs ignored `modelGroup` elements at info level.
 - [x] (2026-07-16 22:35Z) Completed Milestone 3 wrapper discovery and selection routing: root `models` imports enumerate direct child `model` elements, build stable selection items with name fallback and duplicate disambiguation, auto-import a single supported custom model, report unsupported all-non-custom wrappers through the normal unsupported-model path, route selected supported models through the reusable import flow, and cancel when the selection service returns no selection.
 - [x] (2026-07-16 22:43Z) Completed Milestone 4 selection UI: `XModelSelectionService` now shows a Catel dialog through `IUIVisualizerService`, `XModelSelectionViewModel` owns the selection state and OK/Cancel commands, and `XModelSelectionView` lists model names and resolved model types while explaining that one embedded model can be imported.
-- [ ] Add focused automated tests for wrapper import, single-child wrapper import, multi-child wrapper selection, cancel behavior, and non-wrapper regression.
+- [x] (2026-07-17 15:22Z) Completed Milestone 5 focused tests: added wrapper tests for single-child auto-import, multi-child selection, cancel returning null, duplicate name disambiguation, and ignored `modelGroup` elements, using embedded XML and an injected fake selection service.
 - [ ] Run focused tests, full Custom Prop Editor tests as practical, and final build/check commands.
 - [ ] Record implementation results in `Outcomes & Retrospective`.
 
@@ -40,6 +40,8 @@ After this change, importing an `.xmodel` file with a root `models` wrapper will
   Evidence: `src/Vixen.Modules/App/CustomPropEditor/CustomPropEditor.csproj` contains `InternalsVisibleToAttribute` for `Vixen.Tests`.
 - Observation: The Custom Prop Editor already uses Catel `IUIVisualizerService` with view-model-to-window naming for dialogs.
   Evidence: `PropEditorViewModel.OpenVendorBrowserAsync` creates `VendorInventoryWindowViewModel` and calls `IUIVisualizerService.ShowDialogAsync(vm)`, which resolves `VendorInventoryWindow`.
+- Observation: The wrapper import tests can inject `IXModelSelectionService` directly because `XModelImport.SelectionService` is internal and the project exposes internals to `Vixen.Tests`.
+  Evidence: The new tests in `XModelImportHierarchyTests` use `FakeXModelSelectionService` to select models, cancel selection, and inspect model-choice display names without showing UI.
 
 ## Decision Log
 
@@ -89,6 +91,8 @@ Milestone 2 is complete. `XModelImport` now has a reusable custom-model import m
 Milestone 3 is complete. `XModelImport` now detects a root `models` element, gathers direct child `model` elements, creates internal `XModelSelectionItem` values for selection, imports a single supported custom model without prompting, reports unsupported all-non-custom wrappers through the normal unsupported model path, and routes multi-model wrappers through `IXModelSelectionService`. The default production service returns no selection until Milestone 4 adds the user-facing dialog.
 
 Milestone 4 is complete. `XModelSelectionService` now uses `IUIVisualizerService` to show `XModelSelectionViewModel`, and `XModelSelectionView` provides the WPF dialog. The view model defaults to the first supported custom model, exposes OK and Cancel commands, and returns the selected item only when the dialog is accepted.
+
+Milestone 5 is complete. Focused importer tests now cover single-child wrapped custom imports, multi-child wrapped custom selection, canceled selection, duplicate model-name disambiguation, and ignored `modelGroup` elements. Log capture for `modelGroup` skip messages was not added because it would require global NLog target manipulation in this shared test process; the log statement remains covered by code review and the functional test verifies no modelGroup-derived nodes are created.
 
 ## Clarifying Questions
 
@@ -297,3 +301,4 @@ The default public constructor should continue to work for `PropEditorViewModel`
 2026-07-16 / Codex: Completed Milestone 2 by refactoring the importer to reusable `XElement` custom-model parsing and adding unsupported non-custom resolution plus info-only `modelGroup` logging in that path.
 2026-07-16 / Codex: Completed Milestone 3 by adding wrapper discovery, internal selection items and service boundary, single supported model auto-import, unsupported non-custom wrapper handling, and cancel behavior for no selection.
 2026-07-16 / Codex: Completed Milestone 4 by replacing the placeholder selection service with a Catel `IUIVisualizerService` dialog, adding `XModelSelectionViewModel`, and adding `XModelSelectionView`.
+2026-07-17 / Codex: Completed Milestone 5 by adding focused wrapper importer tests with a fake selection service and embedded XML fixtures.
