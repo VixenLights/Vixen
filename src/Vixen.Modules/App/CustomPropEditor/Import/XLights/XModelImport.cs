@@ -18,6 +18,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 	{
 		protected static Logger Logging = LogManager.GetCurrentClassLogger();
 		private const int Offset = 7;
+		private const int MinimumPropWidth = 800;
+		private const int MinimumPropHeight = 600;
 		private const bool CreateLegacyStateGroups = true;
 
 		internal IXModelSelectionService SelectionService { private get; set; } = new XModelSelectionService();
@@ -157,21 +159,16 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 			//These are the size of the grid near as I can tell
 			//We will use them to gauge a scale.
-			int.TryParse(GetAttributeValue(modelElement, "parm1"), out var x);
-			int.TryParse(GetAttributeValue(modelElement, "parm2"), out var y);
+			var x = GetModelDimension(modelElement, "CustomWidth", "parm1");
+			var y = GetModelDimension(modelElement, "CustomHeight", "parm2");
 
 			cm.X = x;
 			cm.Y = y;
 
-			var prop = x < 800 && y < 600
-				//Ensure a minimum size by using the default
-				? PropModelServices.Instance().CreateProp($"{name} {{1}}")
-				: PropModelServices.Instance().CreateProp($"{name} {{1}}", x + 20, y + 20);
-
-			prop.CreatedBy = @"xModel Import";
-
-			int.TryParse(GetAttributeValue(modelElement, "PixelSize"), out var nodeSize);
-			cm.PixelSize = nodeSize;
+			if (int.TryParse(GetAttributeValue(modelElement, "PixelSize"), out var nodeSize) && nodeSize > 0)
+			{
+				cm.PixelSize = nodeSize;
+			}
 
 			cm.StringType = GetAttributeValue(modelElement, "StringType");
 			cm.StrandNames = GetAttributeValue(modelElement, "StrandNames");
@@ -182,6 +179,10 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			{
 				return null;
 			}
+
+			var propSize = CalculatePropSize(cm);
+			var prop = PropModelServices.Instance().CreateProp($"{name} {{1}}", propSize.Width, propSize.Height);
+			prop.CreatedBy = @"xModel Import";
 
 			foreach (var childElement in modelElement.Elements())
 			{
@@ -208,6 +209,35 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 			await Assemble(cm);
 			return prop;
+		}
+
+		private static (int Width, int Height) CalculatePropSize(CustomModel customModel)
+		{
+			if (!customModel.ModelNodes.Any())
+			{
+				return (
+					Math.Max(customModel.X + Offset * 2, MinimumPropWidth),
+					Math.Max(customModel.Y + Offset * 2, MinimumPropHeight));
+			}
+
+			var width = customModel.ModelNodes.Values.Max(modelNode => modelNode.X) + Offset + customModel.PixelSize;
+			var height = customModel.ModelNodes.Values.Max(modelNode => modelNode.Y) + Offset + customModel.PixelSize;
+
+			return (Math.Max(width, MinimumPropWidth), Math.Max(height, MinimumPropHeight));
+		}
+
+		private static int GetModelDimension(XElement modelElement, string preferredAttributeName, string fallbackAttributeName)
+		{
+			return TryGetPositiveAttributeValue(modelElement, preferredAttributeName, out var preferredValue)
+				? preferredValue
+				: TryGetPositiveAttributeValue(modelElement, fallbackAttributeName, out var fallbackValue)
+					? fallbackValue
+					: 0;
+		}
+
+		private static bool TryGetPositiveAttributeValue(XElement modelElement, string attributeName, out int value)
+		{
+			return int.TryParse(GetAttributeValue(modelElement, attributeName), out value) && value > 0;
 		}
 
 		private void ImportSubModel(CustomModel customModel, XElement subModelElement)

@@ -85,6 +85,80 @@ public class XModelImportHierarchyTests
 	}
 
 	[Fact]
+	public async Task Import_WithSmallModelBounds_UsesMinimumPropSize()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<custommodel name="Tiny Snowman" parm1="10" parm2="10" PixelSize="3" CustomModelCompressed="1,0,0;2,4,5" />
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		Assert.Equal(800, prop.Width);
+		Assert.Equal(600, prop.Height);
+		var modelGroup = Assert.Single(prop.RootNode.Children);
+		Assert.All(modelGroup.Children, child => Assert.InRange(child.Lights.Single().X, 0, prop.Width));
+		Assert.All(modelGroup.Children, child => Assert.InRange(child.Lights.Single().Y, 0, prop.Height));
+	}
+
+	[Fact]
+	public async Task Import_WithLargeModelBounds_ExpandsPropToImportedNodes()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<custommodel name="Large Snowman" parm1="10" parm2="10" PixelSize="3" CustomModelCompressed="1,0,0;2,700,900" />
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		Assert.Equal(3611, prop.Width);
+		Assert.Equal(2811, prop.Height);
+		var modelGroup = Assert.Single(prop.RootNode.Children);
+		Assert.All(modelGroup.Children, child => Assert.InRange(child.Lights.Single().X, 0, prop.Width));
+		Assert.All(modelGroup.Children, child => Assert.InRange(child.Lights.Single().Y, 0, prop.Height));
+	}
+
+	[Fact]
+	public async Task Import_WithCustomDimensions_UsesCustomWidthAndHeightForScale()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<custommodel name="Modern Snowman" CustomWidth="300" CustomHeight="300" parm1="10" parm2="10" PixelSize="3" CustomModelCompressed="1,0,0;2,700,900" />
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		Assert.Equal(911, prop.Width);
+		Assert.Equal(711, prop.Height);
+	}
+
+	[Fact]
+	public async Task Import_WithoutCustomDimensions_FallsBackToLegacyDimensionsForScale()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<custommodel name="Legacy Snowman" parm1="300" parm2="300" PixelSize="3" CustomModelCompressed="1,0,0;2,700,900" />
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		Assert.Equal(911, prop.Width);
+		Assert.Equal(711, prop.Height);
+	}
+
+	[Fact]
 	public async Task Import_WithDuplicateStateInfoNames_CreatesUniqueStateDefinitionModelNames()
 	{
 		// Arrange
