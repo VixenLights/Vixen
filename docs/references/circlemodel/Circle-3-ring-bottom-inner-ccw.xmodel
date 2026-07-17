@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<models type="exported">
+	<model name="Circle" DisplayAs="Circle" Antialias="1" centerPercent="40" Controller="No Controller" Dir="R" InsideOut="1" LayerSizes="30,40,50" LayoutGroup="Default" NodesPerString="120" NumStrings="1" PixelSize="2" RotateX="0.000000" RotateY="0.000000" RotateZ="0.000000" ScaleX="5.416101" ScaleY="4.656205" ScaleZ="0.020408" SourceVersion="2026.13" StartChannel="151" StartSide="B" StringType="RGB Nodes" Transparency="0" versionNumber="8" WorldPosX="264.501221" WorldPosY="384.367432" WorldPosZ="0.000000" />
+</models>
