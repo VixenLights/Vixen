@@ -14,7 +14,7 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 
 - [x] (2026-07-17) Read `.agents/PLANS.md`, the committed specification `docs/vix-3044-circle-model-import.md`, the existing wrapper import plan, the current xLights importer, current importer tests, local circle reference files, and the project `dotnet-design-pattern-review` skill.
 - [x] (2026-07-17) Created this ExecPlan with the confirmed decisions that circle groups follow wiring order, `LayerSizes` follows xLights behavior, and invalid `centerPercent` values use deterministic default/clamp behavior.
-- [ ] Update Jira issue `VIX-3044` with the finalized requirements, design notes, acceptance criteria, test plan, and this ExecPlan path.
+- [x] (2026-07-18) Updated Jira issue `VIX-3044` with the finalized requirements, design notes, acceptance criteria, test plan, manual validation plan, and this ExecPlan path.
 - [ ] Read implementation skills before code changes: `.agents/skills/dotnet-best-practices/SKILL.md`; `.agents/skills/csharp-async/SKILL.md` if async importer code changes materially; `.agents/skills/csharp-docs/SKILL.md` if public or protected APIs are changed; `.agents/skills/dotnet-design-pattern-review/SKILL.md` before finalizing parser abstraction changes.
 - [ ] Add characterization tests that prove circle models currently fail or return null before implementation, then evolve them into passing behavior tests.
 - [ ] Refactor xModel import into shared parser and assembly pieces without changing custom model behavior.
@@ -210,3 +210,4 @@ These types should stay internal unless a concrete cross-module consumer require
 
 2026-07-17 / Codex: Created the initial ExecPlan from `docs/vix-3044-circle-model-import.md` after reviewing `.agents/PLANS.md`, the current importer, current tests, local circle references, the existing wrapper-import plan, and the project design-pattern skill.
 2026-07-17 / Codex: Moved the ExecPlan from `docs/plans/state` to `docs/plans/xmodel-import` because xModel import work is adjacent to State features but should be tracked separately.
+2026-07-18 / Codex: Completed milestone 1 by updating Jira issue `VIX-3044` with the implementation requirements, design notes, acceptance criteria, automated test plan, manual validation plan, and plan path.
