@@ -208,7 +208,11 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		private IReadOnlyList<IXModelElementParser> CreateModelParsers()
 		{
-			return [new CustomXModelElementParser(ShowModelErrorAsync)];
+			return
+			[
+				new CustomXModelElementParser(ShowModelErrorAsync),
+				new CircleXModelElementParser(ShowModelErrorAsync)
+			];
 		}
 
 		private async Task Assemble(XModelParsedModel parsedModel)

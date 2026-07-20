@@ -20,7 +20,11 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - [x] (2026-07-18) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; baseline result is 12 failed, 34 passed, 0 skipped, 46 total. The failing tests are the new circle success-path behavior tests and fail because current circle imports return null. Existing importer tests and the new invalid-circle/custom-regression tests pass.
 - [x] (2026-07-20) Refactored xModel import into internal parser and shared assembly pieces without changing custom model behavior. Added `IXModelElementParser`, `CustomXModelElementParser`, `XModelParsedModel`, `XModelGeneratedGroup`, `XModelElementMetadata`, and `XModelChildElementImporter`.
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result remained the intended milestone-2 baseline: 12 failed, 34 passed, 0 skipped, 46 total. Existing custom import behavior still passes, and circle success-path tests still fail because circle parsing has not been implemented.
-- [ ] Implement circle attribute parsing, xLights-compatible layer traversal, coordinate generation, validation, and generated circle groups.
+- [x] (2026-07-20) Implemented circle parser support for standalone `<circlemodel>` and wrapped `<model DisplayAs="Circle">` elements, including required attribute validation, tolerated optional defaults, `centerPercent` default/clamp handling, and shared child metadata parsing.
+- [x] (2026-07-20) Added invalid `Dir`, `InsideOut`, and `StartSide` coverage to `XModelCircleImportTests`.
+- [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 12 failed, 37 passed, 0 skipped, 49 total. The remaining failures are node traversal, coordinate, and generated circle group expectations for milestones 5 and 6.
+- [ ] Implement xLights-compatible layer traversal and coordinate generation.
+- [ ] Implement generated circle groups.
 - [ ] Run focused tests and broader relevant tests.
 - [ ] Manually validate the committed circle examples in the Custom Prop Editor.
 - [ ] Record final implementation results in `Outcomes & Retrospective`.
@@ -41,6 +45,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore` reported 12 failed, 34 passed, 0 skipped, 46 total on 2026-07-18. The new invalid `LayerSizes`, mismatched `PixelCount`, and wrapped custom regression tests pass against current behavior.
 - Observation: The parser refactor can preserve the same focused-test baseline without making Circle supported yet.
   Evidence: After moving custom parsing into `CustomXModelElementParser`, shared child parsing into `XModelChildElementImporter`, and assembly input to `XModelParsedModel`, the focused test command still reports 12 failed, 34 passed, 0 skipped, 46 total on 2026-07-20.
+- Observation: Circle parsing support moves valid circle files past the unsupported-model path before node generation is implemented.
+  Evidence: After registering `CircleXModelElementParser`, valid circle tests fail on empty model nodes or missing generated circle groups rather than null imports. Invalid required attributes and mismatched `PixelCount` return null and pass their tests.
 
 ## Decision Log
 
@@ -219,3 +225,4 @@ These types should stay internal unless a concrete cross-module consumer require
 2026-07-18 / Codex: Completed milestone 1 by updating Jira issue `VIX-3044` with the implementation requirements, design notes, acceptance criteria, automated test plan, manual validation plan, and plan path.
 2026-07-18 / Codex: Completed milestone 2 by adding focused circle import tests and recording the expected pre-implementation failing baseline.
 2026-07-20 / Codex: Completed milestone 3 by introducing internal parser/shared assembly structure while preserving the existing custom import behavior and the expected circle unsupported baseline.
+2026-07-20 / Codex: Completed milestone 4 by adding circle attribute parsing and validation while leaving node generation and generated circle groups for the next milestones.

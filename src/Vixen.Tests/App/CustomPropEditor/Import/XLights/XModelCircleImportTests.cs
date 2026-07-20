@@ -254,6 +254,28 @@ public sealed class XModelCircleImportTests
 		Assert.Null(prop);
 	}
 
+	[Theory]
+	[InlineData("Dir", "X")]
+	[InlineData("InsideOut", "2")]
+	[InlineData("StartSide", "L")]
+	public async Task Import_WithInvalidRequiredCircleAttribute_ReturnsNull(string attributeName, string attributeValue)
+	{
+		// Arrange
+		var dir = attributeName == "Dir" ? attributeValue : "L";
+		var insideOut = attributeName == "InsideOut" ? attributeValue : "0";
+		var startSide = attributeName == "StartSide" ? attributeValue : "B";
+		var modelXml =
+			$"""
+			<circlemodel name="Invalid Attribute Spinner" DisplayAs="Circle" LayerSizes="4" InsideOut="{insideOut}" StartSide="{startSide}" Dir="{dir}" centerPercent="0" PixelSize="1" PixelCount="4" />
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		Assert.Null(prop);
+	}
+
 	[Fact]
 	public async Task Import_WithWrappedCustomModel_StillImportsCustomModels()
 	{

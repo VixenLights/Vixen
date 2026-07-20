@@ -9,6 +9,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		public CustomModel CustomModel { get; }
 
+		public CircleXModelConfiguration CircleConfiguration { get; init; }
+
 		public List<XModelGeneratedGroup> GeneratedGroups { get; } = [];
 	}
 }
