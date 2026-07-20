@@ -1,8 +1,8 @@
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
-	internal static class CustomModelSourceResolver
+	internal static class CustomXModelSourceResolver
 	{
-		internal static CustomModelParseResult Resolve(
+		internal static CustomXModelParseResult Resolve(
 			string compressedModelDefinition,
 			string modelDefinition,
 			int scale)
@@ -10,7 +10,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			return Resolve(compressedModelDefinition, modelDefinition, new XModelCoordinateScale(scale, scale));
 		}
 
-		internal static CustomModelParseResult Resolve(
+		internal static CustomXModelParseResult Resolve(
 			string compressedModelDefinition,
 			string modelDefinition,
 			XModelCoordinateScale scale)
@@ -22,9 +22,9 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			{
 				try
 				{
-					return new CustomModelParseResult(
-						CustomModelSource.CustomModelCompressed,
-						CustomModelParser.ParseCustomModelCompressed(compressedModelDefinition, scale),
+					return new CustomXModelParseResult(
+						CustomXModelSource.CustomModelCompressed,
+						CustomXModelNodeParser.ParseCustomModelCompressed(compressedModelDefinition, scale),
 						null,
 						null);
 				}
@@ -38,9 +38,9 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			{
 				try
 				{
-					return new CustomModelParseResult(
-						CustomModelSource.CustomModel,
-						CustomModelParser.ParseCustomModel(modelDefinition, scale),
+					return new CustomXModelParseResult(
+						CustomXModelSource.CustomModel,
+						CustomXModelNodeParser.ParseCustomModel(modelDefinition, scale),
 						compressedException,
 						null);
 				}
@@ -50,8 +50,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				}
 			}
 
-			return new CustomModelParseResult(
-				CustomModelSource.None,
+			return new CustomXModelParseResult(
+				CustomXModelSource.None,
 				[],
 				compressedException,
 				customModelException);

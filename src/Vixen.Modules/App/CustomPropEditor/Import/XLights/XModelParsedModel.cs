@@ -2,14 +2,12 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
 	internal sealed class XModelParsedModel
 	{
-		public XModelParsedModel(CustomModel customModel)
+		public XModelParsedModel(XModelImportModel importModel)
 		{
-			CustomModel = customModel;
+			ImportModel = importModel;
 		}
 
-		public CustomModel CustomModel { get; }
-
-		public CircleXModelConfiguration CircleConfiguration { get; init; }
+		public XModelImportModel ImportModel { get; }
 
 		public List<XModelGeneratedGroup> GeneratedGroups { get; } = [];
 	}

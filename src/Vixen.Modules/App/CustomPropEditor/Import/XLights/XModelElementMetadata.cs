@@ -6,10 +6,15 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 	{
 		public static bool IsCustomModelElement(XElement modelElement)
 		{
+			return IsXModelTypeElement(modelElement, "custommodel", "Custom");
+		}
+
+		public static bool IsXModelTypeElement(XElement modelElement, string standaloneElementName, string displayAs)
+		{
 			return modelElement.HasAttributes &&
-				(ElementNameEquals(modelElement, "custommodel") ||
+				(ElementNameEquals(modelElement, standaloneElementName) ||
 				ElementNameEquals(modelElement, "model") &&
-				"Custom".Equals(GetAttributeValue(modelElement, "DisplayAs"), StringComparison.OrdinalIgnoreCase));
+				displayAs.Equals(GetAttributeValue(modelElement, "DisplayAs"), StringComparison.OrdinalIgnoreCase));
 		}
 
 		public static string ResolveModelType(XElement modelElement)

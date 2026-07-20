@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Vixen.Tests.App.CustomPropEditor.Import.XLights;
 
-public class CustomModelParserTests
+public class CustomXModelNodeParserTests
 {
 	[Fact]
 	public void CustomModelAndCompressed_DecodeToEquivalentVixenState()
@@ -13,8 +13,8 @@ public class CustomModelParserTests
 		const string compressed = "1,0,0;2,1,2;3,2,4";
 
 		// Act
-		var customNodes = CustomModelParser.ParseCustomModel(customModel, 1);
-		var compressedNodes = CustomModelParser.ParseCustomModelCompressed(compressed, 1);
+		var customNodes = CustomXModelNodeParser.ParseCustomModel(customModel, 1);
+		var compressedNodes = CustomXModelNodeParser.ParseCustomModelCompressed(compressed, 1);
 
 		// Assert
 		AssertEquivalentNodes(customNodes, compressedNodes);
@@ -28,8 +28,8 @@ public class CustomModelParserTests
 		const string compressed = "1,0,0;2,1,2";
 
 		// Act
-		var customNodes = CustomModelParser.ParseCustomModel(customModel, 4);
-		var compressedNodes = CustomModelParser.ParseCustomModelCompressed(compressed, 4);
+		var customNodes = CustomXModelNodeParser.ParseCustomModel(customModel, 4);
+		var compressedNodes = CustomXModelNodeParser.ParseCustomModelCompressed(compressed, 4);
 
 		// Assert
 		AssertEquivalentNodes(customNodes, compressedNodes);
@@ -49,8 +49,8 @@ public class CustomModelParserTests
 		const string compressed = "314,0,0;315,1,188;316,2,195";
 
 		// Act
-		var customNodes = CustomModelParser.ParseCustomModel(customModel, 1);
-		var compressedNodes = CustomModelParser.ParseCustomModelCompressed(compressed, 1);
+		var customNodes = CustomXModelNodeParser.ParseCustomModel(customModel, 1);
+		var compressedNodes = CustomXModelNodeParser.ParseCustomModelCompressed(compressed, 1);
 
 		// Assert
 		AssertEquivalentNodes(customNodes, compressedNodes);
@@ -67,8 +67,8 @@ public class CustomModelParserTests
 		const string compressed = "243,0,81;242,0,85;241,0,89;240,0,92;245,1,73;244,1,77;239,1,96";
 
 		// Act
-		var customNodes = CustomModelParser.ParseCustomModel(customModel, 1);
-		var compressedNodes = CustomModelParser.ParseCustomModelCompressed(compressed, 1);
+		var customNodes = CustomXModelNodeParser.ParseCustomModel(customModel, 1);
+		var compressedNodes = CustomXModelNodeParser.ParseCustomModelCompressed(compressed, 1);
 
 		// Assert
 		AssertEquivalentNodes(customNodes, compressedNodes);
@@ -78,11 +78,11 @@ public class CustomModelParserTests
 	public void Resolver_PrefersCompressedWhenBothFormatsAreValid()
 	{
 		// Act
-		var result = CustomModelSourceResolver.Resolve("1,0,0", "2", 1);
+		var result = CustomXModelSourceResolver.Resolve("1,0,0", "2", 1);
 
 		// Assert
 		Assert.True(result.Success);
-		Assert.Equal(CustomModelSource.CustomModelCompressed, result.Source);
+		Assert.Equal(CustomXModelSource.CustomModelCompressed, result.Source);
 		Assert.True(result.ModelNodes.ContainsKey(1));
 		Assert.False(result.ModelNodes.ContainsKey(2));
 	}
@@ -91,11 +91,11 @@ public class CustomModelParserTests
 	public void Resolver_FallsBackToCustomModelWhenCompressedIsInvalid()
 	{
 		// Act
-		var result = CustomModelSourceResolver.Resolve("bad", "2", 1);
+		var result = CustomXModelSourceResolver.Resolve("bad", "2", 1);
 
 		// Assert
 		Assert.True(result.Success);
-		Assert.Equal(CustomModelSource.CustomModel, result.Source);
+		Assert.Equal(CustomXModelSource.CustomModel, result.Source);
 		Assert.NotNull(result.CompressedException);
 		Assert.True(result.ModelNodes.ContainsKey(2));
 	}
@@ -104,11 +104,11 @@ public class CustomModelParserTests
 	public void Resolver_FailsWhenNeitherFormatIsValid()
 	{
 		// Act
-		var result = CustomModelSourceResolver.Resolve("bad", "also-bad", 1);
+		var result = CustomXModelSourceResolver.Resolve("bad", "also-bad", 1);
 
 		// Assert
 		Assert.False(result.Success);
-		Assert.Equal(CustomModelSource.None, result.Source);
+		Assert.Equal(CustomXModelSource.None, result.Source);
 		Assert.NotNull(result.CompressedException);
 		Assert.NotNull(result.CustomModelException);
 		Assert.Empty(result.ModelNodes);

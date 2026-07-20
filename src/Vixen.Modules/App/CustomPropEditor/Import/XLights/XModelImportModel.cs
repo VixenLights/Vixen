@@ -2,12 +2,12 @@
 
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
-	internal class CustomModel
+	internal class XModelImportModel
 	{
 		private int _y;
 		private int _x;
 
-		public CustomModel(string name)
+		public XModelImportModel(string name)
 		{
 			SubModels = new List<SubModel>();
 			FaceInfos = new List<FaceInfo>();

@@ -1,6 +1,6 @@
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
-	internal static class CustomModelParser
+	internal static class CustomXModelNodeParser
 	{
 		internal static Dictionary<int, ModelNode> ParseCustomModel(string modelDefinition, int scale)
 		{

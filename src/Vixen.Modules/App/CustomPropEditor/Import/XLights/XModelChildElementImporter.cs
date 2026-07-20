@@ -11,33 +11,33 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
-		public void ImportChildElements(CustomModel customModel, XElement modelElement)
+		public void ImportChildElements(XModelImportModel importModel, XElement modelElement)
 		{
 			foreach (var childElement in modelElement.Elements())
 			{
 				if (XModelElementMetadata.ElementNameEquals(childElement, "subModel"))
 				{
-					ImportSubModel(customModel, childElement);
+					ImportSubModel(importModel, childElement);
 				}
 				else if (XModelElementMetadata.ElementNameEquals(childElement, "faceInfo"))
 				{
-					ImportFaceInfo(customModel, childElement);
+					ImportFaceInfo(importModel, childElement);
 				}
 				else if (XModelElementMetadata.ElementNameEquals(childElement, "stateInfo"))
 				{
-					ImportStateInfo(customModel, childElement);
+					ImportStateInfo(importModel, childElement);
 				}
 				else if (XModelElementMetadata.ElementNameEquals(childElement, "modelGroup"))
 				{
 					Logging.Info(
 						"Skipping xModel modelGroup {ModelGroupName} in model {ModelName}; modelGroup import is not supported.",
 						XModelElementMetadata.GetAttributeValue(childElement, "name"),
-						customModel.Name);
+						importModel.Name);
 				}
 			}
 		}
 
-		private static void ImportSubModel(CustomModel customModel, XElement subModelElement)
+		private static void ImportSubModel(XModelImportModel importModel, XElement subModelElement)
 		{
 			var subModel = new SubModel(XModelElementMetadata.GetAttributeValue(subModelElement, "name"))
 			{
@@ -49,14 +49,14 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				case "ranges":
 					subModel.Type = ModelType.Ranges;
 					subModel.Ranges = ProcessRanges(subModelElement);
-					customModel.SubModels.Add(subModel);
+					importModel.SubModels.Add(subModel);
 					break;
 				case "subbuffer":
 					break;
 			}
 		}
 
-		private static void ImportFaceInfo(CustomModel customModel, XElement faceInfoElement)
+		private static void ImportFaceInfo(XModelImportModel importModel, XElement faceInfoElement)
 		{
 			var type = XModelElementMetadata.GetAttributeValue(faceInfoElement, "Type");
 			if (string.IsNullOrEmpty(type) || !type.Equals("NodeRange"))
@@ -89,10 +89,10 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				faceInfo.FaceDefinitions.Add(faceItem);
 			}
 
-			customModel.FaceInfos.Add(faceInfo);
+			importModel.FaceInfos.Add(faceInfo);
 		}
 
-		private static void ImportStateInfo(CustomModel customModel, XElement stateInfoElement)
+		private static void ImportStateInfo(XModelImportModel importModel, XElement stateInfoElement)
 		{
 			if (!stateInfoElement.HasAttributes)
 			{
@@ -108,7 +108,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			var stateInfo = new StateInfo(
 				XLightsStateNameNormalizer.NormalizeStateName(
 					XModelElementMetadata.GetAttributeValue(stateInfoElement, "Name"),
-					customModel.StateInfos.Count + 1));
+					importModel.StateInfos.Count + 1));
 
 			Dictionary<string, StateItem> states = new();
 
@@ -204,7 +204,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				stateInfo.StateItems.Add(stateItem.Value);
 			}
 
-			customModel.StateInfos.Add(stateInfo);
+			importModel.StateInfos.Add(stateInfo);
 		}
 
 		private static List<RangeGroup> ProcessRanges(XElement element)

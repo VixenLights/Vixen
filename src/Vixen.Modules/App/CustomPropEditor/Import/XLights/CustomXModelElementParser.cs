@@ -20,32 +20,27 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		public async Task<XModelParsedModel> ParseAsync(XElement modelElement)
 		{
-			var name = XModelElementMetadata.GetAttributeValue(modelElement, "name");
-			var customModel = new CustomModel(name)
+			var commonConfiguration = XModelCommonConfigurationParser.FromModelElement(modelElement, Logging);
+			var importModel = new XModelImportModel(commonConfiguration.Name)
 			{
 				X = GetModelDimension(modelElement, "CustomWidth", "parm1"),
-				Y = GetModelDimension(modelElement, "CustomHeight", "parm2")
+				Y = GetModelDimension(modelElement, "CustomHeight", "parm2"),
+				PixelSize = commonConfiguration.PixelSize,
+				StringType = commonConfiguration.StringType,
+				StrandNames = commonConfiguration.StrandNames,
+				NodeNames = commonConfiguration.NodeNames
 			};
-
-			if (int.TryParse(XModelElementMetadata.GetAttributeValue(modelElement, "PixelSize"), out var nodeSize) && nodeSize > 0)
-			{
-				customModel.PixelSize = nodeSize;
-			}
-
-			customModel.StringType = XModelElementMetadata.GetAttributeValue(modelElement, "StringType");
-			customModel.StrandNames = XModelElementMetadata.GetAttributeValue(modelElement, "StrandNames");
-			customModel.NodeNames = XModelElementMetadata.GetAttributeValue(modelElement, "NodeNames");
 
 			var compressedModel = XModelElementMetadata.GetAttributeValue(modelElement, "CustomModelCompressed");
 			var customModelDefinition = XModelElementMetadata.GetAttributeValue(modelElement, "CustomModel");
-			var coordinateScale = XModelCoordinateScale.FromModelElement(modelElement, customModel.Scale, Logging);
-			if (!await TryResolveModelNodesAsync(customModel, compressedModel, customModelDefinition, coordinateScale))
+			var coordinateScale = XModelCoordinateScale.FromModelElement(modelElement, importModel.Scale, Logging);
+			if (!await TryResolveModelNodesAsync(importModel, compressedModel, customModelDefinition, coordinateScale))
 			{
 				return null;
 			}
 
-			_childElementImporter.ImportChildElements(customModel, modelElement);
-			return new XModelParsedModel(customModel);
+			_childElementImporter.ImportChildElements(importModel, modelElement);
+			return new XModelParsedModel(importModel);
 		}
 
 		private static int GetModelDimension(XElement modelElement, string preferredAttributeName, string fallbackAttributeName)
@@ -63,38 +58,38 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 		}
 
 		private async Task<bool> TryResolveModelNodesAsync(
-			CustomModel customModel,
+			XModelImportModel importModel,
 			string compressedModelDefinition,
 			string modelDefinition,
 			XModelCoordinateScale scale)
 		{
-			var result = CustomModelSourceResolver.Resolve(
+			var result = CustomXModelSourceResolver.Resolve(
 				compressedModelDefinition,
 				modelDefinition,
 				scale);
 			if (result.Success)
 			{
-				if (result.Source == CustomModelSource.CustomModel &&
+				if (result.Source == CustomXModelSource.CustomModel &&
 					result.CompressedException != null)
 				{
 					Logging.Warn(
 						result.CompressedException,
 						"Unable to parse CustomModelCompressed for xModel {ModelName}. Falling back to CustomModel.",
-						customModel.Name);
+						importModel.Name);
 				}
 
-				customModel.ModelNodes = result.ModelNodes;
+				importModel.ModelNodes = result.ModelNodes;
 				return true;
 			}
 
-			LogParseFailure(customModel.Name, result);
+			LogParseFailure(importModel.Name, result);
 			await showModelErrorAsync(
-				$"Unable to parse a valid CustomModel or CustomModelCompressed for model '{customModel.Name}'.",
+				$"Unable to parse a valid CustomModel or CustomModelCompressed for model '{importModel.Name}'.",
 				"Model import error");
 			return false;
 		}
 
-		private static void LogParseFailure(string modelName, CustomModelParseResult result)
+		private static void LogParseFailure(string modelName, CustomXModelParseResult result)
 		{
 			if (result.CompressedException == null &&
 				result.CustomModelException == null)

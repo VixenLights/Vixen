@@ -1,6 +1,6 @@
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
-	internal enum CustomModelSource
+	internal enum CustomXModelSource
 	{
 		None,
 		CustomModelCompressed,
