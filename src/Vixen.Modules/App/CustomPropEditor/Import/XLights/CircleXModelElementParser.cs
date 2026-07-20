@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Xml.Linq;
 using NLog;
 
@@ -170,6 +169,11 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				return false;
 			}
 
+			var coordinateScale = XModelCoordinateScale.FromModelElement(
+				modelElement,
+				XModelCoordinateScale.GetDefaultScale(layerSizes.Max(), layerSizes.Max()),
+				Logging);
+
 			configuration = new CircleXModelConfiguration
 			{
 				Name = modelName,
@@ -179,8 +183,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				Direction = direction,
 				CenterPercent = GetCenterPercent(modelElement),
 				PixelSize = GetPixelSize(modelElement),
-				ScaleX = GetScale(modelElement, "ScaleX"),
-				ScaleY = GetScale(modelElement, "ScaleY"),
+				ScaleX = coordinateScale.X,
+				ScaleY = coordinateScale.Y,
 				PixelCount = pixelCount,
 				NumStrings = GetIntegerAttributeValue(modelElement, "NumStrings", "parm1"),
 				NodesPerString = GetIntegerAttributeValue(modelElement, "NodesPerString", "parm2"),
@@ -365,26 +369,6 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			}
 
 			return 1;
-		}
-
-		private static double GetScale(XElement modelElement, string attributeName)
-		{
-			var scaleValue = XModelElementMetadata.GetAttributeValue(modelElement, attributeName);
-			if (double.TryParse(scaleValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var scale) && scale > 0)
-			{
-				return scale;
-			}
-
-			if (!string.IsNullOrWhiteSpace(scaleValue))
-			{
-				Logging.Warn(
-					"Circle model {ModelName} has invalid {ScaleAttribute} value {Scale}; using 1.",
-					XModelElementMetadata.GetAttributeValue(modelElement, "name"),
-					attributeName,
-					scaleValue);
-			}
-
-			return 1.0;
 		}
 
 		private static int GetIntegerAttributeValue(XElement modelElement, string attributeName)

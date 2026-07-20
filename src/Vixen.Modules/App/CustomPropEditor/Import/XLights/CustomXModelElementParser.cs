@@ -38,7 +38,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 			var compressedModel = XModelElementMetadata.GetAttributeValue(modelElement, "CustomModelCompressed");
 			var customModelDefinition = XModelElementMetadata.GetAttributeValue(modelElement, "CustomModel");
-			if (!await TryResolveModelNodesAsync(customModel, compressedModel, customModelDefinition))
+			var coordinateScale = XModelCoordinateScale.FromModelElement(modelElement, customModel.Scale, Logging);
+			if (!await TryResolveModelNodesAsync(customModel, compressedModel, customModelDefinition, coordinateScale))
 			{
 				return null;
 			}
@@ -64,12 +65,13 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 		private async Task<bool> TryResolveModelNodesAsync(
 			CustomModel customModel,
 			string compressedModelDefinition,
-			string modelDefinition)
+			string modelDefinition,
+			XModelCoordinateScale scale)
 		{
 			var result = CustomModelSourceResolver.Resolve(
 				compressedModelDefinition,
 				modelDefinition,
-				customModel.Scale);
+				scale);
 			if (result.Success)
 			{
 				if (result.Source == CustomModelSource.CustomModel &&

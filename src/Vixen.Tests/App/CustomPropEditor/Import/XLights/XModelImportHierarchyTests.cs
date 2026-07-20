@@ -142,6 +142,25 @@ public class XModelImportHierarchyTests
 	}
 
 	[Fact]
+	public async Task Import_WithScaleXAndScaleY_AppliesScaleToCustomCoordinates()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<custommodel name="Scaled Snowman" parm1="10" parm2="10" PixelSize="1" ScaleX="5" ScaleY="3" CustomModelCompressed="1,0,0;2,1,2" />
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		var modelGroup = Assert.Single(prop.RootNode.Children);
+		var secondLight = modelGroup.Children.Single(child => child.Order == 2).Lights.Single();
+		Assert.Equal(18, secondLight.X);
+		Assert.Equal(11, secondLight.Y);
+	}
+
+	[Fact]
 	public async Task Import_WithoutCustomDimensions_FallsBackToLegacyDimensionsForScale()
 	{
 		// Arrange

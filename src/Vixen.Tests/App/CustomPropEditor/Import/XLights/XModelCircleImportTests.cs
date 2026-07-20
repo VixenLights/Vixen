@@ -208,7 +208,7 @@ public sealed class XModelCircleImportTests
 			""";
 		const string scaledXml =
 			"""
-			<circlemodel name="Scaled Spinner" DisplayAs="Circle" LayerSizes="8" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="8" ScaleX="5" ScaleY="4" />
+			<circlemodel name="Scaled Spinner" DisplayAs="Circle" LayerSizes="8" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="8" ScaleX="5" ScaleY="6" />
 			""";
 
 		// Act
@@ -223,7 +223,31 @@ public sealed class XModelCircleImportTests
 	}
 
 	[Fact]
-	public async Task Import_WithInvalidScaleValues_UsesUnscaledCoordinates()
+	public async Task Import_WithoutScaleXAndScaleY_UsesDefaultModelScale()
+	{
+		// Arrange
+		const string defaultScaleXml =
+			"""
+			<circlemodel name="Default Scale Spinner" DisplayAs="Circle" LayerSizes="8" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="8" />
+			""";
+		const string explicitUnitScaleXml =
+			"""
+			<circlemodel name="Unit Scale Spinner" DisplayAs="Circle" LayerSizes="8" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="8" ScaleX="1" ScaleY="1" />
+			""";
+
+		// Act
+		var defaultScaleProp = await ImportAsync(defaultScaleXml);
+		var explicitUnitScaleProp = await ImportAsync(explicitUnitScaleXml);
+
+		// Assert
+		var defaultScaleModelGroup = GetModelGroup(defaultScaleProp, "Default Scale Spinner");
+		var explicitUnitScaleModelGroup = GetModelGroup(explicitUnitScaleProp, "Unit Scale Spinner");
+		Assert.True(GetCoordinateSpan(defaultScaleModelGroup.Children, light => light.X) > GetCoordinateSpan(explicitUnitScaleModelGroup.Children, light => light.X));
+		Assert.True(GetCoordinateSpan(defaultScaleModelGroup.Children, light => light.Y) > GetCoordinateSpan(explicitUnitScaleModelGroup.Children, light => light.Y));
+	}
+
+	[Fact]
+	public async Task Import_WithInvalidScaleValues_UsesDefaultScaleCoordinates()
 	{
 		// Arrange
 		const string unscaledXml =

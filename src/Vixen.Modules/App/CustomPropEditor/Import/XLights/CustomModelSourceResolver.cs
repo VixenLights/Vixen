@@ -7,6 +7,14 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			string modelDefinition,
 			int scale)
 		{
+			return Resolve(compressedModelDefinition, modelDefinition, new XModelCoordinateScale(scale, scale));
+		}
+
+		internal static CustomModelParseResult Resolve(
+			string compressedModelDefinition,
+			string modelDefinition,
+			XModelCoordinateScale scale)
+		{
 			FormatException compressedException = null;
 			FormatException customModelException = null;
 
