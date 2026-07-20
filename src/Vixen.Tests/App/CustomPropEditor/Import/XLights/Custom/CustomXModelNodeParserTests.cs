@@ -1,7 +1,8 @@
 using VixenModules.App.CustomPropEditor.Import.XLights;
+using VixenModules.App.CustomPropEditor.Import.XLights.Custom;
 using Xunit;
 
-namespace Vixen.Tests.App.CustomPropEditor.Import.XLights;
+namespace Vixen.Tests.App.CustomPropEditor.Import.XLights.Custom;
 
 public class CustomXModelNodeParserTests
 {

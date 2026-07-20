@@ -2,6 +2,8 @@ using Catel.IoC;
 using Catel.Services;
 using System.IO;
 using System.Xml.Linq;
+using VixenModules.App.CustomPropEditor.Import.XLights.Circle;
+using VixenModules.App.CustomPropEditor.Import.XLights.Custom;
 using VixenModules.App.CustomPropEditor.Model;
 
 namespace VixenModules.App.CustomPropEditor.Import.XLights

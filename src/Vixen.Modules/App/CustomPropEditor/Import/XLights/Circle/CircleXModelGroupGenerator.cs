@@ -1,4 +1,6 @@
-namespace VixenModules.App.CustomPropEditor.Import.XLights
+using VixenModules.App.CustomPropEditor.Import.XLights;
+
+namespace VixenModules.App.CustomPropEditor.Import.XLights.Circle
 {
 	internal static class CircleXModelGroupGenerator
 	{

@@ -1,7 +1,8 @@
 using VixenModules.App.CustomPropEditor.Import.XLights;
+using VixenModules.App.CustomPropEditor.Import.XLights.States;
 using Xunit;
 
-namespace Vixen.Tests.App.CustomPropEditor.Import.XLights;
+namespace Vixen.Tests.App.CustomPropEditor.Import.XLights.States;
 
 public class XLightsStateNameNormalizerTests
 {

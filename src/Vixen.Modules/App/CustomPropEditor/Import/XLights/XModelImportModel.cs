@@ -1,5 +1,7 @@
 ﻿using VixenModules.App.CustomPropEditor.Import.XLights.Faces;
 
+using VixenModules.App.CustomPropEditor.Import.XLights.States;
+
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
 	internal class XModelImportModel

@@ -1,7 +1,7 @@
-﻿using System.Drawing;
+using System.Drawing;
 using VixenModules.App.CustomPropEditor.Import.XLights.Ranges;
 
-namespace VixenModules.App.CustomPropEditor.Import.XLights
+namespace VixenModules.App.CustomPropEditor.Import.XLights.States
 {
     public class StateItem
 	{

@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using NLog;
 using VixenModules.App.CustomPropEditor.Import.XLights.Faces;
 using VixenModules.App.CustomPropEditor.Import.XLights.Ranges;
+using VixenModules.App.CustomPropEditor.Import.XLights.States;
 using Range = VixenModules.App.CustomPropEditor.Import.XLights.Ranges.Range;
 
 namespace VixenModules.App.CustomPropEditor.Import.XLights

@@ -1,7 +1,8 @@
 using System.Xml.Linq;
 using NLog;
+using VixenModules.App.CustomPropEditor.Import.XLights;
 
-namespace VixenModules.App.CustomPropEditor.Import.XLights
+namespace VixenModules.App.CustomPropEditor.Import.XLights.Custom
 {
 	internal sealed class CustomXModelElementParser(Func<string, string, Task> showModelErrorAsync) : IXModelElementParser
 	{

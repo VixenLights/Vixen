@@ -1,4 +1,4 @@
-namespace VixenModules.App.CustomPropEditor.Import.XLights
+namespace VixenModules.App.CustomPropEditor.Import.XLights.States
 {
 	internal static class XLightsStateNameNormalizer
 	{

@@ -1,4 +1,4 @@
-namespace VixenModules.App.CustomPropEditor.Import.XLights
+namespace VixenModules.App.CustomPropEditor.Import.XLights.Circle
 {
 	internal sealed class CircleXModelConfiguration
 	{
