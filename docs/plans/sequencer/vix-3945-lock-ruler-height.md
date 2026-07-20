@@ -16,7 +16,7 @@ The visible result is in the Timed Sequence Editor. Open a sequence, choose `Vie
 - [x] (2026-07-20 00:00 -05:00) Created this initial ExecPlan from the approved specification.
 - [x] (2026-07-20 15:28 -05:00) Milestone 1: Updated Jira VIX-3945 with refined requirements, implementation outline, acceptance criteria, and test plan in planning comment `40212`.
 - [x] (2026-07-20 15:36 -05:00) Milestone 2: Added `LockRulerHeight` to the reusable ruler surface, added the `TimelineControl` forwarding property, and guarded ruler resize cursor, drag resize, and double-click reset paths.
-- [ ] Add the Timed Sequence Editor View menu item below `Full Waveform` and persist `{Name}/LockRulerHeight` through `XMLProfileSettings`.
+- [x] (2026-07-20 16:40 -05:00) Milestone 3: Added `View > Lock Ruler Height` directly below `Full Waveform`, wired the menu handler, and persisted `{Name}/LockRulerHeight` through `XMLProfileSettings`.
 - [ ] Add focused automated coverage where practical.
 - [ ] Run automated validation and perform manual Timed Sequence Editor validation.
 - [ ] Update Jira VIX-3945 and this ExecPlan with final implementation and validation evidence.
@@ -28,6 +28,9 @@ The visible result is in the Timed Sequence Editor. Open a sequence, choose `Vie
 
 - Observation: The tracked source folder is `src/Vixen.Common/Controls/TimeLineControl`, with a capital `L` in `Line`, even though some planning text and user shorthand use `TimelineControl`.
   Evidence: `git ls-files` returns `src/Vixen.Common/Controls/TimeLineControl/Ruler.cs` and `src/Vixen.Common/Controls/TimeLineControl/TimelineControl.cs`; the Milestone 2 source changes are in those tracked files.
+
+- Observation: Timed Sequence Editor project validation is blocked in this environment before the editor project completes.
+  Evidence: `dotnet build src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj --no-restore` fails because the dotnet CLI cannot load native `.vcxproj` references without Visual C++ targets. `msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Build -p:Configuration=Debug -p:Platform=x64 -verbosity:minimal` gets farther but fails in `LiquidLiquidFunWrapper.vcxproj` with `LINK : fatal error LNK1181: cannot open input file '...\Box2D.lib'`. `msbuild ... -p:BuildProjectReferences=false` then fails because `Module.App.TimedSequenceMapper.dll`, `Module.Effect.Liquid.dll`, and `Module.SequenceType.Timed.dll` are missing.
 
 ## Decision Log
 
@@ -58,6 +61,8 @@ Code implementation has started and Milestone 2 is complete. The expected outcom
 Milestone 1 is complete. Jira VIX-3945 now has planning comment `40212` with refined requirements, implementation outline, acceptance criteria, and test plan. The comment also records that the approved implementation default is unchecked/off, resolving the older Jira description text that mentioned turning the lock on by default.
 
 Milestone 2 is complete. `Ruler` now exposes a documented `LockRulerHeight` property, and `TimelineControl` exposes a documented forwarding property for later editor wiring. The only guarded interactions are the existing ruler-height resize affordances: the bottom-edge `Cursors.HSplit` branch, `MouseState.ResizeRuler` entry, height mutation during `MouseState.ResizeRuler`, and double-click reset. A focused build of `src\Vixen.Common\Controls\Controls.csproj` passed with four pre-existing warnings from `Vixen.Core` and zero errors.
+
+Milestone 3 is complete. `TimedSequenceEditorForm.Designer.cs` now declares `lockRulerHeightToolStripMenuItem`, places it immediately after `fullWaveformToolStripMenuItem` in the View menu, and wires its click handler. `TimedSequenceEditorForm_Menu.cs` applies the checked state to `TimelineControl.LockRulerHeight` immediately. `TimedSequenceEditorForm.cs` loads `{Name}/LockRulerHeight` with default `false` beside `RulerHeight` and saves the checked state beside the existing ruler height setting. Editor project validation is blocked by missing native/dependency outputs as recorded in `Surprises & Discoveries`; no compile error from the changed files was reached in the available build attempts.
 
 ## Context and Orientation
 
@@ -327,6 +332,40 @@ Milestone 2 build evidence:
 
     Warnings were from existing `Vixen.Core` code: two nullable annotation context warnings in `Rule\IElementTemplate.cs`, one obsolete `Extensions.Raise` warning in `Sys\Managers\HardwareUpdateThread.cs`, and one unused event warning in `Execution\ProgramExecutor.cs`.
 
+Milestone 3 implementation evidence:
+
+    Changed `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm.Designer.cs`:
+    - Added private `lockRulerHeightToolStripMenuItem` field.
+    - Inserted the item directly below `fullWaveformToolStripMenuItem` in the View menu.
+    - Configured `CheckOnClick = true`, text `Lock Ruler Height`, and click handler `lockRulerHeightToolStripMenuItem_Click`.
+
+    Changed `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm_Menu.cs`:
+    - Added `lockRulerHeightToolStripMenuItem_Click` to assign `TimelineControl.LockRulerHeight`.
+
+    Changed `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm.cs`:
+    - Loads `{Name}/LockRulerHeight` with default `false`.
+    - Saves `{Name}/LockRulerHeight` with the other app settings.
+
+Milestone 3 validation attempts:
+
+    dotnet build src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj --no-restore
+
+    Failed before editor validation because the dotnet CLI could not load native `.vcxproj` references:
+    - `QMLibrary.vcxproj`: missing `$(VCTargetsPath)\Microsoft.Cpp.Default.props`
+    - `LiquidLiquidFunWrapper.vcxproj`: missing `$(VCTargetsPath)\Microsoft.Cpp.Default.props`
+
+    msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Build -p:Configuration=Debug -p:Platform=x64 -verbosity:minimal
+
+    Failed before editor validation in the native Liquid wrapper:
+    - `LINK : fatal error LNK1181: cannot open input file '...\Box2D.lib'`
+
+    msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Build -p:Configuration=Debug -p:Platform=x64 -p:BuildProjectReferences=false -verbosity:minimal
+
+    Failed because dependency outputs were unavailable:
+    - `Module.App.TimedSequenceMapper.dll`
+    - `Module.Effect.Liquid.dll`
+    - `Module.SequenceType.Timed.dll`
+
 Record final validation evidence here after implementation. Include focused test output, full test output, manual validation notes, and Jira update identifiers if available.
 
 ## Interfaces and Dependencies
@@ -381,3 +420,4 @@ The setting type is `XMLProfileSettings.SettingType.AppSettings`, matching the e
 - 2026-07-20 / Codex: Created initial ExecPlan from approved `docs/sequencer/vix-3945-lock-ruler-height.md` specification.
 - 2026-07-20 / Codex: Completed Milestone 1 by adding Jira planning comment `40212` and recording the default-setting clarification.
 - 2026-07-20 / Codex: Completed Milestone 2 by adding the ruler/timeline lock properties, guarding ruler height resize paths, and recording focused build evidence.
+- 2026-07-20 / Codex: Completed Milestone 3 by wiring the Timed Sequence Editor View menu and XML profile setting, then recording build blockers from native/dependency outputs.
