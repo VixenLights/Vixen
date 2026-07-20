@@ -25,7 +25,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 12 failed, 37 passed, 0 skipped, 49 total. The remaining failures are node traversal, coordinate, and generated circle group expectations for milestones 5 and 6.
 - [x] (2026-07-20) Implemented xLights-compatible layer traversal and coordinate generation. Circle nodes now use wired ring order, xLights-derived radii, top/bottom start side, direction, normalized coordinates, and stored per-ring node order metadata for generated circle groups.
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 7 failed, 42 passed, 0 skipped, 49 total. The remaining failures are generated circle group expectations for milestone 6.
-- [ ] Implement generated circle groups.
+- [x] (2026-07-20) Implemented generated circle groups under `<model name> {1} - Circles`, with child groups named by wiring-order circle number and populated from existing light nodes by node order.
+- [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 49 passed, 0 skipped, 49 total.
 - [ ] Run focused tests and broader relevant tests.
 - [ ] Manually validate the committed circle examples in the Custom Prop Editor.
 - [ ] Record final implementation results in `Outcomes & Retrospective`.
@@ -50,6 +51,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
   Evidence: After registering `CircleXModelElementParser`, valid circle tests fail on empty model nodes or missing generated circle groups rather than null imports. Invalid required attributes and mismatched `PixelCount` return null and pass their tests.
 - Observation: Circle node generation satisfies the model-node, coordinate, center-radius, and range-submodel tests before generated circle groups exist.
   Evidence: The focused xModel importer test run reports 7 failed, 42 passed, 0 skipped, 49 total after node generation. The remaining failures all look for `<name> {1} - Circles`.
+- Observation: The existing generated group assembly path can create circle groups without duplicating light nodes.
+  Evidence: After adding generated circle group definitions from `CircleXModelElementParser`, the focused xModel importer test run reports 0 failed, 49 passed, 0 skipped, 49 total.
 
 ## Decision Log
 
@@ -230,3 +233,4 @@ These types should stay internal unless a concrete cross-module consumer require
 2026-07-20 / Codex: Completed milestone 3 by introducing internal parser/shared assembly structure while preserving the existing custom import behavior and the expected circle unsupported baseline.
 2026-07-20 / Codex: Completed milestone 4 by adding circle attribute parsing and validation while leaving node generation and generated circle groups for the next milestones.
 2026-07-20 / Codex: Completed milestone 5 by generating circle model nodes in xLights-compatible wiring order with deterministic normalized coordinates.
+2026-07-20 / Codex: Completed milestone 6 by generating parent and per-ring circle groups from the stored wiring-order ring metadata.

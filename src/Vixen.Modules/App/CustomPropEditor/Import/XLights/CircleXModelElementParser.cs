@@ -40,9 +40,27 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			customModel.ModelNodes = CreateModelNodes(configuration);
 
 			_childElementImporter.ImportChildElements(customModel, modelElement);
-			return new XModelParsedModel(customModel)
+			var parsedModel = new XModelParsedModel(customModel)
 			{
 				CircleConfiguration = configuration
+			};
+			parsedModel.GeneratedGroups.Add(CreateGeneratedCircleGroups(configuration));
+			return parsedModel;
+		}
+
+		private static XModelGeneratedGroup CreateGeneratedCircleGroups(CircleXModelConfiguration configuration)
+		{
+			return new XModelGeneratedGroup
+			{
+				Name = $"{configuration.Name} {{1}} - Circles",
+				Children = configuration.Rings
+					.OrderBy(ring => ring.CircleNumber)
+					.Select(ring => new XModelGeneratedGroup
+					{
+						Name = $"{configuration.Name} {{1}} - Circle {ring.CircleNumber}",
+						NodeOrders = ring.NodeOrders
+					})
+					.ToList()
 			};
 		}
 
