@@ -15,7 +15,7 @@ The visible result is in the Timed Sequence Editor. Open a sequence, choose `Vie
 - [x] (2026-07-20 00:00 -05:00) Created the approved feature specification at `docs/sequencer/vix-3945-lock-ruler-height.md`.
 - [x] (2026-07-20 00:00 -05:00) Created this initial ExecPlan from the approved specification.
 - [x] (2026-07-20 15:28 -05:00) Milestone 1: Updated Jira VIX-3945 with refined requirements, implementation outline, acceptance criteria, and test plan in planning comment `40212`.
-- [ ] Add ruler-level lock behavior to prevent resize cursor, drag resize, and double-click reset while preserving non-resize ruler interactions.
+- [x] (2026-07-20 15:36 -05:00) Milestone 2: Added `LockRulerHeight` to the reusable ruler surface, added the `TimelineControl` forwarding property, and guarded ruler resize cursor, drag resize, and double-click reset paths.
 - [ ] Add the Timed Sequence Editor View menu item below `Full Waveform` and persist `{Name}/LockRulerHeight` through `XMLProfileSettings`.
 - [ ] Add focused automated coverage where practical.
 - [ ] Run automated validation and perform manual Timed Sequence Editor validation.
@@ -25,6 +25,9 @@ The visible result is in the Timed Sequence Editor. Open a sequence, choose `Vie
 
 - Observation: The original Jira description requested turning the lock on by default, but the approved specification says the option defaults off.
   Evidence: VIX-3945 description says "turn that on by default"; planning comment `40212` explicitly records the resolved default as unchecked/off.
+
+- Observation: The tracked source folder is `src/Vixen.Common/Controls/TimeLineControl`, with a capital `L` in `Line`, even though some planning text and user shorthand use `TimelineControl`.
+  Evidence: `git ls-files` returns `src/Vixen.Common/Controls/TimeLineControl/Ruler.cs` and `src/Vixen.Common/Controls/TimeLineControl/TimelineControl.cs`; the Milestone 2 source changes are in those tracked files.
 
 ## Decision Log
 
@@ -50,15 +53,17 @@ The visible result is in the Timed Sequence Editor. Open a sequence, choose `Vie
 
 ## Outcomes & Retrospective
 
-This plan has been created, but code implementation has not started. The expected outcome is a narrow Timed Sequence Editor improvement: a persisted View menu toggle controls whether the ruler can be interactively resized. The implementation should stay local to the reusable timeline ruler control and the editor settings/menu wiring.
+Code implementation has started and Milestone 2 is complete. The expected outcome remains a narrow Timed Sequence Editor improvement: a persisted View menu toggle controls whether the ruler can be interactively resized. The implementation should stay local to the reusable timeline ruler control and the editor settings/menu wiring.
 
 Milestone 1 is complete. Jira VIX-3945 now has planning comment `40212` with refined requirements, implementation outline, acceptance criteria, and test plan. The comment also records that the approved implementation default is unchecked/off, resolving the older Jira description text that mentioned turning the lock on by default.
 
+Milestone 2 is complete. `Ruler` now exposes a documented `LockRulerHeight` property, and `TimelineControl` exposes a documented forwarding property for later editor wiring. The only guarded interactions are the existing ruler-height resize affordances: the bottom-edge `Cursors.HSplit` branch, `MouseState.ResizeRuler` entry, height mutation during `MouseState.ResizeRuler`, and double-click reset. A focused build of `src\Vixen.Common\Controls\Controls.csproj` passed with four pre-existing warnings from `Vixen.Core` and zero errors.
+
 ## Context and Orientation
 
-Vixen is a Windows desktop application for sequencing animated light shows. The Timed Sequence Editor is the main timeline editor. The timeline surface is built from reusable WinForms controls under `src/Vixen.Common/Controls/TimelineControl`, and the editor host lives under `src/Vixen.Modules/Editor/TimedSequenceEditor`.
+Vixen is a Windows desktop application for sequencing animated light shows. The Timed Sequence Editor is the main timeline editor. The timeline surface is built from reusable WinForms controls under `src/Vixen.Common/Controls/TimeLineControl`, and the editor host lives under `src/Vixen.Modules/Editor/TimedSequenceEditor`.
 
-The ruler is the horizontal time display above the timeline grid. In this repository it is the `Common.Controls.TimelineControl.Ruler` class in `src/Vixen.Common/Controls/TimelineControl/Ruler.cs`. It draws time ticks, the playback cursor, selection arrows, and mark-related alignment indicators. It also handles mouse input for ruler clicks, time-range dragging, mark movement, and ruler height resizing.
+The ruler is the horizontal time display above the timeline grid. In this repository it is the `Common.Controls.Timeline.Ruler` class in `src/Vixen.Common/Controls/TimeLineControl/Ruler.cs`. It draws time ticks, the playback cursor, selection arrows, and mark-related alignment indicators. It also handles mouse input for ruler clicks, time-range dragging, mark movement, and ruler height resizing.
 
 The current ruler height resize behavior is implemented in `Ruler.cs`:
 
@@ -69,7 +74,7 @@ The current ruler height resize behavior is implemented in `Ruler.cs`:
 
 `Cursors.HSplit` is the horizontal split cursor that tells the user a horizontal boundary can be dragged vertically. In this feature, it is the resize indicator that must not appear when the ruler height is locked.
 
-`TimelineControl` in `src/Vixen.Common/Controls/TimelineControl/TimelineControl.cs` creates the public `ruler` instance. During construction it docks the ruler above the grid with a default height of 50 pixels.
+`TimelineControl` in `src/Vixen.Common/Controls/TimeLineControl/TimelineControl.cs` creates the public `ruler` instance. During construction it docks the ruler above the grid with a default height of 50 pixels.
 
 The Timed Sequence Editor form is split across generated and hand-written files:
 
@@ -137,7 +142,7 @@ Work from repository root `C:\Dev\Vixen`.
 
 First inspect the current files:
 
-    rg -n "LockRulerHeight|RulerHeight|Full Waveform|fullWaveformToolStripMenuItem|ResizeRuler|HSplit|OnMouseDoubleClick" src\Vixen.Common\Controls\TimelineControl src\Vixen.Modules\Editor\TimedSequenceEditor
+    rg -n "LockRulerHeight|RulerHeight|Full Waveform|fullWaveformToolStripMenuItem|ResizeRuler|HSplit|OnMouseDoubleClick" src\Vixen.Common\Controls\TimeLineControl src\Vixen.Modules\Editor\TimedSequenceEditor
 
 Read required skills before editing public C# APIs:
 
@@ -149,9 +154,9 @@ If updating Jira in this same implementation session, also read:
 
 Update Jira VIX-3945 using the Milestone 1 text in `Artifacts and Notes`. If Jira tools are not available, leave the text in this plan and record the blockage.
 
-Implement `LockRulerHeight` in `src/Vixen.Common/Controls/TimelineControl/Ruler.cs`. Add XML documentation for the public property. Keep the default false value by relying on the default value for a bool field or auto-property.
+Implement `LockRulerHeight` in `src/Vixen.Common/Controls/TimeLineControl/Ruler.cs`. Add XML documentation for the public property. Keep the default false value by relying on the default value for a bool field or auto-property.
 
-If using the recommended forwarding property, implement it in `src/Vixen.Common/Controls/TimelineControl/TimelineControl.cs` with XML documentation. Use the project style already present in that file for properties.
+If using the recommended forwarding property, implement it in `src/Vixen.Common/Controls/TimeLineControl/TimelineControl.cs` with XML documentation. Use the project style already present in that file for properties.
 
 Modify `Ruler.OnMouseMove`. The no-button branch should behave like this in intent:
 
@@ -300,6 +305,28 @@ Milestone 1 Jira update result:
 
     Added planning comment `40212` to VIX-3945 on 2026-07-20 15:28 -05:00. The comment includes the refined requirements, implementation outline, acceptance criteria, and test plan. It also calls out that the approved default is unchecked/off even though the original issue description mentioned turning the lock on by default.
 
+Milestone 2 implementation evidence:
+
+    Changed `src/Vixen.Common/Controls/TimeLineControl/Ruler.cs`:
+    - Added documented public `LockRulerHeight` property.
+    - Prevented `MouseState.ResizeRuler` entry while locked.
+    - Prevented height mutation in the resize state while locked.
+    - Prevented the bottom-edge `Cursors.HSplit` resize indicator while locked.
+    - Prevented double-click height reset while locked.
+
+    Changed `src/Vixen.Common/Controls/TimeLineControl/TimelineControl.cs`:
+    - Added documented public forwarding property `LockRulerHeight`.
+
+Milestone 2 build evidence:
+
+    dotnet build src\Vixen.Common\Controls\Controls.csproj --no-restore
+
+    Build succeeded.
+        4 Warning(s)
+        0 Error(s)
+
+    Warnings were from existing `Vixen.Core` code: two nullable annotation context warnings in `Rule\IElementTemplate.cs`, one obsolete `Extensions.Raise` warning in `Sys\Managers\HardwareUpdateThread.cs`, and one unused event warning in `Execution\ProgramExecutor.cs`.
+
 Record final validation evidence here after implementation. Include focused test output, full test output, manual validation notes, and Jira update identifiers if available.
 
 ## Interfaces and Dependencies
@@ -308,14 +335,14 @@ This feature uses existing WinForms and repository infrastructure only. No new e
 
 The expected new or changed interfaces are:
 
-In `src/Vixen.Common/Controls/TimelineControl/Ruler.cs`, add:
+In `src/Vixen.Common/Controls/TimeLineControl/Ruler.cs`, add:
 
     /// <summary>
     /// Gets or sets a value indicating whether interactive ruler height resizing is disabled.
     /// </summary>
     public bool LockRulerHeight { get; set; }
 
-If using the recommended forwarding property, in `src/Vixen.Common/Controls/TimelineControl/TimelineControl.cs`, add:
+If using the recommended forwarding property, in `src/Vixen.Common/Controls/TimeLineControl/TimelineControl.cs`, add:
 
     /// <summary>
     /// Gets or sets a value indicating whether interactive ruler height resizing is disabled.
@@ -353,3 +380,4 @@ The setting type is `XMLProfileSettings.SettingType.AppSettings`, matching the e
 
 - 2026-07-20 / Codex: Created initial ExecPlan from approved `docs/sequencer/vix-3945-lock-ruler-height.md` specification.
 - 2026-07-20 / Codex: Completed Milestone 1 by adding Jira planning comment `40212` and recording the default-setting clarification.
+- 2026-07-20 / Codex: Completed Milestone 2 by adding the ruler/timeline lock properties, guarding ruler height resize paths, and recording focused build evidence.

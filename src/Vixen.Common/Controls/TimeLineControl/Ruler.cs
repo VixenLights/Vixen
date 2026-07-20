@@ -73,6 +73,15 @@ namespace Common.Controls.Timeline
 			get { return new Size(400, 40); }
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether interactive ruler height resizing is disabled.
+		/// </summary>
+		/// <value>
+		/// <see langword="true" /> if users cannot resize the ruler height with the mouse; otherwise,
+		/// <see langword="false" />. The default is <see langword="false" />.
+		/// </value>
+		public bool LockRulerHeight { get; set; }
+
 		#region Drawing
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -477,7 +486,7 @@ namespace Common.Controls.Timeline
 				m_mouseState = MouseState.DraggingMark;
 				_marksMoveResizeInfo = new MarksMoveResizeInfo(_marksSelectionManager.SelectedMarks);
 			}
-			else if (Cursor == Cursors.HSplit)
+			else if (!LockRulerHeight && Cursor == Cursors.HSplit)
 				m_mouseState = MouseState.ResizeRuler;
 			else
 			{
@@ -561,7 +570,7 @@ namespace Common.Controls.Timeline
 						break;
 					case MouseState.ResizeRuler:
 						//Adjusts Ruler Height
-						if (e.Location.Y > 40)
+						if (!LockRulerHeight && e.Location.Y > 40)
 							Height = e.Location.Y + 1;
 						break;
 					default:
@@ -577,7 +586,7 @@ namespace Common.Controls.Timeline
 					Cursor = Cursors.VSplit;
 					_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { marks.First().StartTime}));
 				}
-				else if (e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6)
+				else if (!LockRulerHeight && e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6)
 				{
 					Cursor = Cursors.HSplit;
 				}
@@ -609,7 +618,7 @@ namespace Common.Controls.Timeline
 			base.OnMouseDoubleClick(e);
 
 			//Resets Ruler Height to default value of 50 when you double click the HSplit
-			if (Cursor == Cursors.HSplit)
+			if (!LockRulerHeight && Cursor == Cursors.HSplit)
 			{
 				Height = 50;
 			}

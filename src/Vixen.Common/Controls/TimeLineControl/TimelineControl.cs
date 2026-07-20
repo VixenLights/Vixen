@@ -319,6 +319,25 @@ namespace Common.Controls.Timeline
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public MarksBar MarksBar { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether interactive ruler height resizing is disabled.
+		/// </summary>
+		/// <value>
+		/// <see langword="true" /> if users cannot resize the ruler height with the mouse; otherwise,
+		/// <see langword="false" />. The default is <see langword="false" />.
+		/// </value>
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public bool LockRulerHeight
+		{
+			get { return ruler != null && ruler.LockRulerHeight; }
+			set
+			{
+				if (ruler != null)
+				{
+					ruler.LockRulerHeight = value;
+				}
+			}
+		}
 
 		#endregion
 
