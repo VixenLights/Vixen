@@ -27,7 +27,9 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 7 failed, 42 passed, 0 skipped, 49 total. The remaining failures are generated circle group expectations for milestone 6.
 - [x] (2026-07-20) Implemented generated circle groups under `<model name> {1} - Circles`, with child groups named by wiring-order circle number and populated from existing light nodes by node order.
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 49 passed, 0 skipped, 49 total.
-- [ ] Run focused tests and broader relevant tests.
+- [x] (2026-07-20) Finished wrapped circle model support by covering multi-model wrapper selection for supported circle models and selected unsupported models. Updated unsupported-model error text to list custom and circle support.
+- [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 51 passed, 0 skipped, 51 total.
+- [ ] Run broader relevant tests.
 - [ ] Manually validate the committed circle examples in the Custom Prop Editor.
 - [ ] Record final implementation results in `Outcomes & Retrospective`.
 
@@ -53,6 +55,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
   Evidence: The focused xModel importer test run reports 7 failed, 42 passed, 0 skipped, 49 total after node generation. The remaining failures all look for `<name> {1} - Circles`.
 - Observation: The existing generated group assembly path can create circle groups without duplicating light nodes.
   Evidence: After adding generated circle group definitions from `CircleXModelElementParser`, the focused xModel importer test run reports 0 failed, 49 passed, 0 skipped, 49 total.
+- Observation: Wrapped circle model support was already enabled by parser-based candidate classification; the missing milestone work was focused coverage for mixed wrappers and stale unsupported-model text.
+  Evidence: `XModelImport` marks candidates supported when `GetModelParser(element) != null`; the new wrapper tests pass for selecting a circle model from a mixed wrapper and for selecting an unsupported model.
 
 ## Decision Log
 
@@ -74,7 +78,7 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 
 ## Outcomes & Retrospective
 
-No implementation milestones are complete yet. This plan captures the committed specification and repository orientation needed for the implementation pass.
+Implementation milestones 1 through 7 are complete. Broader automated validation, manual reference-file validation, and final retrospective notes remain.
 
 ## Context and Orientation
 
@@ -234,3 +238,4 @@ These types should stay internal unless a concrete cross-module consumer require
 2026-07-20 / Codex: Completed milestone 4 by adding circle attribute parsing and validation while leaving node generation and generated circle groups for the next milestones.
 2026-07-20 / Codex: Completed milestone 5 by generating circle model nodes in xLights-compatible wiring order with deterministic normalized coordinates.
 2026-07-20 / Codex: Completed milestone 6 by generating parent and per-ring circle groups from the stored wiring-order ring metadata.
+2026-07-20 / Codex: Completed milestone 7 by validating wrapped circle selection in mixed wrappers and updating unsupported-model error text.

@@ -57,6 +57,60 @@ public sealed class XModelCircleImportTests
 	}
 
 	[Fact]
+	public async Task Import_WithMultipleWrappedModels_ImportsSelectedCircleModel()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<models type="exported">
+				<model name="Wrapped Snowman" DisplayAs="Custom" CustomWidth="300" CustomHeight="300" PixelSize="1" CustomModelCompressed="1,0,0" />
+				<model name="Wrapped Spinner" DisplayAs="Circle" LayerSizes="4" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="4" />
+				<model name="Wrapped Matrix" DisplayAs="Matrix" />
+			</models>
+			""";
+		var selectionService = new FakeXModelSelectionService
+		{
+			SelectedIndex = 1
+		};
+
+		// Act
+		var prop = await ImportAsync(modelXml, selectionService);
+
+		// Assert
+		Assert.NotNull(prop);
+		Assert.Equal("Wrapped Spinner {1}", prop.Name);
+		Assert.Equal(1, selectionService.CallCount);
+		Assert.Equal(["custommodel", "circlemodel", "matrixmodel"], selectionService.SeenModels.Select(model => model.ModelType).ToList());
+		Assert.Equal([true, true, false], selectionService.SeenModels.Select(model => model.IsSupported).ToList());
+		Assert.Equal([1, 2, 3, 4], GetChildOrders(GetModelGroup(prop, "Wrapped Spinner")));
+	}
+
+	[Fact]
+	public async Task Import_WithMultipleWrappedModelsAndUnsupportedSelection_ReturnsNull()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<models type="exported">
+				<model name="Wrapped Spinner" DisplayAs="Circle" LayerSizes="4" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="4" />
+				<model name="Wrapped Matrix" DisplayAs="Matrix" />
+			</models>
+			""";
+		var selectionService = new FakeXModelSelectionService
+		{
+			SelectedIndex = 1
+		};
+
+		// Act
+		var prop = await ImportAsync(modelXml, selectionService);
+
+		// Assert
+		Assert.Null(prop);
+		Assert.Equal(1, selectionService.CallCount);
+		Assert.Equal([true, false], selectionService.SeenModels.Select(model => model.IsSupported).ToList());
+	}
+
+	[Fact]
 	public async Task Import_WithOutsideInCircleModel_CreatesCircleGroupsInWiringOrder()
 	{
 		// Arrange

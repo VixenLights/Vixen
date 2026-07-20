@@ -198,7 +198,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		private async Task ShowUnsupportedModelTypeAsync(string modelType)
 		{
-			await ShowModelErrorAsync($"Unsupported model type: {modelType}. \nImport only supports custom model types at this time.", "Model import error");
+			await ShowModelErrorAsync($"Unsupported model type: {modelType}. \nImport supports custom and circle model types at this time.", "Model import error");
 		}
 
 		private IXModelElementParser GetModelParser(XElement modelElement)
