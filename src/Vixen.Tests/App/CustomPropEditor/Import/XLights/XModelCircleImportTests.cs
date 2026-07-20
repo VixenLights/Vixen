@@ -198,6 +198,54 @@ public sealed class XModelCircleImportTests
 		Assert.Equal(clockwiseSecondLight.Y, counterClockwiseSecondLight.Y, precision: 4);
 	}
 
+	[Fact]
+	public async Task Import_WithScaleXAndScaleY_AppliesScaleBeforeRoundingCoordinates()
+	{
+		// Arrange
+		const string unscaledXml =
+			"""
+			<circlemodel name="Unscaled Spinner" DisplayAs="Circle" LayerSizes="8" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="8" />
+			""";
+		const string scaledXml =
+			"""
+			<circlemodel name="Scaled Spinner" DisplayAs="Circle" LayerSizes="8" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="8" ScaleX="5" ScaleY="4" />
+			""";
+
+		// Act
+		var unscaledProp = await ImportAsync(unscaledXml);
+		var scaledProp = await ImportAsync(scaledXml);
+
+		// Assert
+		var unscaledModelGroup = GetModelGroup(unscaledProp, "Unscaled Spinner");
+		var scaledModelGroup = GetModelGroup(scaledProp, "Scaled Spinner");
+		Assert.True(GetCoordinateSpan(scaledModelGroup.Children, light => light.X) > GetCoordinateSpan(unscaledModelGroup.Children, light => light.X));
+		Assert.True(GetCoordinateSpan(scaledModelGroup.Children, light => light.Y) > GetCoordinateSpan(unscaledModelGroup.Children, light => light.Y));
+	}
+
+	[Fact]
+	public async Task Import_WithInvalidScaleValues_UsesUnscaledCoordinates()
+	{
+		// Arrange
+		const string unscaledXml =
+			"""
+			<circlemodel name="Unscaled Spinner" DisplayAs="Circle" LayerSizes="8" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="8" />
+			""";
+		const string invalidScaleXml =
+			"""
+			<circlemodel name="Invalid Scale Spinner" DisplayAs="Circle" LayerSizes="8" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="8" ScaleX="0" ScaleY="not-a-number" />
+			""";
+
+		// Act
+		var unscaledProp = await ImportAsync(unscaledXml);
+		var invalidScaleProp = await ImportAsync(invalidScaleXml);
+
+		// Assert
+		var unscaledModelGroup = GetModelGroup(unscaledProp, "Unscaled Spinner");
+		var invalidScaleModelGroup = GetModelGroup(invalidScaleProp, "Invalid Scale Spinner");
+		Assert.Equal(GetCoordinateSpan(unscaledModelGroup.Children, light => light.X), GetCoordinateSpan(invalidScaleModelGroup.Children, light => light.X), precision: 4);
+		Assert.Equal(GetCoordinateSpan(unscaledModelGroup.Children, light => light.Y), GetCoordinateSpan(invalidScaleModelGroup.Children, light => light.Y), precision: 4);
+	}
+
 	[Theory]
 	[InlineData("")]
 	[InlineData("not-a-number")]

@@ -16,6 +16,10 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		public int PixelSize { get; init; }
 
+		public double ScaleX { get; init; } = 1.0;
+
+		public double ScaleY { get; init; } = 1.0;
+
 		public int PixelCount { get; init; }
 
 		public int NumStrings { get; init; }

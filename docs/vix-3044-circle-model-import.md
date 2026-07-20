@@ -109,6 +109,8 @@ Wrapper selection rules should match the existing wrapper behavior:
 | `centerPercent` | no | Diameter or radius percentage for the innermost ring relative to the outer ring. Missing or non-numeric values import as `0`, matching xLights' field default. Numeric values are clamped to `0..100` for deterministic import behavior. |
 | `parm3` | no | Legacy equivalent of `centerPercent` for standalone `<circlemodel>` exports. Use only when `centerPercent` is absent or invalid. |
 | `PixelSize` | no | Vixen light size. Use existing custom model default of `1` when missing or invalid. |
+| `ScaleX` | no | xLights screen-location X scale. Apply to generated X coordinates before rounding. Missing, invalid, or non-positive values use `1.0`. |
+| `ScaleY` | no | xLights screen-location Y scale. Apply to generated Y coordinates before rounding. Missing, invalid, or non-positive values use `1.0`. |
 | `PixelCount` | no | Modern wrapped-model total node count. Validate against `LayerSizes` when present. |
 | `NumStrings` | no | Modern equivalent of legacy `parm1`. Not needed for node layout except as optional validation. |
 | `NodesPerString` | no | Modern equivalent of legacy `parm2`. Not needed for node layout except as optional validation. |
@@ -116,7 +118,7 @@ Wrapper selection rules should match the existing wrapper behavior:
 | `parm2` | no | Legacy equivalent of `NodesPerString`. Not needed for node layout except as optional validation. |
 | `StringType` | no | Preserve on the intermediate model where the current custom import preserves it. |
 
-Unsupported or ignored xLights layout attributes include `RotateX`, `RotateY`, `RotateZ`, `ScaleX`, `ScaleY`, `ScaleZ`, `WorldPosX`, `WorldPosY`, `WorldPosZ`, `LayoutGroup`, `Antialias`, and `Transparency`.
+Unsupported or ignored xLights layout attributes include `RotateX`, `RotateY`, `RotateZ`, `ScaleZ`, `WorldPosX`, `WorldPosY`, `WorldPosZ`, `LayoutGroup`, `Antialias`, and `Transparency`.
 
 ## Validation Rules
 
@@ -133,6 +135,7 @@ Circle parsing should tolerate and log a warning when:
 
 - `centerPercent` or `parm3` is missing, non-numeric, or outside the supported range. Missing and non-numeric values use `0`; numeric values outside the supported range are clamped to `0..100`.
 - `PixelSize` is missing or invalid. Use `1`.
+- `ScaleX` or `ScaleY` is missing, invalid, or non-positive. Use `1.0`.
 - Optional count fields (`NumStrings`, `NodesPerString`, `parm1`, `parm2`) are inconsistent with `LayerSizes`, unless the implementation team chooses to make this a hard failure.
 
 ## Node Order
@@ -170,6 +173,7 @@ Recommended coordinate model:
 - Determine `innerRadius = centerPercent / 100.0 * outerRadius`.
 - If there is one ring, use `outerRadius`.
 - If there are multiple rings, distribute radii evenly between `innerRadius` and `outerRadius`.
+- Apply optional xLights `ScaleX` and `ScaleY` values to the generated centered coordinates before rounding. This bakes the xLights screen-location scale into Vixen's fixed light coordinates and avoids jagged small-ring imports.
 - Convert centered circle coordinates into positive Vixen canvas coordinates by shifting all generated points so the minimum `X` and `Y` are `0`, then let the existing assembly offset and minimum prop-size logic apply.
 
 For a WPF-style coordinate system where Y increases downward:
