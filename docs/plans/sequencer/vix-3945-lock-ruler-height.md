@@ -17,7 +17,7 @@ The visible result is in the Timed Sequence Editor. Open a sequence, choose `Vie
 - [x] (2026-07-20 15:28 -05:00) Milestone 1: Updated Jira VIX-3945 with refined requirements, implementation outline, acceptance criteria, and test plan in planning comment `40212`.
 - [x] (2026-07-20 15:36 -05:00) Milestone 2: Added `LockRulerHeight` to the reusable ruler surface, added the `TimelineControl` forwarding property, and guarded ruler resize cursor, drag resize, and double-click reset paths.
 - [x] (2026-07-20 16:40 -05:00) Milestone 3: Added `View > Lock Ruler Height` directly below `Full Waveform`, wired the menu handler, and persisted `{Name}/LockRulerHeight` through `XMLProfileSettings`.
-- [ ] Add focused automated coverage where practical.
+- [x] (2026-07-20 16:52 -05:00) Milestone 4: Added focused automated coverage for ruler lock default state, property storage, timeline forwarding, bottom-edge cursor behavior, in-progress resize blocking, and double-click reset blocking.
 - [ ] Run automated validation and perform manual Timed Sequence Editor validation.
 - [ ] Update Jira VIX-3945 and this ExecPlan with final implementation and validation evidence.
 
@@ -63,6 +63,8 @@ Milestone 1 is complete. Jira VIX-3945 now has planning comment `40212` with ref
 Milestone 2 is complete. `Ruler` now exposes a documented `LockRulerHeight` property, and `TimelineControl` exposes a documented forwarding property for later editor wiring. The only guarded interactions are the existing ruler-height resize affordances: the bottom-edge `Cursors.HSplit` branch, `MouseState.ResizeRuler` entry, height mutation during `MouseState.ResizeRuler`, and double-click reset. A focused build of `src\Vixen.Common\Controls\Controls.csproj` passed with four pre-existing warnings from `Vixen.Core` and zero errors.
 
 Milestone 3 is complete. `TimedSequenceEditorForm.Designer.cs` now declares `lockRulerHeightToolStripMenuItem`, places it immediately after `fullWaveformToolStripMenuItem` in the View menu, and wires its click handler. `TimedSequenceEditorForm_Menu.cs` applies the checked state to `TimelineControl.LockRulerHeight` immediately. `TimedSequenceEditorForm.cs` loads `{Name}/LockRulerHeight` with default `false` beside `RulerHeight` and saves the checked state beside the existing ruler height setting. Editor project validation is blocked by missing native/dependency outputs as recorded in `Surprises & Discoveries`; no compile error from the changed files was reached in the available build attempts.
+
+Milestone 4 is complete. `RulerLockHeightTests` now covers the default unlocked state, explicit lock state storage, `TimelineControl.LockRulerHeight` forwarding to the ruler, unlocked bottom-edge resize cursor behavior, locked bottom-edge cursor suppression, immediate stop of an in-progress resize after the lock turns on, and locked double-click reset suppression. The focused test filter passed 7 tests.
 
 ## Context and Orientation
 
@@ -366,6 +368,25 @@ Milestone 3 validation attempts:
     - `Module.Effect.Liquid.dll`
     - `Module.SequenceType.Timed.dll`
 
+Milestone 4 implementation evidence:
+
+    Changed `src/Vixen.Tests/Sequencer/RulerLockHeightTests.cs`:
+    - Added focused tests for the `Ruler.LockRulerHeight` default and assigned state.
+    - Added a forwarding test for `TimelineControl.LockRulerHeight`.
+    - Added protected mouse-hook coverage for unlocked resize cursor display, locked resize cursor suppression, locked in-progress drag behavior, and locked double-click reset behavior.
+
+Milestone 4 test evidence:
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~RulerLockHeight --no-restore
+
+    Passed.
+        Failed: 0
+        Passed: 7
+        Skipped: 0
+        Total: 7
+
+    The command reported pre-existing warnings, including the known `LiteDB` vulnerability warning and existing warnings in `Vixen.Core`, `WpfPropertyGrid`, `FixtureGraphics`, and `VixenPreview`.
+
 Record final validation evidence here after implementation. Include focused test output, full test output, manual validation notes, and Jira update identifiers if available.
 
 ## Interfaces and Dependencies
@@ -421,3 +442,4 @@ The setting type is `XMLProfileSettings.SettingType.AppSettings`, matching the e
 - 2026-07-20 / Codex: Completed Milestone 1 by adding Jira planning comment `40212` and recording the default-setting clarification.
 - 2026-07-20 / Codex: Completed Milestone 2 by adding the ruler/timeline lock properties, guarding ruler height resize paths, and recording focused build evidence.
 - 2026-07-20 / Codex: Completed Milestone 3 by wiring the Timed Sequence Editor View menu and XML profile setting, then recording build blockers from native/dependency outputs.
+- 2026-07-20 / Codex: Completed Milestone 4 by adding focused ruler lock tests and recording a passing focused test run.
