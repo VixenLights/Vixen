@@ -37,9 +37,11 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 55 passed, 0 skipped, 55 total.
 - [x] (2026-07-20) Shared xModel coordinate scale parsing/defaulting across custom and circle imports. Missing or invalid `ScaleX` and `ScaleY` now use the custom model dimension-based default scale, and custom imports honor explicit scale attributes.
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 57 passed, 0 skipped, 57 total.
-- [ ] Run broader relevant tests.
-- [ ] Manually validate the committed circle examples in the Custom Prop Editor.
-- [ ] Record final implementation results in `Outcomes & Retrospective`.
+- [x] (2026-07-20) Populated `PhysicalMetadata.NodeCount` for xModel imports from the distinct imported light-node count so non-vendor imports get the same metadata field that vendor imports fill from product information.
+- [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 57 passed, 0 skipped, 57 total.
+- [x] (2026-07-20) Ran broader relevant validation with `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore`; result is 0 failed, 490 passed, 0 skipped, 490 total.
+- [x] (2026-07-20) Manual validation of the committed circle examples in the Custom Prop Editor passed, based on user validation after the scale, direction, duplicate `Circles` group, and node-count fixes.
+- [x] (2026-07-20) Recorded final implementation results in `Outcomes & Retrospective`.
 
 ## Surprises & Discoveries
 
@@ -73,6 +75,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
   Evidence: The vendor `Circles` subModel has one `lineN` range group per physical ring, covering the same node-order sets as the generated circle groups; imported `0` placeholders are ignored because no light node resolves for order `0`.
 - Observation: Circle imports without `ScaleX` and `ScaleY` should not fall back to unit scale because custom imports already enlarge small models with a dimension-based default scale.
   Evidence: `CustomModel.CalculateScale` used `4`, `2`, or `1` based on model dimensions; the shared `XModelCoordinateScale` now applies the same default to circle imports and explicit xLights scale attributes to custom imports.
+- Observation: The full `Vixen.Tests` project passes after the circle import changes and adjacent xModel metadata fallback.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore` reported 0 failed, 490 passed, 0 skipped, 490 total on 2026-07-20.
 
 ## Decision Log
 
@@ -94,7 +98,9 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 
 ## Outcomes & Retrospective
 
-Implementation milestones 1 through 7 are complete. Broader automated validation, manual reference-file validation, and final retrospective notes remain.
+Circle xModel import is implemented and validated. Users can import standalone `<circlemodel>` files and wrapped `<model DisplayAs="Circle">` files into the Custom Prop Editor, get correctly ordered model nodes, xLights-compatible circle coordinates, generated or imported circle groups, imported child metadata, and distinct-node physical metadata when vendor product data is not present.
+
+Focused xModel importer validation passed with 57 tests, and the broader `Vixen.Tests` project passed with 490 tests. Manual validation of the committed `docs/references/circlemodel` examples also passed after the scale, direction, duplicate `Circles` group, and node-count fixes. No known implementation work remains for this ExecPlan.
 
 ## Context and Orientation
 
@@ -259,3 +265,4 @@ These types should stay internal unless a concrete cross-module consumer require
 2026-07-20 / Codex: Corrected `Dir` handling so `L` maps to clockwise visual traversal instead of counter-clockwise.
 2026-07-20 / Codex: Added duplicate detection so a matching imported `Circles` subModel replaces the generated fallback group.
 2026-07-20 / Codex: Shared coordinate scale parsing and defaulting across custom and circle xModel imports.
+2026-07-20 / Codex: Completed milestone 8 with focused xModel importer validation and the broader `Vixen.Tests` project validation, and recorded the user-confirmed manual validation result.
