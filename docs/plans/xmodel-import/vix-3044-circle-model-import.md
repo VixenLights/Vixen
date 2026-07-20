@@ -15,8 +15,9 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - [x] (2026-07-17) Read `.agents/PLANS.md`, the committed specification `docs/vix-3044-circle-model-import.md`, the existing wrapper import plan, the current xLights importer, current importer tests, local circle reference files, and the project `dotnet-design-pattern-review` skill.
 - [x] (2026-07-17) Created this ExecPlan with the confirmed decisions that circle groups follow wiring order, `LayerSizes` follows xLights behavior, and invalid `centerPercent` values use deterministic default/clamp behavior.
 - [x] (2026-07-18) Updated Jira issue `VIX-3044` with the finalized requirements, design notes, acceptance criteria, test plan, manual validation plan, and this ExecPlan path.
-- [ ] Read implementation skills before code changes: `.agents/skills/dotnet-best-practices/SKILL.md`; `.agents/skills/csharp-async/SKILL.md` if async importer code changes materially; `.agents/skills/csharp-docs/SKILL.md` if public or protected APIs are changed; `.agents/skills/dotnet-design-pattern-review/SKILL.md` before finalizing parser abstraction changes.
-- [ ] Add characterization tests that prove circle models currently fail or return null before implementation, then evolve them into passing behavior tests.
+- [x] (2026-07-18) Read `.agents/skills/dotnet-best-practices/SKILL.md` before adding test code. Deferred `.agents/skills/csharp-async/SKILL.md`, `.agents/skills/csharp-docs/SKILL.md`, and `.agents/skills/dotnet-design-pattern-review/SKILL.md` until importer async, public API, or parser abstraction code changes begin.
+- [x] (2026-07-18) Added focused circle import characterization tests in `src/Vixen.Tests/App/CustomPropEditor/Import/XLights/XModelCircleImportTests.cs`.
+- [x] (2026-07-18) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; baseline result is 12 failed, 34 passed, 0 skipped, 46 total. The failing tests are the new circle success-path behavior tests and fail because current circle imports return null. Existing importer tests and the new invalid-circle/custom-regression tests pass.
 - [ ] Refactor xModel import into shared parser and assembly pieces without changing custom model behavior.
 - [ ] Implement circle attribute parsing, xLights-compatible layer traversal, coordinate generation, validation, and generated circle groups.
 - [ ] Run focused tests and broader relevant tests.
@@ -35,6 +36,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
   Evidence: `src/Vixen.Tests/App/CustomPropEditor/Import/XLights/XModelImportHierarchyTests.cs` writes `modelXml` to a temp file and calls `new XModelImport().ImportAsync(filePath)`.
 - Observation: The xLights circle source defaults `centerPercent` to zero and assigns supplied values directly in the circle class.
   Evidence: xLights `CircleModel.h` declares `int _centerPercent = 0;` and `void SetCenterPercent(int val) { _centerPercent = val; }`; this plan still clamps imported numeric values to `0..100` as a Vixen import-safety rule.
+- Observation: The focused importer test suite compiles with the new circle tests before implementation, and the red baseline is isolated to circle success-path imports.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore` reported 12 failed, 34 passed, 0 skipped, 46 total on 2026-07-18. The new invalid `LayerSizes`, mismatched `PixelCount`, and wrapped custom regression tests pass against current behavior.
 
 ## Decision Log
 
@@ -211,3 +214,4 @@ These types should stay internal unless a concrete cross-module consumer require
 2026-07-17 / Codex: Created the initial ExecPlan from `docs/vix-3044-circle-model-import.md` after reviewing `.agents/PLANS.md`, the current importer, current tests, local circle references, the existing wrapper-import plan, and the project design-pattern skill.
 2026-07-17 / Codex: Moved the ExecPlan from `docs/plans/state` to `docs/plans/xmodel-import` because xModel import work is adjacent to State features but should be tracked separately.
 2026-07-18 / Codex: Completed milestone 1 by updating Jira issue `VIX-3044` with the implementation requirements, design notes, acceptance criteria, automated test plan, manual validation plan, and plan path.
+2026-07-18 / Codex: Completed milestone 2 by adding focused circle import tests and recording the expected pre-implementation failing baseline.
