@@ -1,3 +1,6 @@
+using Catel.IoC;
+using Catel.Services;
+using Moq;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
 using Xunit;
@@ -335,6 +338,7 @@ public sealed class XModelCircleImportTests
 
 	private static async Task<Prop> ImportAsync(string modelXml, XModelImport import)
 	{
+		RegisterMessageService();
 		var filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xmodel");
 		await File.WriteAllTextAsync(filePath, modelXml);
 		try
@@ -345,6 +349,15 @@ public sealed class XModelCircleImportTests
 		{
 			File.Delete(filePath);
 		}
+	}
+
+	private static void RegisterMessageService()
+	{
+		var messageService = new Mock<IMessageService>();
+		messageService
+			.Setup(service => service.ShowErrorAsync(It.IsAny<string>(), It.IsAny<string>()))
+			.Returns(Task.FromResult(default(MessageResult)));
+		ServiceLocator.Default.RegisterInstance(messageService.Object);
 	}
 
 	private sealed class FakeXModelSelectionService : IXModelSelectionService

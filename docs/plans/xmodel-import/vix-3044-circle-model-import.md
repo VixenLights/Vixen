@@ -18,7 +18,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - [x] (2026-07-18) Read `.agents/skills/dotnet-best-practices/SKILL.md` before adding test code. Deferred `.agents/skills/csharp-async/SKILL.md`, `.agents/skills/csharp-docs/SKILL.md`, and `.agents/skills/dotnet-design-pattern-review/SKILL.md` until importer async, public API, or parser abstraction code changes begin.
 - [x] (2026-07-18) Added focused circle import characterization tests in `src/Vixen.Tests/App/CustomPropEditor/Import/XLights/XModelCircleImportTests.cs`.
 - [x] (2026-07-18) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; baseline result is 12 failed, 34 passed, 0 skipped, 46 total. The failing tests are the new circle success-path behavior tests and fail because current circle imports return null. Existing importer tests and the new invalid-circle/custom-regression tests pass.
-- [ ] Refactor xModel import into shared parser and assembly pieces without changing custom model behavior.
+- [x] (2026-07-20) Refactored xModel import into internal parser and shared assembly pieces without changing custom model behavior. Added `IXModelElementParser`, `CustomXModelElementParser`, `XModelParsedModel`, `XModelGeneratedGroup`, `XModelElementMetadata`, and `XModelChildElementImporter`.
+- [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result remained the intended milestone-2 baseline: 12 failed, 34 passed, 0 skipped, 46 total. Existing custom import behavior still passes, and circle success-path tests still fail because circle parsing has not been implemented.
 - [ ] Implement circle attribute parsing, xLights-compatible layer traversal, coordinate generation, validation, and generated circle groups.
 - [ ] Run focused tests and broader relevant tests.
 - [ ] Manually validate the committed circle examples in the Custom Prop Editor.
@@ -38,6 +39,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
   Evidence: xLights `CircleModel.h` declares `int _centerPercent = 0;` and `void SetCenterPercent(int val) { _centerPercent = val; }`; this plan still clamps imported numeric values to `0..100` as a Vixen import-safety rule.
 - Observation: The focused importer test suite compiles with the new circle tests before implementation, and the red baseline is isolated to circle success-path imports.
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore` reported 12 failed, 34 passed, 0 skipped, 46 total on 2026-07-18. The new invalid `LayerSizes`, mismatched `PixelCount`, and wrapped custom regression tests pass against current behavior.
+- Observation: The parser refactor can preserve the same focused-test baseline without making Circle supported yet.
+  Evidence: After moving custom parsing into `CustomXModelElementParser`, shared child parsing into `XModelChildElementImporter`, and assembly input to `XModelParsedModel`, the focused test command still reports 12 failed, 34 passed, 0 skipped, 46 total on 2026-07-20.
 
 ## Decision Log
 
@@ -215,3 +218,4 @@ These types should stay internal unless a concrete cross-module consumer require
 2026-07-17 / Codex: Moved the ExecPlan from `docs/plans/state` to `docs/plans/xmodel-import` because xModel import work is adjacent to State features but should be tracked separately.
 2026-07-18 / Codex: Completed milestone 1 by updating Jira issue `VIX-3044` with the implementation requirements, design notes, acceptance criteria, automated test plan, manual validation plan, and plan path.
 2026-07-18 / Codex: Completed milestone 2 by adding focused circle import tests and recording the expected pre-implementation failing baseline.
+2026-07-20 / Codex: Completed milestone 3 by introducing internal parser/shared assembly structure while preserving the existing custom import behavior and the expected circle unsupported baseline.
