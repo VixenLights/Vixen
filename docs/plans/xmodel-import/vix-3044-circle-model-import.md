@@ -42,6 +42,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - [x] (2026-07-20) Ran broader relevant validation with `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore`; result is 0 failed, 490 passed, 0 skipped, 490 total.
 - [x] (2026-07-20) Manual validation of the committed circle examples in the Custom Prop Editor passed, based on user validation after the scale, direction, duplicate `Circles` group, and node-count fixes.
 - [x] (2026-07-20) Recorded final implementation results in `Outcomes & Retrospective`.
+- [x] (2026-07-20) Aligned xModel importer naming and organization for future model types. Shared import infrastructure remains in `Import/XLights`; custom-specific parsing lives in `Import/XLights/Custom`; circle-specific parsing and generation lives in `Import/XLights/Circle`; child metadata helpers live in `Faces`, `States`, and `Ranges`.
+- [x] (2026-07-20) Re-ran focused and full validation after the folder/namespace refactor. Focused xLights importer validation passed with 57 tests, and the full `Vixen.Tests` project passed with 490 tests.
 
 ## Surprises & Discoveries
 
@@ -77,6 +79,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
   Evidence: `CustomModel.CalculateScale` used `4`, `2`, or `1` based on model dimensions; the shared `XModelCoordinateScale` now applies the same default to circle imports and explicit xLights scale attributes to custom imports.
 - Observation: The full `Vixen.Tests` project passes after the circle import changes and adjacent xModel metadata fallback.
   Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore` reported 0 failed, 490 passed, 0 skipped, 490 total on 2026-07-20.
+- Observation: The xModel importer now has enough model-specific surface area to justify package-level organization by responsibility.
+  Evidence: Custom-specific files are under `src/Vixen.Modules/App/CustomPropEditor/Import/XLights/Custom`, circle-specific files are under `.../XLights/Circle`, shared import and assembly files remain under `.../XLights`, and child metadata helpers are grouped under `Faces`, `States`, and `Ranges`.
 
 ## Decision Log
 
@@ -95,10 +99,15 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - Decision: Add reusable internal parser/assembly structure before adding circle parsing.
   Rationale: `XModelImport` already owns wrapper selection, custom parsing, child metadata parsing, and prop assembly. Circle support adds a second model-specific parser and generated groups; extracting shared seams first reduces duplication and keeps later xLights model types practical.
   Date/Author: 2026-07-17 / Codex
+- Decision: Organize xModel import code by shared infrastructure, model type, and child metadata type.
+  Rationale: Additional xLights model types should have an obvious place for their parser, configuration, node generation, and tests without expanding the root import namespace into a mixed list of unrelated classes. Shared flow, common configuration, scale handling, parsed-model representation, and prop assembly stay at the root so model-specific implementations reuse one import pipeline.
+  Date/Author: 2026-07-20 / Codex
 
 ## Outcomes & Retrospective
 
 Circle xModel import is implemented and validated. Users can import standalone `<circlemodel>` files and wrapped `<model DisplayAs="Circle">` files into the Custom Prop Editor, get correctly ordered model nodes, xLights-compatible circle coordinates, generated or imported circle groups, imported child metadata, and distinct-node physical metadata when vendor product data is not present.
+
+The final code organization separates shared xModel import pipeline code from model-specific implementations. Shared types such as `XModelImport`, `IXModelElementParser`, `XModelCommonConfiguration`, `XModelCoordinateScale`, `XModelParsedModel`, `XModelChildElementImporter`, and `XModelPropAssembler` remain under `src/Vixen.Modules/App/CustomPropEditor/Import/XLights`. Custom model parsing is under `.../XLights/Custom`, circle parsing and circle geometry/group generation are under `.../XLights/Circle`, and child metadata helpers are grouped under `Faces`, `States`, and `Ranges`. This gives future model types a consistent pattern: add a model-specific folder and parser, reuse shared configuration/assembly, and keep common child metadata import centralized.
 
 Focused xModel importer validation passed with 57 tests, and the broader `Vixen.Tests` project passed with 490 tests. Manual validation of the committed `docs/references/circlemodel` examples also passed after the scale, direction, duplicate `Circles` group, and node-count fixes. No known implementation work remains for this ExecPlan.
 
@@ -250,6 +259,38 @@ Internal names may be adjusted during implementation, but the end state should i
 
 These types should stay internal unless a concrete cross-module consumer requires otherwise. If public or protected APIs are introduced, update XML documentation immediately and record the reason in the Decision Log.
 
+The finalized organization is:
+
+    Import/XLights/
+        XModelImport.cs
+        IXModelElementParser.cs
+        XModelCommonConfiguration.cs
+        XModelCommonConfigurationParser.cs
+        XModelCoordinateScale.cs
+        XModelParsedModel.cs
+        XModelPropAssembler.cs
+        XModelChildElementImporter.cs
+        Custom/
+            CustomXModelElementParser.cs
+            CustomXModelNodeParser.cs
+            CustomXModelSourceResolver.cs
+        Circle/
+            CircleXModelElementParser.cs
+            CircleXModelConfigurationParser.cs
+            CircleXModelNodeGenerator.cs
+            CircleXModelGroupGenerator.cs
+        Faces/
+            FaceInfo.cs
+            FaceItem.cs
+        States/
+            StateInfo.cs
+            StateItem.cs
+            XLightsStateNameNormalizer.cs
+        Ranges/
+            Range.cs
+            RangeGroup.cs
+            NodeRange.cs
+
 ## Revision Notes
 
 2026-07-17 / Codex: Created the initial ExecPlan from `docs/vix-3044-circle-model-import.md` after reviewing `.agents/PLANS.md`, the current importer, current tests, local circle references, the existing wrapper-import plan, and the project design-pattern skill.
@@ -266,3 +307,4 @@ These types should stay internal unless a concrete cross-module consumer require
 2026-07-20 / Codex: Added duplicate detection so a matching imported `Circles` subModel replaces the generated fallback group.
 2026-07-20 / Codex: Shared coordinate scale parsing and defaulting across custom and circle xModel imports.
 2026-07-20 / Codex: Completed milestone 8 with focused xModel importer validation and the broader `Vixen.Tests` project validation, and recorded the user-confirmed manual validation result.
+2026-07-20 / Codex: Finalized the ExecPlan with the post-implementation naming and folder/namespace organization for shared, custom, circle, face, state, and range import code.
