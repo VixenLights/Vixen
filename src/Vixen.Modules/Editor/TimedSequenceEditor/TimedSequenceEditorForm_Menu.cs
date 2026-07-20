@@ -212,6 +212,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.waveform.Invalidate();
 		}
 
+		private void lockRulerHeightToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TimelineControl.LockRulerHeight = lockRulerHeightToolStripMenuItem.Checked;
+		}
+
 		// this seems to break the keyboard shortcuts; the key shortcuts don't get enabled again
 		// until the menu is dropped down, which is annoying. These really should be enabled/disabled
 		// on select of elements, but that's too annoying for now...

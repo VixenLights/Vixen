@@ -93,6 +93,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.showHiddenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.fullWaveformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.lockRulerHeightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.effectWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -247,9 +248,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripPlayBack.SuspendLayout();
 			this.contextMenuStripLibraries.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// toolStripAudio
-			// 
+			//
 			this.toolStripAudio.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.toolStripAudio.ClickThrough = true;
 			this.toolStripAudio.ContextMenuStrip = this.contextMenuStripAll;
@@ -781,6 +782,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.showHiddenToolStripMenuItem,
             this.toolStripSeparator5,
             this.fullWaveformToolStripMenuItem,
+            this.lockRulerHeightToolStripMenuItem,
             this.toolStripMenuItem1,
             this.toolbarToolStripMenuItem,
             this.effectWindowToolStripMenuItem,
@@ -906,7 +908,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.fullWaveformToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.fullWaveformToolStripMenuItem.Text = "Full Waveform";
 			this.fullWaveformToolStripMenuItem.CheckedChanged += new System.EventHandler(this.fullWaveformToolStripMenuItem_CheckedChanged);
-			// 
+			//
+			// lockRulerHeightToolStripMenuItem
+			//
+			this.lockRulerHeightToolStripMenuItem.CheckOnClick = true;
+			this.lockRulerHeightToolStripMenuItem.Name = "lockRulerHeightToolStripMenuItem";
+			this.lockRulerHeightToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.lockRulerHeightToolStripMenuItem.Text = "Lock Ruler Height";
+			this.lockRulerHeightToolStripMenuItem.Click += new System.EventHandler(this.lockRulerHeightToolStripMenuItem_Click);
+			//
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
@@ -2542,5 +2552,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem speedTempoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fullWaveformToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem lockRulerHeightToolStripMenuItem;
 	}
 }
