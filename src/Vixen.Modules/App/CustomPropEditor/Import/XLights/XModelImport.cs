@@ -2,6 +2,7 @@
 using Catel.Services;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
 using VixenModules.App.CustomPropEditor.Import.XLights.Ranges;
@@ -171,7 +172,17 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			prop.CreatedBy = @"xModel Import";
 
 			await Assemble(parsedModel);
+			prop.PhysicalMetadata.NodeCount = CountDistinctLightNodes(prop).ToString(CultureInfo.InvariantCulture);
 			return prop;
+		}
+
+		private static int CountDistinctLightNodes(Prop prop)
+		{
+			return prop.GetLeafNodes()
+				.Where(node => node.IsLightNode)
+				.Select(node => node.Id)
+				.Distinct()
+				.Count();
 		}
 
 		private static (int Width, int Height) CalculatePropSize(CustomModel customModel)

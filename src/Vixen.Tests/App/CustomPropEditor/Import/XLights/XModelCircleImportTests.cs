@@ -25,6 +25,7 @@ public sealed class XModelCircleImportTests
 		// Assert
 		Assert.NotNull(prop);
 		Assert.Equal("Spinner {1}", prop.Name);
+		Assert.Equal("4", prop.PhysicalMetadata.NodeCount);
 		var modelGroup = GetModelGroup(prop, "Spinner");
 		Assert.Equal(ElementModelType.Model, modelGroup.ModelType);
 		Assert.Equal([1, 2, 3, 4], GetChildOrders(modelGroup));

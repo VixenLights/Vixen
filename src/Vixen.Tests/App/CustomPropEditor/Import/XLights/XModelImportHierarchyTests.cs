@@ -25,6 +25,7 @@ public class XModelImportHierarchyTests
 
 		// Assert
 		Assert.Equal("Santa Waving {1}", prop.Name);
+		Assert.Equal("3", prop.PhysicalMetadata.NodeCount);
 
 		var rootChildren = prop.RootNode.Children.Select(child => child.Name).ToList();
 		Assert.Contains("Santa Waving {1} - Model", rootChildren);
