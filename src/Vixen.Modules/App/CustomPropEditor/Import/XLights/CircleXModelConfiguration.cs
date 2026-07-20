@@ -21,5 +21,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 		public int NumStrings { get; init; }
 
 		public int NodesPerString { get; init; }
+
+		public List<CircleXModelRing> Rings { get; init; } = [];
 	}
 }

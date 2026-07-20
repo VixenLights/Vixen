@@ -37,6 +37,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				StrandNames = XModelElementMetadata.GetAttributeValue(modelElement, "StrandNames"),
 				NodeNames = XModelElementMetadata.GetAttributeValue(modelElement, "NodeNames")
 			};
+			customModel.ModelNodes = CreateModelNodes(configuration);
 
 			_childElementImporter.ImportChildElements(customModel, modelElement);
 			return new XModelParsedModel(customModel)
@@ -96,10 +97,101 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				PixelSize = GetPixelSize(modelElement),
 				PixelCount = pixelCount,
 				NumStrings = GetIntegerAttributeValue(modelElement, "NumStrings", "parm1"),
-				NodesPerString = GetIntegerAttributeValue(modelElement, "NodesPerString", "parm2")
+				NodesPerString = GetIntegerAttributeValue(modelElement, "NodesPerString", "parm2"),
+				Rings = CreateRingDefinitions(layerSizes, insideOut)
 			};
 			errorMessage = null;
 			return true;
+		}
+
+		private static List<CircleXModelRing> CreateRingDefinitions(IReadOnlyList<int> layerSizes, bool insideOut)
+		{
+			var physicalLayerIndexes = insideOut
+				? Enumerable.Range(0, layerSizes.Count)
+				: Enumerable.Range(0, layerSizes.Count).Reverse();
+			var rings = new List<CircleXModelRing>();
+			var nextNodeOrder = 1;
+			var circleNumber = 1;
+
+			foreach (var physicalLayerIndex in physicalLayerIndexes)
+			{
+				var nodeOrders = Enumerable
+					.Range(nextNodeOrder, layerSizes[physicalLayerIndex])
+					.ToList();
+				rings.Add(new CircleXModelRing
+				{
+					CircleNumber = circleNumber,
+					PhysicalLayerIndex = physicalLayerIndex,
+					NodeOrders = nodeOrders
+				});
+
+				nextNodeOrder += layerSizes[physicalLayerIndex];
+				circleNumber++;
+			}
+
+			return rings;
+		}
+
+		private static Dictionary<int, ModelNode> CreateModelNodes(CircleXModelConfiguration configuration)
+		{
+			var generatedNodes = new List<ModelNode>();
+			var maxLights = configuration.LayerSizes.Max();
+			var maxRadius = maxLights / 2.0;
+			var minRadius = configuration.CenterPercent / 100.0 * maxRadius;
+
+			foreach (var ring in configuration.Rings)
+			{
+				var nodeCount = configuration.LayerSizes[ring.PhysicalLayerIndex];
+				var radius = GetLayerRadius(
+					ring.PhysicalLayerIndex,
+					configuration.LayerSizes.Count,
+					minRadius,
+					maxRadius);
+				var startAngle = configuration.StartSide == 'T' ? Math.PI : 0;
+				var direction = configuration.Direction == 'L' ? 1 : -1;
+				var angleStep = 2 * Math.PI / nodeCount;
+
+				for (var nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
+				{
+					var angle = startAngle + direction * angleStep * nodeIndex;
+					generatedNodes.Add(new ModelNode
+					{
+						Order = ring.NodeOrders[nodeIndex],
+						X = (int)Math.Round(Math.Sin(angle) * radius, MidpointRounding.AwayFromZero),
+						Y = (int)Math.Round(Math.Cos(angle) * radius, MidpointRounding.AwayFromZero)
+					});
+				}
+			}
+
+			NormalizeCoordinates(generatedNodes);
+			return generatedNodes.ToDictionary(node => node.Order);
+		}
+
+		private static double GetLayerRadius(int physicalLayerIndex, int layerCount, double minRadius, double maxRadius)
+		{
+			if (layerCount == 1)
+			{
+				return maxRadius;
+			}
+
+			return minRadius + (maxRadius - minRadius) * physicalLayerIndex / (layerCount - 1);
+		}
+
+		private static void NormalizeCoordinates(IReadOnlyCollection<ModelNode> modelNodes)
+		{
+			if (!modelNodes.Any())
+			{
+				return;
+			}
+
+			var minX = modelNodes.Min(node => node.X);
+			var minY = modelNodes.Min(node => node.Y);
+
+			foreach (var modelNode in modelNodes)
+			{
+				modelNode.X -= minX;
+				modelNode.Y -= minY;
+			}
 		}
 
 		private static bool TryParseLayerSizes(XElement modelElement, out List<int> layerSizes)
