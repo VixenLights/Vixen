@@ -33,6 +33,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 53 passed, 0 skipped, 53 total.
 - [x] (2026-07-20) Corrected `Dir` angle mapping so `Dir="L"` advances visually clockwise on Vixen's WPF-style canvas.
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 53 passed, 0 skipped, 53 total.
+- [x] (2026-07-20) Suppressed generated `Circles` groups when an imported ranges subModel named `Circles` already matches the generated per-ring node-order groups.
+- [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 55 passed, 0 skipped, 55 total.
 - [ ] Run broader relevant tests.
 - [ ] Manually validate the committed circle examples in the Custom Prop Editor.
 - [ ] Record final implementation results in `Outcomes & Retrospective`.
@@ -65,6 +67,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
   Evidence: xLights `CircleModel::SetCircleCoord()` sets render size from `maxLights`, while `ModelScreenLocation` stores `scalex` and `scaley`; local wrapped circle examples export `ScaleX` and `ScaleY`.
 - Observation: The first implementation mapped `Dir="L"` to increasing angles, which made bottom-start circles advance counter-clockwise in Vixen.
   Evidence: Manual import of `circle-vendor.xmodel` showed `Dir="L"` tracking counter-clockwise; in Vixen's canvas, bottom-start clockwise traversal requires decrementing the angle.
+- Observation: `circle-vendor.xmodel` already includes a `Circles` ranges subModel that partitions nodes into the same ring groups as the generated fallback.
+  Evidence: The vendor `Circles` subModel has one `lineN` range group per physical ring, covering the same node-order sets as the generated circle groups; imported `0` placeholders are ignored because no light node resolves for order `0`.
 
 ## Decision Log
 
@@ -249,3 +253,4 @@ These types should stay internal unless a concrete cross-module consumer require
 2026-07-20 / Codex: Completed milestone 7 by validating wrapped circle selection in mixed wrappers and updating unsupported-model error text.
 2026-07-20 / Codex: Refined circle coordinate generation to apply exported `ScaleX` and `ScaleY` before rounding, matching xLights' screen-location scale behavior more closely.
 2026-07-20 / Codex: Corrected `Dir` handling so `L` maps to clockwise visual traversal instead of counter-clockwise.
+2026-07-20 / Codex: Added duplicate detection so a matching imported `Circles` subModel replaces the generated fallback group.

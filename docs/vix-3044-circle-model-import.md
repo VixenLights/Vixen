@@ -235,6 +235,7 @@ Hierarchy rules:
 - Each generated circle group contains references to the already-created light nodes, not duplicate lights.
 - Each generated circle group should use `ElementModelType.SubModel` unless a separate `ElementModelType.Circle` is explicitly approved.
 - Imported `subModel` groups remain root-level groups, matching current custom model behavior.
+- If an imported ranges `subModel` named `Circles` contains the same per-ring node-order groups as the generated circle groups, keep the imported subModel and skip the generated `Circles` group to avoid duplicate targeting groups.
 - Imported `subModel`, `faceInfo`, and `stateInfo` range references must resolve against the generated node order.
 
 Circle group numbering follows wiring order. `Circle 1` is the first wired ring, `Circle 2` is the next wired ring, and so on. This means `InsideOut="0"` makes `Circle 1` the outside ring, while `InsideOut="1"` makes `Circle 1` the inside ring.

@@ -321,6 +321,50 @@ public sealed class XModelCircleImportTests
 		Assert.Equal([1, 2], GetChildOrders(subModelGroup));
 	}
 
+	[Fact]
+	public async Task Import_WithMatchingCirclesSubModel_UsesImportedSubModelInsteadOfGeneratedGroup()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<circlemodel name="Duplicate Circles Spinner" DisplayAs="Circle" LayerSizes="2,3" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="5">
+				<subModel name="Circles" type="ranges" layout="horizontal" line0="4,5,0" line1="1-3" />
+			</circlemodel>
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		var circlesGroup = prop.RootNode.Children.Single(child => child.Name == "Duplicate Circles Spinner {1} - Circles");
+		Assert.DoesNotContain(circlesGroup.Children, child => child.Name == "Duplicate Circles Spinner {1} - Circle 1");
+		Assert.Equal(2, circlesGroup.Children.Count);
+		Assert.Equal([4, 5], GetChildOrders(circlesGroup.Children[0]));
+		Assert.Equal([1, 2, 3], GetChildOrders(circlesGroup.Children[1]));
+	}
+
+	[Fact]
+	public async Task Import_WithNonMatchingCirclesSubModel_KeepsGeneratedCircleGroups()
+	{
+		// Arrange
+		const string modelXml =
+			"""
+			<circlemodel name="Partial Circles Spinner" DisplayAs="Circle" LayerSizes="2,3" InsideOut="0" StartSide="B" Dir="L" centerPercent="0" PixelSize="1" PixelCount="5">
+				<subModel name="Circles" type="ranges" layout="horizontal" line0="1-2" />
+			</circlemodel>
+			""";
+
+		// Act
+		var prop = await ImportAsync(modelXml);
+
+		// Assert
+		var circlesGroups = prop.RootNode.Children
+			.Where(child => child.Name.StartsWith("Partial Circles Spinner {1} - Circles", StringComparison.Ordinal))
+			.ToList();
+		Assert.Equal(2, circlesGroups.Count);
+		Assert.Contains(circlesGroups, group => group.Children.Any(child => child.Name == "Partial Circles Spinner {1} - Circle 1"));
+	}
+
 	[Theory]
 	[InlineData("")]
 	[InlineData("0,4")]

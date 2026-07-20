@@ -45,8 +45,73 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			{
 				CircleConfiguration = configuration
 			};
-			parsedModel.GeneratedGroups.Add(CreateGeneratedCircleGroups(configuration));
+			if (!HasMatchingImportedCirclesSubModel(customModel, configuration))
+			{
+				parsedModel.GeneratedGroups.Add(CreateGeneratedCircleGroups(configuration));
+			}
+
 			return parsedModel;
+		}
+
+		private static bool HasMatchingImportedCirclesSubModel(CustomModel customModel, CircleXModelConfiguration configuration)
+		{
+			var generatedCircleOrders = configuration.Rings
+				.Select(ring => ring.NodeOrders)
+				.ToList();
+
+			return customModel.SubModels.Any(subModel =>
+				"Circles".Equals(subModel.Name, StringComparison.OrdinalIgnoreCase) &&
+				subModel.Type == ModelType.Ranges &&
+				HasMatchingRingGroups(subModel, generatedCircleOrders));
+		}
+
+		private static bool HasMatchingRingGroups(SubModel subModel, IReadOnlyList<List<int>> generatedCircleOrders)
+		{
+			if (subModel.Ranges.Count != generatedCircleOrders.Count)
+			{
+				return false;
+			}
+
+			var unmatchedGeneratedCircles = generatedCircleOrders
+				.Select(ringOrders => ringOrders.ToList())
+				.ToList();
+
+			foreach (var rangeGroup in subModel.Ranges)
+			{
+				var importedNodeOrders = rangeGroup.Ranges
+					.SelectMany(EnumerateRange)
+					.Where(order => order > 0)
+					.ToList();
+				var matchingCircleIndex = unmatchedGeneratedCircles.FindIndex(generatedNodeOrders =>
+					generatedNodeOrders.SequenceEqual(importedNodeOrders));
+				if (matchingCircleIndex < 0)
+				{
+					return false;
+				}
+
+				unmatchedGeneratedCircles.RemoveAt(matchingCircleIndex);
+			}
+
+			return !unmatchedGeneratedCircles.Any();
+		}
+
+		private static IEnumerable<int> EnumerateRange(Ranges.Range range)
+		{
+			var increment = range.Start > range.End ? -1 : 1;
+			for (var order = range.Start; ; order += increment)
+			{
+				if (increment > 0 && order > range.End)
+				{
+					break;
+				}
+
+				if (increment < 0 && order < range.End)
+				{
+					break;
+				}
+
+				yield return order;
+			}
 		}
 
 		private static XModelGeneratedGroup CreateGeneratedCircleGroups(CircleXModelConfiguration configuration)
