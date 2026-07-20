@@ -179,11 +179,11 @@ Recommended coordinate model:
 For a WPF-style coordinate system where Y increases downward:
 
 ```text
-startAngle = StartSide == "T" ? 0 degrees : 180 degrees
-direction = Dir == "L" ? +1 : -1
+startAngle = StartSide == "T" ? 180 degrees : 0 degrees
+direction = Dir == "L" ? -1 : +1
 angle = startAngle + direction * 360 degrees * nodeIndexWithinRing / nodeCountInRing
 x = centerX + sin(angle) * radius
-y = centerY - cos(angle) * radius
+y = centerY + cos(angle) * radius
 ```
 
 Coordinates should be rounded consistently to integer `ModelNode.X` and `ModelNode.Y` values. Use one documented rounding strategy, preferably `MidpointRounding.AwayFromZero` or `Math.Round` with the default behavior if it matches existing parser expectations.
@@ -200,6 +200,8 @@ xLights `CircleModel.cpp` uses:
 - `sin(angle)` for X and `cos(angle)` for Y.
 
 The implementation should follow xLights' layer traversal, including its `GetStrandLength(layerCount - strand - 1)` behavior, rather than independently assuming a different physical ordering from the raw `LayerSizes` text. The result should be verified against the local reference files under `docs/references/circlemodel`.
+
+When mapping xLights `Dir` into Vixen's WPF-style canvas, `Dir="L"` must decrement the angle so a bottom-start ring advances visually clockwise. Incrementing the angle from the bottom moves the second node to the right side of the canvas, which is counter-clockwise.
 
 ## Generated Vixen Hierarchy
 

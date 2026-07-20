@@ -169,7 +169,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 					minRadius,
 					maxRadius);
 				var startAngle = configuration.StartSide == 'T' ? Math.PI : 0;
-				var direction = configuration.Direction == 'L' ? 1 : -1;
+				var direction = configuration.Direction == 'L' ? -1 : 1;
 				var angleStep = 2 * Math.PI / nodeCount;
 
 				for (var nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)

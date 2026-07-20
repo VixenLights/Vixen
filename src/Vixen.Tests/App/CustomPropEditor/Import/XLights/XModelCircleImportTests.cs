@@ -194,7 +194,7 @@ public sealed class XModelCircleImportTests
 		// Assert
 		var clockwiseSecondLight = GetLight(clockwiseProp, "Clockwise Spinner", 2);
 		var counterClockwiseSecondLight = GetLight(counterClockwiseProp, "Counter Clockwise Spinner", 2);
-		Assert.True(clockwiseSecondLight.X > counterClockwiseSecondLight.X);
+		Assert.True(clockwiseSecondLight.X < counterClockwiseSecondLight.X);
 		Assert.Equal(clockwiseSecondLight.Y, counterClockwiseSecondLight.Y, precision: 4);
 	}
 

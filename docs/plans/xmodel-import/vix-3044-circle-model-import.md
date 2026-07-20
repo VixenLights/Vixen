@@ -31,6 +31,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 51 passed, 0 skipped, 51 total.
 - [x] (2026-07-20) Applied xLights `ScaleX` and `ScaleY` to circle coordinates before rounding so imported circles use the exported layout scale and avoid small, jagged geometry.
 - [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 53 passed, 0 skipped, 53 total.
+- [x] (2026-07-20) Corrected `Dir` angle mapping so `Dir="L"` advances visually clockwise on Vixen's WPF-style canvas.
+- [x] (2026-07-20) Ran `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~App.CustomPropEditor.Import.XLights" --no-restore`; result is 0 failed, 53 passed, 0 skipped, 53 total.
 - [ ] Run broader relevant tests.
 - [ ] Manually validate the committed circle examples in the Custom Prop Editor.
 - [ ] Record final implementation results in `Outcomes & Retrospective`.
@@ -61,6 +63,8 @@ The behavior is visible in automated tests and in the UI. Tests will import smal
   Evidence: `XModelImport` marks candidates supported when `GetModelParser(element) != null`; the new wrapper tests pass for selecting a circle model from a mixed wrapper and for selecting an unsupported model.
 - Observation: xLights circle screen coordinates are generated in a small render space and then transformed by screen-location scale.
   Evidence: xLights `CircleModel::SetCircleCoord()` sets render size from `maxLights`, while `ModelScreenLocation` stores `scalex` and `scaley`; local wrapped circle examples export `ScaleX` and `ScaleY`.
+- Observation: The first implementation mapped `Dir="L"` to increasing angles, which made bottom-start circles advance counter-clockwise in Vixen.
+  Evidence: Manual import of `circle-vendor.xmodel` showed `Dir="L"` tracking counter-clockwise; in Vixen's canvas, bottom-start clockwise traversal requires decrementing the angle.
 
 ## Decision Log
 
@@ -116,7 +120,7 @@ Milestone 4 implements circle attribute parsing and validation. Add a circle par
 
 Milestone 5 implements xLights-compatible node traversal and coordinate generation. The parser should generate `ModelNode` values directly instead of looking for `CustomModel` or `CustomModelCompressed`. Follow xLights layer traversal. Store enough per-ring order information to create generated circle groups later. The first wired ring depends on `InsideOut`: with `InsideOut="0"`, the first wired ring is the outside ring; with `InsideOut="1"`, the first wired ring is the inside ring. `Circle 1` must always refer to this first wired ring. Within each ring, node order starts at `StartSide` and advances according to `Dir`.
 
-For coordinates, use deterministic Vixen canvas coordinates derived from the xLights circle math. Let `maxLights` be `max(LayerSizes)`, `maxRadius = maxLights / 2.0`, and `minRadius = centerPercent / 100.0 * maxRadius`. If there is one ring, use `maxRadius`. If there are multiple rings, distribute ring radii evenly from inside to outside, but assign those radii to wired rings according to the same xLights traversal used for node order. For each node in a ring, compute an angle where `StartSide="T"` starts at the top and `StartSide="B"` starts at the bottom; `Dir="L"` advances clockwise and `Dir="R"` advances counter-clockwise. Use `sin(angle) * radius * ScaleX` for X and `cos(angle) * radius * ScaleY` for Y, treating missing, invalid, or non-positive scale values as `1.0`. Round after applying scale, then normalize all generated points so minimum X and Y are zero before assembly adds its existing offset. Use one documented integer rounding strategy and keep tests aligned with it.
+For coordinates, use deterministic Vixen canvas coordinates derived from the xLights circle math. Let `maxLights` be `max(LayerSizes)`, `maxRadius = maxLights / 2.0`, and `minRadius = centerPercent / 100.0 * maxRadius`. If there is one ring, use `maxRadius`. If there are multiple rings, distribute ring radii evenly from inside to outside, but assign those radii to wired rings according to the same xLights traversal used for node order. For each node in a ring, compute an angle where `StartSide="T"` starts at the top and `StartSide="B"` starts at the bottom; `Dir="L"` decrements the angle to advance clockwise on Vixen's WPF-style canvas and `Dir="R"` increments it to advance counter-clockwise. Use `sin(angle) * radius * ScaleX` for X and `cos(angle) * radius * ScaleY` for Y, treating missing, invalid, or non-positive scale values as `1.0`. Round after applying scale, then normalize all generated points so minimum X and Y are zero before assembly adds its existing offset. Use one documented integer rounding strategy and keep tests aligned with it.
 
 Milestone 6 creates generated circle groups during assembly. Extend the intermediate parsed model with generated group definitions. A generated group definition should be able to express a parent group named `<model name> {1} - Circles` and child groups named `<model name> {1} - Circle 1`, `<model name> {1} - Circle 2`, and so on. Each child group should contain references to existing light nodes by node order, not duplicate light nodes. Set generated circle group `ModelType` to `ElementModelType.SubModel` unless this plan is explicitly revised to add a new enum value. Imported xLights `subModel` groups remain root-level groups as they are today.
 
@@ -244,3 +248,4 @@ These types should stay internal unless a concrete cross-module consumer require
 2026-07-20 / Codex: Completed milestone 6 by generating parent and per-ring circle groups from the stored wiring-order ring metadata.
 2026-07-20 / Codex: Completed milestone 7 by validating wrapped circle selection in mixed wrappers and updating unsupported-model error text.
 2026-07-20 / Codex: Refined circle coordinate generation to apply exported `ScaleX` and `ScaleY` before rounding, matching xLights' screen-location scale behavior more closely.
+2026-07-20 / Codex: Corrected `Dir` handling so `L` maps to clockwise visual traversal instead of counter-clockwise.
