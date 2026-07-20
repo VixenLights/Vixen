@@ -1,9 +1,11 @@
-namespace VixenModules.App.CustomPropEditor.Import.XLights
+using VixenModules.App.CustomPropEditor.Import.XLights;
+
+namespace VixenModules.App.CustomPropEditor.Import.XLights.Custom
 {
-	internal sealed class CustomModelParseResult
+	internal sealed class CustomXModelParseResult
 	{
-		internal CustomModelParseResult(
-			CustomModelSource source,
+		internal CustomXModelParseResult(
+			CustomXModelSource source,
 			Dictionary<int, ModelNode> modelNodes,
 			FormatException compressedException,
 			FormatException customModelException)
@@ -14,7 +16,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			CustomModelException = customModelException;
 		}
 
-		internal CustomModelSource Source { get; }
+		internal CustomXModelSource Source { get; }
 
 		internal Dictionary<int, ModelNode> ModelNodes { get; }
 
@@ -22,6 +24,6 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		internal FormatException CustomModelException { get; }
 
-		internal bool Success => Source != CustomModelSource.None;
+		internal bool Success => Source != CustomXModelSource.None;
 	}
 }

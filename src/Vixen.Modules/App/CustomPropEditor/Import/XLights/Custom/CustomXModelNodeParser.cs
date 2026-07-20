@@ -1,8 +1,17 @@
-namespace VixenModules.App.CustomPropEditor.Import.XLights
+using VixenModules.App.CustomPropEditor.Import.XLights;
+
+namespace VixenModules.App.CustomPropEditor.Import.XLights.Custom
 {
-	internal static class CustomModelParser
+	internal static class CustomXModelNodeParser
 	{
 		internal static Dictionary<int, ModelNode> ParseCustomModel(string modelDefinition, int scale)
+		{
+			return ParseCustomModel(modelDefinition, new XModelCoordinateScale(scale, scale));
+		}
+
+		internal static Dictionary<int, ModelNode> ParseCustomModel(
+			string modelDefinition,
+			XModelCoordinateScale scale)
 		{
 			if (string.IsNullOrWhiteSpace(modelDefinition))
 			{
@@ -15,7 +24,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 			foreach (var row in rows)
 			{
 				var nodes = row.Split(',');
-				var x = 1;
+				var zeroBasedX = 0;
 				foreach (var node in nodes)
 				{
 					if (!string.IsNullOrWhiteSpace(node))
@@ -28,15 +37,15 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 						elementCandidates[order] = new ModelNode
 						{
 							Order = order,
-							X = x,
-							Y = y
+							X = scale.ApplyX(zeroBasedX) + 1,
+							Y = scale.ApplyY(y - 1) + 1
 						};
 					}
 
-					x += scale;
+					zeroBasedX++;
 				}
 
-				y += scale;
+				y++;
 			}
 
 			return elementCandidates;
@@ -45,6 +54,13 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 		internal static Dictionary<int, ModelNode> ParseCustomModelCompressed(
 			string compressedModelDefinition,
 			int scale)
+		{
+			return ParseCustomModelCompressed(compressedModelDefinition, new XModelCoordinateScale(scale, scale));
+		}
+
+		internal static Dictionary<int, ModelNode> ParseCustomModelCompressed(
+			string compressedModelDefinition,
+			XModelCoordinateScale scale)
 		{
 			if (string.IsNullOrWhiteSpace(compressedModelDefinition))
 			{
@@ -71,8 +87,8 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 				elementCandidates[order] = new ModelNode
 				{
 					Order = order,
-					X = compressedColumn * scale + 1,
-					Y = compressedRow * scale + 1
+					X = scale.ApplyX(compressedColumn) + 1,
+					Y = scale.ApplyY(compressedRow) + 1
 				};
 			}
 

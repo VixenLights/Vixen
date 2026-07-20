@@ -1,13 +1,15 @@
 ﻿using VixenModules.App.CustomPropEditor.Import.XLights.Faces;
 
+using VixenModules.App.CustomPropEditor.Import.XLights.States;
+
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
-	internal class CustomModel
+	internal class XModelImportModel
 	{
 		private int _y;
 		private int _x;
 
-		public CustomModel(string name)
+		public XModelImportModel(string name)
 		{
 			SubModels = new List<SubModel>();
 			FaceInfos = new List<FaceInfo>();
@@ -67,18 +69,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
 		private void CalculateScale(int x, int y)
 		{
-			if (x < 100 && y < 100)
-			{
-				Scale = 4;
-			}
-			else if (x < 200 && y < 200)
-			{
-				Scale = 2;
-			}
-			else
-			{
-				Scale = 1;
-			}
+			Scale = XModelCoordinateScale.GetDefaultScale(x, y);
 		}
 
 		internal async Task<Dictionary<int, ModelNode>> CreateModelNodesAsync()

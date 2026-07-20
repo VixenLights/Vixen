@@ -79,8 +79,4 @@
 			</AssemblyAttribute>
 		</ItemGroup>
 
-		<ItemGroup>
-		  <Folder Include="Behaviors\" />
-		</ItemGroup>
-
 </Project>
