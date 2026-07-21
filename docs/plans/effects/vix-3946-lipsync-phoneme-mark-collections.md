@@ -16,9 +16,9 @@ The behavior is visible in the Timed Sequence Editor by creating Mark Collection
 - [x] (2026-07-21 00:00Z) Created this implementation ExecPlan from the approved specification.
 - [x] (2026-07-21 18:30Z) Read the project skills required for implementation: `.agents/skills/dotnet-best-practices/SKILL.md` and `.agents/skills/csharp-docs/SKILL.md`.
 - [x] (2026-07-21 18:31Z) Updated Jira issue VIX-3946 description with requirements, acceptance criteria, test plan, and implementation notes before code implementation begins.
-- [ ] Inspect the LipSync property editor and selection editor behavior to decide whether warning display aliases are feasible without major changes.
-- [ ] Implement the LipSync-specific Mark Collection filtering behavior.
-- [ ] Add focused automated tests for the filtering rules and compatibility behavior.
+- [x] (2026-07-21 18:43Z) Inspected the LipSync property editor and selection editor behavior; warning display aliases are not feasible without broad editor changes, so the approved plain-name fallback will be used.
+- [x] (2026-07-21 19:12Z) Implemented the LipSync-specific Mark Collection filtering behavior with `LipSyncMarkCollectionNameConverter` and updated `LipSync.MarkCollectionId` to use it.
+- [x] (2026-07-21 19:13Z) Added focused automated tests for the filtering rules and compatibility behavior.
 - [ ] Run automated validation and record the exact command results in this plan.
 - [ ] Perform manual validation in the Timed Sequence Editor and record observations in this plan.
 - [ ] Update Jira VIX-3946 with a closeout comment describing any specification changes and the final validation results.
@@ -27,6 +27,15 @@ The behavior is visible in the Timed Sequence Editor by creating Mark Collection
 
 - Observation: The approved specification expects the warning suffix `(Collection is not Phoneme)` only if the editor supports a display label that differs from the committed value.
   Evidence: `LipSync.MarkCollectionId` currently accepts a collection name string and resolves it through `MarkCollections.FirstOrDefault(x => x.Name.Equals(value))`, so returning a suffixed string as the actual standard value would not select the collection without additional support.
+
+- Observation: The Effect Editor selection template does not separate display text from committed value.
+  Evidence: `src/Vixen.Modules/Editor/EffectEditor/Editors/SelectionEditor.cs` uses `EditorKeys.ComboBoxEditorKey`. That template in `src/Vixen.Modules/Editor/EffectEditor/Themes/EditorResources.xaml` binds the ComboBox `ItemsSource` directly to `ParentProperty.StandardValues` and `SelectedValue` directly to `StringValue`, with no `DisplayMemberPath`, `SelectedValuePath`, or item template that could map warning display text to an underlying collection name.
+
+- Observation: Standard values are direct converter values, and selection writes the selected string back through the property value path.
+  Evidence: `src/Vixen.Modules/Editor/EffectEditor/PropertyItem.cs` returns `Converter.GetStandardValues(this)` from `StandardValues`. `src/Vixen.Modules/Editor/EffectEditor/PropertyItemValue.cs` converts `StringValue` by calling `ConvertStringToValue(value)` and then assigns `Value`. For the LipSync `MarkCollectionId` property, the property type is `string`, so `ConvertStringToValue` returns the selected string directly.
+
+- Observation: The test project did not already reference the LipSync effect module.
+  Evidence: `src/Vixen.Tests/Vixen.Tests.csproj` had effect references for Chase, State, Spiral, Spin, Text, and Wipe, but not `src/Vixen.Modules/Effect/LipSync/LipSync.csproj`. A project reference was added so focused converter tests can compile against the real LipSync module.
 
 ## Decision Log
 
@@ -46,9 +55,21 @@ The behavior is visible in the Timed Sequence Editor by creating Mark Collection
   Rationale: The user explicitly approved keeping today's behavior. The current code falls back from `LipSyncMode.MarkCollection` to `LipSyncMode.Phoneme` in `SetupMarks()` when all available collections are generic or no usable collection exists.
   Date/Author: 2026-07-21 / Codex
 
+- Decision: Use the approved plain-name fallback for retained non-phoneme selections instead of displaying `Collection Name (Collection is not Phoneme)`.
+  Rationale: The existing Effect Editor selection template commits the same object/string that it displays. Implementing a true warning alias would require a broader selection-editor redesign, such as adding display/value binding support, or encoding warning text into the LipSync property value and teaching the getter/setter to handle pseudo-values. That would be more invasive than VIX-3946 requires. The approved fallback still preserves compatibility and removes unrelated non-phoneme collections from the dropdown.
+  Date/Author: 2026-07-21 / Codex
+
+- Decision: Put the testable filter helper on `LipSyncMarkCollectionNameConverter` instead of constructing `LipSync` or adding test-only state access.
+  Rationale: `LipSync` has application-service and rendering dependencies that are unnecessary for testing dropdown filtering. A small public static helper lets tests cover the exact collection-type and selected-id rules without launching the effect editor or mutating serialized data. The converter still owns the production behavior and calls the same helper.
+  Date/Author: 2026-07-21 / Codex
+
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. The required project skills were read, the project Jira skill was read, and Jira issue VIX-3946 now contains the implementation requirements, acceptance criteria, test plan, and notes that scope the change to LipSync while preserving legacy non-phoneme selections. No production code has been changed yet. The remaining work starts with Milestone 2: researching whether the selection editor can display a warning suffix while committing the real Mark Collection value.
+Milestone 1 is complete. The required project skills were read, the project Jira skill was read, and Jira issue VIX-3946 now contains the implementation requirements, acceptance criteria, test plan, and notes that scope the change to LipSync while preserving legacy non-phoneme selections.
+
+Milestone 2 is complete. The Effect Editor selection editor does not support separate warning display text and committed collection values without broad changes. The implementation will use the approved fallback: retained non-phoneme selections appear by plain collection name while selected, and unrelated non-phoneme collections remain hidden. No production code has been changed yet. The remaining work starts with Milestone 3: implementing the LipSync-specific filtering converter or helper.
+
+Milestone 3 is complete. `src/Vixen.Modules/Effect/LipSync/LipSyncMarkCollectionNameConverter.cs` now provides the LipSync-specific standard-values filter, and `src/Vixen.Modules/Effect/LipSync/LipSync.cs` uses that converter for `MarkCollectionId`. The shared `IMarkCollectionNameConverter` is unchanged. The filter includes only `MarkCollectionType.Phoneme` collections plus the currently selected collection when it exists, preserving sequence order. Focused tests in `src/Vixen.Tests/Effects/LipSyncMarkCollectionNameConverterTests.cs` cover phoneme-only filtering, retained selected `Generic`, `Word`, and `Phrase` collections, selected phoneme de-duplication, no-phoneme empty results, missing selected collections, and cleanup after selecting a phoneme collection. The remaining work starts with Milestone 4: broader automated validation and recording final command results.
 
 ## Milestones
 
@@ -257,10 +278,13 @@ Approved specification:
 Key source files:
 
         src/Vixen.Modules/Effect/LipSync/LipSync.cs
+        src/Vixen.Modules/Effect/LipSync/LipSyncMarkCollectionNameConverter.cs
         src/Vixen.Modules/Effect/LipSync/LipSyncData.cs
         src/Vixen.Core/TypeConverters/IMarkCollectionNameConverter.cs
         src/Vixen.Core/Marks/IMarkCollection.cs
         src/Vixen.Core/Marks/IMarkType.cs
+        src/Vixen.Tests/Effects/LipSyncMarkCollectionNameConverterTests.cs
+        src/Vixen.Tests/Vixen.Tests.csproj
 
 Jira update completed for Milestone 1:
 
@@ -268,6 +292,52 @@ Jira update completed for Milestone 1:
         URL: https://vixenlights.atlassian.net/browse/VIX-3946
         Updated: 2026-07-21 13:30:57 -0500
         Description now includes: Requirements, Acceptance Criteria, Test Plan, and Implementation Notes.
+
+Selection editor research completed for Milestone 2:
+
+        src/Vixen.Modules/Editor/EffectEditor/Editors/SelectionEditor.cs
+            SelectionEditor uses EditorKeys.ComboBoxEditorKey.
+
+        src/Vixen.Modules/Editor/EffectEditor/Themes/EditorResources.xaml
+            ComboBoxEditorKey binds ItemsSource="{Binding ParentProperty.StandardValues}".
+            ComboBoxEditorKey binds SelectedValue="{Binding StringValue}".
+            There is no DisplayMemberPath, SelectedValuePath, or item template for separate display and value.
+
+        src/Vixen.Modules/Editor/EffectEditor/PropertyItem.cs
+            StandardValues returns Converter.GetStandardValues(this).
+
+        src/Vixen.Modules/Editor/EffectEditor/PropertyItemValue.cs
+            StringValue setter assigns Value = ConvertStringToValue(value).
+            ConvertStringToValue returns the selected string directly when the edited property type is string.
+
+        Decision:
+            Use the approved plain-name fallback for retained non-phoneme selections.
+
+Implementation completed for Milestone 3:
+
+        src/Vixen.Modules/Effect/LipSync/LipSyncMarkCollectionNameConverter.cs
+            Added a LipSync-specific TypeConverter.
+            GetStandardValues reads the current LipSync effect and selected MarkCollectionId.
+            GetAllowedMarkCollectionNames returns only Phoneme collections plus the selected existing collection.
+
+        src/Vixen.Modules/Effect/LipSync/LipSync.cs
+            MarkCollectionId now uses LipSyncMarkCollectionNameConverter.
+            The shared IMarkCollectionNameConverter was not changed.
+
+        src/Vixen.Tests/Effects/LipSyncMarkCollectionNameConverterTests.cs
+            Added eight focused tests for the approved filtering rules.
+
+        src/Vixen.Tests/Vixen.Tests.csproj
+            Added a project reference to src/Vixen.Modules/Effect/LipSync/LipSync.csproj.
+
+Focused validation run during Milestone 3:
+
+        git diff --check
+        Result: passed with no whitespace errors.
+
+        dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~LipSyncMarkCollectionNameConverter --no-restore
+        Result: passed. Failed: 0, Passed: 8, Skipped: 0, Total: 8.
+        Notes: Existing warnings were emitted, including the known LiteDB NU1904 advisory and pre-existing compiler warnings in unrelated projects.
 
 Current relevant behavior in `LipSync.cs`:
 
@@ -332,3 +402,7 @@ Do not change `MarkCollectionType` values:
 2026-07-21: Added an explicit `Milestones` section after review found that the initial ExecPlan had `Plan of Work` and `Concrete Steps` but did not satisfy `.agents/PLANS.md`'s requirement for narrative, independently verifiable milestones.
 
 2026-07-21: Completed Milestone 1 by reading the required implementation and Jira skills, then updating the VIX-3946 Jira description with the requirements, acceptance criteria, test plan, and implementation notes.
+
+2026-07-21: Completed Milestone 2 by inspecting the Effect Editor selection editor and standard-values path. The selection editor does not support warning display aliases without broad changes, so the approved plain-name fallback will be used during implementation.
+
+2026-07-21: Completed Milestone 3 by adding the LipSync-specific Mark Collection converter, switching LipSync.MarkCollectionId to it, adding focused converter tests, and recording passing focused validation.
