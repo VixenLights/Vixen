@@ -19,9 +19,9 @@ The behavior is visible in the Timed Sequence Editor by creating Mark Collection
 - [x] (2026-07-21 18:43Z) Inspected the LipSync property editor and selection editor behavior; warning display aliases are not feasible without broad editor changes, so the approved plain-name fallback will be used.
 - [x] (2026-07-21 19:12Z) Implemented the LipSync-specific Mark Collection filtering behavior with `LipSyncMarkCollectionNameConverter` and updated `LipSync.MarkCollectionId` to use it.
 - [x] (2026-07-21 19:13Z) Added focused automated tests for the filtering rules and compatibility behavior.
-- [ ] Run automated validation and record the exact command results in this plan.
-- [ ] Perform manual validation in the Timed Sequence Editor and record observations in this plan.
-- [ ] Update Jira VIX-3946 with a closeout comment describing any specification changes and the final validation results.
+- [x] (2026-07-21 19:24Z) Ran automated validation and recorded the exact command results in this plan.
+- [x] (2026-07-21 19:30Z) Manual validation in the Timed Sequence Editor passed.
+- [x] (2026-07-21 19:51Z) Updated Jira VIX-3946 with closeout comment 40218 describing the specification change, implementation summary, validation results, and residual risk. The issue was not transitioned.
 
 ## Surprises & Discoveries
 
@@ -36,6 +36,9 @@ The behavior is visible in the Timed Sequence Editor by creating Mark Collection
 
 - Observation: The test project did not already reference the LipSync effect module.
   Evidence: `src/Vixen.Tests/Vixen.Tests.csproj` had effect references for Chase, State, Spiral, Spin, Text, and Wipe, but not `src/Vixen.Modules/Effect/LipSync/LipSync.csproj`. A project reference was added so focused converter tests can compile against the real LipSync module.
+
+- Observation: Automated validation passes with existing repository warnings.
+  Evidence: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore` passed 512 tests and emitted known/pre-existing warnings, including LiteDB NU1904 and compiler warnings in unrelated projects.
 
 ## Decision Log
 
@@ -70,6 +73,12 @@ Milestone 1 is complete. The required project skills were read, the project Jira
 Milestone 2 is complete. The Effect Editor selection editor does not support separate warning display text and committed collection values without broad changes. The implementation will use the approved fallback: retained non-phoneme selections appear by plain collection name while selected, and unrelated non-phoneme collections remain hidden. No production code has been changed yet. The remaining work starts with Milestone 3: implementing the LipSync-specific filtering converter or helper.
 
 Milestone 3 is complete. `src/Vixen.Modules/Effect/LipSync/LipSyncMarkCollectionNameConverter.cs` now provides the LipSync-specific standard-values filter, and `src/Vixen.Modules/Effect/LipSync/LipSync.cs` uses that converter for `MarkCollectionId`. The shared `IMarkCollectionNameConverter` is unchanged. The filter includes only `MarkCollectionType.Phoneme` collections plus the currently selected collection when it exists, preserving sequence order. Focused tests in `src/Vixen.Tests/Effects/LipSyncMarkCollectionNameConverterTests.cs` cover phoneme-only filtering, retained selected `Generic`, `Word`, and `Phrase` collections, selected phoneme de-duplication, no-phoneme empty results, missing selected collections, and cleanup after selecting a phoneme collection. The remaining work starts with Milestone 4: broader automated validation and recording final command results.
+
+Milestone 4 is complete. Automated validation passed for whitespace, the focused LipSync test filter, and the full Vixen test project. The focused LipSync command passed 8 tests. The full test command passed 512 tests. Existing warnings were present, including the known LiteDB NU1904 advisory and unrelated compiler warnings, but there were no validation failures. The remaining work starts with Milestone 5: manual Timed Sequence Editor validation.
+
+Milestone 5 is complete. Manual validation in the Timed Sequence Editor passed. The user confirmed the manual testing for this milestone, covering the LipSync dropdown behavior with mixed Mark Collection types, retained legacy non-phoneme selection behavior, selection-change cleanup, another effect's unfiltered dropdown, and missing selected collection handling. The remaining work starts with Milestone 6: final ExecPlan closeout and Jira closeout comment.
+
+Milestone 6 is complete. Jira VIX-3946 was updated with closeout comment 40218. The comment records the implementation summary, the approved plain-name fallback specification change, automated validation results, manual validation results, and residual risk. Per user instruction, the Jira issue status was not transitioned. VIX-3946 now has both the initial description update and the final closeout comment required by this ExecPlan.
 
 ## Milestones
 
@@ -339,6 +348,47 @@ Focused validation run during Milestone 3:
         Result: passed. Failed: 0, Passed: 8, Skipped: 0, Total: 8.
         Notes: Existing warnings were emitted, including the known LiteDB NU1904 advisory and pre-existing compiler warnings in unrelated projects.
 
+Automated validation completed for Milestone 4:
+
+        git diff --check
+        Result: passed with no whitespace errors.
+
+        dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~LipSync --no-restore
+        Result: passed. Failed: 0, Passed: 8, Skipped: 0, Total: 8.
+        Duration: 38 ms in the test assembly, with build time before execution.
+
+        dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore
+        Result: passed. Failed: 0, Passed: 512, Skipped: 0, Total: 512.
+        Duration: 1 m 15 s in the test assembly, with build time before execution.
+
+        Warning context:
+        Existing warnings were emitted during build, including LiteDB NU1904 for the known critical advisory and unrelated compiler warnings in existing projects. No warning blocked the test run.
+
+Manual validation completed for Milestone 5:
+
+        Result: passed.
+        Source: user-confirmed manual testing in the Timed Sequence Editor.
+        Covered scenarios:
+            LipSync dropdown with mixed Generic, Phrase, Word, and Phoneme Mark Collections.
+            Retained legacy non-phoneme LipSync selection.
+            Selection-change cleanup after selecting a Phoneme collection.
+            Another mark-driven effect's unfiltered Mark Collection dropdown.
+            Missing selected collection handling.
+
+Jira closeout completed for Milestone 6:
+
+        Issue: VIX-3946
+        URL: https://vixenlights.atlassian.net/browse/VIX-3946
+        Comment id: 40218
+        Created: 2026-07-21 14:51:16 -0500
+        Status transition: not performed by user request.
+        Comment includes:
+            Implementation summary and changed files.
+            Specification change: approved plain-name fallback used for retained non-phoneme selections.
+            Automated validation results for git diff --check, focused LipSync tests, and full test project.
+            Manual Timed Sequence Editor validation results.
+            Residual risk for the optional warning suffix.
+
 Current relevant behavior in `LipSync.cs`:
 
         SetupMarks() auto-selects the first MarkCollectionType.Phoneme collection when no MarkCollectionId is set.
@@ -406,3 +456,9 @@ Do not change `MarkCollectionType` values:
 2026-07-21: Completed Milestone 2 by inspecting the Effect Editor selection editor and standard-values path. The selection editor does not support warning display aliases without broad changes, so the approved plain-name fallback will be used during implementation.
 
 2026-07-21: Completed Milestone 3 by adding the LipSync-specific Mark Collection converter, switching LipSync.MarkCollectionId to it, adding focused converter tests, and recording passing focused validation.
+
+2026-07-21: Completed Milestone 4 by running `git diff --check`, the focused LipSync test filter, and the full Vixen test project. All automated validation passed.
+
+2026-07-21: Completed Milestone 5 after user-confirmed manual Timed Sequence Editor validation passed.
+
+2026-07-21: Completed Milestone 6 by adding Jira closeout comment 40218 with implementation notes, specification changes, validation results, and residual risk. The issue was not transitioned.
