@@ -8,7 +8,6 @@ using Vixen.Module.App;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using Vixen.TypeConverters;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -471,7 +470,7 @@ namespace VixenModules.Effect.LipSync
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"MarkCollection")]
 		[ProviderDescription(@"MarkCollection")]
-		[TypeConverter(typeof(IMarkCollectionNameConverter))]
+		[TypeConverter(typeof(LipSyncMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[PropertyOrder(2)]
 		public string MarkCollectionId
