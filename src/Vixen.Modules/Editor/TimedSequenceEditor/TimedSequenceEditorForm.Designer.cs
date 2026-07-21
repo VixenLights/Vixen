@@ -94,6 +94,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.fullWaveformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.lockRulerHeightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.lockWaveformHeightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.effectWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -783,6 +784,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripSeparator5,
             this.fullWaveformToolStripMenuItem,
             this.lockRulerHeightToolStripMenuItem,
+            this.lockWaveformHeightToolStripMenuItem,
             this.toolStripMenuItem1,
             this.toolbarToolStripMenuItem,
             this.effectWindowToolStripMenuItem,
@@ -916,6 +918,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.lockRulerHeightToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.lockRulerHeightToolStripMenuItem.Text = "Lock Ruler Height";
 			this.lockRulerHeightToolStripMenuItem.Click += new System.EventHandler(this.lockRulerHeightToolStripMenuItem_Click);
+			//
+			// lockWaveformHeightToolStripMenuItem
+			//
+			this.lockWaveformHeightToolStripMenuItem.CheckOnClick = true;
+			this.lockWaveformHeightToolStripMenuItem.Name = "lockWaveformHeightToolStripMenuItem";
+			this.lockWaveformHeightToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.lockWaveformHeightToolStripMenuItem.Text = "Lock Waveform Height";
+			this.lockWaveformHeightToolStripMenuItem.Click += new System.EventHandler(this.lockWaveformHeightToolStripMenuItem_Click);
 			//
 			// toolStripMenuItem1
 			// 
@@ -2553,5 +2563,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem speedTempoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fullWaveformToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem lockRulerHeightToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem lockWaveformHeightToolStripMenuItem;
 	}
 }

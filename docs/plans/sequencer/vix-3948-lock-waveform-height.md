@@ -16,7 +16,7 @@ The visible result is in the Timed Sequence Editor. Open a sequence with audio, 
 - [x] (2026-07-21 00:00 -05:00) Created this initial ExecPlan from the specification and the VIX-3945 ruler-height plan pattern.
 - [x] (2026-07-21 11:37 -05:00) Milestone 1: Updated Jira VIX-3948 description with the refined specification, acceptance criteria, and test plan.
 - [x] (2026-07-21 11:51 -05:00) Milestone 2: Added `LockWaveformHeight` to the reusable waveform surface, added the `TimelineControl` forwarding property, and guarded waveform resize cursor, drag resize, and double-click reset paths.
-- [ ] Milestone 3: Add `View > Lock Waveform Height` directly below `Lock Ruler Height`, wire the menu handler, and persist `{Name}/LockWaveformHeight` through `XMLProfileSettings`.
+- [x] (2026-07-21 12:18 -05:00) Milestone 3: Added `View > Lock Waveform Height` directly below `Lock Ruler Height`, wired the menu handler, and persisted `{Name}/LockWaveformHeight` through `XMLProfileSettings`.
 - [ ] Milestone 4: Add focused automated coverage where practical.
 - [ ] Milestone 5: Run automated validation, complete manual Timed Sequence Editor validation, update Jira with final evidence, and close out this ExecPlan.
 
@@ -27,6 +27,9 @@ The visible result is in the Timed Sequence Editor. Open a sequence with audio, 
 
 - Observation: VIX-3945 is already present in the working tree and provides the closest implementation pattern.
   Evidence: `docs/plans/sequencer/vix-3945-lock-ruler-height.md` records a completed `LockRulerHeight` property, `TimelineControl` forwarding property, menu item, XML setting, automated tests, and Jira update workflow.
+
+- Observation: Timed Sequence Editor project validation is blocked in this environment before the editor project completes.
+  Evidence: `dotnet build src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj --no-restore` fails because the dotnet CLI cannot load native `.vcxproj` references without Visual C++ targets: `QMLibrary.vcxproj` and `LiquidLiquidFunWrapper.vcxproj` report missing `$(VCTargetsPath)\Microsoft.Cpp.Default.props`. `dotnet build ... -p:BuildProjectReferences=false` then fails because `C:\Output\Module.Analysis.BeatsAndBars.dll`, `Module.App.TimedSequenceMapper.dll`, `Module.Effect.Liquid.dll`, and `Module.SequenceType.Timed.dll` are missing.
 
 ## Decision Log
 
@@ -56,7 +59,9 @@ Milestone 1 is complete. Jira VIX-3948 now has the refined specification, accept
 
 Milestone 2 is complete. `Waveform` now exposes a documented `LockWaveformHeight` property, and `TimelineControl` exposes a documented forwarding property for later editor wiring. The guarded interactions are the existing waveform-height resize affordances: the bottom-edge `Cursors.HSplit` branch, height mutation during left-button drag, and double-click reset. A focused build of `src\Vixen.Common\Controls\Controls.csproj` passed with four pre-existing warnings from `Vixen.Core` and zero errors.
 
-The remaining implementation work is the Timed Sequence Editor menu and XML settings wiring, focused tests where practical, and final validation.
+Milestone 3 is complete. `TimedSequenceEditorForm.Designer.cs` now declares `lockWaveformHeightToolStripMenuItem`, places it immediately after `lockRulerHeightToolStripMenuItem` in the View menu, and wires its click handler. `TimedSequenceEditorForm_Menu.cs` applies the checked state to `TimelineControl.LockWaveformHeight` immediately. `TimedSequenceEditorForm.cs` loads `{Name}/LockWaveformHeight` with default `false` beside `WaveFormHeight`, `RulerHeight`, and `LockRulerHeight`, and saves the checked state beside the existing waveform and ruler height settings. Editor project validation is blocked by missing native/dependency outputs as recorded in `Surprises & Discoveries`; no compile error from the changed editor files was reached in the available build attempts.
+
+The remaining implementation work is focused tests where practical and final validation.
 
 ## Context and Orientation
 
@@ -307,6 +312,22 @@ Milestone 2 focused build evidence:
     Warnings: 4 pre-existing warnings from Vixen.Core.
     Errors: 0
 
+Milestone 3 editor build evidence:
+
+    Command: dotnet build src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj --no-restore
+    Result: Build failed before editor completion.
+    Blocking errors:
+      QMLibrary.vcxproj cannot import $(VCTargetsPath)\Microsoft.Cpp.Default.props.
+      LiquidLiquidFunWrapper.vcxproj cannot import $(VCTargetsPath)\Microsoft.Cpp.Default.props.
+
+    Command: dotnet build src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj --no-restore -p:BuildProjectReferences=false
+    Result: Build failed before editor compile.
+    Blocking errors:
+      Missing C:\Output\Module.Analysis.BeatsAndBars.dll.
+      Missing C:\Output\Module.App.TimedSequenceMapper.dll.
+      Missing C:\Output\Module.Effect.Liquid.dll.
+      Missing C:\Output\Module.SequenceType.Timed.dll.
+
 ## Interfaces and Dependencies
 
 Use only existing WinForms and repository infrastructure. The lock state lives in `Common.Controls.Timeline.Waveform` and is consumed by existing mouse event overrides. The editor setting is persisted through the existing `XMLProfileSettings` API; do not add a new settings subsystem.
@@ -342,3 +363,4 @@ This key is an app setting and must default to false when missing.
 
 - 2026-07-21 / Codex: Initial ExecPlan created from `docs/sequencer/vix-3948-lock-waveform-height.md`, the VIX-3945 ruler-height specification and implementation plan, and current source review. The plan explicitly includes Jira description update content because VIX-3948 should carry the refined spec, acceptance criteria, and test plan before implementation begins.
 - 2026-07-21 / Codex: Completed Milestone 2 by adding the waveform/timeline lock properties, guarding waveform height resize paths, and recording focused build evidence.
+- 2026-07-21 / Codex: Completed Milestone 3 by adding the Timed Sequence Editor menu item, handler, XML load/save setting, and recording editor build blockers.
