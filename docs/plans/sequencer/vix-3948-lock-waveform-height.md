@@ -18,7 +18,7 @@ The visible result is in the Timed Sequence Editor. Open a sequence with audio, 
 - [x] (2026-07-21 11:51 -05:00) Milestone 2: Added `LockWaveformHeight` to the reusable waveform surface, added the `TimelineControl` forwarding property, and guarded waveform resize cursor, drag resize, and double-click reset paths.
 - [x] (2026-07-21 12:18 -05:00) Milestone 3: Added `View > Lock Waveform Height` directly below `Lock Ruler Height`, wired the menu handler, and persisted `{Name}/LockWaveformHeight` through `XMLProfileSettings`.
 - [x] (2026-07-21 12:43 -05:00) Milestone 4: Added focused automated coverage for waveform lock default state, property storage, timeline forwarding, bottom-edge cursor behavior, in-progress resize blocking, and double-click reset blocking.
-- [ ] Milestone 5: Run automated validation, complete manual Timed Sequence Editor validation, update Jira with final evidence, and close out this ExecPlan.
+- [x] (2026-07-21 12:11 -05:00) Milestone 5: Ran full automated validation, recorded user-confirmed manual Timed Sequence Editor validation, updated Jira VIX-3948 with final evidence in comment `40217`, and closed out this ExecPlan.
 
 ## Surprises & Discoveries
 
@@ -63,7 +63,9 @@ Milestone 3 is complete. `TimedSequenceEditorForm.Designer.cs` now declares `loc
 
 Milestone 4 is complete. `WaveformLockHeightTests` covers the default unlocked state, explicit lock state storage, `TimelineControl.LockWaveformHeight` forwarding to the waveform, unlocked bottom-edge resize cursor behavior, locked bottom-edge cursor suppression, immediate resize blocking after the lock turns on, and locked double-click reset suppression. The focused test filter passed 7 tests.
 
-The remaining implementation work is final validation and Jira closeout evidence.
+Milestone 5 is complete. The full `Vixen.Tests` project passed with 504 tests. Manual Timed Sequence Editor validation was completed by the user and confirmed as passing. Jira VIX-3948 now has final implementation and validation evidence in comment `40217`.
+
+This ExecPlan is complete. The feature is implemented, covered by focused automated tests, validated by the full test project, manually validated in the Timed Sequence Editor, and recorded in Jira.
 
 ## Context and Orientation
 
@@ -337,6 +339,19 @@ Milestone 4 focused test evidence:
     Tests: 7 passed, 0 failed, 0 skipped.
     Duration: 192 ms.
 
+Milestone 5 full validation evidence:
+
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore
+    Result: Passed.
+    Tests: 504 passed, 0 failed, 0 skipped.
+    Duration: 29 s.
+
+    Manual validation:
+    User confirmed Timed Sequence Editor manual testing validates on 2026-07-21. This covers menu placement below `Lock Ruler Height`, locked and unlocked waveform hover and resize behavior, locked double-click reset blocking, ruler lock independence, `Full Waveform` compatibility, and XML profile persistence.
+
+    Jira final evidence:
+    Added implementation and validation comment `40217` to VIX-3948 on 2026-07-21.
+
 ## Interfaces and Dependencies
 
 Use only existing WinForms and repository infrastructure. The lock state lives in `Common.Controls.Timeline.Waveform` and is consumed by existing mouse event overrides. The editor setting is persisted through the existing `XMLProfileSettings` API; do not add a new settings subsystem.
@@ -374,3 +389,4 @@ This key is an app setting and must default to false when missing.
 - 2026-07-21 / Codex: Completed Milestone 2 by adding the waveform/timeline lock properties, guarding waveform height resize paths, and recording focused build evidence.
 - 2026-07-21 / Codex: Completed Milestone 3 by adding the Timed Sequence Editor menu item, handler, XML load/save setting, and recording editor build blockers.
 - 2026-07-21 / Codex: Completed Milestone 4 by adding focused waveform lock tests and recording passing test evidence.
+- 2026-07-21 / Codex: Completed Milestone 5 by recording full test success, user-confirmed manual validation, Jira final evidence comment `40217`, and ExecPlan closure.
