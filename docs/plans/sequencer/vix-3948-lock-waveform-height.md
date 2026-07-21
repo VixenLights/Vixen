@@ -17,7 +17,7 @@ The visible result is in the Timed Sequence Editor. Open a sequence with audio, 
 - [x] (2026-07-21 11:37 -05:00) Milestone 1: Updated Jira VIX-3948 description with the refined specification, acceptance criteria, and test plan.
 - [x] (2026-07-21 11:51 -05:00) Milestone 2: Added `LockWaveformHeight` to the reusable waveform surface, added the `TimelineControl` forwarding property, and guarded waveform resize cursor, drag resize, and double-click reset paths.
 - [x] (2026-07-21 12:18 -05:00) Milestone 3: Added `View > Lock Waveform Height` directly below `Lock Ruler Height`, wired the menu handler, and persisted `{Name}/LockWaveformHeight` through `XMLProfileSettings`.
-- [ ] Milestone 4: Add focused automated coverage where practical.
+- [x] (2026-07-21 12:43 -05:00) Milestone 4: Added focused automated coverage for waveform lock default state, property storage, timeline forwarding, bottom-edge cursor behavior, in-progress resize blocking, and double-click reset blocking.
 - [ ] Milestone 5: Run automated validation, complete manual Timed Sequence Editor validation, update Jira with final evidence, and close out this ExecPlan.
 
 ## Surprises & Discoveries
@@ -61,7 +61,9 @@ Milestone 2 is complete. `Waveform` now exposes a documented `LockWaveformHeight
 
 Milestone 3 is complete. `TimedSequenceEditorForm.Designer.cs` now declares `lockWaveformHeightToolStripMenuItem`, places it immediately after `lockRulerHeightToolStripMenuItem` in the View menu, and wires its click handler. `TimedSequenceEditorForm_Menu.cs` applies the checked state to `TimelineControl.LockWaveformHeight` immediately. `TimedSequenceEditorForm.cs` loads `{Name}/LockWaveformHeight` with default `false` beside `WaveFormHeight`, `RulerHeight`, and `LockRulerHeight`, and saves the checked state beside the existing waveform and ruler height settings. Editor project validation is blocked by missing native/dependency outputs as recorded in `Surprises & Discoveries`; no compile error from the changed editor files was reached in the available build attempts.
 
-The remaining implementation work is focused tests where practical and final validation.
+Milestone 4 is complete. `WaveformLockHeightTests` covers the default unlocked state, explicit lock state storage, `TimelineControl.LockWaveformHeight` forwarding to the waveform, unlocked bottom-edge resize cursor behavior, locked bottom-edge cursor suppression, immediate resize blocking after the lock turns on, and locked double-click reset suppression. The focused test filter passed 7 tests.
+
+The remaining implementation work is final validation and Jira closeout evidence.
 
 ## Context and Orientation
 
@@ -328,6 +330,13 @@ Milestone 3 editor build evidence:
       Missing C:\Output\Module.Effect.Liquid.dll.
       Missing C:\Output\Module.SequenceType.Timed.dll.
 
+Milestone 4 focused test evidence:
+
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~WaveformLockHeight --no-restore
+    Result: Passed.
+    Tests: 7 passed, 0 failed, 0 skipped.
+    Duration: 192 ms.
+
 ## Interfaces and Dependencies
 
 Use only existing WinForms and repository infrastructure. The lock state lives in `Common.Controls.Timeline.Waveform` and is consumed by existing mouse event overrides. The editor setting is persisted through the existing `XMLProfileSettings` API; do not add a new settings subsystem.
@@ -364,3 +373,4 @@ This key is an app setting and must default to false when missing.
 - 2026-07-21 / Codex: Initial ExecPlan created from `docs/sequencer/vix-3948-lock-waveform-height.md`, the VIX-3945 ruler-height specification and implementation plan, and current source review. The plan explicitly includes Jira description update content because VIX-3948 should carry the refined spec, acceptance criteria, and test plan before implementation begins.
 - 2026-07-21 / Codex: Completed Milestone 2 by adding the waveform/timeline lock properties, guarding waveform height resize paths, and recording focused build evidence.
 - 2026-07-21 / Codex: Completed Milestone 3 by adding the Timed Sequence Editor menu item, handler, XML load/save setting, and recording editor build blockers.
+- 2026-07-21 / Codex: Completed Milestone 4 by adding focused waveform lock tests and recording passing test evidence.
