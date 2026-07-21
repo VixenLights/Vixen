@@ -339,6 +339,26 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether interactive waveform height resizing is disabled.
+		/// </summary>
+		/// <value>
+		/// <see langword="true" /> if users cannot resize the waveform height with the mouse; otherwise,
+		/// <see langword="false" />. The default is <see langword="false" />.
+		/// </value>
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public bool LockWaveformHeight
+		{
+			get { return waveform != null && waveform.LockWaveformHeight; }
+			set
+			{
+				if (waveform != null)
+				{
+					waveform.LockWaveformHeight = value;
+				}
+			}
+		}
+
 		#endregion
 
 		#region Methods

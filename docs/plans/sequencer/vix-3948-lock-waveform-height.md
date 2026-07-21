@@ -15,7 +15,7 @@ The visible result is in the Timed Sequence Editor. Open a sequence with audio, 
 - [x] (2026-07-21 00:00 -05:00) Created the feature specification at `docs/sequencer/vix-3948-lock-waveform-height.md`.
 - [x] (2026-07-21 00:00 -05:00) Created this initial ExecPlan from the specification and the VIX-3945 ruler-height plan pattern.
 - [x] (2026-07-21 11:37 -05:00) Milestone 1: Updated Jira VIX-3948 description with the refined specification, acceptance criteria, and test plan.
-- [ ] Milestone 2: Add `LockWaveformHeight` to the reusable waveform surface and guard waveform resize cursor, drag resize, and double-click reset paths.
+- [x] (2026-07-21 11:51 -05:00) Milestone 2: Added `LockWaveformHeight` to the reusable waveform surface, added the `TimelineControl` forwarding property, and guarded waveform resize cursor, drag resize, and double-click reset paths.
 - [ ] Milestone 3: Add `View > Lock Waveform Height` directly below `Lock Ruler Height`, wire the menu handler, and persist `{Name}/LockWaveformHeight` through `XMLProfileSettings`.
 - [ ] Milestone 4: Add focused automated coverage where practical.
 - [ ] Milestone 5: Run automated validation, complete manual Timed Sequence Editor validation, update Jira with final evidence, and close out this ExecPlan.
@@ -54,7 +54,9 @@ The visible result is in the Timed Sequence Editor. Open a sequence with audio, 
 
 Milestone 1 is complete. Jira VIX-3948 now has the refined specification, acceptance criteria, and test plan in the issue description. The Jira issue remains `In Progress`, with summary `Add waveform height lock option`, issue type `New Feature`, component `Editor/Sequencer`, and updated timestamp `2026-07-21T11:37:29.796-0500`.
 
-Code implementation has not started. The intended outcome remains a narrow Timed Sequence Editor improvement: a persisted View menu toggle controls whether the waveform bar can be interactively resized. The implementation should stay local to the reusable waveform control and the editor settings/menu wiring.
+Milestone 2 is complete. `Waveform` now exposes a documented `LockWaveformHeight` property, and `TimelineControl` exposes a documented forwarding property for later editor wiring. The guarded interactions are the existing waveform-height resize affordances: the bottom-edge `Cursors.HSplit` branch, height mutation during left-button drag, and double-click reset. A focused build of `src\Vixen.Common\Controls\Controls.csproj` passed with four pre-existing warnings from `Vixen.Core` and zero errors.
+
+The remaining implementation work is the Timed Sequence Editor menu and XML settings wiring, focused tests where practical, and final validation.
 
 ## Context and Orientation
 
@@ -163,7 +165,7 @@ Implement the recommended forwarding property in `src/Vixen.Common/Controls/Time
 
 Modify `Waveform.OnMouseMove`. The resulting intent should be:
 
-    if (e.Button == MouseButtons.Left & !LockWaveformHeight & Cursor == Cursors.HSplit & e.Location.Y > MinimumHeight)
+    if (!LockWaveformHeight && e.Button == MouseButtons.Left && Cursor == Cursors.HSplit && e.Location.Y > MinimumHeight)
     {
         Height = e.Location.Y + 1;
     }
@@ -298,6 +300,13 @@ Milestone 1 Jira update evidence:
     Updated: 2026-07-21T11:37:29.796-0500
     Description sections updated: Specification, Acceptance Criteria, Test Plan
 
+Milestone 2 focused build evidence:
+
+    Command: dotnet build src\Vixen.Common\Controls\Controls.csproj --no-restore
+    Result: Build succeeded.
+    Warnings: 4 pre-existing warnings from Vixen.Core.
+    Errors: 0
+
 ## Interfaces and Dependencies
 
 Use only existing WinForms and repository infrastructure. The lock state lives in `Common.Controls.Timeline.Waveform` and is consumed by existing mouse event overrides. The editor setting is persisted through the existing `XMLProfileSettings` API; do not add a new settings subsystem.
@@ -332,3 +341,4 @@ This key is an app setting and must default to false when missing.
 ## Revision Notes
 
 - 2026-07-21 / Codex: Initial ExecPlan created from `docs/sequencer/vix-3948-lock-waveform-height.md`, the VIX-3945 ruler-height specification and implementation plan, and current source review. The plan explicitly includes Jira description update content because VIX-3948 should carry the refined spec, acceptance criteria, and test plan before implementation begins.
+- 2026-07-21 / Codex: Completed Milestone 2 by adding the waveform/timeline lock properties, guarding waveform height resize paths, and recording focused build evidence.
