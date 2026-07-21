@@ -370,6 +370,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.waveform.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), 50);
 			TimelineControl.ruler.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), 50);
 			lockRulerHeightToolStripMenuItem.Checked = TimelineControl.LockRulerHeight = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockRulerHeight", Name), false);
+			lockWaveformHeightToolStripMenuItem.Checked = TimelineControl.LockWaveformHeight = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockWaveformHeight", Name), false);
 			TimelineControl.grid.ShowEffectToolTip = showEffectInfoToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
 				$"{Name}/ShowEffectInfo", true);
 
@@ -5772,6 +5773,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), TimelineControl.waveform.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockRulerHeight", Name), lockRulerHeightToolStripMenuItem.Checked);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockWaveformHeight", Name), lockWaveformHeightToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/ShowEffectInfo", TimelineControl.grid.ShowEffectToolTip);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/FullWaveform", fullWaveformToolStripMenuItem.Checked);

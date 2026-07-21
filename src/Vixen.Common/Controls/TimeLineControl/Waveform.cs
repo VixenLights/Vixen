@@ -33,6 +33,15 @@ namespace Common.Controls.Timeline
 		private readonly TimeLineGlobalStateManager _timeLineGlobalStateManager;
 
 		/// <summary>
+		/// Gets or sets a value indicating whether interactive waveform height resizing is disabled.
+		/// </summary>
+		/// <value>
+		/// <see langword="true" /> if users cannot resize the waveform height with the mouse; otherwise,
+		/// <see langword="false" />. The default is <see langword="false" />.
+		/// </value>
+		public bool LockWaveformHeight { get; set; }
+
+		/// <summary>
 		/// Creates a waveform view of the <code>Audio</code> that is associated scaled to the timeinfo.
 		/// </summary>
 		/// <param name="timeinfo"></param>
@@ -67,13 +76,13 @@ namespace Common.Controls.Timeline
 			base.OnMouseMove(e);
 
 			//Adjusts WaveForm Height with a minimum of 40 pixels
-			if (e.Button == MouseButtons.Left & Cursor == Cursors.HSplit & e.Location.Y > MinimumHeight)
+			if (!LockWaveformHeight && e.Button == MouseButtons.Left && Cursor == Cursors.HSplit && e.Location.Y > MinimumHeight)
 			{
 				Height = e.Location.Y + 1;
 			}
 			else
 			{
-				Cursor = e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6 ? Cursors.HSplit : Cursors.Hand;
+				Cursor = !LockWaveformHeight && e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6 ? Cursors.HSplit : Cursors.Hand;
 			}
 		}
 
@@ -82,7 +91,7 @@ namespace Common.Controls.Timeline
 			base.OnMouseDoubleClick(e);
 
 			//Resets WaveForm Height to default value of 50 when you double click the HSplit
-			if (Cursor == Cursors.HSplit)
+			if (!LockWaveformHeight && Cursor == Cursors.HSplit)
 			{
 				Height = 50;
 			}
