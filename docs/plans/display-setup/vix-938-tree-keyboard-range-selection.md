@@ -49,6 +49,9 @@ The visible result is in Display Setup, which hosts `Common.Controls.ElementTree
 - Observation: Calling `TreeNode.EnsureVisible()` in headless tests can create the WinForms handle on an MTA test thread, which attempts OLE drag/drop registration and displays a modal error dialog.
   Evidence: user validation reported `System.InvalidOperationException: DragDrop registration did not succeed` caused by `System.Threading.ThreadStateException: Current thread must be set to single thread apartment (STA) mode before OLE calls can be made`, with the stack entering `MultiSelectTreeview.WndProc`. The fix routes scroll requests through `EnsureNodeVisible(TreeNode node)`, which calls `node.EnsureVisible()` only when `IsHandleCreated` is already true. Focused tests then passed 9/9 in 64 ms and broader Common tests passed 20/20 in 72 ms without the dialog.
 
+- Observation: `LipSyncNodeSelect` is more sensitive to range-selection sorting costs than the other `MultiSelectTreeview` hosts.
+  Evidence: `src/Vixen.Modules/App/LipSyncApp/LipSyncNodeSelect.cs` eagerly builds every child `TreeNode` recursively in `BuildNode`, while `ElementTree` uses a `VirtualNodeName` placeholder and lazy-loads children on expansion. `MultiSelectTreeview.SelectRange` was rebuilding the selected range and then sorting it with `TreeNodeSorter`; that sorter recursively scans the whole tree in `FindFirstInCollection` for comparisons. Keyboard range selection already builds the range in display order, so the implementation now adds range nodes directly and reverses backward ranges before insertion, avoiding the expensive full-tree sort on each Shift keypress.
+
 ## Decision Log
 
 - Decision: Fix `MultiSelectTreeview` instead of adding separate key handlers in `ElementTree` and `ControllerTree`.
@@ -87,9 +90,13 @@ The visible result is in Display Setup, which hosts `Common.Controls.ElementTree
   Rationale: In the application, Display Setup runs on an STA UI thread with created WinForms handles, so scrolling selected nodes into view remains available. In tests and other pre-handle selection paths, creating a handle purely to scroll is unnecessary and can fail because `MultiSelectTreeview` has `AllowDrop = true`, which requires STA OLE registration during handle creation.
   Date/Author: 2026-07-22 / Codex
 
+- Decision: Do not sort keyboard range selections after rebuilding them.
+  Rationale: The range traversal already knows display order. Sorting with `TreeNodeSorter` is much more expensive for fully materialized trees such as `LipSyncNodeSelect`, because each comparison can recursively scan the entire tree. Preserving traversal order directly keeps `SelectedNodes` ordered without the global recursive sort.
+  Date/Author: 2026-07-22 / Codex
+
 ## Outcomes & Retrospective
 
-Milestone 1 implementation is complete. `MultiSelectTreeview` now exposes an internal `ProcessKeyboardSelection(Keys keyCode, Keys modifiers)` helper used by `OnKeyDown` and focused tests. The helper leaves Ctrl+arrow unhandled, allows Shift+Up/Down/Home/End, and preserves unmodified navigation. Shift range selection now uses a stable anchor so reversing direction shrinks the range toward the anchor instead of only adding more nodes. The code also uses local visible-order traversal helpers so collapsed descendants are skipped and automated tests do not depend on WinForms handle state. Selection scrolling now happens only when the control handle already exists, avoiding MTA test-thread drag/drop registration failures while preserving real UI scrolling.
+Milestone 1 implementation is complete. `MultiSelectTreeview` now exposes an internal `ProcessKeyboardSelection(Keys keyCode, Keys modifiers)` helper used by `OnKeyDown` and focused tests. The helper leaves Ctrl+arrow unhandled, allows Shift+Up/Down/Home/End, and preserves unmodified navigation. Shift range selection now uses a stable anchor so reversing direction shrinks the range toward the anchor instead of only adding more nodes. The code also uses local visible-order traversal helpers so collapsed descendants are skipped and automated tests do not depend on WinForms handle state. Selection scrolling now happens only when the control handle already exists, avoiding MTA test-thread drag/drop registration failures while preserving real UI scrolling. Keyboard range selection now preserves traversal order directly and skips the expensive `TreeNodeSorter` pass, addressing the responsiveness issue observed in the fully materialized LipSync node tree.
 
 Automated validation passed for the focused keyboard-selection suite, the broader `Vixen.Tests.Common` filter, and `git diff --check`. Manual Display Setup acceptance and the VIX-938 JIRA update remain.
 
@@ -325,3 +332,4 @@ Do not introduce WPF dependencies for this fix. `ElementTree` and `ControllerTre
 - 2026-07-22 / Codex: Updated the plan with the user's behavior answers. The implementation now requires Windows Explorer-style anchored Shift range selection, restored Shift+Home/End, no Ctrl+arrow action, and `TopNode` selection for no-selection Shift+Down.
 - 2026-07-22 / Codex: Updated the plan after Milestone 1 implementation and validation. Recorded the stable-anchor implementation, the local visible traversal decision, host-owned Delete preservation, focused and broader test results, and remaining manual/JIRA work.
 - 2026-07-22 / Codex: Updated the plan after the user reported the test dialog from WinForms drag/drop registration on an MTA thread. Recorded the `EnsureVisible()` guard and refreshed validation evidence.
+- 2026-07-22 / Codex: Updated the plan after investigating `LipSyncNodeSelect` keyboard responsiveness. Recorded the full-tree sorting cause and the direct display-order range insertion optimization.

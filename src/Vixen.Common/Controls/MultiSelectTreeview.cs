@@ -1039,13 +1039,22 @@ namespace Common.Controls
 
 			ClearSelectedNodes();
 			foreach (TreeNode node in range) {
-				ToggleNode(node, true);
+				SelectRangeNode(node);
 			}
 
 			_selectionAnchorNode = anchorNode;
 			m_SelectedNode = targetNode;
 			EnsureNodeVisible(targetNode);
-			SortSelectedNodes();
+		}
+
+		private void SelectRangeNode(TreeNode node)
+		{
+			if (!m_SelectedNodes.Contains(node)) {
+				m_SelectedNodes.Add(node);
+			}
+
+			node.BackColor = SystemColors.Highlight;
+			node.ForeColor = SystemColors.HighlightText;
 		}
 
 		private void EnsureNodeVisible(TreeNode node)
@@ -1075,8 +1084,13 @@ namespace Common.Controls
 			if (current == targetNode)
 				return nodes;
 
-			nodes.Clear();
-			current = anchorNode;
+			return NodesInPreviousVisibleRange(anchorNode, targetNode);
+		}
+
+		private List<TreeNode> NodesInPreviousVisibleRange(TreeNode anchorNode, TreeNode targetNode)
+		{
+			var nodes = new List<TreeNode>();
+			TreeNode current = anchorNode;
 			nodes.Add(current);
 			while (current != null && current != targetNode) {
 				current = PreviousVisibleNode(current);
@@ -1085,8 +1099,10 @@ namespace Common.Controls
 				}
 			}
 
-			if (current == targetNode)
+			if (current == targetNode) {
+				nodes.Reverse();
 				return nodes;
+			}
 
 			return new List<TreeNode>();
 		}
