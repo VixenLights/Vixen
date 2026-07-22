@@ -8,6 +8,12 @@
 		</PropertyGroup>
 
 		<ItemGroup>
+				<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+						<_Parameter1>Vixen.Tests</_Parameter1>
+				</AssemblyAttribute>
+		</ItemGroup>
+
+		<ItemGroup>
 				<PackageReference Include="NLog" />
 				<PackageReference Include="System.IO.Ports" />
 				<PackageReference Include="System.Reactive" />

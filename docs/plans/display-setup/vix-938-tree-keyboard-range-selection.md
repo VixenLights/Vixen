@@ -18,9 +18,12 @@ The visible result is in Display Setup, which hosts `Common.Controls.ElementTree
 - [x] (2026-07-22 00:00 America/Chicago) Identified the likely root cause: `MultiSelectTreeview.OnKeyDown` returns immediately when Shift or Ctrl is held, so `Shift+Up` and `Shift+Down` never reach the code that could extend selection to `PrevVisibleNode` or `NextVisibleNode`.
 - [x] (2026-07-22 00:00 America/Chicago) Created this initial ExecPlan under `docs/plans/display-setup/`.
 - [x] (2026-07-22 00:00 America/Chicago) Clarified behavior questions with the user: reversed Shift+arrow shrinks the range like Windows Explorer; Ctrl+Up/Down do nothing; Shift+Home/End select to top/bottom; Shift+Down with no selection selects `TopNode`.
-- [ ] Implement the shared keyboard range-selection fix.
-- [ ] Add focused automated coverage or document why UI-only coverage is the practical limit.
-- [ ] Run focused validation and manual Display Setup acceptance.
+- [x] (2026-07-22 00:00 America/Chicago) Implemented the shared keyboard range-selection fix in `src/Vixen.Common/Controls/MultiSelectTreeview.cs`.
+- [x] (2026-07-22 00:00 America/Chicago) Added focused automated coverage in `src/Vixen.Tests/Common/MultiSelectTreeviewKeyboardSelectionTests.cs`.
+- [x] (2026-07-22 00:00 America/Chicago) Ran focused validation: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MultiSelectTreeviewKeyboardSelection --no-restore` passed 9/9 tests.
+- [x] (2026-07-22 00:00 America/Chicago) Ran broader Common validation: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Vixen.Tests.Common --no-restore` passed 20/20 tests.
+- [x] (2026-07-22 00:00 America/Chicago) Ran whitespace validation: `git diff --check` passed with no output.
+- [ ] Run manual Display Setup acceptance.
 - [ ] Update JIRA issue VIX-938 with the final cause, remediation, and test plan/results.
 
 ## Surprises & Discoveries
@@ -36,6 +39,15 @@ The visible result is in Display Setup, which hosts `Common.Controls.ElementTree
 
 - Observation: The current `OnKeyDown` logic contains unreachable Shift range-selection branches for Home and End and blocks Shift arrow range-selection entirely.
   Evidence: in `src/Vixen.Common/Controls/MultiSelectTreeview.cs`, `OnKeyDown` calls `base.OnKeyDown(e)` and then immediately returns when `e.Control || e.Shift` is true. The next line computes `bool bShift = (ModifierKeys == Keys.Shift)`, and later Home/End test `bShift`, but those branches cannot run while Shift is held. Up and Down call `SelectNode(m_SelectedNode.PrevVisibleNode)` or `SelectNode(m_SelectedNode.NextVisibleNode)`, and `SelectNode` already contains range-selection behavior when `ModifierKeys == Keys.Shift`, but the early return prevents that code from running for `Shift+Up` and `Shift+Down`.
+
+- Observation: `TreeNode.NextVisibleNode` and `TreeNode.PrevVisibleNode` are not reliable in the headless test path before the tree has a normal UI handle and visible host.
+  Evidence: the first focused test run compiled but failed 7 of 8 tests because Shift+Down from B selected only B instead of B and C, and Shift+Up from B selected only B instead of A and B. Replacing those properties with local visible-order traversal through `FirstNode`, `NextNode`, `Parent`, and `PrevNode` made the focused test suite pass 8/8.
+
+- Observation: The shared keyboard helper must not claim every unmodified key.
+  Evidence: `ElementTree` and `ControllerTree` have host-level `KeyDown` handlers for Delete and copy/paste shortcuts. A code-read after the first passing test run showed the helper would return `true` for unmodified Delete through the old type-to-search fallback. The implementation now limits type-to-search handling to A-Z and 0-9 and includes `DeleteIsNotHandledBySharedKeyboardSelection`.
+
+- Observation: Calling `TreeNode.EnsureVisible()` in headless tests can create the WinForms handle on an MTA test thread, which attempts OLE drag/drop registration and displays a modal error dialog.
+  Evidence: user validation reported `System.InvalidOperationException: DragDrop registration did not succeed` caused by `System.Threading.ThreadStateException: Current thread must be set to single thread apartment (STA) mode before OLE calls can be made`, with the stack entering `MultiSelectTreeview.WndProc`. The fix routes scroll requests through `EnsureNodeVisible(TreeNode node)`, which calls `node.EnsureVisible()` only when `IsHandleCreated` is already true. Focused tests then passed 9/9 in 64 ms and broader Common tests passed 20/20 in 72 ms without the dialog.
 
 ## Decision Log
 
@@ -63,9 +75,23 @@ The visible result is in Display Setup, which hosts `Common.Controls.ElementTree
   Rationale: The user explicitly chose `TopNode` for the no-selection Shift+Down case. This matches the current plain-arrow fallback more closely than inferring the first root node.
   Date/Author: 2026-07-22 / user, recorded by Codex
 
+- Decision: Use local visible-order traversal helpers instead of relying on `TreeNode.NextVisibleNode` and `TreeNode.PrevVisibleNode` inside the new keyboard path.
+  Rationale: The local traversal is deterministic in automated tests and follows the same visible tree order: expanded children are included, collapsed descendants are skipped, siblings are visited in display order, and traversal climbs back to parent siblings as needed.
+  Date/Author: 2026-07-22 / Codex
+
+- Decision: Return `false` for host-owned keys such as Delete.
+  Rationale: `ElementTree` and `ControllerTree` subscribe to `KeyDown` for actions outside shared tree navigation. The shared helper should only mark keys handled when it processes tree navigation, range selection, or the existing type-to-search behavior.
+  Date/Author: 2026-07-22 / Codex
+
+- Decision: Guard `EnsureVisible()` behind `IsHandleCreated`.
+  Rationale: In the application, Display Setup runs on an STA UI thread with created WinForms handles, so scrolling selected nodes into view remains available. In tests and other pre-handle selection paths, creating a handle purely to scroll is unnecessary and can fail because `MultiSelectTreeview` has `AllowDrop = true`, which requires STA OLE registration during handle creation.
+  Date/Author: 2026-07-22 / Codex
+
 ## Outcomes & Retrospective
 
-This initial plan records the cause and a concrete remediation path. Implementation has not started. Update this section after the fix is coded, tests run, manual Display Setup behavior is observed, and VIX-938 is updated.
+Milestone 1 implementation is complete. `MultiSelectTreeview` now exposes an internal `ProcessKeyboardSelection(Keys keyCode, Keys modifiers)` helper used by `OnKeyDown` and focused tests. The helper leaves Ctrl+arrow unhandled, allows Shift+Up/Down/Home/End, and preserves unmodified navigation. Shift range selection now uses a stable anchor so reversing direction shrinks the range toward the anchor instead of only adding more nodes. The code also uses local visible-order traversal helpers so collapsed descendants are skipped and automated tests do not depend on WinForms handle state. Selection scrolling now happens only when the control handle already exists, avoiding MTA test-thread drag/drop registration failures while preserving real UI scrolling.
+
+Automated validation passed for the focused keyboard-selection suite, the broader `Vixen.Tests.Common` filter, and `git diff --check`. Manual Display Setup acceptance and the VIX-938 JIRA update remain.
 
 ## Answered Questions
 
@@ -297,3 +323,5 @@ Do not introduce WPF dependencies for this fix. `ElementTree` and `ControllerTre
 
 - 2026-07-22 / Codex: Created the initial plan after source inspection. The plan records the root cause, open behavior questions, shared-control remediation, validation expectations, and the required VIX-938 JIRA update step.
 - 2026-07-22 / Codex: Updated the plan with the user's behavior answers. The implementation now requires Windows Explorer-style anchored Shift range selection, restored Shift+Home/End, no Ctrl+arrow action, and `TopNode` selection for no-selection Shift+Down.
+- 2026-07-22 / Codex: Updated the plan after Milestone 1 implementation and validation. Recorded the stable-anchor implementation, the local visible traversal decision, host-owned Delete preservation, focused and broader test results, and remaining manual/JIRA work.
+- 2026-07-22 / Codex: Updated the plan after the user reported the test dialog from WinForms drag/drop registration on an MTA thread. Recorded the `EnsureVisible()` guard and refreshed validation evidence.

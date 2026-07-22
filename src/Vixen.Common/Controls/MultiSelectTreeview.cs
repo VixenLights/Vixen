@@ -71,6 +71,7 @@ namespace Common.Controls
 		private bool _sortSelectedNodesWhenUpdateEnds = false;
 		private bool _clickedNodeWasInBounds = false;
 		private bool _selectedNodeWithControlKey = false;
+		private TreeNode _selectionAnchorNode;
 
 		#endregion
 
@@ -226,6 +227,9 @@ namespace Common.Controls
 		{
 			//AddNodeToSelectedListIfNotInList(node);
 			ToggleNode(node, true);
+			if (_selectionAnchorNode == null) {
+				_selectionAnchorNode = node;
+			}
 		}
 
 		private void AddNodeToSelectedListIfNotInList(TreeNode node)
@@ -437,23 +441,47 @@ namespace Common.Controls
 			// including navigation, selection, etc.
 
 			base.OnKeyDown(e);
-			
-			if (e.Control || e.Shift) return;
 
-			//BeginUpdate();
-			bool bShift = (ModifierKeys == Keys.Shift);
+			if (ProcessKeyboardSelection(e.KeyCode, e.Modifiers)) {
+				e.Handled = true;
+				e.SuppressKeyPress = true;
+			}
+		}
+
+		/// <summary>
+		/// Processes keyboard navigation and range-selection gestures for the tree.
+		/// </summary>
+		/// <param name="keyCode">The key being processed.</param>
+		/// <param name="modifiers">A bitwise combination of the enumeration values that specifies the active modifier keys.</param>
+		/// <returns><see langword="true" /> if the key was handled; otherwise, <see langword="false" />.</returns>
+		internal bool ProcessKeyboardSelection(Keys keyCode, Keys modifiers)
+		{
+			bool isShiftOnly = modifiers == Keys.Shift;
+			bool isUnmodified = modifiers == Keys.None;
+
+			if (!isShiftOnly && !isUnmodified)
+				return false;
+
+			if (isShiftOnly && keyCode != Keys.Up && keyCode != Keys.Down && keyCode != Keys.Home && keyCode != Keys.End)
+				return false;
 
 			try {
 				// Nothing is selected in the tree, this isn't a good state
 				// select the top node
-				if (m_SelectedNode == null && TopNode != null) {
-					ToggleNode(TopNode, true);
+				if (m_SelectedNode == null) {
+					TreeNode topNode = TopNode ?? FirstVisibleNode();
+					if (topNode != null) {
+						SelectSingleNode(topNode, false);
+					}
+					if (isShiftOnly && keyCode == Keys.Down)
+						return true;
 				}
 
 				// Nothing is still selected in the tree, this isn't a good state, leave.
-				if (m_SelectedNode == null) return;
+				if (m_SelectedNode == null) return false;
 
-				if (e.KeyCode == Keys.Left) {
+				if (keyCode == Keys.Left) {
+					if (!isUnmodified) return false;
 					if (m_SelectedNode.IsExpanded && m_SelectedNode.Nodes.Count > 0) {
 						// Collapse an expanded node that has children
 						m_SelectedNode.Collapse();
@@ -463,7 +491,8 @@ namespace Common.Controls
 						SelectSingleNode(m_SelectedNode.Parent);
 					}
 				}
-				else if (e.KeyCode == Keys.Right) {
+				else if (keyCode == Keys.Right) {
+					if (!isUnmodified) return false;
 					if (!m_SelectedNode.IsExpanded) {
 						// Expand a collpased node's children
 						m_SelectedNode.Expand();
@@ -473,23 +502,25 @@ namespace Common.Controls
 						SelectSingleNode(m_SelectedNode.FirstNode);
 					}
 				}
-				else if (e.KeyCode == Keys.Up) {
+				else if (keyCode == Keys.Up) {
 					// Select the previous node
-					if (m_SelectedNode.PrevVisibleNode != null) {
-						SelectNode(m_SelectedNode.PrevVisibleNode);
+					TreeNode previousNode = PreviousVisibleNode(m_SelectedNode);
+					if (previousNode != null) {
+						SelectNode(previousNode, modifiers);
 					}
 				}
-				else if (e.KeyCode == Keys.Down) {
+				else if (keyCode == Keys.Down) {
 					// Select the next node
-					if (m_SelectedNode.NextVisibleNode != null) {
-						SelectNode(m_SelectedNode.NextVisibleNode);
+					TreeNode nextNode = NextVisibleNode(m_SelectedNode);
+					if (nextNode != null) {
+						SelectNode(nextNode, modifiers);
 					}
 				}
-				else if (e.KeyCode == Keys.Home) {
-					if (bShift) {
+				else if (keyCode == Keys.Home) {
+					if (isShiftOnly) {
 						// Select all of the root nodes up to this point 
 						if (Nodes.Count > 0) {
-							SelectNode(Nodes[0]);
+							SelectNode(FirstVisibleNode(), modifiers);
 						}
 					}
 					else {
@@ -499,16 +530,13 @@ namespace Common.Controls
 						}
 					}
 				}
-				else if (e.KeyCode == Keys.End) {
+				else if (keyCode == Keys.End) {
 					// Select the last node visible node in the tree.
 					// Don't expand branches incase the tree is virtual
-					TreeNode ndLast = Nodes[Nodes.Count - 1];
-					while (ndLast.IsExpanded && (ndLast.LastNode != null)) {
-						ndLast = ndLast.LastNode;
-					}
-					if (bShift) {
+					TreeNode ndLast = LastVisibleNode();
+					if (isShiftOnly) {
 						if (Nodes.Count > 0) {
-							SelectNode(ndLast);
+							SelectNode(ndLast, modifiers);
 						}
 					}
 					else {
@@ -517,46 +545,51 @@ namespace Common.Controls
 						}
 					}
 				}
-				else if (e.KeyCode == Keys.PageUp) {
+				else if (keyCode == Keys.PageUp) {
+					if (!isUnmodified) return false;
 					// Select the highest node in the display
 					int nCount = VisibleCount;
 					TreeNode ndCurrent = m_SelectedNode;
-					while ((nCount) > 0 && (ndCurrent.PrevVisibleNode != null)) {
-						ndCurrent = ndCurrent.PrevVisibleNode;
+					while ((nCount) > 0 && (PreviousVisibleNode(ndCurrent) != null)) {
+						ndCurrent = PreviousVisibleNode(ndCurrent);
 						nCount--;
 					}
 					SelectSingleNode(ndCurrent);
 				}
-				else if (e.KeyCode == Keys.PageDown) {
+				else if (keyCode == Keys.PageDown) {
+					if (!isUnmodified) return false;
 					// Select the lowest node in the display
 					int nCount = VisibleCount;
 					TreeNode ndCurrent = m_SelectedNode;
-					while ((nCount) > 0 && (ndCurrent.NextVisibleNode != null)) {
-						ndCurrent = ndCurrent.NextVisibleNode;
+					while ((nCount) > 0 && (NextVisibleNode(ndCurrent) != null)) {
+						ndCurrent = NextVisibleNode(ndCurrent);
 						nCount--;
 					}
 					SelectSingleNode(ndCurrent);
 				}
-				else {
+				else if (isUnmodified && IsSearchKey(keyCode)) {
 					// Assume this is a search character a-z, A-Z, 0-9, etc.
 					// Select the first node after the current node that 
 					// starts with this character
-					string sSearch = ((char) e.KeyValue).ToString();
+					string sSearch = ((char) keyCode).ToString();
 
 					TreeNode ndCurrent = m_SelectedNode;
-					while ((ndCurrent.NextVisibleNode != null)) {
-						ndCurrent = ndCurrent.NextVisibleNode;
+					while ((NextVisibleNode(ndCurrent) != null)) {
+						ndCurrent = NextVisibleNode(ndCurrent);
 						if (ndCurrent.Text.StartsWith(sSearch)) {
 							SelectSingleNode(ndCurrent);
 							break;
 						}
 					}
 				}
+				else {
+					return false;
+				}
+
+				return true;
 			} catch (Exception ex) {
 				HandleException(ex);
-			}
-			finally {
-				EndUpdate();
+				return true;
 			}
 		}
 
@@ -913,106 +946,26 @@ namespace Common.Controls
 
 		private void SelectNode(TreeNode node)
 		{
+			SelectNode(node, ModifierKeys);
+		}
+
+		private void SelectNode(TreeNode node, Keys modifiers)
+		{
 			try {
 				BeginUpdate();
 
-				if (m_SelectedNode == null || ModifierKeys == Keys.Control) {
+				if (m_SelectedNode == null || modifiers == Keys.Control) {
 					// Ctrl+Click selects an unselected node, or unselects a selected node.
 					bool bIsSelected = m_SelectedNodes.Contains(node);
 					ToggleNode(node, !bIsSelected);
+					if (!bIsSelected) {
+						_selectionAnchorNode = node;
+					}
 				}
-				else if (ModifierKeys == Keys.Shift) {
-					// Shift+Click selects nodes between the selected node and here.
-					TreeNode ndStart = m_SelectedNode;
-					TreeNode ndEnd = node;
-
-					if (ndStart.Parent == ndEnd.Parent) {
-						// Selected node and clicked node have same parent, easy case.
-						if (ndStart.Index < ndEnd.Index) {
-							// If the selected node is beneath the clicked node walk down
-							// selecting each Visible node until we reach the end.
-							while (ndStart != ndEnd) {
-								ndStart = ndStart.NextVisibleNode;
-								if (ndStart == null) break;
-								ToggleNode(ndStart, true);
-							}
-						}
-						else if (ndStart.Index == ndEnd.Index) {
-							// Clicked same node, do nothing
-						}
-						else {
-							// If the selected node is above the clicked node walk up
-							// selecting each Visible node until we reach the end.
-							while (ndStart != ndEnd) {
-								ndStart = ndStart.PrevVisibleNode;
-								if (ndStart == null) break;
-								ToggleNode(ndStart, true);
-							}
-						}
-					}
-					else {
-						// Selected node and clicked node have same parent, hard case.
-						// We need to find a common parent to determine if we need
-						// to walk down selecting, or walk up selecting.
-
-						TreeNode ndStartP = ndStart;
-						TreeNode ndEndP = ndEnd;
-						int startDepth = Math.Min(ndStartP.Level, ndEndP.Level);
-
-						// Bring lower node up to common depth
-						while (ndStartP.Level > startDepth) {
-							ndStartP = ndStartP.Parent;
-						}
-
-						// Bring lower node up to common depth
-						while (ndEndP.Level > startDepth) {
-							ndEndP = ndEndP.Parent;
-						}
-
-						// Walk up the tree until we find the common parent
-						while (ndStartP.Parent != ndEndP.Parent) {
-							ndStartP = ndStartP.Parent;
-							ndEndP = ndEndP.Parent;
-						}
-
-						// Select the node
-						if (ndStartP.Index < ndEndP.Index) {
-							// If the selected node is beneath the clicked node walk down
-							// selecting each Visible node until we reach the end.
-							while (ndStart != ndEnd) {
-								ndStart = ndStart.NextVisibleNode;
-								if (ndStart == null) break;
-								ToggleNode(ndStart, true);
-							}
-						}
-						else if (ndStartP.Index == ndEndP.Index) {
-							if (ndStart.Level < ndEnd.Level) {
-								while (ndStart != ndEnd) {
-									ndStart = ndStart.NextVisibleNode;
-									if (ndStart == null) break;
-									ToggleNode(ndStart, true);
-								}
-							}
-							else {
-								while (ndStart != ndEnd) {
-									ndStart = ndStart.PrevVisibleNode;
-									if (ndStart == null) break;
-									ToggleNode(ndStart, true);
-								}
-							}
-						}
-						else {
-							// If the selected node is above the clicked node walk up
-							// selecting each Visible node until we reach the end.
-							while (ndStart != ndEnd) {
-								ndStart = ndStart.PrevVisibleNode;
-								if (ndStart == null) break;
-								ToggleNode(ndStart, true);
-							}
-						}
-					}
-
-					SortSelectedNodes();
+				else if (modifiers == Keys.Shift) {
+					// Shift selects visible rows between the original anchor and the new focus node.
+					TreeNode anchorNode = _selectionAnchorNode ?? m_SelectedNode;
+					SelectRange(anchorNode, node);
 				}
 				else {
 					// Just clicked a node, select it
@@ -1037,6 +990,7 @@ namespace Common.Controls
 			finally {
 				m_SelectedNodes.Clear();
 				m_SelectedNode = null;
+				_selectionAnchorNode = null;
 			}
 		}
 
@@ -1047,7 +1001,8 @@ namespace Common.Controls
 
 			if (node != null) {
 				ToggleNode(node, true);
-				node.EnsureVisible();
+				_selectionAnchorNode = node;
+				EnsureNodeVisible(node);
 			}
 
 			EndUpdate();
@@ -1071,6 +1026,127 @@ namespace Common.Controls
 				node.BackColor = BackColor;
 				node.ForeColor = ForeColor;
 			}
+		}
+
+		private void SelectRange(TreeNode anchorNode, TreeNode targetNode)
+		{
+			if (anchorNode == null || targetNode == null)
+				return;
+
+			List<TreeNode> range = NodesInVisibleRange(anchorNode, targetNode);
+			if (range.Count == 0)
+				return;
+
+			ClearSelectedNodes();
+			foreach (TreeNode node in range) {
+				ToggleNode(node, true);
+			}
+
+			_selectionAnchorNode = anchorNode;
+			m_SelectedNode = targetNode;
+			EnsureNodeVisible(targetNode);
+			SortSelectedNodes();
+		}
+
+		private void EnsureNodeVisible(TreeNode node)
+		{
+			if (IsHandleCreated) {
+				node.EnsureVisible();
+			}
+		}
+
+		private List<TreeNode> NodesInVisibleRange(TreeNode anchorNode, TreeNode targetNode)
+		{
+			var nodes = new List<TreeNode>();
+			if (anchorNode == targetNode) {
+				nodes.Add(anchorNode);
+				return nodes;
+			}
+
+			TreeNode current = anchorNode;
+			nodes.Add(current);
+			while (current != null && current != targetNode) {
+				current = NextVisibleNode(current);
+				if (current != null) {
+					nodes.Add(current);
+				}
+			}
+
+			if (current == targetNode)
+				return nodes;
+
+			nodes.Clear();
+			current = anchorNode;
+			nodes.Add(current);
+			while (current != null && current != targetNode) {
+				current = PreviousVisibleNode(current);
+				if (current != null) {
+					nodes.Add(current);
+				}
+			}
+
+			if (current == targetNode)
+				return nodes;
+
+			return new List<TreeNode>();
+		}
+
+		private TreeNode FirstVisibleNode()
+		{
+			return Nodes.Count > 0 ? Nodes[0] : null;
+		}
+
+		private TreeNode LastVisibleNode()
+		{
+			if (Nodes.Count == 0)
+				return null;
+
+			TreeNode lastNode = Nodes[Nodes.Count - 1];
+			while (lastNode.IsExpanded && lastNode.LastNode != null) {
+				lastNode = lastNode.LastNode;
+			}
+
+			return lastNode;
+		}
+
+		private static TreeNode NextVisibleNode(TreeNode node)
+		{
+			if (node == null)
+				return null;
+
+			if (node.IsExpanded && node.FirstNode != null)
+				return node.FirstNode;
+
+			while (node != null) {
+				if (node.NextNode != null)
+					return node.NextNode;
+
+				node = node.Parent;
+			}
+
+			return null;
+		}
+
+		private static TreeNode PreviousVisibleNode(TreeNode node)
+		{
+			if (node == null)
+				return null;
+
+			if (node.PrevNode == null)
+				return node.Parent;
+
+			node = node.PrevNode;
+			while (node.IsExpanded && node.LastNode != null) {
+				node = node.LastNode;
+			}
+
+			return node;
+		}
+
+		private static bool IsSearchKey(Keys keyCode)
+		{
+			return (keyCode >= Keys.A && keyCode <= Keys.Z) ||
+			       (keyCode >= Keys.D0 && keyCode <= Keys.D9);
 		}
 
 		private void HandleException(Exception ex)
