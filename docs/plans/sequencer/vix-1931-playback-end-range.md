@@ -16,10 +16,10 @@ The behavior is visible in the Timed Sequence Editor by creating a range in the 
 - [x] (2026-07-23 00:00Z) Read `src/Vixen.Common/Controls/TimeLineControl/Ruler.cs` and confirmed the ruler writes `PlaybackStartTime` and `PlaybackEndTime` when a user drags a time range.
 - [x] (2026-07-23 00:00Z) Read the Timed Sequence Editor playback code and identified the faulty End button assignment in `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm_Toolstrip.cs`.
 - [x] (2026-07-23 00:00Z) Fetched Jira issue `VIX-1931` and confirmed the existing bug report describes this same playback-range behavior.
-- [ ] Implement the End button fix in `TimedSequenceEditorForm_Toolstrip.cs`.
-- [ ] Add or update focused regression coverage for the playback range state, if practical in the existing test harness.
-- [ ] Build or test the affected project.
-- [ ] Manually verify the sequencer workflow in the running application.
+- [x] (2026-07-23 00:00Z) Implemented the End button fix in `TimedSequenceEditorForm_Toolstrip.cs`.
+- [x] (2026-07-23 00:00Z) Assessed focused regression coverage and did not add a test because the behavior is implemented in a private WinForms toolbar handler coupled to the full editor context; the scoped one-line fix is covered by source inspection and planned manual validation.
+- [x] (2026-07-23 00:00Z) Build and test validation completed. The implementer first attempted `dotnet build src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj --no-restore`, `msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -t:Build -p:Configuration=Debug -m`, and `msbuild src\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj -restore -t:Build -p:Configuration=Debug -m`; those local attempts were blocked by missing .NET 10 x86 apphost pack support in native dependency projects. The user subsequently confirmed that the full build is successful and all existing unit tests pass.
+- [x] (2026-07-23 00:00Z) Manual sequencer workflow verification completed. The user confirmed the fix works.
 - [x] (2026-07-23 00:00Z) Updated Jira issue `VIX-1931` with cause, fix, acceptance criteria, and test plan.
 
 ## Surprises & Discoveries
@@ -32,6 +32,10 @@ The behavior is visible in the Timed Sequence Editor by creating a range in the 
   Evidence: `context_ContextEnded()` restores both fields. This explains why pressing Stop and Play again can appear to repair the range after the first bad Play path.
 - Observation: The ruler itself is not the source of the End button bug.
   Evidence: `Ruler.OnMouseMove` sets `PlaybackStartTime` from the lower drag position and `PlaybackEndTime` from the higher drag position, then `timelineControl_TimeRangeDragged` stores those values into `_mPrevPlaybackStart` and `_mPrevPlaybackEnd` when the range drag completes.
+- Observation: Automated build validation is blocked in this environment by missing `Microsoft.NETCore.App.Host.win-x86` pack support for `net10.0` native dependency projects.
+  Evidence: MSBuild reports `error NETSDK1145: The Apphost pack is not installed and NuGet package restore is not supported` for `src\Vixen.Modules\Analysis\QMLibrary\QMLibrary.vcxproj` and `src\Vixen.Modules\Effect\Liquid\LiquidFunWrapper\LiquidLiquidFunWrapper.vcxproj`.
+- Observation: The local build blocker was environment-specific, not a source defect.
+  Evidence: The user confirmed the full build is successful and all existing unit tests pass after the fix.
 
 ## Decision Log
 
@@ -47,7 +51,7 @@ The behavior is visible in the Timed Sequence Editor by creating a range in the 
 
 ## Outcomes & Retrospective
 
-This plan has identified the fault, specifies a minimal correction, and the Jira issue has been updated with the cause, fix, acceptance criteria, and test plan. Implementation remains to be completed. After implementation, the expected outcome is that pressing End after selecting a playback range changes only the range end and the first subsequent Play starts from the original range start without requiring a Stop/Play recovery cycle.
+This plan is complete. The fault was identified, Jira issue `VIX-1931` was updated with the cause, fix, acceptance criteria, and test plan, and the code fix was implemented by changing the End toolbar handler to write the sequence length to `PlaybackEndTime` instead of `PlaybackStartTime`. The user confirmed the fix works, the full build is successful, and all existing unit tests pass. The completed outcome is that pressing End after selecting a playback range changes only the range end and the first subsequent Play starts from the original range start without requiring a Stop/Play recovery cycle.
 
 ## Context and Orientation
 
@@ -156,6 +160,8 @@ or:
 
 The change is accepted when the build or tests pass and the manual workflow proves that the first Play after pressing End starts from the selected range start.
 
+Final validation result: the user confirmed the fix works in the sequencer, the full build is successful, and all existing unit tests pass.
+
 ## Idempotence and Recovery
 
 The code change is a one-line assignment correction and can be safely reapplied by inspecting the handler. If the file already contains `TimelineControl.PlaybackEndTime = _mPrevPlaybackEnd = _sequence.Length;`, do not edit it again.
@@ -218,3 +224,6 @@ Do not introduce a public or protected API for this fix unless testing proves it
 
 - 2026-07-23 / Codex: Created the plan after tracing the ruler drag path, toolbar End handler, normal Play path, and Jira issue `VIX-1931`.
 - 2026-07-23 / Codex: Updated the Progress and Outcomes sections after successfully updating Jira issue `VIX-1931`.
+- 2026-07-23 / Codex: Updated Progress and Outcomes after implementing the scoped End button assignment fix.
+- 2026-07-23 / Codex: Recorded the automated build validation blocker and the decision not to add a coupled UI regression test for this private handler.
+- 2026-07-23 / Codex: Marked the plan complete after the user confirmed the fix works, the full build is successful, and all existing unit tests pass.
