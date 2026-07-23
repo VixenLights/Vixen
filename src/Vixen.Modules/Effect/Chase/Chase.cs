@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -513,8 +514,20 @@ namespace VixenModules.Effect.Chase
 			IElementNode lastTargetedNode = null;
 			TimeSpan lastNodeStartTime = TimeSpan.Zero;
 
+			var startTime = TimeSpan.Zero;
+			var endTime = TimeSpan;
 			// iterate up to and including the last pulse generated
-			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan; current += increment) {
+			if (ChaseMovement.Points.First().X > 0)
+			{
+				startTime = TimeSpan * ChaseMovement.Points.First().X / 100;
+			}
+			
+			if (ChaseMovement.Points.Last().X < 100)
+			{
+				endTime = TimeSpan * ChaseMovement.Points.Last().X / 100;
+			}
+			
+			for (TimeSpan current = startTime; current <= endTime; current += increment) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
 				double currentPercentageIntoChase = (current.Ticks/(double) chaseTime.Ticks)*100.0;
@@ -557,7 +570,7 @@ namespace VixenModules.Effect.Chase
 
 			// generate the last pulse
 			if (lastTargetedNode != null) {
-				GeneratePulse(lastTargetedNode, lastNodeStartTime, TimeSpan - lastNodeStartTime, ChaseMovement.GetValue(100));
+				GeneratePulse(lastTargetedNode, lastNodeStartTime, endTime - lastNodeStartTime, ChaseMovement.GetValue(ChaseMovement.Points.Last().X));
 			}
 
 			_elementData = EffectIntents.Restrict(_elementData, TimeSpan.Zero, TimeSpan);
