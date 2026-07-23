@@ -23,8 +23,12 @@ The visible result is in Display Setup, which hosts `Common.Controls.ElementTree
 - [x] (2026-07-22 00:00 America/Chicago) Ran focused validation: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MultiSelectTreeviewKeyboardSelection --no-restore` passed 9/9 tests.
 - [x] (2026-07-22 00:00 America/Chicago) Ran broader Common validation: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Vixen.Tests.Common --no-restore` passed 20/20 tests.
 - [x] (2026-07-22 00:00 America/Chicago) Ran whitespace validation: `git diff --check` passed with no output.
-- [ ] Run manual Display Setup acceptance.
-- [ ] Update JIRA issue VIX-938 with the final cause, remediation, and test plan/results.
+- [x] (2026-07-22 19:13 America/Chicago) Manual testing passed for all places that use `MultiSelectTreeview`.
+- [x] (2026-07-22 00:00 America/Chicago) Re-ran focused validation: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~MultiSelectTreeviewKeyboardSelection --no-restore` passed 9/9 tests.
+- [x] (2026-07-22 00:00 America/Chicago) Re-ran broader Common validation: `dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter FullyQualifiedName~Vixen.Tests.Common --no-restore` passed 20/20 tests.
+- [x] (2026-07-22 00:00 America/Chicago) Re-ran whitespace validation: `git diff --check` passed with no output.
+- [x] (2026-07-22 19:07 America/Chicago) Updated JIRA issue VIX-938 with the final cause, remediation, automated test results, and manual acceptance checklist.
+- [x] (2026-07-22 19:10 America/Chicago) Updated the VIX-938 JIRA description with aligned requirements, acceptance criteria, remediation, and test plan/results.
 
 ## Surprises & Discoveries
 
@@ -98,7 +102,7 @@ The visible result is in Display Setup, which hosts `Common.Controls.ElementTree
 
 Milestone 1 implementation is complete. `MultiSelectTreeview` now exposes an internal `ProcessKeyboardSelection(Keys keyCode, Keys modifiers)` helper used by `OnKeyDown` and focused tests. The helper leaves Ctrl+arrow unhandled, allows Shift+Up/Down/Home/End, and preserves unmodified navigation. Shift range selection now uses a stable anchor so reversing direction shrinks the range toward the anchor instead of only adding more nodes. The code also uses local visible-order traversal helpers so collapsed descendants are skipped and automated tests do not depend on WinForms handle state. Selection scrolling now happens only when the control handle already exists, avoiding MTA test-thread drag/drop registration failures while preserving real UI scrolling. Keyboard range selection now preserves traversal order directly and skips the expensive `TreeNodeSorter` pass, addressing the responsiveness issue observed in the fully materialized LipSync node tree.
 
-Automated validation passed for the focused keyboard-selection suite, the broader `Vixen.Tests.Common` filter, and `git diff --check`. Manual Display Setup acceptance and the VIX-938 JIRA update remain.
+Automated validation passed for the focused keyboard-selection suite, the broader `Vixen.Tests.Common` filter, and `git diff --check`. VIX-938 has been updated with aligned requirements, acceptance criteria, remediation, automated test results, and manual Display Setup acceptance results. Manual testing passed for all places that use `MultiSelectTreeview`.
 
 ## Answered Questions
 
@@ -333,3 +337,7 @@ Do not introduce WPF dependencies for this fix. `ElementTree` and `ControllerTre
 - 2026-07-22 / Codex: Updated the plan after Milestone 1 implementation and validation. Recorded the stable-anchor implementation, the local visible traversal decision, host-owned Delete preservation, focused and broader test results, and remaining manual/JIRA work.
 - 2026-07-22 / Codex: Updated the plan after the user reported the test dialog from WinForms drag/drop registration on an MTA thread. Recorded the `EnsureVisible()` guard and refreshed validation evidence.
 - 2026-07-22 / Codex: Updated the plan after investigating `LipSyncNodeSelect` keyboard responsiveness. Recorded the full-tree sorting cause and the direct display-order range insertion optimization.
+- 2026-07-22 / Codex: Re-ran focused and broader automated validation before the VIX-938 JIRA update. Manual Display Setup acceptance remains listed because it requires an interactive application pass.
+- 2026-07-22 / Codex: Updated VIX-938 in JIRA with the root cause, remediation summary, automated test results, and manual acceptance checklist.
+- 2026-07-22 / Codex: Recorded user confirmation that manual testing passed for all places that use `MultiSelectTreeview`.
+- 2026-07-22 / Codex: Updated the VIX-938 JIRA description so the issue body is aligned with the final requirements, acceptance criteria, remediation, and test plan/results.
