@@ -204,70 +204,95 @@ namespace Common.WPFCommon.Input
 
 		private static void DragSource_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
+			ResetDragSourceState();
 			if (e.ClickCount > 1) return;
-			// Make this the new drag source
-			CurrentDragSourceAdvisor = GetDragSourceAdvisor(sender as DependencyObject);
-			CurrentDragSourceAdvisor.SourceUI = sender as UIElement;
 
-			if (CurrentDragSourceAdvisor.IsDraggable(e.OriginalSource as UIElement) == false)
+			// Make this the new drag source
+			var dragSourceAdvisor = GetDragSourceAdvisor(sender as DependencyObject);
+			if (dragSourceAdvisor == null) return;
+
+			dragSourceAdvisor.SourceUI = sender as UIElement;
+
+			if (dragSourceAdvisor.IsDraggable(e.OriginalSource as UIElement) == false)
 			{
+				dragSourceAdvisor.SourceUI = null;
 				return;
 			}
 
+			CurrentDragSourceAdvisor = dragSourceAdvisor;
 			_draggedElt = e.OriginalSource as UIElement;
 		
-			_dragStartPoint = e.GetPosition(CurrentDragSourceAdvisor.GetTopContainer());
+			_dragStartPoint = e.GetPosition(dragSourceAdvisor.GetTopContainer());
 			_offsetPoint = e.GetPosition(_draggedElt);
 			_isMouseDown = true;
 		}
 
 		private static void DragSource_PreviewMouseMove(object sender, MouseEventArgs e)
 		{
-			if (_isMouseDown && CurrentDragSourceAdvisor != null &&
-			    IsDragGesture(e.GetPosition(CurrentDragSourceAdvisor.GetTopContainer())))
+			if (e.LeftButton != MouseButtonState.Pressed)
+			{
+				ResetDragSourceState();
+				return;
+			}
+
+			if (!_isMouseDown) return;
+			if (CurrentDragSourceAdvisor == null)
+			{
+				ResetDragSourceState();
+				return;
+			}
+
+			var isDragGesture = IsDragGesture(e.GetPosition(CurrentDragSourceAdvisor.GetTopContainer()));
+			if (ShouldStartDrag(_isMouseDown, e.LeftButton, isDragGesture))
 			{
 				DragStarted(sender as UIElement);
 			}
-			//else
-			//{
-			//	//Mouse.Capture(null);
-			//}
 		}
 
 		private static void DragSource_PreviewMouseUp(object sender, MouseButtonEventArgs e)
 		{
-			_isMouseDown = false;
-			_draggedElt = null;
-			if (CurrentDragSourceAdvisor != null)
-			{
-				CurrentDragSourceAdvisor.SourceUI = null;
-				CurrentDragSourceAdvisor = null;
-			}
-			//Mouse.Capture(null);
+			ResetDragSourceState();
 			e.Handled = false;
 		}
 
 		private static void DragStarted(UIElement uiElt)
 		{
 			_isMouseDown = false;
-			if (uiElt == null || _draggedElt == null) return;
-			//Mouse.Capture(uiElt);
+			if (uiElt == null || _draggedElt == null || CurrentDragSourceAdvisor == null)
+			{
+				ResetDragSourceState();
+				return;
+			}
 
-			DataObject data = CurrentDragSourceAdvisor.GetDataObject(_draggedElt);
+			var draggedElement = _draggedElt;
+			var dragSourceAdvisor = CurrentDragSourceAdvisor;
 
-			data.SetData(DragOffsetFormat, _offsetPoint);
-			DragDropEffects supportedEffects = CurrentDragSourceAdvisor.SupportedEffects;
+			try
+			{
+				var data = dragSourceAdvisor.GetDataObject(draggedElement);
 
-			// Perform DragDrop
+				data.SetData(DragOffsetFormat, _offsetPoint);
+				var supportedEffects = dragSourceAdvisor.SupportedEffects;
 
-			DragDropEffects effects = DragDrop.DoDragDrop(_draggedElt, data, supportedEffects);
-			CurrentDragSourceAdvisor.FinishDrag(_draggedElt, effects);
-
-			// Clean up
-			RemovePreviewAdorner();
-			//Mouse.Capture(null);
-			_draggedElt = null;
+				// Perform DragDrop
+				var effects = DragDrop.DoDragDrop(draggedElement, data, supportedEffects);
+				dragSourceAdvisor.FinishDrag(draggedElement, effects);
+			}
+			finally
+			{
+				try
+				{
+					RemovePreviewAdorner();
+				}
+				finally
+				{
+					ResetDragSourceState();
+				}
+			}
 		}
+
+		internal static bool ShouldStartDrag(bool isMouseDown, MouseButtonState leftButtonState, bool isDragGesture) =>
+			isMouseDown && leftButtonState == MouseButtonState.Pressed && isDragGesture;
 
 		private static bool IsDragGesture(Point point)
 		{
@@ -277,6 +302,18 @@ namespace Common.WPFCommon.Input
 			                SystemParameters.MinimumVerticalDragDistance;
 
 			return (hGesture | vGesture);
+		}
+
+		private static void ResetDragSourceState()
+		{
+			_isMouseDown = false;
+			_draggedElt = null;
+
+			if (CurrentDragSourceAdvisor != null)
+			{
+				CurrentDragSourceAdvisor.SourceUI = null;
+				CurrentDragSourceAdvisor = null;
+			}
 		}
 
 		/* ____________________________________________________________________

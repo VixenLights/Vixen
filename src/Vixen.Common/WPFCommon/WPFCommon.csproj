@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <InternalsVisibleTo Include="Vixen.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Catel.Core" />
     <PackageReference Include="Catel.MVVM" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
