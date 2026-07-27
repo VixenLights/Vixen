@@ -504,6 +504,7 @@ namespace VixenModules.Effect.State
 					PlaybackMode,
 					Iterations,
 					_data.CycleIndividually,
+					CycleOffset,
 					TimeSpan);
 			}
 
@@ -521,6 +522,7 @@ namespace VixenModules.Effect.State
 					marks,
 					PlaybackMode,
 					Iterations,
+					CycleOffset,
 					StartTime,
 					TimeSpan);
 			}
@@ -530,6 +532,7 @@ namespace VixenModules.Effect.State
 				_data.SelectedStateItemId,
 				PlaybackMode,
 				Iterations,
+				CycleOffset,
 				TimeSpan);
 		}
 
