@@ -1545,4 +1545,7 @@
   <data name="StateIterations" xml:space="preserve">
     <value>Controls the number of times the pattern repeats over the timespan.</value>
   </data>
+  <data name="StateCycleOffset" xml:space="preserve">
+    <value>Sets the number of Cycle timing slots to skip before the sequence begins.</value>
+  </data>
 </root>

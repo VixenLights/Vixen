@@ -15,7 +15,7 @@ This is a phase shift, not a different order algorithm. It does not change slot 
 - [x] (2026-07-27 00:00Z) Created the approved technical specification at `docs/effects/VIX-3951-state-offset-spec.md`.
 - [x] (2026-07-27 00:00Z) Created this implementation ExecPlan from that specification and read `.agents/PLANS.md`.
 - [x] (2026-07-27) Read the project implementation skills and inspect the current State effect, resources, and focused tests before editing source.
-- [ ] Add the persisted raw `CycleOffset` data contract and editor property, including localized metadata and Iterate-only visibility.
+- [x] (2026-07-27) Add the persisted raw `CycleOffset` data contract and editor property, including localized metadata and Iterate-only visibility.
 - [ ] Add allocation-free indexed offset selection to State Item, Mark Collection, and Custom Iterate planning paths.
 - [ ] Add focused data/editor/planner regression tests for zero-offset compatibility, wrapping, blank slots, grouping, iterations, and remainder ticks.
 - [ ] Run focused automated validation, State project build, and the broadest practical regression test suite; record actual output below.
@@ -320,13 +320,13 @@ Record actual validation output here as the work proceeds.
 
 Focused State test evidence:
 
-    Command: pending
-    Result: pending
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
+    Result: Passed — Failed: 0, Passed: 79, Skipped: 0, Total: 79. Existing NU1904 LiteDB vulnerability advisories were emitted.
 
 State module build evidence:
 
-    Command: pending
-    Result: pending
+    Command: dotnet build src\Vixen.Modules\Effect\State\State.csproj -p:Configuration=Debug -p:Platform=x64 --no-restore
+    Result: Build succeeded — 0 errors. Existing nullable, obsolete-event, unused-event, and FixtureGraphics equality warnings were emitted.
 
 Broad regression evidence:
 
@@ -375,3 +375,4 @@ No NuGet packages, new projects, changes to `StateRenderSource`, changes to `Pla
 - 2026-07-27 / Codex: Created the initial ExecPlan from `docs/effects/VIX-3951-state-offset-spec.md`. The plan records the approved raw-persistence rule, Iterate-only visibility, completed-slot offset ordering, all three source-specific scheduling rules, and the required automated/manual validation so implementation can proceed without external context.
 - 2026-07-27 / Codex: Revised the plan to make updating Jira issue VIX-3951's description the final execution step. The update must contain the final refined requirements, acceptance criteria, and test plan, with recorded evidence and no issue transition unless separately authorized.
 - 2026-07-27 / Codex: Completed Milestone 1. Inspected the required State documentation, project C# and XML documentation skills, State data/editor/planner code, Effect Editor resources, and focused State tests. Confirmed the existing completed-slot collections and modulo sites without modifying production behavior.
+- 2026-07-27 / Codex: Completed Milestone 2. Added raw persisted `CycleOffset`, editor range/metadata, Iterate-only visibility, clone support, and focused contract tests without changing planner scheduling.

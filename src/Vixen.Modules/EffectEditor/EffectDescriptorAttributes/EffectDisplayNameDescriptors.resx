@@ -1416,4 +1416,7 @@
   <data name="StateIterations" xml:space="preserve">
     <value>Cycles</value>
   </data>
+  <data name="StateCycleOffset" xml:space="preserve">
+    <value>Cycle Offset</value>
+  </data>
 </root>
