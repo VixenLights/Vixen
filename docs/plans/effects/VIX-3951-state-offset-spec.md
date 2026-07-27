@@ -17,7 +17,7 @@ This is a phase shift, not a different order algorithm. It does not change slot 
 - [x] (2026-07-27) Read the project implementation skills and inspect the current State effect, resources, and focused tests before editing source.
 - [x] (2026-07-27) Add the persisted raw `CycleOffset` data contract and editor property, including localized metadata and Iterate-only visibility.
 - [x] (2026-07-27) Add allocation-free indexed offset selection to State Item, Mark Collection, and Custom Iterate planning paths.
-- [ ] Add focused data/editor/planner regression tests for zero-offset compatibility, wrapping, blank slots, grouping, iterations, and remainder ticks.
+- [x] (2026-07-27) Add focused data/editor/planner regression tests for zero-offset compatibility, wrapping, blank slots, grouping, iterations, and remainder ticks.
 - [ ] Run focused automated validation, State project build, and the broadest practical regression test suite; record actual output below.
 - [ ] Perform manual State Effect Editor/playback verification and update this plan with observed results.
 - [ ] Update Jira issue VIX-3951's description with the refined requirements, acceptance criteria, and test plan, then close out this plan with outcomes, residual risk, and a revision note.
@@ -321,7 +321,7 @@ Record actual validation output here as the work proceeds.
 Focused State test evidence:
 
     Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --filter "FullyQualifiedName~Effect.State" --no-restore
-    Result: Passed — Failed: 0, Passed: 79, Skipped: 0, Total: 79. Existing NU1904 LiteDB vulnerability advisories were emitted.
+    Result: Passed — Failed: 0, Passed: 89, Skipped: 0, Total: 89. Existing NU1904 LiteDB vulnerability advisories were emitted.
 
 State module build evidence:
 
@@ -377,3 +377,4 @@ No NuGet packages, new projects, changes to `StateRenderSource`, changes to `Pla
 - 2026-07-27 / Codex: Completed Milestone 1. Inspected the required State documentation, project C# and XML documentation skills, State data/editor/planner code, Effect Editor resources, and focused State tests. Confirmed the existing completed-slot collections and modulo sites without modifying production behavior.
 - 2026-07-27 / Codex: Completed Milestone 2. Added raw persisted `CycleOffset`, editor range/metadata, Iterate-only visibility, clone support, and focused contract tests without changing planner scheduling.
 - 2026-07-27 / Codex: Completed Milestone 3. Threaded Cycle Offset from the State effect into allocation-free indexed planner selection after existing State Item grouping, Mark Collection parsing, Custom row collection, and Custom grouping. Default paths remain unchanged.
+- 2026-07-27 / Codex: Completed Milestone 4. Added focused State planner regression coverage for zero-offset parity, modulo wrapping, empty and singleton slot lists, completed State Item groups before iteration repetition, Mark Collection blank slots, Custom individual rows, atomic Custom groups, row colors, and final remainder ticks.

@@ -94,6 +94,151 @@ public class StateRenderPlannerTests
 	}
 
 	[Fact]
+	public void CreateStateItemIntervals_CycleOffsetZeroPreservesIntervals()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var pending = CreateItem(Guid.NewGuid(), "Pending");
+		var definition = CreateDefinition(open, closed, pending);
+
+		// Act
+		var existingIntervals = StateRenderPlanner.CreateStateItemIntervals(
+			definition,
+			Guid.Empty,
+			PlaybackMode.Iterate,
+			2,
+			TimeSpan.FromTicks(10));
+		var offsetIntervals = StateRenderPlanner.CreateStateItemIntervals(
+			definition,
+			Guid.Empty,
+			PlaybackMode.Iterate,
+			2,
+			cycleOffset: 0,
+			effectDuration: TimeSpan.FromTicks(10));
+
+		// Assert
+		Assert.Equal(
+			existingIntervals.Select(interval => (interval.Item.Id, interval.Start, interval.Duration, interval.ColorOverride)),
+			offsetIntervals.Select(interval => (interval.Item.Id, interval.Start, interval.Duration, interval.ColorOverride)));
+	}
+
+	[Fact]
+	public void CreateStateItemIntervals_CycleOffsetRotatesCompletedNameGroupsBeforeIterations()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var openDuplicate = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var pending = CreateItem(Guid.NewGuid(), "Pending");
+		var definition = CreateDefinition(open, openDuplicate, closed, pending);
+
+		// Act
+		var intervals = StateRenderPlanner.CreateStateItemIntervals(
+			definition,
+			Guid.Empty,
+			PlaybackMode.Iterate,
+			2,
+			cycleOffset: 1,
+			effectDuration: TimeSpan.FromSeconds(6));
+
+		// Assert
+		Assert.Equal(
+			[closed.Id, pending.Id, open.Id, openDuplicate.Id, closed.Id, pending.Id, open.Id, openDuplicate.Id],
+			intervals.Select(interval => interval.Item.Id));
+		Assert.Equal(
+			[
+				TimeSpan.Zero,
+				TimeSpan.FromSeconds(1),
+				TimeSpan.FromSeconds(2),
+				TimeSpan.FromSeconds(2),
+				TimeSpan.FromSeconds(3),
+				TimeSpan.FromSeconds(4),
+				TimeSpan.FromSeconds(5),
+				TimeSpan.FromSeconds(5)
+			],
+			intervals.Select(interval => interval.Start));
+	}
+
+	[Theory]
+	[InlineData(3, "Open")]
+	[InlineData(4, "Closed")]
+	[InlineData(100, "Closed")]
+	public void CreateStateItemIntervals_CycleOffsetWrapsByCompletedSlotCount(int cycleOffset, string expectedFirstName)
+	{
+		// Arrange
+		var definition = CreateDefinition(
+			CreateItem(Guid.NewGuid(), "Open"),
+			CreateItem(Guid.NewGuid(), "Closed"),
+			CreateItem(Guid.NewGuid(), "Pending"));
+
+		// Act
+		var intervals = StateRenderPlanner.CreateStateItemIntervals(
+			definition,
+			Guid.Empty,
+			PlaybackMode.Iterate,
+			1,
+			cycleOffset,
+			TimeSpan.FromSeconds(3));
+
+		// Assert
+		Assert.Equal(expectedFirstName, intervals[0].Item.Name);
+	}
+
+	[Fact]
+	public void CreateStateItemIntervals_CycleOffsetPreservesFinalRemainderOnChronologicalLastSlot()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var pending = CreateItem(Guid.NewGuid(), "Pending");
+		var definition = CreateDefinition(open, closed, pending);
+
+		// Act
+		var intervals = StateRenderPlanner.CreateStateItemIntervals(
+			definition,
+			Guid.Empty,
+			PlaybackMode.Iterate,
+			1,
+			cycleOffset: 1,
+			effectDuration: TimeSpan.FromTicks(10));
+
+		// Assert
+		Assert.Equal([closed.Id, pending.Id, open.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal([TimeSpan.FromTicks(3), TimeSpan.FromTicks(3), TimeSpan.FromTicks(4)], intervals.Select(interval => interval.Duration));
+	}
+
+	[Fact]
+	public void CreateStateItemIntervals_CycleOffsetEmptyAndSingletonSlotsAreNoOps()
+	{
+		// Arrange
+		var item = CreateItem(Guid.NewGuid(), "Open");
+		var emptyDefinition = CreateDefinition();
+		var singletonDefinition = CreateDefinition(item);
+
+		// Act
+		var emptyIntervals = StateRenderPlanner.CreateStateItemIntervals(
+			emptyDefinition,
+			Guid.Empty,
+			PlaybackMode.Iterate,
+			1,
+			cycleOffset: 100,
+			effectDuration: TimeSpan.FromSeconds(1));
+		var singletonIntervals = StateRenderPlanner.CreateStateItemIntervals(
+			singletonDefinition,
+			Guid.Empty,
+			PlaybackMode.Iterate,
+			2,
+			cycleOffset: 100,
+			effectDuration: TimeSpan.FromSeconds(2));
+
+		// Assert
+		Assert.Empty(emptyIntervals);
+		Assert.Equal([item.Id, item.Id], singletonIntervals.Select(interval => interval.Item.Id));
+		Assert.Equal([TimeSpan.Zero, TimeSpan.FromSeconds(1)], singletonIntervals.Select(interval => interval.Start));
+	}
+
+	[Fact]
 	public void CreateMarkCollectionIntervals_DefaultClipsAndDeduplicatesRecognizedNames()
 	{
 		// Arrange
@@ -204,6 +349,31 @@ public class StateRenderPlannerTests
 		// Assert
 		Assert.Equal([open.Id, open.Id], intervals.Select(interval => interval.Item.Id));
 		Assert.Equal([TimeSpan.Zero, TimeSpan.FromSeconds(3)], intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(1), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateMarkCollectionIntervals_CycleOffsetRotatesUnknownAndEmptyTimingSlots()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+		var marks = new[] { CreateMark(TimeSpan.Zero, TimeSpan.FromSeconds(4), "Open,Unknown,,Closed") };
+
+		// Act
+		var intervals = StateRenderPlanner.CreateMarkCollectionIntervals(
+			definition,
+			marks,
+			PlaybackMode.Iterate,
+			1,
+			cycleOffset: 1,
+			effectStart: TimeSpan.Zero,
+			effectDuration: TimeSpan.FromSeconds(4));
+
+		// Assert
+		Assert.Equal([closed.Id, open.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal([TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3)], intervals.Select(interval => interval.Start));
 		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(1), interval.Duration));
 	}
 
@@ -441,6 +611,36 @@ public class StateRenderPlannerTests
 	}
 
 	[Fact]
+	public void CreateCustomIntervals_CycleOffsetRotatesIndividualRowsIncludingBlankSlots()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+		var customRows = new[]
+		{
+			CreateCustomRow(open.Id, Color.Blue),
+			CreateCustomRow(Guid.Empty, Color.White),
+			CreateCustomRow(Guid.NewGuid(), Color.Red),
+			CreateCustomRow(closed.Id, Color.Yellow)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			1,
+			cycleOffset: 1,
+			effectDuration: TimeSpan.FromSeconds(4));
+
+		// Assert
+		Assert.Equal([closed.Id, open.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal([TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3)], intervals.Select(interval => interval.Start));
+		Assert.Equal([Color.Yellow, Color.Blue], intervals.Select(interval => interval.ColorOverride));
+	}
+
+	[Fact]
 	public void CreateCustomIntervals_GroupedIterateCollapsesConsecutiveNamesAndNone()
 	{
 		// Arrange
@@ -621,6 +821,41 @@ public class StateRenderPlannerTests
 			[TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(5)],
 			intervals.Select(interval => interval.Start));
 		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(1), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateCustomIntervals_CycleOffsetRotatesCompletedGroupsAtomically()
+	{
+		// Arrange
+		var openFirst = CreateItem(Guid.NewGuid(), "Open");
+		var openSecond = CreateItem(Guid.NewGuid(), "Open");
+		var closedFirst = CreateItem(Guid.NewGuid(), "Closed");
+		var closedSecond = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(openFirst, openSecond, closedFirst, closedSecond);
+		var customRows = new[]
+		{
+			CreateCustomRow(openFirst.Id, Color.Blue),
+			CreateCustomRow(openSecond.Id, Color.Green),
+			CreateCustomRow(Guid.Empty, Color.White),
+			CreateCustomRow(closedFirst.Id, Color.Yellow),
+			CreateCustomRow(closedSecond.Id, Color.Purple)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			1,
+			cycleIndividually: false,
+			cycleOffset: 2,
+			effectDuration: TimeSpan.FromSeconds(6));
+
+		// Assert
+		Assert.Equal([closedFirst.Id, closedSecond.Id, openFirst.Id, openSecond.Id], intervals.Select(interval => interval.Item.Id));
+		Assert.Equal([Color.Yellow, Color.Purple, Color.Blue, Color.Green], intervals.Select(interval => interval.ColorOverride));
+		Assert.Equal([TimeSpan.Zero, TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2)], intervals.Select(interval => interval.Start));
+		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(2), interval.Duration));
 	}
 
 	private static StateDefinitionData CreateDefinition(params StateItemData[] items)
