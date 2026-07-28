@@ -55,8 +55,9 @@ Capture evidence. When your steps produce terminal output, short diffs, or logs,
 
 Milestones are narrative, not bureaucracy. If you break the work into milestones, introduce each with a brief paragraph that describes the scope, what will exist at the end of the milestone that did not exist before, the commands to run, and the acceptance you expect to observe. Keep it readable as a story: goal, work, result, proof. Progress and milestones are distinct: milestones tell the story, progress tracks granular work. Both must exist. Never abbreviate a milestone merely for the sake of brevity, do not leave out details that could be crucial to a future implementation.
 
-Each milestone must be independently verifiable and incrementally implement the overall goal of the execution plan. 
-Milestones must be able to have a JIRA issue created from them with full requirements including testing, design notes and acceptance criteria.
+- Each milestone must be independently verifiable and incrementally implement the overall goal of the execution plan. 
+- Milestones must be able to have a JIRA issue created from them with full requirements including testing, design notes and acceptance criteria.
+- When completing a milestone that changes repository files, output the formatted commit message in the completion response, following the commit-msg skill. Do not create the commit unless the user explicitly requests it.
 
 ## Living plans and design decisions
 
@@ -65,6 +66,8 @@ Milestones must be able to have a JIRA issue created from them with full require
 * When you discover optimizer behavior, performance tradeoffs, unexpected bugs, or inverse/unapply semantics that shaped your approach, capture those observations in the `Surprises & Discoveries` section with short evidence snippets (test output is ideal).
 * If you change course mid-implementation, document why in the `Decision Log` and reflect the implications in `Progress`. Plans are guides for the next contributor as much as checklists for you.
 * At completion of a major task or the full plan, write an `Outcomes & Retrospective` entry summarizing what was achieved, what remains, and lessons learned.
+* Any plan for work associated to a JIRA issue should have an initial milestone to update the JIRA issue description to include the final requirements, acceptance criteria, and test plans.
+* Any plan for work associated to a JIRA issue should have a final milestone to make any final adjustments to the description to align with requirements, acceptance criteria, or test plan changes and then add a comment with the test and validation results.
 
 # Prototyping milestones and parallel implementations
 
