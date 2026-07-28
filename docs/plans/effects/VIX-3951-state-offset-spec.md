@@ -18,9 +18,9 @@ This is a phase shift, not a different order algorithm. It does not change slot 
 - [x] (2026-07-27) Add the persisted raw `CycleOffset` data contract and editor property, including localized metadata and Iterate-only visibility.
 - [x] (2026-07-27) Add allocation-free indexed offset selection to State Item, Mark Collection, and Custom Iterate planning paths.
 - [x] (2026-07-27) Add focused data/editor/planner regression tests for zero-offset compatibility, wrapping, blank slots, grouping, iterations, and remainder ticks.
-- [ ] Run focused automated validation, State project build, and the broadest practical regression test suite; record actual output below.
-- [ ] Perform manual State Effect Editor/playback verification and update this plan with observed results.
-- [ ] Update Jira issue VIX-3951's description with the refined requirements, acceptance criteria, and test plan, then close out this plan with outcomes, residual risk, and a revision note.
+- [x] (2026-07-27) Run focused automated validation, State project build, and the broadest practical regression test suite; record actual output below.
+- [x] (2026-07-27) Perform manual State Effect Editor/playback verification and update this plan with observed results.
+- [x] (2026-07-27) Update Jira issue VIX-3951's description with the refined requirements, acceptance criteria, and test plan, then close out this plan with outcomes, residual risk, and a revision note.
 
 ## Surprises & Discoveries
 
@@ -63,9 +63,9 @@ This is a phase shift, not a different order algorithm. It does not change slot 
 
 ## Outcomes & Retrospective
 
-Implementation has not started. The expected completed outcome is a State Effect Editor Cycle Offset property that changes Iterate scheduling only, preserves zero-offset output exactly, and is proven by focused automated tests plus manual playback across all three supported render sources.
+VIX-3951 is implemented. `StateData` persists and clones the raw `CycleOffset`; `State` exposes the localized, Iterate-only SliderEditor property; and `StateRenderPlanner` applies normalized indexed selection after existing slot calculation for State Item, Mark Collection, Custom individual, and Custom grouped Iterate paths. Default behavior and State visual-representation text remain unchanged.
 
-At completion, replace this paragraph with the implemented files, actual test summaries, manual verification observations, any deviations from this plan, and remaining risks.
+Automated validation passed: focused State tests 89/89, the State effect Debug/x64 build with zero errors, and the broad Vixen test project 540/540. The user manually verified the State Effect Editor and playback scenarios. Jira VIX-3951's description now records the final refined requirements, acceptance criteria, and test plan; its status remains In Progress. Residual risk is limited to the repository's pre-existing dependency and compiler warnings recorded in the validation evidence.
 
 ## Milestones
 
@@ -330,20 +330,21 @@ State module build evidence:
 
 Broad regression evidence:
 
-    Command: pending
-    Result: pending
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj --no-restore
+    Result: Passed — Failed: 0, Passed: 540, Skipped: 0, Total: 540. Existing NU1904 LiteDB vulnerability advisories and unrelated compiler warnings were emitted.
 
 Manual validation evidence:
 
-    Result: pending
+    Result: Passed — manually verified by the user.
     Scenarios: State Item `<All>`, Mark Collection recognized/unknown/empty segments, Custom individual, Custom grouped, wrap-around, Default-mode visibility, and visual text unchanged.
 
 Jira description-update evidence:
 
     Issue: VIX-3951
-    Command/action: pending final Jira description update through the project Jira skill.
-    Result: pending
-    Required record: update time, description field changed, Refined Requirements/Acceptance Criteria/Test Plan sections present, and issue status unchanged.
+    Command/action: Updated the description through the project Jira skill, then re-read the issue.
+    Update time: 2026-07-27T16:23:27.641-05:00
+    Field changed: description only.
+    Result: Verified Refined Requirements, Acceptance Criteria, and Test Plan sections are present. Issue status remains In Progress; no transition was performed.
 
 ## Interfaces and Dependencies
 
@@ -378,3 +379,6 @@ No NuGet packages, new projects, changes to `StateRenderSource`, changes to `Pla
 - 2026-07-27 / Codex: Completed Milestone 2. Added raw persisted `CycleOffset`, editor range/metadata, Iterate-only visibility, clone support, and focused contract tests without changing planner scheduling.
 - 2026-07-27 / Codex: Completed Milestone 3. Threaded Cycle Offset from the State effect into allocation-free indexed planner selection after existing State Item grouping, Mark Collection parsing, Custom row collection, and Custom grouping. Default paths remain unchanged.
 - 2026-07-27 / Codex: Completed Milestone 4. Added focused State planner regression coverage for zero-offset parity, modulo wrapping, empty and singleton slot lists, completed State Item groups before iteration repetition, Mark Collection blank slots, Custom individual rows, atomic Custom groups, row colors, and final remainder ticks.
+- 2026-07-27 / Codex: Completed the automated-validation portion of Milestone 5. Focused State tests passed 89/89, the State effect Debug/x64 build succeeded with zero errors, and the broad Vixen test project passed 540/540. Existing dependency and compiler warnings were recorded without unrelated code changes.
+- 2026-07-27 / Codex: Completed Milestone 5. The user confirmed State Effect Editor and playback behavior for all required Cycle Offset scenarios.
+- 2026-07-27 / Codex: Completed Milestone 6. Updated and re-read Jira VIX-3951's description with Refined Requirements, Acceptance Criteria, and Test Plan sections; the description update timestamp was 2026-07-27T16:23:27.641-05:00 and the issue status remained In Progress.
