@@ -1,20 +1,45 @@
-using System.Windows.Forms.Integration;
-using System.Windows.Interop;
 using Common.Controls;
+using Vixen.Module.Property;
 using Vixen.Rule;
+using Vixen.Services;
 using Vixen.Sys;
 using VixenModules.Property.State.Setup.Services;
-using VixenModules.Property.State.Setup.ViewModels;
-using VixenModules.Property.State.Setup.Views;
 
 namespace VixenModules.Property.State
 {
+	/// <summary>
+	/// Configures State properties for a selected element node.
+	/// </summary>
 	public class StateSetupHelper: IElementSetupHelper
 	{
+		private readonly Func<IPropertyModuleInstance?> _stateModuleFactory;
+		private readonly IStateMapperDialogService _dialogService;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="StateSetupHelper"/> class.
+		/// </summary>
+		public StateSetupHelper()
+			: this(CreateStateModule, new StateMapperDialogService())
+		{
+		}
+
+		internal StateSetupHelper(
+			Func<IPropertyModuleInstance?> stateModuleFactory,
+			IStateMapperDialogService dialogService)
+		{
+			ArgumentNullException.ThrowIfNull(stateModuleFactory);
+			ArgumentNullException.ThrowIfNull(dialogService);
+
+			_stateModuleFactory = stateModuleFactory;
+			_dialogService = dialogService;
+		}
+
 		#region Implementation of IElementSetupHelper
 
+		/// <inheritdoc />
 		public string HelperName { get { return "State Mapping"; } }
 		
+		/// <inheritdoc />
 		public bool Perform(IEnumerable<IElementNode> nodes)
 		{
 			var selectedNodes = nodes.Take(2).ToList();
@@ -26,31 +51,70 @@ namespace VixenModules.Property.State
 				return false;
 			}
 
-			var data = new StateData();
 			var node = selectedNodes[0];
 			if (node.Properties.Contains(StateDescriptor.ModuleId))
 			{
-				if (node.Properties.Get(StateDescriptor.ModuleId)?.ModuleData is StateData existingData)
-				{
-					data = existingData;
-				}
-			}
-			var vm = new StateMapperViewModel(node, data, new StateColorPickerService());
-			var mapper = new StateMapperView(vm);
-			if (Form.ActiveForm != null)
-			{
-				new WindowInteropHelper(mapper).Owner = Form.ActiveForm.Handle;
+				return node.Properties.Get(StateDescriptor.ModuleId)?.ModuleData is StateData existingData &&
+				       ShowMapper(node, existingData);
 			}
 
-			ElementHost.EnableModelessKeyboardInterop(mapper);
-			var response = mapper.ShowDialog();
-			if (response == true)
+			IPropertyModuleInstance? stateModule = null;
+			StateData? stateData = null;
+			try
 			{
-				var sm = node.Properties.Add(StateDescriptor.ModuleId) as StateModule;
-				sm?.ModuleData = data;
+				stateModule = _stateModuleFactory();
+				if (stateModule?.ModuleData is StateData data)
+				{
+					stateData = data;
+				}
 			}
-			
-			return response == true;
+			catch
+			{
+				stateModule?.Dispose();
+				return false;
+			}
+
+			if (stateModule is null || stateData is null)
+			{
+				stateModule?.Dispose();
+				return false;
+			}
+
+			bool accepted;
+			try
+			{
+				accepted = ShowMapper(node, stateData);
+			}
+			catch
+			{
+				stateModule.Dispose();
+				return false;
+			}
+
+			if (!accepted)
+			{
+				stateModule.Dispose();
+				return false;
+			}
+
+			node.Properties.AddWithoutDefaults(stateModule);
+			if (ReferenceEquals(node.Properties.Get(StateDescriptor.ModuleId), stateModule))
+			{
+				return true;
+			}
+
+			stateModule.Dispose();
+			return false;
+		}
+
+		private static IPropertyModuleInstance? CreateStateModule()
+		{
+			return ApplicationServices.Get<IPropertyModuleInstance>(StateDescriptor.ModuleId);
+		}
+
+		private bool ShowMapper(IElementNode node, StateData data)
+		{
+			return _dialogService.Show(node, data);
 		}
 
 		#endregion
