@@ -68,6 +68,32 @@ public class StateDataTests
 	}
 
 	[Fact]
+	public void CycleOffset_DefaultsToZero()
+	{
+		// Arrange / Act
+		var data = new StateEffectData();
+
+		// Assert
+		Assert.Equal(0, data.CycleOffset);
+	}
+
+	[Fact]
+	public void Clone_CopiesRawCycleOffset()
+	{
+		// Arrange
+		var data = new StateEffectData
+		{
+			CycleOffset = 101
+		};
+
+		// Act
+		var clone = (StateEffectData)data.Clone();
+
+		// Assert
+		Assert.Equal(101, clone.CycleOffset);
+	}
+
+	[Fact]
 	public void CycleIndividually_DefaultsToTrue()
 	{
 		// Arrange / Act
@@ -315,6 +341,26 @@ public class StateDataTests
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.MarkCollectionId)));
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.CustomStateItems)));
 		Assert.False(IsBrowsable(effect, nameof(StateEffect.CycleIndividually)));
+		Assert.False(IsBrowsable(effect, nameof(StateEffect.CycleOffset)));
+	}
+
+	[Fact]
+	public void CycleOffset_IterateBrowsability_ShowsForEveryRenderSource()
+	{
+		// Arrange
+		var effect = new StateEffect
+		{
+			PlaybackMode = PlaybackMode.Iterate
+		};
+
+		// Act / Assert
+		Assert.True(IsBrowsable(effect, nameof(StateEffect.CycleOffset)));
+
+		effect.RenderSource = StateRenderSource.MarkCollection;
+		Assert.True(IsBrowsable(effect, nameof(StateEffect.CycleOffset)));
+
+		effect.RenderSource = StateRenderSource.Custom;
+		Assert.True(IsBrowsable(effect, nameof(StateEffect.CycleOffset)));
 	}
 
 	[Fact]
@@ -450,6 +496,48 @@ public class StateDataTests
 		Assert.Equal(
 			"Cycles each custom State item row independently instead of grouping consecutive rows with the same State item name.",
 			property.Description);
+	}
+
+	[Fact]
+	public void CycleOffset_UsesResourceBackedDisplayMetadataAndEditorRange()
+	{
+		// Arrange
+		var effect = new StateEffect
+		{
+			PlaybackMode = PlaybackMode.Iterate
+		};
+
+		// Act
+		var property = TypeDescriptor.GetProperties(effect)[nameof(StateEffect.CycleOffset)];
+
+		// Assert
+		Assert.NotNull(property);
+		Assert.Equal("Cycle Offset", property.DisplayName);
+		Assert.Equal("Sets the number of Cycle timing slots to skip before the sequence begins.", property.Description);
+		var range = Assert.IsType<NumberRangeAttribute>(property.Attributes[typeof(NumberRangeAttribute)]);
+		Assert.Equal(0, range.Minimum);
+		Assert.Equal(100, range.Maximum);
+		Assert.Equal(1, range.Tick);
+	}
+
+	[Fact]
+	public void CycleOffset_ChangedValueMarksEffectDirtyAndRaisesPropertyChanged()
+	{
+		// Arrange
+		var effect = new StateEffect();
+		var changedProperties = new List<string?>();
+		Assert.True(effect.PreRender());
+		Assert.False(effect.IsDirty);
+		effect.PropertyChanged += (_, e) => changedProperties.Add(e.PropertyName);
+
+		// Act
+		effect.CycleOffset = 10;
+
+		// Assert
+		Assert.True(effect.IsDirty);
+		Assert.Contains(nameof(StateEffect.CycleOffset), changedProperties);
+		var data = Assert.IsType<StateEffectData>(effect.ModuleData);
+		Assert.Equal(10, data.CycleOffset);
 	}
 
 	[Fact]

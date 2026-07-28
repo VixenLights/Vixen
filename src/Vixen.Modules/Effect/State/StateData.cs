@@ -12,6 +12,8 @@ namespace VixenModules.Effect.State
 	{
 		internal const int MinIterations = 1;
 		internal const int MaxIterations = 20;
+		internal const int MinCycleOffset = 0;
+		internal const int MaxCycleOffset = 100;
 
 		private int _iterations = MinIterations;
 
@@ -76,6 +78,13 @@ namespace VixenModules.Effect.State
 		}
 
 		/// <summary>
+		/// Gets or sets the raw number of Iterate timing slots to skip before the sequence begins.
+		/// </summary>
+		/// <value>The raw Cycle Offset. The default is 0.</value>
+		[DataMember]
+		public int CycleOffset { get; set; }
+
+		/// <summary>
 		/// Gets or sets a value that indicates whether custom State item rows cycle in individual timing slots.
 		/// </summary>
 		/// <value><see langword="true" /> if each custom row cycles independently; otherwise, <see langword="false" /> to group consecutive custom rows with the same State item name. The default is <see langword="true" />.</value>
@@ -111,6 +120,7 @@ namespace VixenModules.Effect.State
 				MarkCollectionId = MarkCollectionId,
 				PlaybackMode = PlaybackMode,
 				Iterations = Iterations,
+				CycleOffset = CycleOffset,
 				CycleIndividually = CycleIndividually,
 				ShowEffectVisual = ShowEffectVisual,
 				CustomStateItems = CustomStateItems

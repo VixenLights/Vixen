@@ -378,6 +378,33 @@ namespace VixenModules.Effect.State
 		}
 
 		/// <summary>
+		/// Gets or sets the number of Iterate timing slots to skip before the sequence begins.
+		/// </summary>
+		/// <value>The raw Cycle Offset. The default is 0.</value>
+		[Value]
+		[ProviderCategory("Config", 2)]
+		[ProviderDisplayName(@"StateCycleOffset")]
+		[ProviderDescription(@"StateCycleOffset")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(StateData.MinCycleOffset, StateData.MaxCycleOffset, 1)]
+		[PropertyOrder(4)]
+		public int CycleOffset
+		{
+			get => _data.CycleOffset;
+			set
+			{
+				if (_data.CycleOffset == value)
+				{
+					return;
+				}
+
+				_data.CycleOffset = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets a value that indicates whether custom State item rows cycle in individual timing slots.
 		/// </summary>
 		/// <value><see langword="true" /> if each custom row cycles independently; otherwise, <see langword="false" /> to group consecutive custom rows with the same State item name. The default is <see langword="true" />.</value>
@@ -477,6 +504,7 @@ namespace VixenModules.Effect.State
 					PlaybackMode,
 					Iterations,
 					_data.CycleIndividually,
+					CycleOffset,
 					TimeSpan);
 			}
 
@@ -494,6 +522,7 @@ namespace VixenModules.Effect.State
 					marks,
 					PlaybackMode,
 					Iterations,
+					CycleOffset,
 					StartTime,
 					TimeSpan);
 			}
@@ -503,6 +532,7 @@ namespace VixenModules.Effect.State
 				_data.SelectedStateItemId,
 				PlaybackMode,
 				Iterations,
+				CycleOffset,
 				TimeSpan);
 		}
 
@@ -1263,12 +1293,13 @@ namespace VixenModules.Effect.State
 
 		private void SetRenderSourceBrowsables()
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(6)
 			{
 				{nameof(StateItem), RenderSource == StateRenderSource.StateItem},
 				{nameof(MarkCollectionId), RenderSource == StateRenderSource.MarkCollection},
 				{nameof(CustomStateItems), RenderSource == StateRenderSource.Custom},
 				{nameof(Iterations), PlaybackMode == PlaybackMode.Iterate},
+				{nameof(CycleOffset), PlaybackMode == PlaybackMode.Iterate},
 				{nameof(CycleIndividually), RenderSource == StateRenderSource.Custom && PlaybackMode == PlaybackMode.Iterate}
 			};
 
