@@ -88,7 +88,8 @@ namespace VixenApplication.Setup
 
 			buttonAddController.Enabled = comboBoxNewControllerType.SelectedIndex >= 0;
 
-			buttonSelectSourceElements.Enabled = controllerTree.SelectedTreeNodes.Count > 0;
+			buttonSelectSourceElements.Enabled = controllerTree.SelectedTreeNodes.Any(node =>
+				node.Tag is IControllerDevice || node.Tag is int);
 
 			if (selectedControllerCount <= 0)
 			{
@@ -126,7 +127,7 @@ namespace VixenApplication.Setup
 					if (node.Tag is int tag)
 					{
 						outputIndex = tag;
-						controller = node.Parent?.Tag as IControllerDevice;
+						controller = FindOwningController(node);
 						if (controller == null)
 						{
 							Logging.Error("node parent is not a controller: " + node.Name);
@@ -163,6 +164,17 @@ namespace VixenApplication.Setup
 			}
 
 			return result;
+		}
+
+		private static IControllerDevice? FindOwningController(TreeNode node)
+		{
+			for (TreeNode? current = node.Parent; current != null; current = current.Parent)
+			{
+				if (current.Tag is IControllerDevice controller)
+					return controller;
+			}
+
+			return null;
 		}
 
 		[Browsable(false)]

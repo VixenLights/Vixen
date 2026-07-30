@@ -15,7 +15,8 @@ public sealed class ControllerTreeVirtualizationTests
 	[Fact]
 	public void InitialPopulation_CreatesOnlyRootsAndVirtualChildren()
 	{
-		var populatedTree = PopulateTree(CreateController(1), CreateController(5), CreateController(0));
+		var controllerTree = PopulateTree(CreateController(1), CreateController(5), CreateController(0));
+		var populatedTree = controllerTree.TreeViewForTests;
 
 		Assert.Equal(3, populatedTree.Nodes.Count);
 		AssertVirtualChild(populatedTree.Nodes[0]);
@@ -30,10 +31,11 @@ public sealed class ControllerTreeVirtualizationTests
 	[InlineData(256)]
 	public void ExpandingSmallController_MaterializesDirectOutputLeaves(int outputCount)
 	{
-		var populatedTree = PopulateTree(CreateController(outputCount));
+		var controllerTree = PopulateTree(CreateController(outputCount));
+		var populatedTree = controllerTree.TreeViewForTests;
 		var controllerNode = Assert.Single(populatedTree.Nodes.Cast<TreeNode>());
 
-		controllerNode.Expand();
+		controllerTree.ExpandNodeForTests(controllerNode);
 
 		Assert.Equal(outputCount, controllerNode.Nodes.Count);
 		Assert.All(controllerNode.Nodes.Cast<TreeNode>(), node => Assert.IsType<int>(node.Tag));
@@ -46,10 +48,11 @@ public sealed class ControllerTreeVirtualizationTests
 	[InlineData(512, 2, "Outputs 257-512")]
 	public void ExpandingLargeController_CreatesBoundedOutputRanges(int outputCount, int expectedRangeCount, string expectedLastRangeLabel)
 	{
-		var populatedTree = PopulateTree(CreateController(outputCount));
+		var controllerTree = PopulateTree(CreateController(outputCount));
+		var populatedTree = controllerTree.TreeViewForTests;
 		var controllerNode = Assert.Single(populatedTree.Nodes.Cast<TreeNode>());
 
-		controllerNode.Expand();
+		controllerTree.ExpandNodeForTests(controllerNode);
 
 		Assert.Equal(expectedRangeCount, controllerNode.Nodes.Count);
 		Assert.Equal(expectedLastRangeLabel, controllerNode.LastNode!.Text);
@@ -61,12 +64,13 @@ public sealed class ControllerTreeVirtualizationTests
 	public void ExpandingOneRange_MaterializesOnlyThatPageWithOutputMetadata()
 	{
 		var controller = CreateController(5000, outputNames: index => $"Channel {index + 1}");
-		var populatedTree = PopulateTree(controller);
+		var controllerTree = PopulateTree(controller);
+		var populatedTree = controllerTree.TreeViewForTests;
 		var controllerNode = Assert.Single(populatedTree.Nodes.Cast<TreeNode>());
-		controllerNode.Expand();
+		controllerTree.ExpandNodeForTests(controllerNode);
 		var selectedRange = controllerNode.Nodes[1];
 
-		selectedRange.Expand();
+		controllerTree.ExpandNodeForTests(selectedRange);
 
 		Assert.InRange(selectedRange.Nodes.Count, 1, 256);
 		Assert.All(selectedRange.Nodes.Cast<TreeNode>(), node =>
@@ -81,18 +85,19 @@ public sealed class ControllerTreeVirtualizationTests
 	[Fact]
 	public void CollapseAndReexpand_DoesNotDuplicateRangesOrLeaves()
 	{
-		var populatedTree = PopulateTree(CreateController(5000));
+		var controllerTree = PopulateTree(CreateController(5000));
+		var populatedTree = controllerTree.TreeViewForTests;
 		var controllerNode = Assert.Single(populatedTree.Nodes.Cast<TreeNode>());
-		controllerNode.Expand();
+		controllerTree.ExpandNodeForTests(controllerNode);
 		var firstRange = controllerNode.FirstNode!;
-		firstRange.Expand();
+		controllerTree.ExpandNodeForTests(firstRange);
 		var initialRangeCount = controllerNode.Nodes.Count;
 		var initialLeafCount = firstRange.Nodes.Count;
 
 		firstRange.Collapse();
-		firstRange.Expand();
+		controllerTree.ExpandNodeForTests(firstRange);
 		controllerNode.Collapse();
-		controllerNode.Expand();
+		controllerTree.ExpandNodeForTests(controllerNode);
 
 		Assert.Equal(initialRangeCount, controllerNode.Nodes.Count);
 		Assert.Equal(initialLeafCount, firstRange.Nodes.Count);
@@ -101,11 +106,12 @@ public sealed class ControllerTreeVirtualizationTests
 	[Fact]
 	public void ExpandingAnotherController_DoesNotMaterializeOutputsForOtherControllers()
 	{
-		var populatedTree = PopulateTree(CreateController(5000), CreateController(5000));
+		var controllerTree = PopulateTree(CreateController(5000), CreateController(5000));
+		var populatedTree = controllerTree.TreeViewForTests;
 		var firstController = populatedTree.Nodes[0];
 		var secondController = populatedTree.Nodes[1];
 
-		secondController.Expand();
+		controllerTree.ExpandNodeForTests(secondController);
 
 		AssertVirtualChild(firstController);
 		Assert.DoesNotContain(AllNodes(firstController.Nodes), node => node.Tag is int);
@@ -147,15 +153,11 @@ public sealed class ControllerTreeVirtualizationTests
 		Assert.DoesNotContain(AllNodes(controllerNode.Nodes), node => node.Tag is int);
 	}
 
-	private static TreeView PopulateTree(params IControllerDevice[] controllers)
+	private static ControllerTree PopulateTree(params IControllerDevice[] controllers)
 	{
-		using var controllerTree = new ControllerTree();
+		var controllerTree = new ControllerTree();
 		controllerTree.PopulateControllerTreeForTests(controllers);
-
-		// The test returns a detached TreeView so the control can be disposed without disposing its nodes.
-		var treeView = controllerTree.TreeViewForTests;
-		controllerTree.Controls.Remove(treeView);
-		return treeView;
+		return controllerTree;
 	}
 
 	private static IControllerDevice CreateController(int outputCount, Guid? id = null, Func<int, string>? outputNames = null)

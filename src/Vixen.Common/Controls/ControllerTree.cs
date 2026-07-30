@@ -11,6 +11,13 @@ namespace Common.Controls
 {
 	public partial class ControllerTree : UserControl
 	{
+		private const string VirtualNodeName = @"VIRT";
+		private const int OutputPageSize = 256;
+
+		private sealed record OutputRange(IControllerDevice Controller, int StartIndex, int Count);
+		private sealed record OutputIdentity(Guid ControllerId, int OutputIndex);
+		private sealed record RangeIdentity(Guid ControllerId, int StartIndex);
+		private sealed record NodeIdentity(Guid ControllerId, int? OutputIndex, int? RangeStart);
 		public enum Direction
 		{
 			BACKWARD = -1,
@@ -20,10 +27,11 @@ namespace Common.Controls
 
 		// sets of data to keep track of which items in the treeview are open, selected, visible etc., so that
 		// when we reload the tree, we can keep it looking relatively consistent with what the user had before.
-		private HashSet<string> _expandedNodes; // TreeNode paths that are expanded
-		private HashSet<string> _selectedNodes; // TreeNode paths that are selected
-		private List<string> _topDisplayedNodes; // TreeNode paths that are at the top of the view. Should only
-												 // need one, but will have multiple in case the top node is deleted.
+		private HashSet<Guid> _expandedControllerIds = [];
+		private HashSet<RangeIdentity> _expandedRanges = [];
+		private HashSet<Guid> _selectedControllerIds = [];
+		private HashSet<OutputIdentity> _selectedOutputs = [];
+		private List<NodeIdentity> _topDisplayedNodes = [];
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool _someSelectedControllersRunning;
 		private bool _someSelectedControllersNotRunning;
@@ -57,21 +65,28 @@ namespace Common.Controls
 
 		#region Tree view population
 
+		/// <summary>
+		/// Populates the tree and selects the specified controller output indexes.
+		/// </summary>
+		/// <param name="controllersAndOutputs">The controllers and zero-based output indexes to select.</param>
 		public void PopulateControllerTree(Dictionary<IControllerDevice, HashSet<int>> controllersAndOutputs)
 		{
-			List<string> selectedNodes = new List<string>();
-
-			foreach (KeyValuePair<IControllerDevice, HashSet<int>> controllerAndOutput in controllersAndOutputs) {
-				IControllerDevice controller = controllerAndOutput.Key;
-				foreach (int i in controllerAndOutput.Value) {
-					selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromControllerAndOutput(controller, i));
+			_PopulateControllerTree();
+			foreach (var (controller, outputIndexes) in controllersAndOutputs)
+			{
+				foreach (int outputIndex in outputIndexes)
+				{
+					SelectOutput(controller, outputIndex);
 				}
 			}
-
-			_PopulateControllerTree(selectedNodes);
+			OnControllerSelectionChanged();
 		}
 
 
+		/// <summary>
+		/// Populates the tree and optionally selects a controller root without materializing its outputs.
+		/// </summary>
+		/// <param name="controllerToSelect">The controller root to select, or <see langword="null" /> to preserve tree state.</param>
 		public void PopulateControllerTree(IControllerDevice controllerToSelect = null)
 		{
 			if (controllerToSelect == null) {
@@ -79,9 +94,9 @@ namespace Common.Controls
 				return;
 			}
 
-			List<string> treeNodes = new List<string>();
-			treeNodes.Add(GenerateEquivalentTreeNodeFullPathFromController(controllerToSelect));
-			_PopulateControllerTree(treeNodes);
+			_PopulateControllerTree();
+			SelectController(controllerToSelect);
+			OnControllerSelectionChanged();
 		}
 
 		internal TreeView TreeViewForTests => treeview;
@@ -107,12 +122,12 @@ namespace Common.Controls
 
 		internal void SelectOutputForTests(IControllerDevice controller, int outputIndex)
 		{
-			var controllerNode = treeview.Nodes.Cast<TreeNode>()
-				.Single(node => ReferenceEquals(node.Tag, controller));
-			controllerNode.Expand();
-			var outputNode = controllerNode.Nodes.Cast<TreeNode>()
-				.Single(node => node.Tag is int index && index == outputIndex);
-			treeview.AddSelectedNode(outputNode);
+			SelectOutput(controller, outputIndex);
+		}
+
+		internal void ExpandNodeForTests(TreeNode node)
+		{
+			MaterializeNode(node);
 		}
 
 		public void UpdateScrollPosition()
@@ -131,8 +146,8 @@ namespace Common.Controls
 			treeview.SelectedNodes.Clear();
 			_topDisplayedNodes.Clear();
 			AddControllerToTree(treeview.Nodes, controller);
-			_selectedNodes.Clear();
-			_selectedNodes.Add(GenerateEquivalentTreeNodeFullPathFromController(controller));
+			_selectedControllerIds.Clear();
+			_selectedControllerIds.Add(controller.Id);
 
 			var treeNode = treeview.Nodes[treeview.Nodes.Count - 1];
 			//Select the new controller
@@ -146,12 +161,13 @@ namespace Common.Controls
 		}
 
 
-		private void _PopulateControllerTree(IEnumerable<string> treeNodesToSelect = null)
+		private void _PopulateControllerTree()
 		{
-			// save metadata that is currently in the treeview
-			_expandedNodes = new HashSet<string>();
-			_selectedNodes = new HashSet<string>();
-			_topDisplayedNodes = new List<string>();
+			_expandedControllerIds = [];
+			_expandedRanges = [];
+			_selectedControllerIds = [];
+			_selectedOutputs = [];
+			_topDisplayedNodes = [];
 
 			SaveTreeNodeState(treeview.Nodes);
 			SaveTreeNodeTopVisible();
@@ -166,45 +182,21 @@ namespace Common.Controls
 			}
 
 
-			// if a new controller has been passed in to select, select it instead.
-			if (treeNodesToSelect != null) {
-				_selectedNodes = new HashSet<string>(treeNodesToSelect);
-			}
-
-			foreach (string node in _selectedNodes) {
-				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);
-
-				if (resultNode != null) {
-					treeview.AddSelectedNode(resultNode);
-					//ensure selected are visible
-					var parent = resultNode.Parent;
-					while (parent != null)
-					{
-						parent.Expand();
-						parent = parent.Parent;
-					}
-				}
-			}
-
-			// go through all the data we saved, and try to update the treeview to look
-			// like it used to (expanded nodes, selected nodes, node at the top)
-
-			foreach (string node in _expandedNodes)
-			{
-				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);
-
-				if (resultNode != null)
-				{
-					resultNode.Expand();
-				}
-			}
+			foreach (Guid controllerId in _expandedControllerIds)
+				ExpandController(controllerId);
+			foreach (RangeIdentity range in _expandedRanges)
+				ExpandRange(range);
+			foreach (Guid controllerId in _selectedControllerIds)
+				SelectController(controllerId);
+			foreach (OutputIdentity output in _selectedOutputs)
+				SelectOutput(output.ControllerId, output.OutputIndex);
 
 			treeview.EndUpdate();
 
 			// see stackoverflow.com/questions/626315/winforms-listview-remembering-scrolled-location-on-reload .
 			// we can only set the topNode after EndUpdate(). Also, it might throw an exception -- weird?
-			foreach (string node in _topDisplayedNodes) {
-				TreeNode resultNode = FindNodeInTreeAtPath(treeview, node);
+			foreach (NodeIdentity node in _topDisplayedNodes) {
+				TreeNode resultNode = FindNode(node);
 
 				if (resultNode != null) {
 					try {
@@ -216,10 +208,6 @@ namespace Common.Controls
 				}
 			}
 
-			// finally, if we were selecting another controller, make sure we raise the selection changed event
-			if (treeNodesToSelect != null) {
-				OnControllerSelectionChanged();
-			}
 		}
 
 
@@ -279,16 +267,23 @@ namespace Common.Controls
 
 		private void SaveTreeNodeState(TreeNodeCollection collection)
 		{
-			foreach (TreeNode tn in collection) {
-				if (tn.IsExpanded) {
-					_expandedNodes.Add(GenerateTreeNodeFullPath(tn, treeview.PathSeparator));
+			foreach (TreeNode node in collection) {
+				if (node.Tag is IControllerDevice controller) {
+					if (node.IsExpanded)
+						_expandedControllerIds.Add(controller.Id);
+					if (treeview.SelectedNodes.Contains(node))
+						_selectedControllerIds.Add(controller.Id);
+				}
+				else if (node.Tag is OutputRange range && node.IsExpanded) {
+					_expandedRanges.Add(new RangeIdentity(range.Controller.Id, range.StartIndex));
+				}
+				else if (node.Tag is int outputIndex) {
+					IControllerDevice owningController = FindOwningController(node);
+					if (owningController != null && treeview.SelectedNodes.Contains(node))
+						_selectedOutputs.Add(new OutputIdentity(owningController.Id, outputIndex));
 				}
 
-				if (treeview.SelectedNodes.Contains(tn)) {
-					_selectedNodes.Add(GenerateTreeNodeFullPath(tn, treeview.PathSeparator));
-				}
-
-				SaveTreeNodeState(tn.Nodes);
+				SaveTreeNodeState(node.Nodes);
 			}
 		}
 
@@ -302,10 +297,39 @@ namespace Common.Controls
 			if (treeview.Nodes.Count > 0) {
 				TreeNode current = treeview.TopNode;
 				while (current != null) {
-					_topDisplayedNodes.Add(GenerateTreeNodeFullPath(current, treeview.PathSeparator));
+					NodeIdentity identity = GetNodeIdentity(current);
+					if (identity != null)
+						_topDisplayedNodes.Add(identity);
 					current = current.NextNode;
 				}
 			}
+		}
+
+		private NodeIdentity GetNodeIdentity(TreeNode node)
+		{
+			if (node.Tag is IControllerDevice controller)
+				return new NodeIdentity(controller.Id, null, null);
+			if (node.Tag is OutputRange range)
+				return new NodeIdentity(range.Controller.Id, null, range.StartIndex);
+			if (node.Tag is int outputIndex && FindOwningController(node) is IControllerDevice outputController)
+				return new NodeIdentity(outputController.Id, outputIndex, null);
+			return null;
+		}
+
+		private TreeNode FindNode(NodeIdentity identity)
+		{
+			TreeNode controllerNode = FindControllerNode(identity.ControllerId);
+			if (controllerNode == null)
+				return null;
+			if (identity.OutputIndex is int outputIndex) {
+				SelectOutput(identity.ControllerId, outputIndex);
+				return treeview.SelectedNodes.LastOrDefault(node => node.Tag is int index && index == outputIndex);
+			}
+			if (identity.RangeStart is int rangeStart) {
+				ExpandController(identity.ControllerId);
+				return controllerNode.Nodes.Cast<TreeNode>().FirstOrDefault(node => node.Tag is OutputRange range && range.StartIndex == rangeStart);
+			}
+			return controllerNode;
 		}
 
 		private void AddControllerToTree(TreeNodeCollection collection, IControllerDevice controller)
@@ -318,25 +342,164 @@ namespace Common.Controls
 
 			SetControllerImage(controllerNode, controller.IsRunning);
 
-			for (int i = 0; i < controller.OutputCount; i++) {
-				TreeNode channelNode = new TreeNode();
-				channelNode.Name = channelNode.Text = controller.Outputs[i].Name;
-				channelNode.Tag = i;
-
-				IDataFlowComponentReference source = controller.Outputs[i].Source;
-
-				if (source == null) {
-					channelNode.ImageKey = channelNode.SelectedImageKey = @"WhiteBall";
-				} else if (source.Component == null || source.OutputIndex < 0) {
-					channelNode.ImageKey = channelNode.SelectedImageKey = @"GreyBall";
-				} else {
-					channelNode.ImageKey = channelNode.SelectedImageKey = @"GreenBall";
-				}
-
-				controllerNode.Nodes.Add(channelNode);
+			if (controller.OutputCount > 0)
+			{
+				AddVirtualChild(controllerNode);
 			}
 
 			collection.Add(controllerNode);
+		}
+
+		private static void AddVirtualChild(TreeNode node)
+		{
+			node.Nodes.Add(new TreeNode { Name = VirtualNodeName });
+		}
+
+		private void AddControllerChildren(TreeNode controllerNode, IControllerDevice controller)
+		{
+			if (!HasOnlyVirtualChild(controllerNode))
+				return;
+
+			controllerNode.Nodes.Clear();
+			if (controller.OutputCount <= OutputPageSize)
+			{
+				AddOutputLeaves(controllerNode.Nodes, controller, 0, controller.OutputCount);
+				return;
+			}
+
+			for (int startIndex = 0; startIndex < controller.OutputCount; startIndex += OutputPageSize)
+			{
+				int count = Math.Min(OutputPageSize, controller.OutputCount - startIndex);
+				var rangeNode = new TreeNode($"Outputs {startIndex + 1}-{startIndex + count}")
+				{
+					Name = $"{controller.Id}:{startIndex}",
+					Tag = new OutputRange(controller, startIndex, count)
+				};
+				AddVirtualChild(rangeNode);
+				controllerNode.Nodes.Add(rangeNode);
+			}
+		}
+
+		private void AddOutputLeaves(TreeNodeCollection target, IControllerDevice controller, int startIndex, int count)
+		{
+			for (int outputIndex = startIndex; outputIndex < startIndex + count; outputIndex++)
+			{
+				var output = controller.Outputs[outputIndex];
+				var outputNode = new TreeNode
+				{
+					Name = output.Name,
+					Text = output.Name,
+					Tag = outputIndex
+				};
+				SetOutputImage(outputNode, output.Source);
+				target.Add(outputNode);
+			}
+		}
+
+		private static void SetOutputImage(TreeNode outputNode, IDataFlowComponentReference source)
+		{
+			outputNode.ImageKey = outputNode.SelectedImageKey = source switch
+			{
+				null => @"WhiteBall",
+				{ Component: null } or { OutputIndex: < 0 } => @"GreyBall",
+				_ => @"GreenBall"
+			};
+		}
+
+		private static bool HasOnlyVirtualChild(TreeNode node) =>
+			node.Nodes.Count == 1 && node.Nodes[0].Name == VirtualNodeName;
+
+		private void AddRangeChildren(TreeNode rangeNode, OutputRange range)
+		{
+			if (!HasOnlyVirtualChild(rangeNode))
+				return;
+
+			rangeNode.Nodes.Clear();
+			AddOutputLeaves(rangeNode.Nodes, range.Controller, range.StartIndex, range.Count);
+		}
+
+		private IControllerDevice FindOwningController(TreeNode outputNode)
+		{
+			for (TreeNode node = outputNode.Parent; node != null; node = node.Parent)
+			{
+				if (node.Tag is IControllerDevice controller)
+					return controller;
+			}
+
+			return null;
+		}
+
+		private void SelectOutput(IControllerDevice controller, int outputIndex)
+		{
+			if (outputIndex < 0 || outputIndex >= controller.OutputCount)
+				return;
+
+			var controllerNode = treeview.Nodes.Cast<TreeNode>()
+				.FirstOrDefault(node => node.Tag is IControllerDevice current && current.Id == controller.Id);
+			if (controllerNode == null)
+				return;
+
+			MaterializeNode(controllerNode);
+			controllerNode.Expand();
+			TreeNode outputNode;
+			if (controller.OutputCount <= OutputPageSize)
+			{
+				outputNode = controllerNode.Nodes.Cast<TreeNode>().FirstOrDefault(node => node.Tag is int index && index == outputIndex);
+			}
+			else
+			{
+				int pageStart = outputIndex / OutputPageSize * OutputPageSize;
+				var rangeNode = controllerNode.Nodes.Cast<TreeNode>().FirstOrDefault(node => node.Tag is OutputRange range && range.StartIndex == pageStart);
+				if (rangeNode == null)
+					return;
+				MaterializeNode(rangeNode);
+				rangeNode.Expand();
+				outputNode = rangeNode.Nodes.Cast<TreeNode>().FirstOrDefault(node => node.Tag is int index && index == outputIndex);
+			}
+
+			if (outputNode != null)
+				treeview.AddSelectedNode(outputNode);
+		}
+
+		private TreeNode FindControllerNode(Guid controllerId) =>
+			treeview.Nodes.Cast<TreeNode>().FirstOrDefault(node =>
+				node.Tag is IControllerDevice controller && controller.Id == controllerId);
+
+		private void ExpandController(Guid controllerId)
+		{
+			TreeNode controllerNode = FindControllerNode(controllerId);
+			if (controllerNode == null)
+				return;
+			MaterializeNode(controllerNode);
+			controllerNode.Expand();
+		}
+
+		private void ExpandRange(RangeIdentity range)
+		{
+			ExpandController(range.ControllerId);
+			TreeNode controllerNode = FindControllerNode(range.ControllerId);
+			TreeNode rangeNode = controllerNode?.Nodes.Cast<TreeNode>()
+				.FirstOrDefault(node => node.Tag is OutputRange descriptor && descriptor.StartIndex == range.StartIndex);
+			if (rangeNode == null)
+				return;
+			MaterializeNode(rangeNode);
+			rangeNode.Expand();
+		}
+
+		private void SelectController(IControllerDevice controller) => SelectController(controller.Id);
+
+		private void SelectController(Guid controllerId)
+		{
+			TreeNode controllerNode = FindControllerNode(controllerId);
+			if (controllerNode != null)
+				treeview.AddSelectedNode(controllerNode);
+		}
+
+		private void SelectOutput(Guid controllerId, int outputIndex)
+		{
+			TreeNode controllerNode = FindControllerNode(controllerId);
+			if (controllerNode?.Tag is IControllerDevice controller)
+				SelectOutput(controller, outputIndex);
 		}
 
 		public void RefreshControllerName(IControllerDevice controller)
@@ -378,7 +541,7 @@ namespace Common.Controls
 			var node = FindNodeInTreeAtPath(treeview, path);
 			if (node.Tag == controller)
 			{
-				foreach (TreeNode channelNode in node.Nodes)
+				foreach (TreeNode channelNode in GetMaterializedOutputNodes(node))
 				{
 					if (channelNode.Tag is int i)
 					{
@@ -396,24 +559,11 @@ namespace Common.Controls
 			{
 				if (node.Tag is IControllerDevice controller)
 				{
-					foreach (TreeNode channelNode in node.Nodes)
+					foreach (TreeNode channelNode in GetMaterializedOutputNodes(node))
 					{
 						if (channelNode.Tag is int i)
 						{
-							IDataFlowComponentReference source = controller.Outputs[i].Source;
-
-							if (source == null)
-							{
-								channelNode.ImageKey = channelNode.SelectedImageKey = "WhiteBall";
-							}
-							else if (source.Component == null || source.OutputIndex < 0)
-							{
-								channelNode.ImageKey = channelNode.SelectedImageKey = "GreyBall";
-							}
-							else
-							{
-								channelNode.ImageKey = channelNode.SelectedImageKey = "GreenBall";
-							}
+							SetOutputImage(channelNode, controller.Outputs[i].Source);
 						}
 					}
 				}
@@ -421,6 +571,25 @@ namespace Common.Controls
 			}
 
 			treeview.EndUpdate();
+		}
+
+		private static IEnumerable<TreeNode> GetMaterializedOutputNodes(TreeNode controllerNode)
+		{
+			foreach (TreeNode child in controllerNode.Nodes)
+			{
+				if (child.Tag is int)
+				{
+					yield return child;
+				}
+				else if (child.Tag is OutputRange)
+				{
+					foreach (TreeNode outputNode in child.Nodes)
+					{
+						if (outputNode.Tag is int)
+							yield return outputNode;
+					}
+				}
+			}
 		}
 
 		#endregion
@@ -595,9 +764,9 @@ namespace Common.Controls
 
 		public async Task<bool> InsertOutputs()
 		{
-			if (treeview.SelectedNode != null)
+			if (treeview.SelectedNode?.Tag is int outputIndex)
 			{
-				if (treeview.SelectedNode.Parent.Tag is OutputController outputController)
+				if (FindOwningController(treeview.SelectedNode) is OutputController outputController)
 				{
 					using NumberDialog nd = new NumberDialog("Insert Outputs", "Number of outputs to insert.", 10);
 					if (nd.ShowDialog() == DialogResult.OK)
@@ -614,7 +783,7 @@ namespace Common.Controls
 							{
 								VixenSystem.OutputControllers.Pause(outputController);
 							}
-							outputController.InsertOutputsAt(treeview.SelectedNode.Index, nd.Value);
+							outputController.InsertOutputsAt(outputIndex, nd.Value);
 
 							if (restartController)
 							{
@@ -649,18 +818,15 @@ namespace Common.Controls
 
 			foreach (var node in treeview.SelectedNodes)
 			{
-				if (node.Parent.Tag is OutputController controller)
+				if (node.Tag is int index && FindOwningController(node) is OutputController controller)
 				{
-					if (node.Tag is int index)
+					if (outputsToRemove.TryGetValue(controller, out var outputs))
 					{
-						if (outputsToRemove.TryGetValue(controller, out var outputs))
-						{
-							outputs.Add(controller.Outputs[index]);
-						}
-						else
-						{
-							outputsToRemove.Add(controller, new List<CommandOutput>() { controller.Outputs[index] });
-						}
+						outputs.Add(controller.Outputs[index]);
+					}
+					else
+					{
+						outputsToRemove.Add(controller, new List<CommandOutput>() { controller.Outputs[index] });
 					}
 				}
 			}
@@ -801,6 +967,12 @@ namespace Common.Controls
 
 			if (treeview.SelectedNodes.Any())
 			{
+				if (treeview.SelectedNodes.Any(node => node.Tag is not int))
+				{
+					e.Cancel = true;
+					return;
+				}
+
 				unpatchChannelsToolStripMenuItem.Enabled = false;
 				findPatchedChannelsToolStripMenuItem.Enabled = false;
 
@@ -979,7 +1151,26 @@ namespace Common.Controls
 
 		private void treeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
 		{
-			if (isDoubleClick && e.Action == TreeViewAction.Expand)e.Cancel = true;
+			if (isDoubleClick && e.Action == TreeViewAction.Expand)
+			{
+				e.Cancel = true;
+				return;
+			}
+
+			MaterializeNode(e.Node);
+		}
+
+		private void MaterializeNode(TreeNode node)
+		{
+			switch (node.Tag)
+			{
+				case IControllerDevice controller:
+					AddControllerChildren(node, controller);
+					break;
+				case OutputRange range:
+					AddRangeChildren(node, range);
+					break;
+			}
 		}
 
 		private void treeView_MouseDown(object sender, MouseEventArgs e)
