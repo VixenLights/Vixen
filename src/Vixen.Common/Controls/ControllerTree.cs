@@ -84,6 +84,37 @@ namespace Common.Controls
 			_PopulateControllerTree(treeNodes);
 		}
 
+		internal TreeView TreeViewForTests => treeview;
+
+		internal void PopulateControllerTreeForTests(IEnumerable<IControllerDevice> controllers)
+		{
+			treeview.BeginUpdate();
+			try
+			{
+				treeview.Nodes.Clear();
+				treeview.SelectedNodes.Clear();
+
+				foreach (IControllerDevice controller in controllers)
+				{
+					AddControllerToTree(treeview.Nodes, controller);
+				}
+			}
+			finally
+			{
+				treeview.EndUpdate();
+			}
+		}
+
+		internal void SelectOutputForTests(IControllerDevice controller, int outputIndex)
+		{
+			var controllerNode = treeview.Nodes.Cast<TreeNode>()
+				.Single(node => ReferenceEquals(node.Tag, controller));
+			controllerNode.Expand();
+			var outputNode = controllerNode.Nodes.Cast<TreeNode>()
+				.Single(node => node.Tag is int index && index == outputIndex);
+			treeview.AddSelectedNode(outputNode);
+		}
+
 		public void UpdateScrollPosition()
 		{
 			if (treeview.SelectedNodes.Count > 0)

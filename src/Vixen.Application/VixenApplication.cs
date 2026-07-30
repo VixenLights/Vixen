@@ -992,6 +992,7 @@ namespace VixenApplication
 			using (DisplaySetup form = new DisplaySetup())
 			{
 				DialogResult dr = await form.ShowDialogAsync();
+				form.RecordShowDialogAsyncReturnedAndWriteDiagnostics();
 
 				if (dr == DialogResult.OK)
 				{

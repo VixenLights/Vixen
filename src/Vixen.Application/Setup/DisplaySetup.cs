@@ -21,6 +21,7 @@ namespace VixenApplication.Setup
 		public DisplaySetup()
 		{
 			InitializeComponent();
+			buttonCancel.Click += buttonCancel_Click;
 			ThemeUpdateControls.UpdateControls(this);
 
 			if (SystemFonts.MessageBoxFont != null)
@@ -269,12 +270,21 @@ namespace VixenApplication.Setup
 
 		private void buttonOk_Click(object sender, EventArgs e)
 		{
+			RecordCloseDiagnosticMarker("OK click entry");
 			//This is an attempt to band aid up a issue that the graphical designer has with making filters and then abandoning them
 			//Until we can fix up a better way to visualize unconnected filters, we will just clean them up from here.
 			//Just doing it in Ok as if we cancel it reloads the system anyway.
 			VixenSystem.Filters.RemoveOrphanedFilters();
 			Vixen.Sys.PropertyManager.RemoveOrphanedProperties();
 			_setupControllersSimple?.ReorderControllers();
+			RecordCloseDiagnosticMarker("OK click exit");
+		}
+
+		private void buttonCancel_Click(object? sender, EventArgs e)
+		{
+			RecordCloseDiagnosticMarker("Cancel click entry");
+			PerformCancelDisposalExperiment();
+			RecordCloseDiagnosticMarker("Cancel click exit");
 		}
 	}
 }

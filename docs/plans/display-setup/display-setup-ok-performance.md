@@ -23,7 +23,7 @@ A user can see the completed behavior by opening Display Setup on the representa
 - [x] (2026-07-30 12:24 -05:00) Read `ElementTree` and `ControllerTree` population, expansion, selection, refresh, reorder, and output-operation paths. Revised this plan to retain the TreeView and lazily materialize controller outputs using the `ElementTree` precedent.
 - [x] (2026-07-30 12:38 -05:00) Re-evaluated the `ElementTree` precedent after confirming that 5,000-or-more-output controllers are normal. Replaced whole-controller materialization with adaptive 256-output range pages and stable controller-ID/output-index state.
 - [x] (2026-07-30 13:10 -05:00) Created [VIX-3955](https://vixenlights.atlassian.net/browse/VIX-3955) as a VIX Improvement under Display Setup, synchronized its proven-cause description, acceptance criteria, and test plan, and read it back without transitioning it.
-- [ ] Add focused controller-tree virtualization tests that fail against eager or whole-controller population and protect range creation, page materialization, selection, refresh, and output operations.
+- [x] (2026-07-30 13:35 -05:00) Added `ControllerTreeVirtualizationTests` and a narrow internal supplied-controller test seam. The 15-test characterization baseline compiles; 11 tests deliberately fail against eager materialization, covering initial sentinels, large-controller ranges, page-local leaves, selection bounds, and repopulation.
 - [ ] Implement adaptive, 256-output page materialization in `ControllerTree`.
 - [ ] Move OK-only confirmed cleanup into the post-dialog progress workflow and force the preparation progress state to paint before cleanup starts.
 - [ ] Force the Cancel reload progress state to paint before synchronous reload and use common `try/finally` UI restoration for both outcomes.
@@ -59,6 +59,9 @@ A user can see the completed behavior by opening Display Setup on the representa
 
 - Observation: the progress bar is set visible before Cancel reload today, but does not get a chance to paint.
   Evidence: `VixenApplication.SetupDisplay()` calls `UpdateProgress(...)` and then immediately calls synchronous `VixenSystem.ReloadSystemConfig()` on the UI thread. The observed reload is a separate multi-second interval after the modal form returns.
+
+- Observation: the focused characterization tests demonstrate the eager-population defect without depending on global `VixenSystem` state.
+  Evidence: `ControllerTreeVirtualizationTests` supplies mock `IControllerDevice` instances through an internal test seam. Before paging, the focused run reports 15 tests with 11 failures: a 5,000-output controller creates 5,000 leaves instead of 20 ranges, selecting any page-boundary output leaves all 5,000 materialized, and repopulation creates 257 output leaves instead of one sentinel.
 
 - Observation: the original plan's proposed property-model and filter-graph optimizations are not justified by the conclusive close evidence.
   Evidence: measured OK cleanup is hundreds of milliseconds, whereas native deletion of eager controller output nodes is tens of seconds and affects both OK and Cancel.
@@ -123,7 +126,7 @@ A user can see the completed behavior by opening Display Setup on the representa
 
 ## Outcomes & Retrospective
 
-The investigation phase is complete and the root cause is conclusive: eager native output items in `ControllerTree` dominate Display Setup close time. The design now goes beyond `ElementTree`-style whole-branch loading: it retains the TreeView but bounds each large-controller output expansion to a 256-item page, uses stable model identities for state, and retains the reliable progress-painting work. Milestone 1 is complete: [VIX-3955](https://vixenlights.atlassian.net/browse/VIX-3955) captures the as-designed scope, acceptance criteria, and validation plan; implementation remains in subsequent milestones.
+The investigation phase is complete and the root cause is conclusive: eager native output items in `ControllerTree` dominate Display Setup close time. The design now goes beyond `ElementTree`-style whole-branch loading: it retains the TreeView but bounds each large-controller output expansion to a 256-item page, uses stable model identities for state, and retains the reliable progress-painting work. Milestone 1 is complete: [VIX-3955](https://vixenlights.atlassian.net/browse/VIX-3955) captures the as-designed scope, acceptance criteria, and validation plan. Milestone 2 adds a compilation-clean red characterization baseline, so Milestone 3 can prove the behavior change by turning the bounded-node tests green.
 
 No production fix has been implemented by this plan revision. Temporary diagnostic changes remain in the working tree so the implementer can make one post-fix comparison before removing them. Update this section with the implemented files, measured before/after node counts and close latency, test results, and any follow-up limitations when the work is complete.
 
@@ -404,7 +407,7 @@ Post-change evidence to fill in:
 
     JIRA issue and URL: VIX-3955 — https://vixenlights.atlassian.net/browse/VIX-3955 (created and read back 2026-07-30; status: New Ticket; no transition performed)
     Controller output count distribution: TBD
-    Focused virtualization tests: TBD
+    Focused virtualization tests: `dotnet test src/Vixen.Tests/Vixen.Tests.csproj --no-restore --filter FullyQualifiedName~ControllerTreeVirtualizationTests --nologo` (2026-07-30 pre-Milestone-3 baseline: 15 total; 4 passed; 11 expected failures; no test-source warnings)
     Full tests: TBD
     Debug build: TBD
     Initial root/sentinel/range/output counts: TBD
@@ -452,3 +455,4 @@ If implementation adds or changes any public or protected member despite this de
 - 2026-07-30 / Codex: Replaced the disproven cleanup-first root-cause narrative after OK/Cancel Timeline profiling, subtree isolation, controller-tree-only isolation, and the definitive 163,655-node `Nodes.Clear()` experiment. The production design now keeps the TreeView, applies `ElementTree`-style first-expand lazy output loading, paints progress before OK cleanup and Cancel reload, removes speculative property/filter optimization work, and requires removal of all temporary diagnostics after post-fix validation.
 - 2026-07-30 / Codex: Replaced whole-controller `ElementTree`-style loading after the user clarified that 5,000-or-more-output controllers are normal. The plan now uses adaptive 256-output range pages, stable controller-GUID/output-index state, ancestor-based controller resolution for paged leaves, tests for page boundaries and navigation-node safety, and profiling acceptance with one and two materialized pages. The OK/Cancel progress fixes are unchanged.
 - 2026-07-30 / Codex: Completed Milestone 1 by creating and reading back VIX-3955 as a VIX Improvement under the Display Setup component. The issue records the measured native TreeView-deletion cause, 256-output paging approach, progress-paint requirements, acceptance criteria, and validation commands; it remains in New Ticket.
+- 2026-07-30 / Codex: Completed Milestone 2 by adding the supplied-controller internal test seam and 15 focused `ControllerTreeVirtualizationTests`. The eager implementation produces 11 expected red failures (with 4 existing small-controller/idempotence checks green); this records the required bounded-materialization behavior before Milestone 3 changes production population.
