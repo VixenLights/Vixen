@@ -21,7 +21,6 @@ namespace VixenApplication.Setup
 		public DisplaySetup()
 		{
 			InitializeComponent();
-			buttonCancel.Click += buttonCancel_Click;
 			ThemeUpdateControls.UpdateControls(this);
 
 			if (SystemFonts.MessageBoxFont != null)
@@ -278,17 +277,5 @@ namespace VixenApplication.Setup
 			_setupControllersSimple?.ReorderControllers();
 		}
 
-		private void buttonOk_Click(object sender, EventArgs e)
-		{
-			RecordCloseDiagnosticMarker("OK click entry");
-			RecordCloseDiagnosticMarker("OK click exit");
-		}
-
-		private void buttonCancel_Click(object? sender, EventArgs e)
-		{
-			RecordCloseDiagnosticMarker("Cancel click entry");
-			PerformCancelDisposalExperiment();
-			RecordCloseDiagnosticMarker("Cancel click exit");
-		}
 	}
 }

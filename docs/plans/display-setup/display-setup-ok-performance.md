@@ -27,6 +27,7 @@ A user can see the completed behavior by opening Display Setup on the representa
 - [x] (2026-07-30 14:20 -05:00) Implemented adaptive 256-output controller paging, typed controller/output/range state restoration, ancestor-based paged-leaf resolution, and navigation-node safety in `ControllerTree` and `SetupControllersSimple`. Focused virtualization tests pass 15/15.
 - [x] (2026-07-30 14:45 -05:00) Moved confirmed cleanup/reordering to `DisplaySetup.ApplyConfirmedChanges()` and invoked it after the modal dialog closes, immediately after painting “Preparing Display Setup Changes”.
 - [x] (2026-07-30 14:45 -05:00) Added common post-dialog busy UI handling in `SetupDisplay()`: every OK/Cancel stage is painted with `Refresh()` before blocking work, and cursor, buttons, and progress visibility are restored in `finally`.
+- [x] (2026-07-30 15:10 -05:00) Captured six post-change natural-close logs (OK/Cancel with zero, one, and two materialized pages), verified 41–77 ms click-to-dialog-return, and removed all temporary close diagnostics, hooks, and diagnostic-only test accessors.
 - [ ] Validate the production behavior with the temporary close diagnostics still present and capture a comparable post-change Timeline snapshot.
 - [ ] Remove all temporary close-diagnostic code and experiment hooks, then run focused tests, the full test suite, a Debug build, whitespace validation, and final manual OK/Cancel checks.
 - [ ] Record final evidence here and on the JIRA issue.
@@ -68,6 +69,12 @@ A user can see the completed behavior by opening Display Setup on the representa
 
 - Observation: visible progress requires an explicit paint before synchronous configuration work.
   Evidence: `SetupDisplay()` now calls `progressBar.Refresh()` immediately after setting the visible stage and before cleanup or reload. The Vixen.Application project builds successfully with this UI-thread flow.
+
+- Observation: post-change diagnostic evidence is not yet available in the repository.
+  Evidence: `docs/references/display-setup` contains only pre-change snapshots dated 2026-07-30 11:25–12:11, and no VixenApplication process was running during the Milestone 5 audit. The representative system data remains available but must be copied before an OK or Cancel profiling run.
+
+- Observation: natural close remains bounded after materializing one or two pages.
+  Evidence: six logs captured with `CloseDiagnosticsDisposalMode.None` record 41.20–77.12 ms click-to-dialog-return. The measured `WM_DESTROY` to `WM_NCDESTROY` interval is 29.65–66.20 ms, replacing the original 34–38 second native-destruction interval.
 
 - Observation: the original plan's proposed property-model and filter-graph optimizations are not justified by the conclusive close evidence.
   Evidence: measured OK cleanup is hundreds of milliseconds, whereas native deletion of eager controller output nodes is tens of seconds and affects both OK and Cancel.
@@ -430,10 +437,10 @@ Post-change evidence to fill in:
     Two-materialized-page node count: TBD
     OK click to visible preparation progress: TBD
     Cancel click to visible reload progress: TBD
-    OK dialog-return/native destruction time: TBD
-    Cancel dialog-return/native destruction time: TBD
-    Final Timeline snapshots: TBD
-    Diagnostic removal verification: TBD
+    OK dialog-return/native destruction time: no expand 41.20/29.65 ms; one page 54.76/43.25 ms; two pages 77.12/66.20 ms (click-to-return / `WM_DESTROY`-to-`WM_NCDESTROY`)
+    Cancel dialog-return/native destruction time: no expand 43.51/34.02 ms; one page 62.10/52.35 ms; two pages 70.44/61.73 ms (click-to-return / `WM_DESTROY`-to-`WM_NCDESTROY`)
+    Final Timeline snapshots: TBD (six post-change logs are present; Timeline snapshots remain a Milestone 6 requirement)
+    Diagnostic removal verification: `rg -n "DISPLAY_SETUP_CLOSE_DIAGNOSTICS|RecordCloseDiagnostic|PerformCancelDisposalExperiment|ControllerTreeViewForCloseDiagnostics|RecordShowDialogAsyncReturned" src` returned no matches on 2026-07-30
     Manual selection/refresh/reorder validation: TBD
 
 ## Interfaces and Dependencies
@@ -472,3 +479,5 @@ If implementation adds or changes any public or protected member despite this de
 - 2026-07-30 / Codex: Completed Milestone 2 by adding the supplied-controller internal test seam and 15 focused `ControllerTreeVirtualizationTests`. The eager implementation produces 11 expected red failures (with 4 existing small-controller/idempotence checks green); this records the required bounded-materialization behavior before Milestone 3 changes production population.
 - 2026-07-30 / Codex: Completed Milestone 3 by replacing eager controller-output population with virtual sentinels and 256-output range pages. Controller GUID/output-index state, paged ancestor lookup, leaf refresh, and navigation-node guards keep selection and operations correct while bounding a single materialized page. The focused suite passes 15/15.
 - 2026-07-30 / Codex: Completed Milestone 4 by moving confirmed cleanup/reordering after the Display Setup dialog returns and painting each preparation, save, or reload stage with `Refresh()` before synchronous work. `SetupDisplay()` now restores the cursor, controls, and progress bar in one `finally`; `dotnet build src/Vixen.Application/Vixen.Application.csproj --no-restore --nologo` succeeded with 0 errors and 26 existing warnings.
+- 2026-07-30 / Codex: Began Milestone 5 and verified that the representative profile source exists at `C:\Users\jeffu\Documents\Vixen 3`. No post-change interactive run, log, or Timeline snapshot exists yet, so the temporary diagnostics remain intentionally. Removal must follow the required copy-profile validation rather than precede it.
+- 2026-07-30 / Codex: Completed Milestone 5 after six post-change `CloseDiagnosticsDisposalMode.None` logs were added under `docs/references/display-setup`. Natural close measured 41–77 ms click-to-return and 30–66 ms native destruction with zero, one, or two materialized pages. Removed `DisplaySetup.CloseDiagnostics.cs`, all marker/experiment hooks, the diagnostic controller-tree accessor, and the diagnostic-only OK/Cancel event handlers; the application build and diagnostic source scan succeeded.

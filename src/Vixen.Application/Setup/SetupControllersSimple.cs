@@ -193,11 +193,6 @@ namespace VixenApplication.Setup
 			get { return this; }
 		}
 
-		/// <summary>
-		/// Gets the native controller tree view for temporary close diagnostics.
-		/// </summary>
-		internal TreeView ControllerTreeViewForCloseDiagnostics => controllerTree.Controls.OfType<TreeView>().Single();
-
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DisplaySetup? MasterForm { get; set; }
