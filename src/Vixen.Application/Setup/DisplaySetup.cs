@@ -268,15 +268,19 @@ namespace VixenApplication.Setup
 				_currentControllersControl.UpdateScrollPosition();
 		}
 
-		private void buttonOk_Click(object sender, EventArgs e)
+		internal void ApplyConfirmedChanges()
 		{
-			RecordCloseDiagnosticMarker("OK click entry");
 			//This is an attempt to band aid up a issue that the graphical designer has with making filters and then abandoning them
 			//Until we can fix up a better way to visualize unconnected filters, we will just clean them up from here.
 			//Just doing it in Ok as if we cancel it reloads the system anyway.
 			VixenSystem.Filters.RemoveOrphanedFilters();
 			Vixen.Sys.PropertyManager.RemoveOrphanedProperties();
 			_setupControllersSimple?.ReorderControllers();
+		}
+
+		private void buttonOk_Click(object sender, EventArgs e)
+		{
+			RecordCloseDiagnosticMarker("OK click entry");
 			RecordCloseDiagnosticMarker("OK click exit");
 		}
 
