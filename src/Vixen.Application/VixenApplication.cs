@@ -993,6 +993,7 @@ namespace VixenApplication
 			{
 				DialogResult dr = await form.ShowDialogAsync();
 
+				UseWaitCursor = true;
 				Cursor = Cursors.WaitCursor;
 				EnableButtons(false);
 				try
@@ -1009,6 +1010,7 @@ namespace VixenApplication
 					else
 					{
 						ShowDisplaySetupProgress(0, "Reloading System Configuration");
+						Cursor.Current = Cursors.WaitCursor;
 						VixenSystem.ReloadSystemConfig();
 						_ = MakeTopMost();
 					}
@@ -1017,6 +1019,8 @@ namespace VixenApplication
 				{
 					progressBar.Visible = false;
 					EnableButtons();
+					UseWaitCursor = false;
+					Cursor.Current = Cursors.Default;
 					Cursor = Cursors.Default;
 				}
 			}
