@@ -28,6 +28,8 @@ A user can see the completed behavior by opening Display Setup on the representa
 - [x] (2026-07-30 14:45 -05:00) Moved confirmed cleanup/reordering to `DisplaySetup.ApplyConfirmedChanges()` and invoked it after the modal dialog closes, immediately after painting “Preparing Display Setup Changes”.
 - [x] (2026-07-30 14:45 -05:00) Added common post-dialog busy UI handling in `SetupDisplay()`: every OK/Cancel stage is painted with `Refresh()` before blocking work, and cursor, buttons, and progress visibility are restored in `finally`.
 - [x] (2026-07-30 15:10 -05:00) Captured six post-change natural-close logs (OK/Cancel with zero, one, and two materialized pages), verified 41–77 ms click-to-dialog-return, and removed all temporary close diagnostics, hooks, and diagnostic-only test accessors.
+- [x] (2026-07-30 15:35 -05:00) Replaced result replay through individual `TreeNode` selections with authoritative logical controller/output selection and page-local highlighting. Replaced repeated recursive destination lookup with one deduplicated iterative graph traversal, and corrected shifted-output reinsertion so it preserves existing adapter registrations while updating their indexes.
+- [x] (2026-07-30 15:45 -05:00) Changed programmatic destination-result projection to expand every matching output page immediately and removed range-level selected-count labels, so users can inspect all matched outputs directly.
 - [ ] Validate the production behavior with the temporary close diagnostics still present and capture a comparable post-change Timeline snapshot.
 - [ ] Remove all temporary close-diagnostic code and experiment hooks, then run focused tests, the full test suite, a Debug build, whitespace validation, and final manual OK/Cancel checks.
 - [ ] Record final evidence here and on the JIRA issue.
@@ -78,6 +80,9 @@ A user can see the completed behavior by opening Display Setup on the representa
 
 - Observation: the original plan's proposed property-model and filter-graph optimizations are not justified by the conclusive close evidence.
   Evidence: measured OK cleanup is hundreds of milliseconds, whereas native deletion of eager controller output nodes is tens of seconds and affects both OK and Cancel.
+
+- Observation: replaying a large find result through `SelectOutput` defeats paging even though initial tree population is virtualized.
+  Evidence: each selected output expanded and materialized its page, then added and sorted a native multi-selection entry. The logical selection model retains all matching indexes while initially projecting only one matching page.
 
 ## Decision Log
 
@@ -139,6 +144,18 @@ A user can see the completed behavior by opening Display Setup on the representa
 
 - Decision: use controller GUID plus zero-based output index and page start for tree state, rather than display names or native paths.
   Rationale: names can be duplicated or changed and range paging inserts a tree level; these typed identities restore only the required controller and page.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: make `ControllerTree` own a logical selection and export neutral controller/index pairs to the application layer.
+  Rationale: the existing `ControllersAndOutputsSet` type is application-owned, while the shared control must retain exact unmaterialized output indexes without depending on application assemblies. Programmatic results replace prior selection and expand each matching page so users can see every matched output.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: traverse selected element destinations once with component and leaf-element identity sets.
+  Rationale: data-flow managers are mutable and UI-thread owned, so an iterative UI-thread walk avoids repeated recursive enumeration while safely deduplicating shared paths.
+  Date/Author: 2026-07-30 / Codex
+
+- Decision: reattach shifted inserted outputs through the mediator and update their existing controller-output map entries.
+  Rationale: shifted outputs retain their adapters and patches; registering them again produces false duplicate-map errors. Newly inserted outputs continue to use the normal registration path.
   Date/Author: 2026-07-30 / Codex
 
 - Decision: retain progress work on the UI thread and force each stage to paint with `Refresh()`.
@@ -481,3 +498,4 @@ If implementation adds or changes any public or protected member despite this de
 - 2026-07-30 / Codex: Completed Milestone 4 by moving confirmed cleanup/reordering after the Display Setup dialog returns and painting each preparation, save, or reload stage with `Refresh()` before synchronous work. `SetupDisplay()` now restores the cursor, controls, and progress bar in one `finally`; `dotnet build src/Vixen.Application/Vixen.Application.csproj --no-restore --nologo` succeeded with 0 errors and 26 existing warnings.
 - 2026-07-30 / Codex: Began Milestone 5 and verified that the representative profile source exists at `C:\Users\jeffu\Documents\Vixen 3`. No post-change interactive run, log, or Timeline snapshot exists yet, so the temporary diagnostics remain intentionally. Removal must follow the required copy-profile validation rather than precede it.
 - 2026-07-30 / Codex: Completed Milestone 5 after six post-change `CloseDiagnosticsDisposalMode.None` logs were added under `docs/references/display-setup`. Natural close measured 41–77 ms click-to-return and 30–66 ms native destruction with zero, one, or two materialized pages. Removed `DisplaySetup.CloseDiagnostics.cs`, all marker/experiment hooks, the diagnostic controller-tree accessor, and the diagnostic-only OK/Cancel event handlers; the application build and diagnostic source scan succeeded.
+- 2026-07-30 / Codex: Addressed the large find-patched-output regression by keeping authoritative controller/output selection outside the materialized `TreeNode` graph. Destination discovery now visits each graph component once; shifted output insertion preserves adapter registration and updates its index map without duplicate warnings. Programmatic results now expand every matching page and highlight every matched output directly, without persistent range labels. Focused virtualization coverage increased to 18 tests.

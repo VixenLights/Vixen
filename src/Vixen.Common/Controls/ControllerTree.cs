@@ -32,6 +32,7 @@ namespace Common.Controls
 		private HashSet<Guid> _selectedControllerIds = [];
 		private HashSet<OutputIdentity> _selectedOutputs = [];
 		private List<NodeIdentity> _topDisplayedNodes = [];
+		private bool _projectingLogicalSelection;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool _someSelectedControllersRunning;
 		private bool _someSelectedControllersNotRunning;
@@ -71,14 +72,8 @@ namespace Common.Controls
 		/// <param name="controllersAndOutputs">The controllers and zero-based output indexes to select.</param>
 		public void PopulateControllerTree(Dictionary<IControllerDevice, HashSet<int>> controllersAndOutputs)
 		{
+			SetLogicalSelection(controllersAndOutputs);
 			_PopulateControllerTree();
-			foreach (var (controller, outputIndexes) in controllersAndOutputs)
-			{
-				foreach (int outputIndex in outputIndexes)
-				{
-					SelectOutput(controller, outputIndex);
-				}
-			}
 			OnControllerSelectionChanged();
 		}
 
@@ -125,6 +120,20 @@ namespace Common.Controls
 			SelectOutput(controller, outputIndex);
 		}
 
+		internal void SetLogicalSelectionForTests(Dictionary<IControllerDevice, HashSet<int>> controllersAndOutputs)
+		{
+			treeview.BeginUpdate();
+			try
+			{
+				SetLogicalSelection(controllersAndOutputs);
+				ProjectLogicalSelection();
+			}
+			finally
+			{
+				treeview.EndUpdate();
+			}
+		}
+
 		internal void ExpandNodeForTests(TreeNode node)
 		{
 			MaterializeNode(node);
@@ -165,8 +174,6 @@ namespace Common.Controls
 		{
 			_expandedControllerIds = [];
 			_expandedRanges = [];
-			_selectedControllerIds = [];
-			_selectedOutputs = [];
 			_topDisplayedNodes = [];
 
 			SaveTreeNodeState(treeview.Nodes);
@@ -186,10 +193,7 @@ namespace Common.Controls
 				ExpandController(controllerId);
 			foreach (RangeIdentity range in _expandedRanges)
 				ExpandRange(range);
-			foreach (Guid controllerId in _selectedControllerIds)
-				SelectController(controllerId);
-			foreach (OutputIdentity output in _selectedOutputs)
-				SelectOutput(output.ControllerId, output.OutputIndex);
+			ProjectLogicalSelection();
 
 			treeview.EndUpdate();
 
@@ -271,18 +275,10 @@ namespace Common.Controls
 				if (node.Tag is IControllerDevice controller) {
 					if (node.IsExpanded)
 						_expandedControllerIds.Add(controller.Id);
-					if (treeview.SelectedNodes.Contains(node))
-						_selectedControllerIds.Add(controller.Id);
-				}
+			}
 				else if (node.Tag is OutputRange range && node.IsExpanded) {
 					_expandedRanges.Add(new RangeIdentity(range.Controller.Id, range.StartIndex));
 				}
-				else if (node.Tag is int outputIndex) {
-					IControllerDevice owningController = FindOwningController(node);
-					if (owningController != null && treeview.SelectedNodes.Contains(node))
-						_selectedOutputs.Add(new OutputIdentity(owningController.Id, outputIndex));
-				}
-
 				SaveTreeNodeState(node.Nodes);
 			}
 		}
@@ -393,6 +389,8 @@ namespace Common.Controls
 				};
 				SetOutputImage(outputNode, output.Source);
 				target.Add(outputNode);
+				if (_selectedOutputs.Contains(new OutputIdentity(controller.Id, outputIndex)))
+					treeview.AddSelectedNode(outputNode);
 			}
 		}
 
@@ -459,6 +457,59 @@ namespace Common.Controls
 
 			if (outputNode != null)
 				treeview.AddSelectedNode(outputNode);
+		}
+
+		private void SetLogicalSelection(Dictionary<IControllerDevice, HashSet<int>> controllersAndOutputs)
+		{
+			_selectedControllerIds.Clear();
+			_selectedOutputs.Clear();
+
+			foreach (var (controller, outputIndexes) in controllersAndOutputs)
+			{
+				foreach (int outputIndex in outputIndexes)
+				{
+					if (outputIndex >= 0 && outputIndex < controller.OutputCount)
+						_selectedOutputs.Add(new OutputIdentity(controller.Id, outputIndex));
+				}
+			}
+		}
+
+		private void ProjectLogicalSelection()
+		{
+			_projectingLogicalSelection = true;
+			try
+			{
+				treeview.SelectedNodes.Clear();
+				foreach (Guid controllerId in _selectedControllerIds)
+					SelectController(controllerId);
+				foreach (var selectedController in _selectedOutputs.GroupBy(output => output.ControllerId))
+				{
+					TreeNode controllerNode = FindControllerNode(selectedController.Key);
+					if (controllerNode?.Tag is not IControllerDevice controller)
+						continue;
+
+					MaterializeNode(controllerNode);
+					controllerNode.Expand();
+					if (controller.OutputCount <= OutputPageSize)
+						continue;
+
+					foreach (int pageStart in selectedController
+						.Select(output => output.OutputIndex / OutputPageSize * OutputPageSize)
+						.Distinct())
+					{
+						TreeNode rangeNode = controllerNode.Nodes.Cast<TreeNode>()
+							.FirstOrDefault(node => node.Tag is OutputRange range && range.StartIndex == pageStart);
+						if (rangeNode == null)
+							continue;
+						MaterializeNode(rangeNode);
+						rangeNode.Expand();
+					}
+				}
+			}
+			finally
+			{
+				_projectingLogicalSelection = false;
+			}
 		}
 
 		private TreeNode FindControllerNode(Guid controllerId) =>
@@ -611,15 +662,70 @@ namespace Common.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets the logical controller-output selection, including outputs that are not currently materialized in the tree.
+		/// </summary>
+		/// <returns>A sequence of selected controllers and their zero-based output indexes.</returns>
+		public IEnumerable<KeyValuePair<IControllerDevice, IReadOnlyCollection<int>>> GetSelectedControllerOutputs()
+		{
+			var result = new List<KeyValuePair<IControllerDevice, IReadOnlyCollection<int>>>();
+
+			foreach (TreeNode controllerNode in treeview.Nodes)
+			{
+				if (controllerNode.Tag is not IControllerDevice controller)
+					continue;
+
+				if (_selectedControllerIds.Contains(controller.Id))
+				{
+					result.Add(new KeyValuePair<IControllerDevice, IReadOnlyCollection<int>>(controller,
+						Enumerable.Range(0, controller.OutputCount).ToHashSet()));
+					continue;
+				}
+
+				var outputs = _selectedOutputs
+					.Where(output => output.ControllerId == controller.Id)
+					.Select(output => output.OutputIndex)
+					.Where(outputIndex => outputIndex >= 0 && outputIndex < controller.OutputCount)
+					.ToHashSet();
+				if (outputs.Count > 0)
+					result.Add(new KeyValuePair<IControllerDevice, IReadOnlyCollection<int>>(controller, outputs));
+			}
+
+			return result;
+		}
+
 
 		private void treeview_AfterSelect(object sender, TreeViewEventArgs e)
 		{
+			CaptureLogicalSelectionFromTree();
 			OnControllerSelectionChanged();
 		}
 
 		private void treeview_Deselected(object sender, EventArgs e)
 		{
+			CaptureLogicalSelectionFromTree();
 			OnControllerSelectionChanged();
+		}
+
+		private void CaptureLogicalSelectionFromTree()
+		{
+			if (_projectingLogicalSelection)
+				return;
+
+			_selectedControllerIds.Clear();
+			_selectedOutputs.Clear();
+			foreach (TreeNode node in treeview.SelectedNodes)
+			{
+				switch (node.Tag)
+				{
+					case IControllerDevice controller:
+						_selectedControllerIds.Add(controller.Id);
+						break;
+					case int outputIndex when FindOwningController(node) is IControllerDevice controller:
+						_selectedOutputs.Add(new OutputIdentity(controller.Id, outputIndex));
+						break;
+				}
+			}
 		}
 
 

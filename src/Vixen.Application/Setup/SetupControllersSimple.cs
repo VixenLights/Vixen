@@ -14,8 +14,6 @@ namespace VixenApplication.Setup
 {
 	public partial class SetupControllersSimple : UserControl, ISetupControllersControl
 	{
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-
 		public SetupControllersSimple(DisplaySetup displaySetup)
 		{
 			InitializeComponent();
@@ -88,8 +86,7 @@ namespace VixenApplication.Setup
 
 			buttonAddController.Enabled = comboBoxNewControllerType.SelectedIndex >= 0;
 
-			buttonSelectSourceElements.Enabled = controllerTree.SelectedTreeNodes.Any(node =>
-				node.Tag is IControllerDevice || node.Tag is int);
+			buttonSelectSourceElements.Enabled = controllerTree.GetSelectedControllerOutputs().Any();
 
 			if (selectedControllerCount <= 0)
 			{
@@ -113,68 +110,18 @@ namespace VixenApplication.Setup
 			}
 		}
 
+		/// <summary>
+		/// Builds the logical controller-output selection, including unmaterialized output pages.
+		/// </summary>
+		/// <returns>A set of selected controllers and zero-based output indexes.</returns>
 		public ControllersAndOutputsSet BuildSelectedControllersAndOutputs()
 		{
-			ControllersAndOutputsSet result = new ControllersAndOutputsSet();
-
-			foreach (TreeNode node in controllerTree.SelectedTreeNodes)
+			var result = new ControllersAndOutputsSet();
+			foreach (var (controller, outputIndexes) in controllerTree.GetSelectedControllerOutputs())
 			{
-				IControllerDevice? controller = node.Tag as IControllerDevice;
-				int outputIndex = -1;
-
-				if (controller == null)
-				{
-					if (node.Tag is int tag)
-					{
-						outputIndex = tag;
-						controller = FindOwningController(node);
-						if (controller == null)
-						{
-							Logging.Error("node parent is not a controller: " + node.Name);
-						}
-					}
-				}
-
-				if (controller != null)
-				{
-					result.TryGetValue(controller, out var selectedOutputs);
-					if (selectedOutputs == null)
-					{
-						selectedOutputs = new HashSet<int>();
-						result[controller] = selectedOutputs;
-					}
-
-					// if there wasn't a specific output that this was about, add all outputs for the controller
-					if (outputIndex < 0)
-					{
-						for (int i = 0; i < controller.OutputCount; i++)
-						{
-							selectedOutputs.Add(i);
-						}
-					}
-					else
-					{
-						selectedOutputs.Add(outputIndex);
-					}
-				}
-				else
-				{
-					Logging.Error("can't figure out what controller the node maps to: " + node.Name);
-				}
+				result[controller] = outputIndexes.ToHashSet();
 			}
-
 			return result;
-		}
-
-		private static IControllerDevice? FindOwningController(TreeNode node)
-		{
-			for (TreeNode? current = node.Parent; current != null; current = current.Parent)
-			{
-				if (current.Tag is IControllerDevice controller)
-					return controller;
-			}
-
-			return null;
 		}
 
 		[Browsable(false)]

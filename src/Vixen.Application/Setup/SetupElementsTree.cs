@@ -405,32 +405,50 @@ namespace VixenApplication.Setup
 		private void buttonSelectDestinationOutputs_Click(object sender, EventArgs e)
 		{
 			ControllersAndOutputsSet controllersAndOutputs = new ControllersAndOutputsSet();
+			var selectedElementIds = new HashSet<Guid>();
+			var pendingComponents = new Stack<IDataFlowComponent>();
+			var visitedComponentIds = new HashSet<Guid>();
 
 			foreach (ElementNode selectedElement in SelectedElements)
 			{
 				foreach (ElementNode leafElementNode in selectedElement.GetLeafEnumerator())
 				{
-					if (leafElementNode == null || leafElementNode.Element == null)
+					if (leafElementNode?.Element == null || !selectedElementIds.Add(leafElementNode.Element.Id))
 						continue;
 
 					IDataFlowComponent? component = VixenSystem.DataFlow.GetComponent(leafElementNode.Element.Id);
 					if (component == null)
 						continue;
 
-					IEnumerable<IDataFlowComponent> outputComponents = _findComponentsOfTypeInTreeFromComponent(component, typeof(CommandOutputDataFlowAdapter));
+					pendingComponents.Push(component);
+				}
+			}
 
-					foreach (IDataFlowComponent outputComponent in outputComponents)
+			while (pendingComponents.TryPop(out IDataFlowComponent? component))
+			{
+				if (!visitedComponentIds.Add(component.DataFlowComponentId))
+					continue;
+
+				if (component is CommandOutputDataFlowAdapter)
+				{
+					VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(component, out IControllerDevice? controller, out var outputIndex);
+
+					if (controller == null)
+						continue;
+
+					if (!controllersAndOutputs.TryGetValue(controller, out var outputIndexes))
 					{
-						VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(outputComponent, out IControllerDevice? controller, out var outputIndex);
-
-						if (controller == null)
-							continue;
-
-						if (!controllersAndOutputs.ContainsKey(controller))
-							controllersAndOutputs[controller] = new HashSet<int>();
-
-						controllersAndOutputs[controller].Add(outputIndex);
+						outputIndexes = [];
+						controllersAndOutputs[controller] = outputIndexes;
 					}
+
+					outputIndexes.Add(outputIndex);
+					continue;
+				}
+
+				foreach (IDataFlowComponent destination in VixenSystem.DataFlow.GetDestinationsOfComponent(component))
+				{
+					pendingComponents.Push(destination);
 				}
 			}
 
@@ -445,15 +463,6 @@ namespace VixenApplication.Setup
 				MasterForm?.SelectControllersAndOutputs(controllersAndOutputs, true);
 			}
 
-		}
-
-		private IEnumerable<IDataFlowComponent> _findComponentsOfTypeInTreeFromComponent(IDataFlowComponent dataFlowComponent, Type dfctype)
-		{
-			return VixenSystem.DataFlow.GetDestinationsOfComponent(dataFlowComponent)
-				.SelectMany(x => _findComponentsOfTypeInTreeFromComponent(x, dfctype))
-				.Concat(new[] { dataFlowComponent })
-				.Where(dfc => dfctype.IsAssignableFrom(dfc.GetType()))
-				;
 		}
 
 		private void buttonDeleteElements_Click(object sender, EventArgs e)

@@ -279,11 +279,12 @@ namespace Vixen.Sys.Output
 			{
 				var output = tempOutputs[offset];
 				output.Index = OutputCount;
-
-				AddOutput(output);
+				_outputMediator.AddOutput(output);
+				VixenSystem.OutputControllers.UpdateControllerOutputIndex(_adapterFactory.GetAdapter(output), this, output.Index);
 				offset++;
 			}
 
+			commands = null;
 			UpdateOutputNames();
 
 			OnOutputCountChanged();

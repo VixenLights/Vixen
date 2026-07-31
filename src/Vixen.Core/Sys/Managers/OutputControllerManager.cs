@@ -61,6 +61,22 @@ namespace Vixen.Sys.Managers
 			return _outputDataFlowComponentToController.Remove(component);
 		}
 
+		/// <summary>
+		/// Updates the output index associated with an already registered data-flow component.
+		/// </summary>
+		/// <param name="component">The registered output data-flow component.</param>
+		/// <param name="controller">The controller that owns the output.</param>
+		/// <param name="outputIndex">The zero-based output index.</param>
+		/// <returns><see langword="true" /> if the component was registered; otherwise, <see langword="false" />.</returns>
+		public bool UpdateControllerOutputIndex(IDataFlowComponent component, IControllerDevice controller, int outputIndex)
+		{
+			if (component == null || !_outputDataFlowComponentToController.ContainsKey(component))
+				return false;
+
+			_outputDataFlowComponentToController[component] = new Tuple<IControllerDevice, int>(controller, outputIndex);
+			return true;
+		}
+
 		public bool getOutputDetailsForDataFlowComponent(IDataFlowComponent component, out IControllerDevice controller, out int outputIndex)
 		{
 			controller = null;

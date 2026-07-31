@@ -153,6 +153,58 @@ public sealed class ControllerTreeVirtualizationTests
 		Assert.DoesNotContain(AllNodes(controllerNode.Nodes), node => node.Tag is int);
 	}
 
+	[Fact]
+	public void LogicalSelection_ExportsAndMaterializesAllMatchingPages()
+	{
+		var controller = CreateController(5000);
+		using var controllerTree = new ControllerTree();
+		controllerTree.PopulateControllerTreeForTests([controller]);
+
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>>
+		{
+			[controller] = Enumerable.Range(0, 5000).ToHashSet()
+		});
+
+		var selected = Assert.Single(controllerTree.GetSelectedControllerOutputs());
+		Assert.Equal(5000, selected.Value.Count);
+		Assert.Equal(5000, AllNodes(controllerTree.TreeViewForTests.Nodes).Count(node => node.Tag is int));
+	}
+
+	[Fact]
+	public void LogicalSelection_ReplacesPreviousOutputs()
+	{
+		var controller = CreateController(5000);
+		using var controllerTree = new ControllerTree();
+		controllerTree.PopulateControllerTreeForTests([controller]);
+
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [1, 257] });
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [4999] });
+
+		var selected = Assert.Single(controllerTree.GetSelectedControllerOutputs());
+		Assert.Equal([4999], selected.Value);
+	}
+
+	[Fact]
+	public void LogicalSelection_ExpandsMatchedRangesAndHighlightsOnlyMatchingOutputs()
+	{
+		var controller = CreateController(5000);
+		using var controllerTree = new ControllerTree();
+		controllerTree.PopulateControllerTreeForTests([controller]);
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [1, 257, 299] });
+
+		var controllerNode = Assert.Single(controllerTree.TreeViewForTests.Nodes.Cast<TreeNode>());
+		Assert.Equal(20, controllerNode.Nodes.Count);
+		Assert.Equal("Outputs 257-512", controllerNode.Nodes[1].Text);
+		var secondRange = controllerNode.Nodes[1];
+		controllerTree.ExpandNodeForTests(secondRange);
+
+		var selectedOutputs = secondRange.Nodes.Cast<TreeNode>()
+			.Where(controllerTree.SelectedTreeNodes.Contains)
+			.Select(node => Assert.IsType<int>(node.Tag));
+		Assert.Equal([257, 299], selectedOutputs.Order());
+		Assert.DoesNotContain(controllerTree.GetSelectedControllerOutputs().SelectMany(pair => pair.Value), output => output is < 0 or >= 5000);
+	}
+
 	private static ControllerTree PopulateTree(params IControllerDevice[] controllers)
 	{
 		var controllerTree = new ControllerTree();
