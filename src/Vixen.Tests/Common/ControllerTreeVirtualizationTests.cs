@@ -27,8 +27,8 @@ public sealed class ControllerTreeVirtualizationTests
 
 	[Theory]
 	[InlineData(1)]
-	[InlineData(255)]
-	[InlineData(256)]
+	[InlineData(4999)]
+	[InlineData(5000)]
 	public void ExpandingSmallController_MaterializesDirectOutputLeaves(int outputCount)
 	{
 		var controllerTree = PopulateTree(CreateController(outputCount));
@@ -43,9 +43,9 @@ public sealed class ControllerTreeVirtualizationTests
 	}
 
 	[Theory]
-	[InlineData(257, 2, "Outputs 257-257")]
-	[InlineData(5000, 20, "Outputs 4865-5000")]
-	[InlineData(512, 2, "Outputs 257-512")]
+	[InlineData(5001, 2, "Outputs 5001-5001")]
+	[InlineData(10000, 2, "Outputs 5001-10000")]
+	[InlineData(15000, 3, "Outputs 10001-15000")]
 	public void ExpandingLargeController_CreatesBoundedOutputRanges(int outputCount, int expectedRangeCount, string expectedLastRangeLabel)
 	{
 		var controllerTree = PopulateTree(CreateController(outputCount));
@@ -63,7 +63,7 @@ public sealed class ControllerTreeVirtualizationTests
 	[Fact]
 	public void ExpandingOneRange_MaterializesOnlyThatPageWithOutputMetadata()
 	{
-		var controller = CreateController(5000, outputNames: index => $"Channel {index + 1}");
+		var controller = CreateController(10000, outputNames: index => $"Channel {index + 1}");
 		var controllerTree = PopulateTree(controller);
 		var populatedTree = controllerTree.TreeViewForTests;
 		var controllerNode = Assert.Single(populatedTree.Nodes.Cast<TreeNode>());
@@ -72,7 +72,7 @@ public sealed class ControllerTreeVirtualizationTests
 
 		controllerTree.ExpandNodeForTests(selectedRange);
 
-		Assert.InRange(selectedRange.Nodes.Count, 1, 256);
+		Assert.InRange(selectedRange.Nodes.Count, 1, 5000);
 		Assert.All(selectedRange.Nodes.Cast<TreeNode>(), node =>
 		{
 			var outputIndex = Assert.IsType<int>(node.Tag);
@@ -85,7 +85,7 @@ public sealed class ControllerTreeVirtualizationTests
 	[Fact]
 	public void CollapseAndReexpand_DoesNotDuplicateRangesOrLeaves()
 	{
-		var controllerTree = PopulateTree(CreateController(5000));
+		var controllerTree = PopulateTree(CreateController(10000));
 		var populatedTree = controllerTree.TreeViewForTests;
 		var controllerNode = Assert.Single(populatedTree.Nodes.Cast<TreeNode>());
 		controllerTree.ExpandNodeForTests(controllerNode);
@@ -106,13 +106,13 @@ public sealed class ControllerTreeVirtualizationTests
 	[Fact]
 	public void CollapsingRange_EvictsLeavesAndRestoresLogicalSelectionOnExpansion()
 	{
-		var controller = CreateController(5000);
+		var controller = CreateController(10000);
 		using var controllerTree = new ControllerTree();
 		controllerTree.PopulateControllerTreeForTests([controller]);
 		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [1] });
 
 		var rangeNode = controllerTree.TreeViewForTests.Nodes[0].Nodes[0];
-		Assert.Equal(256, rangeNode.Nodes.Count);
+		Assert.Equal(5000, rangeNode.Nodes.Count);
 
 		controllerTree.CollapseNodeForTests(rangeNode);
 
@@ -127,7 +127,7 @@ public sealed class ControllerTreeVirtualizationTests
 	[Fact]
 	public void CollapsingController_EvictsRangesAndLeaves()
 	{
-		var controllerTree = PopulateTree(CreateController(5000));
+		var controllerTree = PopulateTree(CreateController(10000));
 		var controllerNode = controllerTree.TreeViewForTests.Nodes[0];
 		controllerTree.ExpandNodeForTests(controllerNode);
 		controllerTree.ExpandNodeForTests(controllerNode.Nodes[0]);
@@ -141,7 +141,7 @@ public sealed class ControllerTreeVirtualizationTests
 	[Fact]
 	public void ExpandingAnotherController_DoesNotMaterializeOutputsForOtherControllers()
 	{
-		var controllerTree = PopulateTree(CreateController(5000), CreateController(5000));
+		var controllerTree = PopulateTree(CreateController(10000), CreateController(10000));
 		var populatedTree = controllerTree.TreeViewForTests;
 		var firstController = populatedTree.Nodes[0];
 		var secondController = populatedTree.Nodes[1];
@@ -150,17 +150,17 @@ public sealed class ControllerTreeVirtualizationTests
 
 		AssertVirtualChild(firstController);
 		Assert.DoesNotContain(AllNodes(firstController.Nodes), node => node.Tag is int);
-		Assert.Equal(20, secondController.Nodes.Count);
+		Assert.Equal(2, secondController.Nodes.Count);
 	}
 
 	[Theory]
 	[InlineData(0)]
-	[InlineData(255)]
-	[InlineData(256)]
 	[InlineData(4999)]
+	[InlineData(5000)]
+	[InlineData(9999)]
 	public void SelectingOutput_MaterializesOnlyItsContainingPage(int outputIndex)
 	{
-		var controller = CreateController(5000, outputNames: _ => "Duplicate output name");
+		var controller = CreateController(10000, outputNames: _ => "Duplicate output name");
 		using var controllerTree = new ControllerTree();
 		controllerTree.PopulateControllerTreeForTests([controller]);
 
@@ -168,15 +168,15 @@ public sealed class ControllerTreeVirtualizationTests
 
 		var selectedNode = Assert.Single(controllerTree.SelectedTreeNodes);
 		Assert.Equal(outputIndex, Assert.IsType<int>(selectedNode.Tag));
-		Assert.InRange(AllNodes(controllerTree.TreeViewForTests.Nodes).Count(node => node.Tag is int), 1, 256);
+		Assert.InRange(AllNodes(controllerTree.TreeViewForTests.Nodes).Count(node => node.Tag is int), 1, 5000);
 	}
 
 	[Fact]
 	public void RepopulatingAfterOutputCountChange_RecreatesOnlyTheRequiredVirtualChild()
 	{
 		var controllerId = Guid.NewGuid();
-		var originalController = CreateController(5000, controllerId);
-		var resizedController = CreateController(257, controllerId);
+		var originalController = CreateController(10000, controllerId);
+		var resizedController = CreateController(5001, controllerId);
 		using var controllerTree = new ControllerTree();
 
 		controllerTree.PopulateControllerTreeForTests([originalController]);
@@ -191,53 +191,53 @@ public sealed class ControllerTreeVirtualizationTests
 	[Fact]
 	public void LogicalSelection_ExportsAndMaterializesAllMatchingPages()
 	{
-		var controller = CreateController(5000);
+		var controller = CreateController(10000);
 		using var controllerTree = new ControllerTree();
 		controllerTree.PopulateControllerTreeForTests([controller]);
 
 		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>>
 		{
-			[controller] = Enumerable.Range(0, 5000).ToHashSet()
+			[controller] = Enumerable.Range(0, 10000).ToHashSet()
 		});
 
 		var selected = Assert.Single(controllerTree.GetSelectedControllerOutputs());
-		Assert.Equal(5000, selected.Value.Count);
-		Assert.Equal(5000, AllNodes(controllerTree.TreeViewForTests.Nodes).Count(node => node.Tag is int));
+		Assert.Equal(10000, selected.Value.Count);
+		Assert.Equal(10000, AllNodes(controllerTree.TreeViewForTests.Nodes).Count(node => node.Tag is int));
 	}
 
 	[Fact]
 	public void LogicalSelection_ReplacesPreviousOutputs()
 	{
-		var controller = CreateController(5000);
+		var controller = CreateController(10000);
 		using var controllerTree = new ControllerTree();
 		controllerTree.PopulateControllerTreeForTests([controller]);
 
 		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [1, 257] });
-		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [4999] });
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [9999] });
 
 		var selected = Assert.Single(controllerTree.GetSelectedControllerOutputs());
-		Assert.Equal([4999], selected.Value);
+		Assert.Equal([9999], selected.Value);
 	}
 
 	[Fact]
 	public void LogicalSelection_ExpandsMatchedRangesAndHighlightsOnlyMatchingOutputs()
 	{
-		var controller = CreateController(5000);
+		var controller = CreateController(10000);
 		using var controllerTree = new ControllerTree();
 		controllerTree.PopulateControllerTreeForTests([controller]);
-		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [1, 257, 299] });
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [1, 5001, 5599] });
 
 		var controllerNode = Assert.Single(controllerTree.TreeViewForTests.Nodes.Cast<TreeNode>());
-		Assert.Equal(20, controllerNode.Nodes.Count);
-		Assert.Equal("Outputs 257-512", controllerNode.Nodes[1].Text);
+		Assert.Equal(2, controllerNode.Nodes.Count);
+		Assert.Equal("Outputs 5001-10000", controllerNode.Nodes[1].Text);
 		var secondRange = controllerNode.Nodes[1];
 		controllerTree.ExpandNodeForTests(secondRange);
 
 		var selectedOutputs = secondRange.Nodes.Cast<TreeNode>()
 			.Where(controllerTree.SelectedTreeNodes.Contains)
 			.Select(node => Assert.IsType<int>(node.Tag));
-		Assert.Equal([257, 299], selectedOutputs.Order());
-		Assert.DoesNotContain(controllerTree.GetSelectedControllerOutputs().SelectMany(pair => pair.Value), output => output is < 0 or >= 5000);
+		Assert.Equal([5001, 5599], selectedOutputs.Order());
+		Assert.DoesNotContain(controllerTree.GetSelectedControllerOutputs().SelectMany(pair => pair.Value), output => output is < 0 or >= 10000);
 	}
 
 	private static ControllerTree PopulateTree(params IControllerDevice[] controllers)

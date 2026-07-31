@@ -12,7 +12,7 @@ namespace Common.Controls
 	public partial class ControllerTree : UserControl
 	{
 		private const string VirtualNodeName = @"VIRT";
-		private const int OutputPageSize = 256;
+		private const int OutputPageSize = 5000;
 
 		private sealed record OutputRange(IControllerDevice Controller, int StartIndex, int Count);
 		private sealed record OutputIdentity(Guid ControllerId, int OutputIndex);

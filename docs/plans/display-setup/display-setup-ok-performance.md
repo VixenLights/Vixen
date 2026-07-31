@@ -8,7 +8,7 @@ JIRA issue: [VIX-3955](https://vixenlights.atlassian.net/browse/VIX-3955) — Im
 
 Display Setup currently creates one native WinForms `TreeNode` for every controller output as soon as the dialog opens. On the measured profile, 27 controller roots eagerly created 163,655 output nodes. Closing either with OK or Cancel then made the UI thread spend roughly 33 seconds deleting those native tree items. The dialog remained visible but partially dismantled during that interval, which looked like an application hang.
 
-After this change, Display Setup will keep the existing controller `TreeView`, but it will use bounded, adaptive output pages rather than copying `ElementTree`'s whole-branch lazy loading. Initially the tree will create only controller roots plus one virtual child for each non-empty controller. Expanding a controller with at most 256 outputs will materialize those outputs directly. Expanding a larger controller will create lightweight range nodes such as “Outputs 1–256” and “Outputs 257–512”; only expanding a range will materialize its maximum of 256 output leaves. A controller with 5,000 outputs, which is normal in Vixen profiles, will therefore create about 20 range nodes on controller expansion instead of 5,000 native output items.
+After this change, Display Setup keeps the existing controller `TreeView`, but it uses bounded, adaptive output pages rather than copying `ElementTree`'s whole-branch lazy loading. Initially the tree creates only controller roots plus one virtual child for each non-empty controller. Expanding a controller with at most 2,500 outputs materializes those outputs directly. Larger controllers create range nodes such as “Outputs 1–2500” and “Outputs 2501–5000”; expanding a range materializes at most 2,500 output leaves. This retains the familiar single-group experience for common larger props while avoiding eager population of every controller.
 
 The same change will correct two secondary feedback problems. Once the modal dialog can close promptly, the OK path will visibly paint a “Preparing Display Setup Changes” progress stage before synchronous orphan cleanup and controller reordering, then advance through the two existing save stages. The Cancel path will visibly paint “Reloading System Configuration” before its synchronous reload. Both paths will restore the cursor, controls, and progress visibility through `finally`, including when work fails.
 
@@ -31,6 +31,7 @@ A user can see the completed behavior by opening Display Setup on the representa
 - [x] (2026-07-30 15:35 -05:00) Replaced result replay through individual `TreeNode` selections with authoritative logical controller/output selection and page-local highlighting. Replaced repeated recursive destination lookup with one deduplicated iterative graph traversal, and corrected shifted-output reinsertion so it preserves existing adapter registrations while updating their indexes.
 - [x] (2026-07-30 15:45 -05:00) Changed programmatic destination-result projection to expand every matching output page immediately and removed range-level selected-count labels, so users can inspect all matched outputs directly.
 - [x] (2026-07-31 09:20 -05:00) Added synchronous UI-thread eviction when a controller or output-range node collapses. The logical selection remains authoritative, so re-expansion restores matching visual selections without retaining the collapsed native subtree.
+- [x] (2026-07-31 10:00 -05:00) Set the final output page size to 2,500 after user profiling confirmed the desired balance between familiar prop grouping and responsive Display Setup load/close behavior.
 - [ ] Validate the production behavior with the temporary close diagnostics still present and capture a comparable post-change Timeline snapshot.
 - [ ] Remove all temporary close-diagnostic code and experiment hooks, then run focused tests, the full test suite, a Debug build, whitespace validation, and final manual OK/Cancel checks.
 - [ ] Record final evidence here and on the JIRA issue.
@@ -96,8 +97,12 @@ A user can see the completed behavior by opening Display Setup on the representa
   Date/Author: 2026-07-30 / Codex
 
 - Decision: use a fixed production page size of 256 outputs.
-  Rationale: the measured aggregate cost is about 0.202 ms per deleted output item, so 256 leaves project to about 52 ms of native deletion. This leaves substantially more headroom under the 200 ms interaction target than a 512-item page. A 5,000-output controller needs only about 20 range nodes.
+  Rationale: superseded by the final 2,500-output page size after user profiling.
   Date/Author: 2026-07-30 / Codex
+
+- Decision: use a final production page size of 2,500 outputs.
+  Rationale: user profiling confirmed that 2,500 retains the familiar grouping for larger props while preserving responsive Display Setup loading and closing. Collapse eviction releases the corresponding materialized native nodes when users finish browsing a group.
+  Date/Author: 2026-07-31 / User and Codex
 
 - Decision: controllers with 256 or fewer outputs materialize leaves directly on controller expansion; larger controllers materialize navigation-only range nodes and then leaves one page at a time.
   Rationale: small controllers retain the current two-level interaction, while large controllers receive a hard per-expansion leaf bound without changing the TreeView control.
@@ -169,7 +174,7 @@ A user can see the completed behavior by opening Display Setup on the representa
 
 ## Outcomes & Retrospective
 
-The investigation phase is complete and the root cause is conclusive: eager native output items in `ControllerTree` dominate Display Setup close time. The design now goes beyond `ElementTree`-style whole-branch loading: it retains the TreeView but bounds each large-controller output expansion to a 256-item page and uses stable model identities for state. Milestone 4 also paints the preparation, save, and reload stages before their synchronous work, restoring the busy UI through `finally`. Production diagnostics and final profiling remain for later milestones.
+The investigation phase is complete and the root cause is conclusive: eager native output items in `ControllerTree` dominate Display Setup close time. The final design retains the TreeView, uses 2,500-output pages, evicts materialized nodes on collapse, and uses stable model identities for state. Milestone 4 also paints the preparation, save, and reload stages before their synchronous work, restoring the busy UI through `finally`.
 
 No production fix has been implemented by this plan revision. Temporary diagnostic changes remain in the working tree so the implementer can make one post-fix comparison before removing them. Update this section with the implemented files, measured before/after node counts and close latency, test results, and any follow-up limitations when the work is complete.
 
@@ -193,12 +198,12 @@ Each controller root uses its controller GUID as `TreeNode.Name` and stores the 
 The precedent is `src/Vixen.Common/Controls/ElementTree.cs`. It demonstrates the sentinel/`BeforeExpand` mechanism, but not the required granularity: it replaces a sentinel with every child. Reuse only that event-driven materialization concept. `ControllerTree` needs an adaptive provider:
 
 - zero outputs: controller has no sentinel or expansion affordance;
-- 1–256 outputs: controller has a sentinel, and first expansion creates direct output leaves;
-- more than 256 outputs: controller has a sentinel, and first expansion creates `ceil(OutputCount / 256)` range nodes, each with its own sentinel;
-- range expansion: replace only that range's sentinel with its at-most-256 output leaves;
+- 1–2,500 outputs: controller has a sentinel, and first expansion creates direct output leaves;
+- more than 2,500 outputs: controller has a sentinel, and first expansion creates `ceil(OutputCount / 2500)` range nodes, each with its own sentinel;
+- range expansion: replace only that range's sentinel with its at-most-2,500 output leaves;
 - collapse: retain materialized nodes for selection compatibility during this issue.
 
-The range label is presentation only. Internal indexes are zero-based; display labels are one-based and inclusive, for example a descriptor with `StartIndex = 256` and `Count = 256` displays `Outputs 257–512`. The final range ends at the actual `OutputCount`.
+The range label is presentation only. Internal indexes are zero-based; display labels are one-based and inclusive, for example a descriptor with `StartIndex = 2500` and `Count = 2500` displays `Outputs 2501–5000`. The final range ends at the actual `OutputCount`.
 
 Several output actions currently assume `node.Parent.Tag is OutputController`, including insert, remove, unpatch, and other selected-channel operations. That is false for paged leaves because their immediate parent is a range node. Add one focused owning-controller resolver that walks ancestors until it finds an `IControllerDevice`, and use it everywhere an output leaf must resolve its controller. Audit `SetupControllersSimple.BuildSelectedControllersAndOutputs()` separately because it lives in another assembly; it must likewise resolve the controller ancestor rather than only `node.Parent`.
 
@@ -259,7 +264,7 @@ Modify `src/Vixen.Common/Controls/ControllerTree.cs`.
 Add constants for the sentinel and hard page boundary:
 
     private const string VirtualNodeName = @"VIRT";
-    private const int OutputPageSize = 256;
+    private const int OutputPageSize = 2500;
 
 Change controller-root creation so it always creates and adds the controller root immediately, preserves the existing controller icon, and adds one sentinel child only when `controller.OutputCount > 0`. Do not enumerate `controller.Outputs` during initial population.
 
@@ -379,9 +384,9 @@ Acceptance is binary unless a criterion explicitly records a measured value.
 
 1. Given the representative profile with 27 controllers and 163,655 outputs, when Display Setup first appears, then the controller TreeView contains 27 controller roots, zero range nodes, zero real output nodes, and one sentinel child for each non-empty controller.
 2. Given no controller has been expanded, when the user clicks OK or Cancel, then `ShowDialogAsync()` returns and the applicable main-window progress stage is visibly painted within 200 ms on the profiling machine; there is no tens-of-seconds native destruction interval.
-3. Given a controller with 1–256 outputs, when it is expanded, then its outputs appear directly and exactly once with correct names, zero-based index tags, and white/grey/green patch-state icons.
-4. Given a controller with 5,000 or more outputs, when it is expanded, then only one range node per at-most-256 outputs appears, no output leaves are created, and controller expansion remains responsive.
-5. Given a range is expanded, when its leaves appear, then it creates at most 256 outputs for exactly that range; no sibling range or controller output is materialized.
+3. Given a controller with 1–2,500 outputs, when it is expanded, then its outputs appear directly and exactly once with correct names, zero-based index tags, and white/grey/green patch-state icons.
+4. Given a controller with more than 2,500 outputs, when it is expanded, then only one range node per at-most-2,500 outputs appears, no output leaves are created, and controller expansion remains responsive.
+5. Given a range is expanded, when its leaves appear, then it creates at most 2,500 outputs for exactly that range; no sibling range or controller output is materialized.
 6. Given an already-materialized controller or range is collapsed and expanded again, when it reopens, then its existing children are reused without duplicates.
 7. Given output indexes 0, 255, 256, or the last output are requested through `SelectedControllersAndOutputs`, when the tree restores selection, then only the owning controller and containing range are materialized and the correct output leaf is selected.
 8. Given duplicate output names or an output rename, when selection and tree state are restored, then controller GUID plus output index selects the correct output without relying on the display name.
@@ -390,18 +395,18 @@ Acceptance is binary unless a criterion explicitly records a measured value.
 11. Given a direct or paged output leaf is selected, when insert, remove, unpatch, find-patched, or patching selection code resolves it, then it receives the correct owning controller and zero-based output index.
 12. Given controller output names, count, or patch sources change, when loaded leaves refresh or deferred pages first expand, then displayed output state and range boundaries match the current controller model.
 13. Given controllers are reordered, when the user clicks OK and reopens Display Setup, then root order persists without materializing unrelated ranges or outputs.
-14. Given one page containing 256 outputs has been materialized, when OK or Cancel closes the dialog, then native destruction and dialog return remain below 200 ms on the profiling machine. Record the exact count and timing; if 256 leaves do not leave sufficient margin, reduce `OutputPageSize` and repeat rather than relaxing the target.
+14. Given one page containing 2,500 outputs has been materialized, when OK or Cancel closes the dialog, then native destruction and dialog return remain within the user-profiled responsive boundary. Record the exact count and timing for future page-size changes.
 15. Given OK is clicked, when the modal dialog returns, then “Preparing Display Setup Changes” is painted before orphan cleanup/controller reorder, followed by “Saving System Configuration” and “Saving Module Configuration”; cleanup occurs before both saves.
 16. Given Cancel is clicked after an in-memory setup change, when the modal dialog returns, then “Reloading System Configuration” is painted before reload, no OK cleanup or save executes, and reopening Display Setup shows the change was discarded.
 17. Given cleanup, reload, or save throws, when the operation exits, then the progress bar is hidden, buttons are enabled, and the cursor is restored by `finally`; existing error propagation/logging behavior is not silently swallowed.
 18. Given the production fix is complete, then no close-diagnostic source file, WndProc instrumentation, disposal experiment, environment switch, controller-count logger, or diagnostic test hook remains in `src`.
 19. The focused tests pass, the full `Vixen.Tests` suite passes, the Debug solution rebuild succeeds, and `git diff --check` reports no errors.
 
-This issue intentionally does not guarantee constant close time after a user expands every range in every controller. The accepted boundary is that no single controller expansion can create thousands of leaves and no single range expansion can create more than 256. Materialized pages remain cached for selection compatibility, so record the number of materialized pages and output leaves in every performance comparison.
+This issue intentionally does not guarantee constant close time after a user expands every range in every controller. The accepted boundary is a maximum 2,500-output direct group or range page, chosen from user profiling. Collapsing a controller or range evicts its materialized descendants, so record the number of still-expanded groups and output leaves in every performance comparison.
 
 ## Idempotence and Recovery
 
-Population must be idempotent. A controller sentinel may be replaced exactly once with either direct leaves or page nodes. A page sentinel may be replaced exactly once with at-most-256 leaves. Repeated `BeforeExpand` events must observe the node role and existing children rather than append duplicates. Full repopulation may clear the TreeView, recreate controller roots and sentinels, then selectively materialize only controllers/pages required by typed saved state or requested selection.
+Population must be idempotent. A controller sentinel may be replaced exactly once with either direct leaves or page nodes. A page sentinel may be replaced exactly once with at-most-2,500 leaves. Collapsing either node restores its sentinel and releases children. Repeated `BeforeExpand` events must observe the node role and existing children rather than append duplicates. Full repopulation may clear the TreeView, recreate controller roots and sentinels, then selectively materialize only controllers/pages required by typed saved state or requested selection.
 
 If a test fails midway, rerun the focused filter; it must not depend on a persisted profile. Use mock or test controllers and restore any global Vixen state installed by a fixture in `finally` or fixture disposal.
 
@@ -440,8 +445,8 @@ Important measured values:
     Approximate deletion cost per output:          ~0.202 ms
     Average outputs per controller:                ~6,061
     Estimated average whole-controller deletion:  ~1.22 s
-    Planned maximum output page size:              256
-    Estimated deletion cost per full page:         ~52 ms
+    Final maximum output page size:                2,500
+    Final page-size validation:                    user-profiled responsive load/close behavior
     Empty ControllerTree disposal:                ~4.53 ms
     Remaining parent close after emptying tree:   ~95 ms
     NtUserDestroyWindow own CPU, tree-only run:   ~32.45 s
@@ -450,12 +455,12 @@ Post-change evidence to fill in:
 
     JIRA issue and URL: VIX-3955 — https://vixenlights.atlassian.net/browse/VIX-3955 (created and read back 2026-07-30; status: New Ticket; no transition performed)
     Controller output count distribution: TBD
-    Focused virtualization tests: `dotnet test src/Vixen.Tests/Vixen.Tests.csproj --no-restore --filter FullyQualifiedName~ControllerTreeVirtualizationTests --nologo` (2026-07-30: 15 passed; 0 failed; existing repository dependency/compiler warnings remain)
+    Focused virtualization tests: `dotnet test src/Vixen.Tests/Vixen.Tests.csproj --no-restore --filter FullyQualifiedName~ControllerTreeVirtualizationTests --nologo` (2026-07-31: 20 passed; 0 failed; existing repository dependency/compiler warnings remain)
     Full tests: TBD
     Debug build: `dotnet build src/Vixen.Application/Vixen.Application.csproj --no-restore --nologo` (2026-07-30: succeeded; 0 errors; 26 existing warnings)
     Initial root/sentinel/range/output counts: TBD
-    5,000+ controller range count: TBD
-    One-materialized-page node count: TBD
+    5,000-output controller range count: 2 at the final 2,500-output page size
+    One-materialized-page node count: up to 2,500 output leaves
     Two-materialized-page node count: TBD
     OK click to visible preparation progress: TBD
     Cancel click to visible reload progress: TBD
@@ -472,7 +477,7 @@ No new NuGet packages, projects, solution entries, services, configuration forma
 `ControllerTree` should add only private implementation details unless tests require a narrow assembly-internal seam:
 
     private const string VirtualNodeName = @"VIRT";
-    private const int OutputPageSize = 256;
+    private const int OutputPageSize = 2500;
     private void AddControllerChildren(TreeNode controllerNode, IControllerDevice controller);
     private void AddOutputLeaves(TreeNodeCollection target, IControllerDevice controller, int startIndex, int count);
     private IControllerDevice? FindOwningController(TreeNode outputNode);
@@ -505,3 +510,4 @@ If implementation adds or changes any public or protected member despite this de
 - 2026-07-30 / Codex: Completed Milestone 5 after six post-change `CloseDiagnosticsDisposalMode.None` logs were added under `docs/references/display-setup`. Natural close measured 41–77 ms click-to-return and 30–66 ms native destruction with zero, one, or two materialized pages. Removed `DisplaySetup.CloseDiagnostics.cs`, all marker/experiment hooks, the diagnostic controller-tree accessor, and the diagnostic-only OK/Cancel event handlers; the application build and diagnostic source scan succeeded.
 - 2026-07-30 / Codex: Addressed the large find-patched-output regression by keeping authoritative controller/output selection outside the materialized `TreeNode` graph. Destination discovery now visits each graph component once; shifted output insertion preserves adapter registration and updates its index map without duplicate warnings. Programmatic results now expand every matching page and highlight every matched output directly, without persistent range labels. Focused virtualization coverage increased to 18 tests.
 - 2026-07-31 / Codex: Added synchronous collapse eviction for controller and range nodes. Each collapsed node returns to its virtual sentinel, releasing native descendants while logical output selection remains available for re-expansion. Focused virtualization coverage increased to 20 tests.
+- 2026-07-31 / User and Codex: Finalized the output page size at 2,500 after user profiling found it preserves familiar prop grouping while keeping Display Setup responsive. The final design evicts materialized descendants on collapse.
