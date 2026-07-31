@@ -30,6 +30,7 @@ A user can see the completed behavior by opening Display Setup on the representa
 - [x] (2026-07-30 15:10 -05:00) Captured six post-change natural-close logs (OK/Cancel with zero, one, and two materialized pages), verified 41–77 ms click-to-dialog-return, and removed all temporary close diagnostics, hooks, and diagnostic-only test accessors.
 - [x] (2026-07-30 15:35 -05:00) Replaced result replay through individual `TreeNode` selections with authoritative logical controller/output selection and page-local highlighting. Replaced repeated recursive destination lookup with one deduplicated iterative graph traversal, and corrected shifted-output reinsertion so it preserves existing adapter registrations while updating their indexes.
 - [x] (2026-07-30 15:45 -05:00) Changed programmatic destination-result projection to expand every matching output page immediately and removed range-level selected-count labels, so users can inspect all matched outputs directly.
+- [x] (2026-07-31 09:20 -05:00) Added synchronous UI-thread eviction when a controller or output-range node collapses. The logical selection remains authoritative, so re-expansion restores matching visual selections without retaining the collapsed native subtree.
 - [ ] Validate the production behavior with the temporary close diagnostics still present and capture a comparable post-change Timeline snapshot.
 - [ ] Remove all temporary close-diagnostic code and experiment hooks, then run focused tests, the full test suite, a Debug build, whitespace validation, and final manual OK/Cancel checks.
 - [ ] Record final evidence here and on the JIRA issue.
@@ -103,8 +104,12 @@ A user can see the completed behavior by opening Display Setup on the representa
   Date/Author: 2026-07-30 / User and Codex
 
 - Decision: retain a materialized page for the rest of the dialog session instead of unloading it on collapse.
-  Rationale: current multi-selection is stored as live `TreeNode` references. Removing collapsed leaves would require a broader logical-selection rewrite and could invalidate selections used by patching and channel actions. Page-level materialization already prevents a single large-controller expansion from creating thousands of leaves. If users commonly expand every page, selection-independent eviction can be designed separately.
+  Rationale: superseded by the logical-selection model. Collapsed controller and range nodes now reclaim their native descendants while the logical selection supplies the exact outputs if the user re-expands them.
   Date/Author: 2026-07-30 / Codex
+
+- Decision: remove materialized descendants synchronously when a controller or output-range node collapses.
+  Rationale: WinForms tree nodes are UI-thread affine. This immediately reclaims native items and gives profiling a controlled page-size trade-off without unsafe background access.
+  Date/Author: 2026-07-31 / User and Codex
 
 - Decision: programmatic selection of an output must materialize only its controller and containing 256-output page.
   Rationale: patching and tree-state restoration can target outputs directly without expanding unrelated ranges or controllers.
@@ -499,3 +504,4 @@ If implementation adds or changes any public or protected member despite this de
 - 2026-07-30 / Codex: Began Milestone 5 and verified that the representative profile source exists at `C:\Users\jeffu\Documents\Vixen 3`. No post-change interactive run, log, or Timeline snapshot exists yet, so the temporary diagnostics remain intentionally. Removal must follow the required copy-profile validation rather than precede it.
 - 2026-07-30 / Codex: Completed Milestone 5 after six post-change `CloseDiagnosticsDisposalMode.None` logs were added under `docs/references/display-setup`. Natural close measured 41–77 ms click-to-return and 30–66 ms native destruction with zero, one, or two materialized pages. Removed `DisplaySetup.CloseDiagnostics.cs`, all marker/experiment hooks, the diagnostic controller-tree accessor, and the diagnostic-only OK/Cancel event handlers; the application build and diagnostic source scan succeeded.
 - 2026-07-30 / Codex: Addressed the large find-patched-output regression by keeping authoritative controller/output selection outside the materialized `TreeNode` graph. Destination discovery now visits each graph component once; shifted output insertion preserves adapter registration and updates its index map without duplicate warnings. Programmatic results now expand every matching page and highlight every matched output directly, without persistent range labels. Focused virtualization coverage increased to 18 tests.
+- 2026-07-31 / Codex: Added synchronous collapse eviction for controller and range nodes. Each collapsed node returns to its virtual sentinel, releasing native descendants while logical output selection remains available for re-expansion. Focused virtualization coverage increased to 20 tests.

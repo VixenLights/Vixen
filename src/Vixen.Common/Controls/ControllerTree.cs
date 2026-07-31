@@ -139,6 +139,11 @@ namespace Common.Controls
 			MaterializeNode(node);
 		}
 
+		internal void CollapseNodeForTests(TreeNode node)
+		{
+			EvictCollapsedNodeChildren(node);
+		}
+
 		public void UpdateScrollPosition()
 		{
 			if (treeview.SelectedNodes.Count > 0)
@@ -1253,6 +1258,8 @@ namespace Common.Controls
 		private void treeView_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
 		{
 			if (isDoubleClick && e.Action == TreeViewAction.Collapse) e.Cancel = true;
+			if (!e.Cancel)
+				EvictCollapsedNodeChildren(e.Node);
 		}
 
 		private void treeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
@@ -1276,6 +1283,48 @@ namespace Common.Controls
 				case OutputRange range:
 					AddRangeChildren(node, range);
 					break;
+			}
+		}
+
+		private void EvictCollapsedNodeChildren(TreeNode node)
+		{
+			if (node.Tag is not IControllerDevice && node.Tag is not OutputRange)
+				return;
+			if (HasOnlyVirtualChild(node))
+				return;
+
+			treeview.BeginUpdate();
+			_projectingLogicalSelection = true;
+			try
+			{
+				node.Nodes.Clear();
+				AddVirtualChild(node);
+				RestoreMaterializedLogicalSelection();
+			}
+			finally
+			{
+				_projectingLogicalSelection = false;
+				treeview.EndUpdate();
+			}
+		}
+
+		private void RestoreMaterializedLogicalSelection()
+		{
+			treeview.ClearSelectedNodes();
+			foreach (TreeNode controllerNode in treeview.Nodes)
+			{
+				if (controllerNode.Tag is not IControllerDevice controller)
+					continue;
+				if (_selectedControllerIds.Contains(controller.Id))
+					treeview.AddSelectedNode(controllerNode);
+				foreach (TreeNode outputNode in GetMaterializedOutputNodes(controllerNode))
+				{
+					if (outputNode.Tag is int outputIndex &&
+						_selectedOutputs.Contains(new OutputIdentity(controller.Id, outputIndex)))
+					{
+						treeview.AddSelectedNode(outputNode);
+					}
+				}
 			}
 		}
 

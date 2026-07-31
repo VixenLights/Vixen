@@ -104,6 +104,41 @@ public sealed class ControllerTreeVirtualizationTests
 	}
 
 	[Fact]
+	public void CollapsingRange_EvictsLeavesAndRestoresLogicalSelectionOnExpansion()
+	{
+		var controller = CreateController(5000);
+		using var controllerTree = new ControllerTree();
+		controllerTree.PopulateControllerTreeForTests([controller]);
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [1] });
+
+		var rangeNode = controllerTree.TreeViewForTests.Nodes[0].Nodes[0];
+		Assert.Equal(256, rangeNode.Nodes.Count);
+
+		controllerTree.CollapseNodeForTests(rangeNode);
+
+		AssertVirtualChild(rangeNode);
+		Assert.Equal([1], Assert.Single(controllerTree.GetSelectedControllerOutputs()).Value);
+
+		controllerTree.ExpandNodeForTests(rangeNode);
+		Assert.Contains(rangeNode.Nodes.Cast<TreeNode>(), node => node.Tag is int outputIndex && outputIndex == 1 &&
+			controllerTree.SelectedTreeNodes.Contains(node));
+	}
+
+	[Fact]
+	public void CollapsingController_EvictsRangesAndLeaves()
+	{
+		var controllerTree = PopulateTree(CreateController(5000));
+		var controllerNode = controllerTree.TreeViewForTests.Nodes[0];
+		controllerTree.ExpandNodeForTests(controllerNode);
+		controllerTree.ExpandNodeForTests(controllerNode.Nodes[0]);
+
+		controllerTree.CollapseNodeForTests(controllerNode);
+
+		AssertVirtualChild(controllerNode);
+		Assert.Single(AllNodes(controllerNode.Nodes));
+	}
+
+	[Fact]
 	public void ExpandingAnotherController_DoesNotMaterializeOutputsForOtherControllers()
 	{
 		var controllerTree = PopulateTree(CreateController(5000), CreateController(5000));
