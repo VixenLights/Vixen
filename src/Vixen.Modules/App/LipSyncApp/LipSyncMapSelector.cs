@@ -239,7 +239,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			buttonEditMap.Enabled = (mappingsListView.SelectedIndices.Count == 1);
 			buttonCloneMap.Enabled = (mappingsListView.SelectedIndices.Count >= 1);
-			buttonDeleteMap.Enabled = (mappingsListView.SelectedIndices.Count >= 1);
+			buttonDeleteMap.Enabled = (mappingsListView.Items.Count > 1) && (mappingsListView.SelectedIndices.Count >= 1);
 		}
 
 		private void mappingsListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
