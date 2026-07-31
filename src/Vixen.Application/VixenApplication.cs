@@ -993,32 +993,44 @@ namespace VixenApplication
 			{
 				DialogResult dr = await form.ShowDialogAsync();
 
-				if (dr == DialogResult.OK)
+				UseWaitCursor = true;
+				Cursor = Cursors.WaitCursor;
+				EnableButtons(false);
+				try
 				{
-					Cursor = Cursors.WaitCursor;
-					EnableButtons(false);
-					progressBar.Visible = true;
-					UpdateProgress(Tuple.Create(0, "Saving System Configuration"));
-					await VixenSystem.SaveSystemConfigAsync();
-					UpdateProgress(Tuple.Create(50, "Saving Module Configuration"));
-					await VixenSystem.SaveModuleConfigAsync();
-					progressBar.Visible = false;
-					EnableButtons();
-					Cursor = Cursors.Default;
+					if (dr == DialogResult.OK)
+					{
+						ShowDisplaySetupProgress(0, "Preparing Display Setup Changes");
+						form.ApplyConfirmedChanges();
+						ShowDisplaySetupProgress(50, "Saving System Configuration");
+						await VixenSystem.SaveSystemConfigAsync();
+						ShowDisplaySetupProgress(100, "Saving Module Configuration");
+						await VixenSystem.SaveModuleConfigAsync();
+					}
+					else
+					{
+						ShowDisplaySetupProgress(0, "Reloading System Configuration");
+						Cursor.Current = Cursors.WaitCursor;
+						VixenSystem.ReloadSystemConfig();
+						_ = MakeTopMost();
+					}
 				}
-				else
+				finally
 				{
-					Cursor = Cursors.WaitCursor;
-					EnableButtons(false);
-					progressBar.Visible = true;
-					UpdateProgress(Tuple.Create(0, "Reloading Configuration"));
-					VixenSystem.ReloadSystemConfig();
 					progressBar.Visible = false;
 					EnableButtons();
+					UseWaitCursor = false;
+					Cursor.Current = Cursors.Default;
 					Cursor = Cursors.Default;
-					_ = MakeTopMost();
 				}
 			}
+		}
+
+		private void ShowDisplaySetupProgress(int value, string message)
+		{
+			progressBar.Visible = true;
+			UpdateProgress(Tuple.Create(value, message));
+			progressBar.Refresh();
 		}
 
 		private void startToolStripMenuItem_Click(object sender, EventArgs e)
