@@ -778,9 +778,7 @@ namespace VixenModules.Effect.Text
 		protected override void SetupRender()
 		{
 			_textClass = new List<TextClass>();
-			_text = TextMode == TextMode.Normal || TextSource == TextSource.MarkCollection
-				? TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList()
-				: SplitTextIntoCharacters(TextLines);
+			_text = PrepareTextLinesForRendering();
 
 			if (TextSource != TextSource.None) SetupMarks();
 
@@ -796,6 +794,26 @@ namespace VixenModules.Effect.Text
 			double scaleFactor = ScalingTools.GetScaleFactor();
 			_font = new Font(Font.FontFamily, Font.Size / (float)scaleFactor, Font.Style);
 			_newFontSize = _font.Size;
+		}
+
+		private static string PrepareTextRowForRendering(string row)
+		{
+			return String.IsNullOrWhiteSpace(row) ? " " : row;
+		}
+
+		private List<string> PrepareTextLinesForRendering()
+		{
+			if (TextSource == TextSource.None && TextMode == TextMode.Normal)
+			{
+				return TextLines.Select(PrepareTextRowForRendering).ToList();
+			}
+
+			if (TextMode == TextMode.Normal || TextSource == TextSource.MarkCollection)
+			{
+				return TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList();
+			}
+
+			return SplitTextIntoCharacters(TextLines);
 		}
 
 		protected override void CleanUpRender()
