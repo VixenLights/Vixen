@@ -16,7 +16,7 @@ The observable proof is a focused automated test that renders frame zero for Fal
 - [x] (2026-08-02) Authored this implementation-ready ExecPlan.
 - [x] (2026-08-02) Updated VIX-3956 with the final scope, acceptance criteria, and test plan before changing code.
 - [x] (2026-08-02) Added frame-zero render-level regression tests for Fall and Explode, then captured the expected pre-fix failures for all literal-space cases.
-- [ ] Correct the private direction-state allocation rule in `Text.cs`.
+- [x] (2026-08-02) Corrected the private direction-state allocation rule in `Text.cs` and verified the focused frame-zero regression suite passes.
 - [ ] Run focused and full test validation, then manually verify the Text effect if a Vixen UI environment is available.
 - [ ] Update VIX-3956 with final requirements adjustments, validation results, and any limitation discovered during implementation.
 - [ ] Complete this document's outcomes, discoveries, decision log, and revision note after implementation.
@@ -31,6 +31,9 @@ The observable proof is a focused automated test that renders frame zero for Fal
 
 - Observation: The full frame-zero test reaches the intended failing accesses for both directions and every specified literal-space form.
   Evidence: On 2026-08-02, `dotnet test src/Vixen.Tests/Vixen.Tests.csproj --filter FullyQualifiedName~TextDirectionRenderTests` built successfully and ran 10 tests. All 10 failed with `ArgumentOutOfRangeException`: Fall at `Text.cs:1334` and Explode at `Text.cs:1326`.
+
+- Observation: Allocating `text.Length + 1` states resolves every focused literal-space failure without changing the draw algorithm.
+  Evidence: On 2026-08-02, the focused `TextDirectionRenderTests` suite passed all 10 frame-zero Fall and Explode cases after the loop bound changed from the non-empty-token formula to `text.Length + 1`.
 
 ## Decision Log
 
@@ -48,7 +51,7 @@ The observable proof is a focused automated test that renders frame zero for Fal
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. Jira issue VIX-3956 records the reported Stacked/Fall failure, the matching Explode exposure, the private direction-state allocation defect, the minimal correction, scope boundaries, acceptance criteria, and render-level test plan. `TextDirectionRenderTests` now executes actual frame-zero rendering for all five required literal-space inputs and both affected directions; it reliably fails before the production correction.
+Milestones 1 through 3 are complete. Jira issue VIX-3956 records the reported Stacked/Fall failure, the matching Explode exposure, the private direction-state allocation defect, the minimal correction, scope boundaries, acceptance criteria, and render-level test plan. `TextDirectionRenderTests` executes actual frame-zero rendering for all five required literal-space inputs and both affected directions. The production allocation now matches rendering consumption, and all focused cases pass.
 
 At completion, record the exact tests run and their results, the final Jira comment, and whether manual verification was performed. Confirm that no data contract, public/protected API, or preview-mapping change was needed.
 
@@ -207,6 +210,25 @@ Milestone 2 suggested commit message:
 
     Related to VIX-3956
 
+Milestone 2 commit:
+
+    db7e8b2ae VIX-3956 Add Text direction render regressions
+
+Milestone 3 validation:
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj --filter FullyQualifiedName~TextDirectionRenderTests
+    Passed: 10, Failed: 0, Skipped: 0, Total: 10
+
+Milestone 3 suggested commit message:
+
+    VIX-3956 Fix Text direction state allocation
+
+    Stacked literal spaces can make Fall and Explode consume more animation
+    state than they allocate. Match allocation to the renderer's
+    length-plus-one state count.
+
+    Related to VIX-3956
+
 ## Interfaces and Dependencies
 
 No new interfaces, NuGet packages, serialized fields, or public/protected members are required. The implementation uses the existing private members of `VixenModules.Effect.Text.Text`:
@@ -224,4 +246,6 @@ Revision note (2026-08-02): Completed Milestone 1 by updating VIX-3956 through t
 
 Revision note (2026-08-02): Completed Milestone 2 by adding `src/Vixen.Tests/Effects/TextDirectionRenderTests.cs`. The data-driven frame-zero test covers Fall and Explode with ordinary, leading, trailing, consecutive, and all-space literal-space inputs. The focused suite builds and records the expected ten pre-fix failures.
 
-Revision note (2026-08-02): Added the required Milestone 2 formatted commit-message handoff after it was omitted from the original completion response. No commit was created.
+Revision note (2026-08-02): Added the required Milestone 2 formatted commit-message handoff after it was omitted from the original completion response. The test-only milestone was subsequently committed as `db7e8b2ae`.
+
+Revision note (2026-08-02): Completed Milestone 3 by changing the non-mark Text direction-state allocation bound to `text.Length + 1`. The focused render suite passes all 10 Fall and Explode literal-space cases. No public/protected API, serialized data, preview mapping, or `PixelEffectBase` code changed.
