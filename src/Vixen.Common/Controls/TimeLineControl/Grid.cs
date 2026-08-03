@@ -1,3 +1,5 @@
+#nullable enable annotations
+
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
@@ -961,13 +963,16 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Aligns the elements start times to the reference element as a single atomic operation
+		/// Aligns element start times to a reference element as a single atomic operation.
 		/// </summary>
-		/// <param name="elements">The elements to align the start times</param>
-		/// <param name="referenceElement">The element to use for the start time reference</param>
-		/// <param name="holdDuration">Lock the durations</param>
-		public void AlignElementStartTimes(IEnumerable<Element> elements, Element referenceElement, bool holdDuration)
+		/// <param name="elements">The elements to align.</param>
+		/// <param name="referenceElement">The element to use as the alignment reference, or <see langword="null"/> to perform no alignment.</param>
+		/// <param name="holdDuration"><see langword="true"/> to retain element durations; otherwise, <see langword="false"/>.</param>
+		/// <remarks>Does nothing when <paramref name="referenceElement"/> is <see langword="null"/>.</remarks>
+		public void AlignElementStartTimes(IEnumerable<Element> elements, Element? referenceElement, bool holdDuration)
 		{
+			if (referenceElement is null) return;
+
 			if (!OkToUseAlignmentHelper(elements))
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -998,13 +1003,16 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Aligns the elements end times to the reference element as a single atomic operation
+		/// Aligns element end times to a reference element as a single atomic operation.
 		/// </summary>
-		/// <param name="elements">The elements to align the start times</param>
-		/// <param name="referenceElement">The element to use for the start time reference</param>
-		/// <param name="holdDuration">Lock the durations</param>
-		public void AlignElementEndTimes(IEnumerable<Element> elements, Element referenceElement, bool holdDuration)
+		/// <param name="elements">The elements to align.</param>
+		/// <param name="referenceElement">The element to use as the alignment reference, or <see langword="null"/> to perform no alignment.</param>
+		/// <param name="holdDuration"><see langword="true"/> to retain element durations; otherwise, <see langword="false"/>.</param>
+		/// <remarks>Does nothing when <paramref name="referenceElement"/> is <see langword="null"/>.</remarks>
+		public void AlignElementEndTimes(IEnumerable<Element> elements, Element? referenceElement, bool holdDuration)
 		{
+			if (referenceElement is null) return;
+
 			if (!OkToUseAlignmentHelper(elements))
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -1035,13 +1043,16 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Aligns the elements Durations to the reference element by extending the end time or optionally the start time as a single atomic operation
+		/// Aligns element durations to a reference element as a single atomic operation.
 		/// </summary>
-		/// <param name="elements">The elements to align the start times</param>
-		/// <param name="referenceElement">The element to use for the start time reference</param>
-		/// <param name="holdEndTime">Lock the end times and extend the start time</param>
-		public void AlignElementDurations(IEnumerable<Element> elements, Element referenceElement, bool holdEndTime)
+		/// <param name="elements">The elements to align.</param>
+		/// <param name="referenceElement">The element to use as the alignment reference, or <see langword="null"/> to perform no alignment.</param>
+		/// <param name="holdEndTime"><see langword="true"/> to retain element end times; otherwise, <see langword="false"/>.</param>
+		/// <remarks>Does nothing when <paramref name="referenceElement"/> is <see langword="null"/>.</remarks>
+		public void AlignElementDurations(IEnumerable<Element> elements, Element? referenceElement, bool holdEndTime)
 		{
+			if (referenceElement is null) return;
+
 			if (!OkToUseAlignmentHelper(elements))
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -1066,12 +1077,15 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Aligns the elements start and end times to the reference element as a single atomic operation
+		/// Aligns element start and end times to a reference element as a single atomic operation.
 		/// </summary>
-		/// <param name="elements">The elements to align the start times</param>
-		/// <param name="referenceElement">The element to use for the start time reference</param>
-		public void AlignElementStartEndTimes(IEnumerable<Element> elements, Element referenceElement)
+		/// <param name="elements">The elements to align.</param>
+		/// <param name="referenceElement">The element to use as the alignment reference, or <see langword="null"/> to perform no alignment.</param>
+		/// <remarks>Does nothing when <paramref name="referenceElement"/> is <see langword="null"/>.</remarks>
+		public void AlignElementStartEndTimes(IEnumerable<Element> elements, Element? referenceElement)
 		{
+			if (referenceElement is null) return;
+
 			if (!OkToUseAlignmentHelper(elements))
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -1093,13 +1107,16 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Align the start times to the end time of the elements to the referenced element as a single atomic operation
+		/// Aligns element start times to a reference element's end time as a single atomic operation.
 		/// </summary>
-		/// <param name="elements"></param>
-		/// <param name="referenceElement"></param>
-		/// <param name="holdEndTime"></param>
-		public void AlignElementStartToEndTimes(IEnumerable<Element> elements, Element referenceElement, bool holdEndTime)
+		/// <param name="elements">The elements to align.</param>
+		/// <param name="referenceElement">The element to use as the alignment reference, or <see langword="null"/> to perform no alignment.</param>
+		/// <param name="holdEndTime"><see langword="true"/> to retain element end times; otherwise, <see langword="false"/>.</param>
+		/// <remarks>Does nothing when <paramref name="referenceElement"/> is <see langword="null"/>.</remarks>
+		public void AlignElementStartToEndTimes(IEnumerable<Element> elements, Element? referenceElement, bool holdEndTime)
 		{
+			if (referenceElement is null) return;
+
 			if (!OkToUseAlignmentHelper(elements))
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -1127,13 +1144,16 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Align the start times to the end time of the elements to referenced element as a single atomic operation
+		/// Aligns element end times to a reference element's start time as a single atomic operation.
 		/// </summary>
-		/// <param name="elements"></param>
-		/// <param name="referenceElement"></param>
-		/// <param name="holdStartTime"></param>
-		public void AlignElementEndToStartTime(IEnumerable<Element> elements, Element referenceElement, bool holdStartTime)
+		/// <param name="elements">The elements to align.</param>
+		/// <param name="referenceElement">The element to use as the alignment reference, or <see langword="null"/> to perform no alignment.</param>
+		/// <param name="holdStartTime"><see langword="true"/> to retain element start times; otherwise, <see langword="false"/>.</param>
+		/// <remarks>Does nothing when <paramref name="referenceElement"/> is <see langword="null"/>.</remarks>
+		public void AlignElementEndToStartTime(IEnumerable<Element> elements, Element? referenceElement, bool holdStartTime)
 		{
+			if (referenceElement is null) return;
+
 			if (!OkToUseAlignmentHelper(elements))
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -1161,12 +1181,15 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Align the center lines of the elements to the referenced element as a single atomic operation
+		/// Aligns element centerpoints to a reference element as a single atomic operation.
 		/// </summary>
-		/// <param name="elements"></param>
-		/// <param name="referenceElement"></param>
-		public void AlignElementCenters(IEnumerable<Element> elements, Element referenceElement)
+		/// <param name="elements">The elements to align.</param>
+		/// <param name="referenceElement">The element to use as the alignment reference, or <see langword="null"/> to perform no alignment.</param>
+		/// <remarks>Does nothing when <paramref name="referenceElement"/> is <see langword="null"/>.</remarks>
+		public void AlignElementCenters(IEnumerable<Element> elements, Element? referenceElement)
 		{
+			if (referenceElement is null) return;
+
 			if (!OkToUseAlignmentHelper(elements))
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -3079,3 +3102,5 @@ namespace Common.Controls.Timeline
 		public TimeSpan VisibleTimeStart { get; private set; }
 	}
 }
+
+#nullable restore

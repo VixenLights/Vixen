@@ -111,17 +111,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			#endregion
 		
 			#region Effect Alignment Section
-			
+
+			var selectedElementCount = TimelineControl.SelectedElements.Count();
+			var alignmentCountAllowed = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
+			var canReferenceAlign = element != null && alignmentCountAllowed &&
+				(selectedElementCount > 1 || selectedElementCount == 1 && !element.Selected);
+			var canDistribute = alignmentCountAllowed && selectedElementCount > 1;
+
 			ToolStripMenuItem contextMenuItemAlignment = new ToolStripMenuItem("Alignment")
 			{
-				Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements),
+				Enabled = canReferenceAlign || canDistribute,
 				Image = Resources.alignment
 			};
-			//Disables the Alignment menu if too many effects are selected in a row.
-			if (!contextMenuItemAlignment.Enabled)
-			{
-				contextMenuItemAlignment.ToolTipText = @"Disabled, maximum selected effects per row is 32.";
-			}
 
 			ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times")
 			{
@@ -245,33 +246,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignEndToMark);
 			contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignBothToMark);
 
-			if (TimelineControl.SelectedElements.Count() > 1 || TimelineControl.SelectedElements.Any() && element != null && !element.Selected)
+			contextMenuItemDistributeEqually.Enabled = canDistribute;
+			contextMenuItemDistDialog.Enabled = canDistribute;
+			contextMenuItemAlignStart.Enabled = canReferenceAlign;
+			contextMenuItemAlignEnd.Enabled = canReferenceAlign;
+			contextMenuItemAlignBoth.Enabled = canReferenceAlign;
+			contextMenuItemAlignCenter.Enabled = canReferenceAlign;
+			contextMenuItemMatchDuration.Enabled = canReferenceAlign;
+			contextMenuItemAlignEndToStart.Enabled = canReferenceAlign;
+			contextMenuItemAlignStartToEnd.Enabled = canReferenceAlign;
+
+			if (contextMenuItemAlignment.Enabled)
 			{
-				contextMenuItemDistributeEqually.Enabled = true;
-				contextMenuItemDistDialog.Enabled = true;
-				contextMenuItemAlignStart.Enabled = true;
-				contextMenuItemAlignEnd.Enabled = true;
-				contextMenuItemAlignBoth.Enabled = true;
-				contextMenuItemAlignCenter.Enabled = true;
-				contextMenuItemMatchDuration.Enabled = true;
-				contextMenuItemAlignEndToStart.Enabled = true;
-				contextMenuItemAlignStartToEnd.Enabled = true;
-				contextMenuItemAlignment.Enabled = true;
 				contextMenuItemAlignment.ToolTipText = string.Empty;
 			}
 			else
 			{
-				contextMenuItemDistributeEqually.Enabled = false;
-				contextMenuItemDistDialog.Enabled = false;
-				contextMenuItemAlignStart.Enabled = false;
-				contextMenuItemAlignEnd.Enabled = false;
-				contextMenuItemAlignBoth.Enabled = false;
-				contextMenuItemAlignCenter.Enabled = false;
-				contextMenuItemMatchDuration.Enabled = false;
-				contextMenuItemAlignEndToStart.Enabled = false;
-				contextMenuItemAlignStartToEnd.Enabled = false;
-				contextMenuItemAlignment.Enabled = false;
-				if (TimelineControl.SelectedElements.Count() == 1)
+				if (!alignmentCountAllowed)
+				{
+					contextMenuItemAlignment.ToolTipText = @"Disabled, maximum selected effects per row is 32.";
+				}
+				else if (selectedElementCount == 1)
 				{
 					contextMenuItemAlignment.ToolTipText =
 						@"Select more then one effect or ensure you have Marks added to enable the Alignment feature.";
