@@ -13,7 +13,7 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
 - [x] (2026-08-03) Research complete: confirmed the Ctrl-preserved-selection reproduction in `Grid_Mouse.cs`, the unsafe context-menu enablement in `TimedSequenceEditorForm_ContextMenu.cs`, and the seven public `Grid` methods that dereference the reference effect.
 - [x] (2026-08-03) Milestone 1: Updated JIRA VIX-3481 with the corrected Ctrl-right-click reproduction, scope boundary, command-availability rules, acceptance criteria, and test plan. Confirmed its status remained `Accepted`; no transition was performed.
 - [x] (2026-08-03) Milestone 2: Split Sequencer context-menu availability into `canReferenceAlign` and `canDistribute` in `TimedSequenceEditorForm_ContextMenu.cs`. The seven reference commands now require a clicked effect, the two distribution commands require only an eligible multiple-effect selection, and the existing mark-command loop remains independent. Ordinary right-click and hotkey behavior were not changed. Focused compilation was blocked before C# compilation by missing local .NET 10 win-x86 apphost packs for unrelated native projects (NETSDK1145).
-- [ ] Add null-safe guards and XML documentation to every public reference-alignment method.
+- [x] (2026-08-03) Milestone 3: Updated all seven public `Grid.AlignElement*` methods to take `Element? referenceElement`, document a null no-op contract, and return before `OkToUseAlignmentHelper` when the reference is null. Static verification found all seven nullable signatures and guards in the required order; `git diff --check` passed. Build remains blocked by the Milestone 2 NETSDK1145 local SDK issue.
 - [ ] Add focused timeline-control regression tests, build, manually exercise the Sequencer scenarios, and update JIRA with final results.
 
 ## Surprises & Discoveries
@@ -44,13 +44,17 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
   Rationale: These public methods can be called by future UI, hotkey, or integration paths. A no-op for a null reference is safer than a process-terminating exception and does not change valid alignment behavior.
   Date/Author: 2026-08-03 / Codex
 
+- Decision: Express the no-op boundary in nullable-reference annotations as well as runtime guards.
+  Rationale: `Element?` tells future callers and nullable analysis that null is accepted intentionally, while the early guard enforces the contract before any warning-dialog or timing logic executes.
+  Date/Author: 2026-08-03 / Codex
+
 - Decision: Keep mark-alignment availability independent of the new two command facts.
   Rationale: The three “Align … to nearest mark” commands use marks rather than the clicked effect as their reference and are already enabled separately when a labeled mark collection contains marks.
   Date/Author: 2026-08-03 / Codex
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. VIX-3481 now distinguishes the verified Ctrl-right-click current-code path from the unverified historical gesture, and the UI no longer enables reference alignment without a clicked reference effect. The defensive public API and automated regression coverage remain. At completion, record the affected files, automated-test results, Debug build result, manual regression result, and the final JIRA update/comment here.
+Milestones 1 through 3 are complete. VIX-3481 now distinguishes the verified Ctrl-right-click current-code path from the unverified historical gesture, the UI no longer enables reference alignment without a clicked reference effect, and the public alignment boundary tolerates a missing reference. Automated regression coverage remains. At completion, record the affected files, automated-test results, Debug build result, manual regression result, and the final JIRA update/comment here.
 
 ## Context and Orientation
 
@@ -198,3 +202,5 @@ Plan created 2026-08-03 from the VIX-3481 current-code-validation handoff. It re
 Revised 2026-08-03 after Milestone 1: recorded the completed JIRA description update and its unchanged `Accepted` status.
 
 Revised 2026-08-03 after Milestone 2: recorded the command-availability implementation and the local NETSDK1145 build-environment blocker.
+
+Revised 2026-08-03 after Milestone 3: recorded the seven nullable public API contracts, their early guards, and static validation.
