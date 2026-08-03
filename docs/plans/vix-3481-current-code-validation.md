@@ -12,7 +12,7 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
 
 - [x] (2026-08-03) Research complete: confirmed the Ctrl-preserved-selection reproduction in `Grid_Mouse.cs`, the unsafe context-menu enablement in `TimedSequenceEditorForm_ContextMenu.cs`, and the seven public `Grid` methods that dereference the reference effect.
 - [x] (2026-08-03) Milestone 1: Updated JIRA VIX-3481 with the corrected Ctrl-right-click reproduction, scope boundary, command-availability rules, acceptance criteria, and test plan. Confirmed its status remained `Accepted`; no transition was performed.
-- [ ] Add the context-menu command-availability split and retain the current ordinary right-click selection behavior.
+- [x] (2026-08-03) Milestone 2: Split Sequencer context-menu availability into `canReferenceAlign` and `canDistribute` in `TimedSequenceEditorForm_ContextMenu.cs`. The seven reference commands now require a clicked effect, the two distribution commands require only an eligible multiple-effect selection, and the existing mark-command loop remains independent. Ordinary right-click and hotkey behavior were not changed. Focused compilation was blocked before C# compilation by missing local .NET 10 win-x86 apphost packs for unrelated native projects (NETSDK1145).
 - [ ] Add null-safe guards and XML documentation to every public reference-alignment method.
 - [ ] Add focused timeline-control regression tests, build, manually exercise the Sequencer scenarios, and update JIRA with final results.
 
@@ -26,6 +26,9 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
 
 - Observation: The public alignment boundary contains seven methods that dereference `referenceElement` after checking only selection eligibility.
   Evidence: `src/Vixen.Common/Controls/TimeLineControl/Grid.cs` defines `AlignElementStartTimes`, `AlignElementEndTimes`, `AlignElementDurations`, `AlignElementStartEndTimes`, `AlignElementStartToEndTimes`, `AlignElementEndToStartTime`, and `AlignElementCenters`; each accesses a member of `referenceElement`.
+
+- Observation: Building the Timed Sequence Editor project pulls in native projects that require a local .NET 10 win-x86 apphost pack.
+  Evidence: `msbuild src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditor.csproj -m -t:Build -p:Configuration=Debug` stopped with NETSDK1145 for `Microsoft.NETCore.App.Host.win-x86` version 10.0.8 before source compilation.
 
 ## Decision Log
 
@@ -47,7 +50,7 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. VIX-3481 now distinguishes the verified Ctrl-right-click current-code path from the unverified historical gesture and records the implementation and validation contract. At completion, record the affected files, automated-test results, Debug build result, manual regression result, and the final JIRA update/comment here.
+Milestones 1 and 2 are complete. VIX-3481 now distinguishes the verified Ctrl-right-click current-code path from the unverified historical gesture, and the UI no longer enables reference alignment without a clicked reference effect. The defensive public API and automated regression coverage remain. At completion, record the affected files, automated-test results, Debug build result, manual regression result, and the final JIRA update/comment here.
 
 ## Context and Orientation
 
@@ -193,3 +196,5 @@ The modified public interfaces are the existing `Common.Controls.TimelineControl
 Plan created 2026-08-03 from the VIX-3481 current-code-validation handoff. It records the corrected Ctrl-right-click reproduction and makes command availability and public API defense separate, testable responsibilities.
 
 Revised 2026-08-03 after Milestone 1: recorded the completed JIRA description update and its unchanged `Accepted` status.
+
+Revised 2026-08-03 after Milestone 2: recorded the command-availability implementation and the local NETSDK1145 build-environment blocker.
