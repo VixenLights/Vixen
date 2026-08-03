@@ -912,7 +912,7 @@ namespace VixenModules.Effect.Text
 						{
 							foreach (var text in _text)
 							{
-								for (int i = 0; i < text.Length + text.Split(new[]{' '}, StringSplitOptions.RemoveEmptyEntries).Length; i++)
+								for (int i = 0; i < text.Length + 1; i++)
 								{
 									CreateDirectionClass();
 								}
