@@ -17,9 +17,9 @@ The observable proof is a focused automated test that renders frame zero for Fal
 - [x] (2026-08-02) Updated VIX-3956 with the final scope, acceptance criteria, and test plan before changing code.
 - [x] (2026-08-02) Added frame-zero render-level regression tests for Fall and Explode, then captured the expected pre-fix failures for all literal-space cases.
 - [x] (2026-08-02) Corrected the private direction-state allocation rule in `Text.cs` and verified the focused frame-zero regression suite passes.
-- [ ] Run focused and full test validation, then manually verify the Text effect if a Vixen UI environment is available.
-- [ ] Update VIX-3956 with final requirements adjustments, validation results, and any limitation discovered during implementation.
-- [ ] Complete this document's outcomes, discoveries, decision log, and revision note after implementation.
+- [x] (2026-08-03) Confirmed focused and full unit-test validation passes and recorded successful manual validation of the affected Text rendering scenario.
+- [x] (2026-08-03) Added the final validation comment to VIX-3956.
+- [x] (2026-08-03) Completed this document's outcomes, evidence, and revision record after implementation.
 
 ## Surprises & Discoveries
 
@@ -51,9 +51,9 @@ The observable proof is a focused automated test that renders frame zero for Fal
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. Jira issue VIX-3956 records the reported Stacked/Fall failure, the matching Explode exposure, the private direction-state allocation defect, the minimal correction, scope boundaries, acceptance criteria, and render-level test plan. `TextDirectionRenderTests` executes actual frame-zero rendering for all five required literal-space inputs and both affected directions. The production allocation now matches rendering consumption, and all focused cases pass.
+VIX-3956 is complete. Stacked Text now assigns each non-mark render entry the same `text.Length + 1` direction-state count consumed by the existing renderer. Fall and Explode no longer run out of private animation state for ordinary, leading, trailing, consecutive, or all-space literal-space text.
 
-At completion, record the exact tests run and their results, the final Jira comment, and whether manual verification was performed. Confirm that no data contract, public/protected API, or preview-mapping change was needed.
+The focused `TextDirectionRenderTests` suite passed all 10 cases. The full `Vixen.Tests` unit-test suite and manual validation also passed, as confirmed on 2026-08-03. Jira comment 40272 records these validation results and the two implementation commits. No serialized data, public/protected API, preview mapping, or `PixelEffectBase` behavior changed.
 
 ## Context and Orientation
 
@@ -229,6 +229,26 @@ Milestone 3 suggested commit message:
 
     Related to VIX-3956
 
+Milestone 3 commit:
+
+    9dfb6a728 VIX-3956 Fix Text direction state allocation
+
+Milestone 4 validation and Jira evidence:
+
+    Focused TextDirectionRenderTests: 10 passed, 0 failed.
+    Full src/Vixen.Tests/Vixen.Tests.csproj unit-test suite: passed.
+    Manual validation: passed.
+    VIX-3956 final validation comment: 40272, posted 2026-08-03.
+
+Milestone 4 suggested commit message:
+
+    VIX-3956 Record validation results
+
+    Capture focused, full-suite, and manual validation evidence in the
+    ExecPlan and Jira ticket for the completed Text rendering fix.
+
+    Related to VIX-3956
+
 ## Interfaces and Dependencies
 
 No new interfaces, NuGet packages, serialized fields, or public/protected members are required. The implementation uses the existing private members of `VixenModules.Effect.Text.Text`:
@@ -249,3 +269,5 @@ Revision note (2026-08-02): Completed Milestone 2 by adding `src/Vixen.Tests/Eff
 Revision note (2026-08-02): Added the required Milestone 2 formatted commit-message handoff after it was omitted from the original completion response. The test-only milestone was subsequently committed as `db7e8b2ae`.
 
 Revision note (2026-08-02): Completed Milestone 3 by changing the non-mark Text direction-state allocation bound to `text.Length + 1`. The focused render suite passes all 10 Fall and Explode literal-space cases. No public/protected API, serialized data, preview mapping, or `PixelEffectBase` code changed.
+
+Revision note (2026-08-03): Completed Milestone 4 after confirmation that the full unit-test suite and manual validation passed. Added Jira comment 40272 with the final validation evidence and implementation commit identifiers, then updated Progress, Outcomes & Retrospective, and Artifacts and Notes. No implementation code changed in this milestone.
