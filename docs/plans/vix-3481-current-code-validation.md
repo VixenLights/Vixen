@@ -15,7 +15,7 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
 - [x] (2026-08-03) Milestone 2: Split Sequencer context-menu availability into `canReferenceAlign` and `canDistribute` in `TimedSequenceEditorForm_ContextMenu.cs`. The seven reference commands now require a clicked effect, the two distribution commands require only an eligible multiple-effect selection, and the existing mark-command loop remains independent. Ordinary right-click and hotkey behavior were not changed. Focused compilation was blocked before C# compilation by missing local .NET 10 win-x86 apphost packs for unrelated native projects (NETSDK1145).
 - [x] (2026-08-03) Milestone 3: Updated all seven public `Grid.AlignElement*` methods to take `Element? referenceElement`, document a null no-op contract, and return before `OkToUseAlignmentHelper` when the reference is null. Static verification found all seven nullable signatures and guards in the required order; `git diff --check` passed. Build remains blocked by the Milestone 2 NETSDK1145 local SDK issue.
 - [x] (2026-08-03) Milestone 4: Added `GridAlignmentNullReferenceTests`, which creates two selected effects and invokes all seven public reference-alignment methods with a null reference. It asserts no exception and unchanged start, end, and duration values. `dotnet test src/Vixen.Tests/Vixen.Tests.csproj --no-restore --nologo --filter "FullyQualifiedName~GridAlignmentNullReferenceTests"` passed 1/1. Added `#nullable enable annotations` to `Grid.cs` so the documented `Element?` public contracts do not introduce CS8632 warnings.
-- [ ] Build, manually exercise the Sequencer scenarios, and update JIRA with final results.
+- [x] (2026-08-03) Milestone 5: Manual validation confirmed the Ctrl-right-click empty-space reproduction no longer crashes and that Alignment’s reference-based options are disabled. The user confirmed all automated tests pass. Added JIRA comment 40283 with the manual and automated-test results; no transition was performed. The prior Debug editor-project build remains explicitly documented as blocked by local NETSDK1145 apphost-pack configuration, not by this change.
 
 ## Surprises & Discoveries
 
@@ -58,7 +58,7 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 4 are complete. VIX-3481 now distinguishes the verified Ctrl-right-click current-code path from the unverified historical gesture, the UI no longer enables reference alignment without a clicked reference effect, the public alignment boundary tolerates a missing reference, and focused automated coverage proves the null no-op contract. Debug build, manual regression, and final JIRA closeout remain.
+All planned milestones are complete. VIX-3481 now distinguishes the verified Ctrl-right-click current-code path from the unverified historical gesture, the UI no longer enables reference alignment without a clicked reference effect, the public alignment boundary tolerates a missing reference, focused automated coverage proves the null no-op contract, and manual validation confirms the prior crash no longer occurs. Full automated tests passed per user validation. The only unresolved environmental item is the local SDK’s inability to build the editor project directly because its .NET 10 win-x86 apphost pack is absent; this did not prevent the manual validation.
 
 ## Context and Orientation
 
@@ -181,6 +181,12 @@ Populate this section during implementation with concise evidence, for example:
     Debug build: Succeeded / Failed (actual result recorded at implementation time)
     Manual Ctrl-right-click regression: Passed / Failed / Blocked (actual result recorded at implementation time)
 
+    Focused null-reference tests: Passed (1/1).
+    Full automated tests: Passed (user-confirmed during manual validation).
+    Debug editor-project build: Blocked before C# compilation by NETSDK1145: the local .NET SDK lacks Microsoft.NETCore.App.Host.win-x86 10.0.8.
+    Manual Ctrl-right-click regression: Passed; no crash and reference-based Alignment options were disabled.
+    JIRA: VIX-3481 comment 40283 records the validation results; status was not transitioned.
+
 No source files were changed while creating this plan. The working tree was clean at the research checkpoint.
 
 ## Interfaces and Dependencies
@@ -210,3 +216,5 @@ Revised 2026-08-03 after Milestone 2: recorded the command-availability implemen
 Revised 2026-08-03 after Milestone 3: recorded the seven nullable public API contracts, their early guards, and static validation.
 
 Revised 2026-08-03 after Milestone 4: recorded the focused regression test result and the file-local nullable-annotation context required to avoid new warnings.
+
+Revised 2026-08-03 after Milestone 5: recorded the user-confirmed manual/full-test validation and the final JIRA comment; preserved the documented local Debug-build SDK blocker.
