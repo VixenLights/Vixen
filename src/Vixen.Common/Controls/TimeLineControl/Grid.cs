@@ -1,3 +1,5 @@
+#nullable enable annotations
+
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
@@ -3100,3 +3102,5 @@ namespace Common.Controls.Timeline
 		public TimeSpan VisibleTimeStart { get; private set; }
 	}
 }
+
+#nullable restore

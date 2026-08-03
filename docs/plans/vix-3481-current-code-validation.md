@@ -14,7 +14,8 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
 - [x] (2026-08-03) Milestone 1: Updated JIRA VIX-3481 with the corrected Ctrl-right-click reproduction, scope boundary, command-availability rules, acceptance criteria, and test plan. Confirmed its status remained `Accepted`; no transition was performed.
 - [x] (2026-08-03) Milestone 2: Split Sequencer context-menu availability into `canReferenceAlign` and `canDistribute` in `TimedSequenceEditorForm_ContextMenu.cs`. The seven reference commands now require a clicked effect, the two distribution commands require only an eligible multiple-effect selection, and the existing mark-command loop remains independent. Ordinary right-click and hotkey behavior were not changed. Focused compilation was blocked before C# compilation by missing local .NET 10 win-x86 apphost packs for unrelated native projects (NETSDK1145).
 - [x] (2026-08-03) Milestone 3: Updated all seven public `Grid.AlignElement*` methods to take `Element? referenceElement`, document a null no-op contract, and return before `OkToUseAlignmentHelper` when the reference is null. Static verification found all seven nullable signatures and guards in the required order; `git diff --check` passed. Build remains blocked by the Milestone 2 NETSDK1145 local SDK issue.
-- [ ] Add focused timeline-control regression tests, build, manually exercise the Sequencer scenarios, and update JIRA with final results.
+- [x] (2026-08-03) Milestone 4: Added `GridAlignmentNullReferenceTests`, which creates two selected effects and invokes all seven public reference-alignment methods with a null reference. It asserts no exception and unchanged start, end, and duration values. `dotnet test src/Vixen.Tests/Vixen.Tests.csproj --no-restore --nologo --filter "FullyQualifiedName~GridAlignmentNullReferenceTests"` passed 1/1. Added `#nullable enable annotations` to `Grid.cs` so the documented `Element?` public contracts do not introduce CS8632 warnings.
+- [ ] Build, manually exercise the Sequencer scenarios, and update JIRA with final results.
 
 ## Surprises & Discoveries
 
@@ -29,6 +30,9 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
 
 - Observation: Building the Timed Sequence Editor project pulls in native projects that require a local .NET 10 win-x86 apphost pack.
   Evidence: `msbuild src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditor.csproj -m -t:Build -p:Configuration=Debug` stopped with NETSDK1145 for `Microsoft.NETCore.App.Host.win-x86` version 10.0.8 before source compilation.
+
+- Observation: The Controls project does not enable nullable annotations by default.
+  Evidence: Adding `Element?` initially produced CS8632 in `Grid.cs`; applying `#nullable enable annotations` locally preserves the intended public contract without changing nullable warnings for the legacy file.
 
 ## Decision Log
 
@@ -54,7 +58,7 @@ A user can see the fix by selecting two effects, holding Ctrl while right-clicki
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. VIX-3481 now distinguishes the verified Ctrl-right-click current-code path from the unverified historical gesture, the UI no longer enables reference alignment without a clicked reference effect, and the public alignment boundary tolerates a missing reference. Automated regression coverage remains. At completion, record the affected files, automated-test results, Debug build result, manual regression result, and the final JIRA update/comment here.
+Milestones 1 through 4 are complete. VIX-3481 now distinguishes the verified Ctrl-right-click current-code path from the unverified historical gesture, the UI no longer enables reference alignment without a clicked reference effect, the public alignment boundary tolerates a missing reference, and focused automated coverage proves the null no-op contract. Debug build, manual regression, and final JIRA closeout remain.
 
 ## Context and Orientation
 
@@ -204,3 +208,5 @@ Revised 2026-08-03 after Milestone 1: recorded the completed JIRA description up
 Revised 2026-08-03 after Milestone 2: recorded the command-availability implementation and the local NETSDK1145 build-environment blocker.
 
 Revised 2026-08-03 after Milestone 3: recorded the seven nullable public API contracts, their early guards, and static validation.
+
+Revised 2026-08-03 after Milestone 4: recorded the focused regression test result and the file-local nullable-annotation context required to avoid new warnings.
