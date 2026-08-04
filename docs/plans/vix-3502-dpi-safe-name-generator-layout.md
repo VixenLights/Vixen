@@ -14,7 +14,7 @@ A user can demonstrate the result by opening Create/Modify Multiple Items at 100
 - [x] (2026-08-04) Milestone 1: Updated VIX-3502 with the verified layout-only cause, nested table/flow-layout implementation boundary, eight Given/When/Then acceptance criteria, and DPI/mode/theme validation plan. Confirmed status remained `Accepted`; no transition was performed.
 - [x] (2026-08-04) Milestone 2: Replaced the form-level and naming-rule absolute layout with named table/flow containers; the 45%/55% content split, auto-sized footer, fill-docked preview/rule regions, hidden-template footer cell, and scrollable rule host are now in `NameGenerator.Designer.cs`. `msbuild src/Vixen.Common/Controls/Controls.csproj -m -t:restore -t:Rebuild -p:Configuration=Debug` succeeded with 0 errors and 4 existing Vixen.Core warnings.
 - [x] (2026-08-04) Milestone 3: Set dynamically selected `NameGeneratorEditor` controls to `DockStyle.Fill` before adding them to `panelRuleConfig`, and converted Numeric Counter, Letter Counter, Letter Iterator, and Word Iterator editor designers to dock-filled table layouts. `msbuild src/Vixen.Common/Controls/Controls.csproj -m -t:Rebuild -p:Configuration=Debug` succeeded with 0 errors and the same 4 existing Vixen.Core warnings.
-- [ ] Milestone 4: Build, run existing automated tests, manually validate all required DPI and dialog modes, then record results in JIRA and this document.
+- [x] (2026-08-04) Milestone 4: Full build, automated tests, and manual validation passed. Validation covered the required DPI/layout behavior, dialog modes, editor types, and themes; no regressions were reported.
 
 ## Surprises & Discoveries
 
@@ -71,7 +71,7 @@ A user can demonstrate the result by opening Create/Modify Multiple Items at 100
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. The issue records the verified local layout scope; the main dialog uses table/flow containment; and every hosted editor fills the scrollable rule host through an internal table layout. Milestone 4 remains for full test-suite, application, DPI, mode, theme, and mixed-monitor validation.
+All four milestones are complete. The issue records the verified local layout scope; the main dialog uses table/flow containment; every hosted editor fills the scrollable rule host through an internal table layout; and the full build, automated tests, and manual validation have passed.
 
 ## Context and Orientation
 
@@ -216,6 +216,8 @@ Populate this section during implementation with concise evidence, for example:
 
     Editor compact-row correction: added final percentage filler rows to all four hosted editor tables and left Numeric Counter inputs left-aligned with their labels. Focused Controls Debug build passed with 0 errors and the same four unrelated Vixen.Core warnings.
 
+    Final validation: Passed. Full build, automated tests, and manual verification passed on 2026-08-04. Manual verification covered the required DPI/layout behavior, editable/fixed/rename modes, all four rule editors, and light/dark themes. No regressions were reported.
+
 The research checkpoint found a clean working tree. No production source files were changed while creating this plan.
 
 ## Interfaces and Dependencies
@@ -243,3 +245,5 @@ Revised 2026-08-04: recorded and corrected the existing-generator rule-type sele
 Revised 2026-08-04: reverted the rule-type replacement behavior after user clarification that the selector is add-only.
 
 Revised 2026-08-04: recorded the compact editor-row correction discovered during visual validation.
+
+Revised 2026-08-04 after Milestone 4: recorded successful full-build, automated-test, and manual-validation results.
