@@ -33,6 +33,12 @@ A user can demonstrate the result by opening Create/Modify Multiple Items at 100
 - Observation: The focused Controls Debug build succeeds after the designer rewrite, but its dependency Vixen.Core has four unrelated legacy warnings.
   Evidence: `msbuild src/Vixen.Common/Controls/Controls.csproj -m -t:restore -t:Rebuild -p:Configuration=Debug` completed with 0 errors and warnings CS8632 (twice), CS0618, and CS0067 in Vixen.Core files; no warning names `NameGenerator` or its designer.
 
+- Observation: The rule-type selector did not update an existing selected generator.
+  Evidence: `comboBoxRuleTypes_SelectedIndexChanged` only enabled Add, while `listViewGenerators_SelectedIndexChanged` displayed the selected generator without synchronizing the selector. A user could add a correctly typed generator but changing the selector for an existing entry left its editor unchanged.
+
+- Observation: Fill-docked editor tables need an explicit remaining-height row.
+  Evidence: without a percentage filler row, the available rule-host height was distributed between editor input rows, separating Sequential Letters fields and placing Sequential Numbers' Step row below its aligned controls.
+
 ## Decision Log
 
 - Decision: Treat VIX-3502 as a container-only WinForms maintenance change.
@@ -49,6 +55,18 @@ A user can demonstrate the result by opening Create/Modify Multiple Items at 100
 
 - Decision: Make `panelRuleConfig` scrollable and dock the runtime editor into it.
   Rationale: The host is the final containment boundary for all four editor controls. Docking prevents an editor from retaining a stale scaled size; scrolling preserves access when unusually large system fonts exceed the available height.
+  Date/Author: 2026-08-04 / Codex
+
+- Decision: Treat a user-selected rule type as a replacement for the selected generator.
+  Rationale: The type determines the editor UI and name-generation implementation. Synchronizing the selector when list selection changes prevents accidental replacement; a later user selection creates a default instance of the requested type, updates the list entry and editor, and preserves the existing placeholder position in the name format.
+  Date/Author: 2026-08-04 / Codex
+
+- Decision: Preserve the rule-type selector as an add-only control and revert the replacement behavior.
+  Rationale: The user confirmed that changing a rule requires removing the existing generator and adding a new one of the selected type. The selector must therefore enable Add only; it must not synchronize with list selection, mutate a selected generator, or replace its editor.
+  Date/Author: 2026-08-04 / Codex
+
+- Decision: Give each dock-filled editor table a final 100% filler row.
+  Rationale: Input rows remain AutoSize and their labels/inputs stay aligned, while the unused host height is confined to the blank row below the settings. This keeps the root table docked to its host without coordinate positioning.
   Date/Author: 2026-08-04 / Codex
 
 ## Outcomes & Retrospective
@@ -194,6 +212,10 @@ Populate this section during implementation with concise evidence, for example:
 
     Focused Controls Debug build after Milestone 3: Passed with 0 errors and the same four unrelated Vixen.Core warnings.
 
+    Rule-type replacement experiment: reverted on 2026-08-04 after user clarification. The rule-type selector is add-only and does not synchronize with or modify the selected generator.
+
+    Editor compact-row correction: added final percentage filler rows to all four hosted editor tables and left Numeric Counter inputs left-aligned with their labels. Focused Controls Debug build passed with 0 errors and the same four unrelated Vixen.Core warnings.
+
 The research checkpoint found a clean working tree. No production source files were changed while creating this plan.
 
 ## Interfaces and Dependencies
@@ -215,3 +237,9 @@ Revised 2026-08-04: recorded removal of the unrecoverable historical image refer
 Revised 2026-08-04 after Milestone 2: recorded the designer container-layout implementation and focused Controls Debug-build result.
 
 Revised 2026-08-04 after Milestone 3: recorded docked runtime editors, the four editor-layout conversions, and focused Controls Debug-build result.
+
+Revised 2026-08-04: recorded and corrected the existing-generator rule-type selection contract discovered during validation.
+
+Revised 2026-08-04: reverted the rule-type replacement behavior after user clarification that the selector is add-only.
+
+Revised 2026-08-04: recorded the compact editor-row correction discovered during visual validation.

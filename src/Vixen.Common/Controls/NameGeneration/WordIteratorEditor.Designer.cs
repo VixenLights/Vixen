@@ -45,10 +45,11 @@ namespace Common.Controls.NameGeneration
 			this.editorLayoutPanel.Location = new System.Drawing.Point(0, 0);
 			this.editorLayoutPanel.Name = "editorLayoutPanel";
 			this.editorLayoutPanel.Padding = new System.Windows.Forms.Padding(4);
-			this.editorLayoutPanel.RowCount = 3;
+			this.editorLayoutPanel.RowCount = 4;
 			this.editorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.editorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.editorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.editorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.editorLayoutPanel.Size = new System.Drawing.Size(216, 98);
 			this.editorLayoutPanel.TabIndex = 0;
 			//

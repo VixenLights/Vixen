@@ -58,10 +58,11 @@ namespace Common.Controls.NameGeneration
 			this.editorLayoutPanel.Location = new System.Drawing.Point(0, 0);
 			this.editorLayoutPanel.Name = "editorLayoutPanel";
 			this.editorLayoutPanel.Padding = new System.Windows.Forms.Padding(3);
-			this.editorLayoutPanel.RowCount = 3;
+			this.editorLayoutPanel.RowCount = 4;
 			this.editorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.editorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.editorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.editorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.editorLayoutPanel.Size = new System.Drawing.Size(221, 88);
 			this.editorLayoutPanel.TabIndex = 0;
 			//
@@ -76,6 +77,7 @@ namespace Common.Controls.NameGeneration
 			//
 			// numericUpDownStartNumber
 			//
+			this.numericUpDownStartNumber.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.numericUpDownStartNumber.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -102,6 +104,7 @@ namespace Common.Controls.NameGeneration
 			//
 			// numericUpDownEndNumber
 			//
+			this.numericUpDownEndNumber.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.numericUpDownEndNumber.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -139,6 +142,7 @@ namespace Common.Controls.NameGeneration
 			//
 			// numericUpDownStep
 			//
+			this.numericUpDownStep.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.numericUpDownStep.Maximum = new decimal(new int[] {
             1000000,
             0,
