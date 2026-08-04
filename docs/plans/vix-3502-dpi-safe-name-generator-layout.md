@@ -12,7 +12,7 @@ A user can demonstrate the result by opening Create/Modify Multiple Items at 100
 
 - [x] (2026-08-04) Research complete: confirmed that `numericUpDownItemCount_ValueChanged` calls only `PopulateNames`, `DisplayNamingGenerator` creates the editor in `panelRuleConfig`, and the current form and all four hosted editors use absolute coordinates.
 - [x] (2026-08-04) Milestone 1: Updated VIX-3502 with the verified layout-only cause, nested table/flow-layout implementation boundary, eight Given/When/Then acceptance criteria, and DPI/mode/theme validation plan. Confirmed status remained `Accepted`; no transition was performed.
-- [ ] Milestone 2: Replace `NameGenerator`'s form-level and naming-rule layout with nested tables and flows while preserving controls, events, and dialog behavior.
+- [x] (2026-08-04) Milestone 2: Replaced the form-level and naming-rule absolute layout with named table/flow containers; the 45%/55% content split, auto-sized footer, fill-docked preview/rule regions, hidden-template footer cell, and scrollable rule host are now in `NameGenerator.Designer.cs`. `msbuild src/Vixen.Common/Controls/Controls.csproj -m -t:restore -t:Rebuild -p:Configuration=Debug` succeeded with 0 errors and 4 existing Vixen.Core warnings.
 - [ ] Milestone 3: Dock dynamically created rule editors and convert each embedded editor to an internal table layout.
 - [ ] Milestone 4: Build, run existing automated tests, manually validate all required DPI and dialog modes, then record results in JIRA and this document.
 
@@ -29,6 +29,9 @@ A user can demonstrate the result by opening Create/Modify Multiple Items at 100
 
 - Observation: The original report screenshot is not recoverable from VIX-3502.
   Evidence: the issue history names `image-20231214-223634.png`, but the current Jira attachment collection is empty and the historical media URL returns “File not found.” The broken inline reference was removed on 2026-08-04 while retaining the written problem report.
+
+- Observation: The focused Controls Debug build succeeds after the designer rewrite, but its dependency Vixen.Core has four unrelated legacy warnings.
+  Evidence: `msbuild src/Vixen.Common/Controls/Controls.csproj -m -t:restore -t:Rebuild -p:Configuration=Debug` completed with 0 errors and warnings CS8632 (twice), CS0618, and CS0067 in Vixen.Core files; no warning names `NameGenerator` or its designer.
 
 ## Decision Log
 
@@ -50,7 +53,7 @@ A user can demonstrate the result by opening Create/Modify Multiple Items at 100
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. VIX-3502 now records that the count-change handler only repopulates the preview and that the fix is a local WinForms layout change, with all required acceptance and validation coverage. No source code or runtime behavior has changed yet. Milestones 2 through 4 remain.
+Milestones 1 and 2 are complete. The issue now records the verified local layout scope, and `NameGenerator.Designer.cs` uses table/flow containment instead of form-level sibling positions. The dynamically created editor is not docked until Milestone 3, and all end-to-end DPI/mode/theme validation remains for Milestone 4.
 
 ## Context and Orientation
 
@@ -187,6 +190,8 @@ Populate this section during implementation with concise evidence, for example:
     Theme and mixed-DPI verification: light/dark and monitor-move outcomes or explicit environment limitations.
     JIRA: VIX-3502 description updated during Milestone 1; status remained `Accepted` and no transition was performed. The unrecoverable historical screenshot reference was removed on 2026-08-04 to prevent a failed-media error.
 
+    Focused Controls Debug build: Passed with 0 errors. Four unrelated warnings originate in Vixen.Core: CS8632 (two instances), CS0618, and CS0067.
+
 The research checkpoint found a clean working tree. No production source files were changed while creating this plan.
 
 ## Interfaces and Dependencies
@@ -204,3 +209,5 @@ Plan created 2026-08-04 from the VIX-3502 Sol handoff and a current-code review.
 Revised 2026-08-04 after Milestone 1: recorded the VIX-3502 description update and its unchanged `Accepted` status.
 
 Revised 2026-08-04: recorded removal of the unrecoverable historical image reference from VIX-3502's description.
+
+Revised 2026-08-04 after Milestone 2: recorded the designer container-layout implementation and focused Controls Debug-build result.
