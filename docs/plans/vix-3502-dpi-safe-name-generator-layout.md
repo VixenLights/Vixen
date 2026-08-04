@@ -13,7 +13,7 @@ A user can demonstrate the result by opening Create/Modify Multiple Items at 100
 - [x] (2026-08-04) Research complete: confirmed that `numericUpDownItemCount_ValueChanged` calls only `PopulateNames`, `DisplayNamingGenerator` creates the editor in `panelRuleConfig`, and the current form and all four hosted editors use absolute coordinates.
 - [x] (2026-08-04) Milestone 1: Updated VIX-3502 with the verified layout-only cause, nested table/flow-layout implementation boundary, eight Given/When/Then acceptance criteria, and DPI/mode/theme validation plan. Confirmed status remained `Accepted`; no transition was performed.
 - [x] (2026-08-04) Milestone 2: Replaced the form-level and naming-rule absolute layout with named table/flow containers; the 45%/55% content split, auto-sized footer, fill-docked preview/rule regions, hidden-template footer cell, and scrollable rule host are now in `NameGenerator.Designer.cs`. `msbuild src/Vixen.Common/Controls/Controls.csproj -m -t:restore -t:Rebuild -p:Configuration=Debug` succeeded with 0 errors and 4 existing Vixen.Core warnings.
-- [ ] Milestone 3: Dock dynamically created rule editors and convert each embedded editor to an internal table layout.
+- [x] (2026-08-04) Milestone 3: Set dynamically selected `NameGeneratorEditor` controls to `DockStyle.Fill` before adding them to `panelRuleConfig`, and converted Numeric Counter, Letter Counter, Letter Iterator, and Word Iterator editor designers to dock-filled table layouts. `msbuild src/Vixen.Common/Controls/Controls.csproj -m -t:Rebuild -p:Configuration=Debug` succeeded with 0 errors and the same 4 existing Vixen.Core warnings.
 - [ ] Milestone 4: Build, run existing automated tests, manually validate all required DPI and dialog modes, then record results in JIRA and this document.
 
 ## Surprises & Discoveries
@@ -53,7 +53,7 @@ A user can demonstrate the result by opening Create/Modify Multiple Items at 100
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. The issue now records the verified local layout scope, and `NameGenerator.Designer.cs` uses table/flow containment instead of form-level sibling positions. The dynamically created editor is not docked until Milestone 3, and all end-to-end DPI/mode/theme validation remains for Milestone 4.
+Milestones 1 through 3 are complete. The issue records the verified local layout scope; the main dialog uses table/flow containment; and every hosted editor fills the scrollable rule host through an internal table layout. Milestone 4 remains for full test-suite, application, DPI, mode, theme, and mixed-monitor validation.
 
 ## Context and Orientation
 
@@ -192,6 +192,8 @@ Populate this section during implementation with concise evidence, for example:
 
     Focused Controls Debug build: Passed with 0 errors. Four unrelated warnings originate in Vixen.Core: CS8632 (two instances), CS0618, and CS0067.
 
+    Focused Controls Debug build after Milestone 3: Passed with 0 errors and the same four unrelated Vixen.Core warnings.
+
 The research checkpoint found a clean working tree. No production source files were changed while creating this plan.
 
 ## Interfaces and Dependencies
@@ -211,3 +213,5 @@ Revised 2026-08-04 after Milestone 1: recorded the VIX-3502 description update a
 Revised 2026-08-04: recorded removal of the unrecoverable historical image reference from VIX-3502's description.
 
 Revised 2026-08-04 after Milestone 2: recorded the designer container-layout implementation and focused Controls Debug-build result.
+
+Revised 2026-08-04 after Milestone 3: recorded docked runtime editors, the four editor-layout conversions, and focused Controls Debug-build result.

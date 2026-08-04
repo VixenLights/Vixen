@@ -161,6 +161,7 @@ namespace Common.Controls
 
 			if (newControl != null) {
 				newControl.DataChanged += new EventHandler(NameGeneratorEditor_DataChanged);
+				newControl.Dock = System.Windows.Forms.DockStyle.Fill;
 				panelRuleConfig.Controls.Add(newControl);
 			}
 
