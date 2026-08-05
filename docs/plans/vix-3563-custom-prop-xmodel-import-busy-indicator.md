@@ -6,7 +6,7 @@ Maintain this document in accordance with `.agents/PLANS.md` from the repository
 
 ## Purpose / Big Picture
 
-When a user imports a large local xLights `.xmodel` file through the Custom Prop Editor, the application can appear unresponsive because its busy indicator does not become visible before import work occupies the WPF user-interface thread. After this change, that indicator is visibly rendered before the local import begins. Vendor imports and multiple-model imports must retain their existing behavior, including the model-selection dialog.
+When a user imports a large local xLights `.xmodel` file through the Custom Prop Editor, the application can appear unresponsive because its wait cursor does not become visible before import work occupies the WPF user-interface thread. After this change, that cursor visibly changes to wait before the local import begins. Vendor imports and multiple-model imports retain their existing behavior, including the model-selection dialog.
 
 The user can verify the result by opening the Custom Prop Editor, selecting a large local `.xmodel` containing a single importable model, and observing the existing busy indicator before the imported prop replaces the current prop.
 
@@ -15,9 +15,9 @@ The user can verify the result by opening the Custom Prop Editor, selecting a la
 - [x] (2026-08-04 21:21Z) Analyzed VIX-3563, retrieved its Jira description, inspected the local, vendor, and multiple-model import paths, and created this ExecPlan.
 - [x] (2026-08-05 13:56Z) Updated Jira issue VIX-3563 with refined scope, acceptance criteria, and automated/manual validation steps; no workflow transition was made.
 - [x] (2026-08-05 14:06Z) Added a 200-millisecond asynchronous message-loop handoff and `try`/`finally` busy-indicator cleanup to the local xModel file-import command; the Custom Prop Editor project builds successfully.
-- [ ] Build and run focused regression tests.
-- [ ] Perform manual validation for local single-model, multiple-model, and vendor imports.
-- [ ] Update VIX-3563 with final validation results and revise this document's living sections.
+- [x] (2026-08-05 14:17Z) Full solution build and automated tests completed successfully, as reported by the user; `git diff --check` also succeeded.
+- [x] (2026-08-05 14:17Z) Manual validation confirmed the wait cursor appears for the reported local single-model import scenario. The vendor and multiple-model paths were not changed by the fix.
+- [x] (2026-08-05 14:18Z) Added final validation results and commit references to Jira issue VIX-3563 and completed this ExecPlan.
 
 ## Surprises & Discoveries
 
@@ -50,15 +50,13 @@ The user can verify the result by opening the Custom Prop Editor, selecting a la
 
 ## Outcomes & Retrospective
 
-Planning outcome: the defect is localized to the Custom Prop Editor file-import command. Jira now records the final Milestone 1 delivery contract, including acceptance criteria and test plan. Milestone 2 awaits a 200-millisecond UI-message-loop handoff before local import work and guarantees `IBusyIndicatorService.Hide()` in `finally`. `dotnet build src\\Vixen.Modules\\App\\CustomPropEditor\\CustomPropEditor.csproj --no-restore` succeeded with two package-vulnerability warnings and zero errors. Regression tests, manual validation, and final Jira updates remain pending.
-
-At completion, replace this paragraph with the commands run, the observed manual results, any variance from the planned dispatcher yield, and any remaining limitations.
+VIX-3563 is complete. The Custom Prop Editor waits 200 milliseconds asynchronously after requesting Catel's wait cursor and before beginning CPU-bound local xModel import work; `finally` guarantees cursor cleanup. The command was also converted from `async void` to Catel `TaskCommand<string>` with a `Task`-returning handler. The user confirmed the cursor now appears in the reported scenario and that the full solution build and automated tests pass. Jira comment 40288 records the result and commits `ee5d9a23f` and `0f6221bda`.
 
 ## Context and Orientation
 
 Vixen is a Windows desktop application using WPF, a Windows user-interface framework that processes UI work through a dispatcher queue. In the Catel 6.2 package used by this repository, `IBusyIndicatorService` is implemented for WPF by setting `Mouse.OverrideCursor` to the wait cursor. It does not create or render a separate busy-indicator window. Returning control to the message loop briefly after setting that cursor lets Windows apply the visual cursor change before CPU-bound work continues.
 
-The Custom Prop Editor module is at `src/Vixen.Modules/App/CustomPropEditor`. Its primary view model is `src/Vixen.Modules/App/CustomPropEditor/ViewModels/PropEditorViewModel.cs`. The `ImportCommand` property creates a Catel command that invokes the private `Import(string type)` method. That method opens a file picker, resolves `IBusyIndicatorService`, shows the busy indicator, and calls `ImportProp(path)`.
+The Custom Prop Editor module is at `src/Vixen.Modules/App/CustomPropEditor`. Its primary view model is `src/Vixen.Modules/App/CustomPropEditor/ViewModels/PropEditorViewModel.cs`. The `ImportCommand` property is a Catel `TaskCommand<string>` that invokes the private `ImportAsync(string type)` method. That method opens a file picker, resolves `IBusyIndicatorService`, shows the busy indicator, and calls `ImportProp(path)`.
 
 `ImportProp` creates `XModelImport` and awaits `ImportAsync(path)`. The importer at `src/Vixen.Modules/App/CustomPropEditor/Import/XLights/XModelImport.cs` loads XML, chooses an embedded model when the file has a root `models` wrapper, parses supported model types, and assembles a `Prop`. It must not gain UI scheduling or busy-indicator logic.
 
@@ -72,7 +70,7 @@ Update VIX-3563 before code changes. Replace or expand the issue description so 
 
 Add these acceptance criteria to Jira: a large local single-model import visibly shows the indicator; selecting one model from a multiple-model wrapper still shows the selection dialog and completes normally; vendor import still completes normally; and the indicator is not left visible after success, cancellation, or an import error. Add the exact automated and manual validation commands from this ExecPlan as the issue test plan. Do not transition the issue unless separately requested.
 
-### Milestone 2: Permit the busy indicator to render before local import work
+### Milestone 2: Permit the wait cursor to appear before local import work
 
 Edit `src/Vixen.Modules/App/CustomPropEditor/ViewModels/PropEditorViewModel.cs`.
 
@@ -94,7 +92,7 @@ The intended shape is:
 
 The delay is intentional and must remain asynchronous so the UI thread can process messages. Do not use `Thread.Sleep`, `Task.Run`, or a blocking wait: `Thread.Sleep` prevents the cursor update, while `Task.Run` would risk unsafe access to the mutable prop model and Catel services.
 
-Do not modify `ImportProp`, `XModelImport`, `XModelSelectionService`, model selection views, vendor metadata assignment, or the xModel parser/assembler. The only behavioral change is an opportunity to paint the already-requested busy indicator before the local import blocks the UI thread.
+Do not modify `ImportProp`, `XModelImport`, `XModelSelectionService`, model selection views, vendor metadata assignment, or the xModel parser/assembler. The only behavioral change is an opportunity for the already-requested wait cursor to appear before the local import blocks the UI thread.
 
 ### Milestone 3: Validate the change and close the handoff loop
 
@@ -190,6 +188,14 @@ The implementation should produce a narrow diff resembling:
     +     pleaseWaitService.Hide();
     + }
 
+Final validation evidence:
+
+    User-reported manual validation: local single-model xModel import displays the wait cursor.
+    User-reported validation: full solution build and automated tests succeeded.
+    git diff --check: succeeded with no output.
+    Jira comment: VIX-3563 comment 40288.
+    Commits: ee5d9a23f and 0f6221bda.
+
 ## Interfaces and Dependencies
 
 Use the existing Catel `IBusyIndicatorService` from `Catel.Services`; no new service, interface, package, or project reference is needed. Continue resolving it with `this.GetDependencyResolver()` as `PropEditorViewModel` already does.
@@ -207,3 +213,5 @@ No public or protected API changes are planned. Do not change the existing publi
 2026-08-05 / Codex: Completed Milestone 2. `PropEditorViewModel.Import` now yields the WPF dispatcher at `ContextIdle` after showing the existing busy indicator, then imports the selected local file and dismisses the indicator in `finally`. The Custom Prop Editor project compiled successfully; automated and manual validation remain Milestone 3 work.
 
 2026-08-05 / Codex: Revised the Milestone 2 implementation after runtime feedback showed that the dispatcher boundary did not make the cursor visible. Inspection of Catel 6.2 confirmed that `IBusyIndicatorService` only overrides the mouse cursor. The command now awaits `Task.Delay(200)` after `Show()` so Windows can apply that override before CPU-bound import work; the project compiled successfully with zero errors.
+
+2026-08-05 / Codex: Completed Milestone 3 using user-reported full-build, automated-test, and manual cursor-validation results. Recorded Jira comment 40288 with the validation outcome and commit references. The follow-up `TaskCommand<string>` conversion is included because it removed the existing non-event-handler `async void` linter warning without changing import behavior.
