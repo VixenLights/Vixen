@@ -397,10 +397,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				GL.Enable(EnableCap.Blend);
 				//Logging.Info("Blend Func");
 				GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-				//Logging.Info("Point Sprite");
-				GL.Enable(EnableCap.PointSprite);
-				//Logging.Info("Vertex Point Sprite");
-				GL.Enable(EnableCap.VertexProgramPointSize);;
 				//Logging.Info("Program Point");
 				GL.Enable(EnableCap.ProgramPointSize);
 				//Logging.Info("Cull Face");
@@ -432,7 +428,16 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			Logging.Info("OpenGL v {0}", GL.GetString(StringName.Version));
 			Logging.Info("Vendor {0}, Renderer {1}", GL.GetString(StringName.Vendor), GL.GetString(StringName.Renderer));
 			Logging.Info("Shading language version {0}", GL.GetString(StringName.ShadingLanguageVersion));
-			Logging.Info("Extensions {0}", GL.GetString(StringName.Extensions));
+			
+			var extensionCount = GL.GetInteger(GetPName.NumExtensions);
+			var extensions = Enumerable
+				.Range(0, extensionCount)
+				.Select(index => GL.GetString(StringNameIndexed.Extensions, index))
+				.OrderBy(extension => extension);
+
+			Logging.Info("Available OpenGL extension count: {ExtensionCount}", extensionCount);
+			Logging.Debug("Available OpenGL extensions: {Extensions}", string.Join(", ", extensions));
+			
 			_programLog = _program.ProgramLog;
 			_programLog += _program.VertexShader.ShaderLog;
 			_programLog += _program.FragmentShader.ShaderLog;
