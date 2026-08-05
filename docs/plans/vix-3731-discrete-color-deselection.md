@@ -13,7 +13,8 @@ The visible proof is a gradient color edit using the multiple discrete color pic
 - [x] (2026-08-05 09:58 -05:00) Updated Jira issue VIX-3731 with the final scope, acceptance criteria, validation plan, and ExecPlan path before implementation.
 - [ ] Inspect the working tree and the four picker files named in this plan before editing; confirm no unrelated changes overlap the target XAML file.
 - [x] (2026-08-05 10:06 -05:00) Changed the multi-picker ListBox to `SelectionMode="Multiple"`, bound its internal row selection and checkbox two-way to `CheckBoxSelected`, and added a picker-local row template that suppresses all selection visuals.
-- [ ] Build the `DiscreteColorPicker` project and run the repository test project.
+- [x] (2026-08-05 10:11 -05:00) Updated shared picker sizing so the dialog is wide enough for at least three color items before the wrap panel starts a new row.
+- [ ] (partially completed 2026-08-05 10:13 -05:00) Built `DiscreteColorPicker` in Release successfully with 0 errors; remaining: run the repository test project.
 - [ ] Manually verify multi-select toggling, initial selections, confirmation/cancellation, and the unchanged single-color picker.
 - [ ] Update VIX-3731 with any final requirement or test-plan adjustments and add a comment containing the validation results.
 - [ ] Update this ExecPlan’s living sections and outcomes after implementation.
@@ -31,6 +32,12 @@ The visible proof is a gradient color edit using the multiple discrete color pic
 
 - Observation: the shared `ListBoxStyle` leaves a ListBoxItem’s platform selected-state template active, so binding `IsSelected` to `CheckBoxSelected` alone displays a row highlight.
   Evidence: `src/Vixen.Common/WPFCommon/Theme/Theme.xaml` defines `ListBoxStyle` with an item-container style but no replacement `ControlTemplate`; the platform ListBoxItem template responds to `IsSelected`. A local template without `IsSelected` triggers is required to keep selection internal.
+
+- Observation: the multiple picker already supplies `ConfigureWindowSize(92, 3)`, but the base class's fixed 250-pixel minimum is narrower than three 92-pixel items plus its 10-pixel window allowance.
+  Evidence: `3 * 92 + 10 = 286`, whereas `src/Vixen.Common/DiscreteColorPicker/Views/DiscreteColorPickerViewBase.cs` previously enforced only 250 pixels. The dialog could therefore wrap after two multiple-picker items despite the three-item threshold.
+
+- Observation: the focused Release build succeeds, but it reports four warnings from existing `Vixen.Core` sources.
+  Evidence: `msbuild src\\Vixen.Common\\DiscreteColorPicker\\DiscreteColorPicker.csproj -m -t:Restore,Rebuild -p:Configuration=Release -p:Platform=x64` completed with `0 Error(s)` and warnings `CS8632` in `IElementTemplate.cs`, `CS0618` in `HardwareUpdateThread.cs`, and `CS0067` in `ProgramExecutor.cs`; none are in the changed picker files.
 
 ## Decision Log
 
@@ -57,6 +64,10 @@ The visible proof is a gradient color edit using the multiple discrete color pic
 - Decision: Suppress selected-row rendering in the multiple picker while retaining its internal `IsSelected` binding.
   Rationale: The requirement changed after the initial Milestone 2 implementation: clicking a row must toggle its checkbox, but the ListBoxItem must never visually indicate selection. Replacing only this picker’s container template preserves WPF `Multiple` mode mouse/keyboard behavior, leaves the checkbox as the sole indicator, and does not alter the shared or single-picker styles.
   Date/Author: 2026-08-05 / Codex, revised Milestone 2
+
+- Decision: Calculate the minimum dialog width as the larger of 250 pixels and three item widths plus the existing 10-pixel allowance.
+  Rationale: This guarantees that the common three-color multiple picker has 286 pixels and does not wrap early, while the 72-pixel single picker retains its established 250-pixel minimum because three of its items require only 226 pixels. The rule belongs in the shared sizing method because both dialogs use it.
+  Date/Author: 2026-08-05 / Codex, sizing refinement
 
 ## Outcomes & Retrospective
 
@@ -110,7 +121,17 @@ After the source edit, record a completion item in `Progress`. Before committing
 
     fix(discrete-color-picker): allow deselecting color rows
 
-### Milestone 3: Build and prove the dialog behavior
+### Milestone 3: Guarantee three color items fit before wrapping
+
+Edit `src/Vixen.Common/DiscreteColorPicker/Views/DiscreteColorPickerViewBase.cs`, the shared view-specific window-sizing base class used by the single and multiple dialogs. Retain its existing square-grid calculation and 250-pixel button-layout minimum. Add a `MinimumColorItemsPerRow` constant with value `3`, calculate the width needed for three items using the existing `itemWidth` and 10-pixel allowance, and use the larger of that value and 250 pixels when applying the minimum width.
+
+Document the protected `ConfigureWindowSize` method in the same edit. Its parameters must state what each value represents, and its remarks must state that the method guarantees room for at least three color items before the wrap panel creates a new row. Do not change either view's `ConfigureWindowSize` call or add a per-view sizing special case.
+
+The resulting minimums must be 286 pixels for the multiple picker (`3 * 92 + 10`) and remain 250 pixels for the single picker (`max(250, 3 * 72 + 10)`). At the end of this milestone, record the completion in `Progress`, update the Jira issue description and acceptance criteria to include this behavior, and provide this commit message before committing source changes:
+
+    VIX-3731 Keep three colors on one row
+
+### Milestone 4: Build and prove the dialog behavior
 
 First build the modified project from the repository root. Then run the existing repository test project to catch regressions in the broader supported test suite. A successful build/test does not replace the manual dialog verification because WPF mouse and keyboard selection behavior must be observed in a running window.
 
@@ -171,21 +192,23 @@ All commands run in `C:\Dev\Vixen` unless stated otherwise. They are read-only o
             ...
             <CheckBox IsChecked="{Binding CheckBoxSelected, Mode=TwoWay}"></CheckBox>
 
-4. Build the affected project. A clean build prints `Build succeeded.` and exits with code 0. Warnings already present outside the edit may be recorded but must not be silently treated as errors caused by this work.
+4. Apply the shared sizing refinement in `src/Vixen.Common/DiscreteColorPicker/Views/DiscreteColorPickerViewBase.cs` as described in Milestone 3. The minimum-width branch must compare `Width` against the larger of 250 and `3 * itemWidth + 10`; it must not hard-code the 286-pixel multiple-picker value.
+
+5. Build the affected project. A clean build prints `Build succeeded.` and exits with code 0. Warnings already present outside the edit may be recorded but must not be silently treated as errors caused by this work.
 
         msbuild src\Vixen.Common\DiscreteColorPicker\DiscreteColorPicker.csproj -m -t:Restore,Rebuild -p:Configuration=Release -p:Platform=x64
 
-5. Run the existing unit test suite. It should exit successfully with no failed tests. The suite may take longer than the focused build because it references numerous Vixen modules.
+6. Run the existing unit test suite. It should exit successfully with no failed tests. The suite may take longer than the focused build because it references numerous Vixen modules.
 
         dotnet test src\Vixen.Tests\Vixen.Tests.csproj -c Release -p:SolutionDir="C:\Dev\Vixen\\"
 
-6. Perform the manual dialog test in a Debug or Release Vixen build. If no current executable is available, build the solution first:
+7. Perform the manual dialog test in a Debug or Release Vixen build. If no current executable is available, build the solution first:
 
         msbuild Vixen.sln -m -t:Restore,Rebuild -p:Configuration=Debug -p:Platform=x64
 
     Start Vixen from the generated Debug output using the project’s normal local launch procedure. Navigate to a color-gradient or inline-gradient point that opens `MultipleDiscreteColorPickerView`; avoid the single-color picker for the toggle checks. Follow every scenario in the next section.
 
-7. Add the results to VIX-3731, then revise this plan’s `Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective`, and the change note below. Include commands, pass/fail counts, manual observations, and any deviation. Review all changes before requesting a commit:
+8. Add the results to VIX-3731, then revise this plan’s `Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective`, and the change note below. Include commands, pass/fail counts, manual observations, and any deviation. Review all changes before requesting a commit:
 
         git diff --check
         git status --short
@@ -205,6 +228,7 @@ The change is accepted only when the project build and existing test suite succe
 8. Open the multiple picker with one or more initially selected colors. Those colors start checked without row selection styling, and newly checked or cleared rows produce the expected accepted result after **OK**.
 9. Change selections, press **Cancel**, reopen the picker, and verify the underlying gradient was not committed by the canceled dialog.
 10. Open the separate single discrete color picker and confirm its normal one-color selection behavior is unchanged.
+11. Open the multiple picker with three available colors. Its initial window width is at least 286 pixels, all three items appear on the first row, and no horizontal wrap occurs. Open the single picker to confirm its 250-pixel minimum and existing layout remain unchanged.
 
 Expected build evidence is a zero exit code and text comparable to:
 
@@ -227,7 +251,7 @@ If the focused project build cannot resolve the solution directory or shared bui
 
 ## Artifacts and Notes
 
-The expected source diff is deliberately limited to `src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml`:
+The expected source diff is deliberately limited to `src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml` and `src/Vixen.Common/DiscreteColorPicker/Views/DiscreteColorPickerViewBase.cs`:
 
     - <ListBox Grid.Row="0" ItemsSource="{Binding Colors}"
     + <ListBox Grid.Row="0" ItemsSource="{Binding Colors}"
@@ -248,7 +272,18 @@ The expected source diff is deliberately limited to `src/Vixen.Common/DiscreteCo
     - <CheckBox IsChecked="{Binding Path=CheckBoxSelected}"></CheckBox>
     + <CheckBox IsChecked="{Binding CheckBoxSelected, Mode=TwoWay}"></CheckBox>
 
-No view-model, model, caller, code-behind, solution, package, or automated-test file is expected to change for VIX-3731. The ExecPlan itself is an implementation artifact and will be updated as work is performed.
+The sizing diff in `DiscreteColorPickerViewBase.cs` is equivalent to:
+
+    const int MinimumWidth = 250;
+    const int MinimumColorItemsPerRow = 3;
+    int minimumWidthForColorItems = MinimumColorItemsPerRow * itemWidth + 10;
+    int minimumWidth = Math.Max(MinimumWidth, minimumWidthForColorItems);
+    if (Width < minimumWidth)
+    {
+        Width = minimumWidth;
+    }
+
+No view-model, caller, code-behind, solution, package, or automated-test file is expected to change for VIX-3731. The shared view-specific sizing base class changes only to guarantee three items fit before wrapping. The ExecPlan itself is an implementation artifact and will be updated as work is performed.
 
 ## Interfaces and Dependencies
 
@@ -271,6 +306,7 @@ The post-change binding contracts are:
 
 - `docs/plans/vix-3731-discrete-color-deselection.md` — this living ExecPlan; update it throughout implementation.
 - `src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml` — the only production source file to edit.
+- `src/Vixen.Common/DiscreteColorPicker/Views/DiscreteColorPickerViewBase.cs` — shared dialog sizing; update its minimum width calculation and protected-method XML documentation.
 - `src/Vixen.Common/DiscreteColorPicker/ViewModels/MultipleDiscreteColorPickerViewModel.cs` — read-only confirmation of initialization and accepted-result behavior.
 - `src/Vixen.Common/DiscreteColorPicker/ViewModels/ColorItems/MultiSelectColorItem.cs` — read-only confirmation of the authoritative Boolean property.
 - `src/Vixen.Common/DiscreteColorPicker/Views/SingleDiscreteColorPickerView.xaml` — read-only regression check; do not edit.
@@ -285,3 +321,7 @@ The post-change binding contracts are:
 2026-08-05 / Codex: Completed Milestone 2 with the planned three-expression XAML change in `MultipleDiscreteColorPickerView.xaml`. The container selection and checkbox now share `CheckBoxSelected`, and WPF `Multiple` mode owns ordinary click and Space toggling. No code-behind, commands, model, view-model, caller, or single-picker changes were made.
 
 2026-08-05 / Codex: Revised Milestone 2 after the requirement clarified that the checkbox is the sole selection indicator. Added a picker-local transparent `ListBoxItem` template with no selected-state trigger, updated VIX-3731’s requirements and acceptance criteria, and revised this plan so WPF selection remains internal while row highlighting is prohibited.
+
+2026-08-05 / Codex: Added and completed the shared sizing refinement after the requirement clarified that three colors are common. `ConfigureWindowSize` now enforces the larger of its legacy button-layout minimum and three item widths, so the multiple picker does not wrap three 92-pixel items while the single picker keeps its existing 250-pixel minimum. The original validation milestone is renumbered to Milestone 4.
+
+2026-08-05 / Codex: Built `DiscreteColorPicker` in Release after the sizing refinement. The project compiled with 0 errors; four recorded warnings originated in existing `Vixen.Core` files outside this change.

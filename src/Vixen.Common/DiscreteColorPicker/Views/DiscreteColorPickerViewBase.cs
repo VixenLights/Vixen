@@ -44,11 +44,13 @@ namespace Common.DiscreteColorPicker.Views
 		/// <summary>
 		/// Configures the window size based on the specified item width and the number of available colors.
 		/// </summary>
-		/// <param name="itemWidth">Width of each color item</param>
+		/// <param name="itemWidth">The width of each color item.</param>
 		/// <param name="thresholdForFirstRow">
-		/// Due to the minimum dialog width being driven by OK and Cance button this argument controls
-		/// how many color items to display on the first row before starting on the second row.
+		/// The number of color items to display on the first row before starting a second row.
 		/// </param>
+		/// <remarks>
+		/// Ensures the window is wide enough to display at least three color items before the wrap panel starts a new row.
+		/// </remarks>
 		protected void ConfigureWindowSize(int itemWidth, int thresholdForFirstRow)
 		{
 			// Count the number of available of colors
@@ -95,12 +97,15 @@ namespace Common.DiscreteColorPicker.Views
 
 			// Don't let the minimum width go below 250 pixels otherwise the Ok, Cancel buttons look goofy
 			const int MinimumWidth = 250;
+			const int MinimumColorItemsPerRow = 3;
+			int minimumWidthForColorItems = MinimumColorItemsPerRow * itemWidth + 10;
+			int minimumWidth = Math.Max(MinimumWidth, minimumWidthForColorItems);
 
 			// If the width is below the minimum then...
-			if (Width < MinimumWidth)
+			if (Width < minimumWidth)
 			{
 				// Set the width to the minimum
-				Width = MinimumWidth;
+				Width = minimumWidth;
 			}
 
 			// Determine if there are unused boxes
