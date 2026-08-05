@@ -1,0 +1,253 @@
+# Make discrete color choices deselectable
+
+This ExecPlan is a living document. The sections `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` must be kept up to date as work proceeds. This document must be maintained in accordance with `.agents/PLANS.md`.
+
+## Purpose / Big Picture
+
+VIX-3731 fixes the multiple discrete color picker so a user can select a color and then remove that same color by clicking anywhere in its color row, including the colored rectangle. Today, the picker is configured for one selected row only, so the visual ListBox selection cannot be removed by clicking it again. After this change, each color row, its checkbox, and the colors returned when the user presses **OK** share one selection state. A user can independently select several colors, remove all of them, and use Space to toggle the focused row.
+
+The visible proof is a gradient color edit using the multiple discrete color picker: clicking a color rectangle checks and highlights it; clicking it again clears both; pressing **OK** returns exactly the checked colors. Clearing the final color continues to use existing behavior that deletes the gradient point.
+
+## Progress
+
+- [x] (2026-08-05 09:58 -05:00) Updated Jira issue VIX-3731 with the final scope, acceptance criteria, validation plan, and ExecPlan path before implementation.
+- [ ] Inspect the working tree and the four picker files named in this plan before editing; confirm no unrelated changes overlap the target XAML file.
+- [ ] Change the ListBox selection mode and two-way bindings in `src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml`.
+- [ ] Build the `DiscreteColorPicker` project and run the repository test project.
+- [ ] Manually verify multi-select toggling, initial selections, confirmation/cancellation, and the unchanged single-color picker.
+- [ ] Update VIX-3731 with any final requirement or test-plan adjustments and add a comment containing the validation results.
+- [ ] Update this ExecPlan’s living sections and outcomes after implementation.
+
+## Surprises & Discoveries
+
+- Observation: `MultipleDiscreteColorPickerView.xaml` leaves `ListBox.SelectionMode` unset, which means WPF uses its default `Single` mode.
+  Evidence: The current `<ListBox>` at `src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml` has no `SelectionMode` attribute, and its `ListBoxItem.IsSelected` setter binds to `ColorItem.IsSelected` rather than the multiple-picker checkbox state.
+
+- Observation: an empty result is already meaningful to both known callers.
+  Evidence: `src/Vixen.Modules/App/ColorGradients/GradientEditPanel.cs` calls `DeleteColor()` when `GetSelectedColors().Count() == 0`; `src/Vixen.Modules/Editor/EffectEditor/Controls/BaseInlineGradientEditor.cs` similarly calls `DeletePoint()`.
+
+- Observation: VIX-3731 already exists as an in-progress Bug in the VIX project and is assigned to Jeff Uchitjil.
+  Evidence: Jira issue `VIX-3731` was retrieved before editing; its status was `In Progress`, issue type was `Bug`, and its description accepted the expanded scope, acceptance criteria, and validation plan without a required-field or permission error.
+
+## Decision Log
+
+- Decision: Use WPF `SelectionMode="Multiple"`, not `Extended`, and rely on WPF’s built-in selection interaction.
+  Rationale: In `Multiple` mode, a normal click and Space toggle the focused item without modifier keys. `Extended` preserves conventional single-selection behavior for ordinary clicks and would not meet the deselection requirement. WPF therefore owns the toggle operation, avoiding custom event logic and double-toggle/reentrancy problems.
+  Date/Author: 2026-08-05 / Codex planning from Sol handoff
+
+- Decision: Bind both `ListBoxItem.IsSelected` and `CheckBox.IsChecked` two-way to `MultiSelectColorItem.CheckBoxSelected`.
+  Rationale: `MultipleDiscreteColorPickerViewModel.GetSelectedColors()` already returns colors whose `CheckBoxSelected` is true, and `ProcessSelectedItem()` sets that same property for initial selections. Making it the one authoritative state prevents the row highlight, checkbox, and returned colors from diverging.
+  Date/Author: 2026-08-05 / Codex planning from Sol handoff
+
+- Decision: Do not change the view model, `MultiSelectColorItem`, `ColorItem`, gradient callers, code-behind, commands, or public APIs.
+  Rationale: Existing initialization and result handling already support zero or many selections. Altering the inherited legacy `ColorItem.IsSelected` property would expand this narrowly scoped UI fix and require public API documentation work without improving VIX-3731.
+  Date/Author: 2026-08-05 / Codex planning from Sol handoff
+
+- Decision: Use manual WPF interaction testing rather than add an automated UI test in this issue.
+  Rationale: The defect is WPF ListBox mouse/keyboard selection behavior in a dialog, and the repository has no discovered UI test harness for this picker. The production change is declarative XAML only; project build plus a focused manual dialog exercise directly proves the required behavior. A test harness is outside this issue’s scope.
+  Date/Author: 2026-08-05 / Codex planning
+
+- Decision: Replace the existing brief VIX-3731 description with the implementation contract, acceptance criteria, and validation plan captured by this ExecPlan.
+  Rationale: The original issue described the symptom but did not define keyboard behavior, the state-synchronization contract, excluded scope, zero-selection behavior, or demonstrable completion criteria. The expanded description makes the issue independently reviewable and executable.
+  Date/Author: 2026-08-05 / Codex, Milestone 1
+
+## Outcomes & Retrospective
+
+Not started. At completion, replace this paragraph with the build/test results, the manual test evidence, the final VIX-3731 comment reference, and any deviations from this plan.
+
+## Context and Orientation
+
+Vixen is a .NET 10 Windows Presentation Foundation (WPF) desktop application. WPF displays a `ListBox` as a collection of visual rows. A `ListBoxItem` is one row; its `IsSelected` Boolean property determines whether WPF presents it as selected. A WPF binding keeps a visual property and a view-model property synchronized. `Mode=TwoWay` means user interaction writes back to the view model and view-model updates redraw the visual.
+
+This issue affects only the multi-color dialog in `src/Vixen.Common/DiscreteColorPicker`. `Common.DiscreteColorPicker.Views.MultipleDiscreteColorPickerView` is declared in `Views/MultipleDiscreteColorPickerView.xaml`. It renders `Colors` from `MultipleDiscreteColorPickerViewModel` in a wrapping `ListBox`; each row contains a checkbox and a 50-by-50 color rectangle.
+
+The data flow that must exist after the change is:
+
+    ListBoxItem.IsSelected  <->  MultiSelectColorItem.CheckBoxSelected  <->  CheckBox.IsChecked
+
+`MultiSelectColorItem` in `ViewModels/ColorItems/MultiSelectColorItem.cs` inherits `ColorItem` and supplies the `CheckBoxSelected` Catel property. Catel properties notify WPF bindings when their value changes. `MultipleDiscreteColorPickerViewModel` in `ViewModels/MultipleDiscreteColorPickerViewModel.cs` obtains the accepted result through `GetSelectedColors()`, which filters `Colors` where `CheckBoxSelected` is true. Its inherited `InitializeViewModel` path sets `ColorItem.IsSelected` for supplied initial colors, assigns each one to `SelectedItem`, and the multi-select override `ProcessSelectedItem` sets `CheckBoxSelected = true`. That initialization behavior must remain intact.
+
+`ColorItem.IsSelected` is a separate inherited property retained for shared initialization compatibility. The implementation must not merge or remove it in this issue. The ListBox container binding in the multi-select XAML will intentionally stop using it and instead bind to `CheckBoxSelected`.
+
+The same dialog is opened by `GradientEditPanel` and `BaseInlineGradientEditor`. Both deliberately treat no returned colors as a request to delete the current gradient color or point. The single-color dialog at `src/Vixen.Common/DiscreteColorPicker/Views/SingleDiscreteColorPickerView.xaml` is a separate view and must not change; it retains normal one-item ListBox selection.
+
+No services, threads, asynchronous work, allocations beyond ordinary WPF binding propagation, or new dependencies are needed. Each user toggle updates one Boolean on WPF’s UI thread.
+
+## Plan of Work
+
+### Milestone 1: Record the final issue contract in Jira
+
+Before editing code, update VIX-3731 through the repository’s `jira` skill at `.agents/skills/jira/SKILL.md`. Replace or augment the issue description so it states that the multiple discrete color picker must let an ordinary click or Space toggle each row; that checkbox, row highlight, and returned colors are synchronized through `CheckBoxSelected`; and that zero selected colors is valid. Include the acceptance scenarios from `Validation and Acceptance`, state that the single-color picker is excluded, and link this plan as `docs/plans/vix-3731-discrete-color-deselection.md`. Record the Jira update in `Progress` and any constraint learned from Jira in `Surprises & Discoveries`.
+
+This milestone changes external issue-tracking data only. It creates a shared definition of done before source code changes begin.
+
+### Milestone 2: Unify the multi-picker’s WPF selection state
+
+Edit only `src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml`. On its existing top-level `ListBox`, add `SelectionMode="Multiple"` alongside the existing binding and visual attributes. This enables WPF’s normal toggle semantics: clicking an unselected row selects it; clicking an already-selected row deselects it; Space toggles the focused row. Do not set `SelectionMode="Extended"`.
+
+Within the existing `ListBox.ItemContainerStyle`, replace the `IsSelected` setter value with a two-way binding to `CheckBoxSelected`:
+
+    <Setter Property="IsSelected" Value="{Binding CheckBoxSelected, Mode=TwoWay}" />
+
+Within the existing item template, make the checkbox’s existing binding explicitly two-way:
+
+    <CheckBox IsChecked="{Binding CheckBoxSelected, Mode=TwoWay}"></CheckBox>
+
+Keep all existing namespaces, layout, ListBox style, `ItemsSource`, `SelectedItem`, rectangle appearance, buttons, and XAML structure. Do not add code-behind handlers, `EventSetter` elements, commands, converters, view-model code, or tests solely to invert the selection. Do not modify `SingleDiscreteColorPickerView.xaml`.
+
+At the end of this milestone, WPF changes a row’s selected state, the container binding writes the same Boolean to `CheckBoxSelected`, and the checkbox binding reflects that Boolean. Direct checkbox interaction uses the same Boolean and therefore updates the row state. The expected selection rule for every interaction is `new selection = NOT current selection`.
+
+After the source edit, record a completion item in `Progress`. Before committing source changes, provide this milestone’s commit message in the completion response, but do not create a commit unless explicitly requested:
+
+    fix(discrete-color-picker): allow deselecting color rows
+
+### Milestone 3: Build and prove the dialog behavior
+
+First build the modified project from the repository root. Then run the existing repository test project to catch regressions in the broader supported test suite. A successful build/test does not replace the manual dialog verification because WPF mouse and keyboard selection behavior must be observed in a running window.
+
+Open a Vixen workflow that displays the multiple picker, such as editing a gradient point in the Color Gradients application module or in the Effect Editor’s inline gradient editor. Use a gradient point whose targets have at least two valid discrete colors. Execute the interaction cases in `Validation and Acceptance`, recording the Vixen version/configuration and exact result in both the Jira comment and this plan’s `Outcomes & Retrospective` section. Do not alter caller code if clearing the final selection deletes the gradient point; that is the intentional existing contract.
+
+At the end of the milestone, update VIX-3731 one final time. If implementation revealed a requirement or test-plan correction, make that adjustment first. Add a Jira comment with the actual build, automated-test, and manual-test results, including failures or skipped validation and why. Mark the final `Progress` items accurately and update this document’s living sections. Before committing plan-only status changes, provide this milestone’s commit message in the completion response, but do not create a commit unless explicitly requested:
+
+    docs(plans): record VIX-3731 validation results
+
+## Concrete Steps
+
+All commands run in `C:\Dev\Vixen` unless stated otherwise. They are read-only or build/test operations and can be rerun safely.
+
+1. Inspect the status and relevant source before editing. If `MultipleDiscreteColorPickerView.xaml` already has unrelated edits, preserve them and reconcile only the three intended attribute/binding changes; do not overwrite the file.
+
+        git status --short
+        Get-Content -Raw src\Vixen.Common\DiscreteColorPicker\Views\MultipleDiscreteColorPickerView.xaml
+        Get-Content -Raw src\Vixen.Common\DiscreteColorPicker\ViewModels\MultipleDiscreteColorPickerViewModel.cs
+        Get-Content -Raw src\Vixen.Common\DiscreteColorPicker\ViewModels\ColorItems\MultiSelectColorItem.cs
+
+2. Update VIX-3731 as described in Milestone 1, following `.agents/skills/jira/SKILL.md`. Include this concise issue content:
+
+        Make the multiple discrete color picker toggle a color when a user clicks its ListBox row or presses Space.
+        In MultipleDiscreteColorPickerView.xaml, use ListBox SelectionMode="Multiple" and bind both
+        ListBoxItem.IsSelected and CheckBox.IsChecked two-way to MultiSelectColorItem.CheckBoxSelected.
+        CheckBoxSelected remains the sole accepted-result state because GetSelectedColors filters it and
+        ProcessSelectedItem initializes it. Do not add code-behind, event handlers, commands, or use Extended mode.
+        Zero selected colors is valid and existing gradient callers delete their point/color in that case.
+
+3. Make the exact scoped XAML changes described in Milestone 2. Review the resulting focused diff:
+
+        git diff --check
+        git diff -- src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml
+
+    The relevant portion should be equivalent to this; retain the repository’s tab indentation and existing surrounding attributes:
+
+        <ListBox Grid.Row="0" ItemsSource="{Binding Colors}"
+                 SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"
+                 SelectionMode="Multiple"
+                 ...>
+            ...
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="IsSelected" Value="{Binding CheckBoxSelected, Mode=TwoWay}" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+            ...
+            <CheckBox IsChecked="{Binding CheckBoxSelected, Mode=TwoWay}"></CheckBox>
+
+4. Build the affected project. A clean build prints `Build succeeded.` and exits with code 0. Warnings already present outside the edit may be recorded but must not be silently treated as errors caused by this work.
+
+        msbuild src\Vixen.Common\DiscreteColorPicker\DiscreteColorPicker.csproj -m -t:Restore,Rebuild -p:Configuration=Release -p:Platform=x64
+
+5. Run the existing unit test suite. It should exit successfully with no failed tests. The suite may take longer than the focused build because it references numerous Vixen modules.
+
+        dotnet test src\Vixen.Tests\Vixen.Tests.csproj -c Release -p:SolutionDir="C:\Dev\Vixen\\"
+
+6. Perform the manual dialog test in a Debug or Release Vixen build. If no current executable is available, build the solution first:
+
+        msbuild Vixen.sln -m -t:Restore,Rebuild -p:Configuration=Debug -p:Platform=x64
+
+    Start Vixen from the generated Debug output using the project’s normal local launch procedure. Navigate to a color-gradient or inline-gradient point that opens `MultipleDiscreteColorPickerView`; avoid the single-color picker for the toggle checks. Follow every scenario in the next section.
+
+7. Add the results to VIX-3731, then revise this plan’s `Progress`, `Surprises & Discoveries`, `Decision Log`, `Outcomes & Retrospective`, and the change note below. Include commands, pass/fail counts, manual observations, and any deviation. Review all changes before requesting a commit:
+
+        git diff --check
+        git status --short
+        git diff -- docs/plans/vix-3731-discrete-color-deselection.md src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml
+
+## Validation and Acceptance
+
+The change is accepted only when the project build and existing test suite succeed and a person has observed the following in the running multiple discrete color picker:
+
+1. Start with at least two available discrete colors and no initially selected colors. Click an unchecked color rectangle. Its checkbox becomes checked and its ListBox row shows selected styling.
+2. Click the same selected rectangle again. Its checkbox clears and its row loses selected styling. This proves an ordinary row click can deselect.
+3. Click a checkbox directly once. It changes state exactly once, and its row highlight changes to the same state. It must not flip back because of a second event.
+4. Click another location inside a row’s active hit area, such as the margin or colored rectangle. It toggles the same way as the checkbox.
+5. Select two or more colors by clicking their rows. Each remains checked and highlighted independently; selecting one does not clear another.
+6. Use keyboard navigation to focus a row. Press Space once and observe it becomes selected and checked; press Space again and observe it becomes unselected and unchecked.
+7. Deselect the final selected color and press **OK**. `GetSelectedColors()` returns no colors, and the invoking gradient workflow performs its existing deletion behavior without an error.
+8. Open the multiple picker with one or more initially selected colors. Those colors start checked/highlighted, and newly selected or deselected rows produce the expected accepted result after **OK**.
+9. Change selections, press **Cancel**, reopen the picker, and verify the underlying gradient was not committed by the canceled dialog.
+10. Open the separate single discrete color picker and confirm its normal one-color selection behavior is unchanged.
+
+Expected build evidence is a zero exit code and text comparable to:
+
+    Build succeeded.
+        0 Error(s)
+
+Expected test evidence is a zero exit code with a summary comparable to:
+
+    Passed!  - Failed:     0, Passed: <existing total>, Skipped:     <existing total>, Total: <existing total>
+
+The exact current test count is not prescribed because this plan does not add tests; the required invariant is zero failures.
+
+## Idempotence and Recovery
+
+The XAML edit is idempotent when it produces exactly one `SelectionMode="Multiple"` attribute and exactly one two-way `CheckBoxSelected` binding for each of the ListBox item container and checkbox. Before retrying an interrupted edit, inspect `git diff` and the full XAML file; do not add duplicate attributes or setters.
+
+No data migration or destructive operation is involved. To revert only an uncommitted implementation change if validation proves it incorrect, manually restore the three modified XAML expressions to their original values after confirming the target file and preserving unrelated work: remove `SelectionMode="Multiple"`, bind `ListBoxItem.IsSelected` back to `IsSelected`, and remove the explicit checkbox `Mode=TwoWay`. Do not use a broad Git reset or checkout that could discard other contributors’ changes.
+
+If the focused project build cannot resolve the solution directory or shared build paths, run the documented full solution build in Concrete Step 6 and record the exact failure in Jira. If WPF selection styling does not track checkbox clicks as required, do not introduce event handlers as an unplanned workaround; stop, capture the observed binding values, and revise this ExecPlan’s decision log and issue description before choosing a new design.
+
+## Artifacts and Notes
+
+The expected source diff is deliberately limited to `src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml`:
+
+    - <ListBox Grid.Row="0" ItemsSource="{Binding Colors}"
+    + <ListBox Grid.Row="0" ItemsSource="{Binding Colors}"
+    +          SelectionMode="Multiple"
+    ...
+    - <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+    + <Setter Property="IsSelected" Value="{Binding CheckBoxSelected, Mode=TwoWay}" />
+    ...
+    - <CheckBox IsChecked="{Binding Path=CheckBoxSelected}"></CheckBox>
+    + <CheckBox IsChecked="{Binding CheckBoxSelected, Mode=TwoWay}"></CheckBox>
+
+No view-model, model, caller, code-behind, solution, package, or automated-test file is expected to change for VIX-3731. The ExecPlan itself is an implementation artifact and will be updated as work is performed.
+
+## Interfaces and Dependencies
+
+There are no new interfaces, public APIs, NuGet packages, services, commands, or files. The implementation relies on existing WPF controls from the `PresentationFramework` stack and existing Catel property-change support.
+
+The post-change binding contracts are:
+
+    In src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml:
+        ListBox.SelectionMode = Multiple
+        ListBoxItem.IsSelected <-> MultiSelectColorItem.CheckBoxSelected
+        CheckBox.IsChecked     <-> MultiSelectColorItem.CheckBoxSelected
+
+    In src/Vixen.Common/DiscreteColorPicker/ViewModels/MultipleDiscreteColorPickerViewModel.cs (unchanged):
+        public IEnumerable<Color> GetSelectedColors()
+
+`GetSelectedColors()` must continue returning `Colors.Where(item => item.CheckBoxSelected)`, including an empty collection. `ProcessSelectedItem(MultiSelectColorItem selectedItem)` must continue setting `selectedItem.CheckBoxSelected = true` during the shared initial-selection path. `ColorItem.IsSelected` remains available for that shared initializer but is not the multi-picker’s active visual selection binding after this change.
+
+### Critical files
+
+- `docs/plans/vix-3731-discrete-color-deselection.md` — this living ExecPlan; update it throughout implementation.
+- `src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml` — the only production source file to edit.
+- `src/Vixen.Common/DiscreteColorPicker/ViewModels/MultipleDiscreteColorPickerViewModel.cs` — read-only confirmation of initialization and accepted-result behavior.
+- `src/Vixen.Common/DiscreteColorPicker/ViewModels/ColorItems/MultiSelectColorItem.cs` — read-only confirmation of the authoritative Boolean property.
+- `src/Vixen.Common/DiscreteColorPicker/Views/SingleDiscreteColorPickerView.xaml` — read-only regression check; do not edit.
+- `src/Vixen.Modules/App/ColorGradients/GradientEditPanel.cs` and `src/Vixen.Modules/Editor/EffectEditor/Controls/BaseInlineGradientEditor.cs` — read-only confirmation that zero selected colors retains defined deletion behavior.
+
+## Change Note
+
+2026-08-05 / Codex: Created the initial ExecPlan from the Sol architecture handoff. The plan records a XAML-only `SelectionMode="Multiple"` and two-way binding solution, excludes public API and caller changes, and includes the required Jira pre-implementation and final-validation milestones.
+
+2026-08-05 / Codex: Completed Milestone 1 by replacing VIX-3731’s symptom-only description with the final scoped requirements, acceptance criteria, validation plan, and this plan’s repository path. Jira confirmed the issue was already an in-progress Bug; no tracker constraint blocked the next milestone.
