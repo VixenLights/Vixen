@@ -19,6 +19,7 @@ using Control = System.Windows.Forms.Control;
 using Cursors = System.Windows.Forms.Cursors;
 using CustomPropEditorWindow = VixenModules.App.CustomPropEditor.Views.CustomPropEditorWindow;
 using Size = System.Drawing.Size;
+using Timer = System.Windows.Forms.Timer;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -33,6 +34,9 @@ namespace VixenModules.Preview.VixenPreview
 		// Undo manager
 		private UndoManager _undoMgr;
 		private int _iconSize;
+		private const int ZoomDebounceIntervalMilliseconds = 250;
+		private readonly Timer _zoomDebounceTimer;
+		private int _pendingZoomPercent = 100;
 
 		public event EventHandler<PreviewItemMoveEventArgs> PreviewItemsAlignNew;
 
@@ -56,6 +60,12 @@ namespace VixenModules.Preview.VixenPreview
 
 		public VixenPreviewSetup3() {
 			InitializeComponent();
+			_zoomDebounceTimer = new Timer(components)
+			{
+				Interval = ZoomDebounceIntervalMilliseconds
+			};
+			_zoomDebounceTimer.Tick += ZoomDebounceTimerOnTick;
+			trackerZoom.MouseUp += TrackerZoomOnMouseUp;
 			var scaleFactor = ScalingTools.GetScaleFactor();
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			int imageSize = (int)(16 * scaleFactor);
@@ -248,6 +258,7 @@ namespace VixenModules.Preview.VixenPreview
 				e.Cancel = true;
 				return;
 			}
+			_zoomDebounceTimer.Stop();
 			previewForm.Preview.ZoomLevel = 1;
 			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
 			previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
@@ -373,6 +384,8 @@ namespace VixenModules.Preview.VixenPreview
 
 	    private void VixenPreviewSetup3_ChangeZoomLevel(object sender, double zoomLevel) 
         {
+			_zoomDebounceTimer.Stop();
+			_pendingZoomPercent = Convert.ToInt32(zoomLevel * 100);
             SetZoomTextAndTracker(zoomLevel);
         }
 
@@ -850,9 +863,38 @@ namespace VixenModules.Preview.VixenPreview
 
         private void trackerZoom_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
         {
-            double zoomLevel = trackerZoom.Value / 100d;
-            previewForm.Preview.ZoomLevel = zoomLevel;
+			_pendingZoomPercent = trackerZoom.Value;
+			labelZoomLevel.Text = _pendingZoomPercent + "%";
+			_zoomDebounceTimer.Stop();
+			_zoomDebounceTimer.Start();
         }
+
+		private void ZoomDebounceTimerOnTick(object sender, EventArgs e)
+		{
+			ApplyPendingZoom();
+		}
+
+		private void TrackerZoomOnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			ApplyPendingZoom();
+		}
+
+		private void ApplyPendingZoom()
+		{
+			_zoomDebounceTimer.Stop();
+			if (previewForm?.Preview == null)
+			{
+				return;
+			}
+
+			double zoomLevel = _pendingZoomPercent / 100d;
+			if (Math.Abs(previewForm.Preview.ZoomLevel - zoomLevel) < .1)
+			{
+				return;
+			}
+
+			previewForm.Preview.ZoomLevel = zoomLevel;
+		}
 
         private void SetZoomTextAndTracker(double zoomLevel)
         {
