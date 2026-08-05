@@ -14,7 +14,7 @@ The user can verify the result by opening the Custom Prop Editor, selecting a la
 
 - [x] (2026-08-04 21:21Z) Analyzed VIX-3563, retrieved its Jira description, inspected the local, vendor, and multiple-model import paths, and created this ExecPlan.
 - [x] (2026-08-05 13:56Z) Updated Jira issue VIX-3563 with refined scope, acceptance criteria, and automated/manual validation steps; no workflow transition was made.
-- [ ] Add the dispatcher render opportunity and exception-safe busy-indicator cleanup to the local xModel file-import command.
+- [x] (2026-08-05 14:06Z) Added a 200-millisecond asynchronous message-loop handoff and `try`/`finally` busy-indicator cleanup to the local xModel file-import command; the Custom Prop Editor project builds successfully.
 - [ ] Build and run focused regression tests.
 - [ ] Perform manual validation for local single-model, multiple-model, and vendor imports.
 - [ ] Update VIX-3563 with final validation results and revise this document's living sections.
@@ -36,9 +36,9 @@ The user can verify the result by opening the Custom Prop Editor, selecting a la
   Rationale: The importer is reused by both vendor and local paths and is covered by non-UI tests. Keeping it UI-free preserves the existing parser/assembler separation and avoids coupling import data logic to WPF services.
   Date/Author: 2026-08-04 / Codex
 
-- Decision: Explicitly yield the WPF dispatcher at `DispatcherPriority.ContextIdle` after showing the indicator and before invoking `ImportProp`.
-  Rationale: WPF rendering has a higher dispatcher priority than `ContextIdle`. Waiting for an empty context-idle operation allows the just-shown indicator a render turn without adding an arbitrary time delay or moving mutable prop construction to a background thread.
-  Date/Author: 2026-08-04 / Codex
+- Decision: Await a 200-millisecond delay after showing the busy indicator and before invoking `ImportProp`.
+  Rationale: Runtime validation disproved the initial context-idle approach. Catel 6.2's WPF `IBusyIndicatorService` changes `Mouse.OverrideCursor` to the wait cursor; it does not render a spinner window. A short asynchronous delay returns control to the Windows message loop long enough for the cursor transition to reach the desktop before CPU-bound import work starts. The delay is deliberately limited to local xModel imports and does not move mutable prop construction off the UI thread.
+  Date/Author: 2026-08-05 / Codex
 
 - Decision: Use `try/finally` around every `Show()` in this command scope.
   Rationale: The current linear `Show(); await ImportProp(); Hide();` sequence leaves the indicator vulnerable to an unexpected exception. `finally` guarantees cleanup while retaining `ImportProp`'s existing user-facing error behavior.
@@ -50,13 +50,13 @@ The user can verify the result by opening the Custom Prop Editor, selecting a la
 
 ## Outcomes & Retrospective
 
-Planning outcome: the defect is localized to the Custom Prop Editor file-import command. Jira now records the final Milestone 1 delivery contract, including acceptance criteria and test plan. No production source files have been changed; implementation, validation, and final Jira updates remain pending.
+Planning outcome: the defect is localized to the Custom Prop Editor file-import command. Jira now records the final Milestone 1 delivery contract, including acceptance criteria and test plan. Milestone 2 awaits a 200-millisecond UI-message-loop handoff before local import work and guarantees `IBusyIndicatorService.Hide()` in `finally`. `dotnet build src\\Vixen.Modules\\App\\CustomPropEditor\\CustomPropEditor.csproj --no-restore` succeeded with two package-vulnerability warnings and zero errors. Regression tests, manual validation, and final Jira updates remain pending.
 
 At completion, replace this paragraph with the commands run, the observed manual results, any variance from the planned dispatcher yield, and any remaining limitations.
 
 ## Context and Orientation
 
-Vixen is a Windows desktop application using WPF, a Windows user-interface framework that processes UI work through a dispatcher queue. A dispatcher priority determines when queued work runs. WPF render work runs before `ContextIdle` work, so awaiting a no-op queued at `ContextIdle` gives WPF an opportunity to draw controls whose state has just changed.
+Vixen is a Windows desktop application using WPF, a Windows user-interface framework that processes UI work through a dispatcher queue. In the Catel 6.2 package used by this repository, `IBusyIndicatorService` is implemented for WPF by setting `Mouse.OverrideCursor` to the wait cursor. It does not create or render a separate busy-indicator window. Returning control to the message loop briefly after setting that cursor lets Windows apply the visual cursor change before CPU-bound work continues.
 
 The Custom Prop Editor module is at `src/Vixen.Modules/App/CustomPropEditor`. Its primary view model is `src/Vixen.Modules/App/CustomPropEditor/ViewModels/PropEditorViewModel.cs`. The `ImportCommand` property creates a Catel command that invokes the private `Import(string type)` method. That method opens a file picker, resolves `IBusyIndicatorService`, shows the busy indicator, and calls `ImportProp(path)`.
 
@@ -74,9 +74,9 @@ Add these acceptance criteria to Jira: a large local single-model import visibly
 
 ### Milestone 2: Permit the busy indicator to render before local import work
 
-Edit `src/Vixen.Modules/App/CustomPropEditor/ViewModels/PropEditorViewModel.cs`. Add `using System.Windows.Threading;` with the other `using` directives if it is not already present.
+Edit `src/Vixen.Modules/App/CustomPropEditor/ViewModels/PropEditorViewModel.cs`.
 
-In the non-empty-path branch of `Import(string type)`, retain the existing `IBusyIndicatorService` resolution and `Show()` call. Put the remaining operation in `try/finally`: after `Show()`, await the WPF application dispatcher with a no-op callback at `DispatcherPriority.ContextIdle`; then await `ImportProp(path)`; in `finally`, call `Hide()`.
+In the non-empty-path branch of `Import(string type)`, retain the existing `IBusyIndicatorService` resolution and `Show()` call. Put the remaining operation in `try/finally`: after `Show()`, await `Task.Delay(200)`; then await `ImportProp(path)`; in `finally`, call `Hide()`.
 
 The intended shape is:
 
@@ -84,9 +84,7 @@ The intended shape is:
     pleaseWaitService.Show();
     try
     {
-        await Application.Current.Dispatcher.InvokeAsync(
-            () => { },
-            DispatcherPriority.ContextIdle);
+        await Task.Delay(200);
         await ImportProp(path);
     }
     finally
@@ -94,7 +92,7 @@ The intended shape is:
         pleaseWaitService.Hide();
     }
 
-Use the existing `System.Windows.Application` namespace already imported by the file. If static analysis or the target framework rejects direct awaiting of `DispatcherOperation`, await its `.Task` instead. Do not substitute `Task.Delay`, `Task.Run`, or `Task.Yield`: an arbitrary delay is timing-dependent, `Task.Run` would risk unsafe access to the prop model and Catel services, and `Task.Yield` does not explicitly wait behind WPF rendering work.
+The delay is intentional and must remain asynchronous so the UI thread can process messages. Do not use `Thread.Sleep`, `Task.Run`, or a blocking wait: `Thread.Sleep` prevents the cursor update, while `Task.Run` would risk unsafe access to the mutable prop model and Catel services.
 
 Do not modify `ImportProp`, `XModelImport`, `XModelSelectionService`, model selection views, vendor metadata assignment, or the xModel parser/assembler. The only behavioral change is an opportunity to paint the already-requested busy indicator before the local import blocks the UI thread.
 
@@ -175,18 +173,16 @@ The pre-change local import branch has this effective sequence:
     await ImportProp(path);
     pleaseWaitService.Hide();
 
-The problem is that `Show()` changes indicator state but does not itself force a WPF render. When the next code synchronously parses/assembles a local model, the indicator may never be painted. The planned `DispatcherPriority.ContextIdle` boundary is a rendering opportunity, not a performance delay.
+The problem is that `Show()` changes cursor state but CPU-bound import work can begin before Windows has processed the cursor transition. Catel 6.2's WPF busy-indicator implementation uses `Mouse.OverrideCursor = Cursors.Wait`; it does not display a separate spinner window. The 200-millisecond asynchronous boundary is therefore a deliberate message-loop handoff, not background import work.
 
 The implementation should produce a narrow diff resembling:
 
-    + using System.Windows.Threading;
-    ...
       pleaseWaitService.Show();
     - await ImportProp(path);
     - pleaseWaitService.Hide();
     + try
     + {
-    +     await Application.Current.Dispatcher.InvokeAsync(() => { }, DispatcherPriority.ContextIdle);
+    +     await Task.Delay(200);
     +     await ImportProp(path);
     + }
     + finally
@@ -198,7 +194,7 @@ The implementation should produce a narrow diff resembling:
 
 Use the existing Catel `IBusyIndicatorService` from `Catel.Services`; no new service, interface, package, or project reference is needed. Continue resolving it with `this.GetDependencyResolver()` as `PropEditorViewModel` already does.
 
-Use WPF's existing `System.Windows.Application.Current.Dispatcher` and `System.Windows.Threading.DispatcherPriority.ContextIdle`. `Application.Current.Dispatcher.InvokeAsync` schedules the no-op on the application UI dispatcher. `ContextIdle` means it waits until higher-priority WPF work, including visual rendering, has had a chance to run.
+Use the existing `Task.Delay` API with a 200-millisecond duration. It asynchronously yields to the current WPF synchronization context, allowing Windows to apply Catel's wait-cursor override without moving the xModel parser or prop assembler off the UI thread.
 
 No public or protected API changes are planned. Do not change the existing public `IModelImport.ImportAsync(string filePath)` contract. Consequently, no XML documentation update is required for this focused implementation.
 
@@ -207,3 +203,7 @@ No public or protected API changes are planned. Do not change the existing publi
 2026-08-04 / Codex: Created this ExecPlan from VIX-3563 and direct inspection of the Custom Prop Editor local import, vendor import, multiple-model selection, and xModel importer paths. The plan records the dispatcher-yield approach because the indicator state is already requested but cannot render before UI-thread import work begins.
 
 2026-08-05 / Codex: Completed Milestone 1 by updating VIX-3563 with the focused busy-indicator scope, binary acceptance criteria, and automated/manual validation plan. The issue remained in its existing Accepted status.
+
+2026-08-05 / Codex: Completed Milestone 2. `PropEditorViewModel.Import` now yields the WPF dispatcher at `ContextIdle` after showing the existing busy indicator, then imports the selected local file and dismisses the indicator in `finally`. The Custom Prop Editor project compiled successfully; automated and manual validation remain Milestone 3 work.
+
+2026-08-05 / Codex: Revised the Milestone 2 implementation after runtime feedback showed that the dispatcher boundary did not make the cursor visible. Inspection of Catel 6.2 confirmed that `IBusyIndicatorService` only overrides the mouse cursor. The command now awaits `Task.Delay(200)` after `Show()` so Windows can apply that override before CPU-bound import work; the project compiled successfully with zero errors.

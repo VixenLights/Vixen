@@ -965,8 +965,17 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					_lastFolder = Path.GetDirectoryName(path);
 					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 					pleaseWaitService.Show();
-					await ImportProp(path);
-					pleaseWaitService.Hide();
+					try
+					{
+						//The small delay here is to give the wait cursor a chance to show before going on to the long
+						//running task to import.
+						await Task.Delay(200);
+						await ImportProp(path);
+					}
+					finally
+					{
+						pleaseWaitService.Hide();
+					}
 				}
 			}
 		}
