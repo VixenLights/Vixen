@@ -924,21 +924,21 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#region Import command
 
-		private Command<string> _importCommand;
+		private TaskCommand<string> _importCommand;
 
 		/// <summary>
 		/// Gets the Import command.
 		/// </summary>
 		[Browsable(false)]
-		public Command<string> ImportCommand
+		public TaskCommand<string> ImportCommand
 		{
-			get { return _importCommand ?? (_importCommand = new Command<string>(Import)); }
+			get { return _importCommand ??= new TaskCommand<string>(ImportAsync); }
 		}
 
 		/// <summary>
 		/// Method to invoke when the Import command is executed.
 		/// </summary>
-		private async void Import(string type)
+		private async Task ImportAsync(string type)
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
@@ -965,8 +965,17 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					_lastFolder = Path.GetDirectoryName(path);
 					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 					pleaseWaitService.Show();
-					await ImportProp(path);
-					pleaseWaitService.Hide();
+					try
+					{
+						//The small delay here is to give the wait cursor a chance to show before going on to the long
+						//running task to import.
+						await Task.Delay(200);
+						await ImportProp(path);
+					}
+					finally
+					{
+						pleaseWaitService.Hide();
+					}
 				}
 			}
 		}
