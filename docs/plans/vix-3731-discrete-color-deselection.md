@@ -12,7 +12,7 @@ The visible proof is a gradient color edit using the multiple discrete color pic
 
 - [x] (2026-08-05 09:58 -05:00) Updated Jira issue VIX-3731 with the final scope, acceptance criteria, validation plan, and ExecPlan path before implementation.
 - [ ] Inspect the working tree and the four picker files named in this plan before editing; confirm no unrelated changes overlap the target XAML file.
-- [ ] Change the ListBox selection mode and two-way bindings in `src/Vixen.Common/DiscreteColorPicker/Views/MultipleDiscreteColorPickerView.xaml`.
+- [x] (2026-08-05 09:59 -05:00) Changed the multi-picker ListBox to `SelectionMode="Multiple"` and bound its row selection and checkbox two-way to `CheckBoxSelected`.
 - [ ] Build the `DiscreteColorPicker` project and run the repository test project.
 - [ ] Manually verify multi-select toggling, initial selections, confirmation/cancellation, and the unchanged single-color picker.
 - [ ] Update VIX-3731 with any final requirement or test-plan adjustments and add a comment containing the validation results.
@@ -251,3 +251,5 @@ The post-change binding contracts are:
 2026-08-05 / Codex: Created the initial ExecPlan from the Sol architecture handoff. The plan records a XAML-only `SelectionMode="Multiple"` and two-way binding solution, excludes public API and caller changes, and includes the required Jira pre-implementation and final-validation milestones.
 
 2026-08-05 / Codex: Completed Milestone 1 by replacing VIX-3731’s symptom-only description with the final scoped requirements, acceptance criteria, validation plan, and this plan’s repository path. Jira confirmed the issue was already an in-progress Bug; no tracker constraint blocked the next milestone.
+
+2026-08-05 / Codex: Completed Milestone 2 with the planned three-expression XAML change in `MultipleDiscreteColorPickerView.xaml`. The container selection and checkbox now share `CheckBoxSelected`, and WPF `Multiple` mode owns ordinary click and Space toggling. No code-behind, commands, model, view-model, caller, or single-picker changes were made.
