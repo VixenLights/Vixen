@@ -27,6 +27,7 @@
 
         <ListBox Grid.Row="0"  ItemsSource="{Binding Colors}" 
                  SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" 
+                 SelectionMode="Multiple"
                  Style="{StaticResource ListBoxStyle}"
                  Background="#444444"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -37,13 +38,23 @@
 	        </ListBox.ItemsPanel>
 	        <ListBox.ItemContainerStyle>
 				<Style TargetType="{x:Type ListBoxItem}">
-					<Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+					<Setter Property="IsSelected" Value="{Binding CheckBoxSelected, Mode=TwoWay}" />
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="{x:Type ListBoxItem}">
+								<Border Background="Transparent">
+									<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+													  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+								</Border>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
 				</Style>
 			</ListBox.ItemContainerStyle>
 			<ListBox.ItemTemplate>
 				<DataTemplate DataType="{x:Type viewModels:MultiSelectColorItem}">
 					<StackPanel Orientation="Horizontal" Margin="5,5,5,5">
-						<CheckBox IsChecked="{Binding Path=CheckBoxSelected}"></CheckBox>
+						<CheckBox IsChecked="{Binding CheckBoxSelected, Mode=TwoWay}"></CheckBox>
 						<Rectangle Width="50" Height="50"  Fill="{Binding ItemColor, Converter={StaticResource ColorToSolidBrushConverter}}"/>
 					</StackPanel>
 				</DataTemplate>
