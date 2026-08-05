@@ -13,7 +13,7 @@ The behavior is demonstrable through focused unit tests and manually in Preview 
 - [x] (2026-08-05) Investigated `PreviewMovingHead.ShapeInRect`, its caller, bounds accessors, repository history, and current test-project conventions.
 - [x] (2026-08-05 21:20Z) Updated VIX-3957 with the final requirements, acceptance criteria, and test plan before editing code.
 - [x] (2026-08-05 21:23Z) Added focused moving-head marquee-selection tests and ran the pre-fix regression baseline: 17 failed and 13 passed of 30 cases.
-- [ ] Correct `PreviewMovingHead.ShapeInRect` and its XML documentation.
+- [x] (2026-08-05 21:28Z) Corrected `PreviewMovingHead.ShapeInRect` coordinate conversion, containment/intersection semantics, and XML documentation; all 30 focused tests pass.
 - [ ] Run targeted and full test validation, then perform the manual Preview Setup check.
 - [ ] Reconcile VIX-3957 with the delivered implementation and comment the validation results.
 
@@ -33,6 +33,9 @@ The behavior is demonstrable through focused unit tests and manually in Preview 
 
 - Observation: the focused regression suite exposes every intended defect without test-environment failures.
   Evidence: `dotnet test src\\Vixen.Tests\\Vixen.Tests.csproj --filter "FullyQualifiedName~PreviewMovingHeadSelectionTests"` built successfully, then reported 17 failed and 13 passed of 30 cases. Failures covered non-100% full containment (0.5, 2.0, and 4.0), all intersection edge/inside cases, and rejection at the obsolete unscaled location (2.0 and 4.0). Baseline warnings were existing package and project warnings, including `NU1904` for LiteDB 4.1.4.
+
+- Observation: the focused regression suite passes after the bounds fix.
+  Evidence: the same filtered `dotnet test` command exited with code 0 and reported 30 passed, 0 failed, and 0 skipped. Existing restore/build warnings, including `NU1904` for LiteDB 4.1.4, remain outside this change.
 
 ## Decision Log
 
@@ -54,6 +57,10 @@ The behavior is demonstrable through focused unit tests and manually in Preview 
 
 - Decision: Preserve the existing VIX-3957 summary, issue type, status, assignment, and all non-description fields.
   Rationale: Milestone 1 requires only requirements refinement; the existing issue is already an accepted bug assigned to the appropriate owner. The updated description now supplies scope, acceptance criteria, and a test plan without altering workflow state.
+  Date/Author: 2026-08-05 / Codex
+
+- Decision: Compare normalized marquee bounds with scaled `Left`, `Right`, `Top`, and `Bottom` bounds rather than the four stored corners.
+  Rationale: extrema supply normalized fixture bounds in model-space, scaling them matches the canvas-space rectangle contract, and closed-rectangle comparisons express both full containment and intersection without allocations.
   Date/Author: 2026-08-05 / Codex
 
 ## Outcomes & Retrospective
@@ -195,3 +202,5 @@ Revision note (2026-08-05, Codex): Created the initial ExecPlan from the VIX-395
 Revision note (2026-08-05, Codex): Completed Milestone 1 by replacing the VIX-3957 description with the validated scope, acceptance criteria, and regression/manual test plan. Preserved the issue's summary, type, status, assignee, and other fields.
 
 Revision note (2026-08-05, Codex): Completed Milestone 2 by adding `PreviewMovingHeadSelectionTests` for all requested zoom and marquee semantics. The focused baseline produced 17 expected failures and 13 passes of 30 cases before the production fix.
+
+Revision note (2026-08-05, Codex): Completed Milestone 3 by replacing the corner-only selection test with zoom-aware inclusive rectangle containment/intersection and updating the public override's XML documentation. All 30 focused regression tests pass.

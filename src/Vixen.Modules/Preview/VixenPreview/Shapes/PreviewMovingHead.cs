@@ -404,49 +404,34 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		/// <summary>
-		/// Returns true if any corner of the specified rect is inside the moving head rectangle.
+		/// Determines whether the moving-head fixture is contained by or intersects a display-space marquee rectangle.
 		/// </summary>
-		/// <param name="rect">Rectangle to evaluate</param>
-		/// <returns>True if the rectangle is overlaps the shape</returns>
+		/// <param name="rect">The display-space rectangle to evaluate.</param>
+		/// <param name="allIn"><see langword="true" /> to require complete fixture containment; otherwise, <see langword="false" /> to permit any intersection.</param>
+		/// <returns><see langword="true" /> if the fixture satisfies the requested containment or intersection test; otherwise, <see langword="false" />.</returns>
 		public override bool ShapeInRect(Rectangle rect, bool allIn = false)
 		{
-			bool overlaps = false;
+			var selectionLeft = Math.Min(rect.X, rect.X + rect.Width);
+			var selectionRight = Math.Max(rect.X, rect.X + rect.Width);
+			var selectionTop = Math.Min(rect.Y, rect.Y + rect.Height);
+			var selectionBottom = Math.Max(rect.Y, rect.Y + rect.Height);
+			var fixtureLeft = Left * ZoomLevel;
+			var fixtureRight = Right * ZoomLevel;
+			var fixtureTop = Top * ZoomLevel;
+			var fixtureBottom = Bottom * ZoomLevel;
 
-			int X1 = Math.Min(rect.X, rect.X + rect.Width);
-			int X2 = Math.Max(rect.X, rect.X + rect.Width);
-			int Y1 = Math.Min(rect.Y, rect.Y + rect.Height);
-			int Y2 = Math.Max(rect.Y, rect.Y + rect.Height);
-			
-			if (_bottomLeft.X >= X1 &&
-			    _bottomLeft.X <= X2 &&
-			    _bottomLeft.Y >= Y1 &&
-			    _bottomLeft.Y <= Y2)
+			if (allIn)
 			{
-				overlaps = true;
-			}
-			else if (_bottomRight.X >= X1 &&
-			         _bottomRight.X <= X2 &&
-			         _bottomRight.Y >= Y1 &&
-			         _bottomRight.Y <= Y2)
-			{
-				overlaps = true;
-			}
-			else if (_topLeft.X >= X1 &&
-			         _topLeft.X <= X2 &&
-			         _topLeft.Y >= Y1 &&
-			         _topLeft.Y <= Y2)
-			{
-				overlaps = true;
-			}
-			else if (_topRight.X >= X1 &&
-			         _topRight.X <= X2 &&
-			         _topRight.Y >= Y1 &&
-			         _topRight.Y <= Y2)
-			{
-				overlaps = true;
+				return selectionLeft <= fixtureLeft &&
+				       selectionRight >= fixtureRight &&
+				       selectionTop <= fixtureTop &&
+				       selectionBottom >= fixtureBottom;
 			}
 
-			return overlaps;
+			return selectionLeft <= fixtureRight &&
+			       selectionRight >= fixtureLeft &&
+			       selectionTop <= fixtureBottom &&
+			       selectionBottom >= fixtureTop;
 		}
 
 		/// <summary>
