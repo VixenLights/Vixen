@@ -312,12 +312,7 @@ namespace VixenModules.App.LipSyncApp
 				try
 				{
 					fileName = phoneme + ".bmp";
-					DirectoryInfo pictureDirInfo = new DirectoryInfo(PictureDirPath);
-					FileInfo[] fi = pictureDirInfo.GetFiles(fileName);
-					if (fi.Any())
-					{
-						fi[0].Delete();
-					}
+					File.Delete(Path.Combine(PictureDirPath, fileName));
 				}
 				catch (Exception e)
 				{
@@ -589,13 +584,7 @@ namespace VixenModules.App.LipSyncApp
 
 			try
 			{
-				DirectoryInfo pictureDirInfo = new DirectoryInfo(PictureDirPath);
-				FileInfo[] fi = pictureDirInfo.GetFiles(CurrentPhonemeString + "_tmp.bmp");
-
-				foreach (FileInfo file in fi)
-				{
-					fi[0].Delete();
-				}
+				File.Delete(fileName);
 			}
 			catch (Exception err)
 			{
