@@ -11,13 +11,13 @@ The visible proof is a gradient color edit using the multiple discrete color pic
 ## Progress
 
 - [x] (2026-08-05 09:58 -05:00) Updated Jira issue VIX-3731 with the final scope, acceptance criteria, validation plan, and ExecPlan path before implementation.
-- [ ] Inspect the working tree and the four picker files named in this plan before editing; confirm no unrelated changes overlap the target XAML file.
+- [x] (2026-08-05 09:59 -05:00) Inspected the working tree and picker files before editing; no unrelated changes overlapped the target files.
 - [x] (2026-08-05 10:06 -05:00) Changed the multi-picker ListBox to `SelectionMode="Multiple"`, bound its internal row selection and checkbox two-way to `CheckBoxSelected`, and added a picker-local row template that suppresses all selection visuals.
 - [x] (2026-08-05 10:11 -05:00) Updated shared picker sizing so the dialog is wide enough for at least three color items before the wrap panel starts a new row.
-- [ ] (partially completed 2026-08-05 10:13 -05:00) Built `DiscreteColorPicker` in Release successfully with 0 errors; remaining: run the repository test project.
-- [ ] Manually verify multi-select toggling, initial selections, confirmation/cancellation, and the unchanged single-color picker.
-- [ ] Update VIX-3731 with any final requirement or test-plan adjustments and add a comment containing the validation results.
-- [ ] Update this ExecPlan’s living sections and outcomes after implementation.
+- [x] (2026-08-05 10:20 -05:00) Built the full solution successfully and ran automated tests successfully with zero failures, as confirmed by the user.
+- [x] (2026-08-05 10:20 -05:00) Manually verified multi-select toggling, initial selections, confirmation/cancellation, the unchanged single-color picker, and three-color no-wrap sizing successfully, as confirmed by the user.
+- [x] (2026-08-05 10:20 -05:00) Confirmed VIX-3731 requirements required no final adjustments and added validation results in Jira comment 40291.
+- [x] (2026-08-05 10:20 -05:00) Updated this ExecPlan’s living sections and outcomes after implementation.
 
 ## Surprises & Discoveries
 
@@ -38,6 +38,9 @@ The visible proof is a gradient color edit using the multiple discrete color pic
 
 - Observation: the focused Release build succeeds, but it reports four warnings from existing `Vixen.Core` sources.
   Evidence: `msbuild src\\Vixen.Common\\DiscreteColorPicker\\DiscreteColorPicker.csproj -m -t:Restore,Rebuild -p:Configuration=Release -p:Platform=x64` completed with `0 Error(s)` and warnings `CS8632` in `IElementTemplate.cs`, `CS0618` in `HardwareUpdateThread.cs`, and `CS0067` in `ProgramExecutor.cs`; none are in the changed picker files.
+
+- Observation: end-to-end validation passed after the implementation and sizing refinement.
+  Evidence: The user confirmed that the full build, automated tests, and manual testing all succeeded. Jira comment 40291 records the successful result and the manual behaviors exercised.
 
 ## Decision Log
 
@@ -69,9 +72,13 @@ The visible proof is a gradient color edit using the multiple discrete color pic
   Rationale: This guarantees that the common three-color multiple picker has 286 pixels and does not wrap early, while the 72-pixel single picker retains its established 250-pixel minimum because three of its items require only 226 pixels. The rule belongs in the shared sizing method because both dialogs use it.
   Date/Author: 2026-08-05 / Codex, sizing refinement
 
+- Decision: Accept the implementation without further requirement or test-plan changes.
+  Rationale: Full-build, automated-test, and manual-validation results confirmed every documented behavior, including native toggling, checkbox-only indication, zero selection, regression coverage, and the three-color width requirement.
+  Date/Author: 2026-08-05 / Codex, final validation
+
 ## Outcomes & Retrospective
 
-Not started. At completion, replace this paragraph with the build/test results, the manual test evidence, the final VIX-3731 comment reference, and any deviations from this plan.
+Completed 2026-08-05. The multiple discrete color picker now uses WPF multiple selection internally so row clicks and Space toggle `CheckBoxSelected`, while a local transparent item template prevents ListBox selection visuals; the checkbox is the only selection indicator. The shared sizing base now ensures the dialog has room for at least three color items before wrapping, yielding 286 pixels for the 92-pixel multiple picker and retaining 250 pixels for the 72-pixel single picker. The user confirmed successful full-build, automated-test, and manual-validation results. Jira comment 40291 records those results. No requirements, scope, or validation-plan changes remained after testing.
 
 ## Context and Orientation
 
@@ -325,3 +332,5 @@ The post-change binding contracts are:
 2026-08-05 / Codex: Added and completed the shared sizing refinement after the requirement clarified that three colors are common. `ConfigureWindowSize` now enforces the larger of its legacy button-layout minimum and three item widths, so the multiple picker does not wrap three 92-pixel items while the single picker keeps its existing 250-pixel minimum. The original validation milestone is renumbered to Milestone 4.
 
 2026-08-05 / Codex: Built `DiscreteColorPicker` in Release after the sizing refinement. The project compiled with 0 errors; four recorded warnings originated in existing `Vixen.Core` files outside this change.
+
+2026-08-05 / Codex: Completed final validation using user-confirmed full-build, automated-test, and manual-test results. Added Jira comment 40291 documenting the successful validation and recorded the completed outcome in this ExecPlan; no final adjustments were required.
