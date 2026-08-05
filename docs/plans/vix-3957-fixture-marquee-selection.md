@@ -14,8 +14,8 @@ The behavior is demonstrable through focused unit tests and manually in Preview 
 - [x] (2026-08-05 21:20Z) Updated VIX-3957 with the final requirements, acceptance criteria, and test plan before editing code.
 - [x] (2026-08-05 21:23Z) Added focused moving-head marquee-selection tests and ran the pre-fix regression baseline: 17 failed and 13 passed of 30 cases.
 - [x] (2026-08-05 21:28Z) Corrected `PreviewMovingHead.ShapeInRect` coordinate conversion, containment/intersection semantics, and XML documentation; all 30 focused tests pass.
-- [ ] Run targeted and full test validation, then perform the manual Preview Setup check.
-- [ ] Reconcile VIX-3957 with the delivered implementation and comment the validation results.
+- [x] (2026-08-05 21:33Z) Completed focused and full automated validation and recorded the successful full build and Preview Setup manual checks.
+- [x] (2026-08-05 21:33Z) Reconciled VIX-3957 with the delivered implementation and added the validation-results comment.
 
 ## Surprises & Discoveries
 
@@ -36,6 +36,9 @@ The behavior is demonstrable through focused unit tests and manually in Preview 
 
 - Observation: the focused regression suite passes after the bounds fix.
   Evidence: the same filtered `dotnet test` command exited with code 0 and reported 30 passed, 0 failed, and 0 skipped. Existing restore/build warnings, including `NU1904` for LiteDB 4.1.4, remain outside this change.
+
+- Observation: the complete automated suite passes after the fix.
+  Evidence: `dotnet test src\\Vixen.Tests\\Vixen.Tests.csproj` exited with code 0 and reported 616 passed, 0 failed, and 0 skipped. The full build and Preview Setup manual checks were also reported successful by the user.
 
 ## Decision Log
 
@@ -63,9 +66,15 @@ The behavior is demonstrable through focused unit tests and manually in Preview 
   Rationale: extrema supply normalized fixture bounds in model-space, scaling them matches the canvas-space rectangle contract, and closed-rectangle comparisons express both full containment and intersection without allocations.
   Date/Author: 2026-08-05 / Codex
 
+- Decision: Leave VIX-3957 in its existing workflow state after recording validation.
+  Rationale: the final milestone requires the issue description and validation comment to be current, but the user did not request a status transition. The tracker remains available for the project's normal review and release workflow.
+  Date/Author: 2026-08-05 / Codex
+
 ## Outcomes & Retrospective
 
-Not started. At completion, record the production files changed, the exact targeted and full test results, manual verification result, any remaining limitations, and the final VIX-3957 update/comment.
+Completed. `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewMovingHead.cs` now compares normalized zoomed fixture bounds against the zoomed canvas marquee and honors both the full-containment and intersection forms of the existing `allIn` contract. `src/Vixen.Tests/Preview/VixenPreview/PreviewMovingHeadSelectionTests.cs` supplies focused regression coverage for zoom 0.5, 1.0, 2.0, and 4.0, both selection directions, exact-edge contact, containment, intersection, no overlap, and stale unscaled positions.
+
+The focused suite passed 30/30 tests and the full `Vixen.Tests` suite passed 616/616 tests. The user reported that the full build and Preview Setup manual validation also succeeded, including the four zoom levels and the drag-direction and stale-coordinate scenarios. Existing warnings, including the LiteDB `NU1904` advisory and unrelated compiler warnings, remain baseline only. VIX-3957's description now includes the delivered implementation, and comment 40293 records the validation results. No known gaps remain in this plan's scope.
 
 ## Context and Orientation
 
@@ -204,3 +213,5 @@ Revision note (2026-08-05, Codex): Completed Milestone 1 by replacing the VIX-39
 Revision note (2026-08-05, Codex): Completed Milestone 2 by adding `PreviewMovingHeadSelectionTests` for all requested zoom and marquee semantics. The focused baseline produced 17 expected failures and 13 passes of 30 cases before the production fix.
 
 Revision note (2026-08-05, Codex): Completed Milestone 3 by replacing the corner-only selection test with zoom-aware inclusive rectangle containment/intersection and updating the public override's XML documentation. All 30 focused regression tests pass.
+
+Revision note (2026-08-05, Codex): Completed Milestone 4 by running the full automated suite (616 passed), recording the successful full build and manual Preview Setup validation reported by the user, and reconciling VIX-3957 with the delivered implementation plus validation comment 40293.
