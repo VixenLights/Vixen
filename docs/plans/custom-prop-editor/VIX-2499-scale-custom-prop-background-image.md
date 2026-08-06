@@ -15,7 +15,7 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 - [x] (2026-08-05 00:00Z) Read `.agents/PLANS.md`, the Custom Prop Editor model, persistence service, editor view, view models, project files, existing dialog pattern, and test layout; no production files were changed.
 - [x] (2026-08-06 13:27Z) Updated VIX-2499’s Jira description with the finalized requirements, acceptance criteria, implementation constraints, and validation commands; retained Normal priority and New Ticket status.
 - [x] (2026-08-06 13:40Z) Implemented and unit-tested the pure scaling contracts and Catel modal dialog state. The module build succeeded and the focused `BackgroundImageScaling` suite passed 23 tests.
-- [ ] Implement the non-destructive model, persistence, canvas, and light-coordinate changes.
+- [x] (2026-08-06 14:08Z) Implemented non-destructive model, persistence, canvas, and coordinate-scaling behavior. The module build succeeded; 35 focused scaling tests and 121 Custom Prop Editor tests passed.
 - [ ] Add the View menu workflow and dialog view, then verify it manually.
 - [ ] Run the targeted build and test commands, update VIX-2499 with final requirements if needed, and comment the validation results.
 - [ ] Record the completed outcome, evidence, and any follow-up work in this document.
@@ -33,6 +33,9 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 
 - Observation: Catel view models expose `RaisePropertyChanged`, rather than accepting a property name through `OnPropertyChanged`.
   Evidence: the initial module build reported `CS1503` for three computed result properties; replacing those calls with `RaisePropertyChanged(nameof(...))` produced a successful build.
+
+- Observation: a non-uniform canvas resize uses independent X and Y factors; resizing 100×100 to 200×150 moves (10, 10) to (20, 15), not (20, 30).
+  Evidence: the first coordinate-scaling test run caught the incorrect expected Y value; the corrected test passed with the intended `target/current` formulas.
 
 ## Decision Log
 
@@ -60,9 +63,13 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
   Rationale: the calculation contracts remain UI-independent, while the view model follows the module’s established view-model locator convention for the new Catel window.
   Date/Author: 2026-08-06 / Codex
 
+- Decision: Treat finite dimensions from 1 through 100,000 as valid persisted logical canvas dimensions when attaching an image.
+  Rationale: this matches the dialog’s validation range, preserves valid saved scale choices, and supplies native bitmap pixels only for incomplete or invalid legacy data.
+  Date/Author: 2026-08-06 / Codex
+
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. VIX-2499 contains the final implementation contract, and the module now has a validated, UI-independent scaling calculator plus a Catel dialog state/view with focused tests. The feature is not yet reachable from the editor and does not yet modify a prop; Milestones 3–5 remain. The completed result must state whether the user can scale a background, whether `.prp` save/reopen retains the logical canvas size, the exact build/test outcomes, and any remaining limitations.
+Milestones 1–3 are complete. Valid persisted logical dimensions now survive bitmap attachment; newly selected images reset dimensions to native pixels; and the drawing panel applies an accepted target size plus optional unique-light coordinate scaling. The feature is not yet reachable from the editor; Milestones 4–5 remain. The completed result must state whether the user can scale a background, whether `.prp` save/reopen retains the logical canvas size, the exact build/test outcomes, and any remaining limitations.
 
 ## Context and Orientation
 
@@ -241,3 +248,5 @@ Revision note (2026-08-05): Created from the VIX-2499 architecture handoff after
 Revision note (2026-08-06): Completed Milestone 1 by updating VIX-2499 with the executable specification while retaining its Normal priority and New Ticket status. No source implementation was performed.
 
 Revision note (2026-08-06): Completed Milestone 2. Added the deterministic scaling contracts, Catel dialog state and view, and 23 focused passing tests. The module build passed with only the pre-existing LiteDB NU1904 dependency warning; the full Custom Prop Editor filter also passed 109 tests.
+
+Revision note (2026-08-06): Completed Milestone 3. Preserved valid logical canvas dimensions during bitmap attachment, reset dimensions for a newly selected image, added optional unique-light coordinate scaling, and added persistence/coordinate tests. The module build passed; 35 focused scaling tests and 121 Custom Prop Editor tests passed. The LiteDB NU1904 dependency warning remains pre-existing.

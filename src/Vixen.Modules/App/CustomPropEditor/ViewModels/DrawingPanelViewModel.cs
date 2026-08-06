@@ -8,6 +8,7 @@ using Catel.MVVM;
 using Catel.Services;
 using Common.WPFCommon.Command;
 using Common.WPFCommon.Services;
+using VixenModules.App.CustomPropEditor.BackgroundImageScaling;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.App.CustomPropEditor.ViewModels.State;
@@ -452,6 +453,45 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			SelectedItems.Clear();
 		}
 
+		/// <summary>
+		/// Applies validated background image scale options to the canvas and, when requested, existing light centers.
+		/// </summary>
+		/// <param name="options">The validated target canvas dimensions and coordinate-scaling preference.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="options" /> is <see langword="null" />.</exception>
+		/// <exception cref="ArgumentException">The target canvas dimensions are invalid.</exception>
+		/// <exception cref="InvalidOperationException">The current canvas dimensions are invalid.</exception>
+		internal void ApplyBackgroundImageScale(BackgroundImageScaleOptions options)
+		{
+			ArgumentNullException.ThrowIfNull(options);
+			if (!BackgroundImageScaleCalculator.AreValidDimensions(options.TargetWidth, options.TargetHeight))
+			{
+				throw new ArgumentException("The target canvas dimensions must be between 1 and 100,000 pixels.", nameof(options));
+			}
+
+			var currentWidth = Width;
+			var currentHeight = Height;
+			if (!double.IsFinite(currentWidth) || !double.IsFinite(currentHeight) || currentWidth <= 0 || currentHeight <= 0)
+			{
+				throw new InvalidOperationException("The current canvas dimensions must be finite positive values.");
+			}
+
+			Width = options.TargetWidth;
+			Height = options.TargetHeight;
+			if (!options.ScaleExistingLightPositions)
+			{
+				return;
+			}
+
+			var scaleX = options.TargetWidth / currentWidth;
+			var scaleY = options.TargetHeight / currentHeight;
+			foreach (var lightViewModel in LightNodes.GroupBy(light => light.Light.Id).Select(group => group.First()))
+			{
+				lightViewModel.Center = new System.Windows.Point(
+					lightViewModel.Center.X * scaleX,
+					lightViewModel.Center.Y * scaleY);
+			}
+		}
+
 		public void Deselect(IEnumerable<ElementModelViewModel> elementModels)
 		{
 			List<LightViewModel> selectedModels = new List<LightViewModel>();
@@ -778,4 +818,3 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 	}
 }
-
