@@ -16,7 +16,7 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 - [x] (2026-08-06 13:27Z) Updated VIX-2499’s Jira description with the finalized requirements, acceptance criteria, implementation constraints, and validation commands; retained Normal priority and New Ticket status.
 - [x] (2026-08-06 13:40Z) Implemented and unit-tested the pure scaling contracts and Catel modal dialog state. The module build succeeded and the focused `BackgroundImageScaling` suite passed 23 tests.
 - [x] (2026-08-06 14:08Z) Implemented non-destructive model, persistence, canvas, and coordinate-scaling behavior. The module build succeeded; 35 focused scaling tests and 121 Custom Prop Editor tests passed.
-- [ ] Add the View menu workflow and dialog view, then verify it manually (completed: TaskCommand, modal dialog invocation, View-menu entry, and explicit `Stretch="Fill"`; remaining: live interactive Custom Prop Editor exercise).
+- [x] (2026-08-06 15:03Z) Completed manual WPF acceptance testing. The menu and dialog worked for default and assigned backgrounds; aspect-lock/unlock, validation, cancel behavior, optional light scaling, and save/reopen persistence all behaved as specified. Recorded the result in Jira comment 40297.
 - [x] (2026-08-06 14:24Z) Re-ran the exact targeted build and focused test commands: the build succeeded with 0 errors and the Custom Prop Editor filter passed 121 tests. VIX-2499 already matched the implementation; added Jira comment 40295 with the commands, results, existing warnings, and manual-verification follow-up.
 - [x] (2026-08-06 14:24Z) Recorded automated validation evidence and the remaining live WPF acceptance exercise in this document.
 - [x] (2026-08-06 14:51Z) Revised the aspect-lock contract in this plan and VIX-2499: it preserves the current logical canvas ratio, not the original bitmap ratio.
@@ -50,6 +50,9 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 
 - Observation: enabling aspect lock after an unlocked 640×400 edit must retain 640×400 rather than immediately changing it to the source image's 4:3 ratio.
   Evidence: the prior test expectation of 533×400 failed after the correction; updating it to the current 640×400 ratio and adding the 800×600-source/600×600-canvas regression produced 14 passing view-model tests.
+
+- Observation: the completed interactive Custom Prop Editor exercise confirmed that the modal workflow applies only confirmed scaling and preserves the stored bitmap through save/reopen.
+  Evidence: product-tester acceptance recorded in Jira comment 40297 on 2026-08-06.
 
 ## Decision Log
 
@@ -97,13 +100,19 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
   Rationale: this provides stable current-canvas ratio behavior across width/height edits and unit switches while allowing a newly enabled lock to adopt a deliberately stretched canvas.
   Date/Author: 2026-08-06 / Codex
 
+- Decision: Treat the completed product-tester exercise as final user-visible acceptance for this plan.
+  Rationale: it verifies the WPF behavior that the automated calculator, view-model, persistence, and coordinate tests cannot observe directly.
+  Date/Author: 2026-08-06 / Codex
+
 ## Outcomes & Retrospective
 
 Milestones 1–3 are complete, and Milestone 4’s code is complete. The View menu now opens the scaling dialog and applies options only after confirmation; the canvas image uses explicit fill stretching. The confirmed scale updates the logical canvas and can proportionally move unique light centers without changing the stored bitmap or marker radius. Valid saved logical dimensions survive bitmap attachment and persistence tests cover save/reopen behavior.
 
 Milestone 5 automated validation is complete for the implementation state that existed on 2026-08-06: the exact module build succeeded with 0 errors, and the focused Custom Prop Editor test command passed 121 tests with 0 failures or skips. Jira comment 40295 records those results. Existing LiteDB NU1904 and unrelated compiler warnings remain.
 
-Milestone 6 corrects the clarified aspect-lock requirement. The dialog now captures the current logical canvas ratio when lock becomes active and uses it across subsequent edits; source dimensions remain limited to percentage conversion and display. The corrected module build succeeded with 0 errors and the focused Custom Prop Editor test command passed 123 tests with 0 failures or skips; Jira comment 40296 records the result. The live manual Custom Prop Editor exercise remains the only pending verification and must cover the menu/dialog, default background, large-image scaling, cancel behavior, and save/reopen flow.
+Milestone 6 corrects the clarified aspect-lock requirement. The dialog now captures the current logical canvas ratio when lock becomes active and uses it across subsequent edits; source dimensions remain limited to percentage conversion and display. The corrected module build succeeded with 0 errors and the focused Custom Prop Editor test command passed 123 tests with 0 failures or skips; Jira comment 40296 records the result.
+
+The final manual Custom Prop Editor acceptance exercise has passed and is recorded in Jira comment 40297. The menu and dialog work for both default and assigned backgrounds; locking, unlocked stretching, validation, cancel behavior, and optional light scaling behave as expected; and save/reopen preserves the logical canvas without changing the stored bitmap. All planned validation is complete.
 
 ## Context and Orientation
 
@@ -305,3 +314,5 @@ Revision note (2026-08-06): Completed Milestone 5 automated validation. The exac
 Revision note (2026-08-06): Clarified the product behavior for aspect lock. It preserves the current logical canvas ratio, including a deliberate unlocked stretch, rather than the original bitmap ratio. Updated VIX-2499 and added Milestone 6 for the required implementation correction and regression tests.
 
 Revision note (2026-08-06): Completed Milestone 6. Aspect lock now captures and preserves the logical canvas ratio current when the lock is active. Added regressions for a 600×600 canvas backed by an 800×600 source and for re-enabling lock after an unlocked stretch. The module build passed and 123 focused Custom Prop Editor tests passed; Jira comment 40296 records the result. Live interactive verification remains pending.
+
+Revision note (2026-08-06): Completed final manual WPF acceptance. Product testing confirmed the dialog and menu workflow for default and assigned backgrounds, aspect-lock/unlock behavior, validation, cancel safety, optional light scaling, and save/reopen persistence. Jira comment 40297 records the completion; all plan validation is now complete.
