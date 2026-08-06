@@ -62,6 +62,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				StateDefinitionEditorViewModel.StateDataChanged += StateDefinitionEditorViewModel_StateDataChanged;
 				StateDefinitionEditorViewModel.StatePreviewChanged += StateDefinitionEditorViewModel_StatePreviewChanged;
 				RegisterModelEvents();
+				_scaleBackgroundImageCommand?.RaiseCanExecuteChanged();
 			}
 		}
 
@@ -1277,7 +1278,51 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				if (!string.IsNullOrEmpty(path))
 				{
 					PropModelServices.Instance().SetImage(path);
+					_scaleBackgroundImageCommand?.RaiseCanExecuteChanged();
 				}
+			}
+		}
+
+		#endregion
+
+		#region ScaleBackgroundImage command
+
+		private TaskCommand _scaleBackgroundImageCommand;
+
+		/// <summary>
+		/// Gets the command that opens the background image scaling dialog.
+		/// </summary>
+		/// <value>The command that opens the background image scaling dialog.</value>
+		[Browsable(false)]
+		public TaskCommand ScaleBackgroundImageCommand
+		{
+			get { return _scaleBackgroundImageCommand ??= new TaskCommand(ScaleBackgroundImageAsync, CanScaleBackgroundImage); }
+		}
+
+		private bool CanScaleBackgroundImage()
+		{
+			return Prop?.Image != null && DrawingPanelViewModel != null;
+		}
+
+		private async Task ScaleBackgroundImageAsync()
+		{
+			if (!CanScaleBackgroundImage())
+			{
+				return;
+			}
+
+			var dialogViewModel = new BackgroundImageScaleViewModel(
+				Prop.Image.PixelWidth,
+				Prop.Image.PixelHeight,
+				(int)DrawingPanelViewModel.Width,
+				(int)DrawingPanelViewModel.Height,
+				DrawingPanelViewModel.LightNodes.Select(light => light.Light.Id).Distinct().Any());
+			var dependencyResolver = this.GetDependencyResolver();
+			var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
+			var result = await uiVisualizerService.ShowDialogAsync(dialogViewModel);
+			if (result.DialogResult == true && dialogViewModel.Options != null)
+			{
+				DrawingPanelViewModel.ApplyBackgroundImageScale(dialogViewModel.Options);
 			}
 		}
 

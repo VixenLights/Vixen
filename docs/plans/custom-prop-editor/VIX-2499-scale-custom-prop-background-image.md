@@ -16,7 +16,7 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 - [x] (2026-08-06 13:27Z) Updated VIX-2499’s Jira description with the finalized requirements, acceptance criteria, implementation constraints, and validation commands; retained Normal priority and New Ticket status.
 - [x] (2026-08-06 13:40Z) Implemented and unit-tested the pure scaling contracts and Catel modal dialog state. The module build succeeded and the focused `BackgroundImageScaling` suite passed 23 tests.
 - [x] (2026-08-06 14:08Z) Implemented non-destructive model, persistence, canvas, and coordinate-scaling behavior. The module build succeeded; 35 focused scaling tests and 121 Custom Prop Editor tests passed.
-- [ ] Add the View menu workflow and dialog view, then verify it manually.
+- [ ] Add the View menu workflow and dialog view, then verify it manually (completed: TaskCommand, modal dialog invocation, View-menu entry, and explicit `Stretch="Fill"`; remaining: live interactive Custom Prop Editor exercise).
 - [ ] Run the targeted build and test commands, update VIX-2499 with final requirements if needed, and comment the validation results.
 - [ ] Record the completed outcome, evidence, and any follow-up work in this document.
 
@@ -36,6 +36,9 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 
 - Observation: a non-uniform canvas resize uses independent X and Y factors; resizing 100×100 to 200×150 moves (10, 10) to (20, 15), not (20, 30).
   Evidence: the first coordinate-scaling test run caught the incorrect expected Y value; the corrected test passed with the intended `target/current` formulas.
+
+- Observation: the available environment can compile WPF XAML and run the Custom Prop Editor tests, but does not provide an interactive Vixen application session for exercising the modal dialog directly.
+  Evidence: the module build and 121-test Custom Prop Editor filter passed; live menu/dialog acceptance remains an explicit manual step.
 
 ## Decision Log
 
@@ -67,9 +70,13 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
   Rationale: this matches the dialog’s validation range, preserves valid saved scale choices, and supplies native bitmap pixels only for incomplete or invalid legacy data.
   Date/Author: 2026-08-06 / Codex
 
+- Decision: Apply scale options only after `IUIVisualizerService.ShowDialogAsync` reports an affirmative dialog result and the dialog exposes options.
+  Rationale: this preserves cancel and close semantics without introducing a live preview or dirty-state mutation before the user confirms.
+  Date/Author: 2026-08-06 / Codex
+
 ## Outcomes & Retrospective
 
-Milestones 1–3 are complete. Valid persisted logical dimensions now survive bitmap attachment; newly selected images reset dimensions to native pixels; and the drawing panel applies an accepted target size plus optional unique-light coordinate scaling. The feature is not yet reachable from the editor; Milestones 4–5 remain. The completed result must state whether the user can scale a background, whether `.prp` save/reopen retains the logical canvas size, the exact build/test outcomes, and any remaining limitations.
+Milestones 1–3 are complete, and Milestone 4’s code is complete. The View menu now opens the scaling dialog and applies options only after confirmation; the canvas image uses explicit fill stretching. A live manual Custom Prop Editor exercise remains before marking Milestone 4 fully verified. The completed result must state whether the user can scale a background, whether `.prp` save/reopen retains the logical canvas size, the exact build/test outcomes, and any remaining limitations.
 
 ## Context and Orientation
 
@@ -250,3 +257,5 @@ Revision note (2026-08-06): Completed Milestone 1 by updating VIX-2499 with the 
 Revision note (2026-08-06): Completed Milestone 2. Added the deterministic scaling contracts, Catel dialog state and view, and 23 focused passing tests. The module build passed with only the pre-existing LiteDB NU1904 dependency warning; the full Custom Prop Editor filter also passed 109 tests.
 
 Revision note (2026-08-06): Completed Milestone 3. Preserved valid logical canvas dimensions during bitmap attachment, reset dimensions for a newly selected image, added optional unique-light coordinate scaling, and added persistence/coordinate tests. The module build passed; 35 focused scaling tests and 121 Custom Prop Editor tests passed. The LiteDB NU1904 dependency warning remains pre-existing.
+
+Revision note (2026-08-06): Implemented Milestone 4’s command and XAML wiring. The module build and 121 Custom Prop Editor tests passed. Manual dialog/menu verification remains pending because no interactive Vixen host is available in this environment.

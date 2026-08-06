@@ -86,6 +86,7 @@
 												<Image Source="/Module.App.CustomPropEditor;component/Images/BackgroundImage.png" Width="16" Height="16"/>
 										</MenuItem.Icon>
 								</MenuItem>
+								<MenuItem Header="Scale Background Image…" Command="{Binding ScaleBackgroundImageCommand}"/>
 								<MenuItem Header="Background Opacity">
 										<controls:SliderMenuItem x:Name="OpacitySliderMenu" ItemValue="{Binding DrawingPanelViewModel.Opacity, Mode=TwoWay}">
 												<MenuItem Header="10%" controls:SliderMenuItem.ItemValue=".1"></MenuItem>
@@ -317,7 +318,7 @@
                            
                                             Focusable="True">
 																				<Canvas.Background>
-																						<ImageBrush ImageSource="{Binding DrawingPanelViewModel.Image}" Opacity="{Binding DrawingPanelViewModel.Opacity}"></ImageBrush>
+												<ImageBrush ImageSource="{Binding DrawingPanelViewModel.Image}" Opacity="{Binding DrawingPanelViewModel.Opacity}" Stretch="Fill"></ImageBrush>
 																				</Canvas.Background>
 
 																		</Canvas>
@@ -334,6 +335,5 @@
 				</Border>
 		</DockPanel>
 </Window>
-
 
 
