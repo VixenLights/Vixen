@@ -41,10 +41,7 @@
 		<ProjectReference Include="..\Vixen.Modules\Effect\Text\Text.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Wipe\Wipe.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Editor\LayerEditor\LayerEditor.csproj" />
-		<ProjectReference Include="..\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj">
-			<Private>false</Private>
-			<IncludeAssets>None</IncludeAssets>
-		</ProjectReference>
+		<ProjectReference Include="..\Vixen.Modules\Editor\TimedSequenceEditor\TimedSequenceEditor.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Preview\VixenPreview\VixenPreview.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\LayerMixingFilter\ChromaKey\ChromaKey.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\LayerMixingFilter\LumaKey\LumaKey.csproj" />

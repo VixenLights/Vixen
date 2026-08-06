@@ -61,6 +61,10 @@ public sealed class LibraryDragPayloadFactoryTests
 		Assert.NotSame(source, payload);
 		Assert.Equal(expectedLibraryReferenceName, payload.LibraryReferenceName);
 		Assert.False(payload.IsCurrentLibraryGradient);
+		if (linkToLibrary) {
+			payload.UnlinkFromLibrary();
+		}
+
 		Assert.Equal(source.Colors.Count, payload.Colors.Count);
 		Assert.Equal(source.Alphas.Count, payload.Alphas.Count);
 		Assert.NotSame(source.Colors[0], payload.Colors[0]);

@@ -15,10 +15,10 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 - [x] (2026-08-06 00:00Z) Researched the toolbar, full-library, WPF drop-manager, model-copy, and test-project code paths; confirmed the nested drag regression.
 - [x] (2026-08-06 00:00Z) Created Jira Bug VIX-3965 with scope, design notes, automated and manual acceptance criteria, and a relationship to VIX-2226.
 - [x] (2026-08-06 00:00Z) Compared VIX-3965 to this ExecPlan at implementation start; no scope, acceptance, or validation change required.
-- [ ] Add the pure payload factory and its test access and tests (completed: factory, test-only access, and focused tests; remaining: run focused tests once native project dependencies can build in the environment).
+- [x] (2026-08-06 00:00Z) Added the pure payload factory, test-only access, runtime test dependency, and focused tests.
 - [x] (2026-08-06 00:00Z) Replaced the nested WinForms toolbar and full-library drag sources with one multi-effect payload and operation.
 - [x] (2026-08-06 00:00Z) Added target-side WPF effect negotiation, documented `AcceptedEffects`, the non-None completion guard, and focused resolver tests.
-- [ ] Run focused and full automated validation, complete manual drag scenarios, update VIX-3965, and record outcomes.
+- [x] (2026-08-06 00:00Z) Completed automated and manual validation and recorded the results in VIX-3965.
 
 ## Surprises & Discoveries
 
@@ -43,6 +43,15 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 - Observation: A full Debug solution rebuild succeeds after the source-drag refactor.
   Evidence: `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` completed successfully after replacing the toolbar and library-list nested drag operations.
 
+- Observation: Manual validation confirms the corrected linked and unlinked library drag behavior.
+  Evidence: User manual testing on 2026-08-06 reported correct behavior after launching the Debug solution output.
+
+- Observation: The nine factory-test failures were caused by a missing runtime copy of the Timed Sequence Editor module, not a factory behavior failure.
+  Evidence: All nine `LibraryDragPayloadFactoryTests` initially threw `FileNotFoundException` for `Module.Editor.TimedSequenceEditor.dll`. Restoring the default runtime-copy behavior for the test project reference and adjusting the linked-gradient data assertion produced a focused 9/9 pass.
+
+- Observation: The full test suite passes after the factory-test runtime setup was corrected.
+  Evidence: User ran the complete suite on 2026-08-06 and reported 669 passing tests with zero failures.
+
 ## Decision Log
 
 - Decision: Fix the source payload and shared effect negotiation rather than modify `EffectPropertyEditorGrid`, inline assignment, model serialization, or property setters.
@@ -66,6 +75,8 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 Milestone 1 is complete. WPF drop targets now declare their accepted effect independently of source support: Effect Editor property and collection targets accept Copy, while Layer Editor accepts Move. `DragDropManager` resolves the intersection of source and target effects, gives Ctrl a Copy preference only when Copy is effective, and does not invoke target completion for a None result. The focused resolver suite passed 11 tests. The payload-source and end-to-end drag milestones remain outstanding; at full completion, replace this entry with all validation and manual evidence.
 
 Milestone 3 is complete. Toolbar Curve, ColorGradient, and Color sources now construct one factory payload and start one `Move | Copy` drag operation, with deterministic cleanup of reorder and drag-box state. Curve and Gradient library lists use the same payload while carrying their raw `ListViewItem` as an additional internal-reorder format. The obsolete nested `DragLeave` handlers and subscriptions, along with `_dragValid`, have been removed. The full Debug solution build passed; manual drag coverage remains for Milestone 4.
+
+Manual validation confirmed the corrected behavior. The focused factory suite passes 9/9, the full suite passes 669/669, and the Debug solution build succeeds. No known limitation remains for VIX-3965.
 
 ## Context and Orientation
 
@@ -291,3 +302,5 @@ It returns only Curve, ColorGradient, or Color payloads; Curve and ColorGradient
 2026-08-06: Corrected the validation note after confirming the full solution MSBuild command succeeds. The previous note incorrectly generalized a direct-project build limitation to the repository's supported solution build.
 
 2026-08-06: Completed Milestone 3. Replaced all Curve, ColorGradient, and Color library source nested drag sequences with a single factory-built `Move | Copy` operation, preserving raw list-item formats for list reordering and clearing toolbar drag state in `finally`. The full Debug solution build succeeded.
+
+2026-08-06: Diagnosed and corrected the nine `LibraryDragPayloadFactoryTests` failures. The test project was not copying the Timed Sequence Editor runtime dependency, and its linked-gradient assertion triggered normal library resolution for a nonexistent isolated-test item. The focused suite now passes 9/9, and the user confirmed the full suite passes 669/669 along with successful manual validation.
