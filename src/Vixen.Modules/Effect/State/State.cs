@@ -60,6 +60,12 @@ namespace VixenModules.Effect.State
 
 		protected override EffectTypeModuleData EffectModuleData => _data;
 
+		/// <inheritdoc />
+		public override string Information => "Visit the Vixen Lights website for more information on this effect.";
+
+		/// <inheritdoc />
+		public override string InformationLink => "https://www.vixenlights.com/docs/usage/sequencer/effects/basic/state/";
+
 		#endregion
 
 		#region Visual Representation

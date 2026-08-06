@@ -889,6 +889,20 @@ namespace VixenModules.Effect.LipSync
 
 		/// <inheritdoc />
 		protected override EffectTypeModuleData EffectModuleData => _data;
+		
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "https://www.vixenlights.com/docs/usage/sequencer/effects/basic/lipsync/"; }
+		}
+
+		#endregion
 
 		#endregion
 	}
