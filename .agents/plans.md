@@ -57,7 +57,7 @@ Milestones are narrative, not bureaucracy. If you break the work into milestones
 
 - Each milestone must be independently verifiable and incrementally implement the overall goal of the execution plan. 
 - Milestones must be able to have a JIRA issue created from them with full requirements including testing, design notes and acceptance criteria.
-- When completing a milestone that changes repository files, output the formatted commit message in the completion response, following the commit-msg skill. Do not create the commit unless the user explicitly requests it.
+- When completing a milestone that changes repository files, output the formatted commit message in the completion response. It must invoke and follow the commit-msg skill. Do not create the commit unless the user explicitly requests it.
 
 ## Living plans and design decisions
 
