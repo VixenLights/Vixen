@@ -2152,7 +2152,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripColorLibrary.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
 			this.toolStripColorLibrary.DragDrop += new System.Windows.Forms.DragEventHandler(this.toolStripColorLibrary_DragDrop);
 			this.toolStripColorLibrary.DragEnter += new System.Windows.Forms.DragEventHandler(this.toolStripColorLibrary_DragEnter);
-			this.toolStripColorLibrary.DragLeave += new System.EventHandler(this.toolStripLibrary_DragLeave);
 			this.toolStripColorLibrary.Leave += new System.EventHandler(this.toolStripLibrary_Leave);
 			this.toolStripColorLibrary.MouseEnter += new System.EventHandler(this.toolStrips_MouseEnter);
 			// 
@@ -2254,7 +2253,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripCurveLibrary.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
 			this.toolStripCurveLibrary.DragDrop += new System.Windows.Forms.DragEventHandler(this.toolStripCurveLibrary_DragDrop);
 			this.toolStripCurveLibrary.DragEnter += new System.Windows.Forms.DragEventHandler(this.toolStripCurveLibrary_DragEnter);
-			this.toolStripCurveLibrary.DragLeave += new System.EventHandler(this.toolStripLibrary_DragLeave);
 			this.toolStripCurveLibrary.Leave += new System.EventHandler(this.toolStripLibrary_Leave);
 			this.toolStripCurveLibrary.MouseEnter += new System.EventHandler(this.toolStrips_MouseEnter);
 			// 
@@ -2276,7 +2274,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripGradientLibrary.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
 			this.toolStripGradientLibrary.DragDrop += new System.Windows.Forms.DragEventHandler(this.toolStripGradientLibrary_DragDrop);
 			this.toolStripGradientLibrary.DragEnter += new System.Windows.Forms.DragEventHandler(this.toolStripGradientLibrary_DragEnter);
-			this.toolStripGradientLibrary.DragLeave += new System.EventHandler(this.toolStripLibrary_DragLeave);
 			this.toolStripGradientLibrary.Leave += new System.EventHandler(this.toolStripLibrary_Leave);
 			this.toolStripGradientLibrary.MouseEnter += new System.EventHandler(this.toolStrips_MouseEnter);
 			// 

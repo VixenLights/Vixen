@@ -134,7 +134,6 @@
 			this.listViewGradients.SelectedIndexChanged += new System.EventHandler(this.listViewGradients_SelectedIndexChanged);
 			this.listViewGradients.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewGradients_DragDrop);
 			this.listViewGradients.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewGradients_DragEnter);
-			this.listViewGradients.DragLeave += new System.EventHandler(this.listViewGradients_DragLeave);
 			this.listViewGradients.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewGradients_KeyDown);
 			this.listViewGradients.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewGradients_KeyUp);
 			this.listViewGradients.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewGradients_MouseDoubleClick);

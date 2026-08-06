@@ -16,7 +16,7 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 - [x] (2026-08-06 00:00Z) Created Jira Bug VIX-3965 with scope, design notes, automated and manual acceptance criteria, and a relationship to VIX-2226.
 - [x] (2026-08-06 00:00Z) Compared VIX-3965 to this ExecPlan at implementation start; no scope, acceptance, or validation change required.
 - [ ] Add the pure payload factory and its test access and tests (completed: factory, test-only access, and focused tests; remaining: run focused tests once native project dependencies can build in the environment).
-- [ ] Replace the nested WinForms drag sources with one multi-effect drag payload.
+- [x] (2026-08-06 00:00Z) Replaced the nested WinForms toolbar and full-library drag sources with one multi-effect payload and operation.
 - [x] (2026-08-06 00:00Z) Added target-side WPF effect negotiation, documented `AcceptedEffects`, the non-None completion guard, and focused resolver tests.
 - [ ] Run focused and full automated validation, complete manual drag scenarios, update VIX-3965, and record outcomes.
 
@@ -40,6 +40,9 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 - Observation: The full solution MSBuild command uses the repository's shared solution output layout and successfully builds Timed Sequence Editor, including the new factory.
   Evidence: `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` completed successfully in 52 seconds. The standalone `Vixen.Tests` build remains unsuitable for focused execution because it is not built by that solution configuration and its Rebuild target cleans and evaluates transitive native projects.
 
+- Observation: A full Debug solution rebuild succeeds after the source-drag refactor.
+  Evidence: `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` completed successfully after replacing the toolbar and library-list nested drag operations.
+
 ## Decision Log
 
 - Decision: Fix the source payload and shared effect negotiation rather than modify `EffectPropertyEditorGrid`, inline assignment, model serialization, or property setters.
@@ -61,6 +64,8 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 ## Outcomes & Retrospective
 
 Milestone 1 is complete. WPF drop targets now declare their accepted effect independently of source support: Effect Editor property and collection targets accept Copy, while Layer Editor accepts Move. `DragDropManager` resolves the intersection of source and target effects, gives Ctrl a Copy preference only when Copy is effective, and does not invoke target completion for a None result. The focused resolver suite passed 11 tests. The payload-source and end-to-end drag milestones remain outstanding; at full completion, replace this entry with all validation and manual evidence.
+
+Milestone 3 is complete. Toolbar Curve, ColorGradient, and Color sources now construct one factory payload and start one `Move | Copy` drag operation, with deterministic cleanup of reorder and drag-box state. Curve and Gradient library lists use the same payload while carrying their raw `ListViewItem` as an additional internal-reorder format. The obsolete nested `DragLeave` handlers and subscriptions, along with `_dragValid`, have been removed. The full Debug solution build passed; manual drag coverage remains for Milestone 4.
 
 ## Context and Orientation
 
@@ -284,3 +289,5 @@ It returns only Curve, ColorGradient, or Color payloads; Curve and ColorGradient
 2026-08-06: Added Milestone 2's factory, test-only access, and unit tests. The full Debug solution build verifies the production assembly in the repository's required shared-output layout. Keep the focused-test validation pending because `Vixen.Tests` is outside that solution build configuration and its standalone Rebuild target is not compatible with the native project graph.
 
 2026-08-06: Corrected the validation note after confirming the full solution MSBuild command succeeds. The previous note incorrectly generalized a direct-project build limitation to the repository's supported solution build.
+
+2026-08-06: Completed Milestone 3. Replaced all Curve, ColorGradient, and Color library source nested drag sequences with a single factory-built `Move | Copy` operation, preserving raw list-item formats for list reordering and clearing toolbar drag state in `finally`. The full Debug solution build succeeded.
