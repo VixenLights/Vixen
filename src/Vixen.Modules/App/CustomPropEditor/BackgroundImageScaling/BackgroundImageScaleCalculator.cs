@@ -42,33 +42,33 @@ namespace VixenModules.App.CustomPropEditor.BackgroundImageScaling
 		}
 
 		/// <summary>
-		/// Attempts to calculate a target height that preserves the source bitmap aspect ratio.
+		/// Attempts to calculate a target height that preserves a logical canvas aspect ratio.
 		/// </summary>
 		/// <param name="targetWidth">The validated target width.</param>
-		/// <param name="sourceWidth">The source bitmap width.</param>
-		/// <param name="sourceHeight">The source bitmap height.</param>
+		/// <param name="lockBaseWidth">The logical canvas width captured when aspect lock became active.</param>
+		/// <param name="lockBaseHeight">The logical canvas height captured when aspect lock became active.</param>
 		/// <param name="targetHeight">When this method returns, contains the validated matching height.</param>
 		/// <returns><see langword="true" /> if the calculation produces a valid dimension; otherwise, <see langword="false" />.</returns>
-		internal static bool TryCalculateLockedHeight(int targetWidth, int sourceWidth, int sourceHeight, out int targetHeight)
+		internal static bool TryCalculateLockedHeight(int targetWidth, int lockBaseWidth, int lockBaseHeight, out int targetHeight)
 		{
 			targetHeight = default;
-			return targetWidth >= MinimumDimension && sourceWidth >= MinimumDimension && sourceHeight >= MinimumDimension &&
-				TryRoundDimension((double)targetWidth * sourceHeight / sourceWidth, out targetHeight);
+			return targetWidth >= MinimumDimension && lockBaseWidth >= MinimumDimension && lockBaseHeight >= MinimumDimension &&
+				TryRoundDimension((double)targetWidth * lockBaseHeight / lockBaseWidth, out targetHeight);
 		}
 
 		/// <summary>
-		/// Attempts to calculate a target width that preserves the source bitmap aspect ratio.
+		/// Attempts to calculate a target width that preserves a logical canvas aspect ratio.
 		/// </summary>
 		/// <param name="targetHeight">The validated target height.</param>
-		/// <param name="sourceWidth">The source bitmap width.</param>
-		/// <param name="sourceHeight">The source bitmap height.</param>
+		/// <param name="lockBaseWidth">The logical canvas width captured when aspect lock became active.</param>
+		/// <param name="lockBaseHeight">The logical canvas height captured when aspect lock became active.</param>
 		/// <param name="targetWidth">When this method returns, contains the validated matching width.</param>
 		/// <returns><see langword="true" /> if the calculation produces a valid dimension; otherwise, <see langword="false" />.</returns>
-		internal static bool TryCalculateLockedWidth(int targetHeight, int sourceWidth, int sourceHeight, out int targetWidth)
+		internal static bool TryCalculateLockedWidth(int targetHeight, int lockBaseWidth, int lockBaseHeight, out int targetWidth)
 		{
 			targetWidth = default;
-			return targetHeight >= MinimumDimension && sourceWidth >= MinimumDimension && sourceHeight >= MinimumDimension &&
-				TryRoundDimension((double)targetHeight * sourceWidth / sourceHeight, out targetWidth);
+			return targetHeight >= MinimumDimension && lockBaseWidth >= MinimumDimension && lockBaseHeight >= MinimumDimension &&
+				TryRoundDimension((double)targetHeight * lockBaseWidth / lockBaseHeight, out targetWidth);
 		}
 
 		/// <summary>

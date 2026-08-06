@@ -13,6 +13,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		private TaskCommand _okCommand;
 		private bool _isUpdatingInputs;
 		private bool _lastEditedWidth = true;
+		private int _lockBaseHeight;
+		private int _lockBaseWidth;
 		private int _targetHeight;
 		private int _targetWidth;
 
@@ -156,7 +158,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public static readonly IPropertyData HeightInputProperty = RegisterProperty<double>(nameof(HeightInput));
 
 		/// <summary>
-		/// Gets or sets a value that indicates whether changing one dimension updates the other to preserve the source aspect ratio.
+		/// Gets or sets a value that indicates whether changing one dimension updates the other to preserve the current logical canvas aspect ratio.
 		/// </summary>
 		public bool IsAspectRatioLocked
 		{
@@ -167,6 +169,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				SetValue(IsAspectRatioLockedProperty, value);
 				if (!wasLocked && value)
 				{
+					CaptureAspectLockRatio();
 					UpdateLockedTargetFromLastEdit();
 				}
 
@@ -275,7 +278,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			if (IsAspectRatioLocked)
 			{
-				if (!BackgroundImageScaleCalculator.TryCalculateLockedHeight(width, SourceWidth, SourceHeight, out var height))
+				if (!BackgroundImageScaleCalculator.TryCalculateLockedHeight(width, _lockBaseWidth, _lockBaseHeight, out var height))
 				{
 					return;
 				}
@@ -297,7 +300,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			if (IsAspectRatioLocked)
 			{
-				if (!BackgroundImageScaleCalculator.TryCalculateLockedWidth(height, SourceWidth, SourceHeight, out var width))
+				if (!BackgroundImageScaleCalculator.TryCalculateLockedWidth(height, _lockBaseWidth, _lockBaseHeight, out var width))
 				{
 					return;
 				}
@@ -320,6 +323,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				UpdateTargetFromHeight();
 			}
+		}
+
+		private void CaptureAspectLockRatio()
+		{
+			_lockBaseWidth = _targetWidth;
+			_lockBaseHeight = _targetHeight;
 		}
 
 		private void SetTarget(int width, int height, bool updateWidthInput = false, bool updateHeightInput = false)
@@ -399,13 +408,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				if (_lastEditedWidth)
 				{
-					if (!BackgroundImageScaleCalculator.TryCalculateLockedHeight(width, SourceWidth, SourceHeight, out height))
+					if (!BackgroundImageScaleCalculator.TryCalculateLockedHeight(width, _lockBaseWidth, _lockBaseHeight, out height))
 					{
 						heightError = "The aspect-ratio height must result in 1 through 100,000 pixels.";
 						return false;
 					}
 				}
-				else if (!BackgroundImageScaleCalculator.TryCalculateLockedWidth(height, SourceWidth, SourceHeight, out width))
+				else if (!BackgroundImageScaleCalculator.TryCalculateLockedWidth(height, _lockBaseWidth, _lockBaseHeight, out width))
 				{
 					widthError = "The aspect-ratio width must result in 1 through 100,000 pixels.";
 					return false;

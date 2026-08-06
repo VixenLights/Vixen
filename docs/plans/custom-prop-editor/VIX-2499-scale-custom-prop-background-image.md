@@ -17,8 +17,10 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 - [x] (2026-08-06 13:40Z) Implemented and unit-tested the pure scaling contracts and Catel modal dialog state. The module build succeeded and the focused `BackgroundImageScaling` suite passed 23 tests.
 - [x] (2026-08-06 14:08Z) Implemented non-destructive model, persistence, canvas, and coordinate-scaling behavior. The module build succeeded; 35 focused scaling tests and 121 Custom Prop Editor tests passed.
 - [ ] Add the View menu workflow and dialog view, then verify it manually (completed: TaskCommand, modal dialog invocation, View-menu entry, and explicit `Stretch="Fill"`; remaining: live interactive Custom Prop Editor exercise).
-- [ ] Run the targeted build and test commands, update VIX-2499 with final requirements if needed, and comment the validation results.
-- [ ] Record the completed outcome, evidence, and any follow-up work in this document.
+- [x] (2026-08-06 14:24Z) Re-ran the exact targeted build and focused test commands: the build succeeded with 0 errors and the Custom Prop Editor filter passed 121 tests. VIX-2499 already matched the implementation; added Jira comment 40295 with the commands, results, existing warnings, and manual-verification follow-up.
+- [x] (2026-08-06 14:24Z) Recorded automated validation evidence and the remaining live WPF acceptance exercise in this document.
+- [x] (2026-08-06 14:51Z) Revised the aspect-lock contract in this plan and VIX-2499: it preserves the current logical canvas ratio, not the original bitmap ratio.
+- [x] (2026-08-06 14:57Z) Corrected aspect lock to capture the current logical canvas ratio, added two regression tests, and re-ran validation: the module build succeeded with 0 errors and the focused Custom Prop Editor filter passed 123 tests. Added Jira comment 40296. The live WPF exercise remains pending.
 
 ## Surprises & Discoveries
 
@@ -40,15 +42,24 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 - Observation: the available environment can compile WPF XAML and run the Custom Prop Editor tests, but does not provide an interactive Vixen application session for exercising the modal dialog directly.
   Evidence: the module build and 121-test Custom Prop Editor filter passed; live menu/dialog acceptance remains an explicit manual step.
 
+- Observation: the final exact validation commands continue to pass after the workflow wiring changes.
+  Evidence: on 2026-08-06, the module build exited 0 with no errors and the focused Custom Prop Editor test run reported 121 passed, 0 failed, and 0 skipped. Existing LiteDB NU1904 and unrelated compiler warnings remain.
+
+- Observation: a source bitmap's ratio can differ from the current logical canvas ratio after an unlocked scale.
+  Evidence: an 800×600 bitmap can be deliberately stretched to a 600×600 canvas. Reopening the dialog must retain the 1:1 canvas ratio when aspect lock is applied, so source dimensions cannot define the lock ratio.
+
+- Observation: enabling aspect lock after an unlocked 640×400 edit must retain 640×400 rather than immediately changing it to the source image's 4:3 ratio.
+  Evidence: the prior test expectation of 533×400 failed after the correction; updating it to the current 640×400 ratio and adding the 800×600-source/600×600-canvas regression produced 14 passing view-model tests.
+
 ## Decision Log
 
 - Decision: Treat `Prop.Width` and `Prop.Height` as persisted logical canvas dimensions and keep `Prop.Image` as the original bitmap.
   Rationale: LiteDB already persists the two dimensions, so this gives non-destructive scaling and save/reopen compatibility without a new field, database migration, or format revision.
   Date/Author: 2026-08-05 / Codex
 
-- Decision: Calculate percent and aspect-lock dimensions from `BitmapSource.PixelWidth` and `PixelHeight`, but calculate light movement from the current canvas dimensions.
-  Rationale: source pixels provide stable image-relative sizing while current dimensions preserve the intended scale ratio over repeated resizing.
-  Date/Author: 2026-08-05 / Codex
+- Decision: Calculate percentage dimensions from `BitmapSource.PixelWidth` and `PixelHeight`; calculate aspect-lock dimensions from the logical canvas ratio current when the dialog opens or the user enables the lock; calculate light movement from the current canvas dimensions.
+  Rationale: source pixels provide stable image-relative percentage sizing, while aspect lock must preserve the shape the user is currently editing, including a deliberately stretched canvas.
+  Date/Author: 2026-08-06 / Codex
 
 - Decision: Apply coordinate changes through distinct `LightViewModel` instances by setting `Center` once per light, rather than directly writing model X/Y values or iterating the potentially duplicated model traversal.
   Rationale: Catel’s `ViewModelToModel` mapping supplies model change notifications and dirty tracking. It also avoids applying the scale more than once to a grouped light.
@@ -74,9 +85,25 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
   Rationale: this preserves cancel and close semantics without introducing a live preview or dirty-state mutation before the user confirms.
   Date/Author: 2026-08-06 / Codex
 
+- Decision: Leave VIX-2499 in its existing New Ticket state after automated validation, and explicitly record the pending interactive acceptance exercise rather than treating compilation and unit tests as a substitute for it.
+  Rationale: the feature's modal-dialog and save/reopen behavior still requires an interactive Vixen host to verify end to end.
+  Date/Author: 2026-08-06 / Codex
+
+- Decision: Reopen implementation work for the aspect-lock correction before treating the prior automated validation as final.
+  Rationale: the previously implemented source-ratio calculation conflicts with the clarified product behavior for a canvas that was intentionally stretched while unlocked.
+  Date/Author: 2026-08-06 / Codex
+
+- Decision: Capture a lock-base width and height when aspect lock becomes active, and retain them while the lock remains active.
+  Rationale: this provides stable current-canvas ratio behavior across width/height edits and unit switches while allowing a newly enabled lock to adopt a deliberately stretched canvas.
+  Date/Author: 2026-08-06 / Codex
+
 ## Outcomes & Retrospective
 
-Milestones 1–3 are complete, and Milestone 4’s code is complete. The View menu now opens the scaling dialog and applies options only after confirmation; the canvas image uses explicit fill stretching. A live manual Custom Prop Editor exercise remains before marking Milestone 4 fully verified. The completed result must state whether the user can scale a background, whether `.prp` save/reopen retains the logical canvas size, the exact build/test outcomes, and any remaining limitations.
+Milestones 1–3 are complete, and Milestone 4’s code is complete. The View menu now opens the scaling dialog and applies options only after confirmation; the canvas image uses explicit fill stretching. The confirmed scale updates the logical canvas and can proportionally move unique light centers without changing the stored bitmap or marker radius. Valid saved logical dimensions survive bitmap attachment and persistence tests cover save/reopen behavior.
+
+Milestone 5 automated validation is complete for the implementation state that existed on 2026-08-06: the exact module build succeeded with 0 errors, and the focused Custom Prop Editor test command passed 121 tests with 0 failures or skips. Jira comment 40295 records those results. Existing LiteDB NU1904 and unrelated compiler warnings remain.
+
+Milestone 6 corrects the clarified aspect-lock requirement. The dialog now captures the current logical canvas ratio when lock becomes active and uses it across subsequent edits; source dimensions remain limited to percentage conversion and display. The corrected module build succeeded with 0 errors and the focused Custom Prop Editor test command passed 123 tests with 0 failures or skips; Jira comment 40296 records the result. The live manual Custom Prop Editor exercise remains the only pending verification and must cover the menu/dialog, default background, large-image scaling, cancel behavior, and save/reopen flow.
 
 ## Context and Orientation
 
@@ -109,13 +136,13 @@ Create these internal, one-type-per-file C# contracts in a new `BackgroundImageS
 
 Use canonical integer target dimensions in the view model. When its selected unit changes, calculate the displayed width and height from those canonical values: pixels display the dimensions directly; percent displays `target/source × 100`. Never calculate a new target from a prior rounded display value merely because the unit changed. This prevents cumulative rounding drift.
 
-Bind editable numeric values as floating-point values so the calculator can reject NaN, infinity, zero, negative values, and dimensions outside the permitted range. Track the last edited width or height in private view-model state. With aspect lock enabled, a width edit calculates `round(targetWidth × sourceHeight / sourceWidth, AwayFromZero)` and a height edit calculates `round(targetHeight × sourceWidth / sourceHeight, AwayFromZero)`. When the user enables the lock, recompute the opposite dimension from the last-edited dimension. With the lock disabled, preserve independently edited values so a stretch such as 640×400 is valid.
+Bind editable numeric values as floating-point values so the calculator can reject NaN, infinity, zero, negative values, and dimensions outside the permitted range. Track the last edited width or height in private view-model state. Capture `lockedWidth` and `lockedHeight` from the canonical logical target dimensions when the dialog opens with its default lock enabled and whenever the user enables the lock. With aspect lock enabled, a width edit calculates `round(targetWidth × lockedHeight / lockedWidth, AwayFromZero)` and a height edit calculates `round(targetHeight × lockedWidth / lockedHeight, AwayFromZero)`. When the user enables the lock, first capture the then-current canonical dimensions and then recompute the opposite dimension from the last-edited dimension. With the lock disabled, preserve independently edited values so a stretch such as 640×400 is valid. Source dimensions must not be used for aspect-lock calculations.
 
 Implement Catel `ValidateFields` and/or `ValidateBusinessRules` so invalid final dimensions produce field errors and disable the OK command through its `CanOk` method. Default `IsAspectRatioLocked` and `ScaleExistingLightPositions` to true. If no light exists, force the latter false, disable its control, and ensure the result carries false. `OkCommand` calls `SaveAndCloseViewModelAsync()` only when validation succeeds; `CancelCommand` calls `CancelAndCloseViewModelAsync()` and neither command changes a prop. Expose a non-null `Options` only after an accepted valid save.
 
 Add `Views/BackgroundImageScaleWindow.xaml` and its `.xaml.cs` file. Follow `XModelSelectionView.xaml` for a Catel `<catel:Window>`, shared theme resources, centered modal window, and code-behind that only calls `InitializeComponent`. Bind text or numeric editors for width and height, a shared Pixels/Percent selector, aspect-lock and scale-lights check boxes, source/current/result dimension text, and OK/Cancel buttons. The UI must make the scale-lights check box disabled when the source has no lights.
 
-Add `src/Vixen.Tests/App/CustomPropEditor/BackgroundImageScaling/BackgroundImageScaleCalculatorTests.cs` and `BackgroundImageScaleViewModelTests.cs`. Cover pixel conversion, 25% of 4032×3024 becoming 1008×756, 4:3 locked 640 becoming 640×480, unlocked 640×400, AwayFromZero midpoint behavior, unit switching without drift, lock-on using the last edit, all invalid cases, defaults, disabled light option, accepted options, and cancellation leaving the dialog result absent. The tests must instantiate the view model and calculator directly; they must not show a WPF window.
+Add `src/Vixen.Tests/App/CustomPropEditor/BackgroundImageScaling/BackgroundImageScaleCalculatorTests.cs` and `BackgroundImageScaleViewModelTests.cs`. Cover pixel conversion, 25% of 4032×3024 becoming 1008×756, a current 4:3 canvas changing locked width 640 to height 480, unlocked 640×400, and the regression where an 800×600 bitmap has a current 600×600 canvas and locked width 800 produces height 800. Also cover AwayFromZero midpoint behavior, unit switching without drift, lock-on using the last edit, all invalid cases, defaults, disabled light option, accepted options, and cancellation leaving the dialog result absent. The tests must instantiate the view model and calculator directly; they must not show a WPF window.
 
 Expected milestone completion response commit message: `feat(custom-prop-editor): add background scaling dialog state`.
 
@@ -149,6 +176,16 @@ Use the Jira skill to compare VIX-2499’s description with the implemented beha
 
 Expected milestone completion response commit message: `test(custom-prop-editor): cover background image scaling`.
 
+### Milestone 6: Preserve the current logical canvas ratio when aspect lock is active
+
+Correct `ViewModels/BackgroundImageScaleViewModel.cs` and the pure calculation support it uses so the aspect lock no longer derives a ratio from `sourceWidth` and `sourceHeight`. The source bitmap remains the basis for Pixels/Percent display and conversion, but it is not the basis for the lock. On dialog construction, initialize the lock ratio from the valid current logical canvas dimensions supplied to the view model. When the user turns the lock on after editing unlocked dimensions, capture the canonical target width and height at that moment as the new lock ratio before recalculating the opposite dimension from the most recently edited input. While the lock remains on, retain that captured ratio across subsequent width/height edits and unit changes.
+
+Add a regression test that constructs the dialog state with source dimensions 800×600 and current dimensions 600×600, retains the default lock, changes width to 800, and asserts a target height of 800. Add a second test that starts unlocked, creates a stretched canonical target, turns the lock on, and proves the captured stretched ratio is retained. Keep the existing 4:3 case, but make it explicit that it describes a current 4:3 logical canvas rather than a source-image invariant.
+
+Re-run the exact build and focused test commands in `Concrete Steps`. After the correction, use the Jira skill to add a final comment with the new validation result and update this plan’s Progress, Outcomes & Retrospective, and revision notes. The manual WPF exercise remains required before the overall feature is fully verified.
+
+Expected milestone completion response commit message: `fix(custom-prop-editor): retain canvas aspect ratio`.
+
 ## Concrete Steps
 
 All commands run from `C:\Dev\Vixen` in PowerShell.
@@ -178,7 +215,7 @@ The feature is complete only when all of the following are demonstrably true:
 
 - Choosing View → Scale Background Image… works whenever a prop has an image, including the default blank background, and the menu appears between Assign Background and Background Opacity.
 - A 4032×3024 bitmap at 25% produces a 1008×756 logical canvas without changing the stored bitmap dimensions or resampling it.
-- For a 4:3 bitmap, entering width 640 with aspect lock produces height 480. With aspect lock off, 640×400 is accepted and visibly stretches the background because the image brush uses `Stretch="Fill"`.
+- For a current 4:3 logical canvas, entering width 640 with aspect lock produces height 480. With aspect lock off, 640×400 is accepted and visibly stretches the background because the image brush uses `Stretch="Fill"`. If an 800×600 bitmap has already been stretched to a 600×600 logical canvas, reopening the dialog with the lock active and entering width 800 produces 800×800.
 - A width or height conversion round uses `MidpointRounding.AwayFromZero`; NaN, infinity, zero, negative, and results below 1 or above 100000 disable OK and report Catel validation errors.
 - Switching Pixels and Percent derives each display from the canonical target size and does not introduce repeated rounding drift. Re-enabling aspect lock uses the dimension edited most recently.
 - With the default scale-lights option selected, every distinct light center is multiplied by target/current X and Y factors exactly once. With it cleared, all coordinates remain unchanged. Light marker size remains unchanged in both cases, and out-of-bounds coordinates are not clamped.
@@ -209,8 +246,11 @@ The required formulas are:
     pixels = round(inputPixels, AwayFromZero)
     widthPixels = round(sourceWidth * widthPercent / 100, AwayFromZero)
     heightPixels = round(sourceHeight * heightPercent / 100, AwayFromZero)
-    lockedHeight = round(targetWidth * sourceHeight / sourceWidth, AwayFromZero)
-    lockedWidth = round(targetHeight * sourceWidth / sourceHeight, AwayFromZero)
+    lockedHeight = round(targetWidth * lockBaseHeight / lockBaseWidth, AwayFromZero)
+    lockedWidth = round(targetHeight * lockBaseWidth / lockBaseHeight, AwayFromZero)
+
+    # lockBaseWidth and lockBaseHeight are the canonical logical canvas
+    # dimensions captured when aspect lock becomes active.
     newX = oldX * (targetWidth / currentWidth)
     newY = oldY * (targetHeight / currentHeight)
 
@@ -259,3 +299,9 @@ Revision note (2026-08-06): Completed Milestone 2. Added the deterministic scali
 Revision note (2026-08-06): Completed Milestone 3. Preserved valid logical canvas dimensions during bitmap attachment, reset dimensions for a newly selected image, added optional unique-light coordinate scaling, and added persistence/coordinate tests. The module build passed; 35 focused scaling tests and 121 Custom Prop Editor tests passed. The LiteDB NU1904 dependency warning remains pre-existing.
 
 Revision note (2026-08-06): Implemented Milestone 4’s command and XAML wiring. The module build and 121 Custom Prop Editor tests passed. Manual dialog/menu verification remains pending because no interactive Vixen host is available in this environment.
+
+Revision note (2026-08-06): Completed Milestone 5 automated validation. The exact module build succeeded with 0 errors and the focused Custom Prop Editor filter passed 121 tests. VIX-2499 required no description corrections; Jira comment 40295 records the validation results and the still-pending interactive WPF exercise.
+
+Revision note (2026-08-06): Clarified the product behavior for aspect lock. It preserves the current logical canvas ratio, including a deliberate unlocked stretch, rather than the original bitmap ratio. Updated VIX-2499 and added Milestone 6 for the required implementation correction and regression tests.
+
+Revision note (2026-08-06): Completed Milestone 6. Aspect lock now captures and preserves the logical canvas ratio current when the lock is active. Added regressions for a 600×600 canvas backed by an 800×600 source and for re-enabling lock after an unlocked stretch. The module build passed and 123 focused Custom Prop Editor tests passed; Jira comment 40296 records the result. Live interactive verification remains pending.

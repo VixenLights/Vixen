@@ -52,6 +52,17 @@ public sealed class BackgroundImageScaleViewModelTests
 	}
 
 	[Fact]
+	public void WidthInput_WithAspectLock_PreservesCurrentCanvasRatio()
+	{
+		var viewModel = new BackgroundImageScaleViewModel(800, 600, 600, 600, hasLights: true);
+
+		viewModel.WidthInput = 800;
+
+		Assert.Equal(800, viewModel.ResultWidth);
+		Assert.Equal(800, viewModel.ResultHeight);
+	}
+
+	[Fact]
 	public void UnlockedDimensions_PreserveIndependentInputs()
 	{
 		var viewModel = new BackgroundImageScaleViewModel(4, 3, 800, 600, hasLights: true)
@@ -67,7 +78,7 @@ public sealed class BackgroundImageScaleViewModelTests
 	}
 
 	[Fact]
-	public void EnablingAspectLock_UsesLastEditedHeight()
+	public void EnablingAspectLock_PreservesCurrentDimensionsUsingLastEditedHeight()
 	{
 		var viewModel = new BackgroundImageScaleViewModel(4, 3, 800, 600, hasLights: true)
 		{
@@ -78,8 +89,25 @@ public sealed class BackgroundImageScaleViewModelTests
 
 		viewModel.IsAspectRatioLocked = true;
 
-		Assert.Equal(533, viewModel.ResultWidth);
+		Assert.Equal(640, viewModel.ResultWidth);
 		Assert.Equal(400, viewModel.ResultHeight);
+	}
+
+	[Fact]
+	public void EnablingAspectLock_CapturesCurrentUnlockedRatio()
+	{
+		var viewModel = new BackgroundImageScaleViewModel(800, 600, 800, 600, hasLights: true)
+		{
+			IsAspectRatioLocked = false,
+			WidthInput = 600,
+			HeightInput = 600
+		};
+
+		viewModel.IsAspectRatioLocked = true;
+		viewModel.WidthInput = 800;
+
+		Assert.Equal(800, viewModel.ResultWidth);
+		Assert.Equal(800, viewModel.ResultHeight);
 	}
 
 	[Theory]
