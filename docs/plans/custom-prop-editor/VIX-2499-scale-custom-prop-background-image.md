@@ -14,7 +14,7 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 
 - [x] (2026-08-05 00:00Z) Read `.agents/PLANS.md`, the Custom Prop Editor model, persistence service, editor view, view models, project files, existing dialog pattern, and test layout; no production files were changed.
 - [x] (2026-08-06 13:27Z) Updated VIX-2499’s Jira description with the finalized requirements, acceptance criteria, implementation constraints, and validation commands; retained Normal priority and New Ticket status.
-- [ ] Implement and unit-test the pure scaling contracts and modal dialog state.
+- [x] (2026-08-06 13:40Z) Implemented and unit-tested the pure scaling contracts and Catel modal dialog state. The module build succeeded and the focused `BackgroundImageScaling` suite passed 23 tests.
 - [ ] Implement the non-destructive model, persistence, canvas, and light-coordinate changes.
 - [ ] Add the View menu workflow and dialog view, then verify it manually.
 - [ ] Run the targeted build and test commands, update VIX-2499 with final requirements if needed, and comment the validation results.
@@ -30,6 +30,9 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
 
 - Observation: `Prop.GetLeafNodes()` may return the same leaf through multiple groups, whereas `DrawingPanelViewModel.LightNodes` is built from a dictionary keyed by leaf ID and is the bound edit surface.
   Evidence: `Prop.cs` documents possible duplicates in `GetLeafNodes`; `DrawingPanelViewModel.RefreshLightViewModels()` builds `_elementModelMap` by `ElementModel.Id`.
+
+- Observation: Catel view models expose `RaisePropertyChanged`, rather than accepting a property name through `OnPropertyChanged`.
+  Evidence: the initial module build reported `CS1503` for three computed result properties; replacing those calls with `RaisePropertyChanged(nameof(...))` produced a successful build.
 
 ## Decision Log
 
@@ -53,9 +56,13 @@ The feature is intentionally a canvas-scaling tool, not an image editor. It does
   Rationale: this makes the intended behavior, compatibility rules, acceptance criteria, and test commands reviewable directly from VIX-2499 while preserving its existing priority and workflow state.
   Date/Author: 2026-08-06 / Codex
 
+- Decision: Keep the pure scale unit, immutable options record, and calculator under `BackgroundImageScaling`, while locating the Catel view model under the existing `ViewModels` namespace.
+  Rationale: the calculation contracts remain UI-independent, while the view model follows the module’s established view-model locator convention for the new Catel window.
+  Date/Author: 2026-08-06 / Codex
+
 ## Outcomes & Retrospective
 
-Milestone 1 is complete: VIX-2499 now contains the final requirements, acceptance criteria, constraints, and test plan. Implementation has not started. The completed result must state whether the user can scale a background, whether `.prp` save/reopen retains the logical canvas size, the exact build/test outcomes, and any remaining limitations.
+Milestones 1 and 2 are complete. VIX-2499 contains the final implementation contract, and the module now has a validated, UI-independent scaling calculator plus a Catel dialog state/view with focused tests. The feature is not yet reachable from the editor and does not yet modify a prop; Milestones 3–5 remain. The completed result must state whether the user can scale a background, whether `.prp` save/reopen retains the logical canvas size, the exact build/test outcomes, and any remaining limitations.
 
 ## Context and Orientation
 
@@ -232,3 +239,5 @@ No new NuGet package, project reference, project item, project file, solution en
 Revision note (2026-08-05): Created from the VIX-2499 architecture handoff after repository research. This is a planning-only change; implementation has not begun.
 
 Revision note (2026-08-06): Completed Milestone 1 by updating VIX-2499 with the executable specification while retaining its Normal priority and New Ticket status. No source implementation was performed.
+
+Revision note (2026-08-06): Completed Milestone 2. Added the deterministic scaling contracts, Catel dialog state and view, and 23 focused passing tests. The module build passed with only the pre-existing LiteDB NU1904 dependency warning; the full Custom Prop Editor filter also passed 109 tests.
