@@ -15,7 +15,7 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 - [x] (2026-08-06 00:00Z) Researched the toolbar, full-library, WPF drop-manager, model-copy, and test-project code paths; confirmed the nested drag regression.
 - [x] (2026-08-06 00:00Z) Created Jira Bug VIX-3965 with scope, design notes, automated and manual acceptance criteria, and a relationship to VIX-2226.
 - [x] (2026-08-06 00:00Z) Compared VIX-3965 to this ExecPlan at implementation start; no scope, acceptance, or validation change required.
-- [ ] Add the pure payload factory and its test access and tests.
+- [ ] Add the pure payload factory and its test access and tests (completed: factory, test-only access, and focused tests; remaining: run focused tests once native project dependencies can build in the environment).
 - [ ] Replace the nested WinForms drag sources with one multi-effect drag payload.
 - [x] (2026-08-06 00:00Z) Added target-side WPF effect negotiation, documented `AcceptedEffects`, the non-None completion guard, and focused resolver tests.
 - [ ] Run focused and full automated validation, complete manual drag scenarios, update VIX-3965, and record outcomes.
@@ -36,6 +36,9 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 
 - Observation: Milestone 1's focused test run passes, although restore/build continues to report existing package and analyzer warnings.
   Evidence: `dotnet test src/Vixen.Tests/Vixen.Tests.csproj --filter FullyQualifiedName~DragDropManagerTests` passed 11 tests; output included NU1904 warnings for LiteDB 4.1.4 and pre-existing compiler warnings in unrelated projects.
+
+- Observation: The full solution MSBuild command uses the repository's shared solution output layout and successfully builds Timed Sequence Editor, including the new factory.
+  Evidence: `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug` completed successfully in 52 seconds. The standalone `Vixen.Tests` build remains unsuitable for focused execution because it is not built by that solution configuration and its Rebuild target cleans and evaluates transitive native projects.
 
 ## Decision Log
 
@@ -277,3 +280,7 @@ It returns only Curve, ColorGradient, or Color payloads; Curve and ColorGradient
 2026-08-06: Created this initial ExecPlan from the Sol handoff and direct repository research. The revision records the verified nested-drag paths, formalizes VIX-3965, and chooses an internal factory plus internal test access so the regression can be tested without UI event synthesis.
 
 2026-08-06: Recorded completion of Milestone 1 after the documented target contract, pure resolver, completion guard, and focused tests were implemented. No Jira description update was needed because the approved scope and acceptance criteria remained unchanged.
+
+2026-08-06: Added Milestone 2's factory, test-only access, and unit tests. The full Debug solution build verifies the production assembly in the repository's required shared-output layout. Keep the focused-test validation pending because `Vixen.Tests` is outside that solution build configuration and its standalone Rebuild target is not compatible with the native project graph.
+
+2026-08-06: Corrected the validation note after confirming the full solution MSBuild command succeeds. The previous note incorrectly generalized a direct-project build limitation to the repository's supported solution build.
