@@ -14,10 +14,10 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 
 - [x] (2026-08-06 00:00Z) Researched the toolbar, full-library, WPF drop-manager, model-copy, and test-project code paths; confirmed the nested drag regression.
 - [x] (2026-08-06 00:00Z) Created Jira Bug VIX-3965 with scope, design notes, automated and manual acceptance criteria, and a relationship to VIX-2226.
-- [ ] Update VIX-3965 at implementation start if code discovery changes the final scope, acceptance criteria, or validation plan.
+- [x] (2026-08-06 00:00Z) Compared VIX-3965 to this ExecPlan at implementation start; no scope, acceptance, or validation change required.
 - [ ] Add the pure payload factory and its test access and tests.
 - [ ] Replace the nested WinForms drag sources with one multi-effect drag payload.
-- [ ] Add target-side WPF effect negotiation and its unit tests.
+- [x] (2026-08-06 00:00Z) Added target-side WPF effect negotiation, documented `AcceptedEffects`, the non-None completion guard, and focused resolver tests.
 - [ ] Run focused and full automated validation, complete manual drag scenarios, update VIX-3965, and record outcomes.
 
 ## Surprises & Discoveries
@@ -33,6 +33,9 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 
 - Observation: unit tests can access `WPFCommon` internals already, but the test project has no reference to `TimedSequenceEditor`, and that project does not yet declare `InternalsVisibleTo` for `Vixen.Tests`.
   Evidence: `src/Vixen.Tests/Vixen.Tests.csproj` references `WPFCommon` but not `TimedSequenceEditor`; `WPFCommon.csproj` exposes internals to `Vixen.Tests`, whereas `TimedSequenceEditor.csproj` does not.
+
+- Observation: Milestone 1's focused test run passes, although restore/build continues to report existing package and analyzer warnings.
+  Evidence: `dotnet test src/Vixen.Tests/Vixen.Tests.csproj --filter FullyQualifiedName~DragDropManagerTests` passed 11 tests; output included NU1904 warnings for LiteDB 4.1.4 and pre-existing compiler warnings in unrelated projects.
 
 ## Decision Log
 
@@ -54,7 +57,7 @@ The regression occurs because a library-toolbar drag begins as a Move containing
 
 ## Outcomes & Retrospective
 
-No product code has been changed by this planning work. The expected completed outcome is that a linked curve or gradient remains linked at both timeline and inline destinations, unlinked drags remain editable, and existing reordering behavior remains intact. At implementation completion, replace this entry with the tests run, manual evidence, any deviations, and any remaining risks.
+Milestone 1 is complete. WPF drop targets now declare their accepted effect independently of source support: Effect Editor property and collection targets accept Copy, while Layer Editor accepts Move. `DragDropManager` resolves the intersection of source and target effects, gives Ctrl a Copy preference only when Copy is effective, and does not invoke target completion for a None result. The focused resolver suite passed 11 tests. The payload-source and end-to-end drag milestones remain outstanding; at full completion, replace this entry with all validation and manual evidence.
 
 ## Context and Orientation
 
@@ -272,3 +275,5 @@ It returns only Curve, ColorGradient, or Color payloads; Curve and ColorGradient
 ## Plan Revision Note
 
 2026-08-06: Created this initial ExecPlan from the Sol handoff and direct repository research. The revision records the verified nested-drag paths, formalizes VIX-3965, and chooses an internal factory plus internal test access so the regression can be tested without UI event synthesis.
+
+2026-08-06: Recorded completion of Milestone 1 after the documented target contract, pure resolver, completion guard, and focused tests were implemented. No Jira description update was needed because the approved scope and acceptance criteria remained unchanged.

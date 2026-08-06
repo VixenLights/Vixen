@@ -60,6 +60,9 @@ namespace VixenModules.Editor.LayerEditor.Views
 		/// </summary>
 		public DragDropEffects SupportedEffects => DragDropEffects.Move;
 
+		/// <inheritdoc />
+		public DragDropEffects AcceptedEffects => DragDropEffects.Move;
+
 		/// <summary>
 		/// Gets or sets the drop target UI element.
 		/// </summary>

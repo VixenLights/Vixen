@@ -406,6 +406,9 @@ namespace VixenModules.Editor.EffectEditor.Internal
 
 		public UIElement SourceUI { get; set; }
 
+		/// <inheritdoc />
+		public DragDropEffects AcceptedEffects => DragDropEffects.Copy;
+
 		public DragDropEffects SupportedEffects
 		{
 			get
