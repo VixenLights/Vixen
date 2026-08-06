@@ -129,7 +129,12 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 	    public InformationMetadata InformationMetadata { get; set; }
 
-	    [BsonIgnore]
+	    
+        /// <summary>
+        /// Gets or sets the source bitmap displayed on the logical prop canvas.
+        /// </summary>
+        /// <value>The source bitmap. Assigning a bitmap initializes invalid <see cref="Width" /> and <see cref="Height" /> values from its native pixel dimensions.</value>
+        [BsonIgnore]
         public BitmapSource Image
         {
             get { return _image; }
@@ -139,8 +144,11 @@ namespace VixenModules.App.CustomPropEditor.Model
                 {
                     _image = value;
                     OnPropertyChanged(nameof(Image));
-                    Height = _image.Height;
-                    Width = _image.Width;
+                    if (!AreValidCanvasDimensions())
+                    {
+                        Height = _image.PixelHeight;
+                        Width = _image.PixelWidth;
+                    }
                 }
             }
         }
@@ -156,6 +164,10 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
+        /// <summary>
+        /// Gets or sets the logical height of the prop editor canvas.
+        /// </summary>
+        /// <value>The logical canvas height in editor pixels. A valid value is preserved when a persisted source bitmap is attached.</value>
         public double Height
         {
             get { return _height; }
@@ -167,6 +179,10 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
+        /// <summary>
+        /// Gets or sets the logical width of the prop editor canvas.
+        /// </summary>
+        /// <value>The logical canvas width in editor pixels. A valid value is preserved when a persisted source bitmap is attached.</value>
         public double Width
         {
             get { return _width; }
@@ -191,6 +207,16 @@ namespace VixenModules.App.CustomPropEditor.Model
         }
 
         #region Utilities
+
+        private bool AreValidCanvasDimensions()
+        {
+            return IsValidCanvasDimension(Width) && IsValidCanvasDimension(Height);
+        }
+
+        private static bool IsValidCanvasDimension(double value)
+        {
+            return double.IsFinite(value) && value is >= 1 and <= 100000;
+        }
 
         private BitmapSource CreateBitmapSource(int width, int height, Color color)
         {

@@ -88,7 +88,10 @@ namespace VixenModules.App.CustomPropEditor.Services
 				bmi.CacheOption = BitmapCacheOption.OnLoad;
 				bmi.UriSource = new Uri(filePath, UriKind.Absolute);
 				bmi.EndInit();
-				_prop.Image = bmi.Clone(); //To ensure the cache is buted and reloading a modified version of the same uri works.
+				var image = bmi.Clone(); //To ensure the cache is buted and reloading a modified version of the same uri works.
+				_prop.Image = image;
+				_prop.Width = image.PixelWidth;
+				_prop.Height = image.PixelHeight;
 				bmi.UriSource = null;
 			}
 			catch (Exception ex)
