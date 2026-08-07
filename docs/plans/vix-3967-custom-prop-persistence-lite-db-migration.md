@@ -19,10 +19,10 @@ A user can verify the outcome by creating and saving a prop, opening the resulti
 - [x] (2026-08-07 00:00Z) Implemented the async, format-neutral persistence facade; registered it for the editor and Preview; promoted the v4 raw reader to a read-only legacy loader; and routed editor/Preview load and save paths through the shared service for Milestone 5.
 - [x] (2026-08-07 00:00Z) Removed LiteDB 4 from the Custom Prop Editor production project and central package versions for Milestone 6. The Custom Prop Editor vulnerable-package audit reports no vulnerable packages; the adapted raw v4 reader remains the only production legacy parser.
 - [x] (2026-08-07 00:00Z) Added a deterministic LiteDB v4 fixture builder, raw-reader proof of concept with local LiteDB 5.0.21 MIT attribution, and four tests for JPEG/PNG images, legacy State-shaped values, nested `_type` rejection, no-source-mutation, and a 17 MiB raw `props` document.
-- [ ] Add schema-v1 DTOs, mapping, validation, ZIP reading/writing, and atomic replacement.
-- [ ] Replace the editor and Preview persistence integration with the asynchronous format-neutral facade.
-- [ ] Add the adapted read-only LiteDB v4 reader, remove LiteDB 4, and finish migration/security coverage.
-- [ ] Run focused and full validation, complete the Jira issue description/comment, and update this living plan with evidence.
+- [x] (2026-08-07 00:00Z) Completed schema-v1 DTOs, mapping, validation, ZIP reading/writing, and atomic replacement.
+- [x] (2026-08-07 00:00Z) Replaced the editor and Preview persistence integration with the asynchronous format-neutral facade.
+- [x] (2026-08-07 00:00Z) Added the adapted read-only LiteDB v4 reader, removed LiteDB 4 from production, and completed migration/security coverage.
+- [x] (2026-08-07 00:00Z) Completed focused and full validation. User verification confirmed legacy and package files load equivalently in the editor and Preview, controlled rejection of malformed packages, and a successful full build.
 
 ## Surprises & Discoveries
 
@@ -88,7 +88,7 @@ A user can verify the outcome by creating and saving a prop, opening the resulti
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. Jira Improvement VIX-3967 records the approved delivery contract as a Custom Prop Editor improvement and remains in `New Ticket`; no workflow transition was made. The raw-reader spike now reads unencrypted v4 pages and raw BSON only, rejects `_type` before a domain mapper exists, reconstructs both legacy image entry names, and passes its 17 MiB proof. It is not connected to the editor or Preview and it intentionally does not yet map a raw document to a `Prop`. The intended completed outcome remains a dependency-audit-clean Custom Prop persistence system that reads legacy LiteDB files without writing them and writes only validated schema-1 packages.
+Milestones 1 through 7 are complete. The editor and Preview now share a format-neutral persistence facade: it reads schema-1 packages and legacy LiteDB v4 props without modifying the legacy source, then writes only validated schema-1 packages with a one-time backup on the first successful same-path save. User verification confirmed matching State definitions, Face data, element hierarchy and ordering between old and new versions; verified the package entries with 7-Zip; loaded both legacy and new props into Preview; and exercised backup, repeat-save, large-file, deep/shared-graph, failed-save, and malformed-input cases. The full build and automated tests pass. The production Custom Prop Editor dependency audit is clean; a private test-only LiteDB 4 fixture dependency remains isolated to deterministic legacy-file generation. Jira Improvement VIX-3967 remains in `New Ticket`; no workflow transition was made.
 
 ## Context and Orientation
 
@@ -293,3 +293,5 @@ The implementation keeps `IPropFileReader`, `IPropDocumentMapper`, validation, r
 2026-08-07 / Codex: Completed Milestone 6. Removed the `LiteDB` package reference and the model's LiteDB serialization attribute, leaving raw v4 page/BSON reading as the compatibility path. `dotnet list src\Vixen.Modules\App\CustomPropEditor\CustomPropEditor.csproj package --vulnerable --include-transitive` reported no vulnerable packages. The legacy fixture builder still uses LiteDB only in test source and will be replaced by a package-free fixture writer when aggregate test compilation is unblocked.
 
 2026-08-07 / Codex: Corrected the legacy State mapper after read-only inspection of a user-provided v4 prop. It now maps authored `StateDefinitionModels`, State item colors and assignments, and LiteDB `_id` values rather than only obsolete State rows. `Santa Waving.prp` hydrated nine authored State definitions and retained 130 assignments in its first item.
+
+2026-08-07 / Codex: Final user verification passed. Side-by-side comparison confirmed State definitions, Face information, element tree, and order match; 7-Zip confirmed saved packages contain `prop.json` and `background.jpg`; and Preview accepted both legacy v4 and schema-1 files. The remaining migration, malformed-package, backup, repeat-save, deep/shared graph, and large-file checks passed, as did automated tests and the full build. A package with its background image removed produced the intended controlled load error.
