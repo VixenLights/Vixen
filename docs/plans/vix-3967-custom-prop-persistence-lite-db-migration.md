@@ -14,7 +14,7 @@ A user can verify the outcome by creating and saving a prop, opening the resulti
 
 - [x] (2026-08-07 00:00Z) Read `.agents/PLANS.md`, the Custom Prop persistence analysis, existing persistence, state-migration, editor, Preview, project, and test code; created this ExecPlan only.
 - [x] (2026-08-07 00:00Z) Created Jira Improvement VIX-3967, set its Custom Prop Editor delivery contract, acceptance criteria, and test plan, and renamed this plan to begin with the issue key.
-- [ ] Add contract tests and a read-only legacy-import proof of concept for ordinary and over-16-MiB v4 fixtures.
+- [x] (2026-08-07 00:00Z) Added a deterministic LiteDB v4 fixture builder, raw-reader proof of concept with local LiteDB 5.0.21 MIT attribution, and four tests for JPEG/PNG images, legacy State-shaped values, nested `_type` rejection, no-source-mutation, and a 17 MiB raw `props` document.
 - [ ] Add schema-v1 DTOs, mapping, validation, ZIP reading/writing, and atomic replacement.
 - [ ] Replace the editor and Preview persistence integration with the asynchronous format-neutral facade.
 - [ ] Add the adapted read-only LiteDB v4 reader, remove LiteDB 4, and finish migration/security coverage.
@@ -33,6 +33,12 @@ A user can verify the outcome by creating and saving a prop, opening the resulti
 
 - Observation: LiteDB 4.1.4 is centrally pinned and referenced only by Custom Prop Editor in the inspected persistence path.
   Evidence: `Directory.Packages.props` declares `LiteDB` version `4.1.4`; `CustomPropEditor.csproj` references it; `Prop.cs` and `PropModelPersistenceService.cs` import LiteDB namespaces.
+
+- Observation: The LiteDB v4 page reader can reconstruct a raw `props` BSON document and FileStorage image data without opening a LiteDB engine.
+  Evidence: `LegacyLiteDbRawReaderPrototypeTests` passed four tests against deterministic v4 files, including a 17 MiB raw BSON document, while asserting the source SHA-256 hash and write timestamp remain unchanged.
+
+- Observation: `dotnet test` with project build enabled cannot evaluate the test project in this environment because the dotnet CLI cannot import two C++ projects; after the full Visual Studio MSBuild solution build, direct `dotnet vstest` against the Debug test assembly discovers and runs the focused tests.
+  Evidence: the initial CLI command reported missing `Microsoft.Cpp.Default.props`; `msbuild Vixen.sln -m -t:Build -p:Configuration=Debug` succeeded, then `dotnet vstest src\\Vixen.Tests\\bin\\Debug\\Vixen.Tests.dll --TestCaseFilter:"FullyQualifiedName~LegacyLiteDbRawReaderPrototypeTests"` passed 4 tests.
 
 ## Decision Log
 
@@ -64,9 +70,13 @@ A user can verify the outcome by creating and saving a prop, opening the resulti
   Rationale: Replacing a file after information was rejected or cannot be represented would silently destroy user data.
   Date/Author: 2026-08-07 / Codex
 
+- Decision: Generate the Milestone 2 v4 fixtures at test time instead of committing binary files.
+  Rationale: The test-only LiteDB 4 fixture builder deterministically creates JPEG/PNG, legacy State-shaped, malicious `_type`, and over-16-MiB cases while preventing a large binary fixture from entering the repository. The production reader itself has no LiteDB package dependency.
+  Date/Author: 2026-08-07 / Codex
+
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. Jira Improvement VIX-3967 records the approved delivery contract as a Custom Prop Editor improvement and remains in `New Ticket`; no workflow transition was made. The plan is otherwise not implemented. Its intended completed outcome is a dependency-audit-clean Custom Prop persistence system that reads legacy LiteDB files without writing them and writes only validated schema-1 packages. Record actual fixture sizes, test counts, build output, backup naming, and any schema or limits changes here as milestones finish.
+Milestones 1 and 2 are complete. Jira Improvement VIX-3967 records the approved delivery contract as a Custom Prop Editor improvement and remains in `New Ticket`; no workflow transition was made. The raw-reader spike now reads unencrypted v4 pages and raw BSON only, rejects `_type` before a domain mapper exists, reconstructs both legacy image entry names, and passes its 17 MiB proof. It is not connected to the editor or Preview and it intentionally does not yet map a raw document to a `Prop`. The intended completed outcome remains a dependency-audit-clean Custom Prop persistence system that reads legacy LiteDB files without writing them and writes only validated schema-1 packages.
 
 ## Context and Orientation
 
@@ -261,3 +271,5 @@ The implementation keeps `IPropFileReader`, `IPropDocumentMapper`, validation, r
 2026-08-07 / Codex: Clarified from review that no LiteDB v5 `.prp` files were ever released: the v5 attempt was reverted immediately. The compatibility contract, final legacy-provider milestone, and decision log now limit import/migration work to LiteDB v4 and explicitly reject v5 input rather than planning an unnecessary v5 reader.
 
 2026-08-07 / Codex: Completed Milestone 1. Validated that `VIX` permits creation and that `Improvement` is an available issue type, then created VIX-3967 with the Custom Prop Editor component, this plan's scope, acceptance criteria, and validation plan. The issue remains in `New Ticket`; no parent, priority override, fix version, labels, or assignee was invented. Renamed this document to the repository ticket-key convention.
+
+2026-08-07 / Codex: Completed Milestone 2. Added the unencrypted LiteDB v4 raw-reader proof of concept under `Persistence/Legacy/LiteDb5021` with MIT attribution to LiteDB v5.0.21 source commit `84065086a8e8716063b255d0abb332708d0b2ad3`. Deterministic tests create temporary v4 files rather than committing a large fixture and passed JPEG/PNG image reconstruction, legacy State-shaped BSON, nested `_type` rejection, source hash/timestamp preservation, and a 17 MiB raw props document. The full Debug solution build passed; the focused test command used direct `dotnet vstest` after that build because the dotnet CLI build path lacks the installed C++ targets.
