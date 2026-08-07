@@ -38,7 +38,7 @@
     <PackageVersion Include="Orc.SystemInfo" Version="5.1.0" />
     <PackageVersion Include="Orc.Wizard" Version="5.2.0" />
     <PackageVersion Include="Orchestra.Core" Version="7.3.0" />
-    <PackageVersion Include="Svg" Version="3.4.7" />
+    <PackageVersion Include="Svg" Version="3.4.8" />
     <PackageVersion Include="System.Drawing.Common" Version="10.0.10" />
     <PackageVersion Include="System.IO.Ports" Version="10.0.10" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
