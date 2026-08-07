@@ -17,7 +17,6 @@
 		  <PackageReference Include="DockPanelSuite" />
 		  <PackageReference Include="DockPanelSuite.ThemeVS2015" />
 		  <PackageReference Include="gong-wpf-dragdrop" />
-		  <PackageReference Include="MessagePack" />
 		  <PackageReference Include="Newtonsoft.Json" />
 		  <PackageReference Include="NLog" />
 		</ItemGroup>

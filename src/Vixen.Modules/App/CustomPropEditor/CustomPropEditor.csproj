@@ -34,7 +34,6 @@
 				<PackageReference Include="Catel.MVVM" />
 				<PackageReference Include="gong-wpf-dragdrop" />
 				<PackageReference Include="LiteDB" />
-				<PackageReference Include="MessagePack" />
 				<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
 				<PackageReference Include="Newtonsoft.Json" />
 				<PackageReference Include="NLog" />
