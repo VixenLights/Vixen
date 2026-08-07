@@ -9,7 +9,7 @@ internal static class PropDocumentValidator
 		if (document == null) Fail("The prop package is missing its document.");
 		if (document.Format != PropPackageDocument.CurrentFormat || document.SchemaVersion != PropPackageDocument.CurrentSchemaVersion)
 			Fail("The prop package uses an unsupported schema version.");
-		if (document.Prop == null || document.Image == null || document.Elements == null)
+		if (document.Prop == null || document.Image == null || document.Elements == null || document.Prop.Vendor == null || document.Prop.Physical == null || document.Prop.Information == null)
 			Fail("The prop package document is incomplete.");
 		if (document.Prop.Id == Guid.Empty || document.RootElementId == Guid.Empty)
 			Fail("The prop package contains an empty identifier.");
@@ -21,10 +21,12 @@ internal static class PropDocumentValidator
 
 		var elements = new Dictionary<Guid, ElementDocument>();
 		var lights = new HashSet<Guid>();
+		var stateDefinitions = new HashSet<Guid>();
+		var stateItems = new HashSet<Guid>();
 		foreach (var element in document.Elements)
 		{
 			if (element == null || element.Id == Guid.Empty || !elements.TryAdd(element.Id, element)) Fail("The prop package contains duplicate element identifiers.");
-			if (element.StatePropertyId == Guid.Empty || element.LightSize < 1 || element.ChildIds == null || element.Lights == null || element.StateDefinitions == null)
+			if (element.StatePropertyId == Guid.Empty || element.LightSize < 1 || element.ChildIds == null || element.Lights == null || element.StateDefinitions == null || element.Face == null)
 				Fail("The prop package contains an invalid element.");
 			foreach (var light in element.Lights)
 			{
@@ -40,9 +42,9 @@ internal static class PropDocumentValidator
 				Fail("The prop package contains an invalid element reference.");
 			foreach (var definition in element.StateDefinitions)
 			{
-				if (definition == null || definition.Id == Guid.Empty || definition.Items == null) Fail("The prop package contains an invalid State definition.");
+				if (definition == null || definition.Id == Guid.Empty || !stateDefinitions.Add(definition.Id) || definition.Items == null) Fail("The prop package contains an invalid State definition.");
 				foreach (var item in definition.Items)
-					if (item == null || item.Id == Guid.Empty || item.ElementIds == null || item.ElementIds.Any(id => !elements.ContainsKey(id)) || !IsColor(item.Color))
+					if (item == null || item.Id == Guid.Empty || !stateItems.Add(item.Id) || item.ElementIds == null || item.ElementIds.Any(id => !elements.ContainsKey(id)) || !IsColor(item.Color))
 						Fail("The prop package contains an invalid State item.");
 			}
 		}

@@ -36,7 +36,7 @@ internal sealed class PropDocumentMapper : IPropDocumentMapper
 		{
 			Prop = new PropDocument
 			{
-				Id = prop.Id, Type = prop.Type ?? string.Empty, CreatedBy = prop.CreatedBy ?? string.Empty,
+				Id = prop.Id, Name = prop.Name ?? string.Empty, Type = prop.Type ?? string.Empty, CreatedBy = prop.CreatedBy ?? string.Empty,
 				CreationDate = prop.CreationDate, ModifiedDate = prop.ModifiedDate, Opacity = prop.Opacity, Width = prop.Width, Height = prop.Height,
 				Vendor = ToVendor(prop.VendorMetadata), Physical = ToPhysical(prop.PhysicalMetadata), Information = new InformationMetadataDocument { Notes = prop.InformationMetadata?.Notes ?? string.Empty }
 			},
@@ -71,6 +71,7 @@ internal sealed class PropDocumentMapper : IPropDocumentMapper
 		prop.Hydrate(sourceProp.Id, elements[document.RootElementId], image, sourceProp.Type, sourceProp.CreatedBy,
 			sourceProp.CreationDate, sourceProp.ModifiedDate, sourceProp.Opacity, sourceProp.Width, sourceProp.Height,
 			ToVendor(sourceProp.Vendor), ToPhysical(sourceProp.Physical), new InformationMetadata { Notes = sourceProp.Information.Notes });
+		prop.Name = sourceProp.Name;
 		return prop;
 	}
 
