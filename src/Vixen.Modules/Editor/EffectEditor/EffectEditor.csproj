@@ -30,4 +30,9 @@
 				<ProjectReference Include="..\PolygonEditor\PolygonEditor.csproj" />
 		</ItemGroup>
 
+		<ItemGroup>
+		  <None Remove="Themes\Images\librarylink.png" />
+		  <Resource Include="Themes\Images\librarylink.png" />
+		</ItemGroup>
+
 </Project>

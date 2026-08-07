@@ -345,18 +345,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewCurves_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			listViewCurves.DoDragDrop(listViewCurves.SelectedItems[0], DragDropEffects.Move);
-		}
+			if (listViewCurves.SelectedItems.Count == 0 || listViewCurves.SelectedItems[0].Tag is not Curve curve) {
+				return;
+			}
 
-		private void listViewCurves_DragLeave(object sender, EventArgs e)
-		{
-			if (listViewCurves.SelectedItems.Count == 0) return;
-			Curve newCurve = new Curve((Curve) listViewCurves.SelectedItems[0].Tag);
-			if (LinkCurves) newCurve.LibraryReferenceName = listViewCurves.SelectedItems[0].Name;
-
-			newCurve.IsCurrentLibraryCurve = false;
-			var dataObject = DragDropUtils.CreateDataObject(newCurve);
-			listViewCurves.DoDragDrop(dataObject, DragDropEffects.Copy);
+			ListViewItem selectedItem = listViewCurves.SelectedItems[0];
+			object payload = LibraryDragPayloadFactory.Create(curve, selectedItem.Name, LinkCurves);
+			var dataObject = DragDropUtils.CreateDataObject(payload);
+			dataObject.SetData(typeof(ListViewItem), selectedItem);
+			listViewCurves.DoDragDrop(dataObject, DragDropEffects.Move | DragDropEffects.Copy);
 		}
 
 		private void listViewCurves_DragEnter(object sender, DragEventArgs e)

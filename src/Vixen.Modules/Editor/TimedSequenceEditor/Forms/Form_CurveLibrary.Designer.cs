@@ -135,7 +135,6 @@
 			this.listViewCurves.SelectedIndexChanged += new System.EventHandler(this.listViewCurves_SelectedIndexChanged);
 			this.listViewCurves.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewCurves_DragDrop);
 			this.listViewCurves.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewCurves_DragEnter);
-			this.listViewCurves.DragLeave += new System.EventHandler(this.listViewCurves_DragLeave);
 			this.listViewCurves.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewCurves_KeyDown);
 			this.listViewCurves.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewCurves_KeyUp);
 			this.listViewCurves.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewCurves_MouseDoubleClick);

@@ -342,23 +342,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewGradient_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			listViewGradients.DoDragDrop(listViewGradients.SelectedItems[0], DragDropEffects.Move);
-		}
-
-		private void listViewGradients_DragLeave(object sender, EventArgs e)
-		{
-			if (listViewGradients.SelectedItems.Count == 0) return;
-			if (listViewGradients.SelectedItems[0].Tag is ColorGradient selectedItem)
-			{
-				ColorGradient newGradient = new ColorGradient(selectedItem);
-				if (LinkGradients) newGradient.LibraryReferenceName = listViewGradients.SelectedItems[0].Name;
-
-				newGradient.IsCurrentLibraryGradient = false;
-
-				var dataObject = DragDropUtils.CreateDataObject(newGradient);
-				listViewGradients.DoDragDrop(dataObject, DragDropEffects.Copy);
+			if (listViewGradients.SelectedItems.Count == 0 || listViewGradients.SelectedItems[0].Tag is not ColorGradient gradient) {
+				return;
 			}
-			
+
+			ListViewItem selectedItem = listViewGradients.SelectedItems[0];
+			object payload = LibraryDragPayloadFactory.Create(gradient, selectedItem.Name, LinkGradients);
+			var dataObject = DragDropUtils.CreateDataObject(payload);
+			dataObject.SetData(typeof(ListViewItem), selectedItem);
+			listViewGradients.DoDragDrop(dataObject, DragDropEffects.Move | DragDropEffects.Copy);
 		}
 
 		private void listViewGradients_DragEnter(object sender, DragEventArgs e)

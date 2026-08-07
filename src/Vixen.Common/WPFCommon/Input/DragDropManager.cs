@@ -129,7 +129,7 @@ namespace Common.WPFCommon.Input
 			RemovePreviewAdorner();
 			_offsetPoint = new Point(0, 0);
 
-			if (CurrentDropTargetAdvisor.IsValidDataObject(e.Data))
+			if (e.Effects != DragDropEffects.None && CurrentDropTargetAdvisor.IsValidDataObject(e.Data))
 			{
 				CurrentDropTargetAdvisor.OnDropCompleted(e.Data, dropPoint);
 			}
@@ -177,24 +177,47 @@ namespace Common.WPFCommon.Input
 
 		private static void UpdateEffects(DragEventArgs e)
 		{
-			if (CurrentDropTargetAdvisor.IsValidDataObject(e.Data) == false)
+			e.Effects = ResolveDropEffect(
+				CurrentDropTargetAdvisor.IsValidDataObject(e.Data),
+				e.AllowedEffects,
+				CurrentDropTargetAdvisor.AcceptedEffects,
+				e.KeyStates);
+		}
+
+		internal static DragDropEffects ResolveDropEffect(
+			bool isValidDataObject,
+			DragDropEffects sourceAllowedEffects,
+			DragDropEffects targetAcceptedEffects,
+			DragDropKeyStates keyStates)
+		{
+			if (!isValidDataObject)
 			{
-				e.Effects = DragDropEffects.None;
+				return DragDropEffects.None;
 			}
 
-			else if ((e.AllowedEffects & DragDropEffects.Move) == 0 &&
-			         (e.AllowedEffects & DragDropEffects.Copy) == 0)
+			var effectiveEffects = sourceAllowedEffects & targetAcceptedEffects;
+			if ((effectiveEffects & (DragDropEffects.Copy | DragDropEffects.Move)) == DragDropEffects.None)
 			{
-				e.Effects = DragDropEffects.None;
+				return DragDropEffects.None;
 			}
 
-			else if ((e.AllowedEffects & DragDropEffects.Move) != 0 &&
-			         (e.AllowedEffects & DragDropEffects.Copy) != 0)
+			if ((keyStates & DragDropKeyStates.ControlKey) != 0 &&
+				(effectiveEffects & DragDropEffects.Copy) != 0)
 			{
-				e.Effects = ((e.KeyStates & DragDropKeyStates.ControlKey) != 0)
-					? DragDropEffects.Copy
-					: DragDropEffects.Move;
+				return DragDropEffects.Copy;
 			}
+
+			if ((effectiveEffects & DragDropEffects.Move) != 0)
+			{
+				return DragDropEffects.Move;
+			}
+
+			if ((effectiveEffects & DragDropEffects.Copy) != 0)
+			{
+				return DragDropEffects.Copy;
+			}
+
+			return DragDropEffects.None;
 		}
 
 		/* ____________________________________________________________________
