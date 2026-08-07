@@ -14,7 +14,7 @@ The visible proof is simple: open the LipSync Mapping target dialog for a large 
 
 - [x] (2026-08-07 16:00Z) Read VIX-3949, `.agents/PLANS.md`, the project Jira workflow, current LipSync dialog source, the shared `MultiSelectTreeview`, `IElementNode`, and the VIX-938 keyboard-selection history.
 - [x] (2026-08-07 16:05Z) Updated VIX-3949's description with the finalized specification, acceptance criteria, and test plan; retained its In Progress status.
-- [ ] Implement root-only population and one-time child population in the LipSync node-selection dialog.
+- [x] (2026-08-07 16:10Z) Implemented root-only tree population, placeholder expand nodes, and one-time direct-child loading in `LipSyncNodeSelect`; verified the LipSyncApp Debug x64 build succeeds.
 - [ ] Validate automated tests, manually exercise a large profile, and record results in VIX-3949 and this plan.
 
 ## Surprises & Discoveries
@@ -43,7 +43,7 @@ The visible proof is simple: open the LipSync Mapping target dialog for a large 
 
 Planning outcome: a source-local, behavior-preserving lazy-loading design has been selected. VIX-3949 now records the finalized implementation requirements, acceptance criteria, and validation plan. No application code has been changed.
 
-Implementation outcome: pending.
+Implementation outcome: the dialog's initial load now creates display nodes for roots only. Each expandable display node carries its source `IElementNode` in `Tag`, receives one blank placeholder, and replaces that placeholder with direct children on its first expansion. The Add path remains name-based. Automated and manual behavioral validation remains pending in Milestone 3.
 
 ## Context and Orientation
 
@@ -192,3 +192,4 @@ No NuGet packages, project references, designer layout changes, or solution-file
 
 - 2026-08-07 / Codex: Initial ExecPlan created after reading VIX-3949, `.agents/PLANS.md`, the project Jira workflow, current LipSync dialog source, the shared multi-select tree implementation and tests, `IElementNode`, and VIX-938 history. The plan resolves the ticket's lookup ambiguity by preserving the existing name-based add behavior and limiting `TreeNode.Tag` to lazy hierarchy population.
 - 2026-08-07 / Codex: Completed Milestone 1 by replacing the VIX-3949 description with the finalized Specification, Acceptance Criteria, and Test Plan from this ExecPlan. The issue remains In Progress; no source code was changed.
+- 2026-08-07 / Codex: Completed Milestone 2 by replacing recursive `BuildNode` construction with root-only `CreateTreeNode` construction and a guarded `BeforeExpand` population path. The target build command `msbuild src\\Vixen.Modules\\App\\LipSyncApp\\LipSyncApp.csproj -t:Build -p:Configuration=Debug -p:Platform=x64 -p:RestoreIgnoreFailedSources=true` succeeded. Milestone 3 owns automated and manual behavioral validation.
