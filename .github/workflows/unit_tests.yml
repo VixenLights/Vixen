@@ -37,5 +37,26 @@ jobs:
       - name: Display dotnet version
         run: dotnet --version
 
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v3
+        with:
+          msbuild-architecture: x64
+
+      - name: Build unit tests
+        run: >
+          msbuild Vixen.sln
+          -m
+          -restore
+          -t:Vixen_Tests
+          -p:Configuration=Release
+          -p:Platform=x64
+          -p:PlatformTarget=x64
+
       - name: Run unit tests
-        run: dotnet test src\Vixen.Tests\Vixen.Tests.csproj -c Release -p:SolutionDir="${{ github.workspace }}\"
+        run: >
+          dotnet test src\Vixen.Tests\Vixen.Tests.csproj
+          -c Release
+          --no-build
+          --no-restore
+          -p:Platform=x64
+          -p:SolutionDir="${{ github.workspace }}\"
