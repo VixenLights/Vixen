@@ -49,7 +49,11 @@ internal sealed class PropPackageWriter(IPropDocumentMapper mapper, IPropImageCo
 		await using (var json = jsonEntry.Open())
 			await JsonSerializer.SerializeAsync(json, document, CustomPropJsonSerializerContext.Default.PropPackageDocument, cancellationToken);
 		cancellationToken.ThrowIfCancellationRequested();
-		var imageEntry = archive.CreateEntry("background.jpg", CompressionLevel.Optimal);
-		await using (var imageStream = imageEntry.Open()) imageCodec.EncodeJpeg(image, imageStream);
+		var imageEntry = archive.CreateEntry("background.jpg", CompressionLevel.NoCompression);
+		await using var encodedImage = new MemoryStream();
+		imageCodec.EncodeJpeg(image, encodedImage);
+		encodedImage.Position = 0;
+		await using var imageStream = imageEntry.Open();
+		await encodedImage.CopyToAsync(imageStream, 81920, cancellationToken);
 	}
 }

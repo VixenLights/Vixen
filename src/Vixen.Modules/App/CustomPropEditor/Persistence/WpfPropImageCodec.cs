@@ -1,4 +1,5 @@
 using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace VixenModules.App.CustomPropEditor.Persistence;
@@ -9,8 +10,11 @@ internal sealed class WpfPropImageCodec : IPropImageCodec
 	{
 		ArgumentNullException.ThrowIfNull(image);
 		ArgumentNullException.ThrowIfNull(destination);
+		var jpegImage = image.Format == PixelFormats.Bgr24
+			? image
+			: new FormatConvertedBitmap(image, PixelFormats.Bgr24, null, 0);
 		var encoder = new JpegBitmapEncoder();
-		encoder.Frames.Add(BitmapFrame.Create(image));
+		encoder.Frames.Add(BitmapFrame.Create(jpegImage));
 		encoder.Save(destination);
 	}
 

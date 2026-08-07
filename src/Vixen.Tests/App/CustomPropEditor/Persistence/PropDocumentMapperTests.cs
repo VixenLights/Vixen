@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Persistence;
 using VixenModules.App.CustomPropEditor.Persistence.Documents;
+using Xunit;
 
 namespace Vixen.Tests.App.CustomPropEditor.Persistence;
 
