@@ -1,7 +1,6 @@
 ﻿using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Common.WPFCommon.ViewModel;
-using LiteDB;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
@@ -134,7 +133,6 @@ namespace VixenModules.App.CustomPropEditor.Model
         /// Gets or sets the source bitmap displayed on the logical prop canvas.
         /// </summary>
         /// <value>The source bitmap. Assigning a bitmap initializes invalid <see cref="Width" /> and <see cref="Height" /> values from its native pixel dimensions.</value>
-        [BsonIgnore]
         public BitmapSource Image
         {
             get { return _image; }
