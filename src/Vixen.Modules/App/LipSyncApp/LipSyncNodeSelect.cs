@@ -11,11 +11,13 @@ namespace VixenModules.App.LipSyncApp
 		private bool _stringAreRows;
 		private List<String> _selectedNodeNames;
 		private bool _matrixOptsOnly;
+		private readonly HashSet<TreeNode> _populatedTreeNodes = new();
 
 		public LipSyncNodeSelect()
 		{
 			Location = ActiveForm != null ? new Point(ActiveForm.Location.X + 50, ActiveForm.Location.Y + 50) : new Point(400, 200);
 			InitializeComponent();
+			nodeTreeView.BeforeExpand += nodeTreeView_BeforeExpand;
 			ThemeUpdateControls.UpdateControls(this);
 			Changed = false;
 			_userAdd = false;
@@ -97,27 +99,59 @@ namespace VixenModules.App.LipSyncApp
 
 		public bool Changed { get; private set; }
 		
-		private void BuildNode(TreeNode parentNode, IElementNode node)
+		private TreeNode CreateTreeNode(IElementNode elementNode)
 		{
-			foreach(IElementNode childNode in node.Children)
+			TreeNode treeNode = new TreeNode(elementNode.Name)
 			{
-				TreeNode newNode = new TreeNode(childNode.Name);
-				BuildNode(newNode, childNode);
-				parentNode.Nodes.Add(newNode);
+				Tag = elementNode
+			};
+
+			if (!elementNode.IsLeaf)
+			{
+				treeNode.Nodes.Add(new TreeNode());
 			}
+
+			return treeNode;
 		}
 
 		private void LipSyncNodeSelect_Load(object sender, EventArgs e)
 		{
-			foreach (IElementNode node in VixenSystem.Nodes.GetRootNodes())
+			nodeTreeView.BeginUpdate();
+			try
 			{
-				TreeNode newNode = new TreeNode(node.Name);
-				BuildNode(newNode, node);
-				nodeTreeView.Nodes.Add(newNode);
-
+				nodeTreeView.Nodes.Clear();
+				_populatedTreeNodes.Clear();
+				foreach (IElementNode node in VixenSystem.Nodes.GetRootNodes())
+				{
+					nodeTreeView.Nodes.Add(CreateTreeNode(node));
+				}
 			}
-			
+			finally
+			{
+				nodeTreeView.EndUpdate();
+			}
+		}
 
+		private void nodeTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+		{
+			if (e.Node.Tag is not IElementNode elementNode || !_populatedTreeNodes.Add(e.Node))
+			{
+				return;
+			}
+
+			nodeTreeView.BeginUpdate();
+			try
+			{
+				e.Node.Nodes.Clear();
+				foreach (IElementNode childNode in elementNode.Children)
+				{
+					e.Node.Nodes.Add(CreateTreeNode(childNode));
+				}
+			}
+			finally
+			{
+				nodeTreeView.EndUpdate();
+			}
 		}
 
 		public List<IElementNode> SelectedElementNodes
