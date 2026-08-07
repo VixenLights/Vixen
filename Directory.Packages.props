@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Catel.Core" Version="6.2.0" />
-    <PackageVersion Include="Catel.Fody" Version="4.11.0" />
+    <PackageVersion Include="Catel.Fody" Version="7.0.0" />
     <PackageVersion Include="Catel.MVVM" Version="6.2.0" />
     <PackageVersion Include="Catel.Serialization.Json" Version="6.2.0" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
@@ -16,9 +16,9 @@
     <PackageVersion Include="gong-wpf-dragdrop" Version="4.0.0" />
     <PackageVersion Include="LiteDB" Version="4.1.4" />
     <PackageVersion Include="LoadAssembliesOnStartup.Fody" Version="4.7.0" />
-    <PackageVersion Include="MessagePack" Version="3.1.7" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
-    <PackageVersion Include="Microsoft.Win32.SystemEvents" Version="10.0.9" />
+    <PackageVersion Include="MessagePack" Version="3.1.8" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
+    <PackageVersion Include="Microsoft.Win32.SystemEvents" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
     <PackageVersion Include="ModuleInit.Fody" Version="2.1.1" />
     <PackageVersion Include="Moq" Version="4.20.72" />
@@ -28,8 +28,8 @@
     <PackageVersion Include="NAudio.WinMM" Version="2.3.0" />
     <PackageVersion Include="NCalc2" Version="2.1.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageVersion Include="NLog" Version="6.1.3" />
-    <PackageVersion Include="NLog.Web.AspNetCore" Version="6.1.3" />
+    <PackageVersion Include="NLog" Version="6.1.4" />
+    <PackageVersion Include="NLog.Web.AspNetCore" Version="6.1.4" />
     <PackageVersion Include="Obsolete.Fody" Version="5.3.1" />
     <PackageVersion Include="OpenTK" Version="4.9.4" />
     <PackageVersion Include="OpenTK.GLControl" Version="4.0.2" />
@@ -38,12 +38,10 @@
     <PackageVersion Include="Orc.SystemInfo" Version="5.1.0" />
     <PackageVersion Include="Orc.Wizard" Version="5.2.0" />
     <PackageVersion Include="Orchestra.Core" Version="7.3.0" />
-    <PackageVersion Include="Svg" Version="3.4.7" />
-    <PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
-    <PackageVersion Include="System.Drawing.Common" Version="10.0.9" />
-    <PackageVersion Include="System.IO.Ports" Version="10.0.9" />
-    <PackageVersion Include="System.Reactive" Version="6.1.0" />
-    <PackageVersion Include="System.Resources.Extensions" Version="8.0.0" />
+    <PackageVersion Include="Svg" Version="3.4.8" />
+    <PackageVersion Include="System.Drawing.Common" Version="10.0.10" />
+    <PackageVersion Include="System.IO.Ports" Version="10.0.10" />
+    <PackageVersion Include="System.Reactive" Version="7.0.0" />
     <PackageVersion Include="Zstandard.Net" Version="1.1.7" />
     <PackageVersion Include="WixToolset.Heat" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Bal.wixext" Version="5.0.2" />

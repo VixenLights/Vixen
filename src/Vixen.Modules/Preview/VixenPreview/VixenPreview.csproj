@@ -10,7 +10,6 @@
 				<PackageReference Include="Catel.MVVM" />
 				<PackageReference Include="DockPanelSuite" />
 				<PackageReference Include="DockPanelSuite.ThemeVS2015" />
-				<PackageReference Include="MessagePack" />
 				<PackageReference Include="NLog" />
 				<PackageReference Include="OpenTK" />
 				<PackageReference Include="OpenTK.GLControl" />

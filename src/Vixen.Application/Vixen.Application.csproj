@@ -29,7 +29,6 @@
 
 		<ItemGroup>
 				<PackageReference Include="Catel.Core" />
-				<PackageReference Include="MessagePack" />
 				<PackageReference Include="Newtonsoft.Json" />
 				<PackageReference Include="NLog" />
 				<PackageReference Include="Orchestra.Core" />
