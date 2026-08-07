@@ -15,7 +15,7 @@ The visible proof is simple: open the LipSync Mapping target dialog for a large 
 - [x] (2026-08-07 16:00Z) Read VIX-3949, `.agents/PLANS.md`, the project Jira workflow, current LipSync dialog source, the shared `MultiSelectTreeview`, `IElementNode`, and the VIX-938 keyboard-selection history.
 - [x] (2026-08-07 16:05Z) Updated VIX-3949's description with the finalized specification, acceptance criteria, and test plan; retained its In Progress status.
 - [x] (2026-08-07 16:10Z) Implemented root-only tree population, placeholder expand nodes, and one-time direct-child loading in `LipSyncNodeSelect`; verified the LipSyncApp Debug x64 build succeeds.
-- [ ] Validate automated tests, manually exercise a large profile, and record results in VIX-3949 and this plan.
+- [x] (2026-08-07 16:17Z) User validated a significant improvement in dialog open and close performance and usability, confirmed all functions work, and reported all 669 automated tests passed; added Jira validation comment 40336.
 
 ## Surprises & Discoveries
 
@@ -24,6 +24,9 @@ The visible proof is simple: open the LipSync Mapping target dialog for a large 
 
 - Observation: the current dialog resolves a selected tree node by `TreeNode.Text`, scanning `VixenSystem.Nodes` for every element node with that name. Duplicate element names therefore currently add every name match rather than the one visible tree item.
   Evidence: `LipSyncNodeSelect.buttonAdd_Click` calls `findAndAddElements(treeNode.Text, recurseCB.Checked)`; `findAndAddElements` loops over `VixenSystem.Nodes` and compares `node.Name`.
+
+- Observation: lazy UI-node construction substantially improves perceived dialog performance at both open and close.
+  Evidence: user manual validation reported significant performance and usability gains, with all dialog functions working correctly.
 
 ## Decision Log
 
@@ -43,7 +46,7 @@ The visible proof is simple: open the LipSync Mapping target dialog for a large 
 
 Planning outcome: a source-local, behavior-preserving lazy-loading design has been selected. VIX-3949 now records the finalized implementation requirements, acceptance criteria, and validation plan. No application code has been changed.
 
-Implementation outcome: the dialog's initial load now creates display nodes for roots only. Each expandable display node carries its source `IElementNode` in `Tag`, receives one blank placeholder, and replaces that placeholder with direct children on its first expansion. The Add path remains name-based. Automated and manual behavioral validation remains pending in Milestone 3.
+Implementation outcome: the dialog's initial load now creates display nodes for roots only. Each expandable display node carries its source `IElementNode` in `Tag`, receives one blank placeholder, and replaces that placeholder with direct children on its first expansion. The Add path remains name-based. User manual validation confirmed significant open and close performance and usability improvements with all functions working, and all 669 automated tests passed.
 
 ## Context and Orientation
 
@@ -193,3 +196,4 @@ No NuGet packages, project references, designer layout changes, or solution-file
 - 2026-08-07 / Codex: Initial ExecPlan created after reading VIX-3949, `.agents/PLANS.md`, the project Jira workflow, current LipSync dialog source, the shared multi-select tree implementation and tests, `IElementNode`, and VIX-938 history. The plan resolves the ticket's lookup ambiguity by preserving the existing name-based add behavior and limiting `TreeNode.Tag` to lazy hierarchy population.
 - 2026-08-07 / Codex: Completed Milestone 1 by replacing the VIX-3949 description with the finalized Specification, Acceptance Criteria, and Test Plan from this ExecPlan. The issue remains In Progress; no source code was changed.
 - 2026-08-07 / Codex: Completed Milestone 2 by replacing recursive `BuildNode` construction with root-only `CreateTreeNode` construction and a guarded `BeforeExpand` population path. The target build command `msbuild src\\Vixen.Modules\\App\\LipSyncApp\\LipSyncApp.csproj -t:Build -p:Configuration=Debug -p:Platform=x64 -p:RestoreIgnoreFailedSources=true` succeeded. Milestone 3 owns automated and manual behavioral validation.
+- 2026-08-07 / Codex: Completed Milestone 3. User manual validation confirmed significantly faster dialog opening and closing, improved usability, and correct function of all dialog behaviors. The user also reported all 669 automated tests passing. Added Jira comment 40336 with the implementation and validation evidence.
