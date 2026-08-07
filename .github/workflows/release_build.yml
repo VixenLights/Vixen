@@ -195,3 +195,34 @@ jobs:
           prerelease: ${{ needs.setup.outputs.pre_release }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update_jira_build:
+    name: Update Jira Fix Build Number
+    needs:
+      - setup
+      - create_release
+    if: >-
+      needs.setup.result == 'success' &&
+      needs.create_release.result == 'success' &&
+      needs.setup.outputs.environment == 'Development' &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/master'
+    continue-on-error: true
+    runs-on: windows-2025-vs2026
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Best-effort update of Fix Build Number
+        shell: pwsh
+        timeout-minutes: 2
+        env:
+          ATLASSIAN_USER: ${{ secrets.ATLASSIAN_USER }}
+          ATLASSIAN_TOKEN: ${{ secrets.ATLASSIAN_TOKEN }}
+          JIRA_FIX_BUILD_NUMBER_FIELD_ID: ${{ vars.JIRA_FIX_BUILD_NUMBER_FIELD_ID }}
+          BUILD_NUMBER: ${{ needs.setup.outputs.build_number }}
+          HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          RELEASE_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          ./Build/UpdateJiraBuild.ps1 -jiraUrl 'https://vixenlights.atlassian.net' -buildNumber $env:BUILD_NUMBER -headCommitMessage $env:HEAD_COMMIT_MESSAGE -fieldId $env:JIRA_FIX_BUILD_NUMBER_FIELD_ID -releaseRunUrl $env:RELEASE_RUN_URL -email $env:ATLASSIAN_USER -apiToken $env:ATLASSIAN_TOKEN
