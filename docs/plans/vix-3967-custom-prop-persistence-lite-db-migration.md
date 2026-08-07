@@ -14,6 +14,7 @@ A user can verify the outcome by creating and saving a prop, opening the resulti
 
 - [x] (2026-08-07 00:00Z) Read `.agents/PLANS.md`, the Custom Prop persistence analysis, existing persistence, state-migration, editor, Preview, project, and test code; created this ExecPlan only.
 - [x] (2026-08-07 00:00Z) Created Jira Improvement VIX-3967, set its Custom Prop Editor delivery contract, acceptance criteria, and test plan, and renamed this plan to begin with the issue key.
+- [x] (2026-08-07 00:00Z) Implemented the internal schema-1 DTO boundary, source-generated JSON metadata, iterative graph mapper, pre-hydration validator, and mapper/validator tests for Milestone 3. The Custom Prop Editor module builds successfully; the aggregate test-project build remains blocked by missing x86 apphost packs in native dependencies.
 - [x] (2026-08-07 00:00Z) Added a deterministic LiteDB v4 fixture builder, raw-reader proof of concept with local LiteDB 5.0.21 MIT attribution, and four tests for JPEG/PNG images, legacy State-shaped values, nested `_type` rejection, no-source-mutation, and a 17 MiB raw `props` document.
 - [ ] Add schema-v1 DTOs, mapping, validation, ZIP reading/writing, and atomic replacement.
 - [ ] Replace the editor and Preview persistence integration with the asynchronous format-neutral facade.
