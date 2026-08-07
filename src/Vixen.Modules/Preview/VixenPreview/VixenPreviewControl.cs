@@ -2650,18 +2650,19 @@ namespace VixenModules.Preview.VixenPreview
 			if (!string.IsNullOrEmpty(path))
 			{
 				Cursor = Cursors.WaitCursor;
-				
-				Prop p = await PropModelPersistenceService.GetModelAsync(path);
-				if (p != null)
+				try
 				{
+					var persistence = ServiceLocator.Default.ResolveType<IPropModelPersistenceService>();
+					Prop p = await persistence.LoadAsync(path);
 					await AddPropToPreviewAsync(p, location);
 				}
-				else
+				catch (Exception exception)
 				{
 					MessageBoxForm mbf = new MessageBoxForm("An error occurred loading the prop.", "Prop Load Error!",MessageBoxButtons.OK,SystemIcons.Error);
-					mbf.ShowDialog(this);
+					await mbf.ShowDialogAsync(this);
+					Logging.Error(exception, "Unable to import Custom Prop {Path}", path);
 				}
-				Cursor = Cursors.Arrow;
+				finally { Cursor = Cursors.Arrow; }
 			}
 		}
 

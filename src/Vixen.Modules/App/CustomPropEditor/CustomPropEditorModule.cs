@@ -4,6 +4,7 @@ using Common.WPFCommon.Services;
 using Vixen.Module.App;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.App.CustomPropEditor.Views;
 using VixenModules.Property.State.Setup.Services;
 using ConfigurationService = VixenModules.App.CustomPropEditor.Services.ConfigurationService;
@@ -21,6 +22,7 @@ namespace VixenModules.App.CustomPropEditor
 			serviceLocator.RegisterType<IDownloadService, DownloadService>();
 			serviceLocator.RegisterType<IMessageBoxService, MessageBoxService>();
 			serviceLocator.RegisterType<IStateDefinitionDialogService, StateDefinitionDialogService>();
+			serviceLocator.RegisterType<IPropModelPersistenceService, PropModelPersistenceService>();
 			
 			AddApplicationMenu();
 			Configuration config = new Configuration((CustomPropEditorData)StaticModuleData);

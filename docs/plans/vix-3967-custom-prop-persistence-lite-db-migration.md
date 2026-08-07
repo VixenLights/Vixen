@@ -16,6 +16,7 @@ A user can verify the outcome by creating and saving a prop, opening the resulti
 - [x] (2026-08-07 00:00Z) Created Jira Improvement VIX-3967, set its Custom Prop Editor delivery contract, acceptance criteria, and test plan, and renamed this plan to begin with the issue key.
 - [x] (2026-08-07 00:00Z) Implemented the internal schema-1 DTO boundary, source-generated JSON metadata, iterative graph mapper, pre-hydration validator, and mapper/validator tests for Milestone 3. The Custom Prop Editor module builds successfully; the aggregate test-project build remains blocked by missing x86 apphost packs in native dependencies.
 - [x] (2026-08-07 00:00Z) Implemented the schema-1 ZIP reader/writer, detached WPF JPEG codec, per-path atomic publisher, temporary-package revalidation, and package I/O tests for Milestone 4. The Custom Prop Editor module builds successfully; aggregate test compilation remains blocked by unavailable native dependency outputs.
+- [x] (2026-08-07 00:00Z) Implemented the async, format-neutral persistence facade; registered it for the editor and Preview; promoted the v4 raw reader to a read-only legacy loader; and routed editor/Preview load and save paths through the shared service for Milestone 5.
 - [x] (2026-08-07 00:00Z) Added a deterministic LiteDB v4 fixture builder, raw-reader proof of concept with local LiteDB 5.0.21 MIT attribution, and four tests for JPEG/PNG images, legacy State-shaped values, nested `_type` rejection, no-source-mutation, and a 17 MiB raw `props` document.
 - [ ] Add schema-v1 DTOs, mapping, validation, ZIP reading/writing, and atomic replacement.
 - [ ] Replace the editor and Preview persistence integration with the asynchronous format-neutral facade.
@@ -78,6 +79,10 @@ A user can verify the outcome by creating and saving a prop, opening the resulti
 
 - Decision: Limit package input to two uncompressed logical entries, a 4 MiB JSON manifest, a 64 MiB JPEG, and a 100:1 compression ratio.
   Rationale: These bounds admit realistic prop images while rejecting ZIP-bomb-shaped input before JSON or WPF image decoding.
+  Date/Author: 2026-08-07 / Codex
+
+- Decision: Track a legacy source path against its loaded live `Prop` with a weak association until its first successful save.
+  Rationale: This enables the one-time backup without broadening the editor model or exposing migration state to editor and Preview callers.
   Date/Author: 2026-08-07 / Codex
 
 ## Outcomes & Retrospective
@@ -281,3 +286,5 @@ The implementation keeps `IPropFileReader`, `IPropDocumentMapper`, validation, r
 2026-08-07 / Codex: Completed Milestone 2. Added the unencrypted LiteDB v4 raw-reader proof of concept under `Persistence/Legacy/LiteDb5021` with MIT attribution to LiteDB v5.0.21 source commit `84065086a8e8716063b255d0abb332708d0b2ad3`. Deterministic tests create temporary v4 files rather than committing a large fixture and passed JPEG/PNG image reconstruction, legacy State-shaped BSON, nested `_type` rejection, source hash/timestamp preservation, and a 17 MiB raw props document. The full Debug solution build passed; the focused test command used direct `dotnet vstest` after that build because the dotnet CLI build path lacks the installed C++ targets.
 
 2026-08-07 / Codex: Completed Milestone 4. Added strict two-entry ZIP package I/O with ZIP-signature, path, size, compression-ratio, JSON, schema, and JPEG validation. The writer creates a unique same-directory temporary archive, validates it through the reader, supports an injected pre-publish failure seam, and uses a per-canonical-path publisher with `File.Replace` when available. The Custom Prop Editor module build passed; the aggregate test project could not compile because native referenced projects lack x86 apphost/reference outputs in this environment.
+
+2026-08-07 / Codex: Completed Milestone 5. Added the documented public asynchronous persistence interface and internal facade, routed editor and Preview calls through the same registered service, and restored busy/cursor state in `finally` blocks. The facade recognizes schema-1 ZIP content before LiteDB v4 headers, maps v4 raw BSON without a LiteDB engine, and requests the deterministic legacy backup only on the first successful same-path legacy save. Custom Prop Editor and Vixen Preview module builds passed; the aggregate test project remains blocked by missing native x86 apphost/reference outputs.

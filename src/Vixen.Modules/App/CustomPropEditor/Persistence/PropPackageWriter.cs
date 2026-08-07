@@ -10,7 +10,9 @@ internal sealed class PropPackageWriter(IPropDocumentMapper mapper, IPropImageCo
 {
 	internal Func<string, CancellationToken, Task> BeforePublishAsync { get; set; }
 
-	public async Task WriteAsync(Prop prop, string destinationPath, CancellationToken cancellationToken = default)
+	public Task WriteAsync(Prop prop, string destinationPath, CancellationToken cancellationToken = default) => WriteAsync(prop, destinationPath, null, cancellationToken);
+
+	internal async Task WriteAsync(Prop prop, string destinationPath, string legacyBackupPath, CancellationToken cancellationToken = default)
 	{
 		ArgumentNullException.ThrowIfNull(prop);
 		ArgumentException.ThrowIfNullOrWhiteSpace(destinationPath);
@@ -26,7 +28,7 @@ internal sealed class PropPackageWriter(IPropDocumentMapper mapper, IPropImageCo
 			await reader.ReadAsync(temporaryPath, cancellationToken);
 			if (BeforePublishAsync != null) await BeforePublishAsync(temporaryPath, cancellationToken);
 			cancellationToken.ThrowIfCancellationRequested();
-			await atomicWriter.PublishAsync(temporaryPath, destination, cancellationToken: cancellationToken);
+			await atomicWriter.PublishAsync(temporaryPath, destination, legacyBackupPath, cancellationToken);
 		}
 		catch (PropPersistenceException) { throw; }
 		catch (Exception exception) when (exception is not OperationCanceledException)
