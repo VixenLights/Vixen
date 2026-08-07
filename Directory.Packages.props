@@ -39,11 +39,9 @@
     <PackageVersion Include="Orc.Wizard" Version="5.2.0" />
     <PackageVersion Include="Orchestra.Core" Version="7.3.0" />
     <PackageVersion Include="Svg" Version="3.4.7" />
-    <PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageVersion Include="System.Drawing.Common" Version="10.0.9" />
     <PackageVersion Include="System.IO.Ports" Version="10.0.9" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
-    <PackageVersion Include="System.Resources.Extensions" Version="8.0.0" />
     <PackageVersion Include="Zstandard.Net" Version="1.1.7" />
     <PackageVersion Include="WixToolset.Heat" Version="5.0.0" />
     <PackageVersion Include="WixToolset.Bal.wixext" Version="5.0.2" />
