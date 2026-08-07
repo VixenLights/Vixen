@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
 using VixenModules.App.CustomPropEditor.Model;
@@ -28,11 +29,13 @@ internal sealed class LegacyLiteDbPropReader : IPropFileReader
 
 	private static ElementModel MapElement(IReadOnlyDictionary<string, object> source, IDictionary<Guid, ElementModel> mapped)
 	{
-		var id = GetGuid(source, "Id", Guid.NewGuid());
+		var id = GetGuid(source, "_id", GetGuid(source, "Id", Guid.NewGuid()));
 		if (mapped.TryGetValue(id, out var existing)) return existing;
 		var element = new ElementModel(GetString(source, "Name", string.Empty))
 		{
 			Id = id, StatePropertyId = GetGuid(source, "StatePropertyId", Guid.NewGuid()), Order = (int)GetDouble(source, "Order", 0), LightSize = (int)GetDouble(source, "LightSize", ElementModel.DefaultLightSize),
+			ModelType = ParseEnum<ElementModelType>(GetString(source, "ModelType", nameof(ElementModelType.None)), ElementModelType.None),
+			FaceDefinition = MapFaceDefinition(source.GetValueOrDefault("FaceDefinition") as IReadOnlyDictionary<string, object>),
 			Children = new ObservableCollection<ElementModel>(), Parents = new ObservableCollection<Guid>(), Lights = new ObservableCollection<Light>(), StateDefinitions = new ObservableCollection<StateDefinition>(), StateDefinitionModels = new ObservableCollection<StateDefinitionModel>()
 		};
 		mapped.Add(id, element);
@@ -46,8 +49,31 @@ internal sealed class LegacyLiteDbPropReader : IPropFileReader
 				element.Children.Add(child);
 				if (!child.Parents.Contains(id)) child.Parents.Add(id);
 			}
-		MapLegacyStates(source, element);
+		MapAuthoredStates(source, element);
+		if (!element.StateDefinitionModels.Any()) MapLegacyStates(source, element);
 		return element;
+	}
+
+	private static void MapAuthoredStates(IReadOnlyDictionary<string, object> source, ElementModel element)
+	{
+		if (source.GetValueOrDefault("StateDefinitionModels") is not List<object> definitions) return;
+		foreach (var definition in definitions.OfType<IReadOnlyDictionary<string, object>>())
+		{
+			var items = definition.GetValueOrDefault("Items") as List<object> ?? [];
+			element.StateDefinitionModels.Add(new StateDefinitionModel
+			{
+				Id = GetGuid(definition, "_id", GetGuid(definition, "Id", Guid.NewGuid())),
+				Name = GetString(definition, "Name", StateDefinitionModel.DefaultName),
+				Description = GetString(definition, "Description", string.Empty),
+				Items = new ObservableCollection<StateItemModel>(items.OfType<IReadOnlyDictionary<string, object>>().Select(item => new StateItemModel
+				{
+					Id = GetGuid(item, "_id", GetGuid(item, "Id", Guid.NewGuid())),
+					Name = GetString(item, "Name", StateItemModel.DefaultName),
+					Color = ParseLegacyColor(GetString(item, "Color", "255,255,255,255")),
+					ElementModelIds = new ObservableCollection<Guid>((item.GetValueOrDefault("ElementModelIds") as List<object> ?? []).Select(value => value is byte[] { Length: 16 } bytes ? new Guid(bytes) : Guid.Empty).Where(value => value != Guid.Empty))
+				}))
+			});
+		}
 	}
 
 	private static void MapLegacyStates(IReadOnlyDictionary<string, object> source, ElementModel element)
@@ -77,7 +103,20 @@ internal sealed class LegacyLiteDbPropReader : IPropFileReader
 		return image;
 	}
 
-	private static string GetString(IReadOnlyDictionary<string, object> values, string name, string fallback) => values.GetValueOrDefault(name) as string ?? fallback;
+	private static string GetString(IReadOnlyDictionary<string, object> values, string name, string fallback) => values?.GetValueOrDefault(name) as string ?? fallback;
 	private static double GetDouble(IReadOnlyDictionary<string, object> values, string name, double fallback) => values.GetValueOrDefault(name) switch { int value => value, long value => value, double value when double.IsFinite(value) => value, _ => fallback };
-	private static Guid GetGuid(IReadOnlyDictionary<string, object> values, string name, Guid fallback) => values.GetValueOrDefault(name) is byte[] { Length: 16 } value ? new Guid(value) : fallback;
+	private static Guid GetGuid(IReadOnlyDictionary<string, object> values, string name, Guid fallback) => values.GetValueOrDefault(name) switch { byte[] { Length: 16 } value => new Guid(value), string value when Guid.TryParse(value, out var id) => id, _ => fallback };
+	private static Color ParseLegacyColor(string value)
+	{
+		var components = value.Split(',');
+		return components.Length == 4 && components.All(component => byte.TryParse(component, out _))
+			? Color.FromArgb(byte.Parse(components[0]), byte.Parse(components[1]), byte.Parse(components[2]), byte.Parse(components[3]))
+			: Color.White;
+	}
+	private static FaceDefinition MapFaceDefinition(IReadOnlyDictionary<string, object> source) => new()
+	{
+		FaceComponent = ParseEnum<FaceComponent>(GetString(source, "FaceComponent", nameof(FaceComponent.None)), FaceComponent.None),
+		DefaultColor = ParseLegacyColor(GetString(source, "DefaultColor", "255,255,255,255"))
+	};
+	private static T ParseEnum<T>(string value, T fallback) where T : struct, Enum => Enum.TryParse(value, out T parsed) && Enum.IsDefined(parsed) ? parsed : fallback;
 }
