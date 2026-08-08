@@ -379,7 +379,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// SelectedTabIndex property data.
 		/// </summary>
 		public static readonly IPropertyData SelectedTabIndexProperty =
-			RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, e) => ((PropEditorViewModel) sender).OnSelectedTabIndexChanged());
+			RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, _) => ((PropEditorViewModel) sender).OnSelectedTabIndexChanged());
 
 		/// <summary>
 		/// Gets a value that indicates whether the State Definition tab is selected.
@@ -695,7 +695,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		/// <summary>
 		/// Gets the Delete command.
-		/// </summary
+		/// </summary>
 		[Browsable(false)]
 		public Command DeleteCommand
 		{
@@ -827,7 +827,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		/// <summary>
 		/// Gets the SaveModelAs command.
-		/// </summary
+		/// </summary>
 		[Browsable(false)]
 		public Command SaveModelAsCommand
 		{
@@ -987,7 +987,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
-		private async Task<bool> ImportProp(string path)
+		private async Task ImportProp(string path)
 		{
 			try
 			{
@@ -1003,14 +1003,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 			catch (Exception e)
 			{
-				
+
 				Logging.Error(e, "An error occuring importing the xModel.");
 				var mbs = new MessageBoxService();
 				mbs.ShowError($"An error occurred importing the xModel. Please notify the Vixen Team.", "Error Importing xModel");
-				return false;
 			}
-
-			return true;
 		}
 
 		#endregion
@@ -1105,10 +1102,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 					if (string.IsNullOrEmpty(Prop.VendorMetadata.Website))
 					{
-						var website = vm.SelectedInventory.Vendor.WebLinks.Where(x => x.Name.Equals("Website"));
-						if (website.Any())
+						var website = vm.SelectedInventory.Vendor.WebLinks.FirstOrDefault(x => x.Name.Equals("Website"));
+						if (website != null)
 						{
-							Prop.VendorMetadata.Website = website.First().Link.AbsoluteUri;
+							Prop.VendorMetadata.Website = website.Link.AbsoluteUri;
 						}
 					}
 				}
