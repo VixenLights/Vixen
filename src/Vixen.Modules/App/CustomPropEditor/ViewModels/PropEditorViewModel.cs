@@ -363,6 +363,27 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region StatusMessage property
+
+		/// <summary>
+		/// Gets or sets a general-purpose, transient status message for the status bar. Set by whichever
+		/// long-running operation is currently in progress and cleared when it completes. Not tied to any
+		/// specific command.
+		/// </summary>
+		[Browsable(false)]
+		public string StatusMessage
+		{
+			get { return GetValue<string>(StatusMessageProperty); }
+			set { SetValue(StatusMessageProperty, value); }
+		}
+
+		/// <summary>
+		/// StatusMessage property data.
+		/// </summary>
+		public static readonly IPropertyData StatusMessageProperty = RegisterProperty<string>(nameof(StatusMessage), string.Empty);
+
+		#endregion
+
 		#region SelectedTabIndex property
 
 		/// <summary>

@@ -17,13 +17,18 @@ A user can see this working by opening the Custom Prop Editor, choosing `Tools >
 ## Progress
 
 - [x] (2026-08-08) Milestone 1: Created [VIX-3968](https://vixenlights.atlassian.net/browse/VIX-3968) as an Improvement in project VIX, with the problem, proposed change, acceptance criteria, and test plan from this ExecPlan recorded in its description. Left in its default "New Ticket" status; no workflow transition made.
-- [ ] Milestone 2: Add a status-message property and status-bar UI to the Custom Prop Editor window.
+- [x] (2026-08-08) Milestone 2: Added `StatusMessage` (a `RegisterProperty`/`GetValue`/`SetValue`-backed, general-purpose property, matching the `FilePath`/`ElementTreeViewModel` pattern already used in this file) to `PropEditorViewModel.cs`, and a new `StatusMessageBarItem` `StatusBarItem` bound to it in `CustomPropEditorWindow.xaml`'s existing `StatusBar`, collapsed via a `DataTrigger` when the message is empty. Also fixed six pre-existing Rider warnings the post-edit check flagged in `PropEditorViewModel.cs` (two malformed `</summary` doc comments, a possible-multiple-enumeration on a `Where`/`Any`/`First` chain simplified to `FirstOrDefault`, an unused lambda parameter renamed to `_`, and `ImportProp`'s unused `bool` return type removed in favor of `Task`).
 - [ ] Milestone 3: Wire the busy cursor and status message into `OpenVendorBrowserAsync`.
 - [ ] Milestone 4: Validate the change, update Jira, and close the loop.
 
 ## Surprises & Discoveries
 
-(Fill in as work proceeds. Seed observation carried in from prior, related work below.)
+- Observation: Editing `PropEditorViewModel.cs` for Milestone 2 triggered this repository's Rider post-edit check, which flagged six pre-existing warnings unrelated to the `StatusMessage` addition: two doc comments missing a closing `>` on `</summary`, a possible-multiple-enumeration warning on a `Where(...).Any()` / `Where(...).First()` pair, an unused lambda parameter, and an `async Task<bool> ImportProp(...)` whose `bool` return value was never used by either call site.
+  Evidence: Post-edit check output listed `PropEditorViewModel.cs:725:15`, `:857:15`, `:1150:11`, `:1152:38`, `:406:14`, and `:1016:21`.
+- Decision: Fixed all six as directed by the tooling (the two doc comments closed, the `Where`/`Any`/`First` chain simplified to a single `FirstOrDefault`, the unused lambda parameter renamed to `_`, and `ImportProp` changed from `Task<bool>` to `Task` since neither caller used the result). These are pre-existing, unrelated to this task's scope, but were required by the repository's mandatory post-edit tooling; behavior is unchanged in all cases.
+  Date/Author: 2026-08-08 / Claude
+
+(Fill in further as work proceeds. Seed observation carried in from prior, related work below.)
 
 - Observation: Catel 6.2's WPF implementation of `IBusyIndicatorService` (the interface this repository already uses to request a busy cursor; see `Catel.Services.IBusyIndicatorService`, resolved via `this.GetDependencyResolver().Resolve<IBusyIndicatorService>()`) only overrides `Mouse.OverrideCursor`. It does not render a spinner window, and nothing in this repository currently renders the `status` text passed to `Show(string status)` or `UpdateStatus(string status)` — no `BusyIndicator`-style control exists anywhere under `src/`. This was confirmed for a related fix in `docs/plans/vix-3563-custom-prop-xmodel-import-busy-indicator.md`. Consequently, `IBusyIndicatorService` alone can give the spinning/wait cursor this task asks for, but the "status line message" part of this task requires adding real, visible UI — it cannot be achieved by passing a string into `IBusyIndicatorService`.
 
