@@ -1055,82 +1055,93 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			List<ModelInventory> vendorInventories = new List<ModelInventory>();
 
-			var vendorLinks = await GetVendorUrls();
-			if (!vendorLinks.Any()) { return; }
-			
-
 			var dependencyResolver = this.GetDependencyResolver();
-			var ds = dependencyResolver.Resolve<IDownloadService>();
-
-			foreach (var vendorLink in vendorLinks)
+			var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
+			pleaseWaitService.Show();
+			StatusMessage = "Loading vendor list...";
+			try
 			{
-				try
+				var vendorLinks = await GetVendorUrls();
+				if (!vendorLinks.Any()) { return; }
+
+				var ds = dependencyResolver.Resolve<IDownloadService>();
+
+				foreach (var vendorLink in vendorLinks)
 				{
-					var xml = await ds.GetFileAsStringAsync(new Uri(vendorLink.Url));
-					vendorInventories.Add(await mi.Import(xml));
+					StatusMessage = $"Retrieving inventory from {vendorLink.Name}...";
+					try
+					{
+						var xml = await ds.GetFileAsStringAsync(new Uri(vendorLink.Url));
+						vendorInventories.Add(await mi.Import(xml));
+					}
+					catch (Exception e)
+					{
+						Logging.Error(e, $"An error occurred retrieving the inventory from: {vendorLink.Name}, {vendorLink.Url}");
+						var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+						mbs.ShowError($"Unable to retrieve inventory from {vendorLink.Name}\nEnsure you have an active internet connection.", "Error Retrieving Inventory");
+					}
 				}
-				catch (Exception e)
+
+				if (!vendorInventories.Any()) { return; }
+				var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
+				var vm = new VendorInventoryWindowViewModel(vendorInventories, dependencyResolver.Resolve<IProcessService>());
+				bool? result = (await uiVisualizerService.ShowDialogAsync(vm)).DialogResult;
+
+				if (result.HasValue && result.Value)
 				{
-					Logging.Error(e, $"An error occurred retrieving the inventory from: {vendorLink.Name}, {vendorLink.Url}");
-					var mbs = dependencyResolver.Resolve<IMessageBoxService>();
-					mbs.ShowError($"Unable to retrieve inventory from {vendorLink.Name}\nEnsure you have an active internet connection.", "Error Retrieving Inventory");
-				}
-			}
+					var status = await LoadVendorModel(vm.SelectedModelLink);
 
-			if (!vendorInventories.Any()) { return; }
-			var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
-			var vm = new VendorInventoryWindowViewModel(vendorInventories, dependencyResolver.Resolve<IProcessService>());
-			bool? result = (await uiVisualizerService.ShowDialogAsync(vm)).DialogResult;
-
-			if (result.HasValue && result.Value)
-			{
-				var status = await LoadVendorModel(vm.SelectedModelLink);
-
-				if (status.Item1)
-				{
-					if (status.Item2 == ModelType.XModel)
+					if (status.Item1)
 					{
-						Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
-						Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
-						Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
-						Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
-						Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
-						Prop.PhysicalMetadata.NodeCount = vm.SelectedProduct.PixelCount.ToString();
-						Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
-						Prop.Type = vm.SelectedProduct.ProductType;
-					}
-					
-					//Ensure the Vendor info is populated
-					if (string.IsNullOrEmpty(Prop.VendorMetadata.Name))
-					{
-						Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
-					}
-
-					if (string.IsNullOrEmpty(Prop.VendorMetadata.Contact))
-					{
-						Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
-					}
-
-					if (string.IsNullOrEmpty(Prop.VendorMetadata.Email))
-					{
-						Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
-					}
-
-					if (string.IsNullOrEmpty(Prop.VendorMetadata.Phone))
-					{
-						Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
-					}
-
-					if (string.IsNullOrEmpty(Prop.VendorMetadata.Website))
-					{
-						var website = vm.SelectedInventory.Vendor.WebLinks.FirstOrDefault(x => x.Name.Equals("Website"));
-						if (website != null)
+						if (status.Item2 == ModelType.XModel)
 						{
-							Prop.VendorMetadata.Website = website.Link.AbsoluteUri;
+							Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
+							Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
+							Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
+							Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
+							Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
+							Prop.PhysicalMetadata.NodeCount = vm.SelectedProduct.PixelCount.ToString();
+							Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
+							Prop.Type = vm.SelectedProduct.ProductType;
+						}
+
+						//Ensure the Vendor info is populated
+						if (string.IsNullOrEmpty(Prop.VendorMetadata.Name))
+						{
+							Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
+						}
+
+						if (string.IsNullOrEmpty(Prop.VendorMetadata.Contact))
+						{
+							Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
+						}
+
+						if (string.IsNullOrEmpty(Prop.VendorMetadata.Email))
+						{
+							Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
+						}
+
+						if (string.IsNullOrEmpty(Prop.VendorMetadata.Phone))
+						{
+							Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
+						}
+
+						if (string.IsNullOrEmpty(Prop.VendorMetadata.Website))
+						{
+							var website = vm.SelectedInventory.Vendor.WebLinks.FirstOrDefault(x => x.Name.Equals("Website"));
+							if (website != null)
+							{
+								Prop.VendorMetadata.Website = website.Link.AbsoluteUri;
+							}
 						}
 					}
+
 				}
-				
+			}
+			finally
+			{
+				StatusMessage = string.Empty;
+				pleaseWaitService.Hide();
 			}
 		}
 
