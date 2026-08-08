@@ -363,6 +363,27 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region StatusMessage property
+
+		/// <summary>
+		/// Gets or sets a general-purpose, transient status message for the status bar. Set by whichever
+		/// long-running operation is currently in progress and cleared when it completes. Not tied to any
+		/// specific command.
+		/// </summary>
+		[Browsable(false)]
+		public string StatusMessage
+		{
+			get { return GetValue<string>(StatusMessageProperty); }
+			set { SetValue(StatusMessageProperty, value); }
+		}
+
+		/// <summary>
+		/// StatusMessage property data.
+		/// </summary>
+		public static readonly IPropertyData StatusMessageProperty = RegisterProperty<string>(nameof(StatusMessage), string.Empty);
+
+		#endregion
+
 		#region SelectedTabIndex property
 
 		/// <summary>
@@ -379,7 +400,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// SelectedTabIndex property data.
 		/// </summary>
 		public static readonly IPropertyData SelectedTabIndexProperty =
-			RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, e) => ((PropEditorViewModel) sender).OnSelectedTabIndexChanged());
+			RegisterProperty<int>(nameof(SelectedTabIndex), null, (sender, _) => ((PropEditorViewModel) sender).OnSelectedTabIndexChanged());
 
 		/// <summary>
 		/// Gets a value that indicates whether the State Definition tab is selected.
@@ -695,7 +716,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		/// <summary>
 		/// Gets the Delete command.
-		/// </summary
+		/// </summary>
 		[Browsable(false)]
 		public Command DeleteCommand
 		{
@@ -827,7 +848,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		/// <summary>
 		/// Gets the SaveModelAs command.
-		/// </summary
+		/// </summary>
 		[Browsable(false)]
 		public Command SaveModelAsCommand
 		{
@@ -987,7 +1008,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
-		private async Task<bool> ImportProp(string path)
+		private async Task ImportProp(string path)
 		{
 			try
 			{
@@ -1003,14 +1024,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 			catch (Exception e)
 			{
-				
+
 				Logging.Error(e, "An error occuring importing the xModel.");
 				var mbs = new MessageBoxService();
 				mbs.ShowError($"An error occurred importing the xModel. Please notify the Vixen Team.", "Error Importing xModel");
-				return false;
 			}
-
-			return true;
 		}
 
 		#endregion
@@ -1037,29 +1055,41 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			List<ModelInventory> vendorInventories = new List<ModelInventory>();
 
-			var vendorLinks = await GetVendorUrls();
-			if (!vendorLinks.Any()) { return; }
-			
-
 			var dependencyResolver = this.GetDependencyResolver();
-			var ds = dependencyResolver.Resolve<IDownloadService>();
-
-			foreach (var vendorLink in vendorLinks)
+			var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
+			pleaseWaitService.Show();
+			StatusMessage = "Loading vendor list...";
+			try
 			{
-				try
+				var vendorLinks = await GetVendorUrls();
+				if (!vendorLinks.Any()) { return; }
+
+				var ds = dependencyResolver.Resolve<IDownloadService>();
+
+				foreach (var vendorLink in vendorLinks)
 				{
-					var xml = await ds.GetFileAsStringAsync(new Uri(vendorLink.Url));
-					vendorInventories.Add(await mi.Import(xml));
+					StatusMessage = $"Retrieving inventory from {vendorLink.Name}...";
+					try
+					{
+						var xml = await ds.GetFileAsStringAsync(new Uri(vendorLink.Url));
+						vendorInventories.Add(await mi.Import(xml));
+					}
+					catch (Exception e)
+					{
+						Logging.Error(e, $"An error occurred retrieving the inventory from: {vendorLink.Name}, {vendorLink.Url}");
+						var mbs = dependencyResolver.Resolve<IMessageBoxService>();
+						mbs.ShowError($"Unable to retrieve inventory from {vendorLink.Name}\nEnsure you have an active internet connection.", "Error Retrieving Inventory");
+					}
 				}
-				catch (Exception e)
-				{
-					Logging.Error(e, $"An error occurred retrieving the inventory from: {vendorLink.Name}, {vendorLink.Url}");
-					var mbs = dependencyResolver.Resolve<IMessageBoxService>();
-					mbs.ShowError($"Unable to retrieve inventory from {vendorLink.Name}\nEnsure you have an active internet connection.", "Error Retrieving Inventory");
-				}
+
+				if (!vendorInventories.Any()) { return; }
+			}
+			finally
+			{
+				StatusMessage = string.Empty;
+				pleaseWaitService.Hide();
 			}
 
-			if (!vendorInventories.Any()) { return; }
 			var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
 			var vm = new VendorInventoryWindowViewModel(vendorInventories, dependencyResolver.Resolve<IProcessService>());
 			bool? result = (await uiVisualizerService.ShowDialogAsync(vm)).DialogResult;
@@ -1081,7 +1111,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
 						Prop.Type = vm.SelectedProduct.ProductType;
 					}
-					
+
 					//Ensure the Vendor info is populated
 					if (string.IsNullOrEmpty(Prop.VendorMetadata.Name))
 					{
@@ -1105,14 +1135,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 					if (string.IsNullOrEmpty(Prop.VendorMetadata.Website))
 					{
-						var website = vm.SelectedInventory.Vendor.WebLinks.Where(x => x.Name.Equals("Website"));
-						if (website.Any())
+						var website = vm.SelectedInventory.Vendor.WebLinks.FirstOrDefault(x => x.Name.Equals("Website"));
+						if (website != null)
 						{
-							Prop.VendorMetadata.Website = website.First().Link.AbsoluteUri;
+							Prop.VendorMetadata.Website = website.Link.AbsoluteUri;
 						}
 					}
 				}
-				
+
 			}
 		}
 

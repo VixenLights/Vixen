@@ -12,6 +12,15 @@
 		<SolutionDir Condition="'$(SolutionDir)' == '' Or '$(SolutionDir)' == '*Undefined*'">$(MSBuildThisFileDirectory)..\</SolutionDir>
 	</PropertyGroup>
 	<PropertyGroup>
+		<!-- Directory.Build.props is imported before the SDK applies its own Configuration
+		     default, so $(Configuration) is still empty here unless it was passed explicitly
+		     (e.g. `-c`/`-p:Configuration` on the command line, or Vixen.sln supplying it).
+		     Without this default, BaseOutputPath below evaluates to a bare "Output" folder at
+		     the repo root instead of "Debug\Output"/"Release\Output", scattering untracked
+		     build artifacts outside the folders .gitignore already excludes. -->
+		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+	</PropertyGroup>
+	<PropertyGroup>
 		<Title>Vixen</Title>
 		<Authors>Vixen Team</Authors>
 		<Copyright>2023 Vixen Team</Copyright>
