@@ -18,7 +18,15 @@ msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Debug
 
 Build output lands in `/Release/Output/` (Release) or `/Debug/Output/` (Debug). Modules build into subdirectories named `Module.{ModuleType}.{ModuleName}/`.
 
-Unit tests live in `src/Vixen.Tests/`. Run them with `dotnet test src/Vixen.Tests/Vixen.Tests.csproj`.
+Unit tests live in `src/Vixen.Tests/`. Two of the test project's transitive dependencies (`QMLibrary`, `LiquidFunWrapper`) are C++/CLI `.vcxproj` projects — `dotnet test` alone cannot build them (`dotnet`'s bundled MSBuild can't resolve `VCTargetsPath`/the C++ toolset). Build the `Vixen_Tests` target with full MSBuild first, then run the already-built tests with `dotnet test --no-build`:
+
+```bash
+msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m
+
+dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="$(pwd)/"
+```
+
+This mirrors `.github/workflows/unit_tests.yml`.
 
 ## Code Style
 
