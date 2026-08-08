@@ -5,6 +5,13 @@
 		<Assembly_Version>0.0.0.0</Assembly_Version>
 	</PropertyGroup>
 	<PropertyGroup>
+		<!-- SolutionDir is only auto-populated by MSBuild when Vixen.sln is the build entry point.
+		     Building/testing a project directly (e.g. `dotnet test src\Vixen.Tests\Vixen.Tests.csproj`)
+		     leaves it empty, which would otherwise scatter a Release\Output or Debug\Output folder
+		     under each project directory instead of the shared repo-root one. -->
+		<SolutionDir Condition="'$(SolutionDir)' == '' Or '$(SolutionDir)' == '*Undefined*'">$(MSBuildThisFileDirectory)..\</SolutionDir>
+	</PropertyGroup>
+	<PropertyGroup>
 		<Title>Vixen</Title>
 		<Authors>Vixen Team</Authors>
 		<Copyright>2023 Vixen Team</Copyright>
