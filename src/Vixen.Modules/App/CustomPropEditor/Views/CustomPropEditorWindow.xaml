@@ -121,18 +121,6 @@
 						</MenuItem>
 				</Menu>
 				<StatusBar DockPanel.Dock="Bottom">
-						<StatusBarItem x:Name="StatusMessageBarItem">
-								<StatusBarItem.Style>
-										<Style TargetType="StatusBarItem">
-												<Style.Triggers>
-														<DataTrigger Binding="{Binding StatusMessage}" Value="">
-																<Setter Property="Visibility" Value="Collapsed"/>
-														</DataTrigger>
-												</Style.Triggers>
-										</Style>
-								</StatusBarItem.Style>
-								<TextBlock Text="{Binding StatusMessage}"/>
-						</StatusBarItem>
 						<StatusBarItem>
 								<StackPanel Orientation="Horizontal">
 										<StackPanel.Style>
@@ -148,6 +136,18 @@
 										<TextBlock Text=", "></TextBlock>
 										<TextBlock Text="{Binding Path=Coordinates.Y, StringFormat='{}{0:0}', ElementName=PropDesigner}"/>
 								</StackPanel>
+						</StatusBarItem>
+						<StatusBarItem x:Name="StatusMessageBarItem">
+								<StatusBarItem.Style>
+										<Style TargetType="StatusBarItem">
+												<Style.Triggers>
+														<DataTrigger Binding="{Binding StatusMessage}" Value="">
+																<Setter Property="Visibility" Value="Collapsed"/>
+														</DataTrigger>
+												</Style.Triggers>
+										</Style>
+								</StatusBarItem.Style>
+								<TextBlock Text="{Binding StatusMessage}"/>
 						</StatusBarItem>
 				</StatusBar>
 				<Border BorderThickness="0 0 0 1" >

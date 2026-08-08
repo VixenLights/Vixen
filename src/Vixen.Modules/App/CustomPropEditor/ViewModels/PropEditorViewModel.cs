@@ -1083,65 +1083,66 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				}
 
 				if (!vendorInventories.Any()) { return; }
-				var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
-				var vm = new VendorInventoryWindowViewModel(vendorInventories, dependencyResolver.Resolve<IProcessService>());
-				bool? result = (await uiVisualizerService.ShowDialogAsync(vm)).DialogResult;
-
-				if (result.HasValue && result.Value)
-				{
-					var status = await LoadVendorModel(vm.SelectedModelLink);
-
-					if (status.Item1)
-					{
-						if (status.Item2 == ModelType.XModel)
-						{
-							Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
-							Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
-							Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
-							Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
-							Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
-							Prop.PhysicalMetadata.NodeCount = vm.SelectedProduct.PixelCount.ToString();
-							Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
-							Prop.Type = vm.SelectedProduct.ProductType;
-						}
-
-						//Ensure the Vendor info is populated
-						if (string.IsNullOrEmpty(Prop.VendorMetadata.Name))
-						{
-							Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
-						}
-
-						if (string.IsNullOrEmpty(Prop.VendorMetadata.Contact))
-						{
-							Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
-						}
-
-						if (string.IsNullOrEmpty(Prop.VendorMetadata.Email))
-						{
-							Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
-						}
-
-						if (string.IsNullOrEmpty(Prop.VendorMetadata.Phone))
-						{
-							Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
-						}
-
-						if (string.IsNullOrEmpty(Prop.VendorMetadata.Website))
-						{
-							var website = vm.SelectedInventory.Vendor.WebLinks.FirstOrDefault(x => x.Name.Equals("Website"));
-							if (website != null)
-							{
-								Prop.VendorMetadata.Website = website.Link.AbsoluteUri;
-							}
-						}
-					}
-
-				}
 			}
 			finally
 			{
 				StatusMessage = string.Empty;
 				pleaseWaitService.Hide();
+			}
+
+			var uiVisualizerService = dependencyResolver.Resolve<IUIVisualizerService>();
+			var vm = new VendorInventoryWindowViewModel(vendorInventories, dependencyResolver.Resolve<IProcessService>());
+			bool? result = (await uiVisualizerService.ShowDialogAsync(vm)).DialogResult;
+
+			if (result.HasValue && result.Value)
+			{
+				var status = await LoadVendorModel(vm.SelectedModelLink);
+
+				if (status.Item1)
+				{
+					if (status.Item2 == ModelType.XModel)
+					{
+						Prop.PhysicalMetadata.Width = vm.SelectedProduct.Width;
+						Prop.PhysicalMetadata.Height = vm.SelectedProduct.Height;
+						Prop.PhysicalMetadata.Depth = vm.SelectedProduct.Thickness;
+						Prop.PhysicalMetadata.Material = vm.SelectedProduct.Material;
+						Prop.PhysicalMetadata.BulbType = vm.SelectedProduct.PixelDescription;
+						Prop.PhysicalMetadata.NodeCount = vm.SelectedProduct.PixelCount.ToString();
+						Prop.InformationMetadata.Notes = vm.SelectedProduct.Notes;
+						Prop.Type = vm.SelectedProduct.ProductType;
+					}
+
+					//Ensure the Vendor info is populated
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Name))
+					{
+						Prop.VendorMetadata.Name = vm.SelectedInventory.Vendor.Name;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Contact))
+					{
+						Prop.VendorMetadata.Contact = vm.SelectedInventory.Vendor.Contact;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Email))
+					{
+						Prop.VendorMetadata.Email = vm.SelectedInventory.Vendor.Email;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Phone))
+					{
+						Prop.VendorMetadata.Phone = vm.SelectedInventory.Vendor.Phone;
+					}
+
+					if (string.IsNullOrEmpty(Prop.VendorMetadata.Website))
+					{
+						var website = vm.SelectedInventory.Vendor.WebLinks.FirstOrDefault(x => x.Name.Equals("Website"));
+						if (website != null)
+						{
+							Prop.VendorMetadata.Website = website.Link.AbsoluteUri;
+						}
+					}
+				}
+
 			}
 		}
 
