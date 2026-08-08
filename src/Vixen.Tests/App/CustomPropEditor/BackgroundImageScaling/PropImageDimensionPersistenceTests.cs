@@ -72,7 +72,7 @@ public sealed class PropImageDimensionPersistenceTests
 	}
 
 	[Fact]
-	public void SaveAndLoad_PreservesScaledLogicalDimensions()
+	public async Task SaveAndLoad_PreservesScaledLogicalDimensions()
 	{
 		var path = Path.Combine(Path.GetTempPath(), $"VIX-2499-{Guid.NewGuid():N}.prp");
 		try
@@ -83,8 +83,9 @@ public sealed class PropImageDimensionPersistenceTests
 				Height = 756
 			};
 
-			PropModelPersistenceService.SaveModel(prop, path);
-			var loaded = PropModelPersistenceService.GetModel(path);
+			var persistence = new PropModelPersistenceService();
+			await persistence.SaveAsync(prop, path, TestContext.Current.CancellationToken);
+			var loaded = await persistence.LoadAsync(path, TestContext.Current.CancellationToken);
 
 			Assert.NotNull(loaded);
 			Assert.Equal(1008, loaded.Width);

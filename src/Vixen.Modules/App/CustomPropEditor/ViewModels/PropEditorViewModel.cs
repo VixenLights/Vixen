@@ -766,8 +766,19 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				{
 					var pleaseWaitService = dependencyResolver.Resolve<IBusyIndicatorService>();
 					pleaseWaitService.Show();
-					LoadPropFromPath(path);
-					pleaseWaitService.Hide();
+					try
+					{
+						await LoadPropFromPathAsync(path);
+					}
+					catch (Exception exception)
+					{
+						dependencyResolver.Resolve<IMessageBoxService>().ShowError("The prop could not be loaded.", "Prop Load Error");
+						Logging.Error(exception, "Unable to load Custom Prop {Path}", path);
+					}
+					finally
+					{
+						pleaseWaitService.Hide();
+					}
 				}
 			}
 		}
@@ -790,7 +801,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Method to invoke when the SaveModel command is executed.
 		/// </summary>
-		private void SaveModel()
+		private async void SaveModel()
 		{
 			if (!TryValidateStateBeforeSave())
 			{
@@ -804,8 +815,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 			else
 			{
-				PropModelPersistenceService.UpdateModel(Prop, FilePath);
-				ClearDirtyFlag();
+				await SaveModelAsync(FilePath);
 			}
 		}
 
@@ -851,11 +861,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (result.Result)
 			{
 				// User selected a file
-				if (PropModelPersistenceService.SaveModel(Prop, result.FileName))
-				{
-					FilePath = result.FileName;
-					ClearDirtyFlag();
-				}
+				await SaveModelAsync(result.FileName);
 			}
 		}
 
@@ -1387,9 +1393,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		private void LoadPropFromPath(string path)
+		private async Task LoadPropFromPathAsync(string path)
 		{
-			Prop p = PropModelServices.Instance().LoadProp(path);
+			Prop p = await PropModelServices.Instance().LoadPropAsync(path);
 			if (p != null)
 			{
 				Prop = p;
@@ -1400,6 +1406,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				//Alert user
 			}
+		}
+
+		private async Task SaveModelAsync(string path)
+		{
+			var resolver = this.GetDependencyResolver();
+			var busy = resolver.Resolve<IBusyIndicatorService>();
+			busy.Show();
+			try
+			{
+				await resolver.Resolve<IPropModelPersistenceService>().SaveAsync(Prop, path);
+				FilePath = path;
+				ClearDirtyFlag();
+			}
+			catch (Exception exception)
+			{
+				resolver.Resolve<IMessageBoxService>().ShowError("The prop could not be saved.", "Prop Save Error");
+				Logging.Error(exception, "Unable to save Custom Prop {Path}", path);
+			}
+			finally { busy.Hide(); }
 		}
 
 		private bool TryValidateStateBeforeSave()
@@ -1433,7 +1458,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				bool success = await ds.GetFileAsync(modelLink.Link, targetPath);
 				if (success)
 				{
-					LoadPropFromPath(targetPath);
+					await LoadPropFromPathAsync(targetPath);
 					status = new Tuple<bool, ModelType>(true, ModelType.Prop); ;
 				}
 				else

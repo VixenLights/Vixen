@@ -1,7 +1,6 @@
 ﻿using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Common.WPFCommon.ViewModel;
-using LiteDB;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
@@ -134,7 +133,6 @@ namespace VixenModules.App.CustomPropEditor.Model
         /// Gets or sets the source bitmap displayed on the logical prop canvas.
         /// </summary>
         /// <value>The source bitmap. Assigning a bitmap initializes invalid <see cref="Width" /> and <see cref="Height" /> values from its native pixel dimensions.</value>
-        [BsonIgnore]
         public BitmapSource Image
         {
             get { return _image; }
@@ -201,10 +199,32 @@ namespace VixenModules.App.CustomPropEditor.Model
             return _rootNode.Children.SelectMany(x => x.GetLeafEnumerator());
         }
 
-        public IEnumerable<ElementModel> GetAll()
-        {
-            return _rootNode.GetNodeEnumerator().ToList();
-        }
+	    public IEnumerable<ElementModel> GetAll()
+	    {
+	        return _rootNode.GetNodeEnumerator().ToList();
+	    }
+
+		internal void Hydrate(Guid id, ElementModel rootNode, BitmapSource image, string type, string createdBy,
+			DateTime creationDate, DateTime modifiedDate, double opacity, double width, double height,
+			VendorMetadata vendorMetadata, PhysicalMetadata physicalMetadata, InformationMetadata informationMetadata)
+		{
+			if (rootNode == null) throw new ArgumentNullException(nameof(rootNode));
+			if (image == null) throw new ArgumentNullException(nameof(image));
+
+			Id = id;
+			RootNode = rootNode;
+			Type = type;
+			CreatedBy = createdBy;
+			CreationDate = creationDate;
+			ModifiedDate = modifiedDate;
+			Opacity = opacity;
+			Width = width;
+			Height = height;
+			Image = image;
+			VendorMetadata = vendorMetadata ?? new VendorMetadata();
+			PhysicalMetadata = physicalMetadata ?? new PhysicalMetadata();
+			InformationMetadata = informationMetadata ?? new InformationMetadata();
+		}
 
         #region Utilities
 

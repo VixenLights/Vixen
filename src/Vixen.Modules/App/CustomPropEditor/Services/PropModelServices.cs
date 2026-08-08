@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows.Media.Imaging;
 using Catel.Collections;
+using Catel.IoC;
 using NLog;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
@@ -57,10 +58,11 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return _prop;
 		}
 
-		public Prop LoadProp(string path)
+		public async Task<Prop> LoadPropAsync(string path, CancellationToken cancellationToken = default)
 		{
 			_models.Clear();
-			var p = PropModelPersistenceService.GetModel(path);
+			var persistence = ServiceLocator.Default.ResolveType<IPropModelPersistenceService>();
+			var p = await persistence.LoadAsync(path, cancellationToken);
 			if (p != null)
 			{
 				_prop = p;
