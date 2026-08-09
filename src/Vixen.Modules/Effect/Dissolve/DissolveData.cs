@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -28,6 +29,7 @@ namespace VixenModules.Effect.Dissolve
 		public bool DissolveMethod { get; set; }
 
 		[DataMember]
+		[ExcludeFromEffectDefault]
 		public Guid MarkCollectionId { get; set; }
 		
 		[DataMember]

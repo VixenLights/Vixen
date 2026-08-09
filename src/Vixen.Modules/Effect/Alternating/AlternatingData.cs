@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -32,6 +33,7 @@ namespace VixenModules.Effect.Alternating {
 		public AlternatingMode AlternatingMode { get; set; }
 
 		[DataMember]
+		[ExcludeFromEffectDefault]
 		public Guid MarkCollectionId { get; set; }
 
 		public AlternatingData()

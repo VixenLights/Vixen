@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Effect.Effect;
@@ -56,6 +57,7 @@ namespace VixenModules.Effect.LipSync
 		public Curve XOffsetCurve { get; set; }
 
 		[DataMember]
+		[ExcludeFromEffectDefault]
 		public Guid MarkCollectionId { get; set; }
 
 		[DataMember]
