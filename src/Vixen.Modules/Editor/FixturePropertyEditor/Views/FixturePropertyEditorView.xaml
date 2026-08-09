@@ -141,8 +141,8 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Command="{Binding Path=EditFunctionsCommand}"
-										ToolTip="Select to Edit the function associated with the channel."
-										>
+                                        CommandParameter="{Binding}"
+										ToolTip="Select to Edit the function associated with the channel.">
                                     <Image Source="{Binding Path=EditFunctionsImageSource}"/>
                                 </Button>
                             </DataTemplate>
