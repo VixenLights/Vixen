@@ -101,7 +101,7 @@ namespace VixenModules.Effect.Video
 		[Value]
 		[ProviderCategory(@"Movement", 2)]
 		[ProviderDisplayName(@"PlayBackSpeed")]
-		[ProviderDescription(@"PlayBackSpeed")]
+		[ProviderDescription(@"VideoPlayBackSpeed")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(-100, 200, 1)]
 		[PropertyOrder(2)]

@@ -1419,4 +1419,7 @@
   <data name="StateCycleOffset" xml:space="preserve">
     <value>Cycle Offset</value>
   </data>
+  <data name="PlayBackSpeed" xml:space="preserve">
+    <value>Playback Speed</value>
+  </data>
 </root>
