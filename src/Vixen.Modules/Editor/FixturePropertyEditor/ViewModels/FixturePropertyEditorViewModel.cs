@@ -26,7 +26,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			Functions = new ObservableCollection<string>();
 
 			// Create button commands
-			EditFunctionsCommand = new Command(EditFunctions);
+			EditFunctionsCommand = new Command<ChannelItemViewModel>(EditFunctions, channel => channel != null);
 			LoadSpecificationCommand = new Command(LoadSpecification);			
 
 			// Create the collection of allowable channel numbers
@@ -464,16 +464,17 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <summary>
 		/// Edits the functions associated with this fixture.
 		/// </summary>
-		private void EditFunctions()
+		private void EditFunctions(ChannelItemViewModel channelItem)
 		{	
-			// Create the function type editor window indicating which function to select
-			FunctionTypeWindowView view = new FunctionTypeWindowView(_fixtureSpecification.FunctionDefinitions, SelectedItem.Function);
+			var view = new FunctionTypeWindowView(
+				_fixtureSpecification.FunctionDefinitions,
+				channelItem.Function);
 
 			// Display the function type editor window
 			bool? result = view.ShowDialog();
 
 			// If the user selected to commit the function changes then...
-			if (result.Value)
+			if (result == true)
 			{
 				// Retrieve the function data
 				_fixtureSpecification.FunctionDefinitions = view.GetFunctionData();
