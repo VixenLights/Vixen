@@ -125,6 +125,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.lyricConverterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.papagayoImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bulkEffectMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.effectDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportEffectDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.importEffectDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.dumpEffectDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.onlineHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.vixenYouTubeChannelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1011,7 +1015,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.colorGradientEditorToolStripMenuItem,
             this.ColorCollectionsToolStripMenuItem,
             this.lipSyncMappingsToolStripMenuItem,
-            this.bulkEffectMoveToolStripMenuItem});
+            this.bulkEffectMoveToolStripMenuItem,
+            this.effectDefaultsToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
@@ -1155,7 +1160,38 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.bulkEffectMoveToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
 			this.bulkEffectMoveToolStripMenuItem.Text = "Bulk Effects Move";
 			this.bulkEffectMoveToolStripMenuItem.Click += new System.EventHandler(this.bulkEffectMoveToolStripMenuItem_Click);
-			// 
+			//
+			// effectDefaultsToolStripMenuItem
+			//
+			this.effectDefaultsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportEffectDefaultsToolStripMenuItem,
+            this.importEffectDefaultsToolStripMenuItem,
+            this.dumpEffectDefaultsToolStripMenuItem});
+			this.effectDefaultsToolStripMenuItem.Name = "effectDefaultsToolStripMenuItem";
+			this.effectDefaultsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+			this.effectDefaultsToolStripMenuItem.Text = "Effect Defaults";
+			//
+			// exportEffectDefaultsToolStripMenuItem
+			//
+			this.exportEffectDefaultsToolStripMenuItem.Name = "exportEffectDefaultsToolStripMenuItem";
+			this.exportEffectDefaultsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.exportEffectDefaultsToolStripMenuItem.Text = "Export...";
+			this.exportEffectDefaultsToolStripMenuItem.Click += new System.EventHandler(this.exportEffectDefaultsToolStripMenuItem_Click);
+			//
+			// importEffectDefaultsToolStripMenuItem
+			//
+			this.importEffectDefaultsToolStripMenuItem.Name = "importEffectDefaultsToolStripMenuItem";
+			this.importEffectDefaultsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.importEffectDefaultsToolStripMenuItem.Text = "Import...";
+			this.importEffectDefaultsToolStripMenuItem.Click += new System.EventHandler(this.importEffectDefaultsToolStripMenuItem_Click);
+			//
+			// dumpEffectDefaultsToolStripMenuItem
+			//
+			this.dumpEffectDefaultsToolStripMenuItem.Name = "dumpEffectDefaultsToolStripMenuItem";
+			this.dumpEffectDefaultsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.dumpEffectDefaultsToolStripMenuItem.Text = "Dump (Readable XML)...";
+			this.dumpEffectDefaultsToolStripMenuItem.Click += new System.EventHandler(this.dumpEffectDefaultsToolStripMenuItem_Click);
+			//
 			// helpDocumentationToolStripMenuItem
 			// 
 			this.helpDocumentationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2433,6 +2469,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem ColorCollectionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpDocumentationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem bulkEffectMoveToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem effectDefaultsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem exportEffectDefaultsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem importEffectDefaultsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem dumpEffectDefaultsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem cADStyleSelectionBoxToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem legacyCursorActiveRowToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem audioToolStripMenuItem;

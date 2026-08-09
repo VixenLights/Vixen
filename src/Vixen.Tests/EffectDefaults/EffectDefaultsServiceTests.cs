@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Runtime.Serialization;
+using System.Xml;
 using Vixen.Services.EffectDefaults;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -61,5 +62,113 @@ public sealed class EffectDefaultsServiceCapturePipelineTests
 		Assert.NotEmpty(payload);
 		Assert.Same(originalCurve, data.LevelCurve);
 		Assert.Equal(originalPoints, data.LevelCurve.Points.ToArray());
+	}
+}
+
+public sealed class EffectDefaultsServiceExportImportDiagnosticsTests
+{
+	private static EffectDefaultEntry MakeEntry(Guid typeId, string effectName, DateTime savedUtc) => new()
+	{
+		TypeId = typeId,
+		EffectName = effectName,
+		DataModelTypeName = typeof(PulseData).FullName,
+		SavedUtc = savedUtc,
+		Payload = [1, 2, 3]
+	};
+
+	[Fact]
+	public void BuildExportStore_IncludesOnlyRequestedEntries()
+	{
+		Guid pulseId = Guid.NewGuid();
+		Guid waveId = Guid.NewGuid();
+		Guid textId = Guid.NewGuid();
+		var entries = new Dictionary<Guid, EffectDefaultEntry>
+		{
+			[pulseId] = MakeEntry(pulseId, "Pulse", DateTime.UtcNow),
+			[waveId] = MakeEntry(waveId, "Wave", DateTime.UtcNow),
+			[textId] = MakeEntry(textId, "Text", DateTime.UtcNow)
+		};
+
+		EffectDefaultsStore store = EffectDefaultsService.BuildExportStore(entries, [pulseId, textId]);
+
+		Assert.Equal(2, store.Entries.Count);
+		Assert.Contains(store.Entries, entry => entry.TypeId == pulseId);
+		Assert.Contains(store.Entries, entry => entry.TypeId == textId);
+		Assert.DoesNotContain(store.Entries, entry => entry.TypeId == waveId);
+	}
+
+	[Fact]
+	public void BuildExportStore_SkipsRequestedIdsWithNoEntry()
+	{
+		var entries = new Dictionary<Guid, EffectDefaultEntry>();
+
+		EffectDefaultsStore store = EffectDefaultsService.BuildExportStore(entries, [Guid.NewGuid()]);
+
+		Assert.Empty(store.Entries);
+	}
+
+	[Fact]
+	public void MergeEntries_AddsNewAndOverwritesExisting_LeavingUntouchedEntriesAlone()
+	{
+		Guid existingId = Guid.NewGuid();
+		Guid overwrittenId = Guid.NewGuid();
+		Guid newId = Guid.NewGuid();
+
+		var existingEntry = MakeEntry(existingId, "Existing", DateTime.UtcNow.AddDays(-1));
+		var staleOverwrittenEntry = MakeEntry(overwrittenId, "StaleName", DateTime.UtcNow.AddDays(-1));
+		var entries = new Dictionary<Guid, EffectDefaultEntry>
+		{
+			[existingId] = existingEntry,
+			[overwrittenId] = staleOverwrittenEntry
+		};
+
+		var freshOverwrittenEntry = MakeEntry(overwrittenId, "FreshName", DateTime.UtcNow);
+		var newEntry = MakeEntry(newId, "New", DateTime.UtcNow);
+
+		EffectDefaultsImportResult result = EffectDefaultsService.MergeEntries(entries, [freshOverwrittenEntry, newEntry]);
+
+		Assert.Equal(1, result.Imported);
+		Assert.Equal(1, result.Overwritten);
+		Assert.Equal(3, entries.Count);
+		Assert.Same(existingEntry, entries[existingId]);
+		Assert.Same(freshOverwrittenEntry, entries[overwrittenId]);
+		Assert.Same(newEntry, entries[newId]);
+	}
+
+	[Fact]
+	public void WriteIndentedXml_ProducesIndentedXmlContainingStoreValues()
+	{
+		Guid typeId = Guid.NewGuid();
+		DateTime savedUtc = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc);
+		var store = new EffectDefaultsStore();
+		store.Entries.Add(MakeEntry(typeId, "Pulse", savedUtc));
+
+		var serializer = new DataContractSerializer(typeof(EffectDefaultsStore));
+		string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xml");
+		try
+		{
+			EffectDefaultsService.WriteIndentedXml(serializer, store, path);
+
+			string xml = File.ReadAllText(path);
+			Assert.Contains("\n  <", xml); // indented, not a single flat line
+			Assert.Contains(typeId.ToString(), xml);
+			Assert.Contains("Pulse", xml);
+			Assert.Contains("2026-01-02T03:04:05", xml);
+
+			object? deserialized;
+			using (XmlReader reader = XmlReader.Create(path))
+			{
+				deserialized = serializer.ReadObject(reader);
+			}
+			var reloaded = Assert.IsType<EffectDefaultsStore>(deserialized);
+			EffectDefaultEntry reloadedEntry = Assert.Single(reloaded.Entries);
+			Assert.Equal(typeId, reloadedEntry.TypeId);
+			Assert.Equal("Pulse", reloadedEntry.EffectName);
+			Assert.Equal(savedUtc, reloadedEntry.SavedUtc);
+		}
+		finally
+		{
+			if (File.Exists(path)) File.Delete(path);
+		}
 	}
 }

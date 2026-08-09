@@ -207,6 +207,167 @@ namespace Vixen.Services.EffectDefaults
 			}
 		}
 
+		/// <summary>
+		/// Writes the saved defaults for the given effect types to a file, in the same binary format used for the
+		/// primary store. The written entries carry their already-scrubbed payload bytes exactly as captured by
+		/// <see cref="SaveDefault"/>; nothing is re-serialized or re-scrubbed for export.
+		/// </summary>
+		/// <param name="path">The file to write. Overwritten if it already exists.</param>
+		/// <param name="effectTypeIds">The effect type <c>TypeId</c>s whose saved defaults should be exported.
+		/// Any id with no saved default is silently skipped.</param>
+		public void Export(string path, IEnumerable<Guid> effectTypeIds)
+		{
+			if (path == null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
+			if (effectTypeIds == null)
+			{
+				throw new ArgumentNullException(nameof(effectTypeIds));
+			}
+
+			EffectDefaultsStore store;
+			lock (_loadLock)
+			{
+				EnsureLoadedLocked();
+				store = BuildExportStore(_entriesByTypeId, effectTypeIds);
+			}
+
+			DataContractSerializer serializer = GetOrAddSerializer(typeof(EffectDefaultsStore));
+			byte[] bytes = WriteBinary(serializer, store);
+			File.WriteAllBytes(path, bytes);
+		}
+
+		/// <summary>
+		/// Builds the subset <see cref="EffectDefaultsStore"/> that <see cref="Export"/> writes to disk, containing
+		/// only the requested entries. Factored out from <see cref="Export"/> so it can be exercised without any
+		/// disk or singleton-store dependency.
+		/// </summary>
+		/// <param name="entries">The current entries, keyed by effect type <c>TypeId</c>.</param>
+		/// <param name="effectTypeIds">The effect type <c>TypeId</c>s to include. Any id not present in
+		/// <paramref name="entries"/> is silently skipped.</param>
+		/// <returns>A new store containing only the requested entries.</returns>
+		internal static EffectDefaultsStore BuildExportStore(IReadOnlyDictionary<Guid, EffectDefaultEntry> entries, IEnumerable<Guid> effectTypeIds)
+		{
+			var store = new EffectDefaultsStore();
+			foreach (Guid typeId in effectTypeIds)
+			{
+				if (entries.TryGetValue(typeId, out EffectDefaultEntry entry))
+				{
+					store.Entries.Add(entry);
+				}
+			}
+			return store;
+		}
+
+		/// <summary>
+		/// Reads a file previously written by <see cref="Export"/> and merges its entries into the current store,
+		/// then persists the merged store to disk. Every entry in the imported file is upserted by
+		/// <c>TypeId</c>; entries already in the current store that are not present in the imported file are left
+		/// untouched.
+		/// </summary>
+		/// <param name="path">The file to import, previously written by <see cref="Export"/>.</param>
+		/// <param name="mode">The merge strategy to use. Only <see cref="ImportMode.Overwrite"/> is currently
+		/// supported.</param>
+		/// <returns>How many entries were newly added versus how many overwrote an existing entry.</returns>
+		public EffectDefaultsImportResult Import(string path, ImportMode mode)
+		{
+			if (path == null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
+			if (mode != ImportMode.Overwrite)
+			{
+				throw new ArgumentOutOfRangeException(nameof(mode), mode, "Only ImportMode.Overwrite is currently supported.");
+			}
+
+			byte[] bytes = File.ReadAllBytes(path);
+			DataContractSerializer serializer = GetOrAddSerializer(typeof(EffectDefaultsStore));
+			var importedStore = (EffectDefaultsStore)ReadBinary(serializer, bytes);
+
+			EffectDefaultsImportResult result;
+
+			lock (_loadLock)
+			{
+				EnsureLoadedLocked();
+				result = MergeEntries(_entriesByTypeId, importedStore.Entries);
+				PersistLocked();
+			}
+
+			Reload();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Upserts each entry from an imported file into the current entries, by <c>TypeId</c>. Factored out from
+		/// <see cref="Import"/> so the merge counting logic can be exercised without any disk or singleton-store
+		/// dependency.
+		/// </summary>
+		/// <param name="entries">The current entries, keyed by effect type <c>TypeId</c>. Mutated in place.</param>
+		/// <param name="importedEntries">The entries read from the imported file.</param>
+		/// <returns>How many entries were newly added versus how many overwrote an existing entry.</returns>
+		internal static EffectDefaultsImportResult MergeEntries(Dictionary<Guid, EffectDefaultEntry> entries, IEnumerable<EffectDefaultEntry> importedEntries)
+		{
+			var result = new EffectDefaultsImportResult();
+			foreach (EffectDefaultEntry entry in importedEntries)
+			{
+				if (entries.ContainsKey(entry.TypeId))
+				{
+					result.Overwritten++;
+				}
+				else
+				{
+					result.Imported++;
+				}
+
+				entries[entry.TypeId] = entry;
+			}
+			return result;
+		}
+
+		/// <summary>
+		/// Writes the current store to a file as readable, indented XML, for troubleshooting. The dump is produced
+		/// from the exact same in-memory <see cref="EffectDefaultsStore"/> object graph used for the binary store
+		/// file, through a plain <see cref="XmlWriter"/> instead of a binary one, so it can never drift out of
+		/// sync with what is actually stored.
+		/// </summary>
+		/// <param name="path">The file to write. Overwritten if it already exists.</param>
+		public void WriteDiagnosticDump(string path)
+		{
+			if (path == null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
+			EffectDefaultsStore store;
+			lock (_loadLock)
+			{
+				EnsureLoadedLocked();
+				store = new EffectDefaultsStore { Entries = _entriesByTypeId.Values.ToList() };
+			}
+
+			DataContractSerializer serializer = GetOrAddSerializer(typeof(EffectDefaultsStore));
+			WriteIndentedXml(serializer, store, path);
+		}
+
+		/// <summary>
+		/// Serializes <paramref name="value"/> to <paramref name="path"/> as indented XML. Factored out from
+		/// <see cref="WriteDiagnosticDump"/> so it can be exercised without any disk-path or singleton-store
+		/// dependency beyond the destination file itself.
+		/// </summary>
+		/// <param name="serializer">A <see cref="DataContractSerializer"/> for <paramref name="value"/>'s runtime
+		/// type.</param>
+		/// <param name="value">The object graph to serialize.</param>
+		/// <param name="path">The file to write. Overwritten if it already exists.</param>
+		internal static void WriteIndentedXml(DataContractSerializer serializer, object value, string path)
+		{
+			using XmlWriter writer = XmlWriter.Create(path, new XmlWriterSettings { Indent = true });
+			serializer.WriteObject(writer, value);
+		}
+
 		// Callers must hold _loadLock.
 		private void EnsureLoadedLocked()
 		{

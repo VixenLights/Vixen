@@ -41,5 +41,15 @@ namespace Vixen.Services.EffectDefaults
 		/// <c>Vixen.Sys.Modules.GetDescriptorById</c>.
 		/// </summary>
 		public bool ModuleInstalled { get; }
+
+		/// <summary>
+		/// Returns a short, human-readable description of this summary (the effect name and saved date), for
+		/// display in lists such as an export selection dialog.
+		/// </summary>
+		/// <returns>A string of the form "EffectName (saved yyyy-MM-dd HH:mm)".</returns>
+		public override string ToString()
+		{
+			return $"{EffectName} (saved {SavedUtc:yyyy-MM-dd HH:mm})";
+		}
 	}
 }
