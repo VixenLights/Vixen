@@ -21,8 +21,7 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		public FunctionTypeViewModel(Tuple<List<FixtureFunction>, string, Action> functions)
 		{
 			// Create the function item view models and select the specified function
-			InitialSelectedFunction = InitializeChildViewModels(functions.Item1, functions.Item2);
-			SelectedItem = InitialSelectedFunction;
+			SelectedItem = InitializeChildViewModels(functions.Item1, functions.Item2);
 
 			// Store off the delegate to refresh the command enable / disable status
 			RaiseCanExecuteChanged = functions.Item3;
@@ -256,15 +255,6 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 			}
 		}
 
-		/// <summary>
-		/// The function to initially select on view initialization.
-		/// </summary>
-		public FunctionItemViewModel InitialSelectedFunction
-		{
-			get;
-			set;
-		}
-
 		#endregion
 
 		#region Public Methods
@@ -419,10 +409,6 @@ namespace VixenModules.Editor.FixturePropertyEditor.ViewModels
 		/// <param name="item"></param>
 		public void SelectFunctionItem(FunctionItemViewModel item)
         {
-			// Clear out initial selected item as if we made it this far we
-			// have already processed the initial selected item or are processing it.
-			InitialSelectedFunction = null;
-
 			// If the previously selected function has changed then...
 			if (PreviouslySelectedItem != item)
 			{

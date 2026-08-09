@@ -56,6 +56,7 @@
 				    RowHeaderWidth="0" Grid.Row="0" 
 				    Grid.Column="0" 
 				    CanUserAddRows="False"
+				    SelectionUnit="FullRow"
 				    ItemsSource="{Binding Items}" 
 			        SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"
 			        SelectionChanged="SelectionChanged"                    
@@ -125,11 +126,11 @@
 
 
 				<WrapPanel Margin="5,0,0,0" Grid.Row="1">
-					<Button Name="Add" Width="40" Height="40" Command="{Binding AddCommand}" Margin="0,2,2,2"
+					<Button Name="Add" Width="30" Height="30" Command="{Binding AddCommand}" Margin="0,2,2,2"
 							ToolTip="Select to Add a new function.">
 						<Image Source="/Resources;component/Add.png"/>
 					</Button>
-					<Button Name="Remove" Width="40" Height="40" Command="{Binding DeleteCommand}" Margin="0,2,2,2"
+					<Button Name="Remove" Width="30" Height="30" Command="{Binding DeleteCommand}" Margin="0,2,2,2"
 							ToolTip="Select to Remove the selected function.">
 						<Image Source="/Resources;component/Delete.png"></Image>
 					</Button>

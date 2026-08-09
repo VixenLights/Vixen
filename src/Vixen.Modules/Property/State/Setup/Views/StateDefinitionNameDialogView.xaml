@@ -23,7 +23,7 @@
 		</ResourceDictionary>
 	</Window.Resources>
 
-	<DockPanel>
+	<DockPanel Background="{DynamicResource BackColorBrush}">
 		<WrapPanel DockPanel.Dock="Bottom"
 				   Margin="0,8,8,8"
 				   Style="{StaticResource RowButtonRightContainerStyle}">

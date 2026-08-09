@@ -23,11 +23,7 @@
         <Setter Property="Background" Value="{DynamicResource BackColorBrush}" />
     </Style>
     
-    <Style TargetType="{x:Type DockPanel}">
-        <Setter Property="Background" Value="{DynamicResource BackColorBrush}" />
-    </Style>
-
-	<Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="{x:Type DataGrid}">
+    <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="{x:Type DataGrid}">
 	    <Setter Property="Background" Value="{DynamicResource BackColorBrush}"/>
     </Style>
 
