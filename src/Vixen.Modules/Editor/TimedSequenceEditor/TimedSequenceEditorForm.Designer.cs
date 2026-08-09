@@ -160,7 +160,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.alignmentToolStripButton_End = new System.Windows.Forms.ToolStripButton();
 			this.alignmentToolStripButton_Both = new System.Windows.Forms.ToolStripButton();
 			this.alignmentToolStripButton_Distribute = new System.Windows.Forms.ToolStripButton();
-			this.toolStripEffects = new System.Windows.Forms.ToolStrip();
+			this.toolStripEffects = new Common.Controls.ToolStripEx();
 			this.contextMenuStripEffect = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.effectGroupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.basicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1512,6 +1512,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripEffects
 			// 
 			this.toolStripEffects.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.toolStripEffects.ClickThrough = true;
 			this.toolStripEffects.ContextMenuStrip = this.contextMenuStripEffect;
 			this.toolStripEffects.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStripEffects.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -2454,7 +2455,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemColorLibrary;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemGradientLibrary;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCurveLibrary;
-		private System.Windows.Forms.ToolStrip toolStripEffects;
+		private Common.Controls.ToolStripEx toolStripEffects;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripEffect;
 		private System.Windows.Forms.ToolStripMenuItem effectGroupsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem basicToolStripMenuItem;
