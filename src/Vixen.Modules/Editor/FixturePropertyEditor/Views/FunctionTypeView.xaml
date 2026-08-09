@@ -56,6 +56,7 @@
 				    RowHeaderWidth="0" Grid.Row="0" 
 				    Grid.Column="0" 
 				    CanUserAddRows="False"
+				    SelectionUnit="FullRow"
 				    ItemsSource="{Binding Items}" 
 			        SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"
 			        SelectionChanged="SelectionChanged"                    

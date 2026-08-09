@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 using VixenModules.Editor.FixturePropertyEditor.ViewModels;
 
 namespace VixenModules.Editor.FixturePropertyEditor.Views
@@ -21,14 +22,66 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 		public FunctionTypeView()
 		{
 			InitializeComponent();
+			Loaded += FunctionTypeView_Loaded;
 
 			Width = 1100;
-			Height = 500;					
+			Height = 500;
 		}
+
+		#endregion
+
+		#region Private Fields
+
+		/// <summary>
+		/// View model whose initial selection has been displayed.
+		/// </summary>
+		private FunctionTypeViewModel _initializedViewModel;
 
 		#endregion
 		
 		#region Private Methods
+
+		/// <summary>
+		/// Initializes the selected function after the view has loaded.
+		/// </summary>
+		/// <param name="sender">The event source.</param>
+		/// <param name="e">The event data.</param>
+		private void FunctionTypeView_Loaded(object sender, RoutedEventArgs e)
+		{
+			InitializeSelectedFunction();
+		}
+
+		/// <summary>
+		/// Initializes the detail area for the current function after Catel has attached the view model and WPF has loaded the view.
+		/// </summary>
+		private void InitializeSelectedFunction()
+		{
+			if (!IsLoaded || ViewModel is not FunctionTypeViewModel viewModel || ReferenceEquals(_initializedViewModel, viewModel))
+			{
+				return;
+			}
+
+			Dispatcher.InvokeAsync(() =>
+			{
+				if (!IsLoaded ||
+					ViewModel is not FunctionTypeViewModel currentViewModel ||
+					!ReferenceEquals(viewModel, currentViewModel) ||
+					ReferenceEquals(_initializedViewModel, currentViewModel) ||
+					currentViewModel.SelectedItem == null)
+				{
+					return;
+				}
+
+				currentViewModel.SelectFunctionItem(currentViewModel.SelectedItem);
+
+				if (functionGrid.SelectedItem != currentViewModel.SelectedItem)
+				{
+					functionGrid.SelectedItem = currentViewModel.SelectedItem;
+				}
+
+				_initializedViewModel = currentViewModel;
+			}, DispatcherPriority.Loaded);
+		}
 								
 		/// <summary>
 		/// Event handler for when selected function change is attempted.
@@ -50,14 +103,6 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 				obj.SelectedItem == null)
             {
 				// Ignore the event
-				return;
-            }
-			
-			// By default the DataGrid selects the first row 			
-			if (vm.InitialSelectedFunction != null && 
-				vm.InitialSelectedFunction != obj.SelectedItem)				 
-            {
-				// Ignore this selection
 				return;
             }
 			
@@ -109,6 +154,16 @@ namespace VixenModules.Editor.FixturePropertyEditor.Views
 					RestorePreviouslySelectedFunction();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Responds when Catel attaches a different view model.
+		/// </summary>
+		protected override void OnViewModelChanged()
+		{
+			base.OnViewModelChanged();
+
+			InitializeSelectedFunction();
 		}
 
 		/// <summary>
