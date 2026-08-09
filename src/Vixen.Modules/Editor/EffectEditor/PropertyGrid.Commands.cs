@@ -99,7 +99,7 @@ namespace VixenModules.Editor.EffectEditor
 
 			var messageBoxService = ServiceLocator.Default.ResolveType<IMessageBoxService>();
 			var confirmResult = messageBoxService.GetUserConfirmation(
-				"Remove the saved default for this effect type?", "Reset Effect Default");
+				$"Remove the saved default for {effect.Descriptor.TypeName}?", "Reset Effect Default");
 
 			// IMessageBoxService.GetUserConfirmation shows a Yes/No dialog whose "confirm" button
 			// reports MessageResult.OK (see MessageBoxForm.Designer.cs); it never reports Cancel.
