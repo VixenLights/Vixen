@@ -155,11 +155,11 @@
         </DockPanel>
 
         <WrapPanel Margin="10,5,5,0" Grid.Row="2">
-            <Button Name="Add" Width="40" Height="40" Margin="0,2,2,0" Command="{Binding AddCommand}">
+            <Button Name="Add" Width="30" Height="30" Margin="0,2,2,0" Command="{Binding AddCommand}">
                 <Image Source="/Resources;component/Add.png"
 			     ToolTip="Select to Add a new channel."/>
             </Button>
-            <Button Name="Remove" Width="40" Height="40" Margin="2,2,2,0" Command="{Binding DeleteCommand}">
+            <Button Name="Remove" Width="30" Height="30" Margin="2,2,2,0" Command="{Binding DeleteCommand}">
                 <Image Source="/Resources;component/Delete.png"
 					   ToolTip="Select to Remove the selected channel."></Image>
             </Button>
