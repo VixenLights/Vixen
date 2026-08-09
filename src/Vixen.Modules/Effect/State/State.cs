@@ -443,7 +443,7 @@ namespace VixenModules.Effect.State
 		[Value]
 		[ProviderCategory("EffectVisual", 10)]
 		[ProviderDisplayName(@"EffectVisual")]
-		[ProviderDescription(@"EffectVisual.")]
+		[ProviderDescription(@"EffectVisual")]
 		[PropertyOrder(3)]
 		public bool ShowEffectVisual
 		{
