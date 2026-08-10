@@ -16,7 +16,7 @@ The behavior is observable by adding a Video effect, leaving Filename empty, and
 - [x] (2026-08-10 08:56 -05:00) Updated VIX-3981 with the confirmed diagnosis, scope, acceptance criteria, and validation plan. The issue remains In Progress; JIRA returned update timestamp `2026-08-10T08:56:49.471-0500`.
 - [x] (2026-08-10 09:02 -05:00) Added `VideoCacheCleanup`, internal test visibility, and seven isolated cache-cleanup regression tests. The Video module build and `Vixen_Tests` build succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped.
 - [x] (2026-08-10 09:05 -05:00) Routed `Video.Removing()` and `Video.Dispose(bool)` through the guarded helper. The Video module build and `Vixen_Tests` build succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped. Manual sequencer validation remains Milestone 4.
-- [ ] Add final VIX-3981 validation results and any scope adjustments as a JIRA comment.
+- [x] (2026-08-10 09:17 -05:00) Added the final VIX-3981 validation comment (ID 40349). It records the successful build/test results, manual no-crash reproduction, configured-cache cleanup, and intentional retention of the shared cache root. No scope adjustment or status transition was needed.
 
 ## Surprises & Discoveries
 
@@ -37,6 +37,9 @@ The behavior is observable by adding a Video effect, leaving Filename empty, and
 
 - Observation: a non-copy-local Video project reference compiles the test assembly but prevents `dotnet test` from loading `Module.Effect.Video`.
   Evidence: the initial test run built successfully but all seven `VideoCacheCleanupTests` failed with `FileNotFoundException` for `Module.Effect.Video`. The test project’s established project references rely on the default copy-local behavior, so the Video reference must follow that local convention.
+
+- Observation: Video cache cleanup retains the top-level `%TEMP%\\Vixen\\VideoEffect` directory after a configured effect is closed.
+  Evidence: manual validation confirmed that cache artifacts are cleaned while the shared root remains. This is expected because the root is the reusable container for settings-hash subdirectories and pairing files.
 
 ## Decision Log
 
@@ -64,9 +67,13 @@ The behavior is observable by adding a Video effect, leaving Filename empty, and
   Rationale: the helper already has an isolated, deterministic filesystem contract. Wrapping that operation in the existing NLog-based disposal error handling prevents cleanup maintenance from terminating disposal without adding another production abstraction.
   Date/Author: 2026-08-10 / Codex
 
+- Decision: Retain the top-level Video cache root after cleanup.
+  Rationale: it is a shared, reusable container rather than an effect-owned cache directory. Deleting only settings-hash children and pairing files preserves the VIX-3625 cache model and avoids treating the root as a deletion target.
+  Date/Author: 2026-08-10 / Codex
+
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete: VIX-3981 now preserves the original report and adds the confirmed diagnosis, acceptance criteria, and validation plan. The internal cache-cleanup boundary has seven isolated xUnit regression tests, and `Video.Removing()` / `Video.Dispose(bool)` now use it. The helper makes an absent cache root a no-op and refuses an empty or root-resolving settings key, so an unconfigured Video effect cannot delete the shared cache root. The Video module build and full `Vixen_Tests` build succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped. Manual reproduction and the final JIRA validation comment remain pending Milestone 4.
+All milestones are complete. VIX-3981 now has a guarded cache-cleanup boundary, seven isolated xUnit tests, and lifecycle integration in `Video.Removing()` / `Video.Dispose(bool)`. The Video module build and full `Vixen_Tests` build succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped. Manual testing confirmed that an empty-Filename Video effect no longer crashes the sequencer on close, and that a configured Video effect cleans cache artifacts while retaining the intended shared root. Final evidence was added to VIX-3981 comment 40349; the issue remains In Progress for normal workflow handling.
 
 ## Context and Orientation
 
@@ -251,3 +258,5 @@ Revision note (2026-08-10): During Milestone 2 validation, replaced the initial 
 Revision note (2026-08-10): Completed Milestone 2. The helper is intentionally not called by `Video.cs` until Milestone 3; the new tests validate its filesystem boundary independently. The module build and complete test suite passed with 683 tests.
 
 Revision note (2026-08-10): Completed Milestone 3. `Removing()` now handles an absent cache root safely, and `Dispose(bool)` deletes only a validated settings-hash child directory before invoking guarded stale-cache cleanup. Module and full-test validation passed; manual validation remains required.
+
+Revision note (2026-08-10): Completed Milestone 4. Manual validation confirmed the crash is fixed and configured cache cleanup works; the retained top-level cache root is intentional. Added final validation evidence to VIX-3981 comment 40349 without changing issue status.
