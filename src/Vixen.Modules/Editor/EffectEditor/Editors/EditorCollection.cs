@@ -38,6 +38,10 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		{
 			{typeof (bool), new TypeEditor(typeof (bool), EditorKeys.BooleanEditorKey)},
 			{KnownTypes.Wpf.Integer, new TypeEditor(KnownTypes.Wpf.Integer, EditorKeys.IntegerEditorKey)},
+			{KnownTypes.Wpf.Byte, new TypeEditor(KnownTypes.Wpf.Byte, EditorKeys.IntegerEditorKey)},
+			{KnownTypes.Wpf.UShort, new TypeEditor(KnownTypes.Wpf.UShort, EditorKeys.IntegerEditorKey)},
+			{KnownTypes.Wpf.UInt, new TypeEditor(KnownTypes.Wpf.UInt, EditorKeys.IntegerEditorKey)},
+			{KnownTypes.Wpf.ULong, new TypeEditor(KnownTypes.Wpf.ULong, EditorKeys.IntegerEditorKey)},
 			{KnownTypes.Wpf.Double, new TypeEditor(KnownTypes.Wpf.Double, EditorKeys.DoubleEditorKey)},
 			{KnownTypes.Vixen.Color, new ColorTypeEditor()},
 			{KnownTypes.Vixen.Curve, new CurveEditor()},
