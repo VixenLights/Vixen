@@ -1167,13 +1167,15 @@ namespace VixenModules.Effect.Video
 			return ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
 		}
 
+		/// <summary>
+		/// Removes cache pairing files associated with this effect instance.
+		/// </summary>
+		/// <remarks>
+		/// Does not create the shared Video cache root when this effect has not processed a video.
+		/// </remarks>
 		public override void Removing()
 		{
-			// If the effect was deleted, remove the pairing file(s), Dispose will handle the rest
-			foreach (string f in Directory.EnumerateFiles(TempPath, $"{InstanceId}.*", SearchOption.TopDirectoryOnly))
-			{
-				File.Delete(f);
-			}
+			VideoCacheCleanup.RemovePairingFiles(TempPath, InstanceId);
 		}
 
 		protected override void Dispose(bool disposing)
@@ -1183,7 +1185,7 @@ namespace VixenModules.Effect.Video
 				Removing();
 				try
 				{
-					Directory.Delete(_tempFilePath, true);
+					VideoCacheCleanup.DeleteResolvedCacheDirectory(TempPath, _settingsHash);
 				}
 				catch (Exception e)
 				{
@@ -1192,27 +1194,13 @@ namespace VixenModules.Effect.Video
 			}
 
 			// Check the Video Effect cache for unneeded folders
-			List<string> dirsToDelete = [.. Directory.EnumerateDirectories(TempPath, "*", SearchOption.TopDirectoryOnly)];
-
-			foreach (string f in Directory.EnumerateFiles(TempPath, "*", SearchOption.TopDirectoryOnly))
+			try
 			{
-				string dirName = Path.Combine(TempPath, Path.GetExtension(f)[1..]);
-				if (Directory.Exists(dirName))
-				{
-					dirsToDelete.Remove(dirName);
-				}
+				VideoCacheCleanup.RemoveUnpairedCacheDirectories(TempPath);
 			}
-
-			foreach (string d in dirsToDelete)
+			catch (Exception e)
 			{
-				try
-				{
-					Directory.Delete(d, true);
-				}
-				catch (Exception e)
-				{
-					Logging.Error(e, $"Unable to delete {d}");
-				}
+				Logging.Error(e, "Unable to remove unpaired Video effect cache directories.");
 			}
 
 			base.Dispose(disposing);

@@ -15,7 +15,7 @@ The behavior is observable by adding a Video effect, leaving Filename empty, and
 - [x] (2026-08-10 10:00 -05:00) Wrote this ExecPlan; no production or test source has been changed by this planning work.
 - [x] (2026-08-10 08:56 -05:00) Updated VIX-3981 with the confirmed diagnosis, scope, acceptance criteria, and validation plan. The issue remains In Progress; JIRA returned update timestamp `2026-08-10T08:56:49.471-0500`.
 - [x] (2026-08-10 09:02 -05:00) Added `VideoCacheCleanup`, internal test visibility, and seven isolated cache-cleanup regression tests. The Video module build and `Vixen_Tests` build succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped.
-- [ ] Implement the guarded Video cache cleanup and run module, test-target, and manual validation.
+- [x] (2026-08-10 09:05 -05:00) Routed `Video.Removing()` and `Video.Dispose(bool)` through the guarded helper. The Video module build and `Vixen_Tests` build succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped. Manual sequencer validation remains Milestone 4.
 - [ ] Add final VIX-3981 validation results and any scope adjustments as a JIRA comment.
 
 ## Surprises & Discoveries
@@ -60,9 +60,13 @@ The behavior is observable by adding a Video effect, leaving Filename empty, and
   Rationale: the test runner loads assemblies from `src/Vixen.Tests/bin/Release`; a non-copy-local Video module cannot be found there. This follows the existing test-project reference pattern and permits the isolated regression tests to execute.
   Date/Author: 2026-08-10 / Codex
 
+- Decision: Keep the helper responsible for deleting unpaired cache directories and have `Video.Dispose(bool)` log any cleanup failure.
+  Rationale: the helper already has an isolated, deterministic filesystem contract. Wrapping that operation in the existing NLog-based disposal error handling prevents cleanup maintenance from terminating disposal without adding another production abstraction.
+  Date/Author: 2026-08-10 / Codex
+
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete: VIX-3981 now preserves the original report and adds the confirmed diagnosis, acceptance criteria, and validation plan. The internal cache-cleanup boundary has seven isolated xUnit regression tests. `msbuild src/Vixen.Modules/Effect/Video/Video.csproj -m -restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -v:m` and the full `Vixen_Tests` build both succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped. The Video lifecycle has not yet been changed to use the helper, so manual reproduction and final JIRA validation remain pending Milestones 3 and 4.
+Milestones 1 through 3 are complete: VIX-3981 now preserves the original report and adds the confirmed diagnosis, acceptance criteria, and validation plan. The internal cache-cleanup boundary has seven isolated xUnit regression tests, and `Video.Removing()` / `Video.Dispose(bool)` now use it. The helper makes an absent cache root a no-op and refuses an empty or root-resolving settings key, so an unconfigured Video effect cannot delete the shared cache root. The Video module build and full `Vixen_Tests` build succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped. Manual reproduction and the final JIRA validation comment remain pending Milestone 4.
 
 ## Context and Orientation
 
@@ -245,3 +249,5 @@ Revision note (2026-08-10): Completed Milestone 1 by updating VIX-3981’s descr
 Revision note (2026-08-10): During Milestone 2 validation, replaced the initial non-copy-local Video test-project reference with the project’s established reference style because `dotnet test` could not load `Module.Effect.Video` otherwise.
 
 Revision note (2026-08-10): Completed Milestone 2. The helper is intentionally not called by `Video.cs` until Milestone 3; the new tests validate its filesystem boundary independently. The module build and complete test suite passed with 683 tests.
+
+Revision note (2026-08-10): Completed Milestone 3. `Removing()` now handles an absent cache root safely, and `Dispose(bool)` deletes only a validated settings-hash child directory before invoking guarded stale-cache cleanup. Module and full-test validation passed; manual validation remains required.
