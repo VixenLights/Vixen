@@ -295,7 +295,7 @@
     <value>Automatically sets the scaling to match the grid size.</value>
   </data>
   <data name="Setup" xml:space="preserve">
-    <value />
+    <value>The speed at which the video plays. -100 to 200 is the range.</value>
   </data>
   <data name="Show3D" xml:space="preserve">
     <value>Adds a 3D effect.</value>
@@ -1546,6 +1546,9 @@
     <value>Controls the number of times the pattern repeats over the timespan.</value>
   </data>
   <data name="StateCycleOffset" xml:space="preserve">
-    <value>Sets the number of Cycle timing slots to skip before the sequence begins.</value>
+    <value>Sets the number of State Item timing slots to skip to determine the starting State Item in the cycle.</value>
+  </data>
+  <data name="VideoPlayBackSpeed" xml:space="preserve">
+    <value>The speed which the Video plays. The range is -100 to 200 with 0 being normal speed. Negative values are slower and positve values are faster.</value>
   </data>
 </root>
