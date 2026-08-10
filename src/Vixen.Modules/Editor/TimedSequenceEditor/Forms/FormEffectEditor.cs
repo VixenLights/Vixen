@@ -13,6 +13,8 @@ using Element = Common.Controls.Timeline.Element;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using PropertyValueChangedEventArgs = VixenModules.Editor.EffectEditor.PropertyValueChangedEventArgs;
 using Timer = System.Timers.Timer;
+using WpfTextBox = System.Windows.Controls.TextBox;
+using WpfKeyboardFocusChangedEventArgs = System.Windows.Input.KeyboardFocusChangedEventArgs;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -26,6 +28,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private readonly EffectPropertyEditorGrid _effectPropertyEditorGridEffectEffectPropertiesEditor;
 		private bool _previewState;
 		private ElementHost host;
+		private WpfTextBox _activeTextBox;
 
 		private readonly DispatcherTimer _selectionChangeBuffer;
 
@@ -48,7 +51,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// Establish automation to intercept quick keys meant for the Timeline window
 			host.Child.KeyDown += Form_EffectEditorKeyDown;
+			host.Child.PreviewGotKeyboardFocus += EffectPropertyEditorPreviewGotKeyboardFocus;
+			host.Child.LostKeyboardFocus += EffectPropertyEditorLostKeyboardFocus;
 			host.Enter += Form_EffectEditorEnter;
+			host.Leave += Form_EffectEditorLeave;
 
 			_selectionChangeBuffer = new DispatcherTimer
 			{
@@ -100,6 +106,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				_effectPropertyEditorGridEffectEffectPropertiesEditor.PropertyValueChanged -= EffectPropertyEditorValueChanged;
 				_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewChanged -= EditorPreviewStateChanged;
+				_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewGotKeyboardFocus -= EffectPropertyEditorPreviewGotKeyboardFocus;
+				_effectPropertyEditorGridEffectEffectPropertiesEditor.LostKeyboardFocus -= EffectPropertyEditorLostKeyboardFocus;
+			}
+
+			if (host != null)
+			{
+				host.Leave -= Form_EffectEditorLeave;
 			}
 			
 			_previewLoopTimer.Elapsed -= PreviewLoopTimerOnElapsed;
@@ -162,6 +175,38 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void Form_EffectEditorEnter(object sender, EventArgs e)
 		{
 			host.Child.Focus();
+		}
+
+		private void Form_EffectEditorLeave(object sender, EventArgs e)
+		{
+			CommitTextBoxValue(_activeTextBox);
+			_activeTextBox = null;
+		}
+
+		private void EffectPropertyEditorPreviewGotKeyboardFocus(object sender, WpfKeyboardFocusChangedEventArgs e)
+		{
+			_activeTextBox = e.NewFocus as WpfTextBox;
+		}
+
+		private void EffectPropertyEditorLostKeyboardFocus(object sender, WpfKeyboardFocusChangedEventArgs e)
+		{
+			var textBox = e.OldFocus as WpfTextBox;
+			CommitTextBoxValue(textBox);
+
+			if (ReferenceEquals(_activeTextBox, textBox))
+			{
+				_activeTextBox = null;
+			}
+		}
+
+		private static void CommitTextBoxValue(WpfTextBox textBox)
+		{
+			if (textBox == null)
+			{
+				return;
+			}
+
+			textBox.GetBindingExpression(WpfTextBox.TextProperty)?.UpdateSource();
 		}
 
 		/// <summary>

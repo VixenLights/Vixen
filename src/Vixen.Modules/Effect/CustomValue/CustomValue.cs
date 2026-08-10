@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.Serialization;
 using NLog;
+using Vixen.Attributes;
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -272,6 +273,7 @@ namespace VixenModules.Effect.CustomValue
 		[ProviderCategory(@"Config")]
 		[DisplayName(@"Value")]
 		[Description(@"Sets the value.")]
+		[NumberRange(byte.MinValue, byte.MaxValue, 1)]
 		public byte Value8Bit
 		{
 			get { return _data.Value8Bit; }
@@ -287,6 +289,7 @@ namespace VixenModules.Effect.CustomValue
 		[ProviderCategory(@"Config")]
 		[DisplayName(@"Value")]
 		[Description(@"Sets the value.")]
+		[NumberRange(ushort.MinValue, ushort.MaxValue, 1)]
 		public ushort Value16Bit
 		{
 			get { return _data.Value16Bit; }
@@ -302,6 +305,7 @@ namespace VixenModules.Effect.CustomValue
 		[ProviderCategory(@"Config")]
 		[DisplayName(@"Value")]
 		[Description(@"Sets the value.")]
+		[NumberRange(uint.MinValue, uint.MaxValue, 1)]
 		public uint Value32Bit
 		{
 			get { return _data.Value32Bit; }
@@ -317,6 +321,7 @@ namespace VixenModules.Effect.CustomValue
 		[ProviderCategory(@"Config")]
 		[DisplayName(@"Value")]
 		[Description(@"Sets the value.")]
+		[NumberRange(ulong.MinValue, ulong.MaxValue, 1)]
 		public ulong Value64Bit
 		{
 			get { return _data.Value64Bit; }

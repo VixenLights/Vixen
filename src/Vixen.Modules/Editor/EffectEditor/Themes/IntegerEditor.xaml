@@ -10,7 +10,7 @@
 				<ControlTemplate TargetType="{x:Type controls:IntegerEditor}">
 					<StackPanel>
 						<TextBox x:Name="textboxEditor" 
-						         Text="{Binding Path=Value, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
+						         Text="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
 								 utils:TextBoxExtender.CommitOnEnter="true"
 								 utils:TextBoxExtender.RollbackOnEscape="true"
 								 utils:TextBoxExtender.CommitOnTyping="false"/>

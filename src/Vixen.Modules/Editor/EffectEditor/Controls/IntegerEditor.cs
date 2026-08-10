@@ -15,6 +15,7 @@
  */
 
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,10 +34,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private Point _dragStartPoint;
 		private Point _lastDragPoint;
 
-		private int _changeValue;
-		private double _changeOffset;
+		private decimal _changeValue;
+		private decimal _changeOffset;
 		private bool _isMouseDown;
-		private int _holdValue ;
+		private bool _isUpdatingText;
+		private decimal _holdValue;
+		private Type _valueType = typeof(int);
 
 		private const double DragTolerance = 2.0;
 
@@ -101,38 +104,44 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		/// <summary>
 		/// Identifies the <see cref="Value"/> dependency property.
 		/// </summary>
-		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof (int), ThisType,
-			new PropertyMetadata(0, ValueChanged));
+		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(object), ThisType,
+			new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, ValueChanged, CoerceValue));
+
+		/// <summary>
+		/// Identifies the <see cref="Text"/> dependency property.
+		/// </summary>
+		public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), ThisType,
+			new FrameworkPropertyMetadata("0", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, TextChanged));
 
 		/// <summary>
 		/// Identifies the <see cref="SmallChange"/> dependency property.
 		/// </summary>
 		public static readonly DependencyProperty SmallChangeProperty = DependencyProperty.Register("SmallChange",
-			typeof (int), ThisType, new PropertyMetadata(1));
+			typeof(double), ThisType, new PropertyMetadata(1.0));
 
 		/// <summary>
 		/// Identifies the <see cref="LargeChange"/> dependency property.
 		/// </summary>
 		public static readonly DependencyProperty LargeChangeProperty = DependencyProperty.Register("LargeChange",
-			typeof (int), ThisType, new PropertyMetadata(1));
+			typeof(double), ThisType, new PropertyMetadata(1.0));
 
 		/// <summary>
 		/// Identifies the <see cref="DefaultChange"/> dependency property.
 		/// </summary>
 		public static readonly DependencyProperty DefaultChangeProperty = DependencyProperty.Register("DefaultChange",
-			typeof (int), ThisType, new PropertyMetadata(1));
+			typeof(double), ThisType, new PropertyMetadata(1.0));
 
 		/// <summary>
 		/// Identifies the <see cref="Minimum"/> dependency property.
 		/// </summary>
-		public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register("Minimum", typeof (int),
-			ThisType, new PropertyMetadata(0, OnMinimumChanged));
+		public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register("Minimum", typeof(double),
+			ThisType, new PropertyMetadata(0.0, OnMinimumChanged));
 
 		/// <summary>
 		/// Identifies the <see cref="Maximum"/> dependency property.
 		/// </summary>
-		public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register("Maximum", typeof (int),
-			ThisType, new PropertyMetadata(int.MaxValue, OnMaximumChanged));
+		public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register("Maximum", typeof(double),
+			ThisType, new PropertyMetadata(double.MaxValue, OnMaximumChanged));
 
 		/// <summary>
 		/// Identifies the <see cref="MaxPrecision"/> dependency property.
@@ -168,7 +177,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			var ve = (IntegerEditor) sender;
 
-			ve._changeValue = ve.Value;
+			ve._changeValue = Convert.ToDecimal(ve.Value, CultureInfo.CurrentCulture);
 			ve._changeOffset = 0;
 			ve.CalculateValue(ve.DefaultChange);
 		}
@@ -177,7 +186,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			var ve = (IntegerEditor) sender;
 
-			ve._changeValue = ve.Value;
+			ve._changeValue = Convert.ToDecimal(ve.Value, CultureInfo.CurrentCulture);
 			ve._changeOffset = 0;
 			ve.CalculateValue(-ve.DefaultChange);
 		}
@@ -209,20 +218,33 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		/// Gets or sets the value. This is a dependency property.
 		/// </summary>
 		/// <value>The value.</value>
-		[TypeConverter(typeof (LengthConverter))]
-		public int Value
+		/// <remarks>
+		/// Supported values are the built-in signed and unsigned integral types. The editor preserves the
+		/// runtime type when it commits a changed value.
+		/// </remarks>
+		public object Value
 		{
-			get { return (int) GetValue(ValueProperty); }
+			get { return GetValue(ValueProperty); }
 			set { SetValue(ValueProperty, value); }
+		}
+
+		/// <summary>
+		/// Gets or sets the editable text representation of the value. This is a dependency property.
+		/// </summary>
+		/// <value>The editable value text.</value>
+		public string Text
+		{
+			get { return (string)GetValue(TextProperty); }
+			set { SetValue(TextProperty, value); }
 		}
 
 		/// <summary>
 		/// Gets or sets the small change value. This is a dependency property.
 		/// </summary>
 		/// <value>The small change value.</value>
-		public int SmallChange
+		public double SmallChange
 		{
-			get { return (int) GetValue(SmallChangeProperty); }
+			get { return (double) GetValue(SmallChangeProperty); }
 			set { SetValue(SmallChangeProperty, value); }
 		}
 
@@ -230,9 +252,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		/// Gets or sets the default change value. This is a dependency property.
 		/// </summary>
 		/// <value>The default change value.</value>
-		public int DefaultChange
+		public double DefaultChange
 		{
-			get { return (int) GetValue(DefaultChangeProperty); }
+			get { return (double) GetValue(DefaultChangeProperty); }
 			set { SetValue(DefaultChangeProperty, value); }
 		}
 
@@ -240,9 +262,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		/// Gets or sets the large change value. This is a dependency property.
 		/// </summary>
 		/// <value>The large change value.</value>
-		public int LargeChange
+		public double LargeChange
 		{
-			get { return (int) GetValue(LargeChangeProperty); }
+			get { return (double) GetValue(LargeChangeProperty); }
 			set { SetValue(LargeChangeProperty, value); }
 		}
 
@@ -250,9 +272,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		/// Gets or sets the minimum. This is a dependency property.
 		/// </summary>
 		/// <value>The minimum.</value>
-		public int Minimum
+		public double Minimum
 		{
-			get { return (int) GetValue(MinimumProperty); }
+			get { return (double) GetValue(MinimumProperty); }
 			set { SetValue(MinimumProperty, value); }
 		}
 
@@ -260,9 +282,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		/// Gets or sets the maximum. This is a dependency property.
 		/// </summary>
 		/// <value>The maximum.</value>
-		public int Maximum
+		public double Maximum
 		{
-			get { return (int) GetValue(MaximumProperty); }
+			get { return (double) GetValue(MaximumProperty); }
 			set { SetValue(MaximumProperty, value); }
 		}
 
@@ -295,21 +317,39 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private static void ValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var doubleEditor = (IntegerEditor) d;
-			if (!doubleEditor.IsInitialized)
-				return;
+			var integerEditor = (IntegerEditor)d;
+			integerEditor._holdValue = Convert.ToDecimal(e.NewValue, CultureInfo.CurrentCulture);
+			integerEditor.UpdateText();
+		}
 
-			doubleEditor.Value = doubleEditor.EnforceLimitsAndPrecision((int) e.NewValue);
+		private static void TextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var integerEditor = (IntegerEditor)d;
+			if (integerEditor._isUpdatingText)
+			{
+				return;
+			}
+
+			if (e.NewValue is string text &&
+				decimal.TryParse(text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var parsedValue))
+			{
+				integerEditor.SetCurrentValue(ValueProperty,
+					integerEditor.ConvertValue(integerEditor.EnforceLimitsAndPrecision(parsedValue)));
+			}
+			else
+			{
+				integerEditor.UpdateText();
+			}
 		}
 
 		private static void OnMinimumChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var doubleEditor = (IntegerEditor) d;
+			d.CoerceValue(ValueProperty);
 		}
 
 		private static void OnMaximumChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var doubleEditor = (IntegerEditor) d;
+			d.CoerceValue(ValueProperty);
 		}
 
 		private static void OnIsDraggingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -343,7 +383,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			base.OnMouseDown(e);
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
-				_holdValue = Value;
+				_holdValue = Convert.ToDecimal(Value, CultureInfo.CurrentCulture);
 				_isMouseDown = true;
 				_dragStartPoint = e.GetPosition(this);
 
@@ -377,7 +417,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 						_dragStartPoint = position;
 
 						_lastDragPoint = _dragStartPoint;
-						_changeValue = Value;
+						_changeValue = Convert.ToDecimal(Value, CultureInfo.CurrentCulture);
 						_changeOffset = 0;
 					}
 				}
@@ -434,26 +474,134 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			else
 				changeValue *= DefaultChange;
 
-			_changeOffset += changeValue;
-			int newValue = (int) (_changeValue + _changeOffset);
+			_changeOffset += Convert.ToDecimal(changeValue);
+			var newValue = _changeValue + _changeOffset;
 			//
 			// Make sure the change is line up with Max/Min Limits and set the precission as specified.
 			var template = Template;
 			var textControl = (TextBox)template.FindName("textboxEditor", this);
 			_holdValue = EnforceLimitsAndPrecision(newValue);
-			textControl.Text = _holdValue.ToString();
+			textControl.Text = ConvertValue(_holdValue).ToString();
 			StartTimer();
 			
 		}
 
 		protected override void SetValue()
 		{
-			Value = _holdValue;
+			Value = ConvertValue(_holdValue);
 		}
 
-		private int EnforceLimitsAndPrecision(int value)
+		private static object CoerceValue(DependencyObject d, object value)
 		{
-			return Math.Max(Minimum, Math.Min(Maximum, value));
+			var integerEditor = (IntegerEditor)d;
+
+			if (value is string text)
+			{
+				if (!decimal.TryParse(text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var parsedValue))
+				{
+					return integerEditor.ConvertValue(integerEditor._holdValue);
+				}
+
+				return integerEditor.ConvertValue(integerEditor.EnforceLimitsAndPrecision(parsedValue));
+			}
+
+			var valueType = value?.GetType();
+			if (valueType == null || !IsSupportedIntegralType(valueType))
+			{
+				return integerEditor.ConvertValue(integerEditor._holdValue);
+			}
+
+			integerEditor._valueType = valueType;
+			var numericValue = Convert.ToDecimal(value, CultureInfo.CurrentCulture);
+			return integerEditor.ConvertValue(integerEditor.EnforceLimitsAndPrecision(numericValue));
+		}
+
+		private decimal EnforceLimitsAndPrecision(decimal value)
+		{
+			var (typeMinimum, typeMaximum) = GetTypeBounds(_valueType);
+			var minimum = decimal.Clamp(ToDecimal(Minimum), typeMinimum, typeMaximum);
+			var maximum = decimal.Clamp(ToDecimal(Maximum), typeMinimum, typeMaximum);
+
+			if (minimum > maximum)
+			{
+				maximum = minimum;
+			}
+
+			return decimal.Clamp(decimal.Truncate(value), minimum, maximum);
+		}
+
+		private object ConvertValue(decimal value)
+		{
+			return Type.GetTypeCode(_valueType) switch
+			{
+				TypeCode.SByte => (sbyte)value,
+				TypeCode.Byte => (byte)value,
+				TypeCode.Int16 => (short)value,
+				TypeCode.UInt16 => (ushort)value,
+				TypeCode.Int32 => (int)value,
+				TypeCode.UInt32 => (uint)value,
+				TypeCode.Int64 => (long)value,
+				TypeCode.UInt64 => (ulong)value,
+				_ => throw new InvalidOperationException($"{_valueType.Name} is not a supported integral type.")
+			};
+		}
+
+		private static bool IsSupportedIntegralType(Type type)
+		{
+			return Type.GetTypeCode(type) is TypeCode.SByte or TypeCode.Byte or TypeCode.Int16 or TypeCode.UInt16 or
+				TypeCode.Int32 or TypeCode.UInt32 or TypeCode.Int64 or TypeCode.UInt64;
+		}
+
+		private static (decimal Minimum, decimal Maximum) GetTypeBounds(Type type)
+		{
+			return Type.GetTypeCode(type) switch
+			{
+				TypeCode.SByte => (sbyte.MinValue, sbyte.MaxValue),
+				TypeCode.Byte => (byte.MinValue, byte.MaxValue),
+				TypeCode.Int16 => (short.MinValue, short.MaxValue),
+				TypeCode.UInt16 => (ushort.MinValue, ushort.MaxValue),
+				TypeCode.Int32 => (int.MinValue, int.MaxValue),
+				TypeCode.UInt32 => (uint.MinValue, uint.MaxValue),
+				TypeCode.Int64 => (long.MinValue, long.MaxValue),
+				TypeCode.UInt64 => (ulong.MinValue, ulong.MaxValue),
+				_ => throw new InvalidOperationException($"{type.Name} is not a supported integral type.")
+			};
+		}
+
+		private static decimal ToDecimal(double value)
+		{
+			if (double.IsNaN(value))
+			{
+				return 0;
+			}
+
+			try
+			{
+				return Convert.ToDecimal(value);
+			}
+			catch (OverflowException)
+			{
+				return value < 0 ? decimal.MinValue : decimal.MaxValue;
+			}
+		}
+
+		private void UpdateText()
+		{
+			var text = ConvertValue(_holdValue).ToString();
+			if (Text == text)
+			{
+				return;
+			}
+
+			_isUpdatingText = true;
+			try
+			{
+				SetCurrentValue(TextProperty, text);
+			}
+			finally
+			{
+				_isUpdatingText = false;
+			}
 		}
 
 		#endregion Helpers

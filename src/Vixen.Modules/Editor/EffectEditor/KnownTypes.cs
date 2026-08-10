@@ -62,6 +62,26 @@ namespace VixenModules.Editor.EffectEditor
 			public static readonly Type Cursor = typeof (Cursor);
 			public static readonly Type Brush = typeof (Brush);
 			public static readonly Type Integer = typeof (int);
+
+			/// <summary>
+			/// Identifies the unsigned 8-bit integer type.
+			/// </summary>
+			public static readonly Type Byte = typeof (byte);
+
+			/// <summary>
+			/// Identifies the unsigned 16-bit integer type.
+			/// </summary>
+			public static readonly Type UShort = typeof (ushort);
+
+			/// <summary>
+			/// Identifies the unsigned 32-bit integer type.
+			/// </summary>
+			public static readonly Type UInt = typeof (uint);
+
+			/// <summary>
+			/// Identifies the unsigned 64-bit integer type.
+			/// </summary>
+			public static readonly Type ULong = typeof (ulong);
 			public static readonly Type Double = typeof(double);
 		}
 
