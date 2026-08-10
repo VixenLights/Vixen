@@ -513,7 +513,7 @@ public class StateDataTests
 		// Assert
 		Assert.NotNull(property);
 		Assert.Equal("Cycle Offset", property.DisplayName);
-		Assert.Equal("Sets the number of Cycle timing slots to skip before the sequence begins.", property.Description);
+		Assert.Equal("Sets the number of State Item timing slots to skip to determine the starting State Item in the cycle.", property.Description);
 		var range = Assert.IsType<NumberRangeAttribute>(property.Attributes[typeof(NumberRangeAttribute)]);
 		Assert.Equal(0, range.Minimum);
 		Assert.Equal(100, range.Maximum);
