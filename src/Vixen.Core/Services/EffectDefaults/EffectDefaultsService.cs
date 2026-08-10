@@ -329,10 +329,13 @@ namespace Vixen.Services.EffectDefaults
 		}
 
 		/// <summary>
-		/// Writes the current store to a file as readable, indented XML, for troubleshooting. The dump is produced
-		/// from the exact same in-memory <see cref="EffectDefaultsStore"/> object graph used for the binary store
-		/// file, through a plain <see cref="XmlWriter"/> instead of a binary one, so it can never drift out of
-		/// sync with what is actually stored.
+		/// Writes the current store to a file as fully human-readable, indented XML, for troubleshooting. Unlike
+		/// the binary primary store and export files, this dump never leaves a saved default's captured settings
+		/// (colors, curves, gradients, and so on) encoded as an opaque, unreadable byte blob: each entry's
+		/// <c>ModuleData</c> payload is deserialized back into its real settings and written out as ordinary,
+		/// readable XML elements alongside the entry's metadata. An entry whose effect type is no longer installed
+		/// (so its payload cannot be deserialized) is written with a comment explaining why its settings are
+		/// unavailable, instead of falling back to a raw byte dump.
 		/// </summary>
 		/// <param name="path">The file to write. Overwritten if it already exists.</param>
 		public void WriteDiagnosticDump(string path)
@@ -342,30 +345,65 @@ namespace Vixen.Services.EffectDefaults
 				throw new ArgumentNullException(nameof(path));
 			}
 
-			EffectDefaultsStore store;
+			List<EffectDefaultEntry> entries;
 			lock (_loadLock)
 			{
 				EnsureLoadedLocked();
-				store = new EffectDefaultsStore { Entries = _entriesByTypeId.Values.ToList() };
+				entries = _entriesByTypeId.Values.ToList();
 			}
 
-			DataContractSerializer serializer = GetOrAddSerializer(typeof(EffectDefaultsStore));
-			WriteIndentedXml(serializer, store, path);
+			using XmlWriter writer = XmlWriter.Create(path, new XmlWriterSettings { Indent = true });
+			WriteDiagnosticXml(writer, entries, typeId => Modules.GetDescriptorById(typeId)?.ModuleDataClass);
 		}
 
 		/// <summary>
-		/// Serializes <paramref name="value"/> to <paramref name="path"/> as indented XML. Factored out from
-		/// <see cref="WriteDiagnosticDump"/> so it can be exercised without any disk-path or singleton-store
-		/// dependency beyond the destination file itself.
+		/// Writes <paramref name="entries"/> to <paramref name="writer"/> as human-readable XML, resolving each
+		/// entry's <c>ModuleData</c> type through <paramref name="resolveDataType"/> and, when resolved,
+		/// deserializing and inlining the actual settings rather than leaving them as an opaque byte payload.
+		/// Factored out from <see cref="WriteDiagnosticDump"/> so it can be exercised without any disk-path or
+		/// singleton-store dependency: tests supply their own <paramref name="resolveDataType"/> instead of going
+		/// through <c>Modules.GetDescriptorById</c>.
 		/// </summary>
-		/// <param name="serializer">A <see cref="DataContractSerializer"/> for <paramref name="value"/>'s runtime
-		/// type.</param>
-		/// <param name="value">The object graph to serialize.</param>
-		/// <param name="path">The file to write. Overwritten if it already exists.</param>
-		internal static void WriteIndentedXml(DataContractSerializer serializer, object value, string path)
+		/// <param name="writer">The XML writer to write to. Not closed by this method.</param>
+		/// <param name="entries">The entries to dump.</param>
+		/// <param name="resolveDataType">Resolves an entry's <c>ModuleData</c> <see cref="Type"/> from its effect
+		/// type <c>TypeId</c>, or returns <see langword="null"/> if the effect type cannot be resolved (for
+		/// example, because its module is not currently installed).</param>
+		internal static void WriteDiagnosticXml(XmlWriter writer, IEnumerable<EffectDefaultEntry> entries, Func<Guid, Type> resolveDataType)
 		{
-			using XmlWriter writer = XmlWriter.Create(path, new XmlWriterSettings { Indent = true });
-			serializer.WriteObject(writer, value);
+			writer.WriteStartElement("EffectDefaults");
+			foreach (EffectDefaultEntry entry in entries)
+			{
+				writer.WriteStartElement("EffectDefault");
+				writer.WriteElementString("TypeId", entry.TypeId.ToString());
+				writer.WriteElementString("EffectName", entry.EffectName ?? string.Empty);
+				writer.WriteElementString("DataModelTypeName", entry.DataModelTypeName ?? string.Empty);
+				writer.WriteElementString("SavedUtc", XmlConvert.ToString(entry.SavedUtc, XmlDateTimeSerializationMode.Utc));
+
+				writer.WriteStartElement("ModuleData");
+				Type dataType = resolveDataType(entry.TypeId);
+				if (dataType == null)
+				{
+					writer.WriteComment(" This effect type is not currently installed, so its saved settings cannot be shown. ");
+				}
+				else
+				{
+					try
+					{
+						var serializer = new DataContractSerializer(dataType);
+						object moduleData = ReadBinary(serializer, entry.Payload);
+						serializer.WriteObjectContent(writer, moduleData);
+					}
+					catch (Exception ex)
+					{
+						writer.WriteComment($" Unable to read the saved settings: {ex.Message} ");
+					}
+				}
+				writer.WriteEndElement(); // ModuleData
+
+				writer.WriteEndElement(); // EffectDefault
+			}
+			writer.WriteEndElement(); // EffectDefaults
 		}
 
 		// Callers must hold _loadLock.

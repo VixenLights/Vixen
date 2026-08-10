@@ -136,18 +136,33 @@ public sealed class EffectDefaultsServiceExportImportDiagnosticsTests
 	}
 
 	[Fact]
-	public void WriteIndentedXml_ProducesIndentedXmlContainingStoreValues()
+	public void WriteDiagnosticXml_InlinesActualSettingsInsteadOfRawPayloadBytes()
 	{
 		Guid typeId = Guid.NewGuid();
 		DateTime savedUtc = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc);
-		var store = new EffectDefaultsStore();
-		store.Entries.Add(MakeEntry(typeId, "Pulse", savedUtc));
+		var data = new PulseData
+		{
+			LevelCurve = new Curve(CurveType.Flat100),
+			ColorGradient = new ColorGradient(Color.White)
+		};
+		var serializer = new DataContractSerializer(typeof(PulseData));
+		byte[] payload = EffectDefaultsService.WriteBinary(serializer, data);
+		var entry = new EffectDefaultEntry
+		{
+			TypeId = typeId,
+			EffectName = "Pulse",
+			DataModelTypeName = typeof(PulseData).FullName,
+			SavedUtc = savedUtc,
+			Payload = payload
+		};
 
-		var serializer = new DataContractSerializer(typeof(EffectDefaultsStore));
 		string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xml");
 		try
 		{
-			EffectDefaultsService.WriteIndentedXml(serializer, store, path);
+			using (XmlWriter writer = XmlWriter.Create(path, new XmlWriterSettings { Indent = true }))
+			{
+				EffectDefaultsService.WriteDiagnosticXml(writer, [entry], _ => typeof(PulseData));
+			}
 
 			string xml = File.ReadAllText(path);
 			Assert.Contains("\n  <", xml); // indented, not a single flat line
@@ -155,16 +170,34 @@ public sealed class EffectDefaultsServiceExportImportDiagnosticsTests
 			Assert.Contains("Pulse", xml);
 			Assert.Contains("2026-01-02T03:04:05", xml);
 
-			object? deserialized;
-			using (XmlReader reader = XmlReader.Create(path))
+			// The actual settings must be inlined as readable elements, not left as an opaque
+			// base64-encoded byte blob (the fix for the human-readability gap reported after use).
+			Assert.Contains("LevelCurve", xml);
+			Assert.Contains("ColorGradient", xml);
+			Assert.DoesNotContain(Convert.ToBase64String(payload), xml);
+		}
+		finally
+		{
+			if (File.Exists(path)) File.Delete(path);
+		}
+	}
+
+	[Fact]
+	public void WriteDiagnosticXml_ExplainsUnavailableSettingsWhenEffectTypeIsNotInstalled()
+	{
+		var entry = MakeEntry(Guid.NewGuid(), "Obsolete", DateTime.UtcNow);
+
+		string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xml");
+		try
+		{
+			using (XmlWriter writer = XmlWriter.Create(path, new XmlWriterSettings { Indent = true }))
 			{
-				deserialized = serializer.ReadObject(reader);
+				EffectDefaultsService.WriteDiagnosticXml(writer, [entry], _ => null);
 			}
-			var reloaded = Assert.IsType<EffectDefaultsStore>(deserialized);
-			EffectDefaultEntry reloadedEntry = Assert.Single(reloaded.Entries);
-			Assert.Equal(typeId, reloadedEntry.TypeId);
-			Assert.Equal("Pulse", reloadedEntry.EffectName);
-			Assert.Equal(savedUtc, reloadedEntry.SavedUtc);
+
+			string xml = File.ReadAllText(path);
+			Assert.Contains("not currently installed", xml);
+			Assert.DoesNotContain(Convert.ToBase64String(entry.Payload), xml);
 		}
 		finally
 		{
