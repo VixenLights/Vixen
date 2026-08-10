@@ -32,6 +32,7 @@ using Vixen.Module.Effect;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
 using Vixen.Services;
+using Vixen.Services.EffectDefaults;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
 using VixenModules.App.ColorGradients;
@@ -2269,7 +2270,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var newEffects = new List<EffectNode>();
 				foreach (Row drawingRow in e.Rows)
 				{
-					var newEffect = ApplicationServices.Get<IEffectModuleInstance>(e.Guid);
+					var newEffect = CreateEffectInstanceWithDefaults(e.Guid);
 
 
 					try
@@ -2568,7 +2569,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							//if something went wrong in the forms calculations
 							break;
 						}						
-						var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
+						var newEffect = CreateEffectInstanceWithDefaults(effectId);
 						try
 						{
 							newEffects.Add(CreateEffectNode(newEffect, row, nextStartTime, eDialog.Duration));
@@ -2607,7 +2608,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (!skipThisBeat)
 						{
-							var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectGuid);
+							var newEffect = CreateEffectInstanceWithDefaults(effectGuid);
 							try
 							{
 								if (fillDuration)
@@ -3776,8 +3777,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
 
-			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
+			IEffectModuleInstance effect = CreateEffectInstanceWithDefaults(effectId);
 			return AddEffectInstance(effect, row, startTime, timeSpan, select);
+		}
+
+		/// <summary>
+		/// Creates a new effect module instance of the given type, the same way <c>ApplicationServices.Get&lt;IEffectModuleInstance&gt;(Guid)</c>
+		/// does, and then applies that effect type's saved default settings (see <see cref="EffectDefaultsService"/>)
+		/// on top of the module's built-in constructor defaults, if a default has been saved for it. If no default
+		/// has been saved, or applying it fails for any reason, the instance is returned exactly as the built-in
+		/// constructor produced it.
+		/// </summary>
+		/// <param name="effectTypeId">The effect type's descriptor <c>TypeId</c>.</param>
+		/// <returns>A new effect module instance, or <see langword="null"/> if <paramref name="effectTypeId"/> does
+		/// not resolve to an installed effect module.</returns>
+		/// <remarks>Do not use where the caller immediately overwrites ModuleData
+		/// (clone, paste) — the default would be materialized and thrown away.</remarks>
+		private IEffectModuleInstance CreateEffectInstanceWithDefaults(Guid effectTypeId)
+		{
+			var effect = ApplicationServices.Get<IEffectModuleInstance>(effectTypeId);
+			if (effect != null)
+			{
+				var defaultData = EffectDefaultsService.Instance.CreateDefaultData(effect);
+				if (defaultData != null)
+				{
+					effect.ModuleData = defaultData;
+				}
+			}
+			return effect;
 		}
 
 		/// <summary>
@@ -4226,7 +4253,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return;
 				}
 
-				var newEffects = (from elem in TimelineControl.SelectedElements let newEffectInstance = ApplicationServices.Get<IEffectModuleInstance>(effectGuid) select CreateEffectNode(newEffectInstance, elem.Row, elem.StartTime, elem.Duration)).ToList();
+				var newEffects = (from elem in TimelineControl.SelectedElements let newEffectInstance = CreateEffectInstanceWithDefaults(effectGuid) select CreateEffectNode(newEffectInstance, elem.Row, elem.StartTime, elem.Duration)).ToList();
 
 				RemoveSelectedElements();
 				AddEffectNodes(newEffects);
@@ -4939,7 +4966,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//If effect Placement is false then just stack all the new effcts on top of each other, else add them sequentially in the timeline.
 					if (!dragFileSequencialEffectPlacement) i = 0;
 
-					IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(guid);
+					IEffectModuleInstance effect = CreateEffectInstanceWithDefaults(guid);
 
 					
 					//This is extremely brittle. If anything changes in these effects

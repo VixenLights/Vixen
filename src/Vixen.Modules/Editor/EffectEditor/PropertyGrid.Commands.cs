@@ -16,6 +16,11 @@
 
 using System.Windows;
 using System.Windows.Input;
+using Catel.IoC;
+using Catel.Services;
+using Common.WPFCommon.Services;
+using Vixen.Module.Effect;
+using Vixen.Services.EffectDefaults;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Input;
@@ -32,6 +37,10 @@ namespace VixenModules.Editor.EffectEditor
 		{
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.ResetFilter, OnResetFilterCommand));
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.Reload, OnReloadCommand));
+			CommandBindings.Add(new CommandBinding(PropertyGridCommands.SaveEffectDefault, OnSaveEffectDefaultCommand,
+				OnCanExecuteSaveEffectDefaultCommand));
+			CommandBindings.Add(new CommandBinding(PropertyGridCommands.ClearEffectDefault, OnClearEffectDefaultCommand,
+				OnCanExecuteClearEffectDefaultCommand));
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.ShowReadOnlyProperties, OnShowReadOnlyPropertiesCommand));
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.HideReadOnlyProperties, OnHideReadOnlyPropertiesCommand));
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.ToggleReadOnlyProperties,
@@ -60,6 +69,44 @@ namespace VixenModules.Editor.EffectEditor
 		private void OnReloadCommand(object sender, ExecutedRoutedEventArgs e)
 		{
 			DoReload();
+		}
+
+		private void OnCanExecuteSaveEffectDefaultCommand(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = SelectedObjects.Length == 1 && SelectedObjects[0] as IEffectModuleInstance != null;
+			e.Handled = true;
+		}
+
+		private void OnSaveEffectDefaultCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			var effect = SelectedObject as IEffectModuleInstance;
+			if (effect == null) return;
+
+			EffectDefaultsService.Instance.SaveDefault(effect);
+			OnPropertyChanged("HasStoredDefault");
+		}
+
+		private void OnCanExecuteClearEffectDefaultCommand(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = HasStoredDefault;
+			e.Handled = true;
+		}
+
+		private void OnClearEffectDefaultCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			var effect = SelectedObject as IEffectModuleInstance;
+			if (effect == null) return;
+
+			var messageBoxService = ServiceLocator.Default.ResolveType<IMessageBoxService>();
+			var confirmResult = messageBoxService.GetUserConfirmation(
+				$"Remove the saved default for {effect.Descriptor.TypeName}?", "Reset Effect Default");
+
+			// IMessageBoxService.GetUserConfirmation shows a Yes/No dialog whose "confirm" button
+			// reports MessageResult.OK (see MessageBoxForm.Designer.cs); it never reports Cancel.
+			if (confirmResult.Result != MessageResult.OK) return;
+
+			EffectDefaultsService.Instance.ClearDefault(effect.TypeId);
+			OnPropertyChanged("HasStoredDefault");
 		}
 
 		private void OnShowReadOnlyPropertiesCommand(object sender, ExecutedRoutedEventArgs e)

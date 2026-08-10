@@ -3,7 +3,12 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:converters="clr-namespace:VixenModules.Editor.EffectEditor.Converters"
 	xmlns:design="clr-namespace:VixenModules.Editor.EffectEditor.Design"
+	xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
     xmlns:controls="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+	</ResourceDictionary.MergedDictionaries>
 
 	<Style TargetType="{x:Type design:CategorizedLayout}">
 		<Setter Property="Background" Value="{Binding Background}" />
@@ -18,9 +23,19 @@
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="*"/>
 											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="Auto" />
 										</Grid.ColumnDefinitions>
 										<Label Grid.Column="0" x:Name="EffectName" Content="{Binding EffectName, Mode=OneWay}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="10pt" />
-										<TextBlock Grid.Column="1" TextAlignment="Right" Foreground="#DDD" Padding="5,5,5,5">
+										<Button Grid.Column="1" Style="{StaticResource ToolbarIconButtonStyle}" Command="input:PropertyGridCommands.SaveEffectDefault"
+												ToolTip="Save as Default" Margin="5,0,0,0" VerticalAlignment="Center">
+											<Image Source="/Resources;component/disk.png" Width="16" Height="16" />
+										</Button>
+										<Button Grid.Column="2" Style="{StaticResource ToolbarIconButtonStyle}" Command="input:PropertyGridCommands.ClearEffectDefault"
+												ToolTip="Reset to Built-in" Margin="5,0,0,0" VerticalAlignment="Center">
+											<Image Source="/Resources;component/arrow_refresh.png" Width="16" Height="16" />
+										</Button>
+										<TextBlock Grid.Column="3" TextAlignment="Right" Foreground="#DDD" Padding="5,5,5,5">
 											<TextBlock.Background>
 												<SolidColorBrush Color="Transparent" Opacity="0"></SolidColorBrush>
 											</TextBlock.Background>

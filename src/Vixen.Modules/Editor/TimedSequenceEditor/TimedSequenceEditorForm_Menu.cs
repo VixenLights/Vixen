@@ -17,6 +17,7 @@ using TimedSequenceEditor;
 using VixenModules.App.Marks;
 using Catel.Reflection;
 using System.Text.RegularExpressions;
+using Vixen.Services.EffectDefaults;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -717,6 +718,94 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					MoveMarksInRangeByTime(dialog.Start, dialog.End, offset, dialog.ProcessVisibleRows);
 				}
+			}
+		}
+
+		private void exportEffectDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var summaries = EffectDefaultsService.Instance.GetSummaries();
+			if (summaries.Count == 0)
+			{
+				var noneMessageBox = new MessageBoxForm("There are no saved effect defaults to export.", "Export Effect Defaults", false, false);
+				noneMessageBox.ShowDialog();
+				return;
+			}
+
+			using var selectionForm = new EffectDefaultsExportSelectionForm(summaries);
+			if (selectionForm.ShowDialog() != DialogResult.OK) return;
+
+			var selectedEffectTypeIds = selectionForm.SelectedEffectTypeIds;
+			if (selectedEffectTypeIds.Count == 0) return;
+
+			var exportFileDialog = new SaveFileDialog
+			{
+				DefaultExt = ".vfd",
+				Filter = @"Vixen 3 Effect Defaults (*.vfd)|*.vfd|All Files (*.*)|*.*"
+			};
+			if (exportFileDialog.ShowDialog() != DialogResult.OK) return;
+
+			try
+			{
+				EffectDefaultsService.Instance.Export(exportFileDialog.FileName, selectedEffectTypeIds);
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "While exporting effect defaults: " + exportFileDialog.FileName);
+				MessageBoxForm.msgIcon = SystemIcons.Warning;
+				var errorMessageBox = new MessageBoxForm("Unable to export effect defaults, please check the error log for details",
+					"Unable to Export", false, false);
+				errorMessageBox.ShowDialog();
+			}
+		}
+
+		private void importEffectDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var importFileDialog = new OpenFileDialog
+			{
+				DefaultExt = ".vfd",
+				Filter = @"Vixen 3 Effect Defaults (*.vfd)|*.vfd|All Files (*.*)|*.*",
+				FilterIndex = 0
+			};
+			if (importFileDialog.ShowDialog() != DialogResult.OK) return;
+
+			try
+			{
+				EffectDefaultsImportResult result = EffectDefaultsService.Instance.Import(importFileDialog.FileName, ImportMode.Overwrite);
+				var resultMessageBox = new MessageBoxForm(
+					$"Imported {result.Imported} new and {result.Overwritten} updated effect default(s).",
+					"Import Effect Defaults", false, false);
+				resultMessageBox.ShowDialog();
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "While importing effect defaults: " + importFileDialog.FileName);
+				MessageBoxForm.msgIcon = SystemIcons.Warning;
+				var errorMessageBox = new MessageBoxForm("Unable to import effect defaults, please check the error log for details",
+					"Unable to Import", false, false);
+				errorMessageBox.ShowDialog();
+			}
+		}
+
+		private void dumpEffectDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var dumpFileDialog = new SaveFileDialog
+			{
+				DefaultExt = ".xml",
+				Filter = @"XML Files (*.xml)|*.xml|All Files (*.*)|*.*"
+			};
+			if (dumpFileDialog.ShowDialog() != DialogResult.OK) return;
+
+			try
+			{
+				EffectDefaultsService.Instance.WriteDiagnosticDump(dumpFileDialog.FileName);
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "While writing the effect defaults diagnostic dump: " + dumpFileDialog.FileName);
+				MessageBoxForm.msgIcon = SystemIcons.Warning;
+				var errorMessageBox = new MessageBoxForm("Unable to write the diagnostic dump, please check the error log for details",
+					"Unable to Write Dump", false, false);
+				errorMessageBox.ShowDialog();
 			}
 		}
 		#endregion

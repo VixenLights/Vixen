@@ -1,4 +1,5 @@
 using System.Runtime.Serialization;
+using Vixen.Sys.Attribute;
 using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.State
@@ -57,6 +58,7 @@ namespace VixenModules.Effect.State
 		/// </summary>
 		/// <value>The selected Mark Collection identifier.</value>
 		[DataMember]
+		[ExcludeFromEffectDefault]
 		public Guid MarkCollectionId { get; set; } = Guid.Empty;
 
 		/// <summary>

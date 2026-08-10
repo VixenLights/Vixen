@@ -37,6 +37,12 @@ namespace VixenModules.Editor.EffectEditor.Input
 		private static readonly RoutedUICommand _ResetFilter = new RoutedUICommand("Reset Filter", "ResetFilter", ThisType);
 		private static readonly RoutedUICommand _Reload = new RoutedUICommand("Reload", "Reload", ThisType);
 
+		private static readonly RoutedUICommand _SaveEffectDefault = new RoutedUICommand("Save as Default",
+			"SaveEffectDefault", ThisType);
+
+		private static readonly RoutedUICommand _ClearEffectDefault = new RoutedUICommand("Reset to Built-in",
+			"ClearEffectDefault", ThisType);
+
 		private static readonly RoutedUICommand _ShowReadOnlyProperties = new RoutedUICommand("Show Read-Only Properties",
 			"ShowReadOnlyProperties", ThisType);
 
@@ -99,6 +105,24 @@ namespace VixenModules.Editor.EffectEditor.Input
 		public static RoutedUICommand Reload
 		{
 			get { return _Reload; }
+		}
+
+		/// <summary>
+		/// Represents a command that saves the currently selected effect's settings as the default for its
+		/// effect type, applied to future new instances of that effect type.
+		/// </summary>
+		public static RoutedUICommand SaveEffectDefault
+		{
+			get { return _SaveEffectDefault; }
+		}
+
+		/// <summary>
+		/// Represents a command that deletes the saved default for the currently selected effect's effect type,
+		/// so future new instances of that effect type revert to Vixen's built-in defaults.
+		/// </summary>
+		public static RoutedUICommand ClearEffectDefault
+		{
+			get { return _ClearEffectDefault; }
 		}
 
 		/// <summary>

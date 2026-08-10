@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -118,6 +119,7 @@ namespace VixenModules.Effect.Text
 		public StringOrientation Orientation { get; set; }
 
 		[DataMember]
+		[ExcludeFromEffectDefault]
 		public Guid MarkCollectionId { get; set; }
 		
 		[DataMember]

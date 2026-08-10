@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using ZedGraph;
@@ -206,6 +207,7 @@ namespace Liquid
 		public FlowControlSerializationType FlowControl { get; set; }
 								
 		[DataMember]
+		[ExcludeFromEffectDefault]
 		public Guid MarkCollectionId { get; set; }
 				
 		[DataMember]

@@ -23,6 +23,7 @@ using System.Windows.Media;
 using Common.WPFCommon.Controls;
 using Vixen.Attributes;
 using Vixen.Module.Effect;
+using Vixen.Services.EffectDefaults;
 using VixenModules.Editor.EffectEditor.Design;
 using VixenModules.Editor.EffectEditor.Editors;
 using VixenModules.Editor.EffectEditor.PropertyEditing;
@@ -549,6 +550,8 @@ namespace VixenModules.Editor.EffectEditor
 		/// </summary>
 		protected virtual void OnSelectedObjectsChanged()
 		{
+			OnPropertyChanged("HasStoredDefault");
+
 			var handler = SelectedObjectsChanged;
 			if (handler != null) handler(this, EventArgs.Empty);
 		}
@@ -1070,6 +1073,23 @@ namespace VixenModules.Editor.EffectEditor
 		public bool HasCategories
 		{
 			get { return _categories != null && _categories.Count > 0; }
+		}
+
+		/// <summary>
+		///     Gets a value indicating whether the currently selected effect's effect type has a saved default
+		///     (see <see cref="EffectDefaultsService"/>), recomputed whenever <see cref="SelectedObjects"/> changes.
+		/// </summary>
+		/// <value>
+		///     <c>true</c> if exactly one effect is selected and its effect type has a saved default; otherwise,
+		///     <c>false</c>.
+		/// </value>
+		public bool HasStoredDefault
+		{
+			get
+			{
+				return SelectedObjects.Length == 1 && SelectedObjects[0] is IEffectModuleInstance effect &&
+					   EffectDefaultsService.Instance.HasDefault(effect.TypeId);
+			}
 		}
 
 		#region ShowReadOnlyProperties property
