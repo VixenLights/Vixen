@@ -14,7 +14,7 @@ The behavior is observable by adding a Video effect, leaving Filename empty, and
 - [x] (2026-08-10 10:00 -05:00) Identified the missing-directory exception and the separate empty-hash shared-root deletion risk.
 - [x] (2026-08-10 10:00 -05:00) Wrote this ExecPlan; no production or test source has been changed by this planning work.
 - [x] (2026-08-10 08:56 -05:00) Updated VIX-3981 with the confirmed diagnosis, scope, acceptance criteria, and validation plan. The issue remains In Progress; JIRA returned update timestamp `2026-08-10T08:56:49.471-0500`.
-- [ ] Add isolated automated regression coverage for Video cache cleanup.
+- [x] (2026-08-10 09:02 -05:00) Added `VideoCacheCleanup`, internal test visibility, and seven isolated cache-cleanup regression tests. The Video module build and `Vixen_Tests` build succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped.
 - [ ] Implement the guarded Video cache cleanup and run module, test-target, and manual validation.
 - [ ] Add final VIX-3981 validation results and any scope adjustments as a JIRA comment.
 
@@ -35,6 +35,9 @@ The behavior is observable by adding a Video effect, leaving Filename empty, and
 - Observation: `Vixen.Tests` does not currently reference the Video effect project.
   Evidence: `src/Vixen.Tests/Vixen.Tests.csproj` has no `Video.csproj` project reference, and the Video project does not currently grant `Vixen.Tests` access to internal members.
 
+- Observation: a non-copy-local Video project reference compiles the test assembly but prevents `dotnet test` from loading `Module.Effect.Video`.
+  Evidence: the initial test run built successfully but all seven `VideoCacheCleanupTests` failed with `FileNotFoundException` for `Module.Effect.Video`. The test project’s established project references rely on the default copy-local behavior, so the Video reference must follow that local convention.
+
 ## Decision Log
 
 - Decision: Fix the cleanup boundary instead of forcing an empty Video effect to create a cache directory.
@@ -53,9 +56,13 @@ The behavior is observable by adding a Video effect, leaving Filename empty, and
   Rationale: `.agents/PLANS.md` requires an initial requirements/acceptance update and a final results comment. The existing issue is already In Progress, so an unsolicited status transition is out of scope.
   Date/Author: 2026-08-10 / Codex
 
+- Decision: Use the default copy-local setting for the Video project reference from `Vixen.Tests`.
+  Rationale: the test runner loads assemblies from `src/Vixen.Tests/bin/Release`; a non-copy-local Video module cannot be found there. This follows the existing test-project reference pattern and permits the isolated regression tests to execute.
+  Date/Author: 2026-08-10 / Codex
+
 ## Outcomes & Retrospective
 
-Milestone 1 is complete: VIX-3981 now preserves the original report and adds the confirmed diagnosis, acceptance criteria, and validation plan. Implementation has not started. The expected outcome is a focused Video-module change, isolated regression tests, and a JIRA record containing both the diagnosis and validation evidence. Populate this section when the plan is implemented with the exact build/test results, manual reproduction result, any remaining gaps, and the JIRA comment timestamp.
+Milestones 1 and 2 are complete: VIX-3981 now preserves the original report and adds the confirmed diagnosis, acceptance criteria, and validation plan. The internal cache-cleanup boundary has seven isolated xUnit regression tests. `msbuild src/Vixen.Modules/Effect/Video/Video.csproj -m -restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -v:m` and the full `Vixen_Tests` build both succeeded; `dotnet test --no-build` reported 683 passed, 0 failed, and 0 skipped. The Video lifecycle has not yet been changed to use the helper, so manual reproduction and final JIRA validation remain pending Milestones 3 and 4.
 
 ## Context and Orientation
 
@@ -164,7 +171,7 @@ Run the manual cases from Milestone 4. If a manual case fails, keep VIX-3981 In 
 
 The work is accepted only when all of the following are true:
 
-- The five `VideoCacheCleanupTests` described in Milestone 2 pass. The absent-root tests fail against the current unconditional-enumeration logic and pass after the guarded helper is used.
+- The seven `VideoCacheCleanupTests` described in Milestone 2 pass. They cover absent roots, instance pairing isolation, paired/unpaired cache directories, an empty key, a root-resolving key, and a resolved child directory.
 - The Video module build completes successfully.
 - `Vixen_Tests` builds with full MSBuild and the already-built test assembly passes through `dotnet test --no-build` on x64.
 - With the cache root absent, adding a Video effect with no Filename and closing the sequencer does not crash or show a `DirectoryNotFoundException` when Clear Effect Cache on Exit is enabled.
@@ -234,3 +241,7 @@ No NuGet package is added. The test project gains a project reference to the exi
 Revision note (2026-08-10): Initial ExecPlan created from VIX-3981 and direct source/history analysis. It records both the ticket’s missing-directory exception and the otherwise latent empty-settings-hash shared-root deletion risk, and it includes required initial and final JIRA updates.
 
 Revision note (2026-08-10): Completed Milestone 1 by updating VIX-3981’s description. The issue now contains Findings, Acceptance Criteria, and Test Plan sections; no status transition, production change, or test change was made.
+
+Revision note (2026-08-10): During Milestone 2 validation, replaced the initial non-copy-local Video test-project reference with the project’s established reference style because `dotnet test` could not load `Module.Effect.Video` otherwise.
+
+Revision note (2026-08-10): Completed Milestone 2. The helper is intentionally not called by `Video.cs` until Milestone 3; the new tests validate its filesystem boundary independently. The module build and complete test suite passed with 683 tests.
