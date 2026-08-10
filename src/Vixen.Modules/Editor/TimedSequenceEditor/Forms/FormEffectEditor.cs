@@ -216,6 +216,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="e">Contains the event data</param>
 		private void Form_EffectEditorKeyDown(object sender, KeyEventArgs e)
 		{
+			if (e.OriginalSource is System.Windows.Controls.TextBox)
+			{
+				// Do not publish to KeydownSWI because the user is typing in a text box.
+				// Do not mark e.Handled: the WPF editor retains normal editing behavior.
+				return;
+			}
+			
 			Broadcast.Publish<KeyEventArgs>("KeydownSWI", e);
 		}
 
