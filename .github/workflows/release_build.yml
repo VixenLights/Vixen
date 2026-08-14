@@ -196,6 +196,52 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  update_release_notes:
+    name: Commit Production Release Notes
+    permissions:
+      contents: write
+
+    needs:
+      - setup
+      - create_release
+
+    if: >-
+      needs.setup.result == 'success' &&
+      needs.create_release.result == 'success' &&
+      needs.setup.outputs.environment == 'Production'
+
+    runs-on: windows-2025-vs2026
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v6
+        with:
+          ref: master
+
+      - name: Download Release Notes artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: _releaseNotes
+          path: release-notes-artifact
+
+      - name: Commit release notes
+        shell: pwsh
+        env:
+          APP_VERSION: ${{ needs.setup.outputs.app_version }}
+        run: |
+          $releaseNotes = [System.IO.File]::ReadAllText('release-notes-artifact/Release Notes.txt')
+          $key = "Release Notes - Vixen 3`r`n`r`n`r`n"
+          [System.IO.File]::WriteAllText('Release Notes.txt', "$key$releaseNotes", [System.Text.UTF8Encoding]::new($false))
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- 'Release Notes.txt'
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 0) {
+            exit 0
+          }
+          git commit -m "Update release notes for $env:APP_VERSION"
+          git push origin HEAD:master
+
   update_jira_build:
     name: Update Jira Fix Build Number
     needs:
