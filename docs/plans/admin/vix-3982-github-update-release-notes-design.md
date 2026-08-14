@@ -148,3 +148,5 @@ Revision note (2026-08-14): Moved the plan to the `admin/vix-3982-...` conventio
 Revision note (2026-08-14): Extended VIX-3982 to replace Help > Release Notes' `Release Notes.txt` read. The running build now requests its exact GitHub release tag through the existing update service, rather than displaying the packaged text file.
 
 Revision note (2026-08-14): Hardened the Release Notes load event. It now delegates to a task-returning method and catches/logs unexpected failures at the required `async void` event boundary before showing the unavailable state.
+
+Revision note (2026-08-14): Added a display-only fallback to the packaged `Release Notes.txt` when the exact GitHub release is unavailable or its body is empty. The file remains unchanged; its LF-only content is normalized to WinForms line endings in memory before display.
