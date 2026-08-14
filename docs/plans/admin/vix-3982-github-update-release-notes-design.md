@@ -154,3 +154,5 @@ Revision note (2026-08-14): Added a display-only fallback to the packaged `Relea
 Revision note (2026-08-14): Replaced the per-download `HttpClient` with an injected, application-lifetime GitHub download client. It shares the GitHub connection handler but retains a longer download timeout than the five-second API client.
 
 Revision note (2026-08-14): Corrected installer downloads to use the exact 64-bit setup asset URL supplied by the GitHub release API. The prior release filename derivation omitted the `.0` build component for tags such as `3.13`, yielding a 404. Download failures now reset the cursor, are logged, and present a user-facing error dialog.
+
+Revision note (2026-08-14): Replaced the Downloads registry lookup with Windows' supported `SHGetKnownFolderPath(FOLDERID_Downloads)` API. A `%USERPROFILE%\\Downloads` path remains only as a fallback when the Shell API cannot resolve the folder.

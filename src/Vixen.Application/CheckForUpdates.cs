@@ -3,7 +3,6 @@ using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
-using Microsoft.Win32;
 using NLog;
 using LogManager = NLog.LogManager;
 using VixenApplication.Updates;
@@ -134,17 +133,14 @@ namespace VixenApplication
 			var fileName = Path.GetFileName(installerDownloadUri.LocalPath);
 			var githubDownloadClient = _githubDownloadClient ?? throw new InvalidOperationException("The GitHub download client is unavailable.");
 			var fileBytes = await githubDownloadClient.GetByteArrayAsync(installerDownloadUri);
-			await File.WriteAllBytesAsync(Path.Combine(GetDownloadFolderPath(), fileName), fileBytes);
-			var messageBox = new MessageBoxForm($"Latest version downloaded to {GetDownloadFolderPath()}.", "Info", MessageBoxButtons.OK, SystemIcons.Information);
+			var downloadFolderPath = GetDownloadFolderPath();
+			await File.WriteAllBytesAsync(Path.Combine(downloadFolderPath, fileName), fileBytes);
+			var messageBox = new MessageBoxForm($"Latest version downloaded to {downloadFolderPath}.", "Info", MessageBoxButtons.OK, SystemIcons.Information);
 			messageBox.ShowDialogThreadSafe(this);
 		}
 
 		private static string GetDownloadFolderPath()
-		{
-			using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders");
-			var path = key?.GetValue("{374DE290-123F-4565-9164-39C4925E467B}")?.ToString();
-			return string.IsNullOrEmpty(path) ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads") : path;
-		}
+			=> KnownFolders.GetDownloadsPath();
 
 		private void SetScrollbars()
 		{
