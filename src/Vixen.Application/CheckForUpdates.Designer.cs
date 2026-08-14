@@ -115,7 +115,6 @@
 			lblChangeLog.TabIndex = 8;
 			lblChangeLog.Text = "Change Log for latest version:";
 			lblChangeLog.Visible = false;
-			lblChangeLog.Click += lblChangeLog_Click;
 			// 
 			// buttonDownload
 			// 

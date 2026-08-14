@@ -159,10 +159,5 @@ namespace VixenApplication
 				_ => ScrollBars.None
 			};
 		}
-
-		private void lblChangeLog_Click(object sender, EventArgs e)
-		{
-			throw new System.NotImplementedException();
-		}
 	}
 }
