@@ -21,5 +21,8 @@ namespace VixenApplication.Updates
 
 		[JsonProperty("html_url")]
 		public Uri? HtmlUrl { get; init; }
+
+		[JsonProperty("assets")]
+		public List<GitHubReleaseAsset> Assets { get; init; } = [];
 	}
 }

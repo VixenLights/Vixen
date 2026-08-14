@@ -13,7 +13,7 @@ public sealed class GitHubUpdateServiceTests
 		var handler = CreateHandler("""
 		[
 		  { "tag_name": "DevBuild-1500", "prerelease": true, "draft": false, "published_at": "2026-01-03T00:00:00Z", "body": "older build", "html_url": "https://example.test/1500" },
-		  { "tag_name": "DevBuild-1502", "prerelease": true, "draft": false, "published_at": "2026-01-01T00:00:00Z", "body": "chosen", "html_url": "https://example.test/1502" },
+		  { "tag_name": "DevBuild-1502", "prerelease": true, "draft": false, "published_at": "2026-01-01T00:00:00Z", "body": "chosen", "html_url": "https://example.test/1502", "assets": [{ "name": "Vixen-DevBuild-0.0.1502-Setup-64bit.exe", "browser_download_url": "https://github.com/VixenLights/Vixen/releases/download/DevBuild-1502/Vixen-DevBuild-0.0.1502-Setup-64bit.exe" }] },
 		  { "tag_name": "DevBuild-invalid", "prerelease": true, "draft": false },
 		  { "tag_name": "DevBuild-9999", "prerelease": true, "draft": true },
 		  { "tag_name": "3.13", "prerelease": false, "draft": false }
@@ -31,6 +31,7 @@ public sealed class GitHubUpdateServiceTests
 		Assert.Equal(1502, result.LatestBuildNumber);
 		Assert.True(result.IsUpdateAvailable);
 		Assert.Equal("chosen", result.ReleaseNotes);
+		Assert.Equal("https://github.com/VixenLights/Vixen/releases/download/DevBuild-1502/Vixen-DevBuild-0.0.1502-Setup-64bit.exe", result.InstallerDownloadUri?.ToString());
 		Assert.Single(handler.RequestUris);
 		Assert.Equal("/repos/VixenLights/Vixen/releases?per_page=5", handler.RequestUris[0].PathAndQuery);
 	}
@@ -40,7 +41,7 @@ public sealed class GitHubUpdateServiceTests
 	{
 		// Arrange
 		var handler = CreateHandler("""
-		{ "tag_name": "3.13u1", "prerelease": false, "draft": false, "body": "latest notes", "html_url": "https://example.test/3.13u1" }
+		{ "tag_name": "3.13u1", "prerelease": false, "draft": false, "body": "latest notes", "html_url": "https://example.test/3.13u1", "assets": [{ "name": "Vixen-3.13.1-Setup-64bit.exe", "browser_download_url": "https://github.com/VixenLights/Vixen/releases/download/3.13u1/Vixen-3.13.1-Setup-64bit.exe" }] }
 		""");
 		using var client = CreateClient(handler);
 		var service = new GitHubUpdateService(client);
@@ -53,6 +54,7 @@ public sealed class GitHubUpdateServiceTests
 		Assert.True(result.IsUpdateAvailable);
 		Assert.Equal("3.13u1", result.LatestVersion);
 		Assert.Equal("latest notes", result.ReleaseNotes);
+		Assert.Equal("https://github.com/VixenLights/Vixen/releases/download/3.13u1/Vixen-3.13.1-Setup-64bit.exe", result.InstallerDownloadUri?.ToString());
 		Assert.Single(handler.RequestUris);
 		Assert.Equal("/repos/VixenLights/Vixen/releases/latest", handler.RequestUris[0].PathAndQuery);
 	}

@@ -6,5 +6,6 @@ namespace VixenApplication.Updates
 		bool IsUpdateAvailable,
 		string? ReleaseNotes,
 		Uri ReleasePageUri,
-		DateTimeOffset? PublishedAt);
+		DateTimeOffset? PublishedAt,
+		Uri? InstallerDownloadUri);
 }

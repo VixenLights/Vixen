@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -14,13 +13,13 @@ namespace VixenApplication
 	public partial class CheckForUpdates : BaseForm
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
-		private const string GitHubReleaseDownloadPath = "https://github.com/VixenLights/Vixen/releases/download/";
 		private readonly string _currentVersionType;
 		private readonly IUpdateService _updateService;
 		private readonly HttpClient? _githubDownloadClient;
 		private readonly CancellationTokenSource _updateCancellation = new();
 		private string _currentVersion = string.Empty;
 		private string _latestVersion = string.Empty;
+		private Uri? _installerDownloadUri;
 		private bool _newVersionAvailable;
 
 		public CheckForUpdates() : this(new UnavailableUpdateService(), null)
@@ -67,8 +66,8 @@ namespace VixenApplication
 
 			if (result is null)
 			{
-				labelCurrentVersion.Text = "Unable to check for updates. Please try again later.";
-				labelHeading.Text = "Update check unavailable.";
+				labelCurrentVersion.Text = @"Unable to check for updates. Please try again later.";
+				labelHeading.Text = @"Update check unavailable.";
 				textBoxReleaseNotes.Visible = false;
 				lblChangeLog.Visible = false;
 				buttonDownload.Visible = false;
@@ -77,6 +76,7 @@ namespace VixenApplication
 			}
 
 			_latestVersion = result.LatestVersion;
+			_installerDownloadUri = result.InstallerDownloadUri;
 			_newVersionAvailable = result.IsUpdateAvailable;
 			textBoxReleaseNotes.Text = NormalizeLineEndings(result.ReleaseNotes ?? string.Empty);
 			labelCurrentVersion.Text = $@"{_currentVersionType} {_latestVersion} is the latest.";
@@ -87,7 +87,11 @@ namespace VixenApplication
 				textBoxReleaseNotes.Visible = true;
 				labelHeading.Visible = true;
 				lblChangeLog.Visible = true;
-				buttonDownload.Visible = true;
+				buttonDownload.Visible = _installerDownloadUri is not null;
+				if (_installerDownloadUri is null)
+				{
+					labelCurrentVersion.Text = @"An update is available, but its installer is unavailable.";
+				}
 				textBoxReleaseNotes.AutoSize = false;
 				textBoxReleaseNotes.Height = (int)(ScalingTools.GetScaleFactor() * 225);
 				SetScrollbars();
@@ -114,31 +118,25 @@ namespace VixenApplication
 			catch (Exception exception)
 			{
 				Logging.Error(exception, "An error occurred while downloading the latest version.");
+				var messageBox = new MessageBoxForm("The update could not be downloaded. Please try again later.", "Download Failed", MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.ShowDialogThreadSafe(this);
+			}
+			finally
+			{
+				Cursor = Cursors.Default;
 			}
 		}
 
 		private async Task DownloadFile()
 		{
 			Cursor = Cursors.WaitCursor;
-			var downloadUrl = new StringBuilder(GitHubReleaseDownloadPath);
-			if (VersionInfo.IsDevBuild)
-			{
-				downloadUrl.Append($"DevBuild-{_latestVersion}/Vixen-DevBuild-0.0.{_latestVersion}-Setup-64bit.exe");
-			}
-			else
-			{
-				downloadUrl.Append($"{_latestVersion}/Vixen-{ConvertVersion(_latestVersion)}-Setup-64bit.exe");
-			}
-
-			var fileToDownload = downloadUrl.ToString();
-			var fileName = fileToDownload.Split('/').Last();
-			var relativeDownloadUri = fileToDownload[GitHubReleaseDownloadPath.Length..];
+			var installerDownloadUri = _installerDownloadUri ?? throw new InvalidOperationException("The update installer is unavailable.");
+			var fileName = Path.GetFileName(installerDownloadUri.LocalPath);
 			var githubDownloadClient = _githubDownloadClient ?? throw new InvalidOperationException("The GitHub download client is unavailable.");
-			var fileBytes = await githubDownloadClient.GetByteArrayAsync(relativeDownloadUri);
+			var fileBytes = await githubDownloadClient.GetByteArrayAsync(installerDownloadUri);
 			await File.WriteAllBytesAsync(Path.Combine(GetDownloadFolderPath(), fileName), fileBytes);
 			var messageBox = new MessageBoxForm($"Latest version downloaded to {GetDownloadFolderPath()}.", "Info", MessageBoxButtons.OK, SystemIcons.Information);
 			messageBox.ShowDialogThreadSafe(this);
-			Cursor = Cursors.Default;
 		}
 
 		private static string GetDownloadFolderPath()
@@ -147,8 +145,6 @@ namespace VixenApplication
 			var path = key?.GetValue("{374DE290-123F-4565-9164-39C4925E467B}")?.ToString();
 			return string.IsNullOrEmpty(path) ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads") : path;
 		}
-
-		private static string ConvertVersion(string version) => version.Replace('u', '.');
 
 		private void SetScrollbars()
 		{

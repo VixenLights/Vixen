@@ -9,6 +9,7 @@ namespace VixenApplication.Updates
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private static readonly Uri FallbackReleasePageUri = new("https://github.com/VixenLights/Vixen/releases");
+		private const string InstallerFileNameSuffix = "-Setup-64bit.exe";
 		private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 		private readonly SemaphoreSlim _cacheLock = new(1, 1);
 		private readonly Dictionary<UpdateChannel, CachedRelease> _cache = [];
@@ -162,7 +163,8 @@ namespace VixenApplication.Updates
 					hasInstalledBuildNumber && latestBuildNumber > installedBuildNumber,
 					request.IncludeReleaseNotes ? release.Body ?? string.Empty : null,
 					release.HtmlUrl ?? FallbackReleasePageUri,
-					release.PublishedAt);
+					release.PublishedAt,
+					GetInstallerDownloadUri(release));
 			}
 
 			if (request.Channel == UpdateChannel.Release &&
@@ -175,11 +177,17 @@ namespace VixenApplication.Updates
 					latestVersion.CompareTo(installedVersion) > 0,
 					request.IncludeReleaseNotes ? release.Body ?? string.Empty : null,
 					release.HtmlUrl ?? FallbackReleasePageUri,
-					release.PublishedAt);
+					release.PublishedAt,
+					GetInstallerDownloadUri(release));
 			}
 
 			return null;
 		}
+
+		private static Uri? GetInstallerDownloadUri(GitHubRelease release)
+			=> release.Assets.FirstOrDefault(asset =>
+				asset.Name?.EndsWith(InstallerFileNameSuffix, StringComparison.OrdinalIgnoreCase) == true)
+				?.BrowserDownloadUri;
 
 		internal static bool TryGetDevelopmentBuildNumber(string? tagName, out int buildNumber)
 		{
