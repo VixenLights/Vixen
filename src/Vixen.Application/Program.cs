@@ -1,5 +1,6 @@
 ﻿using Catel.Logging;
 using Vixen.Sys;
+using VixenApplication.Updates;
 
 namespace VixenApplication
 {
@@ -9,6 +10,9 @@ namespace VixenApplication
 		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
 									"with the following information:\n\n";
 		private static VixenApplication? _app;
+		private static HttpClient? _githubApiClient;
+		private static HttpClient? _githubDownloadClient;
+		private static SocketsHttpHandler? _githubHandler;
 		internal static string LockFilePath = string.Empty;
 		/// <summary>
 		/// The main entry point for the application.
@@ -27,12 +31,37 @@ namespace VixenApplication
 				// To customize application configuration such as set high DPI settings or default font,
 				// see https://aka.ms/applicationconfiguration.
 				ApplicationConfiguration.Initialize();
-				_app = new VixenApplication();
+				_githubHandler = new SocketsHttpHandler
+				{
+					PooledConnectionLifetime = TimeSpan.FromMinutes(10)
+				};
+				_githubApiClient = new HttpClient(_githubHandler, disposeHandler: false)
+				{
+					BaseAddress = new Uri("https://api.github.com/repos/VixenLights/Vixen/"),
+					Timeout = TimeSpan.FromSeconds(10)
+				};
+				_githubApiClient.DefaultRequestHeaders.UserAgent.ParseAdd("Vixen-UpdateChecker/1.0");
+				_githubApiClient.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
+				_githubApiClient.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2026-03-10");
+				_githubDownloadClient = new HttpClient(_githubHandler, disposeHandler: false)
+				{
+					BaseAddress = new Uri("https://github.com/VixenLights/Vixen/releases/download/"),
+					Timeout = TimeSpan.FromMinutes(5)
+				};
+				_githubDownloadClient.DefaultRequestHeaders.UserAgent.ParseAdd("Vixen-UpdateChecker/1.0");
+
+				_app = new VixenApplication(new GitHubUpdateService(_githubApiClient), _githubDownloadClient);
 				Application.Run(_app);
 			}
 			catch (Exception ex)
 			{
 				LogMessageAndExit(ex);
+			}
+			finally
+			{
+				_githubDownloadClient?.Dispose();
+				_githubApiClient?.Dispose();
+				_githubHandler?.Dispose();
 			}
 		}
 

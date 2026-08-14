@@ -21,6 +21,7 @@ using Timer = System.Windows.Forms.Timer;
 using WPFApplication = System.Windows.Application;
 using Common.WPFCommon.Services;
 using LogManager = NLog.LogManager;
+using VixenApplication.Updates;
 
 namespace VixenApplication
 {
@@ -39,13 +40,21 @@ namespace VixenApplication
 		private string _currentReleaseVersion;
 		private bool _closing;
 		private readonly IProgress<Tuple<int, string>> _startupProgress;
+		private readonly IUpdateService _updateService;
+		private readonly HttpClient _githubDownloadClient;
 
 		private readonly VixenApplicationData _applicationData;
 		private string _releaseVersion = String.Empty;
 		private string _buildVersion = String.Empty;
 
-		public VixenApplication()
+		public VixenApplication() : this(new UnavailableUpdateService(), null)
 		{
+		}
+
+		internal VixenApplication(IUpdateService updateService, HttpClient githubDownloadClient)
+		{
+			_updateService = updateService ?? throw new ArgumentNullException(nameof(updateService));
+			_githubDownloadClient = githubDownloadClient;
 			InitializeComponent();
 
 			VixenSystem.UIThread = Thread.CurrentThread;
@@ -552,24 +561,16 @@ namespace VixenApplication
 
 		public async Task<string> CheckLatestBuildVersionAsync()
 		{
-			var latestDevelopmentBuild = await VersionInfo.GetLatestBuildVersionAsync();
-			if (latestDevelopmentBuild > _currentBuildVersion)
-			{
-				return latestDevelopmentBuild.ToString();
-			}
-			return string.Empty;
+			var result = await _updateService.CheckAsync(
+				new UpdateCheckRequest(UpdateChannel.Development, _currentBuildVersion.ToString(), false));
+			return result is { IsUpdateAvailable: true } ? result.LatestVersion : string.Empty;
 		}
 
 		public async Task<string> CheckLatestReleaseVersionAsync()
 		{
-			var releaseVersionName = await VersionInfo.GetLatestReleaseVersionAsync();
-
-			if (releaseVersionName != _currentReleaseVersion)
-			{
-				return releaseVersionName;
-			}
-
-			return string.Empty;
+			var result = await _updateService.CheckAsync(
+				new UpdateCheckRequest(UpdateChannel.Release, _currentReleaseVersion, false));
+			return result is { IsUpdateAvailable: true } ? result.LatestVersion : string.Empty;
 		}
 
 		private void CheckForTestBuild()
@@ -1280,26 +1281,17 @@ namespace VixenApplication
 
 		private async void UpdatesMenu_Click(object sender, EventArgs e)
 		{
-			Cursor = Cursors.WaitCursor;
-
-			if (!await VersionInfo.CheckForConnectionToWebsite())
-			{
-				var messageBox = new MessageBoxForm("Unable to reach http://bugs.vixenlights.com. Please check your internet connection and verify you can reach the site and try again.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialogThreadSafe(this);
-				Cursor = Cursors.Default;
-				return;
-			}
-
-			Cursor = Cursors.Default;
-
-			var checkForUpdates = new CheckForUpdates();
+			var checkForUpdates = new CheckForUpdates(_updateService, _githubDownloadClient);
 			await checkForUpdates.ShowDialogAsync(this);
 			checkForUpdates.Dispose();
 		}
 
 		private void ReleaseNotesMenu_Click(object sender, EventArgs e)
 		{
-			var releaseNotes = new ReleaseNotes();
+			var releaseTag = VersionInfo.IsDevBuild
+				? $"DevBuild-{VersionInfo.BuildNumber}"
+				: VersionInfo.IsReleaseBuild ? VersionInfo.ReleaseVersion : null;
+			var releaseNotes = new ReleaseNotes(_updateService, releaseTag);
 			releaseNotes.ShowDialog();
 			releaseNotes.Dispose();
 		}
