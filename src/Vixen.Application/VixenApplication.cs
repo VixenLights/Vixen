@@ -1286,7 +1286,10 @@ namespace VixenApplication
 
 		private void ReleaseNotesMenu_Click(object sender, EventArgs e)
 		{
-			var releaseNotes = new ReleaseNotes();
+			var releaseTag = VersionInfo.IsDevBuild
+				? $"DevBuild-{VersionInfo.BuildNumber}"
+				: VersionInfo.IsReleaseBuild ? VersionInfo.ReleaseVersion : null;
+			var releaseNotes = new ReleaseNotes(_updateService, releaseTag);
 			releaseNotes.ShowDialog();
 			releaseNotes.Dispose();
 		}

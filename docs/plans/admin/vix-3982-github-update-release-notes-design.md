@@ -17,6 +17,8 @@ After this work, Vixen checks GitHub directly for update metadata and shows the 
 - [x] (2026-08-14 00:00Z) Added and composed `GitHubUpdateService`; fake-handler tests verify bounded requests, error states, and in-memory caching.
 - [x] (2026-08-14 00:00Z) Migrated automatic startup status checks and the manual dialog; removed Jira preflight and Jira release-note I/O.
 - [x] (2026-08-14 00:00Z) Built the application and tests; focused tests passed 11/11 and the full already-built x64 test assembly passed 705/705.
+- [x] (2026-08-14 00:00Z) Replaced the legacy packaged release-notes text with an exact-tag GitHub release lookup for the running release or development build.
+- [x] (2026-08-14 00:00Z) Built `Vixen.Application`; focused `GitHubUpdateServiceTests` passed 12/12 after the current-release notes addition.
 - [ ] Manually validate release, development, test-build, no-update, empty-body, offline, and skipped-release paths; update VIX-3982 with final validation results.
 
 ## Surprises & Discoveries
@@ -42,7 +44,7 @@ After this work, Vixen checks GitHub directly for update metadata and shows the 
 
 ## Outcomes & Retrospective
 
-The update path now owns GitHub transport, parsed release metadata, comparison, availability, caching, and optional release-note exposure in one internal service. `VersionInfo` now contains installed-version facts only, and the manual dialog has no Jira requests. `Vixen.Application` built successfully; focused fake-HTTP tests passed 11/11 and the full already-built x64 test assembly passed 705/705. Manual UI validation and the mandated VIX-3982 description/comment updates remain because this session has no Atlassian connector.
+The update path now owns GitHub transport, parsed release metadata, comparison, availability, caching, and optional release-note exposure in one internal service. `VersionInfo` now contains installed-version facts only, the manual update dialog has no Jira requests, and Help > Release Notes retrieves the exact GitHub release for the running tag. `Vixen.Application` built successfully; focused fake-HTTP tests passed 12/12 and the full already-built x64 test assembly previously passed 705/705. Manual UI validation and the mandated VIX-3982 description/comment updates remain because this session has no Atlassian connector.
 
 ## Context and Orientation
 
@@ -61,6 +63,8 @@ Milestone 2 implements `GitHubUpdateService` with the shared injected client. It
 Milestone 3 passes `IUpdateService` through constructors into `VixenApplication` and `CheckForUpdates`. Startup asks for no notes and uses `IsUpdateAvailable`. The dialog asks once for notes, sets availability from the returned boolean, normalizes release-body line endings for the WinForms text box, and reports an explicit unavailable state on `null`. Delete `PopulateChangeLog` and its Jira parsing, delete remote/update methods and the Jira connectivity probe from `VersionInfo`, and remove the menu preflight. Keep installer download work out of scope.
 
 Milestone 4 runs the focused tests, full repository test workflow, and application build. It then manually tests release, development, test-build, no-update, empty-body, offline, and skipped-release paths. A skipped stable installation must show only the latest stable release body.
+
+Milestone 5 replaces the Help > Release Notes file read with `IUpdateService.GetReleaseNotesAsync`. The menu converts the running version to its exact GitHub tag (`major.minor`, `major.minoruN`, or `DevBuild-N`), while test builds do not make a network call. The service retrieves `releases/tags/{tag}`, validates the returned tag, accepts an empty body, and caches the parsed release. The dialog presents an explicit unavailable message if GitHub cannot provide the release.
 
 ## Concrete Steps
 
@@ -140,3 +144,7 @@ Revision note (2026-08-14): Associated the work with VIX-3982. Added initial and
 Revision note (2026-08-14): Completed the code migration and automated validation. The GitHub service uses the shared-client option, caches successful parsed responses for five minutes, and the dialog consumes one result rather than querying Jira. Jira and manual validation are recorded as remaining external work because the configured tools cannot access Atlassian or operate an installed Vixen build interactively.
 
 Revision note (2026-08-14): Moved the plan to the `admin/vix-3982-...` convention and corrected the friend-assembly declaration. `InternalsVisibleTo` now uses the established MSBuild `AssemblyAttribute` pattern in `Vixen.Application.csproj`; the standalone `AssemblyInfo.cs` file was removed.
+
+Revision note (2026-08-14): Extended VIX-3982 to replace Help > Release Notes' `Release Notes.txt` read. The running build now requests its exact GitHub release tag through the existing update service, rather than displaying the packaged text file.
+
+Revision note (2026-08-14): Hardened the Release Notes load event. It now delegates to a task-returning method and catches/logs unexpected failures at the required `async void` event boundary before showing the unavailable state.

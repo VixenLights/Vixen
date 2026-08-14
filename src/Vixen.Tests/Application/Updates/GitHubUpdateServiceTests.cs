@@ -98,6 +98,27 @@ public sealed class GitHubUpdateServiceTests
 		Assert.Single(handler.RequestUris);
 	}
 
+	[Fact]
+	public async Task GetReleaseNotesAsync_RunningRelease_UsesExactTagAndReturnsGitHubBody()
+	{
+		// Arrange
+		var handler = CreateHandler("""
+		{ "tag_name": "3.13u1", "prerelease": false, "draft": false, "body": "GitHub notes\r\nfor 3.13u1", "html_url": "https://example.test/3.13u1" }
+		""");
+		using var client = CreateClient(handler);
+		var service = new GitHubUpdateService(client);
+
+		// Act
+		var result = await service.GetReleaseNotesAsync("3.13u1", TestContext.Current.CancellationToken);
+
+		// Assert
+		Assert.NotNull(result);
+		Assert.Equal("3.13u1", result.ReleaseTag);
+		Assert.Equal("GitHub notes\r\nfor 3.13u1", result.ReleaseNotes);
+		Assert.Single(handler.RequestUris);
+		Assert.Equal("/repos/VixenLights/Vixen/releases/tags/3.13u1", handler.RequestUris[0].PathAndQuery);
+	}
+
 	[Theory]
 	[InlineData("3.13", "3.13u1", -1)]
 	[InlineData("3.13u1", "3.14", -1)]

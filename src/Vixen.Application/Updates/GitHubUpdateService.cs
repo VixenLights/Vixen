@@ -12,6 +12,7 @@ namespace VixenApplication.Updates
 		private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 		private readonly SemaphoreSlim _cacheLock = new(1, 1);
 		private readonly Dictionary<UpdateChannel, CachedRelease> _cache = [];
+		private readonly Dictionary<string, CachedRelease> _releaseNotesCache = [];
 
 		public async Task<UpdateCheckResult?> CheckAsync(UpdateCheckRequest request, CancellationToken cancellationToken = default)
 		{
@@ -19,6 +20,20 @@ namespace VixenApplication.Updates
 
 			var release = await GetReleaseAsync(request.Channel, cancellationToken).ConfigureAwait(false);
 			return release is null ? null : CreateResult(request, release);
+		}
+
+		public async Task<ReleaseNotesResult?> GetReleaseNotesAsync(string releaseTag, CancellationToken cancellationToken = default)
+		{
+			ArgumentException.ThrowIfNullOrWhiteSpace(releaseTag);
+
+			var release = await GetReleaseNotesReleaseAsync(releaseTag, cancellationToken).ConfigureAwait(false);
+			return release is null
+				? null
+				: new ReleaseNotesResult(
+					release.TagName!,
+					release.Body ?? string.Empty,
+					release.HtmlUrl ?? FallbackReleasePageUri,
+					release.PublishedAt);
 		}
 
 		private async Task<GitHubRelease?> GetReleaseAsync(UpdateChannel channel, CancellationToken cancellationToken)
@@ -72,6 +87,32 @@ namespace VixenApplication.Updates
 				.MaxBy(release => TryGetDevelopmentBuildNumber(release.TagName, out var buildNumber) ? buildNumber : -1);
 		}
 
+		private async Task<GitHubRelease?> GetReleaseNotesReleaseAsync(string releaseTag, CancellationToken cancellationToken)
+		{
+			await _cacheLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+			try
+			{
+				if (_releaseNotesCache.TryGetValue(releaseTag, out var cached) && cached.ExpiresAt > DateTimeOffset.UtcNow)
+				{
+					return cached.Release;
+				}
+
+				var release = await GetAsync<GitHubRelease>($"releases/tags/{Uri.EscapeDataString(releaseTag)}", cancellationToken).ConfigureAwait(false);
+				if (release is null || release.IsDraft || !string.Equals(release.TagName, releaseTag, StringComparison.Ordinal))
+				{
+					Logging.Warn("GitHub returned an invalid Vixen release for tag {ReleaseTag}.", releaseTag);
+					return null;
+				}
+
+				_releaseNotesCache[releaseTag] = new CachedRelease(release, DateTimeOffset.UtcNow.AddMinutes(5));
+				return release;
+			}
+			finally
+			{
+				_cacheLock.Release();
+			}
+		}
+
 		private async Task<T?> GetAsync<T>(string relativeUri, CancellationToken cancellationToken)
 		{
 			try
@@ -97,10 +138,6 @@ namespace VixenApplication.Updates
 			catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
 			{
 				Logging.Warn("GitHub update check timed out.");
-			}
-			catch (OperationCanceledException)
-			{
-				throw;
 			}
 			catch (JsonException exception)
 			{
