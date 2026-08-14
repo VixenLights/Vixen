@@ -1,6 +1,133 @@
 Release Notes - Vixen 3
 
 
+Release Notes - Vixen 3 - 3.13u0 Build 
+
+** 116 issues resolved in this release. 
+
+** Bugs
+    * [VIX-580] - Cannot change the Color handling of an existing element.
+    * [VIX-938] - Unable to select multiple elements or controllers using Shift Arrow
+    * [VIX-1931] - Playback Start Point
+    * [VIX-2276] - Chase Effect doesn't honor start/end points that are not 0 or 100%
+    * [VIX-2328] - Effect Editor - Curve issues when using un docked
+    * [VIX-2369] - Snap to Effect Bug While Already Snapped
+    * [VIX-2451] - Default Image Map Active With No Maps
+    * [VIX-2686] - Pinwheel center hub size on larger props is off
+    * [VIX-3021] - Text effect removes spaces on empty text rows re-opening
+    * [VIX-3150] - Color picker quick pick green isn't green
+    * [VIX-3477] - Form Scaling - Display Setup Generic Numbered Group
+    * [VIX-3481] - Vixen Crashing During Alignment Operations on Timeline
+    * [VIX-3502] - Create/Edit Multiple form needs fixing
+    * [VIX-3503] - Attempted to divide by zero fatal error
+    * [VIX-3563] - When importing a large xModel in the prop editor, there is no  wait cursor indicating it is doing something.
+    * [VIX-3626] - Cannot drag & drop Gradient or Curve directly onto the Wave, Liquid, Morph, or Fixtures effects in the timeline
+    * [VIX-3705] - Unexpected error while drawing in the grid.
+    * [VIX-3731] - Color Picker clicking on color doesn't de-select
+    * [VIX-3767] - Deprecated OpenGL calls should be cleaned up.
+    * [VIX-3813] - Check for updates in help menu does not work.
+    * [VIX-3821] - Crash copying Intelligent Fixture Effect from one fixture type to another
+    * [VIX-3822] - Logic to determine timeline color of Fixture Functions is flawed / incomplete
+    * [VIX-3826] - Xaml Binding error when viewing effects that have a color list
+    * [VIX-3827] - Suppressed exception on Fixture clone.
+    * [VIX-3853] - Can't copy effects in Dev Build
+    * [VIX-3856] - The webserver project is using deprecated web host and needs to be converted to some form of IHost.
+    * [VIX-3857] - Build is throwing nullability errors in the Vixen.Application Project
+    * [VIX-3863] - Fatal exception in some parts of the app fires a platform not supported exception for code that no longer works in modern .NET
+    * [VIX-3864] - Copying gradient onto pinwheel crashes Vixen Dev Build 1393
+    * [VIX-3878] - Logic in LipSyncMapMatrixEditor is questionable as to it's purpose
+    * [VIX-3896] - MovingHeadIntentHandler could throw null pointer if the right condition existed.
+    * [VIX-3910] - OpenGL Preview was broken in some of the cleanup work
+    * [VIX-3923] - Can't Config Preview in Newest Dev Build
+    * [VIX-3926] - Pangolin Beyond Mark Colors Incorrect
+    * [VIX-3927] - Mark Collection Pane has a few usability bugs
+    * [VIX-3930] - Several property modules specify a static module data class that is not used or needed.
+    * [VIX-3939] - Shift Clicking Row Label Crashes Vixen
+    * [VIX-3941] - Static row events cross-talk between timeline editors
+    * [VIX-3943] - Importing of xmodel with models tag failing.
+    * [VIX-3947] - Mark collection drop down can't select marks with the same name
+    * [VIX-3950] - Inline curve edit can unintentionally copy the curve to a neighboring property
+    * [VIX-3953] - State Mapping helper does not save the edits when adding a new State
+    * [VIX-3956] - Text effect with the Direction of Fall fails to render
+    * [VIX-3957] - Fixtures don't select with selection boxes when preview is scaled
+    * [VIX-3963] - Lipsync and State effect help link doesn't go to effect website page
+    * [VIX-3965] - Fix linked curve and gradient drags to inline Effect Editor properties
+    * [VIX-3972] - Fixture Wizard doesn't allow function row selections
+    * [VIX-3973] - The Fixture property setup in Display Setup crashes when selecting the Cog button to edit a row.
+    * [VIX-3977] - Timeline can become undocked when effect toolbar drag is the form activating gesture. 
+    * [VIX-3978] - Custom value / Text effect value saving issue
+    * [VIX-3980] - Typing a T in an editor text field causes child rows to expand
+    * [VIX-3981] - Adding a video effect without giving it a file causes app crash when sequencer is closed
+
+** New Features
+    * [VIX-2221] - Arrow keys for row selection navigation
+    * [VIX-2702] - Hide groups at the sequence level
+    * [VIX-3819] - Add Display Preview Toolbar Button Tooltips
+    * [VIX-3920] - Add xUnit unit testing framework with seed tests
+    * [VIX-3921] - Add FPP REST API client module
+    * [VIX-3922] - Add FPP Direct Upload capability to Export Wizard
+    * [VIX-3924] - Create the State Effect
+    * [VIX-3925] - Universal Live Preview: shared LivePreview module, Vixen.Messages broadcast project, and WebServer refactor
+    * [VIX-3928] - Add transparent background mode to Preview viewer
+    * [VIX-3929] - Provide the ability to add / edit the State property in the Custom Prop Editor
+    * [VIX-3933] - Element Tags: core API and persistence (catalog, node assignment, ElementTagService)
+    * [VIX-3938] - Add target node selection and depth support to Wipe effect
+    * [VIX-3948] - Add waveform height lock option
+
+** Improvements
+    * [VIX-2499] - Ability to scale background image in custom prop editor
+    * [VIX-2648] - Add mutiple universes button on sACN config form
+    * [VIX-2681] - Text Effect - Gradient across words
+    * [VIX-2690] - Element Tags workflow: Display Setup, Preview Setup, and Sequencer
+    * [VIX-2823] - Untick all and Group tick option on export list
+    * [VIX-2886] - Improve Display Setup Resizing
+    * [VIX-2902] - Use speed curve to control direction of pinwheel effect
+    * [VIX-2973] - Ability to export / import Layers similar to Marks
+    * [VIX-3044] - Add support for circlemodel type
+    * [VIX-3285] - Full screen display setup editor
+    * [VIX-3386] - Add location support to Spiral effect
+    * [VIX-3400] - Meteors Effect Label and Tooltip Cleanup
+    * [VIX-3402] - Picture Effect Missing Tooltips
+    * [VIX-3403] - Spirograph Effect does not have tooltips for the effect settings
+    * [VIX-3532] - Correct code spelling error: effectDesriptor
+    * [VIX-3560] - Update the Wix installer to use the new Files directive to collect the files to package instead of using Heat. This is a new feature in the latest Wix release.
+    * [VIX-3591] - Create the State property and the mechanisms to apply it.
+    * [VIX-3605] - DDP Controller should allow for host name instead of just IP address
+    * [VIX-3632] - Add ability to delete and rename bulk export profiles
+    * [VIX-3768] - Hide Locked Preview Elements
+    * [VIX-3776] - Create Evenly Divided Marks feature - increase quantity
+    * [VIX-3781] - Upgrade project to NET 10 LTS
+    * [VIX-3791] - Add Pangolin Beyond Mark Export Option
+    * [VIX-3832] - Configure the build workflow to utilize a specific .NET SDK
+    * [VIX-3862] - Convert usage of deprecated clipboard win32 listeners to modern replacement.
+    * [VIX-3865] - Duplicate classes in the Effect Editor and WPFCommon Input namespace
+    * [VIX-3868] - Update dependencies to latest versions
+    * [VIX-3869] - Correct the Binary Serialization issues that were suppressed in the NET 10 upgrade.
+    * [VIX-3871] - Code quality improvement
+    * [VIX-3874] - Improve Region Use and Fix Naming Conventions
+    * [VIX-3880] - Several Fixture View classes have the same methods duplicated in them.
+    * [VIX-3900] - Clean up form controls application of the ForeColor and BackColor
+    * [VIX-3905] - Clean up unused usings and namespace directives.
+    * [VIX-3911] - Additional code improvements.
+    * [VIX-3931] - Widen public APIs from ElementNode to IElementNode
+    * [VIX-3932] - Update libraries for security vulnerability
+    * [VIX-3936] - Move timeline cursor to selected effect start
+    * [VIX-3940] - Support Ctrl+Shift drag to clone effects with vertical-only movement
+    * [VIX-3942] - Add element setup helper for the state property
+    * [VIX-3944] - Scroll timeline when moving marks and mark labels
+    * [VIX-3945] - Add lock ruler height option
+    * [VIX-3946] - Limit lipsync effect mark collection options to phoneme type marks 
+    * [VIX-3949] - Lazy-load LipSync node selection tree
+    * [VIX-3951] - State cycle mode start offset
+    * [VIX-3955] - Improve Display Setup close responsiveness with paged controller outputs
+    * [VIX-3962] - Debounce Preview Setup zoom slider rendering
+    * [VIX-3964] - Add option to set effect default settings
+    * [VIX-3966] - Update dependencies to current versions
+    * [VIX-3967] - Replace Custom Prop LiteDB persistence with validated versioned .prp packages
+    * [VIX-3968] - Show busy cursor and status message while Custom Prop Editor vendor browser loads
+    * [VIX-3976] - Video playback speed label needs spaces. State Effect Visual needs batter name.
+    
+    
 Release Notes - Vixen 3 - 3.12u6 Build
 
 ** 5 issues resolved in this release.
