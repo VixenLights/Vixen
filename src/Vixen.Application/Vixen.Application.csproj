@@ -35,6 +35,12 @@
 		</ItemGroup>
 
 		<ItemGroup>
+				<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+					<_Parameter1>Vixen.Tests</_Parameter1>
+				</AssemblyAttribute>
+		</ItemGroup>
+
+		<ItemGroup>
 				<ProjectReference Include="..\Vixen.Common\Broadcast\Broadcast.csproj" />
 				<ProjectReference Include="..\Vixen.Common\Controls\Controls.csproj" />
 				<ProjectReference Include="..\Vixen.Common\ElementTagManager\ElementTagManager.csproj" />

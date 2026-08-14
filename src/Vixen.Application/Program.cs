@@ -1,5 +1,6 @@
 ﻿using Catel.Logging;
 using Vixen.Sys;
+using VixenApplication.Updates;
 
 namespace VixenApplication
 {
@@ -9,6 +10,8 @@ namespace VixenApplication
 		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
 									"with the following information:\n\n";
 		private static VixenApplication? _app;
+		private static HttpClient? _githubClient;
+		private static SocketsHttpHandler? _githubHandler;
 		internal static string LockFilePath = string.Empty;
 		/// <summary>
 		/// The main entry point for the application.
@@ -27,12 +30,30 @@ namespace VixenApplication
 				// To customize application configuration such as set high DPI settings or default font,
 				// see https://aka.ms/applicationconfiguration.
 				ApplicationConfiguration.Initialize();
-				_app = new VixenApplication();
+				_githubHandler = new SocketsHttpHandler
+				{
+					PooledConnectionLifetime = TimeSpan.FromMinutes(10)
+				};
+				_githubClient = new HttpClient(_githubHandler)
+				{
+					BaseAddress = new Uri("https://api.github.com/repos/VixenLights/Vixen/"),
+					Timeout = TimeSpan.FromSeconds(5)
+				};
+				_githubClient.DefaultRequestHeaders.UserAgent.ParseAdd("Vixen-UpdateChecker/1.0");
+				_githubClient.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
+				_githubClient.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2026-03-10");
+
+				_app = new VixenApplication(new GitHubUpdateService(_githubClient));
 				Application.Run(_app);
 			}
 			catch (Exception ex)
 			{
 				LogMessageAndExit(ex);
+			}
+			finally
+			{
+				_githubClient?.Dispose();
+				_githubHandler?.Dispose();
 			}
 		}
 
