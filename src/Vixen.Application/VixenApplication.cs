@@ -41,18 +41,20 @@ namespace VixenApplication
 		private bool _closing;
 		private readonly IProgress<Tuple<int, string>> _startupProgress;
 		private readonly IUpdateService _updateService;
+		private readonly HttpClient _githubDownloadClient;
 
 		private readonly VixenApplicationData _applicationData;
 		private string _releaseVersion = String.Empty;
 		private string _buildVersion = String.Empty;
 
-		public VixenApplication() : this(new UnavailableUpdateService())
+		public VixenApplication() : this(new UnavailableUpdateService(), null)
 		{
 		}
 
-		internal VixenApplication(IUpdateService updateService)
+		internal VixenApplication(IUpdateService updateService, HttpClient githubDownloadClient)
 		{
 			_updateService = updateService ?? throw new ArgumentNullException(nameof(updateService));
+			_githubDownloadClient = githubDownloadClient;
 			InitializeComponent();
 
 			VixenSystem.UIThread = Thread.CurrentThread;
@@ -1279,7 +1281,7 @@ namespace VixenApplication
 
 		private async void UpdatesMenu_Click(object sender, EventArgs e)
 		{
-			var checkForUpdates = new CheckForUpdates(_updateService);
+			var checkForUpdates = new CheckForUpdates(_updateService, _githubDownloadClient);
 			await checkForUpdates.ShowDialogAsync(this);
 			checkForUpdates.Dispose();
 		}

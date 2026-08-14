@@ -14,20 +14,23 @@ namespace VixenApplication
 	public partial class CheckForUpdates : BaseForm
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		private const string GitHubReleaseDownloadPath = "https://github.com/VixenLights/Vixen/releases/download/";
 		private readonly string _currentVersionType;
 		private readonly IUpdateService _updateService;
+		private readonly HttpClient? _githubDownloadClient;
 		private readonly CancellationTokenSource _updateCancellation = new();
 		private string _currentVersion = string.Empty;
 		private string _latestVersion = string.Empty;
 		private bool _newVersionAvailable;
 
-		public CheckForUpdates() : this(new UnavailableUpdateService())
+		public CheckForUpdates() : this(new UnavailableUpdateService(), null)
 		{
 		}
 
-		internal CheckForUpdates(IUpdateService updateService)
+		internal CheckForUpdates(IUpdateService updateService, HttpClient? githubDownloadClient)
 		{
 			_updateService = updateService ?? throw new ArgumentNullException(nameof(updateService));
+			_githubDownloadClient = githubDownloadClient;
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
 			textBoxReleaseNotes.AutoSize = true;
@@ -117,7 +120,7 @@ namespace VixenApplication
 		private async Task DownloadFile()
 		{
 			Cursor = Cursors.WaitCursor;
-			var downloadUrl = new StringBuilder("https://github.com/VixenLights/Vixen/releases/download/");
+			var downloadUrl = new StringBuilder(GitHubReleaseDownloadPath);
 			if (VersionInfo.IsDevBuild)
 			{
 				downloadUrl.Append($"DevBuild-{_latestVersion}/Vixen-DevBuild-0.0.{_latestVersion}-Setup-64bit.exe");
@@ -129,8 +132,9 @@ namespace VixenApplication
 
 			var fileToDownload = downloadUrl.ToString();
 			var fileName = fileToDownload.Split('/').Last();
-			using var httpClient = new HttpClient();
-			var fileBytes = await httpClient.GetByteArrayAsync(fileToDownload);
+			var relativeDownloadUri = fileToDownload[GitHubReleaseDownloadPath.Length..];
+			var githubDownloadClient = _githubDownloadClient ?? throw new InvalidOperationException("The GitHub download client is unavailable.");
+			var fileBytes = await githubDownloadClient.GetByteArrayAsync(relativeDownloadUri);
 			await File.WriteAllBytesAsync(Path.Combine(GetDownloadFolderPath(), fileName), fileBytes);
 			var messageBox = new MessageBoxForm($"Latest version downloaded to {GetDownloadFolderPath()}.", "Info", MessageBoxButtons.OK, SystemIcons.Information);
 			messageBox.ShowDialogThreadSafe(this);

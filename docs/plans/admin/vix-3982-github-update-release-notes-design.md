@@ -150,3 +150,5 @@ Revision note (2026-08-14): Extended VIX-3982 to replace Help > Release Notes' `
 Revision note (2026-08-14): Hardened the Release Notes load event. It now delegates to a task-returning method and catches/logs unexpected failures at the required `async void` event boundary before showing the unavailable state.
 
 Revision note (2026-08-14): Added a display-only fallback to the packaged `Release Notes.txt` when the exact GitHub release is unavailable or its body is empty. The file remains unchanged; its LF-only content is normalized to WinForms line endings in memory before display.
+
+Revision note (2026-08-14): Replaced the per-download `HttpClient` with an injected, application-lifetime GitHub download client. It shares the GitHub connection handler but retains a longer download timeout than the five-second API client.
