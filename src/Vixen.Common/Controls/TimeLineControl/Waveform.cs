@@ -24,7 +24,7 @@ namespace Common.Controls.Timeline
 		private Audio audio;
 		private bool _creatingSamples = false;
 		private bool _showMarkAlignment;
-		private IEnumerable<TimeSpan> _activeTimes;
+		private IReadOnlyList<TimeSpan> _activeTimes = [];
 		private const int MinimumHeight = 30;
 		private readonly Subject<TimeSpan> _timePerPixelChangeSubject;
 		private CancellationTokenSource _updateCancellationTokenSource;
@@ -66,9 +66,71 @@ namespace Common.Controls.Timeline
 
 		private void WaveFormSelectedTimeLineGlobalMove(object sender, AlignmentEventArgs e)
 		{
+			var previousTimes = _activeTimes;
+			var currentTimes = e.Active && e.Times != null ? e.Times.ToArray() : [];
+
 			_showMarkAlignment = e.Active;
-			_activeTimes = e.Times;
-			Refresh();
+			_activeTimes = currentTimes;
+
+			var invalidationRectangle = GetAlignmentInvalidationRectangle(previousTimes, currentTimes);
+			if (!invalidationRectangle.IsEmpty)
+			{
+				Invalidate(invalidationRectangle);
+			}
+		}
+
+		/// <summary>
+		/// Gets the client area that must be repainted for an alignment guide.
+		/// </summary>
+		/// <param name="alignmentTime">The timeline time represented by the alignment guide.</param>
+		/// <returns>A client-coordinate rectangle that contains the guide and its safety margin.</returns>
+		internal Rectangle GetAlignmentInvalidationRectangle(TimeSpan alignmentTime)
+		{
+			var x = (int)MathF.Floor(timeToPixels(alignmentTime - VisibleTimeStart));
+			var guideRectangle = new Rectangle(x - 2, 0, 5, ClientSize.Height);
+			return Rectangle.Intersect(ClientRectangle, guideRectangle);
+		}
+
+		/// <summary>
+		/// Gets the client area that must be repainted to remove previous alignment guides and draw current guides.
+		/// </summary>
+		/// <param name="previousTimes">The timeline times of the alignment guides previously displayed.</param>
+		/// <param name="currentTimes">The timeline times of the alignment guides currently displayed.</param>
+		/// <returns>A client-coordinate rectangle that contains every visible previous and current guide.</returns>
+		internal Rectangle GetAlignmentInvalidationRectangle(IEnumerable<TimeSpan> previousTimes, IEnumerable<TimeSpan> currentTimes)
+		{
+			var invalidationRectangle = Rectangle.Empty;
+
+			foreach (var alignmentTime in previousTimes.Concat(currentTimes))
+			{
+				var guideRectangle = GetAlignmentInvalidationRectangle(alignmentTime);
+				if (guideRectangle.IsEmpty)
+				{
+					continue;
+				}
+
+				invalidationRectangle = invalidationRectangle.IsEmpty
+					? guideRectangle
+					: Rectangle.Union(invalidationRectangle, guideRectangle);
+			}
+
+			return invalidationRectangle;
+		}
+
+		/// <summary>
+		/// Gets the bounded absolute waveform sample range that intersects a client paint clip.
+		/// </summary>
+		/// <param name="clipRectangle">The client-coordinate area being painted.</param>
+		/// <returns>A half-open range of waveform sample indexes to draw.</returns>
+		internal (int Start, int EndExclusive) GetVisibleSampleRange(Rectangle clipRectangle)
+		{
+			var visibleStartPixel = (int)MathF.Floor(timeToPixels(VisibleTimeStart));
+			var mediaDurationPixel = audio == null ? 0 : (int)MathF.Floor(timeToPixels(audio.MediaDuration));
+			var maximumSampleIndex = Math.Min(samples.Count, mediaDurationPixel);
+			var start = Math.Clamp(visibleStartPixel + clipRectangle.Left - 1, 0, maximumSampleIndex);
+			var endExclusive = Math.Clamp(visibleStartPixel + clipRectangle.Right + 1, start, maximumSampleIndex);
+
+			return (start, endExclusive);
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -222,6 +284,7 @@ namespace Common.Controls.Timeline
 			//Do nothing
 		}
 
+		/// <inheritdoc />
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			if (VisibleTimeStart <= audio.MediaDuration)
@@ -260,10 +323,9 @@ namespace Common.Controls.Timeline
 						bottomPen = CreatePen(bottomHeight,true);
 					}
 
-					int start = (int) timeToPixels(VisibleTimeStart);
-					int end = (int) timeToPixels(VisibleTimeEnd <= audio.MediaDuration ? VisibleTimeEnd : audio.MediaDuration);
+					var (start, endExclusive) = GetVisibleSampleRange(e.ClipRectangle);
 					
-					for (int x = start; x < end; x += 1)
+					for (var x = start; x < endExclusive; x += 1)
 					{
 						if (samples.Count <= x) break;
 						var lineHeight = topHeight * samples[x].High;

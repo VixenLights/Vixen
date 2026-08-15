@@ -12,7 +12,7 @@ The immediate scope is Remediation A from `docs/reviews/marks-bar-drag-performan
 
 - [x] (2026-08-15 00:00Z) Evaluated `docs/reviews/marks-bar-drag-performance-remediation-plan.md`, `.agents/PLANS.md`, the waveform implementation, timeline coordinate conversion, alignment-event publishers, and nearby WinForms test conventions.
 - [x] (2026-08-15 20:08Z) Updated VIX-3985 with the user-facing Remediation A scope, acceptance criteria, validation approach, and evidence-based follow-up gates.
-- [ ] Replace synchronous alignment repainting with narrow invalidation and clip-aware waveform sample drawing.
+- [x] (2026-08-15 20:11Z) Replaced synchronous alignment repainting with narrow old/new guide invalidation and clip-aware waveform sample drawing; the affected Controls project builds successfully.
 - [ ] Add deterministic waveform alignment rendering tests.
 - [ ] Build, run focused and complete tests, perform the manual drag regressions, and capture a controlled replacement dotTrace profile.
 - [ ] Update VIX-3985 with final requirements changes, validation evidence, and an understandable user-facing result; decide whether Remediation B is necessary.
@@ -30,6 +30,9 @@ The immediate scope is Remediation A from `docs/reviews/marks-bar-drag-performan
 
 - Observation: Several normal lifecycle paths already request a full repaint through `Invalidate()`, including viewport changes in `TimelineControlBase`, completed sample generation, audio changes, and cursor movement. Those paths must retain complete visible-waveform redraw behavior.
   Evidence: `TimelineControlBase.OnVisibleTimeStartChanged`, `Waveform.FinishedSamples`, `Waveform.SetAudio`, and `Waveform.CursorMoved` each call `Invalidate()`.
+
+- Observation: The Controls project builds successfully after the waveform change, with four existing Vixen.Core warnings and no errors.
+  Evidence: `dotnet build src/Vixen.Common/Controls/Controls.csproj -c Release --no-restore` completed with `0 Error(s)`; the warnings are CS8632, CS0618, and CS0067 in Vixen.Core files outside this milestone.
 
 ## Decision Log
 
@@ -49,9 +52,13 @@ The immediate scope is Remediation A from `docs/reviews/marks-bar-drag-performan
   Rationale: The baseline retains a separate 1,134.1 ms live Grid branch. After A, profile first; promote B only when that residual branch is demonstrably the next limiter.
   Date/Author: 2026-08-15 / Codex and user
 
+- Decision: Expose narrow internal waveform calculation helpers for the existing `Vixen.Tests` friend assembly.
+  Rationale: Guide invalidation and clip-to-sample calculations need deterministic boundary tests without publishing a new API or requiring paint-message timing.
+  Date/Author: 2026-08-15 / Codex
+
 ## Outcomes & Retrospective
 
-Planning is complete and VIX-3985 now describes the user-visible Remediation A contract. Runtime implementation has not started. After implementation, record the changed files, focused and full test results, manual observations, the replacement profile values, and whether VIX-3985 proceeds to B or closes after A.
+VIX-3985 now describes the user-visible Remediation A contract, and the production waveform change is complete. `Waveform.cs` now materializes alignment times, invalidates the union of the old and new narrow guide areas without forcing a paint, and restricts waveform drawing to the paint clip's bounded sample range. The Controls project builds successfully; deterministic tests, end-to-end validation, and replacement profiling remain.
 
 ## Context and Orientation
 
@@ -190,3 +197,5 @@ The waveform's stored alignment times must always be a non-null materialized col
 Plan revision note (2026-08-15): Initial VIX-3985 ExecPlan created after evaluating the remediation review against `.agents/PLANS.md` and the current waveform code. It intentionally limits the first implementation to Remediation A, adds the required initial/final Jira milestones and user-facing updates, and makes B/C promotion dependent on a replacement profile.
 
 Plan revision note (2026-08-15): Completed Milestone 1 by updating VIX-3985 with a concise user-facing Summary, Scope, Acceptance Criteria, validation approach, and the profile-driven follow-up rule. No code or test changes were made.
+
+Plan revision note (2026-08-15): Completed Milestone 2. `Waveform.cs` no longer calls `Refresh()` for alignment activity; it invalidates one bounded union of previous and current guide regions and honors `PaintEventArgs.ClipRectangle` when drawing samples. Added documented internal calculation seams for Milestone 3 tests. The Controls Release build succeeded with four pre-existing Vixen.Core warnings and no errors. Added a user-facing VIX-3985 progress comment describing the completed first pass and next validation step.
