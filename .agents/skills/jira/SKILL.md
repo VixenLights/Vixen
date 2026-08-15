@@ -50,6 +50,27 @@ The Atlassian MCP may use environment variables:
 - `JIRA_EMAIL`: Email associated with API token
 - `JIRA_PROJECTS_FILTER`: (Optional) Comma-separated project keys to filter
 
+## User-Facing Issue Descriptions
+
+When creating or updating a JIRA issue description, write for the people who use and review Vixen rather than for the implementer. Use this format unless the user explicitly requests a technical issue description:
+
+```markdown
+## Summary
+
+Describe the user problem and the outcome in one or two short paragraphs.
+
+## Scope
+
+- State the user-visible behaviors included in the change.
+- State important user-facing behaviors that must remain unchanged.
+
+## Acceptance Criteria
+
+- Given ..., when ..., then ...
+```
+
+Keep the JIRA description concise and use plain language. Do not include class names, event routes, formulas, internal APIs, file paths, implementation alternatives, or test seam details. For work governed by a local specification or ExecPlan, translate its purpose and acceptance criteria into user outcomes; keep the technical design, code locations, and detailed test plan in the repository-local documents. A closing JIRA comment should similarly report user-visible completion and short validation results, not internal implementation details.
+
 ## Skill Workflow
 
 ### 1. Issue Creation Workflow
@@ -68,10 +89,10 @@ Do NOT ask for issue type yet — fetch valid types from the project first (Step
 
 If the request originates from an ExecPlan document (e.g., `docs/plans/*.md`), read the plan
 before creating the issue and extract:
-- **Scope / description** from the plan's Purpose or Plan of Work sections
-- **Acceptance criteria** from the plan's Validation and Acceptance section — include these
-  as a dedicated "Acceptance Criteria" section in the issue description
-- **Expected test names or outcomes** if the plan lists them explicitly
+- **User outcome** from the plan's Purpose or Plan of Work sections
+- **User-facing acceptance criteria** from the plan's Validation and Acceptance section — include
+  these as a dedicated "Acceptance Criteria" section in the issue description
+- **Validation outcome** only when it can be stated concisely without exposing implementation detail
 
 Always include acceptance criteria in the issue description when they are available, whether
 from a plan document or provided directly by the user. A JIRA issue without acceptance criteria
