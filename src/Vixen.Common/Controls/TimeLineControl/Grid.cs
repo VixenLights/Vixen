@@ -57,6 +57,7 @@ namespace Common.Controls.Timeline
 
 		//We turn these into snap points for effects.
 		private ObservableCollection<IMarkCollection> _markCollections;
+		private readonly Dictionary<IMark, MarkSnapPointRegistration> _markSnapPointRegistrations = new(ReferenceEqualityComparer.Instance);
 		private readonly TimeLineGlobalEventManager _timelineGlobalEventManager;
 		private readonly TimeLineGlobalStateManager _timelineGlobalStateManager;
 
@@ -393,6 +394,7 @@ namespace Common.Controls.Timeline
 		private int CurrentRowIndexUnderMouse { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
+		internal IReadOnlyDictionary<IMark, MarkSnapPointRegistration> MarkSnapPointRegistrations => _markSnapPointRegistrations;
 
 		private IEnumerable<TimeSpan> MarkAlignmentPoints { get; set; } = Enumerable.Empty<TimeSpan>();
 		private List<Element> tempSelectedElements = new List<Element>();
@@ -2242,17 +2244,13 @@ namespace Common.Controls.Timeline
 
 		private void RecalculateAllStaticSnapPoints()
 		{
-			if (StaticSnapPoints == null)
-				return;
-
-			SortedDictionary<TimeSpan, List<SnapDetails>> newPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
-			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints) {
-				newPoints[kvp.Key] = new List<SnapDetails>();
-				foreach (SnapDetails details in kvp.Value) {
-					newPoints[kvp.Key].Add(CalculateSnapDetailsForPoint(details.SnapTime, details.SnapLevel, details.SnapColor, details.SnapBold, details.SnapSolidLine));
+			foreach (List<SnapDetails> snapDetails in StaticSnapPoints.Values)
+			{
+				foreach (SnapDetails details in snapDetails)
+				{
+					UpdateSnapRange(details);
 				}
 			}
-			StaticSnapPoints = newPoints;
 		}
 
 		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
@@ -2271,14 +2269,43 @@ namespace Common.Controls.Timeline
 			return result;
 		}
 
+		private void UpdateSnapRange(SnapDetails details)
+		{
+			details.SnapStart = details.SnapTime - TimeSpan.FromTicks(TimePerPixel.Ticks * details.SnapLevel * SnapStrength);
+			details.SnapEnd = details.SnapTime + TimeSpan.FromTicks(TimePerPixel.Ticks * details.SnapLevel * SnapStrength);
+		}
+
+		private SnapDetails AddSnapPointCore(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
+		{
+			SnapDetails details = CalculateSnapDetailsForPoint(snapTime, level, color, lineBold, solidLine);
+			if (!StaticSnapPoints.TryGetValue(snapTime, out List<SnapDetails> detailsAtTime))
+			{
+				detailsAtTime = [];
+				StaticSnapPoints.Add(snapTime, detailsAtTime);
+			}
+
+			detailsAtTime.Add(details);
+			return details;
+		}
+
+		private void ClearMarkSnapPoints()
+		{
+			StaticSnapPoints.Clear();
+			_markSnapPointRegistrations.Clear();
+		}
+
+		private void InvalidateSnapPoints()
+		{
+			if (!SuppressInvalidate)
+			{
+				Invalidate();
+			}
+		}
+
 		public void AddSnapPoint(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
 		{
-			if (!StaticSnapPoints.ContainsKey(snapTime))
-				StaticSnapPoints.Add(snapTime, new List<SnapDetails> {CalculateSnapDetailsForPoint(snapTime, level, color, lineBold, solidLine)});
-			else
-				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color, lineBold, solidLine));
-
-			if (!SuppressInvalidate) Invalidate();
+			AddSnapPointCore(snapTime, level, color, lineBold, solidLine);
+			InvalidateSnapPoints();
 		}
 
 		public bool RemoveSnapPoint(TimeSpan snapTime)
@@ -2290,8 +2317,8 @@ namespace Common.Controls.Timeline
 
 		public void ClearSnapPoints()
 		{
-			StaticSnapPoints.Clear();
-			if (!SuppressInvalidate) Invalidate();
+			ClearMarkSnapPoints();
+			InvalidateSnapPoints();
 		}
 
 		#region Marks
@@ -2327,21 +2354,30 @@ namespace Common.Controls.Timeline
 
 		public void CreateSnapPointsFromMarks()
 		{
-			ClearSnapPoints();
-			if (_markCollections == null) return;
-			foreach (var mc in _markCollections)
+			ClearMarkSnapPoints();
+			if (_markCollections != null)
 			{
-				if (!mc.ShowGridLines) continue;
-				mc.EnsureOrder();
-				foreach (var mark in mc.Marks)
+				foreach (IMarkCollection markCollection in _markCollections)
 				{
-					AddSnapPoint(mark.StartTime, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
-					if (mc.ShowTailGridLines)
+					if (!markCollection.ShowGridLines)
 					{
-						AddSnapPoint(mark.EndTime, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
+						continue;
+					}
+
+					foreach (IMark mark in markCollection.Marks)
+					{
+						SnapDetails startSnapPoint = AddSnapPointCore(mark.StartTime, markCollection.Level, markCollection.Decorator.Color,
+							markCollection.Decorator.IsBold, markCollection.Decorator.IsSolidLine);
+						SnapDetails? endSnapPoint = markCollection.ShowTailGridLines
+							? AddSnapPointCore(mark.EndTime, markCollection.Level, markCollection.Decorator.Color,
+								markCollection.Decorator.IsBold, markCollection.Decorator.IsSolidLine)
+							: null;
+						_markSnapPointRegistrations[mark] = new MarkSnapPointRegistration(startSnapPoint, endSnapPoint);
 					}
 				}
 			}
+
+			InvalidateSnapPoints();
 		}
 
 		private void UnConfigureMarks()
