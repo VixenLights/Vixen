@@ -13,7 +13,7 @@ The immediate scope is Remediation A from `docs/reviews/marks-bar-drag-performan
 - [x] (2026-08-15 00:00Z) Evaluated `docs/reviews/marks-bar-drag-performance-remediation-plan.md`, `.agents/PLANS.md`, the waveform implementation, timeline coordinate conversion, alignment-event publishers, and nearby WinForms test conventions.
 - [x] (2026-08-15 20:08Z) Updated VIX-3985 with the user-facing Remediation A scope, acceptance criteria, validation approach, and evidence-based follow-up gates.
 - [x] (2026-08-15 20:11Z) Replaced synchronous alignment repainting with narrow old/new guide invalidation and clip-aware waveform sample drawing; the affected Controls project builds successfully.
-- [ ] Add deterministic waveform alignment rendering tests.
+- [x] (2026-08-15 20:22Z) Added deterministic waveform alignment rendering tests and verified 25 focused waveform, height-lock, and Marks Bar auto-scroll tests pass.
 - [ ] Build, run focused and complete tests, perform the manual drag regressions, and capture a controlled replacement dotTrace profile.
 - [ ] Update VIX-3985 with final requirements changes, validation evidence, and an understandable user-facing result; decide whether Remediation B is necessary.
 
@@ -33,6 +33,9 @@ The immediate scope is Remediation A from `docs/reviews/marks-bar-drag-performan
 
 - Observation: The Controls project builds successfully after the waveform change, with four existing Vixen.Core warnings and no errors.
   Evidence: `dotnet build src/Vixen.Common/Controls/Controls.csproj -c Release --no-restore` completed with `0 Error(s)`; the warnings are CS8632, CS0618, and CS0067 in Vixen.Core files outside this milestone.
+
+- Observation: The focused test set passes with the new deterministic rendering-bound tests included.
+  Evidence: `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:/Dev/Vixen/" --filter "FullyQualifiedName~WaveformAlignmentRenderingTests|FullyQualifiedName~WaveformLockHeightTests|FullyQualifiedName~MarksBarAutoScrollTests"` reported `Failed: 0, Passed: 25`.
 
 ## Decision Log
 
@@ -58,7 +61,7 @@ The immediate scope is Remediation A from `docs/reviews/marks-bar-drag-performan
 
 ## Outcomes & Retrospective
 
-VIX-3985 now describes the user-visible Remediation A contract, and the production waveform change is complete. `Waveform.cs` now materializes alignment times, invalidates the union of the old and new narrow guide areas without forcing a paint, and restricts waveform drawing to the paint clip's bounded sample range. The Controls project builds successfully; deterministic tests, end-to-end validation, and replacement profiling remain.
+VIX-3985 now describes the user-visible Remediation A contract, and the production waveform change plus its deterministic test coverage are complete. `Waveform.cs` materializes alignment times, invalidates the union of the old and new narrow guide areas without forcing a paint, and restricts waveform drawing to the paint clip's bounded sample range. The Controls project builds successfully and the 25-test focused suite passes; end-to-end validation and replacement profiling remain.
 
 ## Context and Orientation
 
@@ -199,3 +202,5 @@ Plan revision note (2026-08-15): Initial VIX-3985 ExecPlan created after evaluat
 Plan revision note (2026-08-15): Completed Milestone 1 by updating VIX-3985 with a concise user-facing Summary, Scope, Acceptance Criteria, validation approach, and the profile-driven follow-up rule. No code or test changes were made.
 
 Plan revision note (2026-08-15): Completed Milestone 2. `Waveform.cs` no longer calls `Refresh()` for alignment activity; it invalidates one bounded union of previous and current guide regions and honors `PaintEventArgs.ClipRectangle` when drawing samples. Added documented internal calculation seams for Milestone 3 tests. The Controls Release build succeeded with four pre-existing Vixen.Core warnings and no errors. Added a user-facing VIX-3985 progress comment describing the completed first pass and next validation step.
+
+Plan revision note (2026-08-15): Completed Milestone 3. Added `WaveformAlignmentRenderingTests` for guide clipping, prior/current guide coverage, inactive null-time clearing, and left/right/outside/full clip sample ranges. A full x64 test-target build succeeded, and the focused waveform, height-lock, and Marks Bar auto-scroll run passed all 25 tests without timing-sensitive assertions. Added a user-facing VIX-3985 validation comment describing the focused automated coverage and remaining end-to-end checks.
