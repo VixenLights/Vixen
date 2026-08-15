@@ -17,7 +17,7 @@ The user can observe the improvement by continuously dragging a Mark in a dense 
 - [x] (2026-08-15 20:30Z) Created this implementation plan for the evidence-supported Remediation B.
 - [x] (2026-08-15 20:43Z) Updated VIX-3985 with the user-facing Remediation B scope, acceptance criteria, and validation plan.
 - [x] (2026-08-15 20:59Z) Added the Mark snap-point registration foundation and deterministic full-rebuild/scale-change tests; the focused sequencer suite passed 22 tests with zero failures.
-- [ ] Make `Grid` own live, incremental snap-point maintenance and remove the editor form's duplicate live full rebuild.
+- [x] (2026-08-15 21:12Z) Moved live snap-point maintenance into `Grid`, removed the Timed Sequence Editor's per-mouse full rebuild, and passed 26 focused sequencer tests with zero failures.
 - [ ] Run focused and complete automated validation, perform the manual sequencer scenarios, and capture a comparable 10-second replacement profile.
 - [ ] Adjust VIX-3985 if needed and add a concise user-facing validation comment; decide from the profile whether Remediation C needs a separate plan.
 
@@ -37,6 +37,9 @@ The user can observe the improvement by continuously dragging a Mark in a dense 
 
 - Observation: Replacing every `SnapDetails` object when the pixel-to-time scale changes would leave a Mark registration pointing to stale objects.
   Evidence: The former `RecalculateAllStaticSnapPoints()` created a new dictionary and new details, while registrations must later remove the exact objects that remain in the live dictionary.
+
+- Observation: A `MarksMoving` event can contain the same Mark more than once.
+  Evidence: The new focused test supplies a duplicate entry and verifies that one live update preserves the other Mark's shared-time detail while replacing the moved Mark's detail only once.
 
 ## Decision Log
 
@@ -64,9 +67,13 @@ The user can observe the improvement by continuously dragging a Mark in a dense 
   Rationale: A later live update can reliably remove the objects registered for a Mark, while the computed snap windows still reflect the current scale and snap strength.
   Date/Author: 2026-08-15 / Codex.
 
+- Decision: Make `Grid` the sole live `MarksMoving` subscriber that maintains Mark-derived snap points, while preserving the editor form's completed-operation rebuild.
+  Rationale: This eliminates the all-Mark pointer-frequency rebuild without weakening the final mouse-up consistency backstop for undo and other completed-operation paths.
+  Date/Author: 2026-08-15 / Codex.
+
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. The Grid full-rebuild path now records the exact start/end details contributed by each eligible Mark, batches its own rebuild invalidation, and retains those exact objects when scale changes. `GridMarkSnapPointTests`, waveform tests, and auto-scroll tests passed 22 focused tests with zero failures. Live `MarksMoving` ownership and editor-handler removal remain for Milestone 3. Remediation A reduced the sampled `MouseMove_DragMoving` subtree from 4,886.3 ms to 1,108.8 ms (about 77.3%), but the remaining full grid rebuild still causes visible lag. Record changed files, full test results, manual findings, and the comparable replacement profile after subsequent milestones. State explicitly whether the evidence warrants a separately approved Remediation C plan.
+Milestones 1 through 3 are complete. Grid now subscribes to live Mark movement, removes and recreates only the exact snap details for the distinct affected Mark instances, and invalidates once per changed batch. The editor form no longer runs a full rebuild for each pointer move; it retains the existing completed-operation rebuild. `GridMarkSnapPointTests`, waveform tests, and auto-scroll tests passed 26 focused tests with zero failures. Remediation A reduced the sampled `MouseMove_DragMoving` subtree from 4,886.3 ms to 1,108.8 ms (about 77.3%), but the remaining full grid rebuild still requires manual and replacement-profile validation in Milestone 4. Record full test results, manual findings, and the comparable replacement profile after that milestone. State explicitly whether the evidence warrants a separately approved Remediation C plan.
 
 ## Context and Orientation
 
@@ -191,4 +198,4 @@ In `Grid.cs`, maintain a private `Dictionary<IMark, MarkSnapPointRegistration>` 
 
 In `TimedSequenceEditorForm.cs`, `TimeLineGlobalMoved` continues calling `UpdateGridSnapTimes()` after it records undo information. The live `TimeLineGlobalMoving` handler and subscription are removed. `TimeLineGlobalEventManager` remains unchanged.
 
-Plan revision note (2026-08-15 21:02Z): Corrected the nullable flow in the new Grid insertion helper and enabled nullable annotations in the new registration file. The full `Vixen_Tests` build target and the focused sequencer test run both passed; no nullable warnings remain in the touched files. Milestone 3 remains next.
+Plan revision note (2026-08-15 21:12Z): Completed Milestone 3. Grid now subscribes to `MarksMoving`, performs exact reference-based remove/recreate operations for distinct moved Marks, and invalidates once after a changed batch. Removed the editor form's live `MarksMoving` full rebuild but retained its mouse-up rebuild. Added focused live-event, duplicate-time, multi-collection, and disposed-control tests; the focused sequencer run passed 26 tests with zero failures. Milestone 4 remains next.

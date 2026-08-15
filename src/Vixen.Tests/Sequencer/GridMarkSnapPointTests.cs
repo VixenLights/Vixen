@@ -85,14 +85,105 @@ public sealed class GridMarkSnapPointTests
 		Assert.Equal(mark.EndTime, endSnapPoint.SnapTime);
 	}
 
+	[Fact]
+	public void MarksMoving_WhenOneMarkMoves_ReplacesOnlyItsRegisteredDetails()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection(showTailGridLines: true);
+		Mark movingMark = AddMark(collection, 1, 1);
+		Mark stationaryMark = AddMark(collection, 4, 1);
+
+		using Grid grid = CreateGrid(instanceId, collection);
+		MarkSnapPointRegistration previousRegistration = grid.MarkSnapPointRegistrations[movingMark];
+		MarkSnapPointRegistration stationaryRegistration = grid.MarkSnapPointRegistrations[stationaryMark];
+		movingMark.StartTime = TimeSpan.FromSeconds(2);
+
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs(new List<IMark> { movingMark }));
+
+		MarkSnapPointRegistration currentRegistration = grid.MarkSnapPointRegistrations[movingMark];
+		Assert.False(grid.ContainsStaticSnapPoint(previousRegistration.StartSnapPoint));
+		Assert.False(grid.ContainsStaticSnapPoint(previousRegistration.EndSnapPoint!));
+		Assert.True(grid.ContainsStaticSnapPoint(currentRegistration.StartSnapPoint));
+		Assert.True(grid.ContainsStaticSnapPoint(currentRegistration.EndSnapPoint!));
+		Assert.Equal(movingMark.StartTime, currentRegistration.StartSnapPoint.SnapTime);
+		Assert.Equal(movingMark.EndTime, currentRegistration.EndSnapPoint!.SnapTime);
+		Assert.Same(stationaryRegistration, grid.MarkSnapPointRegistrations[stationaryMark]);
+		Assert.True(grid.ContainsStaticSnapPoint(stationaryRegistration.StartSnapPoint));
+		Assert.True(grid.ContainsStaticSnapPoint(stationaryRegistration.EndSnapPoint!));
+	}
+
+	[Fact]
+	public void MarksMoving_WhenDuplicateTimeMarkMoves_RetainsTheOtherMarkDetail()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection();
+		Mark movingMark = AddMark(collection, 1, 1);
+		Mark stationaryMark = AddMark(collection, 1, 2);
+
+		using Grid grid = CreateGrid(instanceId, collection);
+		MarkSnapPointRegistration previousRegistration = grid.MarkSnapPointRegistrations[movingMark];
+		MarkSnapPointRegistration stationaryRegistration = grid.MarkSnapPointRegistrations[stationaryMark];
+		movingMark.StartTime = TimeSpan.FromSeconds(3);
+
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs(new List<IMark> { movingMark, movingMark }));
+
+		Assert.False(grid.ContainsStaticSnapPoint(previousRegistration.StartSnapPoint));
+		Assert.True(grid.ContainsStaticSnapPoint(stationaryRegistration.StartSnapPoint));
+		Assert.Same(stationaryRegistration, grid.MarkSnapPointRegistrations[stationaryMark]);
+		Assert.Equal(movingMark.StartTime, grid.MarkSnapPointRegistrations[movingMark].StartSnapPoint.SnapTime);
+	}
+
+	[Fact]
+	public void MarksMoving_WhenMarksFromMultipleCollectionsMove_UpdatesEachRegistration()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection firstCollection = CreateCollection(showTailGridLines: true);
+		Mark firstMark = AddMark(firstCollection, 1, 1);
+		MarkCollection secondCollection = CreateCollection();
+		Mark secondMark = AddMark(secondCollection, 4, 1);
+
+		using Grid grid = CreateGrid(instanceId, firstCollection, secondCollection);
+		firstMark.StartTime = TimeSpan.FromSeconds(2);
+		secondMark.StartTime = TimeSpan.FromSeconds(5);
+
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs(new List<IMark> { firstMark, secondMark }));
+
+		Assert.Equal(firstMark.StartTime, grid.MarkSnapPointRegistrations[firstMark].StartSnapPoint.SnapTime);
+		Assert.Equal(firstMark.EndTime, grid.MarkSnapPointRegistrations[firstMark].EndSnapPoint!.SnapTime);
+		Assert.Equal(secondMark.StartTime, grid.MarkSnapPointRegistrations[secondMark].StartSnapPoint.SnapTime);
+		Assert.Null(grid.MarkSnapPointRegistrations[secondMark].EndSnapPoint);
+	}
+
+	[Fact]
+	public void MarksMoving_WhenGridIsDisposed_DoesNotInvokeTheDisposedControl()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection();
+		Mark mark = AddMark(collection, 1, 1);
+		Grid grid = CreateGrid(instanceId, collection);
+
+		grid.Dispose();
+		mark.StartTime = TimeSpan.FromSeconds(2);
+		Exception? exception = Record.Exception(() =>
+			TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs(new List<IMark> { mark })));
+
+		Assert.Null(exception);
+		Assert.Empty(grid.MarkSnapPointRegistrations);
+	}
+
 	private static Grid CreateGrid(params IMarkCollection[] markCollections)
+	{
+		return CreateGrid(Guid.NewGuid(), markCollections);
+	}
+
+	private static Grid CreateGrid(Guid instanceId, params IMarkCollection[] markCollections)
 	{
 		TimeInfo timeInfo = new()
 		{
 			TimePerPixel = TimeSpan.FromMilliseconds(100),
 			TotalTime = TimeSpan.FromSeconds(60)
 		};
-		Grid grid = new(timeInfo, Guid.NewGuid());
+		Grid grid = new(timeInfo, instanceId);
 		grid.MarkCollections = new ObservableCollection<IMarkCollection>(markCollections);
 		return grid;
 	}

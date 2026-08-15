@@ -95,6 +95,7 @@ namespace Common.Controls.Timeline
 			InitAutoScrollTimer();
 
 			_timelineGlobalEventManager.AlignmentActivity += TimeLineAlignmentHandler;
+			_timelineGlobalEventManager.MarksMoving += TimeLineGlobalEventManager_MarksMoving;
 
 			// Drag & Drop
 			AllowDrop = true;
@@ -140,6 +141,7 @@ namespace Common.Controls.Timeline
 			m_autoScrollTimer.Enabled = false;
 			m_autoScrollTimer.Tick -= m_autoScrollTimer_Tick;
 			_timelineGlobalEventManager.AlignmentActivity -= TimeLineAlignmentHandler;
+			_timelineGlobalEventManager.MarksMoving -= TimeLineGlobalEventManager_MarksMoving;
 
 			TimeInfo= null;
 
@@ -395,6 +397,9 @@ namespace Common.Controls.Timeline
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
 		internal IReadOnlyDictionary<IMark, MarkSnapPointRegistration> MarkSnapPointRegistrations => _markSnapPointRegistrations;
+		internal bool ContainsStaticSnapPoint(SnapDetails details) =>
+			StaticSnapPoints.TryGetValue(details.SnapTime, out List<SnapDetails> detailsAtTime) &&
+			detailsAtTime.Any(candidate => ReferenceEquals(candidate, details));
 
 		private IEnumerable<TimeSpan> MarkAlignmentPoints { get; set; } = Enumerable.Empty<TimeSpan>();
 		private List<Element> tempSelectedElements = new List<Element>();
@@ -549,6 +554,21 @@ namespace Common.Controls.Timeline
 		private void TimeLineAlignmentHandler(object sender, AlignmentEventArgs e)
 		{
 			MarkAlignmentPoints = e.Times ?? Enumerable.Empty<TimeSpan>();
+		}
+
+		private void TimeLineGlobalEventManager_MarksMoving(object sender, MarksMovingEventArgs e)
+		{
+			bool changed = false;
+			foreach (IMark mark in e.Marks.Distinct(ReferenceEqualityComparer.Instance))
+			{
+				changed |= RemoveMarkSnapPointRegistration(mark);
+				changed |= RegisterMarkSnapPoints(mark);
+			}
+
+			if (changed)
+			{
+				InvalidateSnapPoints();
+			}
 		}
 
 		protected void RowChangedHandler(object sender, EventArgs e)
@@ -2294,6 +2314,61 @@ namespace Common.Controls.Timeline
 			_markSnapPointRegistrations.Clear();
 		}
 
+		private bool RemoveMarkSnapPointRegistration(IMark mark)
+		{
+			if (!_markSnapPointRegistrations.Remove(mark, out MarkSnapPointRegistration? registration))
+			{
+				return false;
+			}
+
+			bool removed = RemoveSnapPointDetail(registration.StartSnapPoint);
+			if (registration.EndSnapPoint != null)
+			{
+				removed |= RemoveSnapPointDetail(registration.EndSnapPoint);
+			}
+
+			return removed;
+		}
+
+		private bool RemoveSnapPointDetail(SnapDetails details)
+		{
+			if (!StaticSnapPoints.TryGetValue(details.SnapTime, out List<SnapDetails> detailsAtTime))
+			{
+				return false;
+			}
+
+			int detailIndex = detailsAtTime.FindIndex(candidate => ReferenceEquals(candidate, details));
+			if (detailIndex < 0)
+			{
+				return false;
+			}
+
+			detailsAtTime.RemoveAt(detailIndex);
+			if (detailsAtTime.Count == 0)
+			{
+				StaticSnapPoints.Remove(details.SnapTime);
+			}
+
+			return true;
+		}
+
+		private bool RegisterMarkSnapPoints(IMark mark)
+		{
+			if (mark.Parent is not { ShowGridLines: true } markCollection)
+			{
+				return false;
+			}
+
+			SnapDetails startSnapPoint = AddSnapPointCore(mark.StartTime, markCollection.Level, markCollection.Decorator.Color,
+				markCollection.Decorator.IsBold, markCollection.Decorator.IsSolidLine);
+			SnapDetails? endSnapPoint = markCollection.ShowTailGridLines
+				? AddSnapPointCore(mark.EndTime, markCollection.Level, markCollection.Decorator.Color,
+					markCollection.Decorator.IsBold, markCollection.Decorator.IsSolidLine)
+				: null;
+			_markSnapPointRegistrations[mark] = new MarkSnapPointRegistration(startSnapPoint, endSnapPoint);
+			return true;
+		}
+
 		private void InvalidateSnapPoints()
 		{
 			if (!SuppressInvalidate)
@@ -2366,13 +2441,7 @@ namespace Common.Controls.Timeline
 
 					foreach (IMark mark in markCollection.Marks)
 					{
-						SnapDetails startSnapPoint = AddSnapPointCore(mark.StartTime, markCollection.Level, markCollection.Decorator.Color,
-							markCollection.Decorator.IsBold, markCollection.Decorator.IsSolidLine);
-						SnapDetails? endSnapPoint = markCollection.ShowTailGridLines
-							? AddSnapPointCore(mark.EndTime, markCollection.Level, markCollection.Decorator.Color,
-								markCollection.Decorator.IsBold, markCollection.Decorator.IsSolidLine)
-							: null;
-						_markSnapPointRegistrations[mark] = new MarkSnapPointRegistration(startSnapPoint, endSnapPoint);
+						RegisterMarkSnapPoints(mark);
 					}
 				}
 			}

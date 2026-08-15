@@ -509,7 +509,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerBeginDragTimeRange += timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
 
-			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalMoved;
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalDeleted;
 			_timeLineGlobalEventManager.MarksPasted += TimeLineGlobalEventManagerOnMarksPasted;
@@ -723,7 +722,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.MarksMoved -= TimeLineGlobalMoved;
 			_timeLineGlobalEventManager.DeleteMark -= TimeLineGlobalDeleted;
 			_timeLineGlobalEventManager.MarksPasted -= TimeLineGlobalEventManagerOnMarksPasted;
-			_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksTextChanged -= TimeLineGlobalTextChanged;
 			_timeLineGlobalEventManager.PhonemeBreakdownAction -= PhonemeBreakdownAction;
 			_timeLineGlobalEventManager.PlayRangeAction -= TimeLineGlobalEventManagerOnPlayRangeAction;
@@ -3128,11 +3126,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			SequenceModified();
 			CheckAndRenderDirtyElementsAsync();
-		}
-
-		private void TimeLineGlobalMoving(object sender, MarksMovingEventArgs e)
-		{
-			UpdateGridSnapTimes();
 		}
 
 		private void TimeLineGlobalMoved(object sender, MarksMovedEventArgs e)
