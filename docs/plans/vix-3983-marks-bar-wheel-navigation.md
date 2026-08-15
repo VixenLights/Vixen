@@ -10,7 +10,7 @@ Vixen's sequencer has a timeline grid where users navigate horizontally with whe
 
 - [x] (2026-08-15 00:00Z) Researched the timeline event paths and wrote the approved technical specification in `docs/sequencer/vix-3983-marks-bar-wheel-navigation.md`.
 - [x] (2026-08-15 14:29Z) Updated VIX-3983 with a user-facing summary, scope, and acceptance criteria; detailed implementation notes remain in the local specification and this ExecPlan.
-- [ ] Add shared TimelineControl pan and zoom routing and connect the Marks Bar's wheel events.
+- [x] (2026-08-15 14:36Z) Added Marks Bar wheel-event subscriptions, narrow pan/zoom dispatch, coordinate translation for pointer-relative zoom, and a shared native-horizontal pan helper used by Grid and Marks Bar.
 - [ ] Add focused sequencer tests for Marks Bar navigation parity.
 - [ ] Build and run focused and complete test suites; perform manual navigation and mark-editing regression checks.
 - [ ] Update VIX-3983 with final requirements alignment and validation results.
@@ -40,6 +40,10 @@ Vixen's sequencer has a timeline grid where users navigate horizontally with whe
 - Decision: Keep the Jira description concise and user-facing.
   Rationale: The tracker should describe the user benefit and reviewable acceptance criteria. The repository-local specification and ExecPlan are the source of truth for event routing, code locations, and test design.
   Date/Author: 2026-08-15 / Codex and user
+
+- Decision: Centralize native horizontal-wheel math in an internal TimelineControl helper.
+  Rationale: Grid and Marks Bar are separate child controls, but both must retain the grid's established positive/negative native-wheel movement. A shared helper prevents their calculations from drifting while preserving each control's existing shared `TimeInfo` state.
+  Date/Author: 2026-08-15 / Codex
 
 ## Outcomes & Retrospective
 
@@ -135,6 +139,11 @@ The approved product specification is `docs/sequencer/vix-3983-marks-bar-wheel-n
     Grid.OnMouseWheel: intentionally empty
     TimelineControl.OnMouseWheel: owns Ctrl zoom and an inline Shift pan branch
 
+Milestone 2 build evidence:
+
+    dotnet build src/Vixen.Common/Controls/Controls.csproj -c Release --no-restore
+    Build succeeded. 4 existing Vixen.Core warnings; 0 errors.
+
 The plan intentionally avoids assuming a single input-message route because WinForms dispatch depends on the focused child and input device. Its acceptance condition is visible parity rather than reproducing incidental message delivery.
 
 ## Interfaces and Dependencies
@@ -152,3 +161,5 @@ The exact internal test seam names and signatures may be finalized during Milest
 Plan revision note (2026-08-15): Initial approved plan created after source inspection found that the grid uses both ordinary wheel and native horizontal-wheel paths. The plan therefore requires behavior parity across both event routes instead of relying on the original MouseWheel-only handoff.
 
 Plan revision note (2026-08-15): Completed Milestone 1 by updating VIX-3983 with a general user-facing description and acceptance criteria. Detailed technical design remains in the local documentation at the user's direction.
+
+Plan revision note (2026-08-15): Completed Milestone 2. Marks Bar now subscribes to ordinary and native horizontal-wheel events and dispatches only approved pan and zoom behavior through TimelineControl helpers. Grid now uses the shared native-horizontal pan helper.
