@@ -295,14 +295,7 @@ namespace Common.Controls.Timeline
 
 		protected override void OnMouseHWheel(MouseEventArgs args)
 		{
-			//Debug.WriteLine("Grid OnMouseHWheel: delta={0}", args.Delta);
-
-			double scale;
-			if (args.Delta > 0)
-				scale = 0.10;
-			else
-				scale = -0.10;
-			VisibleTimeStart += VisibleTimeSpan.Scale(scale);
+			TimelineControl.PanTimelineHorizontallyFromNativeWheel(this, args.Delta);
 		}
 
 		protected override void OnMouseDoubleClick(MouseEventArgs e)

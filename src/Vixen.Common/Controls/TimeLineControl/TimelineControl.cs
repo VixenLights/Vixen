@@ -110,6 +110,11 @@ namespace Common.Controls.Timeline
 			waveform?.Dispose();
 			waveform= null;
 
+			if (MarksBar != null)
+			{
+				MarksBar.MouseWheel -= MarksBarMouseWheelHandler;
+				MarksBar.MouseHWheel -= MarksBarMouseHWheelHandler;
+			}
 			MarksBar?.Dispose();
 			MarksBar = null;
 
@@ -198,6 +203,8 @@ namespace Common.Controls.Timeline
 				Dock = DockStyle.Top,
 				Height = 50
 			};
+			MarksBar.MouseWheel += MarksBarMouseWheelHandler;
+			MarksBar.MouseHWheel += MarksBarMouseHWheelHandler;
 
 			splitContainer.Panel2.Controls.Add(MarksBar);
 
@@ -1104,29 +1111,71 @@ namespace Common.Controls.Timeline
 			}
 			else if (ModifierKeys.HasFlag(Keys.Control))
 			{
-				// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
-				if (ZoomToMousePosition)
-				{
-					// holding the control key zooms the horizontal axis under the cursor, by 10% per mouse wheel tick
-					ZoomTime(1.0 - e.Delta / 1200.0, e.Location);
-	//			waveform.Invalidate();
-			}
-				else
-				{
-					// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
-					Zoom(1.0 - e.Delta / 1200.0);
-				}
+				ZoomTimelineHorizontally(e.Delta, e.Location);
 			}
 			else if (ModifierKeys.HasFlag(Keys.Shift)) {
-				// holding the skift key moves the horizontal axis, by 10% of the visible time span per mouse wheel tick
-				// wheel towards user   --> negative delta --> VisibleTimeStart increases
-				// wheel away from user --> positive delta --> VisibleTimeStart decreases
-				VisibleTimeStart += VisibleTimeSpan.Scale(-(e.Delta / 1200.0));
-	//			waveform.Invalidate();
+				PanTimelineHorizontally(e.Delta);
 			}
 			else {
 				// moving the mouse wheel with no modifiers moves the display vertically, 40 pixels per mouse wheel tick
 				VerticalOffset += -(e.Delta/3);
+			}
+		}
+
+		private void MarksBarMouseWheelHandler(object sender, MouseEventArgs e)
+		{
+			Point timelineLocation = PointToClient(MarksBar.PointToScreen(e.Location));
+			HandleMarksBarMouseWheel(e.Delta, ModifierKeys, timelineLocation);
+		}
+
+		private void MarksBarMouseHWheelHandler(object sender, MouseEventArgs e)
+		{
+			HandleMarksBarMouseHWheel(e.Delta);
+		}
+
+		internal void HandleMarksBarMouseWheel(int delta, Keys modifierKeys)
+		{
+			HandleMarksBarMouseWheel(delta, modifierKeys, Point.Empty);
+		}
+
+		internal void HandleMarksBarMouseWheel(int delta, Keys modifierKeys, Point timelineLocation)
+		{
+			if (modifierKeys.HasFlag(Keys.Shift))
+			{
+				PanTimelineHorizontally(delta);
+			}
+			else if (modifierKeys.HasFlag(Keys.Control) && !modifierKeys.HasFlag(Keys.Alt))
+			{
+				ZoomTimelineHorizontally(delta, timelineLocation);
+			}
+		}
+
+		internal void HandleMarksBarMouseHWheel(int delta)
+		{
+			PanTimelineHorizontallyFromNativeWheel(this, delta);
+		}
+
+		private void PanTimelineHorizontally(int delta)
+		{
+			VisibleTimeStart += VisibleTimeSpan.Scale(-(delta / 1200.0));
+		}
+
+		internal static void PanTimelineHorizontallyFromNativeWheel(TimelineControlBase timelineControl, int delta)
+		{
+			double scale = delta > 0 ? 0.10 : -0.10;
+			timelineControl.VisibleTimeStart += timelineControl.VisibleTimeSpan.Scale(scale);
+		}
+
+		private void ZoomTimelineHorizontally(int delta, Point mousePosition)
+		{
+			double scale = 1.0 - delta / 1200.0;
+			if (ZoomToMousePosition)
+			{
+				ZoomTime(scale, mousePosition);
+			}
+			else
+			{
+				Zoom(scale);
 			}
 		}
 
