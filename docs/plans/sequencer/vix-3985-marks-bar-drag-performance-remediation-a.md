@@ -14,8 +14,8 @@ The immediate scope is Remediation A from `docs/reviews/marks-bar-drag-performan
 - [x] (2026-08-15 20:08Z) Updated VIX-3985 with the user-facing Remediation A scope, acceptance criteria, validation approach, and evidence-based follow-up gates.
 - [x] (2026-08-15 20:11Z) Replaced synchronous alignment repainting with narrow old/new guide invalidation and clip-aware waveform sample drawing; the affected Controls project builds successfully.
 - [x] (2026-08-15 20:22Z) Added deterministic waveform alignment rendering tests and verified 25 focused waveform, height-lock, and Marks Bar auto-scroll tests pass.
-- [ ] Build, run focused and complete tests, perform the manual drag regressions, and capture a controlled replacement dotTrace profile.
-- [ ] Update VIX-3985 with final requirements changes, validation evidence, and an understandable user-facing result; decide whether Remediation B is necessary.
+- [x] (2026-08-15 20:30Z) User verified a successful full build, all 728 unit tests, and no visible waveform regressions; analyzed the controlled replacement dotTrace profile.
+- [x] (2026-08-15 20:30Z) Added final VIX-3985 validation evidence and a user-facing progress comment; determined that Remediation B is necessary and that Remediation C is not yet indicated.
 
 ## Surprises & Discoveries
 
@@ -36,6 +36,12 @@ The immediate scope is Remediation A from `docs/reviews/marks-bar-drag-performan
 
 - Observation: The focused test set passes with the new deterministic rendering-bound tests included.
   Evidence: `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:/Dev/Vixen/" --filter "FullyQualifiedName~WaveformAlignmentRenderingTests|FullyQualifiedName~WaveformLockHeightTests|FullyQualifiedName~MarksBarAutoScrollTests"` reported `Failed: 0, Passed: 25`.
+
+- Observation: Remediation A removed the synchronous waveform-paint bottleneck but the editor still rebuilds every Mark snap point during each live drag update.
+  Evidence: `C:\Dev\Snapshots\MarkBar\vixen-marksbar-mark drag-A.dtp` records 1,108.8 ms under `MarksBar.MouseMove_DragMoving`; `Grid.CreateSnapPointsFromMarks` accounts for 1,079.5 ms total and 882.1 ms own time. `Waveform.WaveFormSelectedTimeLineGlobalMove` accounts for 6.0 ms.
+
+- Observation: The replacement drag subtree is approximately 77.3% lower than the 4,886.3 ms baseline, but the remaining full Grid rebuild still produces visible lag.
+  Evidence: The controlled replacement profile retained a 1,079.5 ms full snap-point rebuild below `MarksMoving`; the user observed that the Marks Bar, waveform, and ruler lag the Grid alignment lines despite otherwise correct rendering.
 
 ## Decision Log
 
@@ -59,9 +65,13 @@ The immediate scope is Remediation A from `docs/reviews/marks-bar-drag-performan
   Rationale: Guide invalidation and clip-to-sample calculations need deterministic boundary tests without publishing a new API or requiring paint-message timing.
   Date/Author: 2026-08-15 / Codex
 
+- Decision: Promote VIX-3985 to a separately planned Remediation B implementation; do not add presentation coalescing yet.
+  Rationale: The replacement profile proves the waveform is no longer material in the live mouse-move path, while full Grid snap-point rebuilding consumes virtually all remaining drag time. Remediation C has no evidence basis until B is implemented and re-profiled.
+  Date/Author: 2026-08-15 / Codex and user
+
 ## Outcomes & Retrospective
 
-VIX-3985 now describes the user-visible Remediation A contract, and the production waveform change plus its deterministic test coverage are complete. `Waveform.cs` materializes alignment times, invalidates the union of the old and new narrow guide areas without forcing a paint, and restricts waveform drawing to the paint clip's bounded sample range. The Controls project builds successfully and the 25-test focused suite passes; end-to-end validation and replacement profiling remain.
+Remediation A is complete and validated. `Waveform.cs` materializes alignment times, invalidates the union of the old and new narrow guide areas without forcing a paint, and restricts waveform drawing to the paint clip's bounded sample range. The user confirmed the full build and all 728 unit tests pass, with no visible waveform regression. The replacement profile reduced `MarksBar.MouseMove_DragMoving` from 4,886.3 ms to 1,108.8 ms (approximately 77.3%), and removed synchronous waveform painting from the material path. It also proved that full Grid snap-point rebuilding remains the next bottleneck, so a separate Remediation B ExecPlan is required. Remediation C is not warranted until B is completed and profiled.
 
 ## Context and Orientation
 
@@ -204,3 +214,5 @@ Plan revision note (2026-08-15): Completed Milestone 1 by updating VIX-3985 with
 Plan revision note (2026-08-15): Completed Milestone 2. `Waveform.cs` no longer calls `Refresh()` for alignment activity; it invalidates one bounded union of previous and current guide regions and honors `PaintEventArgs.ClipRectangle` when drawing samples. Added documented internal calculation seams for Milestone 3 tests. The Controls Release build succeeded with four pre-existing Vixen.Core warnings and no errors. Added a user-facing VIX-3985 progress comment describing the completed first pass and next validation step.
 
 Plan revision note (2026-08-15): Completed Milestone 3. Added `WaveformAlignmentRenderingTests` for guide clipping, prior/current guide coverage, inactive null-time clearing, and left/right/outside/full clip sample ranges. A full x64 test-target build succeeded, and the focused waveform, height-lock, and Marks Bar auto-scroll run passed all 25 tests without timing-sensitive assertions. Added a user-facing VIX-3985 validation comment describing the focused automated coverage and remaining end-to-end checks.
+
+Plan revision note (2026-08-15): Completed Milestone 4 with user-provided full-build, 728-unit-test, and manual-rendering evidence plus analysis of `vixen-marksbar-mark drag-A.dtp`. The profile reduced the drag subtree by approximately 77.3% and showed waveform handling is now negligible, but it attributed 1,079.5 ms of the 1,108.8 ms remaining subtree to live full Grid snap-point rebuilding. VIX-3985 remains in progress for a separately planned Remediation B; no Remediation C work is authorized.
