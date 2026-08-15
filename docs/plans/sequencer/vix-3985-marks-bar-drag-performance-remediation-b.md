@@ -18,8 +18,8 @@ The user can observe the improvement by continuously dragging a Mark in a dense 
 - [x] (2026-08-15 20:43Z) Updated VIX-3985 with the user-facing Remediation B scope, acceptance criteria, and validation plan.
 - [x] (2026-08-15 20:59Z) Added the Mark snap-point registration foundation and deterministic full-rebuild/scale-change tests; the focused sequencer suite passed 22 tests with zero failures.
 - [x] (2026-08-15 21:12Z) Moved live snap-point maintenance into `Grid`, removed the Timed Sequence Editor's per-mouse full rebuild, and passed 26 focused sequencer tests with zero failures.
-- [ ] Run focused and complete automated validation, perform the manual sequencer scenarios, and capture a comparable 10-second replacement profile.
-- [ ] Adjust VIX-3985 if needed and add a concise user-facing validation comment; decide from the profile whether Remediation C needs a separate plan.
+- [ ] (2026-08-15 21:20Z) Completed the manual behavior check and B replacement-profile analysis; focused tests passed earlier, but complete automated validation remains pending before B can close.
+- [x] (2026-08-15 21:20Z) Added a user-facing VIX-3985 progress update and determined that Remediation C requires a separate approved plan for repaint coalescing.
 
 ## Surprises & Discoveries
 
@@ -40,6 +40,9 @@ The user can observe the improvement by continuously dragging a Mark in a dense 
 
 - Observation: A `MarksMoving` event can contain the same Mark more than once.
   Evidence: The new focused test supplies a duplicate entry and verifies that one live update preserves the other Mark's shared-time detail while replacing the moved Mark's detail only once.
+
+- Observation: B removed the full all-Mark rebuild from the live path, but each incremental update still requests a complete Grid repaint.
+  Evidence: The 11.1-second B timeline capture records `MarksBar.MouseMove_DragMoving` at 316.3 ms and Grid's live handler at 39.9 ms, while `Grid.OnPaint` totals 2,326.7 ms. `Grid._drawSnapPoints` accounts for 1,988.4 ms, including 1,836.4 ms in `GdipDrawLine`.
 
 ## Decision Log
 
@@ -71,9 +74,13 @@ The user can observe the improvement by continuously dragging a Mark in a dense 
   Rationale: This eliminates the all-Mark pointer-frequency rebuild without weakening the final mouse-up consistency backstop for undo and other completed-operation paths.
   Date/Author: 2026-08-15 / Codex.
 
+- Decision: Promote repaint coalescing to a separately planned Remediation C, limited to derived presentation invalidation.
+  Rationale: The B profile proves state maintenance is no longer material, whereas repeated complete Grid painting consumes the UI thread and delays the Mark bar, ruler, and waveform from servicing their own pending paints. Mark model updates, boundary checks, auto-scroll replay, and the final completed event remain immediate.
+  Date/Author: 2026-08-15 / Codex.
+
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. Grid now subscribes to live Mark movement, removes and recreates only the exact snap details for the distinct affected Mark instances, and invalidates once per changed batch. The editor form no longer runs a full rebuild for each pointer move; it retains the existing completed-operation rebuild. `GridMarkSnapPointTests`, waveform tests, and auto-scroll tests passed 26 focused tests with zero failures. Remediation A reduced the sampled `MouseMove_DragMoving` subtree from 4,886.3 ms to 1,108.8 ms (about 77.3%), but the remaining full grid rebuild still requires manual and replacement-profile validation in Milestone 4. Record full test results, manual findings, and the comparable replacement profile after that milestone. State explicitly whether the evidence warrants a separately approved Remediation C plan.
+Milestones 1 through 3 are complete. Grid now subscribes to live Mark movement, removes and recreates only the exact snap details for the distinct affected Mark instances, and invalidates once per changed batch. The editor form no longer runs a full rebuild for each pointer move; it retains the existing completed-operation rebuild. `GridMarkSnapPointTests`, waveform tests, and auto-scroll tests passed 26 focused tests with zero failures. The user reports retained behavior but continued lag in the B capture. The replacement profile confirms the full rebuild is gone: `MarksBar.MouseMove_DragMoving` fell from A's 1,108.8 ms to 316.3 ms, and the live Grid update is 39.9 ms. However, complete Grid painting now consumes 2,326.7 ms across the 11.1-second capture, mostly 1,988.4 ms drawing snap lines. This UI-thread paint cost explains why the Grid indicator can appear current while the Mark bar, ruler, and waveform lag. Remediation C is justified but must be separately planned; complete automated validation for B remains pending.
 
 ## Context and Orientation
 
@@ -198,4 +205,4 @@ In `Grid.cs`, maintain a private `Dictionary<IMark, MarkSnapPointRegistration>` 
 
 In `TimedSequenceEditorForm.cs`, `TimeLineGlobalMoved` continues calling `UpdateGridSnapTimes()` after it records undo information. The live `TimeLineGlobalMoving` handler and subscription are removed. `TimeLineGlobalEventManager` remains unchanged.
 
-Plan revision note (2026-08-15 21:12Z): Completed Milestone 3. Grid now subscribes to `MarksMoving`, performs exact reference-based remove/recreate operations for distinct moved Marks, and invalidates once after a changed batch. Removed the editor form's live `MarksMoving` full rebuild but retained its mouse-up rebuild. Added focused live-event, duplicate-time, multi-collection, and disposed-control tests; the focused sequencer run passed 26 tests with zero failures. Milestone 4 remains next.
+Plan revision note (2026-08-15 21:20Z): Recorded manual behavior feedback and analyzed `vixen-marksbar-mark drag-B.dtp` plus its 11.1-second timeline capture. B removed the full-rebuild bottleneck, but repeated full Grid painting (especially snap-line drawing) now dominates the UI thread and leaves the Mark bar, ruler, and waveform visibly behind. Added the VIX-3985 progress update and promoted a separately approved Remediation C plan; do not implement C from this document. Complete B regression validation remains pending.
