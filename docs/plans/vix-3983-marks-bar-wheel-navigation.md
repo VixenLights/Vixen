@@ -11,7 +11,7 @@ Vixen's sequencer has a timeline grid where users navigate horizontally with whe
 - [x] (2026-08-15 00:00Z) Researched the timeline event paths and wrote the approved technical specification in `docs/sequencer/vix-3983-marks-bar-wheel-navigation.md`.
 - [x] (2026-08-15 14:29Z) Updated VIX-3983 with a user-facing summary, scope, and acceptance criteria; detailed implementation notes remain in the local specification and this ExecPlan.
 - [x] (2026-08-15 14:36Z) Added Marks Bar wheel-event subscriptions, narrow pan/zoom dispatch, coordinate translation for pointer-relative zoom, and a shared native-horizontal pan helper used by Grid and Marks Bar.
-- [ ] Add focused sequencer tests for Marks Bar navigation parity.
+- [x] (2026-08-15 14:40Z) Added 12 focused Marks Bar wheel-navigation tests and verified them alongside the 8 existing Marks Bar auto-scroll tests.
 - [ ] Build and run focused and complete test suites; perform manual navigation and mark-editing regression checks.
 - [ ] Update VIX-3983 with final requirements alignment and validation results.
 
@@ -43,6 +43,10 @@ Vixen's sequencer has a timeline grid where users navigate horizontally with whe
 
 - Decision: Centralize native horizontal-wheel math in an internal TimelineControl helper.
   Rationale: Grid and Marks Bar are separate child controls, but both must retain the grid's established positive/negative native-wheel movement. A shared helper prevents their calculations from drifting while preserving each control's existing shared `TimeInfo` state.
+  Date/Author: 2026-08-15 / Codex
+
+- Decision: Provide narrow internal seams for ordinary and native Marks Bar wheel dispatch.
+  Rationale: Direct seams let tests verify modifier selection, viewport clamping, zoom, and native horizontal-wheel movement without reflection or fragile WinForms message synthesis. They remain internal to the existing `Vixen.Tests` friend-assembly boundary.
   Date/Author: 2026-08-15 / Codex
 
 ## Outcomes & Retrospective
@@ -144,6 +148,14 @@ Milestone 2 build evidence:
     dotnet build src/Vixen.Common/Controls/Controls.csproj -c Release --no-restore
     Build succeeded. 4 existing Vixen.Core warnings; 0 errors.
 
+Milestone 3 test evidence:
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:\Dev\Vixen\" --filter FullyQualifiedName~MarksBarMouseWheelTests
+    Passed! - Failed: 0, Passed: 12, Skipped: 0, Total: 12.
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:\Dev\Vixen\" --filter "FullyQualifiedName~MarksBarMouseWheelTests|FullyQualifiedName~MarksBarAutoScrollTests"
+    Passed! - Failed: 0, Passed: 20, Skipped: 0, Total: 20.
+
 The plan intentionally avoids assuming a single input-message route because WinForms dispatch depends on the focused child and input device. Its acceptance condition is visible parity rather than reproducing incidental message delivery.
 
 ## Interfaces and Dependencies
@@ -163,3 +175,5 @@ Plan revision note (2026-08-15): Initial approved plan created after source insp
 Plan revision note (2026-08-15): Completed Milestone 1 by updating VIX-3983 with a general user-facing description and acceptance criteria. Detailed technical design remains in the local documentation at the user's direction.
 
 Plan revision note (2026-08-15): Completed Milestone 2. Marks Bar now subscribes to ordinary and native horizontal-wheel events and dispatches only approved pan and zoom behavior through TimelineControl helpers. Grid now uses the shared native-horizontal pan helper.
+
+Plan revision note (2026-08-15): Completed Milestone 3. Added direct, deterministic coverage for modifier routing, horizontal pan amount and bounds, Ctrl zoom, and native horizontal-wheel behavior; the focused tests pass with existing Marks Bar auto-scroll coverage.

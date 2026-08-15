@@ -1130,7 +1130,7 @@ namespace Common.Controls.Timeline
 
 		private void MarksBarMouseHWheelHandler(object sender, MouseEventArgs e)
 		{
-			PanTimelineHorizontallyFromNativeWheel(this, e.Delta);
+			HandleMarksBarMouseHWheel(e.Delta);
 		}
 
 		internal void HandleMarksBarMouseWheel(int delta, Keys modifierKeys)
@@ -1148,6 +1148,11 @@ namespace Common.Controls.Timeline
 			{
 				ZoomTimelineHorizontally(delta, timelineLocation);
 			}
+		}
+
+		internal void HandleMarksBarMouseHWheel(int delta)
+		{
+			PanTimelineHorizontallyFromNativeWheel(this, delta);
 		}
 
 		private void PanTimelineHorizontally(int delta)
