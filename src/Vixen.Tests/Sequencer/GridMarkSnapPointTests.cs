@@ -155,6 +155,51 @@ public sealed class GridMarkSnapPointTests
 	}
 
 	[Fact]
+	public void MarksMoving_WhenSeveralUpdatesArriveBeforePaint_UpdatesSnapPointsWithoutImmediateGridInvalidation()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection(showTailGridLines: true);
+		Mark movingMark = AddMark(collection, 1, 1);
+
+		using Grid grid = CreateGrid(instanceId, collection);
+		grid.CreateControl();
+		int invalidationCount = 0;
+		grid.Invalidated += (_, _) => invalidationCount++;
+
+		movingMark.StartTime = TimeSpan.FromSeconds(2);
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs([movingMark]));
+		movingMark.StartTime = TimeSpan.FromSeconds(3);
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs([movingMark]));
+		movingMark.StartTime = TimeSpan.FromSeconds(4);
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs([movingMark]));
+
+		Assert.Equal(movingMark.StartTime, grid.MarkSnapPointRegistrations[movingMark].StartSnapPoint.SnapTime);
+		Assert.Equal(movingMark.EndTime, grid.MarkSnapPointRegistrations[movingMark].EndSnapPoint!.SnapTime);
+		Assert.Equal(0, invalidationCount);
+	}
+
+	[Fact]
+	public void MarksMoving_WhenInvalidationIsSuppressed_UpdatesSnapPointsWithoutRequestingGridInvalidation()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection(showTailGridLines: true);
+		Mark movingMark = AddMark(collection, 1, 1);
+
+		using Grid grid = CreateGrid(instanceId, collection);
+		grid.CreateControl();
+		int invalidationCount = 0;
+		grid.Invalidated += (_, _) => invalidationCount++;
+		grid.SuppressInvalidate = true;
+		movingMark.StartTime = TimeSpan.FromSeconds(2);
+
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs([movingMark]));
+
+		Assert.Equal(movingMark.StartTime, grid.MarkSnapPointRegistrations[movingMark].StartSnapPoint.SnapTime);
+		Assert.Equal(movingMark.EndTime, grid.MarkSnapPointRegistrations[movingMark].EndSnapPoint!.SnapTime);
+		Assert.Equal(0, invalidationCount);
+	}
+
+	[Fact]
 	public void MarksMoving_WhenGridIsDisposed_DoesNotInvokeTheDisposedControl()
 	{
 		Guid instanceId = Guid.NewGuid();
