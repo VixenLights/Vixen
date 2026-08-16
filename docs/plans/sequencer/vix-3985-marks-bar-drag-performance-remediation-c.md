@@ -19,6 +19,8 @@ After this change, the Mark edit, snap information, auto-scroll, and final compl
 - [x] (2026-08-16 15:19Z) Implemented Grid-owned repaint coalescing with a 16 ms UI-thread timer, immediate snap-state maintenance, completion/rebuild/scale/disposal cleanup, and deterministic tests; the focused suite passed 14 tests.
 - [x] (2026-08-16 15:46Z) Completed full validation: the user reports a successful full build, all 742 unit tests passing, confirmed functional behavior, and much improved performance.
 - [x] (2026-08-16 15:46Z) Confirmed that VIX-3985's approved user-facing scope remains accurate and added the final concise validation comment.
+- [x] (2026-08-16 15:50Z) Corrected the post-validation hidden-Mark-lines regression: alignment activity now uses the existing coalesced Grid repaint request, with focused deterministic coverage.
+- [ ] (2026-08-16 15:50Z) Validate the regression test after the running Vixen application releases the shared Release output files; the build is currently blocked by `Vixen.Application` PID 39776 locks.
 
 ## Surprises & Discoveries
 
@@ -45,6 +47,9 @@ After this change, the Mark edit, snap information, auto-scroll, and final compl
 
 - Observation: The C replacement profile confirms that the UI thread is no longer occupied by Grid redraw work for most of the drag capture.
   Evidence: `vixen-marksbar-mark drag-C-timeline.dtp` lasts 8,121.618 ms with the main thread running for 2,913 ms and 6.988 ms of GC. B's corresponding timeline lasts 11,065.609 ms with the main thread running for 6,833 ms. C has sustained CPU only in the active drag regions rather than throughout the capture.
+
+- Observation: Alignment activity changes the yellow Grid alignment-line positions independently of Mark-derived snap points.
+  Evidence: `TimeLineAlignmentHandler` updated `MarkAlignmentPoints` without invalidating the Grid. With Show Mark Lines disabled, `MarksMoving` does not alter snap points, so it no longer supplied the incidental repaint that previously displayed the latest alignment lines.
 
 ## Decision Log
 
@@ -84,19 +89,23 @@ After this change, the Mark edit, snap information, auto-scroll, and final compl
   Rationale: The full build and all 742 unit tests pass, functional checks are confirmed, the user reports much improved drag responsiveness, and C's replacement profile shows substantially reduced UI-thread occupancy.
   Date/Author: 2026-08-16 / Codex.
 
+- Decision: Route alignment-activity changes through C's existing coalesced Grid repaint request.
+  Rationale: Alignment lines are derived presentation, like live Mark snap lines. Scheduling the repaint independently of whether a Mark collection draws persistent lines preserves the 16 ms paint bound while ensuring the newest alignment position is rendered and cleared during every Mark drag.
+  Date/Author: 2026-08-16 / Codex.
+
 ## Outcomes & Retrospective
 
 Milestone 3 outcome: Grid now updates Mark-derived snap state synchronously but records only one pending repaint request during a live drag. A 16 ms WinForms timer consumes that request on the UI thread and invalidates the Grid once. Completed edits, Mark snap rebuilds, scale changes, suppression, and disposal clear the pending request safely. The focused `GridMarkSnapPointTests` suite passed 14 tests after a full `Vixen_Tests` build. Full-suite, manual, and replacement-profile validation remain pending. Remediation B's focused tests passed, but its full regression validation is included in C's final validation so VIX-3985 closes only with the complete behavior covered.
 
 Replacement-profile update: the user reports much improved observed dragging. C's supplied timeline profile reduces main-thread running time from B's 6.833 seconds to 2.913 seconds, and no material GC pressure is present. This supports the presentation-coalescing design. The subsequent full validation completed successfully.
 
-Final outcome: the user reports the full Vixen build succeeds and all 742 unit tests pass. Functional checks are confirmed and the C drag behavior is much improved. With the profile evidence and validation results, Remediation C meets its purpose; no additional redraw remediation is planned.
+Final outcome: the user reports the full Vixen build succeeds and all 742 unit tests pass. Functional checks are confirmed and the C drag behavior is much improved. A later hidden-Mark-lines regression was corrected by scheduling an alignment-activity repaint through the existing coalescer; focused test validation remains pending until the running application releases its output locks. With that validation complete, no additional redraw remediation is planned.
 
 ## Context and Orientation
 
 The Timed Sequence Editor is a WinForms timeline in Vixen. A Mark is a timed annotation. Its start and, optionally, end position produce Grid snap points: objects that both support snapping and draw the colored vertical alignment lines in the timeline. The Mark bar, ruler, waveform, and Grid are separate controls on one Windows UI thread. An invalidation asks Windows to paint a control later; it does not itself draw, but repeated invalidations can cause expensive full paints that prevent other controls from painting promptly.
 
-`src/Vixen.Common/Controls/TimeLineControl/Grid.cs` owns `StaticSnapPoints`, the Mark-to-snap-point registration map, Grid rendering, and Grid invalidation. Its live `TimeLineGlobalEventManager_MarksMoving` handler already removes and registers only the affected distinct Marks. It currently calls `InvalidateSnapPoints()`, which calls `Invalidate()` on the entire Grid. `Grid.OnPaint` calls `_drawSnapPoints`, which draws every visible snap line as part of a complete Grid paint.
+`src/Vixen.Common/Controls/TimeLineControl/Grid.cs` owns `StaticSnapPoints`, the Mark-to-snap-point registration map, Grid rendering, and Grid invalidation. Its live `TimeLineGlobalEventManager_MarksMoving` handler removes and registers only the affected distinct Marks, then requests a coalesced repaint. Its `TimeLineAlignmentHandler` stores the transient yellow alignment positions used while a Mark drag is active and must request that same repaint even when the moving collection has persistent Mark lines disabled. `Grid.OnPaint` calls `_drawSnapPoints`, which draws every visible snap line as part of a complete Grid paint.
 
 `src/Vixen.Common/Controls/TimeLineControl/LabeledMarks/TimeLineGlobalEventManager.cs` raises `MarksMoving` repeatedly as the pointer changes and `MarksMoved` once when the edit completes. It keeps both events synchronous. `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm.cs` retains `TimeLineGlobalMoved`, which calls `UpdateGridSnapTimes()` after `MarksMoved` to rebuild snap points as a final consistency backstop. `src/Vixen.Common/Controls/TimeLineControl/MarksBar.cs`, the ruler, and `Waveform.cs` independently respond to movement; they are explicitly outside this remediation.
 
@@ -240,7 +249,7 @@ In `Grid.cs`, the implementation must provide private operations with responsibi
     private void SnapPointInvalidateTimer_Tick(object? sender, EventArgs e);
     private void TimeLineGlobalEventManager_MarksMoved(object sender, MarksMovedEventArgs e);
 
-`RequestSnapPointInvalidate` is called only after live Mark snap data changes. `FlushPendingSnapPointInvalidate` stops the timer, clears state, and performs one immediate invalidation when warranted. The tick handler uses the same flush semantics. The completed-operation handler uses the flush operation and performs no rebuild. `Dispose(bool)` must detach both global event handlers and the timer callback before disposing the timer.
+`RequestSnapPointInvalidate` is called after live Mark snap data changes and after a transient alignment-line position changes. `FlushPendingSnapPointInvalidate` stops the timer, clears state, and performs one immediate invalidation when warranted. The tick handler uses the same flush semantics. The completed-operation handler uses the flush operation and performs no rebuild. `Dispose(bool)` must detach both global event handlers and the timer callback before disposing the timer.
 
 Revision note (2026-08-15): Created after the B replacement profiles demonstrated that incremental Mark snap maintenance succeeded but complete Grid painting remained the UI-thread bottleneck. The plan confines C to presentation coalescing and explicitly preserves immediate edit state.
 
@@ -253,3 +262,5 @@ Revision note (2026-08-16): Completed Milestone 3. Grid now coalesces only live 
 Revision note (2026-08-16): Recorded the user-supplied C replacement profiles. They confirm materially lower UI-thread occupancy and the reported visual improvement; final validation remains open for the complete suite and interaction checklist.
 
 Revision note (2026-08-16): Completed final validation with the user-reported successful full build, 742 passing unit tests, confirmed functionality, and much improved performance. VIX-3985 scope was already accurate, so only the final validation comment was added.
+
+Revision note (2026-08-16): A post-validation test found that alignment activity had no repaint trigger when Show Mark Lines was disabled, because no snap point changed. The alignment handler now uses C's existing coalesced repaint request and a deterministic hidden-lines regression test covers the behavior. The focused build is deferred until the user closes the running Vixen application that holds shared Release output locks.

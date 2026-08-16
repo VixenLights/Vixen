@@ -291,6 +291,31 @@ public sealed class GridMarkSnapPointTests
 	}
 
 	[Fact]
+	public void AlignmentActivity_WhenMarkGridLinesAreHidden_RequestsAGridRepaint()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection(showGridLines: false);
+		AddMark(collection, 1, 1);
+
+		using Grid grid = CreateGrid(instanceId, collection);
+		grid.CreateControl();
+		int invalidationCount = 0;
+		grid.Invalidated += (_, _) => invalidationCount++;
+
+		TimeLineGlobalEventManager.Manager(instanceId).OnAlignmentActivity(
+			new AlignmentEventArgs(true, [TimeSpan.FromSeconds(2)]));
+
+		Assert.Empty(grid.MarkSnapPointRegistrations);
+		Assert.True(grid.IsSnapPointInvalidatePending);
+		Assert.Equal(0, invalidationCount);
+
+		grid.FlushPendingSnapPointInvalidateForTesting();
+
+		Assert.False(grid.IsSnapPointInvalidatePending);
+		Assert.Equal(1, invalidationCount);
+	}
+
+	[Fact]
 	public void MarksMoving_WhenGridIsDisposed_DoesNotInvokeTheDisposedControl()
 	{
 		Guid instanceId = Guid.NewGuid();

@@ -570,6 +570,7 @@ namespace Common.Controls.Timeline
 		private void TimeLineAlignmentHandler(object sender, AlignmentEventArgs e)
 		{
 			MarkAlignmentPoints = e.Times ?? Enumerable.Empty<TimeSpan>();
+			RequestSnapPointInvalidate();
 		}
 
 		private void TimeLineGlobalEventManager_MarksMoving(object sender, MarksMovingEventArgs e)
