@@ -5,6 +5,7 @@ using Common.Controls.TimelineControl.LabeledMarks;
 using Vixen.Marks;
 using VixenModules.App.Marks;
 using Xunit;
+using FactAttribute = Xunit.WinFormsFactAttribute;
 
 namespace Vixen.Tests.Sequencer;
 

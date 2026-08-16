@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Reflection;
+using Vixen.Services;
 using Vixen.Sys;
+using Vixen.Sys.Managers;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.Preview.VixenPreview;
 using VixenModules.Property.State;
@@ -9,18 +11,23 @@ using Xunit;
 
 namespace Vixen.Tests.Preview.VixenPreview;
 
-public sealed class PreviewCustomPropStateImportTests : IDisposable
+[Collection(PreviewCustomPropStateImportTestCollection.Name)]
+public sealed class PreviewCustomPropStateImportTests
 {
-	private readonly string _dataRootPath;
-
 	public PreviewCustomPropStateImportTests()
 	{
-		_dataRootPath = Path.Combine(Path.GetTempPath(), $"VixenPreviewStateTests-{Guid.NewGuid():N}");
-		Paths.DataRootPath = _dataRootPath;
+		if (ApplicationServices.GetModuleDescriptor(StateDescriptor.ModuleId) == null)
+		{
+			Modules.LoadModule(typeof(StateDescriptor).Assembly.Location);
+		}
+
 		SetVixenSystemProperty(
 			nameof(VixenSystem.Instrumentation),
 			new global::Vixen.Sys.Instrumentation.Instrumentation());
-		VixenSystem.LoadSystemConfig();
+		SetVixenSystemProperty(nameof(VixenSystem.DataFlow), new DataFlowManager());
+		SetVixenSystemProperty(nameof(VixenSystem.Elements), new ElementManager());
+		SetVixenSystemProperty(nameof(VixenSystem.Nodes), new NodeManager());
+		SetVixenSystemProperty(nameof(VixenSystem.ModuleStore), new ModuleStore());
 	}
 
 	[Fact]
@@ -169,14 +176,6 @@ public sealed class PreviewCustomPropStateImportTests : IDisposable
 		Assert.Equal([FindNode(rootNode, leaf.Name).Id], item.ElementNodeIds);
 	}
 
-	public void Dispose()
-	{
-		if (Directory.Exists(_dataRootPath))
-		{
-			Directory.Delete(_dataRootPath, true);
-		}
-	}
-
 	private static async Task<ElementNode> CreatePreviewRootAsync(Prop prop)
 	{
 		var builder = new PreviewCustomPropBuilder(prop, 1, null);
@@ -212,7 +211,7 @@ public sealed class PreviewCustomPropStateImportTests : IDisposable
 	{
 		var property = typeof(VixenSystem).GetProperty(
 			propertyName,
-			BindingFlags.Public | BindingFlags.Static);
+			BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 		property!.SetValue(null, value);
 	}
 }

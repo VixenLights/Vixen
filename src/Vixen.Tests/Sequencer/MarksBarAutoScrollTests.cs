@@ -3,6 +3,7 @@ using Common.Controls.TimelineControl;
 using System.Drawing;
 using System.Reflection;
 using Xunit;
+using FactAttribute = Xunit.WinFormsFactAttribute;
 
 namespace Vixen.Tests.Sequencer;
 

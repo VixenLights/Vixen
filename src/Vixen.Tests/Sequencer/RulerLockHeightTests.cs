@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Vixen.Marks;
 using Xunit;
+using FactAttribute = Xunit.WinFormsFactAttribute;
 
 namespace Vixen.Tests.Sequencer;
 

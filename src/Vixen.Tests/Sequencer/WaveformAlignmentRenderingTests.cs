@@ -7,6 +7,7 @@ using System.Reflection;
 using VixenModules.Media.Audio;
 using VixenModules.Media.Audio.SampleProviders;
 using Xunit;
+using FactAttribute = Xunit.WinFormsFactAttribute;
 
 namespace Vixen.Tests.Sequencer;
 

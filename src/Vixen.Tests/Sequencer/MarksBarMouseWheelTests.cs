@@ -2,6 +2,8 @@ using Common.Controls.Timeline;
 using System.Drawing;
 using System.Windows.Forms;
 using Xunit;
+using FactAttribute = Xunit.WinFormsFactAttribute;
+using TheoryAttribute = Xunit.WinFormsTheoryAttribute;
 
 namespace Vixen.Tests.Sequencer;
 

@@ -1,5 +1,6 @@
 using Common.Controls.Timeline;
 using Xunit;
+using FactAttribute = Xunit.WinFormsFactAttribute;
 
 namespace Vixen.Tests.Sequencer;
 
