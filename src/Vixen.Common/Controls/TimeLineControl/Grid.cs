@@ -58,8 +58,11 @@ namespace Common.Controls.Timeline
 		//We turn these into snap points for effects.
 		private ObservableCollection<IMarkCollection> _markCollections;
 		private readonly Dictionary<IMark, MarkSnapPointRegistration> _markSnapPointRegistrations = new(ReferenceEqualityComparer.Instance);
+		private readonly System.Windows.Forms.Timer _snapPointInvalidateTimer;
 		private readonly TimeLineGlobalEventManager _timelineGlobalEventManager;
 		private readonly TimeLineGlobalStateManager _timelineGlobalStateManager;
+		private bool _snapPointInvalidatePending;
+		private bool _isDisposing;
 
 		#region Initialization
 
@@ -68,6 +71,8 @@ namespace Common.Controls.Timeline
 		{
 			_timelineGlobalStateManager = TimeLineGlobalStateManager.Manager(instanceId);
 			_timelineGlobalEventManager = TimeLineGlobalEventManager.Manager(instanceId);
+			_snapPointInvalidateTimer = new System.Windows.Forms.Timer { Interval = 16 };
+			_snapPointInvalidateTimer.Tick += SnapPointInvalidateTimer_Tick;
 			AutoScroll = true;
 			AllowGridResize = true;
 			AutoScrollMargin = new Size(24, 24);
@@ -96,6 +101,7 @@ namespace Common.Controls.Timeline
 
 			_timelineGlobalEventManager.AlignmentActivity += TimeLineAlignmentHandler;
 			_timelineGlobalEventManager.MarksMoving += TimeLineGlobalEventManager_MarksMoving;
+			_timelineGlobalEventManager.MarksMoved += TimeLineGlobalEventManager_MarksMoved;
 
 			// Drag & Drop
 			AllowDrop = true;
@@ -107,8 +113,12 @@ namespace Common.Controls.Timeline
 
 		
 
+		/// <inheritdoc/>
 		protected override void Dispose(bool disposing)
 		{
+			_isDisposing = true;
+			ClearPendingSnapPointInvalidate();
+
 			// Cancel/complete the rendering background worker
 			_blockingElementQueue.CompleteAdding();
 
@@ -142,6 +152,7 @@ namespace Common.Controls.Timeline
 			m_autoScrollTimer.Tick -= m_autoScrollTimer_Tick;
 			_timelineGlobalEventManager.AlignmentActivity -= TimeLineAlignmentHandler;
 			_timelineGlobalEventManager.MarksMoving -= TimeLineGlobalEventManager_MarksMoving;
+			_timelineGlobalEventManager.MarksMoved -= TimeLineGlobalEventManager_MarksMoved;
 
 			TimeInfo= null;
 
@@ -150,6 +161,8 @@ namespace Common.Controls.Timeline
 			Context=null;
 
 			UnConfigureMarks();
+			_snapPointInvalidateTimer.Tick -= SnapPointInvalidateTimer_Tick;
+			_snapPointInvalidateTimer.Dispose();
 			
 			base.Dispose(disposing);
 		}
@@ -164,6 +177,7 @@ namespace Common.Controls.Timeline
 
 		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
+			ClearPendingSnapPointInvalidate();
             RecalculateAllStaticSnapPoints();
 			ResizeGridHorizontally();
             //ResetAllElements();
@@ -397,9 +411,11 @@ namespace Common.Controls.Timeline
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
 		internal IReadOnlyDictionary<IMark, MarkSnapPointRegistration> MarkSnapPointRegistrations => _markSnapPointRegistrations;
+		internal bool IsSnapPointInvalidatePending => _snapPointInvalidatePending;
 		internal bool ContainsStaticSnapPoint(SnapDetails details) =>
 			StaticSnapPoints.TryGetValue(details.SnapTime, out List<SnapDetails> detailsAtTime) &&
 			detailsAtTime.Any(candidate => ReferenceEquals(candidate, details));
+		internal void FlushPendingSnapPointInvalidateForTesting() => FlushPendingSnapPointInvalidate();
 
 		private IEnumerable<TimeSpan> MarkAlignmentPoints { get; set; } = Enumerable.Empty<TimeSpan>();
 		private List<Element> tempSelectedElements = new List<Element>();
@@ -567,8 +583,13 @@ namespace Common.Controls.Timeline
 
 			if (changed)
 			{
-				InvalidateSnapPoints();
+				RequestSnapPointInvalidate();
 			}
+		}
+
+		private void TimeLineGlobalEventManager_MarksMoved(object sender, MarksMovedEventArgs e)
+		{
+			FlushPendingSnapPointInvalidate();
 		}
 
 		protected void RowChangedHandler(object sender, EventArgs e)
@@ -2371,10 +2392,43 @@ namespace Common.Controls.Timeline
 
 		private void InvalidateSnapPoints()
 		{
-			if (!SuppressInvalidate)
+			if (!_isDisposing && !IsDisposed && !SuppressInvalidate)
 			{
 				Invalidate();
 			}
+		}
+
+		private void RequestSnapPointInvalidate()
+		{
+			if (_isDisposing || Disposing || IsDisposed || SuppressInvalidate || _snapPointInvalidatePending)
+			{
+				return;
+			}
+
+			_snapPointInvalidatePending = true;
+			_snapPointInvalidateTimer.Start();
+		}
+
+		private void FlushPendingSnapPointInvalidate()
+		{
+			if (!_snapPointInvalidatePending)
+			{
+				return;
+			}
+
+			ClearPendingSnapPointInvalidate();
+			InvalidateSnapPoints();
+		}
+
+		private void ClearPendingSnapPointInvalidate()
+		{
+			_snapPointInvalidateTimer.Stop();
+			_snapPointInvalidatePending = false;
+		}
+
+		private void SnapPointInvalidateTimer_Tick(object sender, EventArgs e)
+		{
+			FlushPendingSnapPointInvalidate();
 		}
 
 		public void AddSnapPoint(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
@@ -2429,6 +2483,7 @@ namespace Common.Controls.Timeline
 
 		public void CreateSnapPointsFromMarks()
 		{
+			ClearPendingSnapPointInvalidate();
 			ClearMarkSnapPoints();
 			if (_markCollections != null)
 			{

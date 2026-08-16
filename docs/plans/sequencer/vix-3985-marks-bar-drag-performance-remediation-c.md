@@ -16,7 +16,7 @@ After this change, the Mark edit, snap information, auto-scroll, and final compl
 - [x] (2026-08-15 21:20Z) Created this separate Remediation C ExecPlan from the measured repaint bottleneck; no C code has been implemented.
 - [x] (2026-08-16 15:12Z) Updated VIX-3985 with the user-facing Remediation C scope, acceptance criteria, and validation approach.
 - [x] (2026-08-16 15:15Z) Added the deterministic immediate-state and invalidation-observation test foundation; the focused build passed and the new coalescing contract is intentionally red until Milestone 3 adds the scheduler.
-- [ ] Implement Grid-owned repaint coalescing without changing Mark movement semantics.
+- [x] (2026-08-16 15:19Z) Implemented Grid-owned repaint coalescing with a 16 ms UI-thread timer, immediate snap-state maintenance, completion/rebuild/scale/disposal cleanup, and deterministic tests; the focused suite passed 14 tests.
 - [ ] Run focused tests, the complete Vixen test build and suite, manual sequencer checks, and a comparable replacement profile.
 - [ ] Make final VIX-3985 adjustments if needed and add a concise user-facing validation comment.
 
@@ -39,6 +39,9 @@ After this change, the Mark edit, snap information, auto-scroll, and final compl
 
 - Observation: The existing WinForms test harness can deterministically observe direct Grid invalidation without waiting for a paint or timer.
   Evidence: After `grid.CreateControl()`, `Control.Invalidated` recorded three events for three `MarksMoving` updates. The new focused run built successfully and reported 9 passing tests plus the one expected red coalescing contract.
+
+- Observation: A time-per-pixel change performs established immediate Grid redraw work independently of the pending repaint request.
+  Evidence: The focused test observed three invalidation notifications during scale change. Clearing the pending request before that path and then forcing its deterministic tick produced no additional notification.
 
 ## Decision Log
 
@@ -70,9 +73,13 @@ After this change, the Mark edit, snap information, auto-scroll, and final compl
   Rationale: Creating the control makes direct invalidation observable deterministically. The red test now accurately captures the behavior Milestone 3 must replace, while the existing registration diagnostics continue to prove immediate snap-state updates.
   Date/Author: 2026-08-16 / Codex.
 
+- Decision: Retain immediate invalidation for the established time-per-pixel path while canceling any live-drag pending request first.
+  Rationale: Zooming already refreshes Grid through the base timeline control. C must prevent a later duplicate timer repaint without changing the existing scale-change paint behavior.
+  Date/Author: 2026-08-16 / Codex.
+
 ## Outcomes & Retrospective
 
-Planning outcome: Remediation C is justified by replacement profile evidence and is intentionally narrower than a general scheduling rewrite. The planned change does not make Mark edits asynchronous and does not alter their event ordering. Milestone 2 added a red/green test boundary: immediate snap-state updates continue to pass, while three live changes currently produce three observed Grid invalidations. Milestone 3 must make that contract green and add deterministic tick, completion, rebuild, and disposal tests. Remediation B's focused tests passed, but its full regression validation remains pending and is included in C's final validation so VIX-3985 closes only with the complete behavior covered.
+Milestone 3 outcome: Grid now updates Mark-derived snap state synchronously but records only one pending repaint request during a live drag. A 16 ms WinForms timer consumes that request on the UI thread and invalidates the Grid once. Completed edits, Mark snap rebuilds, scale changes, suppression, and disposal clear the pending request safely. The focused `GridMarkSnapPointTests` suite passed 14 tests after a full `Vixen_Tests` build. Full-suite, manual, and replacement-profile validation remain pending. Remediation B's focused tests passed, but its full regression validation is included in C's final validation so VIX-3985 closes only with the complete behavior covered.
 
 ## Context and Orientation
 
@@ -222,3 +229,5 @@ Revision note (2026-08-15): Created after the B replacement profiles demonstrate
 Revision note (2026-08-16): Completed Milestone 1 by replacing VIX-3985's prior B-only description with user-facing C scope, preserved behaviors, acceptance criteria, and validation approach. No code changed.
 
 Revision note (2026-08-16): Completed Milestone 2's test foundation using the real WinForms invalidation event. The focused build completed; the coalescing contract intentionally fails with the current three direct invalidations and will become green in Milestone 3.
+
+Revision note (2026-08-16): Completed Milestone 3. Grid now coalesces only live Mark-derived repaint requests and the red contract is green. Added deterministic checks for a timer tick, completed edit, rebuild, scale change, suppression, and disposal; the focused suite passed 14 tests.

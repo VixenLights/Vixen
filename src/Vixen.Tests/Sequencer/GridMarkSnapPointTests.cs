@@ -175,7 +175,96 @@ public sealed class GridMarkSnapPointTests
 
 		Assert.Equal(movingMark.StartTime, grid.MarkSnapPointRegistrations[movingMark].StartSnapPoint.SnapTime);
 		Assert.Equal(movingMark.EndTime, grid.MarkSnapPointRegistrations[movingMark].EndSnapPoint!.SnapTime);
+		Assert.True(grid.IsSnapPointInvalidatePending);
 		Assert.Equal(0, invalidationCount);
+	}
+
+	[Fact]
+	public void PendingSnapPointInvalidation_WhenFlushed_InvalidatesOnceAndAllowsAnotherRequest()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection();
+		Mark movingMark = AddMark(collection, 1, 1);
+
+		using Grid grid = CreateGrid(instanceId, collection);
+		grid.CreateControl();
+		int invalidationCount = 0;
+		grid.Invalidated += (_, _) => invalidationCount++;
+		movingMark.StartTime = TimeSpan.FromSeconds(2);
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs([movingMark]));
+
+		grid.FlushPendingSnapPointInvalidateForTesting();
+
+		Assert.False(grid.IsSnapPointInvalidatePending);
+		Assert.Equal(1, invalidationCount);
+		movingMark.StartTime = TimeSpan.FromSeconds(3);
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs([movingMark]));
+		Assert.True(grid.IsSnapPointInvalidatePending);
+	}
+
+	[Fact]
+	public void MarksMoved_WhenSnapPointInvalidationIsPending_FlushesItSynchronously()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection();
+		Mark movingMark = AddMark(collection, 1, 1);
+
+		using Grid grid = CreateGrid(instanceId, collection);
+		grid.CreateControl();
+		int invalidationCount = 0;
+		grid.Invalidated += (_, _) => invalidationCount++;
+		movingMark.StartTime = TimeSpan.FromSeconds(2);
+		TimeLineGlobalEventManager manager = TimeLineGlobalEventManager.Manager(instanceId);
+		manager.OnMarksMoving(new MarksMovingEventArgs([movingMark]));
+
+		manager.OnMarkMoved(new MarksMovedEventArgs(new MarksMoveResizeInfo([movingMark]), ElementMoveType.Move));
+
+		Assert.False(grid.IsSnapPointInvalidatePending);
+		Assert.Equal(1, invalidationCount);
+	}
+
+	[Fact]
+	public void CreateSnapPointsFromMarks_WhenSnapPointInvalidationIsPending_CancelsItBeforeTheImmediateInvalidation()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection();
+		Mark movingMark = AddMark(collection, 1, 1);
+
+		using Grid grid = CreateGrid(instanceId, collection);
+		grid.CreateControl();
+		int invalidationCount = 0;
+		grid.Invalidated += (_, _) => invalidationCount++;
+		movingMark.StartTime = TimeSpan.FromSeconds(2);
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs([movingMark]));
+
+		grid.CreateSnapPointsFromMarks();
+		grid.FlushPendingSnapPointInvalidateForTesting();
+
+		Assert.False(grid.IsSnapPointInvalidatePending);
+		Assert.Equal(1, invalidationCount);
+	}
+
+	[Fact]
+	public void TimePerPixelChange_WhenSnapPointInvalidationIsPending_CancelsItWithoutAnAdditionalTimerInvalidation()
+	{
+		Guid instanceId = Guid.NewGuid();
+		MarkCollection collection = CreateCollection();
+		Mark movingMark = AddMark(collection, 1, 1);
+
+		using Grid grid = CreateGrid(instanceId, collection);
+		grid.CreateControl();
+		int invalidationCount = 0;
+		grid.Invalidated += (_, _) => invalidationCount++;
+		movingMark.StartTime = TimeSpan.FromSeconds(2);
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs([movingMark]));
+
+		grid.TimePerPixel = TimeSpan.FromMilliseconds(50);
+		int invalidationCountAfterScaleChange = invalidationCount;
+		grid.FlushPendingSnapPointInvalidateForTesting();
+
+		Assert.False(grid.IsSnapPointInvalidatePending);
+		Assert.True(invalidationCountAfterScaleChange > 0);
+		Assert.Equal(invalidationCountAfterScaleChange, invalidationCount);
 	}
 
 	[Fact]
@@ -196,6 +285,7 @@ public sealed class GridMarkSnapPointTests
 
 		Assert.Equal(movingMark.StartTime, grid.MarkSnapPointRegistrations[movingMark].StartSnapPoint.SnapTime);
 		Assert.Equal(movingMark.EndTime, grid.MarkSnapPointRegistrations[movingMark].EndSnapPoint!.SnapTime);
+		Assert.False(grid.IsSnapPointInvalidatePending);
 		Assert.Equal(0, invalidationCount);
 	}
 
@@ -206,14 +296,20 @@ public sealed class GridMarkSnapPointTests
 		MarkCollection collection = CreateCollection();
 		Mark mark = AddMark(collection, 1, 1);
 		Grid grid = CreateGrid(instanceId, collection);
+		grid.CreateControl();
+		mark.StartTime = TimeSpan.FromSeconds(2);
+		TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs([mark]));
+		Assert.True(grid.IsSnapPointInvalidatePending);
 
 		grid.Dispose();
-		mark.StartTime = TimeSpan.FromSeconds(2);
+		mark.StartTime = TimeSpan.FromSeconds(3);
 		Exception? exception = Record.Exception(() =>
 			TimeLineGlobalEventManager.Manager(instanceId).OnMarksMoving(new MarksMovingEventArgs(new List<IMark> { mark })));
 
 		Assert.Null(exception);
 		Assert.Empty(grid.MarkSnapPointRegistrations);
+		Assert.False(grid.IsSnapPointInvalidatePending);
+		Assert.Null(Record.Exception(grid.FlushPendingSnapPointInvalidateForTesting));
 	}
 
 	private static Grid CreateGrid(params IMarkCollection[] markCollections)
