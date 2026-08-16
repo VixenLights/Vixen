@@ -17,8 +17,8 @@ After this change, the Mark edit, snap information, auto-scroll, and final compl
 - [x] (2026-08-16 15:12Z) Updated VIX-3985 with the user-facing Remediation C scope, acceptance criteria, and validation approach.
 - [x] (2026-08-16 15:15Z) Added the deterministic immediate-state and invalidation-observation test foundation; the focused build passed and the new coalescing contract is intentionally red until Milestone 3 adds the scheduler.
 - [x] (2026-08-16 15:19Z) Implemented Grid-owned repaint coalescing with a 16 ms UI-thread timer, immediate snap-state maintenance, completion/rebuild/scale/disposal cleanup, and deterministic tests; the focused suite passed 14 tests.
-- [ ] Run focused tests, the complete Vixen test build and suite, manual sequencer checks, and a comparable replacement profile.
-- [ ] Make final VIX-3985 adjustments if needed and add a concise user-facing validation comment.
+- [x] (2026-08-16 15:46Z) Completed full validation: the user reports a successful full build, all 742 unit tests passing, confirmed functional behavior, and much improved performance.
+- [x] (2026-08-16 15:46Z) Confirmed that VIX-3985's approved user-facing scope remains accurate and added the final concise validation comment.
 
 ## Surprises & Discoveries
 
@@ -42,6 +42,9 @@ After this change, the Mark edit, snap information, auto-scroll, and final compl
 
 - Observation: A time-per-pixel change performs established immediate Grid redraw work independently of the pending repaint request.
   Evidence: The focused test observed three invalidation notifications during scale change. Clearing the pending request before that path and then forcing its deterministic tick produced no additional notification.
+
+- Observation: The C replacement profile confirms that the UI thread is no longer occupied by Grid redraw work for most of the drag capture.
+  Evidence: `vixen-marksbar-mark drag-C-timeline.dtp` lasts 8,121.618 ms with the main thread running for 2,913 ms and 6.988 ms of GC. B's corresponding timeline lasts 11,065.609 ms with the main thread running for 6,833 ms. C has sustained CPU only in the active drag regions rather than throughout the capture.
 
 ## Decision Log
 
@@ -77,9 +80,17 @@ After this change, the Mark edit, snap information, auto-scroll, and final compl
   Rationale: Zooming already refreshes Grid through the base timeline control. C must prevent a later duplicate timer repaint without changing the existing scale-change paint behavior.
   Date/Author: 2026-08-16 / Codex.
 
+- Decision: Close Remediation C without a further redraw remediation.
+  Rationale: The full build and all 742 unit tests pass, functional checks are confirmed, the user reports much improved drag responsiveness, and C's replacement profile shows substantially reduced UI-thread occupancy.
+  Date/Author: 2026-08-16 / Codex.
+
 ## Outcomes & Retrospective
 
 Milestone 3 outcome: Grid now updates Mark-derived snap state synchronously but records only one pending repaint request during a live drag. A 16 ms WinForms timer consumes that request on the UI thread and invalidates the Grid once. Completed edits, Mark snap rebuilds, scale changes, suppression, and disposal clear the pending request safely. The focused `GridMarkSnapPointTests` suite passed 14 tests after a full `Vixen_Tests` build. Full-suite, manual, and replacement-profile validation remain pending. Remediation B's focused tests passed, but its full regression validation is included in C's final validation so VIX-3985 closes only with the complete behavior covered.
+
+Replacement-profile update: the user reports much improved observed dragging. C's supplied timeline profile reduces main-thread running time from B's 6.833 seconds to 2.913 seconds, and no material GC pressure is present. This supports the presentation-coalescing design. The subsequent full validation completed successfully.
+
+Final outcome: the user reports the full Vixen build succeeds and all 742 unit tests pass. Functional checks are confirmed and the C drag behavior is much improved. With the profile evidence and validation results, Remediation C meets its purpose; no additional redraw remediation is planned.
 
 ## Context and Orientation
 
@@ -195,6 +206,13 @@ The evidence that authorizes C is:
     GdipDrawLine below _drawSnapPoints: 1,836.4 ms
     Live Grid Mark update: 39.9 ms
 
+The C replacement evidence is:
+
+    C timeline duration: 8,121.618 ms
+    C main-thread running time: 2,913 ms
+    C garbage-collection time: 6.988 ms
+    User observation: Much improved dragging
+
 The intended live sequence after implementation is:
 
     pointer move
@@ -231,3 +249,7 @@ Revision note (2026-08-16): Completed Milestone 1 by replacing VIX-3985's prior 
 Revision note (2026-08-16): Completed Milestone 2's test foundation using the real WinForms invalidation event. The focused build completed; the coalescing contract intentionally fails with the current three direct invalidations and will become green in Milestone 3.
 
 Revision note (2026-08-16): Completed Milestone 3. Grid now coalesces only live Mark-derived repaint requests and the red contract is green. Added deterministic checks for a timer tick, completed edit, rebuild, scale change, suppression, and disposal; the focused suite passed 14 tests.
+
+Revision note (2026-08-16): Recorded the user-supplied C replacement profiles. They confirm materially lower UI-thread occupancy and the reported visual improvement; final validation remains open for the complete suite and interaction checklist.
+
+Revision note (2026-08-16): Completed final validation with the user-reported successful full build, 742 passing unit tests, confirmed functionality, and much improved performance. VIX-3985 scope was already accurate, so only the final validation comment was added.
