@@ -621,8 +621,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				foreach (var mr in orderedMarks)
 				{
 					var timeText = mr.StartTime.Hours > 0
-						? mr.StartTime.ToString(@"hh\:mm\:ss\:fff")
-						: mr.StartTime.ToString(@"mm\:ss\:fff");
+						? mr.StartTime.ToString(@"hh\:mm\:ss\.fff")
+						: mr.StartTime.ToString(@"mm\:ss\.fff");
 					beatMarks.Add($"M{markNum},{mr.Text},{timeText},{mr.Color}");
 					markNum++;
 				}
