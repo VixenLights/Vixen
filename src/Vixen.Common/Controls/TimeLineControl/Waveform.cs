@@ -291,21 +291,6 @@ namespace Common.Controls.Timeline
 			{
 				if (samples.Count > 0 && !_creatingSamples)
 				{
-					//Draws the Mark alignment through the waveform if active mark is being moved.
-					if (_showMarkAlignment)
-					{
-						Pen p;
-						p = new Pen(Brushes.Yellow) { DashPattern = new float[] { 2, 2 } };
-
-						foreach (var activeTime in _activeTimes)
-						{
-							var x1 = timeToPixels(activeTime - VisibleTimeStart);
-							e.Graphics.DrawLine(p, x1, 0, x1, Height);
-						}
-							
-						p.Dispose();
-					}
-
 					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 
@@ -339,7 +324,21 @@ namespace Common.Controls.Timeline
 
 					topPen.Dispose();
 					bottomPen?.Dispose();
+					
+					//Draws the Mark alignment through the waveform if active mark is being moved.
+					if (_showMarkAlignment)
+					{
+						var p = new Pen(Brushes.Yellow) { DashPattern = new float[] { 2, 2 } };
 
+						foreach (var activeTime in _activeTimes)
+						{
+							var x1 = timeToPixels(activeTime);
+							e.Graphics.DrawLine(p, x1, 0, x1, Height);
+						}
+							
+						p.Dispose();
+					}
+					
 					DrawCursor(e.Graphics);
 				}
 				else
