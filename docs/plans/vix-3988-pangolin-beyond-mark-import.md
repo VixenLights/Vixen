@@ -15,6 +15,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 - [x] (2026-08-18 16:20Z) Implemented the file, decision, color-picker, atomic error, unique-name, and default-selection workflow; the focused suite now passes 13 tests.
 - [x] (2026-08-18 16:34Z) User confirmed the full build and full unit suite pass; verified Vixen Beyond export/import round trip and a Beyond-exported test file; posted the results to VIX-3988 comment 40367.
 - [x] (2026-08-18 00:00Z) Updated the import flow so files with zero or one source color skip the grouping prompt and import directly with their source color; added focused decision coverage and revised the plan and VIX-3988 scope.
+- [x] (2026-08-18 00:00Z) User manually confirmed the updated zero/one-color prompt behavior.
 
 ## Surprises & Discoveries
 
@@ -65,7 +66,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 
 ## Outcomes & Retrospective
 
-All milestones are complete. Users can import valid Pangolin Beyond CSV mark files into the Marks Docker. Zero- or one-color files import directly as source-color collections, while multi-color files can be grouped by source color or combined into one replacement-color collection. The import guards against malformed input and cancellation without changing a sequence. The follow-up Release x64 test-target build, 17 focused tests, and 760-test full suite pass. Manual validation confirmed a Vixen Beyond export can be imported back into Vixen and a test file exported by Beyond imports successfully. VIX-3988 records the validation and amended scope. No remaining gaps are known.
+All milestones are complete. Users can import valid Pangolin Beyond CSV mark files into the Marks Docker. Zero- or one-color files import directly as source-color collections, while multi-color files can be grouped by source color or combined into one replacement-color collection. The import guards against malformed input and cancellation without changing a sequence. The follow-up Release x64 test-target build, 17 focused tests, and 760-test full suite pass. Manual validation confirmed Vixen Beyond export/import round trips, import of a Beyond-exported test file, and the updated zero/one-color prompt behavior. VIX-3988 records the validation and amended scope. No remaining gaps are known.
 
 ## Context and Orientation
 
@@ -257,3 +258,5 @@ The exact helper signatures may be adjusted only to keep parsing and materializa
 2026-08-18: Revised the scope after follow-up product feedback: files with zero or one distinct Beyond color now bypass the grouping prompt and import directly using their source color. The multi-color Yes/No/Cancel and replacement-color behavior remains unchanged. Added an internal decision seam and focused coverage for zero, one, and multiple colors; VIX-3988 was updated to reflect the user-visible requirement.
 
 2026-08-18: Follow-up validation passed with the Release x64 `Vixen_Tests` target build, 17 focused `PangolinBeyondMarkImportTests`, and the complete 760-test `Vixen.Tests` suite.
+
+2026-08-18: User manually confirmed that the updated zero/one-color import behavior works as intended.
