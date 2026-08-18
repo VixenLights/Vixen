@@ -25,11 +25,114 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		/// <summary>
 		/// Imports mark collections from a Pangolin Beyond CSV file.
 		/// </summary>
+		/// <remarks>
+		/// Parses the complete file before prompting for import options or changing <paramref name="collections" />.
+		/// Cancelling either import prompt leaves the collection set unchanged.
+		/// </remarks>
 		/// <param name="collections">The mark collections in the active timed sequence.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="collections" /> is <see langword="null" />.</exception>
 		public static void ImportPangolinBeyondMarks(ObservableCollection<IMarkCollection> collections)
 		{
 			ArgumentNullException.ThrowIfNull(collections);
-			Logging.Debug("Pangolin Beyond mark import has not yet been implemented.");
+
+			using var openFileDialog = new OpenFileDialog
+			{
+				DefaultExt = ".csv",
+				Filter = @"Pangolin Beyond CSV (*.csv)|*.csv|All Files (*.*)|*.*",
+				FilterIndex = 0,
+				InitialDirectory = _lastFolder
+			};
+			if (openFileDialog.ShowDialog() != DialogResult.OK)
+			{
+				return;
+			}
+
+			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			try
+			{
+				var csv = File.ReadAllText(openFileDialog.FileName);
+				if (!PangolinBeyondMarkParser.TryParse(csv, out var records, out var error))
+				{
+					Logging.Error("Unable to import Pangolin Beyond marks from {FileName}: {Error}", openFileDialog.FileName, error);
+					ShowPangolinBeyondImportError();
+					return;
+				}
+
+				using var choiceDialog = new MessageBoxForm(
+					"Create a Mark Collection for each Beyond color?",
+					"Pangolin Beyond Import",
+					MessageBoxButtons.YesNoCancel,
+					SystemIcons.Question);
+				var choice = choiceDialog.ShowDialog();
+				var importMode = GetPangolinBeyondImportMode(choice);
+				if (importMode is null)
+				{
+					return;
+				}
+
+				var replacementColor = Color.Empty;
+				if (importMode == PangolinBeyondImportMode.SingleCollection)
+				{
+					using var colorPicker = new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
+					if (colorPicker.ShowDialog() != DialogResult.OK)
+					{
+						return;
+					}
+
+					replacementColor = colorPicker.Color.ToRGB().ToArgb();
+				}
+
+				TryAddPangolinBeyondMarks(collections, records, importMode, replacementColor);
+			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "Unable to import Pangolin Beyond marks from {FileName}", openFileDialog.FileName);
+				ShowPangolinBeyondImportError();
+			}
+		}
+
+		internal static PangolinBeyondImportMode? GetPangolinBeyondImportMode(DialogResult dialogResult)
+		{
+			return dialogResult switch
+			{
+				DialogResult.OK or DialogResult.Yes => PangolinBeyondImportMode.GroupByColor,
+				DialogResult.No => PangolinBeyondImportMode.SingleCollection,
+				_ => null
+			};
+		}
+
+		internal static bool TryAddPangolinBeyondMarks(
+			ObservableCollection<IMarkCollection> collections,
+			IReadOnlyList<PangolinBeyondMarkRecord> records,
+			PangolinBeyondImportMode? importMode,
+			Color replacementColor)
+		{
+			ArgumentNullException.ThrowIfNull(collections);
+			ArgumentNullException.ThrowIfNull(records);
+			if (importMode is null)
+			{
+				return false;
+			}
+
+			var importedCollections = PangolinBeyondMarkCollectionFactory.CreateCollections(records, importMode.Value, replacementColor);
+			foreach (var importedCollection in importedCollections)
+			{
+				AddUniqueCollection(collections, importedCollection);
+			}
+
+			if (importedCollections.Count > 0 && !collections.Any(collection => collection.IsDefault))
+			{
+				SetDefaultCollection(collections);
+			}
+
+			return true;
+		}
+
+		private static void ShowPangolinBeyondImportError()
+		{
+			const string message = "There was an error importing the Pangolin Beyond marks.";
+			using var messageBox = new MessageBoxForm(message, "Pangolin Beyond Import Error", MessageBoxButtons.OK, SystemIcons.Error);
+			messageBox.ShowDialog();
 		}
 
 		//Vixen 3 Beat Mark Collection Import routine 2-7-2014 JMB

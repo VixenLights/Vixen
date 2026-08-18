@@ -1,4 +1,8 @@
 using System.Drawing;
+using System.Collections.ObjectModel;
+using System.Windows.Forms;
+using Vixen.Marks;
+using VixenModules.App.Marks;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services;
 using Xunit;
 
@@ -92,5 +96,94 @@ public sealed class PangolinBeyondMarkImportTests
 		Assert.Equal(replacementColor, collection.Decorator.Color);
 		Assert.Equal(["Intro", "Chorus"], collection.Marks.Select(mark => mark.Text));
 		Assert.All(collection.Marks, mark => Assert.Equal(TimeSpan.FromMilliseconds(450), mark.Duration));
+	}
+
+	[Fact]
+	public void TryAddPangolinBeyondMarks_Cancelled_DoesNotMutateCollections()
+	{
+		// Arrange
+		var existingCollection = new MarkCollection { Name = "Existing", IsDefault = true };
+		var collections = new ObservableCollection<IMarkCollection> { existingCollection };
+		IReadOnlyList<PangolinBeyondMarkRecord> records = [new("Intro", TimeSpan.FromSeconds(1), Color.Red)];
+
+		// Act
+		var imported = MarkImportExportService.TryAddPangolinBeyondMarks(collections, records, null, Color.Empty);
+
+		// Assert
+		Assert.False(imported);
+		var collection = Assert.Single(collections);
+		Assert.Same(existingCollection, collection);
+		Assert.True(existingCollection.IsDefault);
+	}
+
+	[Fact]
+	public void GetPangolinBeyondImportMode_LegacyYesChoice_ReturnsGroupByColor()
+	{
+		// Act
+		var importMode = MarkImportExportService.GetPangolinBeyondImportMode(DialogResult.OK);
+
+		// Assert
+		Assert.Equal(PangolinBeyondImportMode.GroupByColor, importMode);
+	}
+
+	[Fact]
+	public void GetPangolinBeyondImportMode_NoChoice_ReturnsSingleCollection()
+	{
+		// Act
+		var importMode = MarkImportExportService.GetPangolinBeyondImportMode(DialogResult.No);
+
+		// Assert
+		Assert.Equal(PangolinBeyondImportMode.SingleCollection, importMode);
+	}
+
+	[Fact]
+	public void GetPangolinBeyondImportMode_CancelledChoice_ReturnsNull()
+	{
+		// Act
+		var importMode = MarkImportExportService.GetPangolinBeyondImportMode(DialogResult.Cancel);
+
+		// Assert
+		Assert.Null(importMode);
+	}
+
+	[Fact]
+	public void TryAddPangolinBeyondMarks_Success_UsesUniqueNamesAndPreservesDefault()
+	{
+		// Arrange
+		var existingCollection = new MarkCollection { Name = "Beyond Marks", IsDefault = true };
+		var collections = new ObservableCollection<IMarkCollection> { existingCollection };
+		IReadOnlyList<PangolinBeyondMarkRecord> records = [new("Intro", TimeSpan.FromSeconds(1), Color.Red)];
+
+		// Act
+		var imported = MarkImportExportService.TryAddPangolinBeyondMarks(
+			collections,
+			records,
+			PangolinBeyondImportMode.SingleCollection,
+			Color.MediumPurple);
+
+		// Assert
+		Assert.True(imported);
+		Assert.Equal(["Beyond Marks", "Beyond Marks - 2"], collections.Select(collection => collection.Name));
+		Assert.True(existingCollection.IsDefault);
+		Assert.False(collections[1].IsDefault);
+	}
+
+	[Fact]
+	public void TryAddPangolinBeyondMarks_NoExistingDefault_SetsOneDefault()
+	{
+		// Arrange
+		var collections = new ObservableCollection<IMarkCollection>();
+		IReadOnlyList<PangolinBeyondMarkRecord> records = [new("Intro", TimeSpan.FromSeconds(1), Color.Red)];
+
+		// Act
+		var imported = MarkImportExportService.TryAddPangolinBeyondMarks(
+			collections,
+			records,
+			PangolinBeyondImportMode.SingleCollection,
+			Color.MediumPurple);
+
+		// Assert
+		Assert.True(imported);
+		Assert.True(Assert.Single(collections).IsDefault);
 	}
 }

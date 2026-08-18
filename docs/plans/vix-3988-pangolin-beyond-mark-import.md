@@ -12,7 +12,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 - [x] (2026-08-18 15:46Z) Updated VIX-3988 with the user-facing Summary, Scope, Acceptance Criteria, and Validation Plan.
 - [x] (2026-08-18 15:49Z) Added the Pangolin Beyond dialog selection, Marks Docker dispatch, and documented compile-safe service entry point; the affected Release build succeeded.
 - [x] (2026-08-18 16:00Z) Added pure internal parser/materializer types and seven focused tests; the x64 test target build and `PangolinBeyondMarkImportTests` pass.
-- [ ] Implement the file, choice, color-picker, and collection-mutation workflow.
+- [x] (2026-08-18 16:20Z) Implemented the file, decision, color-picker, atomic error, unique-name, and default-selection workflow; the focused suite now passes 13 tests.
 - [ ] Build, run focused and full tests, perform a manual editor import check, and post validation results to VIX-3988.
 
 ## Surprises & Discoveries
@@ -28,6 +28,9 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 
 - Observation: `MarkCollection.AddMarks` enumerates its input once to assign parents and again to add it.
   Evidence: The initial focused factory test passed a lazy projection and observed two resulting marks with `Parent == null`; materializing the `Mark` list before the single `AddMarks` invocation made all seven focused tests pass.
+
+- Observation: `MessageBoxForm` presents its `OK` button as “YES” but retains `DialogResult.OK`.
+  Evidence: `MessageBoxForm.cs` changes `buttonOk.Text` for `YesNoCancel`, while its designer assigns `buttonOk.DialogResult = DialogResult.OK`; treating only `DialogResult.Yes` caused grouped imports to return without adding collections.
 
 ## Decision Log
 
@@ -47,9 +50,17 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
   Rationale: This guarantees invalid-file atomicity and avoids prompting the user for an import that cannot succeed.
   Date/Author: 2026-08-18 / Codex
 
+- Decision: Expose an internal append seam that accepts already parsed records and a nullable import mode.
+  Rationale: The WinForms dialogs must stay in the legacy service, but the nullable mode makes cancellation/no-mutation, unique-name insertion, and default-selection behavior directly testable without automating dialogs.
+  Date/Author: 2026-08-18 / Codex
+
+- Decision: Map the legacy dialog's `DialogResult.OK` to the grouped (Yes) import choice.
+  Rationale: The existing `MessageBoxForm` labels its OK button “YES” without changing its DialogResult. Accepting both `OK` and `Yes` keeps the user-visible choice correct and makes the mapping explicit in tests.
+  Date/Author: 2026-08-18 / Codex
+
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. The UI now offers and routes the Pangolin Beyond selection, and pure internal parsing/materialization code validates Vixen's CSV shape, BGR colors, grouping order, and default durations. The service entry point intentionally performs no import until the file/dialog workflow milestone is complete. The x64 test target build succeeded and the focused suite passed 7 tests; both builds reported pre-existing warnings in dependent projects and no errors. At completion, record the actual full-suite count, manual import result, final tracker update, and any environment limitation here; compare them with the user-visible import behavior described above.
+Milestones 1 through 4 are complete. The service now reads and fully parses the selected CSV before asking the user whether to group colors, uses the existing ColorPicker for a single replacement-color collection, and mutates collections only after all user decisions succeed. Invalid CSV and every cancellation route return before collection/default mutation. The legacy Yes button's `DialogResult.OK` is explicitly mapped to grouping. The x64 test target build succeeded and the focused suite passed 13 tests; both builds reported pre-existing warnings in dependent projects and no errors. At completion, record the actual full-suite count, manual import result, final tracker update, and any environment limitation here; compare them with the user-visible import behavior described above.
 
 ## Context and Orientation
 
@@ -191,7 +202,7 @@ Milestone 3 validation evidence:
     Build succeeded with zero errors.
 
     dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:\Dev\Vixen\\" --filter FullyQualifiedName~PangolinBeyondMarkImportTests
-    Passed! - Failed: 0, Passed: 7, Skipped: 0, Total: 7.
+    Passed! - Failed: 0, Passed: 13, Skipped: 0, Total: 13.
 
 ## Interfaces and Dependencies
 
@@ -223,3 +234,7 @@ The exact helper signatures may be adjusted only to keep parsing and materializa
 2026-08-18: Completed Milestone 2 by adding the legacy dialog radio button and `IsPangolinBeyondSelection` property, routing it from Marks Docker, and adding the documented `ImportPangolinBeyondMarks` entry point. Verified with `msbuild src\\Vixen.Modules\\Editor\\TimedSequenceEditor\\TimedSequenceEditor.csproj -m -t:Build -p:Configuration=Release -p:Platform=x64 -v:m`, which completed with zero errors.
 
 2026-08-18: Completed Milestone 3 by adding separate internal record, mode, parser, and collection-factory files plus seven focused tests. The initial test exposed that `MarkCollection.AddMarks` re-enumerates its input, so the factory now materializes marks before its required single bulk-add call.
+
+2026-08-18: Completed Milestone 4 by replacing the service placeholder with the legacy file/dialog workflow. It logs and displays the required error title for parse/read failures, maps Yes/No/other dialog results to grouping/single/cancellation behavior, uses the existing ColorPicker, and commits through an internal test seam after all decisions succeed. Added cancellation, unique-name/default-preservation, first-default, and legacy-dialog-result tests; the focused suite now has 13 passing tests.
+
+2026-08-18: Corrected grouped import after manual testing found that the legacy Yes button returns `DialogResult.OK`, not `DialogResult.Yes`. The service now maps both results to grouped import and has direct regression coverage for OK, Yes, No, and Cancel mappings.
