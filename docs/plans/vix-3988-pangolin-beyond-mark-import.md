@@ -11,7 +11,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 - [x] (2026-08-18 00:00Z) Inspected the existing import dialog, import/export service, Marks Docker dispatch, mark model, unique-name helper use, ColorPicker use, and test-project visibility.
 - [x] (2026-08-18 15:46Z) Updated VIX-3988 with the user-facing Summary, Scope, Acceptance Criteria, and Validation Plan.
 - [x] (2026-08-18 15:49Z) Added the Pangolin Beyond dialog selection, Marks Docker dispatch, and documented compile-safe service entry point; the affected Release build succeeded.
-- [ ] Add pure parser and materializer internals plus focused unit tests.
+- [x] (2026-08-18 16:00Z) Added pure internal parser/materializer types and seven focused tests; the x64 test target build and `PangolinBeyondMarkImportTests` pass.
 - [ ] Implement the file, choice, color-picker, and collection-mutation workflow.
 - [ ] Build, run focused and full tests, perform a manual editor import check, and post validation results to VIX-3988.
 
@@ -25,6 +25,9 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 
 - Observation: Creating `new Mark(startTime)` deliberately gives the mark a 450 ms duration.
   Evidence: `src/Vixen.Modules/App/Marks/Mark.cs` assigns `TimeSpan.FromMilliseconds(450)` in its `Mark(TimeSpan)` constructor.
+
+- Observation: `MarkCollection.AddMarks` enumerates its input once to assign parents and again to add it.
+  Evidence: The initial focused factory test passed a lazy projection and observed two resulting marks with `Parent == null`; materializing the `Mark` list before the single `AddMarks` invocation made all seven focused tests pass.
 
 ## Decision Log
 
@@ -46,7 +49,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. The UI now offers and routes the Pangolin Beyond selection, but its service entry point intentionally performs no import until the parser and workflow milestones are complete. The affected `TimedSequenceEditor` Release build succeeded; it reported pre-existing warnings in dependent projects and no errors. At completion, record the actual test counts, manual import result, final tracker update, and any environment limitation here; compare them with the user-visible import behavior described above.
+Milestones 1 through 3 are complete. The UI now offers and routes the Pangolin Beyond selection, and pure internal parsing/materialization code validates Vixen's CSV shape, BGR colors, grouping order, and default durations. The service entry point intentionally performs no import until the file/dialog workflow milestone is complete. The x64 test target build succeeded and the focused suite passed 7 tests; both builds reported pre-existing warnings in dependent projects and no errors. At completion, record the actual full-suite count, manual import result, final tracker update, and any environment limitation here; compare them with the user-visible import behavior described above.
 
 ## Context and Orientation
 
@@ -182,6 +185,14 @@ The expected grouped result is:
 
 Both imported collections set `ShowMarkBar = true`. Every listed mark has a 450 ms duration unless a future product requirement explicitly adds Beyond duration serialization.
 
+Milestone 3 validation evidence:
+
+    msbuild Vixen.sln -m -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m
+    Build succeeded with zero errors.
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:\Dev\Vixen\\" --filter FullyQualifiedName~PangolinBeyondMarkImportTests
+    Passed! - Failed: 0, Passed: 7, Skipped: 0, Total: 7.
+
 ## Interfaces and Dependencies
 
 No package, solution, or project-reference change is expected. Use existing `System.Globalization.CultureInfo.InvariantCulture`, `System.Drawing.Color`, `System.Windows.Forms` dialogs, `NLog`, `VixenModules.App.Marks.Mark`, `MarkCollection`, `MarkCollectionNameService`, `MessageBoxForm`, and `Common.Controls.ColorManagement.ColorPicker.ColorPicker` dependencies.
@@ -210,3 +221,5 @@ The exact helper signatures may be adjusted only to keep parsing and materializa
 2026-08-18: Completed Milestone 1 by updating VIX-3988 with a concise user-facing Summary, Scope, Acceptance Criteria, and Validation Plan. Detailed parser, UI, and test design remains in this repository-local ExecPlan.
 
 2026-08-18: Completed Milestone 2 by adding the legacy dialog radio button and `IsPangolinBeyondSelection` property, routing it from Marks Docker, and adding the documented `ImportPangolinBeyondMarks` entry point. Verified with `msbuild src\\Vixen.Modules\\Editor\\TimedSequenceEditor\\TimedSequenceEditor.csproj -m -t:Build -p:Configuration=Release -p:Platform=x64 -v:m`, which completed with zero errors.
+
+2026-08-18: Completed Milestone 3 by adding separate internal record, mode, parser, and collection-factory files plus seven focused tests. The initial test exposed that `MarkCollection.AddMarks` re-enumerates its input, so the factory now materializes marks before its required single bulk-add call.
