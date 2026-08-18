@@ -4,7 +4,7 @@ This ExecPlan is a living document. Maintain its `Progress`, `Surprises & Discov
 
 ## Purpose / Big Picture
 
-Timed Sequence Editor users can already export mark collections in Pangolin Beyond's CSV shape, but cannot bring that CSV back into the Marks Docker. After this work, a user can choose `Pangolin Beyond` from the existing import-type dialog, select a CSV exported by Vixen, and either retain the source colors as separate mark collections or replace every source color with one selected color. The user can see the imported marks immediately in the Marks Bar; invalid files and cancelled choices leave the current sequence unchanged.
+Timed Sequence Editor users can already export mark collections in Pangolin Beyond's CSV shape, but cannot bring that CSV back into the Marks Docker. After this work, a user can choose `Pangolin Beyond` from the existing import-type dialog and select a CSV exported by Vixen. A file with zero or one source color imports directly as source-color collections; a multi-color file lets the user either retain source colors as separate mark collections or replace every source color with one selected color. The user can see the imported marks immediately in the Marks Bar; invalid files and cancelled choices leave the current sequence unchanged.
 
 ## Progress
 
@@ -14,6 +14,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 - [x] (2026-08-18 16:00Z) Added pure internal parser/materializer types and seven focused tests; the x64 test target build and `PangolinBeyondMarkImportTests` pass.
 - [x] (2026-08-18 16:20Z) Implemented the file, decision, color-picker, atomic error, unique-name, and default-selection workflow; the focused suite now passes 13 tests.
 - [x] (2026-08-18 16:34Z) User confirmed the full build and full unit suite pass; verified Vixen Beyond export/import round trip and a Beyond-exported test file; posted the results to VIX-3988 comment 40367.
+- [x] (2026-08-18 00:00Z) Updated the import flow so files with zero or one source color skip the grouping prompt and import directly with their source color; added focused decision coverage and revised the plan and VIX-3988 scope.
 
 ## Surprises & Discoveries
 
@@ -58,9 +59,13 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
   Rationale: The existing `MessageBoxForm` labels its OK button “YES” without changing its DialogResult. Accepting both `OK` and `Yes` keeps the user-visible choice correct and makes the mapping explicit in tests.
   Date/Author: 2026-08-18 / Codex
 
+- Decision: Show the grouping and replacement-color choice only when parsed Beyond data contains more than one distinct source color.
+  Rationale: A zero- or one-color file has no grouping decision to make, so it imports directly using the source color and avoids an unnecessary prompt.
+  Date/Author: 2026-08-18 / Codex
+
 ## Outcomes & Retrospective
 
-All milestones are complete. Users can import valid Pangolin Beyond CSV mark files into the Marks Docker either as collections grouped by source color or as one replacement-color collection. The import guards against malformed input and cancellation without changing a sequence. Automated focused coverage passes 13 tests; the user also confirmed the full build and full unit suite pass. Manual validation confirmed a Vixen Beyond export can be imported back into Vixen and a test file exported by Beyond imports successfully. VIX-3988 comment 40367 records the validation results. No remaining gaps are known.
+All milestones are complete. Users can import valid Pangolin Beyond CSV mark files into the Marks Docker. Zero- or one-color files import directly as source-color collections, while multi-color files can be grouped by source color or combined into one replacement-color collection. The import guards against malformed input and cancellation without changing a sequence. The follow-up Release x64 test-target build, 17 focused tests, and 760-test full suite pass. Manual validation confirmed a Vixen Beyond export can be imported back into Vixen and a test file exported by Beyond imports successfully. VIX-3988 records the validation and amended scope. No remaining gaps are known.
 
 ## Context and Orientation
 
@@ -114,7 +119,7 @@ Add `ImportPangolinBeyondMarks(ObservableCollection<IMarkCollection> collections
 
 If parsing fails, construct a specific NLog error containing the parser error and file path (include an exception only if one occurred), show `MessageBoxForm` with the title exactly `Pangolin Beyond Import Error`, and return. Do not add a collection, change an existing collection, set a default, or show the grouping question on this path. Also catch read/unexpected errors around this workflow, log them, show that same title, and preserve the same no-mutation guarantee.
 
-After a successful parse, ask with Yes/No/Cancel using the existing `MessageBoxForm`/WinForms dialog conventions and exact prompt text `Create a Mark Collection for each Beyond color?`. Map Yes to `PangolinBeyondImportMode.GroupByColor`. Map No to `SingleCollection`, then show the existing `ColorPicker`; if it returns anything other than `DialogResult.OK`, return without mutation. Convert its selected XYZ color with `picker.Color.ToRGB().ToArgb()`. Map Cancel, form-close, or any other result to an immediate no-mutation return. Dispose the ColorPicker with `using` so its message filter is removed.
+After a successful parse, count distinct source colors. For zero or one color, select `PangolinBeyondImportMode.GroupByColor` directly and do not show a choice dialog. For more than one color, ask with Yes/No/Cancel using the existing `MessageBoxForm`/WinForms dialog conventions and exact prompt text `Create a Mark Collection for each Beyond color?`. Map Yes to `PangolinBeyondImportMode.GroupByColor`. Map No to `SingleCollection`, then show the existing `ColorPicker`; if it returns anything other than `DialogResult.OK`, return without mutation. Convert its selected XYZ color with `picker.Color.ToRGB().ToArgb()`. Map Cancel, form-close, or any other result to an immediate no-mutation return. Dispose the ColorPicker with `using` so its message filter is removed.
 
 Only after a successful mode and, where required, color selection, call the materializer. Then append every fully constructed collection with `AddUniqueCollection(collections, collection)`, retaining the materializer order. Once all additions are complete, call `SetDefaultCollection(collections)` only if `collections.Any(x => x.IsDefault)` is false. This sequencing ensures failed parse, prompt cancellation, and picker cancellation cannot produce partial imports. Do not add a new dialog, do not move UI behavior out of the import service, and do not alter the existing Beyond export branch.
 
@@ -170,9 +175,9 @@ All commands run from `C:\Dev\Vixen`.
 
 The feature is accepted when the import dialog has a selectable Pangolin Beyond format and the user can import a Vixen-exported Beyond CSV through it. A file with the exact header and valid four-field rows must parse invariantly, preserve mark text and start time, translate BGR colors correctly, preserve the 450 ms default duration, and create visible collections.
 
-Yes must create one `Beyond Marks - #RRGGBB` collection for each source RGB color in first-occurrence order. No must show the existing ColorPicker and, after confirmation, create one `Beyond Marks` collection whose decorator is the selected replacement color. The collections must get unique names, marks must be bulk-added once per collection, and default selection must only be supplied when absent. Cancel at either decision point must leave collections untouched.
+A zero- or one-color file must import directly, without a grouping prompt, as one source-color `Beyond Marks - #RRGGBB` collection when records exist. For a multi-color file, Yes must create one `Beyond Marks - #RRGGBB` collection for each source RGB color in first-occurrence order. No must show the existing ColorPicker and, after confirmation, create one `Beyond Marks` collection whose decorator is the selected replacement color. The collections must get unique names, marks must be bulk-added once per collection, and default selection must only be supplied when absent. Cancel at either multi-color decision point must leave collections untouched.
 
-For malformed headers, non-four-column rows, invalid timestamps, or invalid colors, the application must log an NLog error, display `Pangolin Beyond Import Error`, and make no collection/default changes. Automated tests must cover parsing, BGR conversion, both time forms, both materialization modes, grouping order, uniqueness/default append behavior where exposed, cancellation/no-mutation seams, and invalid-input atomicity. The focused and full `Vixen.Tests` commands must have zero failures, and the manual scenarios in Milestone 5 must pass.
+For malformed headers, non-four-column rows, invalid timestamps, or invalid colors, the application must log an NLog error, display `Pangolin Beyond Import Error`, and make no collection/default changes. Automated tests must cover parsing, BGR conversion, both time forms, the zero/one/multiple-color prompt decision, both materialization modes, grouping order, uniqueness/default append behavior where exposed, cancellation/no-mutation seams, and invalid-input atomicity. The focused and full `Vixen.Tests` commands must have zero failures, and the manual scenarios in Milestone 5 must pass.
 
 ## Idempotence and Recovery
 
@@ -248,3 +253,7 @@ The exact helper signatures may be adjusted only to keep parsing and materializa
 2026-08-18: Corrected grouped import after manual testing found that the legacy Yes button returns `DialogResult.OK`, not `DialogResult.Yes`. The service now maps both results to grouped import and has direct regression coverage for OK, Yes, No, and Cancel mappings.
 
 2026-08-18: Completed Milestone 5 with user-provided full-build, full-suite, and manual round-trip/import validation. Added the results to VIX-3988 comment 40367; no issue-description changes were needed.
+
+2026-08-18: Revised the scope after follow-up product feedback: files with zero or one distinct Beyond color now bypass the grouping prompt and import directly using their source color. The multi-color Yes/No/Cancel and replacement-color behavior remains unchanged. Added an internal decision seam and focused coverage for zero, one, and multiple colors; VIX-3988 was updated to reflect the user-visible requirement.
+
+2026-08-18: Follow-up validation passed with the Release x64 `Vixen_Tests` target build, 17 focused `PangolinBeyondMarkImportTests`, and the complete 760-test `Vixen.Tests` suite.

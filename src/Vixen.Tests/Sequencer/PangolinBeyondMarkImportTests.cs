@@ -116,6 +116,41 @@ public sealed class PangolinBeyondMarkImportTests
 		Assert.True(existingCollection.IsDefault);
 	}
 
+	[Theory]
+	[InlineData(0, false)]
+	[InlineData(1, false)]
+	[InlineData(2, true)]
+	public void RequiresPangolinBeyondColorChoice_ReturnsTrueOnlyForMultipleSourceColors(int colorCount, bool expected)
+	{
+		// Arrange
+		IReadOnlyList<PangolinBeyondMarkRecord> records = Enumerable.Range(0, colorCount)
+			.Select(index => new PangolinBeyondMarkRecord($"Mark {index}", TimeSpan.FromSeconds(index), Color.FromArgb(index, index, index)))
+			.ToList();
+
+		// Act
+		var requiresChoice = MarkImportExportService.RequiresPangolinBeyondColorChoice(records);
+
+		// Assert
+		Assert.Equal(expected, requiresChoice);
+	}
+
+	[Fact]
+	public void RequiresPangolinBeyondColorChoice_RepeatedSourceColor_ReturnsFalse()
+	{
+		// Arrange
+		IReadOnlyList<PangolinBeyondMarkRecord> records =
+		[
+			new("Intro", TimeSpan.FromSeconds(1), Color.Red),
+			new("Chorus", TimeSpan.FromSeconds(2), Color.Red)
+		];
+
+		// Act
+		var requiresChoice = MarkImportExportService.RequiresPangolinBeyondColorChoice(records);
+
+		// Assert
+		Assert.False(requiresChoice);
+	}
+
 	[Fact]
 	public void GetPangolinBeyondImportMode_LegacyYesChoice_ReturnsGroupByColor()
 	{

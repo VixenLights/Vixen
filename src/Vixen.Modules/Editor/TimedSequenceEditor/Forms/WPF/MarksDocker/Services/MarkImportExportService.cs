@@ -27,6 +27,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		/// </summary>
 		/// <remarks>
 		/// Parses the complete file before prompting for import options or changing <paramref name="collections" />.
+		/// Files with zero or one source color import directly with their source color; files with multiple source colors
+		/// prompt for the collection arrangement.
 		/// Cancelling either import prompt leaves the collection set unchanged.
 		/// </remarks>
 		/// <param name="collections">The mark collections in the active timed sequence.</param>
@@ -58,16 +60,21 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					return;
 				}
 
-				using var choiceDialog = new MessageBoxForm(
-					"Create a Mark Collection for each Beyond color?",
-					"Pangolin Beyond Import",
-					MessageBoxButtons.YesNoCancel,
-					SystemIcons.Question);
-				var choice = choiceDialog.ShowDialog();
-				var importMode = GetPangolinBeyondImportMode(choice);
-				if (importMode is null)
+				var importMode = PangolinBeyondImportMode.GroupByColor;
+				if (RequiresPangolinBeyondColorChoice(records))
 				{
-					return;
+					using var choiceDialog = new MessageBoxForm(
+						"Create a Mark Collection for each Beyond color?",
+						"Pangolin Beyond Import",
+						MessageBoxButtons.YesNoCancel,
+						SystemIcons.Question);
+					var choice = GetPangolinBeyondImportMode(choiceDialog.ShowDialog());
+					if (choice is null)
+					{
+						return;
+					}
+
+					importMode = choice.Value;
 				}
 
 				var replacementColor = Color.Empty;
@@ -99,6 +106,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				DialogResult.No => PangolinBeyondImportMode.SingleCollection,
 				_ => null
 			};
+		}
+
+		internal static bool RequiresPangolinBeyondColorChoice(IReadOnlyList<PangolinBeyondMarkRecord> records)
+		{
+			ArgumentNullException.ThrowIfNull(records);
+
+			return records.Select(record => record.Color).Distinct().Skip(1).Any();
 		}
 
 		internal static bool TryAddPangolinBeyondMarks(
