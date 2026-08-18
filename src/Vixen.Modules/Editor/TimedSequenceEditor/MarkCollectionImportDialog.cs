@@ -43,6 +43,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		/// <summary>
+		/// Gets a value that indicates whether Pangolin Beyond import is selected.
+		/// </summary>
+		/// <value><see langword="true" /> if Pangolin Beyond import is selected; otherwise, <see langword="false" />.</value>
+		public bool IsPangolinBeyondSelection => radioPangolinBeyond.Checked;
+
         public bool IsTimingTrackBrowserSelection => radioTimingTrackBrowser.Checked;
 
         public bool IsPapagayoSelection => radioPapagayo.Checked;

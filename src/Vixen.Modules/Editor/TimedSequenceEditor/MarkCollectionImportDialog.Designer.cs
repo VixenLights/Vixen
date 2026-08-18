@@ -37,6 +37,7 @@
             this.radioXTiming = new System.Windows.Forms.RadioButton();
             this.radioPapagayo = new System.Windows.Forms.RadioButton();
             this.radioTimingTrackBrowser = new System.Windows.Forms.RadioButton();
+            this.radioPangolinBeyond = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // radioVixen3Beats
@@ -84,7 +85,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			btnCancel.Location = new Point(105, 205);
+			btnCancel.Location = new Point(105, 231);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(87, 27);
             this.btnCancel.TabIndex = 1;
@@ -94,7 +95,7 @@
             // btnOk
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			btnOk.Location = new Point(12, 205);
+			btnOk.Location = new Point(12, 231);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(87, 27);
             this.btnOk.TabIndex = 2;
@@ -131,13 +132,24 @@
             this.radioTimingTrackBrowser.Text = "Singing Faces Lyric Browser";
             this.radioTimingTrackBrowser.UseVisualStyleBackColor = true;
             // 
+			// radioPangolinBeyond
+			//
+			this.radioPangolinBeyond.AutoSize = true;
+			radioPangolinBeyond.Location = new Point(12, 193);
+			this.radioPangolinBeyond.Name = "radioPangolinBeyond";
+			this.radioPangolinBeyond.Size = new System.Drawing.Size(117, 19);
+			this.radioPangolinBeyond.TabIndex = 7;
+			this.radioPangolinBeyond.Text = "Pangolin Beyond";
+			this.radioPangolinBeyond.UseVisualStyleBackColor = true;
+			//
             // MarkCollectionImportDialog
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-			ClientSize = new Size(207, 244);
+			ClientSize = new Size(207, 270);
+			this.Controls.Add(this.radioPangolinBeyond);
             this.Controls.Add(this.radioTimingTrackBrowser);
             this.Controls.Add(this.radioPapagayo);
             this.Controls.Add(this.radioXTiming);
@@ -150,7 +162,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
             this.MinimizeBox = false;
-			MinimumSize = new Size(150, 283);
+			MinimumSize = new Size(150, 309);
             this.Name = "MarkCollectionImportDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Import Type Selection";
@@ -170,5 +182,6 @@
 		private System.Windows.Forms.RadioButton radioXTiming;
 		private System.Windows.Forms.RadioButton radioPapagayo;
         private System.Windows.Forms.RadioButton radioTimingTrackBrowser;
+		private System.Windows.Forms.RadioButton radioPangolinBeyond;
     }
 }

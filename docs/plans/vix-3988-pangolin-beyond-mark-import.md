@@ -10,7 +10,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 
 - [x] (2026-08-18 00:00Z) Inspected the existing import dialog, import/export service, Marks Docker dispatch, mark model, unique-name helper use, ColorPicker use, and test-project visibility.
 - [x] (2026-08-18 15:46Z) Updated VIX-3988 with the user-facing Summary, Scope, Acceptance Criteria, and Validation Plan.
-- [ ] Add the Pangolin Beyond import choice and service dispatch.
+- [x] (2026-08-18 15:49Z) Added the Pangolin Beyond dialog selection, Marks Docker dispatch, and documented compile-safe service entry point; the affected Release build succeeded.
 - [ ] Add pure parser and materializer internals plus focused unit tests.
 - [ ] Implement the file, choice, color-picker, and collection-mutation workflow.
 - [ ] Build, run focused and full tests, perform a manual editor import check, and post validation results to VIX-3988.
@@ -46,7 +46,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete: VIX-3988 now describes the import outcome, cancellation and invalid-file safeguards, and reviewable acceptance criteria. Implementation has not started. At completion, record the actual test counts, manual import result, final tracker update, and any environment limitation here; compare them with the user-visible import behavior described above.
+Milestones 1 and 2 are complete. The UI now offers and routes the Pangolin Beyond selection, but its service entry point intentionally performs no import until the parser and workflow milestones are complete. The affected `TimedSequenceEditor` Release build succeeded; it reported pre-existing warnings in dependent projects and no errors. At completion, record the actual test counts, manual import result, final tracker update, and any environment limitation here; compare them with the user-visible import behavior described above.
 
 ## Context and Orientation
 
@@ -208,3 +208,5 @@ The exact helper signatures may be adjusted only to keep parsing and materializa
 2026-08-18: Initial ExecPlan created from the VIX-3988 handoff after source inspection of the existing import/export flow, WinForms selection dialog, Marks model, ColorPicker API, unique-name behavior, and test visibility. The plan resolves grouping order, parsing strictness, duration preservation, and no-mutation sequencing explicitly so implementation can proceed without relying on the handoff.
 
 2026-08-18: Completed Milestone 1 by updating VIX-3988 with a concise user-facing Summary, Scope, Acceptance Criteria, and Validation Plan. Detailed parser, UI, and test design remains in this repository-local ExecPlan.
+
+2026-08-18: Completed Milestone 2 by adding the legacy dialog radio button and `IsPangolinBeyondSelection` property, routing it from Marks Docker, and adding the documented `ImportPangolinBeyondMarks` entry point. Verified with `msbuild src\\Vixen.Modules\\Editor\\TimedSequenceEditor\\TimedSequenceEditor.csproj -m -t:Build -p:Configuration=Release -p:Platform=x64 -v:m`, which completed with zero errors.

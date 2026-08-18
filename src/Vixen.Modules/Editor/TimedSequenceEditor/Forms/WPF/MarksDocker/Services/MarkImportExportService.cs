@@ -22,6 +22,15 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 
 		private static string _lastFolder = Paths.DataRootPath;
 
+		/// <summary>
+		/// Imports mark collections from a Pangolin Beyond CSV file.
+		/// </summary>
+		/// <param name="collections">The mark collections in the active timed sequence.</param>
+		public static void ImportPangolinBeyondMarks(ObservableCollection<IMarkCollection> collections)
+		{
+			ArgumentNullException.ThrowIfNull(collections);
+			Logging.Debug("Pangolin Beyond mark import has not yet been implemented.");
+		}
 
 		//Vixen 3 Beat Mark Collection Import routine 2-7-2014 JMB
 		public static void ImportVixen3Beats(ObservableCollection<IMarkCollection> collections)
