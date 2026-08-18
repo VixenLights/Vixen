@@ -13,7 +13,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 - [x] (2026-08-18 15:49Z) Added the Pangolin Beyond dialog selection, Marks Docker dispatch, and documented compile-safe service entry point; the affected Release build succeeded.
 - [x] (2026-08-18 16:00Z) Added pure internal parser/materializer types and seven focused tests; the x64 test target build and `PangolinBeyondMarkImportTests` pass.
 - [x] (2026-08-18 16:20Z) Implemented the file, decision, color-picker, atomic error, unique-name, and default-selection workflow; the focused suite now passes 13 tests.
-- [ ] Build, run focused and full tests, perform a manual editor import check, and post validation results to VIX-3988.
+- [x] (2026-08-18 16:34Z) User confirmed the full build and full unit suite pass; verified Vixen Beyond export/import round trip and a Beyond-exported test file; posted the results to VIX-3988 comment 40367.
 
 ## Surprises & Discoveries
 
@@ -60,7 +60,7 @@ Timed Sequence Editor users can already export mark collections in Pangolin Beyo
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 4 are complete. The service now reads and fully parses the selected CSV before asking the user whether to group colors, uses the existing ColorPicker for a single replacement-color collection, and mutates collections only after all user decisions succeed. Invalid CSV and every cancellation route return before collection/default mutation. The legacy Yes button's `DialogResult.OK` is explicitly mapped to grouping. The x64 test target build succeeded and the focused suite passed 13 tests; both builds reported pre-existing warnings in dependent projects and no errors. At completion, record the actual full-suite count, manual import result, final tracker update, and any environment limitation here; compare them with the user-visible import behavior described above.
+All milestones are complete. Users can import valid Pangolin Beyond CSV mark files into the Marks Docker either as collections grouped by source color or as one replacement-color collection. The import guards against malformed input and cancellation without changing a sequence. Automated focused coverage passes 13 tests; the user also confirmed the full build and full unit suite pass. Manual validation confirmed a Vixen Beyond export can be imported back into Vixen and a test file exported by Beyond imports successfully. VIX-3988 comment 40367 records the validation results. No remaining gaps are known.
 
 ## Context and Orientation
 
@@ -204,6 +204,14 @@ Milestone 3 validation evidence:
     dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:\Dev\Vixen\\" --filter FullyQualifiedName~PangolinBeyondMarkImportTests
     Passed! - Failed: 0, Passed: 13, Skipped: 0, Total: 13.
 
+Milestone 5 validation evidence supplied by the user:
+
+    Full build: passed.
+    Full unit test suite: passed.
+    Manual: exported marks in Beyond format and re-imported the same file successfully.
+    Manual: imported a test file exported by Beyond successfully.
+    Jira: validation recorded in VIX-3988 comment 40367.
+
 ## Interfaces and Dependencies
 
 No package, solution, or project-reference change is expected. Use existing `System.Globalization.CultureInfo.InvariantCulture`, `System.Drawing.Color`, `System.Windows.Forms` dialogs, `NLog`, `VixenModules.App.Marks.Mark`, `MarkCollection`, `MarkCollectionNameService`, `MessageBoxForm`, and `Common.Controls.ColorManagement.ColorPicker.ColorPicker` dependencies.
@@ -238,3 +246,5 @@ The exact helper signatures may be adjusted only to keep parsing and materializa
 2026-08-18: Completed Milestone 4 by replacing the service placeholder with the legacy file/dialog workflow. It logs and displays the required error title for parse/read failures, maps Yes/No/other dialog results to grouping/single/cancellation behavior, uses the existing ColorPicker, and commits through an internal test seam after all decisions succeed. Added cancellation, unique-name/default-preservation, first-default, and legacy-dialog-result tests; the focused suite now has 13 passing tests.
 
 2026-08-18: Corrected grouped import after manual testing found that the legacy Yes button returns `DialogResult.OK`, not `DialogResult.Yes`. The service now maps both results to grouped import and has direct regression coverage for OK, Yes, No, and Cancel mappings.
+
+2026-08-18: Completed Milestone 5 with user-provided full-build, full-suite, and manual round-trip/import validation. Added the results to VIX-3988 comment 40367; no issue-description changes were needed.
