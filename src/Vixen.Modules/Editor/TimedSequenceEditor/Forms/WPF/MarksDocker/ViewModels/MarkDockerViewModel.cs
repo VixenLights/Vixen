@@ -137,6 +137,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 					MarkImportExportService.ImportPapagayoTracks(MarkCollections);
 				if(aDialog.IsTimingTrackBrowserSelection)
 					MarkImportExportService.ImportSingingFacesTracks(MarkCollections);
+				if (aDialog.IsPangolinBeyondSelection)
+					MarkImportExportService.ImportPangolinBeyondMarks(MarkCollections);
 			}
 		}
 
