@@ -12,7 +12,7 @@ The change deliberately does not introduce drag reordering and does not alter an
 
 - [x] (2026-08-19 14:08Z) Read `.agents/PLANS.md`, the three target templates, existing collection commands, collection mutation code, editor registrations, and the test project layout.
 - [x] (2026-08-19 14:24Z) Updated VIX-3974 with final scope, acceptance criteria, exclusions, and validation plan; status remains Accepted.
-- [ ] Add command, collection mutation, and selection-retention behavior.
+- [x] (2026-08-19 14:31Z) Added the ordering commands and validated collection mutation path; CollectionView selection behavior remains for Milestone 3.
 - [ ] Add focused pure xUnit coverage and required test visibility/reference.
 - [ ] Build, test, manually validate, reconcile VIX-3974, and record outcomes in this plan.
 
@@ -26,6 +26,9 @@ The change deliberately does not introduce drag reordering and does not alter an
 
 - Observation: `src/Vixen.Tests/Vixen.Tests.csproj` does not currently reference the Effect Editor module.
   Evidence: Its project-reference list contains other editor modules but not `src/Vixen.Modules/Editor/EffectEditor/EffectEditor.csproj`.
+
+- Observation: The affected module builds with six existing warnings outside the Milestone 2 changes.
+  Evidence: Release build completed successfully with obsolete serialization-culture, formatter serialization, and unused-event warnings in existing `PropertyItemValue.cs`, `CollectionItemValue.cs`, and `MergedPropertyDescriptor.cs` code; no warning identifies a newly added member.
 
 ## Decision Log
 
@@ -43,7 +46,7 @@ The change deliberately does not introduce drag reordering and does not alter an
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete: VIX-3974 now describes the approved three-editor, button-only outcome and excludes Text Editor and drag reordering. No application implementation has begun. Replace this section with the delivered behavior, test results, manual evidence, remaining gaps, and lessons once the work is complete.
+Milestones 1 and 2 are complete: VIX-3974 describes the approved three-editor, button-only outcome, and the Effect Editor now has shared ordering command definitions plus a validated, single-write collection move path. Command routing, template opt-in, tests, and manual validation remain. Replace this section with the delivered behavior, test results, manual evidence, remaining gaps, and lessons once the work is complete.
 
 ## Context and Orientation
 
@@ -222,3 +225,5 @@ All methods above return false without mutation for invalid state or indexes. `T
 Revision note (2026-08-19): Initial ExecPlan created from the approved VIX-3974 design handoff after repository inspection. No production, test, Jira, or implementation files were changed.
 
 Revision note (2026-08-19): Completed Milestone 1 by updating VIX-3974's user-facing description, scope, acceptance criteria, and validation plan. The issue remains in Accepted status; no source code changed.
+
+Revision note (2026-08-19): Completed Milestone 2 by adding public documented ordering commands and internal collection move validation/mutation. The Effect Editor Release build succeeds with only six pre-existing warnings. CollectionView routing, XAML opt-in, tests, and end-to-end validation remain.

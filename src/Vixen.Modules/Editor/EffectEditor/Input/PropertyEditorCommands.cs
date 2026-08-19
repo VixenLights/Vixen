@@ -34,6 +34,12 @@ namespace VixenModules.Editor.EffectEditor.Input
 		private static readonly RoutedUICommand _RemoveCollectionItem = new RoutedUICommand("Remove Collection Item",
 			"RemoveCollectionItemCommand", ThisType);
 
+		private static readonly RoutedUICommand _MoveCollectionItemUp = new RoutedUICommand("Move Collection Item Up",
+			"MoveCollectionItemUpCommand", ThisType);
+
+		private static readonly RoutedUICommand _MoveCollectionItemDown = new RoutedUICommand("Move Collection Item Down",
+			"MoveCollectionItemDownCommand", ThisType);
+
 		private static readonly RoutedUICommand _ShowExtendedEditor = new RoutedUICommand("Show Extended Editor",
 			"ShowExtendedEditorCommand", ThisType);
 
@@ -177,6 +183,24 @@ namespace VixenModules.Editor.EffectEditor.Input
 		public static RoutedUICommand RemoveCollectionItem
 		{
 			get { return _RemoveCollectionItem; }
+		}
+
+		/// <summary>
+		/// Gets a command that moves the selected collection item one position earlier.
+		/// </summary>
+		/// <value>A command that moves the selected collection item one position earlier.</value>
+		public static RoutedUICommand MoveCollectionItemUp
+		{
+			get { return _MoveCollectionItemUp; }
+		}
+
+		/// <summary>
+		/// Gets a command that moves the selected collection item one position later.
+		/// </summary>
+		/// <value>A command that moves the selected collection item one position later.</value>
+		public static RoutedUICommand MoveCollectionItemDown
+		{
+			get { return _MoveCollectionItemDown; }
 		}
 
 		/// <summary>

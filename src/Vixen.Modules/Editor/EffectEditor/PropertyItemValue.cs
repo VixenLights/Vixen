@@ -190,6 +190,34 @@ namespace VixenModules.Editor.EffectEditor
 		}
 
 		/// <summary>
+		/// Determines whether an item can move between two indexes in the collection.
+		/// </summary>
+		/// <param name="sourceIndex">The index of the item to move.</param>
+		/// <param name="targetIndex">The destination index for the item.</param>
+		/// <returns><see langword="true" /> if the item can move; otherwise, <see langword="false" />.</returns>
+		internal bool CanMoveItemInCollection(int sourceIndex, int targetIndex)
+		{
+			if (!IsCollection || !IsEditable || _collectionValues == null) return false;
+
+			return sourceIndex >= 0 && sourceIndex < _collectionValues.Count &&
+			       targetIndex >= 0 && targetIndex < _collectionValues.Count &&
+			       sourceIndex != targetIndex;
+		}
+
+		/// <summary>
+		/// Moves an item between two indexes in the collection.
+		/// </summary>
+		/// <param name="sourceIndex">The index of the item to move.</param>
+		/// <param name="targetIndex">The destination index for the item.</param>
+		/// <returns><see langword="true" /> if the item moved; otherwise, <see langword="false" />.</returns>
+		internal bool MoveItemInCollection(int sourceIndex, int targetIndex)
+		{
+			if (!CanMoveItemInCollection(sourceIndex, targetIndex)) return false;
+
+			return _property.MoveCollectionValue(sourceIndex, targetIndex);
+		}
+
+		/// <summary>
 		///     Gets a value indicating whether encapsulated value has sub-properties.
 		/// </summary>
 		/// <remarks>This property is reserved for future implementations.</remarks>
