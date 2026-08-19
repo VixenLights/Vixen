@@ -13,6 +13,7 @@ The change deliberately does not introduce drag reordering and does not alter an
 - [x] (2026-08-19 14:08Z) Read `.agents/PLANS.md`, the three target templates, existing collection commands, collection mutation code, editor registrations, and the test project layout.
 - [x] (2026-08-19 14:24Z) Updated VIX-3974 with final scope, acceptance criteria, exclusions, and validation plan; status remains Accepted.
 - [x] (2026-08-19 14:31Z) Added the ordering commands and validated collection mutation path; CollectionView selection behavior remains for Milestone 3.
+- [x] (2026-08-19 14:36Z) Registered and implemented shared move command routing, boundary enablement, and post-move selection retention in `CollectionView`.
 - [ ] Add focused pure xUnit coverage and required test visibility/reference.
 - [ ] Build, test, manually validate, reconcile VIX-3974, and record outcomes in this plan.
 
@@ -30,6 +31,9 @@ The change deliberately does not introduce drag reordering and does not alter an
 - Observation: The affected module builds with six existing warnings outside the Milestone 2 changes.
   Evidence: Release build completed successfully with obsolete serialization-culture, formatter serialization, and unused-event warnings in existing `PropertyItemValue.cs`, `CollectionItemValue.cs`, and `MergedPropertyDescriptor.cs` code; no warning identifies a newly added member.
 
+- Observation: Rebuilding the module can also rebuild dependencies and repeat their existing warnings.
+  Evidence: The Milestone 3 Release build completed successfully while additionally reporting known warnings from `Vixen.Core.IElementTemplate`, `HardwareUpdateThread`, `ProgramExecutor`, and `FixtureGraphics.MovingHeadSettings`; no warning identifies `CollectionView.cs`.
+
 ## Decision Log
 
 - Decision: Opt in through Up/Down button presence in only the three approved XAML templates; do not add an `AllowReordering` dependency property.
@@ -46,7 +50,7 @@ The change deliberately does not introduce drag reordering and does not alter an
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete: VIX-3974 describes the approved three-editor, button-only outcome, and the Effect Editor now has shared ordering command definitions plus a validated, single-write collection move path. Command routing, template opt-in, tests, and manual validation remain. Replace this section with the delivered behavior, test results, manual evidence, remaining gaps, and lessons once the work is complete.
+Milestones 1 through 3 are complete: VIX-3974 describes the approved three-editor, button-only outcome; the Effect Editor has shared ordering command definitions and a validated, single-write collection move path; and CollectionView now enables, executes, and reselects item movement. Template opt-in, tests, and manual validation remain. Replace this section with the delivered behavior, test results, manual evidence, remaining gaps, and lessons once the work is complete.
 
 ## Context and Orientation
 
@@ -227,3 +231,5 @@ Revision note (2026-08-19): Initial ExecPlan created from the approved VIX-3974 
 Revision note (2026-08-19): Completed Milestone 1 by updating VIX-3974's user-facing description, scope, acceptance criteria, and validation plan. The issue remains in Accepted status; no source code changed.
 
 Revision note (2026-08-19): Completed Milestone 2 by adding public documented ordering commands and internal collection move validation/mutation. The Effect Editor Release build succeeds with only six pre-existing warnings. CollectionView routing, XAML opt-in, tests, and end-to-end validation remain.
+
+Revision note (2026-08-19): Completed Milestone 3 by registering shared move commands in CollectionView, enforcing parameter/editability/selection/boundary checks, and restoring the moved item's selection after reload. The Effect Editor Release build succeeds with only existing dependency and module warnings. XAML opt-in, tests, and end-to-end validation remain.

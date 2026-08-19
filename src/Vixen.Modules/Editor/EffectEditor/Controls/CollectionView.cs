@@ -13,6 +13,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		public CollectionView()
 		{
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.RemoveCollectionItem, OnRemoveCollectionItemCommand, CanExecuteDelete));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.MoveCollectionItemUp, OnMoveCollectionItemUpCommand, CanExecuteMoveCollectionItemUp));
+			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.MoveCollectionItemDown, OnMoveCollectionItemDownCommand, CanExecuteMoveCollectionItemDown));
 			LostFocus += CollectionView_LostFocus;
 			//IsSynchronizedWithCurrentItem = false;
 		}
@@ -54,6 +56,61 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					value.RemoveItemFromCollection(SelectedIndex);
 				}
 			}			
+		}
+
+		private void CanExecuteMoveCollectionItemUp(object sender, CanExecuteRoutedEventArgs e)
+		{
+			CanExecuteMoveCollectionItem(e, -1);
+		}
+
+		private void CanExecuteMoveCollectionItemDown(object sender, CanExecuteRoutedEventArgs e)
+		{
+			CanExecuteMoveCollectionItem(e, 1);
+		}
+
+		private void CanExecuteMoveCollectionItem(CanExecuteRoutedEventArgs e, int direction)
+		{
+			e.CanExecute = false;
+
+			var value = e.Parameter as PropertyItemValue;
+			if (e.Parameter == null || !e.Parameter.Equals(PropertyValue) || value == null || !value.IsEditable || SelectedIndex < 0)
+			{
+				e.Handled = true;
+				return;
+			}
+
+			var targetIndex = SelectedIndex + direction;
+			if (targetIndex < 0 || targetIndex >= value.CollectionValues.Count)
+			{
+				e.Handled = true;
+				return;
+			}
+
+			e.CanExecute = value.CanMoveItemInCollection(SelectedIndex, targetIndex);
+			e.Handled = true;
+		}
+
+		private void OnMoveCollectionItemUpCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			MoveCollectionItem(e, -1);
+		}
+
+		private void OnMoveCollectionItemDownCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			MoveCollectionItem(e, 1);
+		}
+
+		private void MoveCollectionItem(ExecutedRoutedEventArgs e, int direction)
+		{
+			var value = e.Parameter as PropertyItemValue;
+			if (value == null || !e.Parameter.Equals(PropertyValue) || SelectedIndex < 0) return;
+
+			var targetIndex = SelectedIndex + direction;
+			if (!value.MoveItemInCollection(SelectedIndex, targetIndex)) return;
+
+			SelectedIndex = targetIndex;
+			ScrollIntoView(SelectedItem);
+			CommandManager.InvalidateRequerySuggested();
 		}
 
 		#region PropertyValue property
