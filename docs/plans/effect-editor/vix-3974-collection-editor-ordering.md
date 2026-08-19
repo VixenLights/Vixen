@@ -15,6 +15,7 @@ The change deliberately does not introduce drag reordering and does not alter an
 - [x] (2026-08-19 14:31Z) Added the ordering commands and validated collection mutation path; CollectionView selection behavior remains for Milestone 3.
 - [x] (2026-08-19 14:36Z) Registered and implemented shared move command routing, boundary enablement, and post-move selection retention in `CollectionView`.
 - [x] (2026-08-19 14:46Z) Added Up/Down button opt-in to exactly the three approved palette/pair templates and verified the excluded templates remain unchanged.
+- [x] (2026-08-19 14:52Z) Added pure internal move-seam tests, the narrow test visibility declaration, and an Effect Editor test project reference; focused suite passes 12/12.
 - [ ] Add focused pure xUnit coverage and required test visibility/reference.
 - [ ] Build, test, manually validate, reconcile VIX-3974, and record outcomes in this plan.
 
@@ -35,6 +36,9 @@ The change deliberately does not introduce drag reordering and does not alter an
 - Observation: Rebuilding the module can also rebuild dependencies and repeat their existing warnings.
   Evidence: The Milestone 3 Release build completed successfully while additionally reporting known warnings from `Vixen.Core.IElementTemplate`, `HardwareUpdateThread`, `ProgramExecutor`, and `FixtureGraphics.MovingHeadSettings`; no warning identifies `CollectionView.cs`.
 
+- Observation: The Effect Editor test project reference must copy the module assembly to the test output directory.
+  Evidence: A reference configured with `Private=false` compiled but all 12 focused tests failed with `FileNotFoundException` for `EffectEditor.dll`. Reverting to the repository's established bare project-reference form copied the assembly and the same 12 tests passed.
+
 ## Decision Log
 
 - Decision: Opt in through Up/Down button presence in only the three approved XAML templates; do not add an `AllowReordering` dependency property.
@@ -51,7 +55,7 @@ The change deliberately does not introduce drag reordering and does not alter an
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 4 are complete: VIX-3974 describes the approved three-editor, button-only outcome; the Effect Editor has shared ordering command definitions and a validated, single-write collection move path; CollectionView enables, executes, and reselects item movement; and only the approved templates now display the controls. Tests and manual validation remain. Replace this section with the delivered behavior, test results, manual evidence, remaining gaps, and lessons once the work is complete.
+Milestones 1 through 5 are complete: VIX-3974 describes the approved three-editor, button-only outcome; the Effect Editor has shared ordering command definitions and a validated, single-write collection move path; CollectionView enables, executes, and reselects item movement; only the approved templates display the controls; and 12 pure ordering tests pass. Full validation, manual verification, and final tracker reconciliation remain. Replace this section with the delivered behavior, test results, manual evidence, remaining gaps, and lessons once the work is complete.
 
 ## Context and Orientation
 
@@ -236,3 +240,5 @@ Revision note (2026-08-19): Completed Milestone 2 by adding public documented or
 Revision note (2026-08-19): Completed Milestone 3 by registering shared move commands in CollectionView, enforcing parameter/editability/selection/boundary checks, and restoring the moved item's selection after reload. The Effect Editor Release build succeeds with only existing dependency and module warnings. XAML opt-in, tests, and end-to-end validation remain.
 
 Revision note (2026-08-19): Completed Milestone 4 by adding targeted Up/Down controls to the color-gradient palette, color palette, and gradient-level pair templates. The required command target, parameter, focus scope, and editable visibility bindings are present in all three; excluded templates have no diff. The Effect Editor Release build succeeds with only existing warnings.
+
+Revision note (2026-08-19): Completed Milestone 5 by exposing `PropertyItem.TryMoveItem` only to Vixen.Tests, adding focused non-WPF ordering/identity/boundary tests, and adding the required module project reference. The first reference configuration suppressed the runtime assembly and failed all focused tests; the repository-standard reference form corrected that. The standard test build succeeds and the focused suite passes 12/12.
