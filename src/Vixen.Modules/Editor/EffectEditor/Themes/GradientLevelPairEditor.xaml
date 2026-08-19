@@ -57,6 +57,14 @@
 				<Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
 					  Command="input:PropertyEditorCommands.RemoveCollectionItem"
 					  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+				<Button Margin="5" Content="Up" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
+					  Command="input:PropertyEditorCommands.MoveCollectionItemUp"
+					  CommandParameter="{Binding}" CommandTarget="{Binding ElementName=PART_editor}"
+					  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+				<Button Margin="5" Content="Down" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
+					  Command="input:PropertyEditorCommands.MoveCollectionItemDown"
+					  CommandParameter="{Binding}" CommandTarget="{Binding ElementName=PART_editor}"
+					  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 			</WrapPanel>
 		</StackPanel>
 	</DataTemplate>

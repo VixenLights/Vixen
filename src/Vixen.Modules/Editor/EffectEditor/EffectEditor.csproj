@@ -10,6 +10,10 @@
 		</ItemGroup>
 
 		<ItemGroup>
+			<InternalsVisibleTo Include="Vixen.Tests" />
+		</ItemGroup>
+
+		<ItemGroup>
 				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\DiscreteColorPicker\DiscreteColorPicker.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Common\ValueTypes\ValueTypes.csproj" />

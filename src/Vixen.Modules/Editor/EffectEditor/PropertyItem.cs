@@ -709,6 +709,53 @@ namespace VixenModules.Editor.EffectEditor
 
 		}
 
+		/// <summary>
+		/// Moves a collection item between two indexes.
+		/// </summary>
+		/// <param name="sourceIndex">The index of the item to move.</param>
+		/// <param name="targetIndex">The destination index for the item.</param>
+		/// <returns><see langword="true" /> if the item moved; otherwise, <see langword="false" />.</returns>
+		internal bool MoveCollectionValue(int sourceIndex, int targetIndex)
+		{
+			if (!IsCollection || IsReadOnly) return false;
+
+			var collectionValue = GetValue() as IList;
+			if (!CanMoveItem(collectionValue, sourceIndex, targetIndex)) return false;
+
+			var oldValue = CloneValues();
+			if (!TryMoveItem(collectionValue, sourceIndex, targetIndex)) return false;
+
+			SetValueCore(collectionValue);
+			OnValueChanged(oldValue, GetValue());
+			OnPropertyChanged("PropertyValue");
+			return true;
+		}
+
+		/// <summary>
+		/// Moves an item in a list between two indexes.
+		/// </summary>
+		/// <param name="collection">The collection containing the item.</param>
+		/// <param name="sourceIndex">The index of the item to move.</param>
+		/// <param name="targetIndex">The destination index for the item.</param>
+		/// <returns><see langword="true" /> if the item moved; otherwise, <see langword="false" />.</returns>
+		internal static bool TryMoveItem(IList collection, int sourceIndex, int targetIndex)
+		{
+			if (!CanMoveItem(collection, sourceIndex, targetIndex)) return false;
+
+			var item = collection[sourceIndex];
+			collection.RemoveAt(sourceIndex);
+			collection.Insert(targetIndex, item);
+			return true;
+		}
+
+		private static bool CanMoveItem(IList collection, int sourceIndex, int targetIndex)
+		{
+			return collection != null &&
+			       sourceIndex >= 0 && sourceIndex < collection.Count &&
+			       targetIndex >= 0 && targetIndex < collection.Count &&
+			       sourceIndex != targetIndex;
+		}
+
 		private IList CreateList(Type t, IList values)
 		{
 			var instance = (IList)Activator.CreateInstance(t);
