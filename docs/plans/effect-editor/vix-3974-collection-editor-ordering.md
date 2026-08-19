@@ -16,6 +16,7 @@ The change deliberately does not introduce drag reordering and does not alter an
 - [x] (2026-08-19 14:36Z) Registered and implemented shared move command routing, boundary enablement, and post-move selection retention in `CollectionView`.
 - [x] (2026-08-19 14:46Z) Added Up/Down button opt-in to exactly the three approved palette/pair templates and verified the excluded templates remain unchanged.
 - [x] (2026-08-19 14:52Z) Added pure internal move-seam tests, the narrow test visibility declaration, and an Effect Editor test project reference; focused suite passes 12/12.
+- [x] (2026-08-19 15:15Z) Full build, unit tests, and the complete manual-validation scenario passed; updated VIX-3974 description and added a validation comment without changing its In Progress status.
 - [ ] Add focused pure xUnit coverage and required test visibility/reference.
 - [ ] Build, test, manually validate, reconcile VIX-3974, and record outcomes in this plan.
 
@@ -55,7 +56,7 @@ The change deliberately does not introduce drag reordering and does not alter an
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 5 are complete: VIX-3974 describes the approved three-editor, button-only outcome; the Effect Editor has shared ordering command definitions and a validated, single-write collection move path; CollectionView enables, executes, and reselects item movement; only the approved templates display the controls; and 12 pure ordering tests pass. Full validation, manual verification, and final tracker reconciliation remain. Replace this section with the delivered behavior, test results, manual evidence, remaining gaps, and lessons once the work is complete.
+All milestones are complete. VIX-3974 now delivers Up/Down ordering in exactly the approved color-gradient palette, color palette, and gradient-level pair editors. Movement is bounded, preserves selection and item identity, and leaves existing Add/Remove and drag/drop behavior unchanged. The full build, unit tests, and manual validation all passed; VIX-3974 contains the final user-facing scope and validation comment. The issue remains In Progress because no workflow transition was requested.
 
 ## Context and Orientation
 
@@ -242,3 +243,5 @@ Revision note (2026-08-19): Completed Milestone 3 by registering shared move com
 Revision note (2026-08-19): Completed Milestone 4 by adding targeted Up/Down controls to the color-gradient palette, color palette, and gradient-level pair templates. The required command target, parameter, focus scope, and editable visibility bindings are present in all three; excluded templates have no diff. The Effect Editor Release build succeeds with only existing warnings.
 
 Revision note (2026-08-19): Completed Milestone 5 by exposing `PropertyItem.TryMoveItem` only to Vixen.Tests, adding focused non-WPF ordering/identity/boundary tests, and adding the required module project reference. The first reference configuration suppressed the runtime assembly and failed all focused tests; the repository-standard reference form corrected that. The standard test build succeeds and the focused suite passes 12/12.
+
+Revision note (2026-08-19): Completed Milestone 6 from the user's reported successful full build, unit-test, and manual-validation evidence. VIX-3974's validation language was converted from planned to completed, and a concise validation comment was added. Its In Progress status was intentionally preserved because no transition was requested.
