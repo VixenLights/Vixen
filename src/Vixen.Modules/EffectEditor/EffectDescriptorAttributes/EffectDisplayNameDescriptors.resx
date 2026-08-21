@@ -552,6 +552,9 @@
   <data name="Size" xml:space="preserve">
     <value>Size</value>
   </data>
+  <data name="SizeBasis" xml:space="preserve">
+    <value>Size Basis</value>
+  </data>
   <data name="VerticalOffset" xml:space="preserve">
     <value>Vertical Offset</value>
   </data>

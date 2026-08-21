@@ -2193,6 +2193,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
                 return ResourceManager.GetString("Size", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Chooses the preview dimension used to scale Size. Largest Dimension is normally the best choice.
+        /// </summary>
+        internal static string SizeBasis {
+            get {
+                return ResourceManager.GetString("SizeBasis", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Enable increase/decrease of shape size based on size variation..

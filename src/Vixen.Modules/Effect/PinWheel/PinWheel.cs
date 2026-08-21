@@ -140,12 +140,34 @@ namespace VixenModules.Effect.PinWheel
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the virtual-buffer dimension used to scale the Size curve.
+		/// </summary>
+		/// <value>
+		/// One of the <see cref="PinWheelSizeScaleBasis"/> values that specifies the Size curve scale basis.
+		/// </value>
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"SizeBasis")]
+		[ProviderDescription(@"SizeBasis")]
+		[PropertyOrder(5)]
+		public PinWheelSizeScaleBasis SizeScaleBasis
+		{
+			get { return _data.SizeScaleBasis; }
+			set
+			{
+				_data.SizeScaleBasis = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Twist")]
 		[ProviderDescription(@"Twist")]
 		//[NumberRange(-500, 500, 1)] Keep for range reference
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public Curve TwistCurve
 		{
 			get { return _data.TwistCurve; }
@@ -161,7 +183,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"OffsetPercentage")]
 		[ProviderDescription(@"OffsetPercentage")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public bool OffsetPercentage
 		{
 			get { return _data.OffsetPercentage; }
@@ -179,7 +201,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"XOffset")]
 		[ProviderDescription(@"XOffset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public Curve XOffsetCurve
 		{
 			get { return _data.XOffsetCurve; }
@@ -196,7 +218,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"YOffset")]
 		[ProviderDescription(@"YOffset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(9)]
 		public Curve YOffsetCurve
 		{
 			get { return _data.YOffsetCurve; }
@@ -213,7 +235,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"Center Hub")]
 		[ProviderDescription(@"CenterHub")]
 		//[NumberRange(0, 100, 1)]
-		[PropertyOrder(9)]
+		[PropertyOrder(10)]
 		public Curve CenterHubCurve
 		{
 			get { return _data.CenterHubCurve; }
@@ -232,7 +254,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
 		[ProviderDescription(@"PinWheelRotation")]
-		[PropertyOrder(10)]
+		[PropertyOrder(11)]
 		public Curve RotationCurve
 		{
 			get { return _data.RotationCurve; }
@@ -248,7 +270,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"BladeType")]
 		[ProviderDescription(@"BladeType")]
-		[PropertyOrder(11)]
+		[PropertyOrder(12)]
 		public PinWheelBladeType PinWheelBladeType
 		{
 			get { return _data.PinWheelBladeType; }
@@ -328,11 +350,11 @@ namespace VixenModules.Effect.PinWheel
 			TypeDescriptor.Refresh(this);
 		}
 
-		//Used to hide Colors from user when Rainbow type is selected and unhides for the other types.
 		private void UpdateOffsetAttribute(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
-			propertyStates.Add("OffsetPercentage", !OffsetPercentage);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			propertyStates.Add(nameof(OffsetPercentage), !OffsetPercentage);
+			propertyStates.Add(nameof(SizeScaleBasis), OffsetPercentage);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{

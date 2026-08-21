@@ -12,7 +12,7 @@ Existing sequences and saved effect defaults must look exactly as they did befor
 
 - [x] (2026-08-21) Created this ExecPlan from the VIX-3989 handoff after inspecting `docs/reviews/vix-3989-pinwheel-size-scale-basis-design.md`, the PinWheel effect/data code, the effect-editor resources, the current rendering-test seam, and the test project references.
 - [x] (2026-08-21 20:05Z) Updated Jira VIX-3989 with the user-facing summary, scope, and acceptance criteria for compatibility-preserving Size Basis behavior. Used the project `jira` skill.
-- [ ] Add the serialized compatibility strategy, documented property-grid setting, localized text, and shared radius-basis calculation.
+- [x] (2026-08-21) Added the serialized Size Basis contract, documented property-grid setting, localized display/description resources, and generated resource accessors. The shared radius-basis calculation remains Milestone 3 work.
 - [ ] Add focused PinWheel compatibility, rendering, and browsability tests and the required test-project reference.
 - [ ] Run the focused and complete x64 test workflows, manually validate in the UI, update Jira, and record actual evidence here.
 
@@ -206,6 +206,11 @@ The intended shared radius-basis logic is:
 
 This helper selects only the unscaled basis. Existing `CalculateSize(intervalPosFactor) / 100.0` remains the multiplier, so the maximum radius remains `basis * sizeFactor` and no Size curve is rewritten.
 
+Milestone 2 validation evidence:
+
+    msbuild src\Vixen.Modules\Effect\PinWheel\PinWheel.csproj -m -restore -t:Build -p:Configuration=Release -p:Platform=x64 -v:m
+    Build succeeded with zero errors. The build reported existing warnings in Vixen.Core and FixtureGraphics.
+
 ## Interfaces and Dependencies
 
 No package, descriptor-version, sequence migration, Catel/ViewModel, service, or solution-platform change is required. The only new production type is the public `VixenModules.Effect.PinWheel.PinWheelSizeScaleBasis` enum. The existing public `PinWheelData.SizeScaleBasis` and `PinWheel.SizeScaleBasis` properties expose it. Use the existing `System.Runtime.Serialization.DataContractSerializer`, `System.ComponentModel.TypeDescriptor`, provider-resource attributes, `PixelEffectBase`, `IPixelFrameBuffer`, and `PixelLocationFrameBuffer` dependencies; do not introduce a new library.
@@ -217,3 +222,5 @@ The private helper remains an implementation detail in `PinWheel.cs`; tests may 
 2026-08-21: Initial ExecPlan created from the VIX-3989 handoff and repository design note. It resolves serialization defaults, clone behavior, public documentation, resource keys, render helper behavior, location/string parity, legacy absolute offsets, required Jira lifecycle, and full x64 validation so implementation can proceed without relying on prior conversation context.
 
 2026-08-21: Completed Milestone 1 by updating VIX-3989 with a concise user-facing Summary, Scope, and Acceptance Criteria. Detailed design, compatibility constraints, and test steps remain in this repository-local ExecPlan.
+
+2026-08-21: Completed Milestone 2 by adding the documented public `PinWheelSizeScaleBasis` enum, serialized `SizeScaleBasis` storage with the Largest Dimension new-effect default and clone preservation, and a localized Config property shown only for percentage offsets. The Release x64 PinWheel build completed with zero errors.
