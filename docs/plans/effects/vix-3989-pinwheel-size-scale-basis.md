@@ -14,7 +14,7 @@ Existing sequences and saved effect defaults must look exactly as they did befor
 - [x] (2026-08-21 20:05Z) Updated Jira VIX-3989 with the user-facing summary, scope, and acceptance criteria for compatibility-preserving Size Basis behavior. Used the project `jira` skill.
 - [x] (2026-08-21) Added the serialized Size Basis contract, documented property-grid setting, localized display/description resources, and generated resource accessors. The shared radius-basis calculation remains Milestone 3 work.
 - [x] (2026-08-21) Replaced the duplicated string/location radius selection with one private helper that selects the configured percentage basis and preserves the legacy absolute-offset corner-distance calculation.
-- [ ] Add focused PinWheel compatibility, rendering, and browsability tests and the required test-project reference.
+- [x] (2026-08-21) Added the PinWheel test-project reference and 17 focused compatibility, rendering, and browsability tests; the Release/x64 focused suite passes.
 - [ ] Run the focused and complete x64 test workflows, manually validate in the UI, update Jira, and record actual evidence here.
 
 ## Surprises & Discoveries
@@ -24,6 +24,9 @@ Existing sequences and saved effect defaults must look exactly as they did befor
 
 - Observation: The PinWheel module is already in `Vixen.sln`, but `src/Vixen.Tests/Vixen.Tests.csproj` does not reference `src/Vixen.Modules/Effect/PinWheel/PinWheel.csproj`.
   Evidence: `Vixen.sln` contains the PinWheel project; the test project's reference list includes Spiral and other effects but no PinWheel reference.
+
+- Observation: Pixel frame buffers use `System.Drawing.Color` even though their source files also import the HSV color-model namespace.
+  Evidence: `src/Vixen.Modules/Effect/Effect/PixelFrameBuffer.cs` and `PixelLocationFrameBuffer.cs` expose `Color` values compatible with the existing `System.Drawing.Color` assertions in location-render tests.
 
 ## Decision Log
 
@@ -217,6 +220,14 @@ Milestone 3 validation evidence:
     msbuild src\Vixen.Modules\Effect\PinWheel\PinWheel.csproj -m -t:Build -p:Configuration=Release -p:Platform=x64 -v:m
     Build succeeded with zero errors. The build reported existing warnings in Vixen.Core and FixtureGraphics.
 
+Milestone 4 validation evidence:
+
+    msbuild src\Vixen.Tests\Vixen.Tests.csproj -m -t:Build -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:q
+    Build succeeded with zero errors.
+
+    dotnet test src\Vixen.Tests\Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:\Dev\Vixen\\" --filter FullyQualifiedName~PinWheelSizeScaleBasisTests
+    Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17.
+
 ## Interfaces and Dependencies
 
 No package, descriptor-version, sequence migration, Catel/ViewModel, service, or solution-platform change is required. The only new production type is the public `VixenModules.Effect.PinWheel.PinWheelSizeScaleBasis` enum. The existing public `PinWheelData.SizeScaleBasis` and `PinWheel.SizeScaleBasis` properties expose it. Use the existing `System.Runtime.Serialization.DataContractSerializer`, `System.ComponentModel.TypeDescriptor`, provider-resource attributes, `PixelEffectBase`, `IPixelFrameBuffer`, and `PixelLocationFrameBuffer` dependencies; do not introduce a new library.
@@ -232,3 +243,5 @@ The private helper remains an implementation detail in `PinWheel.cs`; tests may 
 2026-08-21: Completed Milestone 2 by adding the documented public `PinWheelSizeScaleBasis` enum, serialized `SizeScaleBasis` storage with the Largest Dimension new-effect default and clone preservation, and a localized Config property shown only for percentage offsets. The Release x64 PinWheel build completed with zero errors.
 
 2026-08-21: Completed Milestone 3 by replacing the separate dense and location rendering radius-basis calculations with one private helper. It retains the absolute-offset bottom-right distance and selects Height, Width, or Largest Dimension for percentage offsets, with Height as the defensive fallback. The Release x64 PinWheel build completed with zero errors.
+
+2026-08-21: Completed Milestone 4 by adding the PinWheel module test reference and 17 focused tests. The tests cover constructor and old-XML defaults, data-contract round trips, cloning, property visibility, wide/tall/square buffer selection, string/location parity, unknown values, and unchanged absolute offsets. The Release x64 focused test run passed with zero failures.
