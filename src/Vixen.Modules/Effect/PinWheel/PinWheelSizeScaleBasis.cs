@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace VixenModules.Effect.PinWheel
 {
 	/// <summary>
@@ -18,6 +20,7 @@ namespace VixenModules.Effect.PinWheel
 		/// <summary>
 		/// Scales size by the larger virtual-buffer dimension.
 		/// </summary>
+		[Description("Auto")]
 		LargestDimension = 2
 	}
 }
