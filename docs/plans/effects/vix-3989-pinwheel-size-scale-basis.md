@@ -15,7 +15,7 @@ Existing sequences and saved effect defaults must look exactly as they did befor
 - [x] (2026-08-21) Added the serialized Size Basis contract, documented property-grid setting, localized display/description resources, and generated resource accessors. The shared radius-basis calculation remains Milestone 3 work.
 - [x] (2026-08-21) Replaced the duplicated string/location radius selection with one private helper that selects the configured percentage basis and preserves the legacy absolute-offset corner-distance calculation.
 - [x] (2026-08-21) Added the PinWheel test-project reference and 17 focused compatibility, rendering, and browsability tests; the Release/x64 focused suite passes.
-- [ ] Run the focused and complete x64 test workflows, manually validate in the UI, update Jira, and record actual evidence here.
+- [x] (2026-08-21) User confirmed the full build and complete unit-test suite pass, and manually validated both the new wide-preview behavior and Height retention for existing effects. Recorded the results in Jira VIX-3989 comment 40372.
 
 ## Surprises & Discoveries
 
@@ -48,7 +48,7 @@ Existing sequences and saved effect defaults must look exactly as they did befor
 
 ## Outcomes & Retrospective
 
-Implementation has not begun. The intended completed outcome is a localized, documented Size Basis setting with safe old-data behavior, parity between both PinWheel render paths, and automated evidence for serialization, cloning, buffer shapes, visibility, and legacy absolute offsets. Record actual results, remaining gaps, test counts, and manual validation here when the work finishes.
+All milestones are complete. PinWheel now provides a localized, documented Size Basis setting that defaults new effects to Largest Dimension while old serialized effects resolve to Height. The shared render helper keeps dense and location paths aligned and preserves absolute-offset behavior. Focused automated coverage verifies serialization, cloning, buffer shapes, visibility, render parity, unknown values, and legacy offsets; the user confirmed the full build, full unit suite, and manual behavior. No remaining gaps are known.
 
 ## Context and Orientation
 
@@ -228,6 +228,14 @@ Milestone 4 validation evidence:
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:\Dev\Vixen\\" --filter FullyQualifiedName~PinWheelSizeScaleBasisTests
     Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17.
 
+Milestone 5 validation evidence supplied by the user:
+
+    Full build: passed.
+    Complete unit-test suite: passed.
+    Manual: verified new wide-preview Size Basis behavior.
+    Manual: verified existing effects retain the Height setting and their prior appearance.
+    Jira: validation recorded in VIX-3989 comment 40372.
+
 ## Interfaces and Dependencies
 
 No package, descriptor-version, sequence migration, Catel/ViewModel, service, or solution-platform change is required. The only new production type is the public `VixenModules.Effect.PinWheel.PinWheelSizeScaleBasis` enum. The existing public `PinWheelData.SizeScaleBasis` and `PinWheel.SizeScaleBasis` properties expose it. Use the existing `System.Runtime.Serialization.DataContractSerializer`, `System.ComponentModel.TypeDescriptor`, provider-resource attributes, `PixelEffectBase`, `IPixelFrameBuffer`, and `PixelLocationFrameBuffer` dependencies; do not introduce a new library.
@@ -245,3 +253,5 @@ The private helper remains an implementation detail in `PinWheel.cs`; tests may 
 2026-08-21: Completed Milestone 3 by replacing the separate dense and location rendering radius-basis calculations with one private helper. It retains the absolute-offset bottom-right distance and selects Height, Width, or Largest Dimension for percentage offsets, with Height as the defensive fallback. The Release x64 PinWheel build completed with zero errors.
 
 2026-08-21: Completed Milestone 4 by adding the PinWheel module test reference and 17 focused tests. The tests cover constructor and old-XML defaults, data-contract round trips, cloning, property visibility, wide/tall/square buffer selection, string/location parity, unknown values, and unchanged absolute offsets. The Release x64 focused test run passed with zero failures.
+
+2026-08-21: Completed Milestone 5 with user-provided full-build, full-suite, and manual validation. The manual scenarios confirmed the corrected wide-preview behavior and Height retention for existing effects. Added the results to VIX-3989 comment 40372; no issue-description adjustment was required.
