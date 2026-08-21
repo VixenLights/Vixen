@@ -448,11 +448,7 @@ namespace VixenModules.Effect.PinWheel
 
 			var origin = new Point(BufferWi / 2 + BufferWiOffset + CalculateXOffset(intervalPosFactor), BufferHt / 2 + BufferHtOffset + CalculateYOffset(intervalPosFactor));
 			
-			var xc = OffsetPercentage
-				? BufferHt
-				: DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
-
-			var maxRadius = xc * armsize;
+			var maxRadius = CalculateRadiusBasis(origin) * armsize;
 
 			var angleRange = CalculateThickness(intervalPosFactor) / 100.0f * degreesPerArm / 2.0f;
 
@@ -494,11 +490,7 @@ namespace VixenModules.Effect.PinWheel
 
 				var origin = new Point(BufferWi / 2 + BufferWiOffset + CalculateXOffset(intervalPosFactor), BufferHt / 2 + BufferHtOffset + CalculateYOffset(intervalPosFactor));
 				
-				var xc = OffsetPercentage
-					? BufferHt
-					: DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
-
-				var maxRadius = xc * armsize;
+				var maxRadius = CalculateRadiusBasis(origin) * armsize;
 
 				var angleRange = CalculateThickness(intervalPosFactor) / 100.0f * degreesPerArm / 2.0f;
 
@@ -523,6 +515,22 @@ namespace VixenModules.Effect.PinWheel
 			return OffsetPercentage
 				? (int) Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), -BufferHt, BufferHt))
 				: (int) Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100));
+		}
+
+		private double CalculateRadiusBasis(Point origin)
+		{
+			if (!OffsetPercentage)
+			{
+				return DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
+			}
+
+			return SizeScaleBasis switch
+			{
+				PinWheelSizeScaleBasis.Height => BufferHt,
+				PinWheelSizeScaleBasis.Width => BufferWi,
+				PinWheelSizeScaleBasis.LargestDimension => Math.Max(BufferWi, BufferHt),
+				_ => BufferHt
+			};
 		}
 
 		private double CalculateSpeed(double intervalPos)
