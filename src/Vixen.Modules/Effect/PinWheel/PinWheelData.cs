@@ -31,6 +31,7 @@ namespace VixenModules.Effect.PinWheel
 			PinWheelBladeType = PinWheelBladeType.Flat; 
 			MovementType = MovementType.Iterations;
 			OffsetPercentage = true;
+			SizeScaleBasis = PinWheelSizeScaleBasis.LargestDimension;
 		}
 
 		[DataMember]
@@ -110,6 +111,15 @@ namespace VixenModules.Effect.PinWheel
 
 		[DataMember]
 		public bool OffsetPercentage { get; set; }
+
+		/// <summary>
+		/// Gets or sets the virtual-buffer dimension used to scale the Size curve.
+		/// </summary>
+		/// <value>
+		/// One of the <see cref="PinWheelSizeScaleBasis"/> values that specifies the Size curve scale basis. The default for newly created effects is <see cref="PinWheelSizeScaleBasis.LargestDimension"/>.
+		/// </value>
+		[DataMember]
+		public PinWheelSizeScaleBasis SizeScaleBasis { get; set; }
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
@@ -202,7 +212,8 @@ namespace VixenModules.Effect.PinWheel
 				LevelCurve = new Curve(LevelCurve),
 				MovementType = MovementType,
 				PinWheelBladeType = PinWheelBladeType,
-				OffsetPercentage = OffsetPercentage
+				OffsetPercentage = OffsetPercentage,
+				SizeScaleBasis = SizeScaleBasis
 			};
 			return result;
 		}
