@@ -13,7 +13,7 @@ VIX-3991 concerns only the shared sequence-executor lifecycle. It must preserve 
 - [x] (2026-08-23 20:00Z) Investigated the reported stack trace, `SequenceExecutor`, `SequenceContext`, `ProgramExecutor`, and `HighResolutionTimer`; identified a queued loop-restart callback racing executor disposal.
 - [x] (2026-08-23 20:00Z) Read VIX-3991 and created this implementation plan without modifying production or test code.
 - [x] (2026-08-23 14:06Z) Updated VIX-3991 with the user-facing requirements, scope, acceptance criteria, and validation approach; added a progress comment.
-- [ ] Add deterministic executor lifecycle tests that reproduce a queued restart becoming stale.
+- [x] (2026-08-23 09:14-05:00) Added deterministic sequence-executor lifecycle tests and the `BaseSequence` test-project reference; the focused baseline reports 2 passed and 3 expected failures against the unfixed executor.
 - [ ] Implement restart invalidation and disposal-safe timer synchronization in `SequenceExecutor`.
 - [ ] Verify focused and full x64 test runs, then manually exercise the close/stop-at-loop-boundary scenario.
 - [ ] Align VIX-3991 with delivered behavior and add the final validation comment.
@@ -35,6 +35,9 @@ VIX-3991 concerns only the shared sequence-executor lifecycle. It must preserve 
 - Observation: `SequenceContext.Dispose(bool)` disposes its sequence executor before `ContextBase.Dispose(bool)` has an opportunity to stop a running context.
   Evidence: `src/Vixen.Core/Execution/Context/SequenceContext.cs` lines 226-237 and `ContextBase.cs` lines 186-197. The normal `ContextManager` release route stops the context first, but direct disposal still needs a safe executor.
 
+- Observation: The queued-callback failure can be reproduced without UI timing or sleep-based polling by capturing the executor's synchronization-context posts, stopping its end-check timer, and invoking the existing natural-end boundary directly.
+  Evidence: `SequenceExecutorLifecycleTests` focused run reports 2 passed and 3 failures in 117 ms: stale dispatch after disposal throws `ArgumentNullException` at `_loopPlay`, stale dispatch after stop starts timing again, and a post-disposal end-check dispatch throws `NullReferenceException`.
+
 ## Decision Log
 
 - Decision: Solve the stale queued-work problem with an execution-generation token (a monotonically increasing value identifying one active play/loop run), not with only a null guard.
@@ -53,9 +56,17 @@ VIX-3991 concerns only the shared sequence-executor lifecycle. It must preserve 
   Rationale: `SequenceExecutor` is used both by sequence contexts and by `ProgramExecutor`; it is the common fault boundary. Correcting it there protects all callers and avoids relying on every owner to get cleanup order right.
   Date/Author: 2026-08-23 / Codex
 
+- Decision: Exercise the existing private timer and natural-end boundaries through reflection in the regression tests instead of adding a production-only test hook.
+  Rationale: The controlled synchronization context captures the actual production callback, and stopping the real timer before the direct boundary invocation removes scheduling variability. This preserves the public and internal production surface while matching the repository's existing reflection-based test convention.
+  Date/Author: 2026-08-23 / Codex
+
+- Decision: Do not add Jira comments after individual implementation milestones; update the issue description at the start and add one final validation comment at completion.
+  Rationale: The tracker should capture the agreed user-facing contract and final delivery evidence without milestone-by-milestone commentary.
+  Date/Author: 2026-08-23 / User
+
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. VIX-3991 now defines the user-visible loop-boundary behavior and the required automated and manual validation before code changes begin. The intended implementation result remains a sequence executor whose posted loop restart is valid only for its originating active loop and whose disposal is safe while timer or UI work is in flight. Update this section with actual test counts, manual observations, remaining gaps, and the final VIX-3991 status when work is complete.
+Milestones 1 and 2 are complete. VIX-3991 now defines the user-visible loop-boundary behavior, and deterministic regression coverage proves the three unsafe current behaviors before implementation: stale restart after stop, stale restart after disposal, and timer work arriving after disposal. The intended implementation result remains a sequence executor whose posted loop restart is valid only for its originating active loop and whose disposal is safe while timer or UI work is in flight. Update this section with actual test counts, manual observations, remaining gaps, and the final VIX-3991 status when work is complete.
 
 ## Context and Orientation
 
@@ -77,7 +88,7 @@ Tests live in `src/Vixen.Tests`. The test project must be built with full Visual
 
 Before editing code, use `.agents/skills/jira/SKILL.md` and the configured Jira connection to update VIX-3991. Keep the description user-facing. Explain that Vixen must not crash, restart playback, or leave a sequence playing when a looping sequence ends while a user stops playback, closes the sequence/editor, changes playback context, or exits the application.
 
-Add acceptance criteria stating that normal looping continues to restart and report its restart event while the executor remains active; stopping or disposing at the loop boundary does not crash or restart; media and timing remain stopped after the stop; and existing non-loop end behavior remains unchanged. State that automated race-focused tests, the full x64 test suite, and a manual stop/close boundary scenario will validate the work. Add a concise progress comment after each implementation or validation milestone. If Jira is unavailable, record the failure in this plan and leave tracker actions pending; do not fabricate updates.
+Add acceptance criteria stating that normal looping continues to restart and report its restart event while the executor remains active; stopping or disposing at the loop boundary does not crash or restart; media and timing remain stopped after the stop; and existing non-loop end behavior remains unchanged. State that automated race-focused tests, the full x64 test suite, and a manual stop/close boundary scenario will validate the work. Do not add interim Jira comments; Milestone 4 adds the single final validation comment. If Jira is unavailable, record the failure in this plan and leave tracker actions pending; do not fabricate updates.
 
 ### Milestone 2: Establish deterministic stale-callback tests
 
@@ -176,3 +187,7 @@ Use existing .NET synchronization primitives (`lock`, `SynchronizationContext.Po
 Plan revision note (2026-08-23): Initial VIX-3991 ExecPlan created from the Jira report, the crash investigation, and `.agents/PLANS.md`. It requires the mandated initial and final Jira milestones, chooses generation-based stale-callback invalidation with immutable timer synchronization, and explicitly prohibits a null-guard-only fix.
 
 Plan revision note (2026-08-23): Completed Milestone 1. Updated VIX-3991 with a concise user-facing Summary, Scope, Acceptance Criteria, and validation approach, then added a progress comment. No production or test code was changed.
+
+Plan revision note (2026-08-23): Completed Milestone 2. Added the `BaseSequence` test-project reference, a non-parallel sequence-executor test collection, and five deterministic lifecycle tests using a captured synchronization context. The x64 test target builds successfully. The focused baseline has 2 passing tests and 3 expected failures that reproduce the bugs Milestone 3 must repair; no production behavior was changed.
+
+Plan revision note (2026-08-23): Updated the Jira communication policy at the user's direction. Keep the Milestone 1 description update and the Milestone 4 final validation comment, but do not add comments for individual implementation milestones.
