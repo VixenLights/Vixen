@@ -11,11 +11,14 @@ namespace BaseSequence
 {
 	public class SequenceExecutor : ISequenceExecutor
 	{
+		private readonly Lock _lifecycleLock = new();
 		private HighResolutionTimer _endCheckTimer;
 		private SynchronizationContext _syncContext;
 		private bool _isRunning;
 		private bool _isPaused;
 		private bool _loop;
+		private bool _isDisposed;
+		private long _executionGeneration;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		public event EventHandler<SequenceStartedEventArgs> SequenceReStarted;
@@ -69,13 +72,21 @@ namespace BaseSequence
 
 		public void Play(TimeSpan startTime, TimeSpan endTime)
 		{
-			_loop = false;
+			lock (_lifecycleLock)
+			{
+				if (_isDisposed) return;
+				_loop = false;
+			}
 			_Play(startTime, endTime);
 		}
 
 		public void PlayLoop(TimeSpan startTime, TimeSpan endTime)
 		{
-			_loop = true;
+			lock (_lifecycleLock)
+			{
+				if (_isDisposed) return;
+				_loop = true;
+			}
 			_Play(startTime, endTime);
 		}
 
@@ -171,8 +182,12 @@ namespace BaseSequence
 
 		private void _Play(TimeSpan startTime, TimeSpan endTime)
 		{
-			if (IsRunning) return;
-			if (Sequence == null) return;
+			long executionGeneration;
+			lock (_lifecycleLock)
+			{
+				if (_isDisposed || IsRunning || Sequence == null) return;
+				executionGeneration = ++_executionGeneration;
+			}
 
 			// Only hook the input stream during execution.
 			// Hook before starting the behaviors.
@@ -186,7 +201,7 @@ namespace BaseSequence
 			if (StartTime == EndTime)
 			{
 				//We are done before we get started
-				_syncContext.Post(x => _Stop(), null);
+				_PostNaturalEnd(executionGeneration, false);
 			}
 
 			TimingSource = Sequence.GetTiming() ?? _GetDefaultTimingSource();
@@ -206,29 +221,43 @@ namespace BaseSequence
 				Thread.Sleep(1); //Give the train a chance to get out of the station.
 			}
 
-			_endCheckTimer.Start();
+			_StartEndCheckTimer(executionGeneration);
 
 		}
 
-		private void _loopPlay()
+		private void _loopPlay(long executionGeneration)
 		{
-			// Stop whatever is driving this crazy train.
-			lock (_endCheckTimer)
+			ITiming timingSource;
+			ISequence sequence;
+			TimeSpan startTime;
+			TimeSpan endTime;
+
+			lock (_lifecycleLock)
 			{
-				_endCheckTimer.Stop(false);
+				if (!_IsCurrentLoopExecution(executionGeneration)) return;
+
+				var endCheckTimer = _endCheckTimer;
+				if (endCheckTimer == null) return;
+
+				endCheckTimer.Stop(false);
+				timingSource = TimingSource;
+				sequence = Sequence;
+				startTime = StartTime;
+				endTime = EndTime;
+
+				//Reset our position. No need to stop the source, we will just reset its position.
+				timingSource.Position = startTime;
+				timingSource.Start();
 			}
+
+			OnSequenceReStarted(new SequenceStartedEventArgs(sequence, timingSource, startTime, endTime));
 			
-			//Reset our position. No need to stop the source, we will just reset its position.
-			TimingSource.Position = StartTime;
-			TimingSource.Start();
-			OnSequenceReStarted(new SequenceStartedEventArgs(Sequence, TimingSource, StartTime, EndTime));
-			
-			while (TimingSource.Position == StartTime)
+			while (_IsCurrentExecution(executionGeneration) && timingSource.Position == startTime)
 			{
 				Thread.Sleep(1); //Give the train a chance to get out of the station.
 			}
 
-			_endCheckTimer.Start();
+			_StartEndCheckTimer(executionGeneration);
 		}
 
 		protected virtual void _HookDataListener()
@@ -303,41 +332,51 @@ namespace BaseSequence
 
 		private void _Pause()
 		{
-			if (!IsRunning || IsPaused) return;
+			lock (_lifecycleLock)
+			{
+				if (_isDisposed || !IsRunning || IsPaused) return;
 
-			if (_endCheckTimer.IsRunning) {
+				var endCheckTimer = _endCheckTimer;
+				if (endCheckTimer == null || !endCheckTimer.IsRunning) return;
+
 				IsPaused = true;
 
 				TimingSource.Pause();
 
 				_PauseMedia();
 
-				_endCheckTimer.Stop(false);
+				endCheckTimer.Stop(false);
 			}
 		}
 
 		private void _Resume()
 		{
-			if (!IsPaused) return;
+			lock (_lifecycleLock)
+			{
+				if (_isDisposed || !IsPaused) return;
 
-			if (!_endCheckTimer.IsRunning && Sequence != null) {
+				var endCheckTimer = _endCheckTimer;
+				if (endCheckTimer == null || endCheckTimer.IsRunning || Sequence == null) return;
+
 				IsPaused = false;
 
 				TimingSource.Resume();
 
 				_ResumeMedia();
 
-				_endCheckTimer.Start();
+				endCheckTimer.Start();
 			}
 		}
 
 		private void _Stop()
 		{
-			if (!IsRunning) return;
+			lock (_lifecycleLock)
+			{
+				if (!IsRunning) return;
+				_executionGeneration++;
 
-			// Stop whatever is driving this crazy train.
-			lock (_endCheckTimer) {
-				_endCheckTimer.Stop(false);
+				var endCheckTimer = _endCheckTimer;
+				endCheckTimer?.Stop(false);
 			}
 
 			// Release the hook before the behaviors are shut down so that
@@ -365,33 +404,77 @@ namespace BaseSequence
 			// To catch events that may trail after the timer's been disabled
 			// due to it being a threaded timer and Stop being called between the
 			// timer message being posted and acted upon.
-			if (!_endCheckTimer.IsRunning) return;
-
-			lock (_endCheckTimer)
+			lock (_lifecycleLock)
 			{
+				if (_isDisposed) return;
+
+				var endCheckTimer = _endCheckTimer;
+				if (endCheckTimer == null || !endCheckTimer.IsRunning) return;
 
 				if (_CheckForNaturalEnd() || !IsRunning)
 				{
-					_endCheckTimer.Stop(false);
+					endCheckTimer.Stop(false);
 				}
 			}
 		}
 
 		private bool _CheckForNaturalEnd()
 		{
-			bool isEnd = _IsEndOfSequence();
-			if (isEnd) {
-				if (_loop)
-				{
-					_syncContext.Post(x => _loopPlay(), null);
+			lock (_lifecycleLock)
+			{
+				if (_isDisposed || !IsRunning) return false;
+
+				bool isEnd = _IsEndOfSequence();
+				if (isEnd) {
+					_PostNaturalEnd(_executionGeneration, _loop);
 				}
-				else
-				{
-					_syncContext.Post(x => _Stop(), null);	
-				}
-				
+				return isEnd;
 			}
-			return isEnd;
+		}
+
+		private void _PostNaturalEnd(long executionGeneration, bool loop)
+		{
+			var syncContext = _syncContext;
+			if (_isDisposed || syncContext == null) return;
+
+			if (loop)
+			{
+				syncContext.Post(x => _loopPlay((long)x), executionGeneration);
+			}
+			else
+			{
+				syncContext.Post(x => _stopAfterNaturalEnd((long)x), executionGeneration);
+			}
+		}
+
+		private void _stopAfterNaturalEnd(long executionGeneration)
+		{
+			lock (_lifecycleLock)
+			{
+				if (!_IsCurrentExecution(executionGeneration)) return;
+			}
+
+			_Stop();
+		}
+
+		private void _StartEndCheckTimer(long executionGeneration)
+		{
+			lock (_lifecycleLock)
+			{
+				if (!_IsCurrentExecution(executionGeneration)) return;
+
+				_endCheckTimer?.Start();
+			}
+		}
+
+		private bool _IsCurrentLoopExecution(long executionGeneration)
+		{
+			return _loop && _IsCurrentExecution(executionGeneration);
+		}
+
+		private bool _IsCurrentExecution(long executionGeneration)
+		{
+			return !_isDisposed && IsRunning && executionGeneration == _executionGeneration;
 		}
 
 		private bool _IsEndOfSequence()
@@ -414,17 +497,34 @@ namespace BaseSequence
 
 		protected virtual void Dispose(bool disposing)
 		{
+			HighResolutionTimer endCheckTimer;
+			bool wasRunning;
+
+			lock (_lifecycleLock)
+			{
+				if (_isDisposed) return;
+
+				_isDisposed = true;
+				_executionGeneration++;
+				wasRunning = IsRunning;
+				endCheckTimer = _endCheckTimer;
+				_endCheckTimer = null;
+				_syncContext = null;
+			}
+
 			if (disposing)
 			{
-				if (_endCheckTimer != null)
-				{
-					_endCheckTimer.Elapsed -= _EndCheckTimerElapsed;
-					_endCheckTimer = null;
+				endCheckTimer?.Stop();
+				endCheckTimer?.Elapsed -= _EndCheckTimerElapsed;
 
-				}	
+				if (wasRunning)
+				{
+					TimingSource?.Stop();
+					_StopMedia();
+					IsRunning = false;
+					IsPaused = false;
+				}
 			}
-			_endCheckTimer = null;
-			_syncContext = null;
 		}
 
 		#endregion

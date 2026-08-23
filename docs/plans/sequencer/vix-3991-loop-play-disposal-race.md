@@ -14,7 +14,7 @@ VIX-3991 concerns only the shared sequence-executor lifecycle. It must preserve 
 - [x] (2026-08-23 20:00Z) Read VIX-3991 and created this implementation plan without modifying production or test code.
 - [x] (2026-08-23 14:06Z) Updated VIX-3991 with the user-facing requirements, scope, acceptance criteria, and validation approach; added a progress comment.
 - [x] (2026-08-23 09:14-05:00) Added deterministic sequence-executor lifecycle tests and the `BaseSequence` test-project reference; the focused baseline reports 2 passed and 3 expected failures against the unfixed executor.
-- [ ] Implement restart invalidation and disposal-safe timer synchronization in `SequenceExecutor`.
+- [x] (2026-08-23 09:20-05:00) Implemented generation-based stale-callback invalidation and disposal-safe timer synchronization in `SequenceExecutor`; the x64 test target builds and all 5 focused lifecycle tests pass.
 - [ ] Verify focused and full x64 test runs, then manually exercise the close/stop-at-loop-boundary scenario.
 - [ ] Align VIX-3991 with delivered behavior and add the final validation comment.
 
@@ -37,6 +37,9 @@ VIX-3991 concerns only the shared sequence-executor lifecycle. It must preserve 
 
 - Observation: The queued-callback failure can be reproduced without UI timing or sleep-based polling by capturing the executor's synchronization-context posts, stopping its end-check timer, and invoking the existing natural-end boundary directly.
   Evidence: `SequenceExecutorLifecycleTests` focused run reports 2 passed and 3 failures in 117 ms: stale dispatch after disposal throws `ArgumentNullException` at `_loopPlay`, stale dispatch after stop starts timing again, and a post-disposal end-check dispatch throws `NullReferenceException`.
+
+- Observation: The repaired executor stops active timing and media as part of disposal, so direct context disposal no longer relies on a caller having stopped the context first.
+  Evidence: `SequenceExecutor.Dispose(bool)` captures and invalidates the timer under the lifecycle lock, then stops the captured timer, timing source, and media before raising the existing end event. The focused stale-disposal test passes without touching `SequenceContext`.
 
 ## Decision Log
 
@@ -64,9 +67,13 @@ VIX-3991 concerns only the shared sequence-executor lifecycle. It must preserve 
   Rationale: The tracker should capture the agreed user-facing contract and final delivery evidence without milestone-by-milestone commentary.
   Date/Author: 2026-08-23 / User
 
+- Decision: Do not change `SequenceContext.Dispose(bool)` in this delivery.
+  Rationale: The repaired `SequenceExecutor.Dispose(bool)` now performs terminal playback cleanup itself, which protects direct context disposal and every other executor owner. Changing context cleanup order would add redundant lifecycle behavior without evidence that it is necessary.
+  Date/Author: 2026-08-23 / Codex
+
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete. VIX-3991 now defines the user-visible loop-boundary behavior, and deterministic regression coverage proves the three unsafe current behaviors before implementation: stale restart after stop, stale restart after disposal, and timer work arriving after disposal. The intended implementation result remains a sequence executor whose posted loop restart is valid only for its originating active loop and whose disposal is safe while timer or UI work is in flight. Update this section with actual test counts, manual observations, remaining gaps, and the final VIX-3991 status when work is complete.
+Milestones 1 through 3 are complete. The executor now assigns each playback run a generation value, captures it with natural-end callbacks, and ignores a callback after stop or disposal has invalidated that run. Timer access uses one immutable lifecycle lock, and disposal stops active playback before releasing timer state. The x64 test target builds and the five focused lifecycle tests pass. Full-suite and manual validation remain for Milestone 4.
 
 ## Context and Orientation
 
@@ -191,3 +198,5 @@ Plan revision note (2026-08-23): Completed Milestone 1. Updated VIX-3991 with a 
 Plan revision note (2026-08-23): Completed Milestone 2. Added the `BaseSequence` test-project reference, a non-parallel sequence-executor test collection, and five deterministic lifecycle tests using a captured synchronization context. The x64 test target builds successfully. The focused baseline has 2 passing tests and 3 expected failures that reproduce the bugs Milestone 3 must repair; no production behavior was changed.
 
 Plan revision note (2026-08-23): Updated the Jira communication policy at the user's direction. Keep the Milestone 1 description update and the Milestone 4 final validation comment, but do not add comments for individual implementation milestones.
+
+Plan revision note (2026-08-23): Completed Milestone 3. `SequenceExecutor` now uses a lifecycle lock, a playback-generation value, and guarded queued callbacks to prevent stopped or disposed loops from restarting. Timer callbacks return after disposal, and disposal stops live timing/media before clearing timer state. The x64 test target built successfully and all five focused lifecycle tests passed. No `SequenceContext` change was required, and no interim Jira comment was added.
