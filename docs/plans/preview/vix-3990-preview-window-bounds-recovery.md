@@ -13,7 +13,7 @@ The observable proof is that an off-screen saved Preview window falls back to th
 ## Progress
 
 - [x] (2026-08-23 15:40Z) Updated the VIX-3990 Jira description by appending the confirmed scope, acceptance criteria, and test plan while preserving the reporter's original text and four attachments.
-- [ ] (2026-08-23 15:19Z) Add the shared Preview window-bounds policy and its focused xUnit boundary tests.
+- [x] (2026-08-23 15:43Z) Added `PreviewWindowBounds.IsRecoverable` and 12 monitor-independent xUnit boundary tests; `msbuild Vixen.sln -m -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` and the focused test run passed.
 - [ ] (2026-08-23 15:19Z) Route GDI Preview, OpenGL Preview, and Preview Setup through the shared policy; restore OpenGL dimensions before validating its saved location and protect its valid geometry while minimized.
 - [ ] (2026-08-23 15:19Z) Build and run the focused and full test commands, perform the renderer persistence checks, then update VIX-3990 with final requirements and validation results.
 
@@ -51,7 +51,7 @@ The observable proof is that an off-screen saved Preview window falls back to th
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. VIX-3990 now preserves the original reporter text and attachments and adds the agreed user-facing scope, acceptance criteria, and test plan. No code or test execution has occurred. At completion, replace this entry with the observed test results, manual renderer results, any Jira-scope adjustment, and any remaining follow-up (including the deferred Timed Sequence Editor correction if it remains out of scope).
+Milestones 1 and 2 are complete. VIX-3990 preserves the original reporter text and attachments and adds the agreed user-facing scope, acceptance criteria, and test plan. `PreviewWindowBounds.IsRecoverable` now makes the intended pure recovery decision, and its 12 focused xUnit tests pass after the full `Vixen_Tests` build. Renderer integration and manual verification remain for later milestones. At completion, replace this entry with the observed test results, manual renderer results, any Jira-scope adjustment, and any remaining follow-up (including the deferred Timed Sequence Editor correction if it remains out of scope).
 
 ## Context and Orientation
 
@@ -214,3 +214,5 @@ No package, project reference, app setting, serialized member, renderer API, WPF
 Revision note (2026-08-23 15:19Z): Created from the VIX-3990 handoff after source inspection. It records the confirmed point transposition, exclusive-boundary correction, shared testable policy, GDI maximized exception, OpenGL restore/save ordering, required tests, and deferred Timed Sequence Editor scope.
 
 Revision note (2026-08-23 15:40Z): Marked Milestone 1 complete after appending the confirmed scope, acceptance criteria, and test plan to VIX-3990. The original reporter text and all four existing attachments were preserved.
+
+Revision note (2026-08-23 15:43Z): Marked Milestone 2 complete after adding the shared policy and 12 focused boundary tests. The `Vixen_Tests` MSBuild target and the focused `PreviewWindowBoundsTests` run both passed.
