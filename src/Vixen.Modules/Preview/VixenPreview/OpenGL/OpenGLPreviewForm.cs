@@ -1038,10 +1038,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
 			var name = $"OpenGLPreview_{InstanceId}";
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", name), ClientSize.Height);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", name), ClientSize.Width);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", name), Location.Y);
+			if (WindowState != FormWindowState.Minimized)
+			{
+				xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", name), ClientSize.Height);
+				xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", name), ClientSize.Width);
+				xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X);
+				xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", name), Location.Y);
+			}
+
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionX", name), _camera.Position.X);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", name), _camera.Position.Y);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", name), _camera.Position.Z);
@@ -1071,14 +1075,38 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			ConfigureAlwaysOnTop();
 			ConfigureTransparentBackground();
 
+			var cHeight = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", name),
+				_background.HasBackground ? _background.Height : 0);
+			var cWidth = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", name),
+				_background.HasBackground ? _background.Width : 0);
+
+			if (cHeight <= 0 || cWidth <= 0)
+			{
+				var size = FindMaxPreviewSize();
+				if (size.Height > 50 && size.Width > 50)
+				{
+					cHeight = cHeight > 0 ? cHeight : size.Height;
+					cWidth = cWidth > 0 ? cWidth : size.Width;
+				}
+				else
+				{
+					cHeight = cHeight > 0 ? cHeight : _height;
+					cWidth = cWidth > 0 ? cWidth : _width;
+				}
+			}
+
+			ClientSize = new Size(cWidth, cHeight);
+			_width = cWidth;
+			_height = cHeight;
+
 			var desktopBounds =
 				new Rectangle(
 					new Point(
 						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X),
 						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", name), Location.Y)),
-					new Size(100, 100));
+					ClientSize);
 
-			if (IsVisibleOnAnyScreen(desktopBounds))
+			if (PreviewWindowBounds.IsRecoverable(desktopBounds, Screen.AllScreens.Select(screen => screen.WorkingArea)))
 			{
 				StartPosition = FormStartPosition.Manual;
 				DesktopLocation = desktopBounds.Location;
@@ -1095,30 +1123,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				// this resets the upper left corner of the window to windows standards
 				StartPosition = FormStartPosition.WindowsDefaultLocation;
 			}
-
-			var cHeight = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", name),
-				_background.HasBackground ? _background.Height : 0);
-			var cWidth = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", name),
-				_background.HasBackground ? _background.Width : 0);
-
-			if (cHeight == 0 && cWidth == 0)
-			{
-				var size = FindMaxPreviewSize();
-				if (size.Height > 50 && size.Width > 50)
-				{
-					cHeight = size.Height;
-					cWidth = size.Width;
-				}
-				else
-				{
-					cHeight = _height;
-					cWidth = _width;
-				}
-				
-			}
-			ClientSize = new Size(cWidth, cHeight);
-			_width = cWidth;
-			_height = cHeight;
 		}
 
 		private void CreateCamera()
@@ -1134,12 +1138,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", name), _camera.Position.Y),
 				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", name), _camera.Position.Z));
 			UpdateStatusDistance(_camera.Position.Z);
-		}
-
-		private bool IsVisibleOnAnyScreen(Rectangle rect)
-		{
-			return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location)) ||
-				Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(new Point(rect.Top, rect.Right)));
 		}
 
 		private Size FindMaxPreviewSize()
