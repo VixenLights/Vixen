@@ -28,6 +28,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 			_filter = new CoarseFineBreakdownFilter();
 			_outputCommands = new List<ICommand>();
 			_commandsData = new CommandsDataFlowData(_outputCommands);
+			HandleDefaultValue();
 		}
 
 		/// <summary>
@@ -36,10 +37,15 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		/// <param name="data">The command data flow to process.</param>
 		public void ProcessInputData(CommandDataFlowData data)
 		{
+			_outputCommands.Clear();
+
 			if (data.Value is _16BitCommand command)
 			{
 				Handle(command.CommandValue);
+				return;
 			}
+
+			HandleDefaultValue();
 		}
 
 		/// <summary>
@@ -50,6 +56,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		{
 			_outputCommands.Clear();
 
+			var hasOutputValue = false;
 			if (intents.Value != null)
 			{
 				foreach (var intentState in intents.Value)
@@ -58,8 +65,14 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 					if (state != null)
 					{
 						Handle((IIntentState<RangeValue<FunctionIdentity>>)state);
+						hasOutputValue = true;
 					}
 				}
+			}
+
+			if (!hasOutputValue)
+			{
+				HandleDefaultValue();
 			}
 		}
 
@@ -70,12 +83,19 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 
 		private void Handle(ushort canonicalValue)
 		{
-			var effectiveValue = _configuration.EffectiveValue(canonicalValue);
 			var commandValue = _highByte
-				? (byte)(effectiveValue >> 8)
-				: (byte)(effectiveValue & 0xFF);
+				? (byte)(canonicalValue >> 8)
+				: (byte)(canonicalValue & 0xFF);
 
 			_outputCommands.Add(new _8BitCommand(commandValue));
+		}
+
+		private void HandleDefaultValue()
+		{
+			if (_configuration.EnableDefaultValueMapping)
+			{
+				Handle(_configuration.RestingValue);
+			}
 		}
 
 		/// <inheritdoc />

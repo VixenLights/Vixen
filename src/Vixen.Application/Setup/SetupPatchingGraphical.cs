@@ -832,18 +832,21 @@ namespace VixenApplication.Setup
 				if (i == 0)
 				{
 					int totalShapes = sortedFilterShapes[0].Count;
+					int shapesPerRow = Math.Max(_filterWidth / (ShapeMinWidth + ShapeVerticalSpacing), 1);
+					int columns = Math.Min(totalShapes, shapesPerRow);
 					int shapesSoFar = 0;
 
 					foreach (FilterShape filterShape in sortedFilterShapes[0])
 					{
-
 						int shapeHeight = ShapeDefaultHeight;
-						int ypos = ShapeYTop;
+						int row = shapesSoFar / columns;
+						int column = shapesSoFar % columns;
+						int ypos = ShapeYTop + (row * (shapeHeight + ShapeVerticalSpacing));
 
-						int columnWidth = _filterWidth / totalShapes;
+						int columnWidth = _filterWidth / columns;
 						int shapeWidth = Math.Max(Math.Min(columnWidth, ShapeMaxWidth), ShapeMinWidth);
 						int internalColumnOffset = (columnWidth - shapeWidth) / 2;
-						int xpos = _filterX + shapesSoFar * columnWidth + internalColumnOffset;
+						int xpos = _filterX + column * columnWidth + internalColumnOffset;
 
 						shapesSoFar++;
 
@@ -898,28 +901,18 @@ namespace VixenApplication.Setup
 						shapesLaidOutPerComponent.TryGetValue(source, out shapesSoFar);
 						// will default to '0' if not in dictionary; how convenient!
 
-						float verticalProportionOffset = (float)shapesSoFar / totalShapes;
 						int shapeHeight = ShapeDefaultHeight;
 						int ypos = _filterY;
 						if (sourceShape != null)
 						{
-							shapeHeight = sourceShape.Height / totalShapes;
-							ypos = sourceShape.Y + (int)(verticalProportionOffset * sourceShape.Height);
+							int availableHeight = sourceShape.Height - (ShapeVerticalSpacing * (totalShapes - 1));
+							shapeHeight = Math.Max(availableHeight / totalShapes, ShapeMinHeight);
+							ypos = sourceShape.Y + (shapesSoFar * (shapeHeight + ShapeVerticalSpacing));
 						}
-
-						// let's try and get 4 pixels vertical spacing between each filter when there's multiple: take 2px off the bottom
-						// of each non-end shape, and take 2px off the top of each non-start shape
-						if (shapesSoFar > 0)
+						else
 						{
-							shapeHeight -= 2;
-							ypos += 2;
+							ypos += shapesSoFar * (shapeHeight + ShapeVerticalSpacing);
 						}
-						if (shapesSoFar < totalShapes - 1)
-						{
-							shapeHeight -= 2;
-						}
-						if (shapeHeight < ShapeMinHeight)
-							shapeHeight = ShapeMinHeight;
 
 						shapesSoFar++;
 						shapesLaidOutPerComponent[source] = shapesSoFar;

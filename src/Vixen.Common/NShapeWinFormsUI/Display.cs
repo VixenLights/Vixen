@@ -507,10 +507,10 @@ namespace Dataweb.NShape.WinFormsUI
 				string angleInfoText = null;
 				if (SelectedShapes.Count == 1 && SelectedShapes.TopMost is IPlanarShape) {
 					float shapeAngleDeg = Geometry.TenthsOfDegreeToDegrees(((IPlanarShape) SelectedShapes.TopMost).Angle);
-					angleInfoText = string.Format("{0}° ({1}° {2} {3}°)", (360 + shapeAngleDeg + sweepAngleDeg)%360, shapeAngleDeg,
+					angleInfoText = string.Format("{0}ï¿½ ({1}ï¿½ {2} {3}ï¿½)", (360 + shapeAngleDeg + sweepAngleDeg)%360, shapeAngleDeg,
 					                              anglePrefix, Math.Abs(sweepAngleDeg));
 				}
-				else angleInfoText = string.Format("{0}{1}°", anglePrefix, Math.Abs(sweepAngleDeg));
+				else angleInfoText = string.Format("{0}{1}ï¿½", anglePrefix, Math.Abs(sweepAngleDeg));
 
 				// Calculate size of the text's layout rectangle
 				Rectangle layoutRect = Rectangle.Empty;
@@ -2507,7 +2507,7 @@ namespace Dataweb.NShape.WinFormsUI
 					}
 					catch (Exception exc) {
 						CurrentTool.Cancel();
-						Debug.Fail(GetFailMessage(exc));
+						//Debug.Fail(GetFailMessage(exc));
 					}
 				}
 			}

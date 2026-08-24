@@ -41,7 +41,6 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
 			<CheckBox Grid.ColumnSpan="2"
@@ -50,29 +49,21 @@
 					  IsChecked="{Binding EnableDefaultValueMapping, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
 			<TextBlock Grid.Row="1"
-					   Margin="0,8,8,3"
-					   VerticalAlignment="Center"
-					   Text="Default input value (0-65535)" />
-			<TextBox Grid.Row="1"
-					 Grid.Column="1"
-					 Margin="0,8,0,4"
-					 MinWidth="140"
-					 Text="{Binding DefaultInputValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
-
-			<TextBlock Grid.Row="2"
+					   Grid.Column="0"
 					   Margin="0,8,8,3"
 					   VerticalAlignment="Center"
 					   Text="Resting coarse value (0-255)" />
-			<TextBox Grid.Row="2"
+			<TextBox Grid.Row="1"
 					 Grid.Column="1"
 					 Margin="0,8,0,4"
 					 Text="{Binding RestingCoarseValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
 
-			<TextBlock Grid.Row="3"
+			<TextBlock Grid.Row="2"
+					   Grid.Column="0"
 					   Margin="0,8,8,3"
 					   VerticalAlignment="Center"
 					   Text="Resting fine value (0-255)" />
-			<TextBox Grid.Row="3"
+			<TextBox Grid.Row="2"
 					 Grid.Column="1"
 					 Margin="0,8,0,4"
 					 Text="{Binding RestingFineValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />

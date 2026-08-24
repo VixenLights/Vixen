@@ -29,7 +29,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		/// <summary>
 		/// Breaks down the commands and routes them to the correct output.
 		/// </summary>
-		/// <param name="obj"></param>
+		/// <param name="commandDataFlow">The command data flow to process.</param>
 		public override void Handle(CommandDataFlowData commandDataFlow)
 		{
 			foreach (var output in _outputs)
@@ -74,7 +74,6 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		{
 			var viewModel = new CoarseFineBreakdownSetupViewModel(
 				_data.EnableDefaultValueMapping,
-				_data.DefaultInputValue,
 				_data.RestingCoarseValue,
 				_data.RestingFineValue);
 			var view = new CoarseFineBreakdownSetupView(viewModel);
@@ -87,7 +86,6 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 			ApplyConfiguration(new CoarseFineBreakdownData
 			{
 				EnableDefaultValueMapping = result.EnableDefaultValueMapping,
-				DefaultInputValue = result.DefaultInputValue,
 				RestingCoarseValue = result.RestingCoarseValue,
 				RestingFineValue = result.RestingFineValue
 			});
@@ -95,9 +93,9 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		}
 
 		/// <summary>
-		/// Gets or sets a value that indicates whether the configured default input value is mapped to the resting output values.
+		/// Gets or sets a value that indicates whether missing output values emit the resting output values.
 		/// </summary>
-		/// <value><see langword="true" /> to map the configured default input value; otherwise, <see langword="false" />. The default is <see langword="false" />.</value>
+		/// <value><see langword="true" /> to emit resting values when no input produces an output; otherwise, <see langword="false" />. The default is <see langword="false" />.</value>
 		public bool EnableDefaultValueMapping
 		{
 			get => _data.EnableDefaultValueMapping;
@@ -109,21 +107,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		}
 
 		/// <summary>
-		/// Gets or sets the 16-bit input value that is mapped when default value mapping is enabled.
-		/// </summary>
-		/// <value>The input value to map. The default is <c>0</c>.</value>
-		public ushort DefaultInputValue
-		{
-			get => _data.DefaultInputValue;
-			set
-			{
-				_data.DefaultInputValue = value;
-				CreateOutputs();
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the high-byte value emitted for a mapped default input value.
+		/// Gets or sets the high-byte value emitted when no input produces an output.
 		/// </summary>
 		/// <value>The coarse output value. The default is <c>0</c>.</value>
 		public byte RestingCoarseValue
@@ -137,7 +121,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		}
 
 		/// <summary>
-		/// Gets or sets the low-byte value emitted for a mapped default input value.
+		/// Gets or sets the low-byte value emitted when no input produces an output.
 		/// </summary>
 		/// <value>The fine output value. The default is <c>0</c>.</value>
 		public byte RestingFineValue
@@ -154,7 +138,6 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		{
 			var configuration = new CoarseFineBreakdownOutputConfiguration(
 				_data.EnableDefaultValueMapping,
-				_data.DefaultInputValue,
 				_data.RestingCoarseValue,
 				_data.RestingFineValue);
 
@@ -168,7 +151,6 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		private void ApplyConfiguration(CoarseFineBreakdownData configuration)
 		{
 			_data.EnableDefaultValueMapping = configuration.EnableDefaultValueMapping;
-			_data.DefaultInputValue = configuration.DefaultInputValue;
 			_data.RestingCoarseValue = configuration.RestingCoarseValue;
 			_data.RestingFineValue = configuration.RestingFineValue;
 			CreateOutputs();

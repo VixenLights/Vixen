@@ -16,7 +16,6 @@ public sealed class CoarseFineBreakdownModuleTests
 		var data = new CoarseFineBreakdownData
 		{
 			EnableDefaultValueMapping = false,
-			DefaultInputValue = 0,
 			RestingCoarseValue = 0xA5,
 			RestingFineValue = 0x3C
 		};
@@ -28,56 +27,86 @@ public sealed class CoarseFineBreakdownModuleTests
 	}
 
 	[Fact]
-	public void EnabledMapping_ChangesOnlyAnExactCommandMatch()
+	public void DisabledMapping_LeavesMissingValuesWithoutAnOutput()
 	{
-		var data = new CoarseFineBreakdownData
+		var module = CreateModule(new CoarseFineBreakdownData
 		{
-			EnableDefaultValueMapping = true,
-			DefaultInputValue = 0x1234,
+			EnableDefaultValueMapping = false,
 			RestingCoarseValue = 0xA5,
 			RestingFineValue = 0x3C
-		};
+		});
 
-		Assert.Equal(((byte)0xA5, (byte)0x3C), ProcessCommand(data, 0x1234));
-		Assert.Equal(((byte)0x12, (byte)0x33), ProcessCommand(data, 0x1233));
-		Assert.Equal(((byte)0x12, (byte)0x35), ProcessCommand(data, 0x1235));
+		module.Handle(new CommandDataFlowData(null!));
+
+		Assert.Empty(Assert.IsType<CommandsDataFlowData>(module.Outputs[0].Data).Value);
+		Assert.Empty(Assert.IsType<CommandsDataFlowData>(module.Outputs[1].Data).Value);
 	}
 
 	[Fact]
-	public void RangeValue_UsesTruncationBeforeExactMapping()
+	public void EnabledMapping_UsesRestingBytesWhenCommandValueIsMissing()
 	{
-		const ushort truncatedHalf = 0x7FFF;
 		var data = new CoarseFineBreakdownData
 		{
 			EnableDefaultValueMapping = true,
-			DefaultInputValue = truncatedHalf,
 			RestingCoarseValue = 0xA5,
 			RestingFineValue = 0x3C
 		};
 
-		Assert.Equal(((byte)0xA5, (byte)0x3C), ProcessRangeValue(data, 0.5));
+		Assert.Equal(((byte)0xA5, (byte)0x3C), ProcessMissingCommand(data));
+		Assert.Equal(((byte)0x00, (byte)0x00), ProcessCommand(data, 0));
+		Assert.Equal(((byte)0x12, (byte)0x34), ProcessCommand(data, 0x1234));
+	}
 
-		data.DefaultInputValue = 0x8000;
+	[Fact]
+	public void EnabledMapping_InitializesOutputsWithRestingBytes()
+	{
+		var module = CreateModule(new CoarseFineBreakdownData
+		{
+			EnableDefaultValueMapping = true,
+			RestingCoarseValue = 0xA5,
+			RestingFineValue = 0x3C
+		});
+
+		Assert.Equal(((byte)0xA5, (byte)0x3C), GetOutputBytes(module));
+	}
+
+	[Fact]
+	public void EnabledMapping_UsesRestingBytesWhenNoIntentProducesAnOutput()
+	{
+		var data = new CoarseFineBreakdownData
+		{
+			EnableDefaultValueMapping = true,
+			RestingCoarseValue = 0xA5,
+			RestingFineValue = 0x3C
+		};
+
+		Assert.Equal(((byte)0xA5, (byte)0x3C), ProcessMissingIntents(data));
 		Assert.Equal(((byte)0x7F, (byte)0xFF), ProcessRangeValue(data, 0.5));
+	}
+
+	[Fact]
+	public void RangeValue_UsesExistingTruncationWhenAnInputIsPresent()
+	{
+		Assert.Equal(((byte)0x7F, (byte)0xFF), ProcessRangeValue(new CoarseFineBreakdownData(), 0.5));
 	}
 
 	[Theory]
 	[InlineData((ushort)0, (byte)0, (byte)0)]
 	[InlineData(ushort.MaxValue, byte.MaxValue, byte.MaxValue)]
 	public void EnabledMapping_HandlesInputAndRestingBoundaries(
-		ushort defaultInputValue,
+		ushort inputValue,
 		byte restingCoarseValue,
 		byte restingFineValue)
 	{
 		var data = new CoarseFineBreakdownData
 		{
 			EnableDefaultValueMapping = true,
-			DefaultInputValue = defaultInputValue,
 			RestingCoarseValue = restingCoarseValue,
 			RestingFineValue = restingFineValue
 		};
 
-		Assert.Equal((restingCoarseValue, restingFineValue), ProcessCommand(data, defaultInputValue));
+		Assert.Equal((restingCoarseValue, restingFineValue), ProcessMissingCommand(data));
+		Assert.Equal(((byte)(inputValue >> 8), (byte)(inputValue & 0xFF)), ProcessCommand(data, inputValue));
 	}
 
 	[Fact]
@@ -86,19 +115,22 @@ public sealed class CoarseFineBreakdownModuleTests
 		var module = CreateModule(new CoarseFineBreakdownData());
 		var originalOutputs = module.Outputs;
 
-		module.DefaultInputValue = 0x1234;
 		module.RestingCoarseValue = 0xA5;
 		module.RestingFineValue = 0x3C;
 		module.EnableDefaultValueMapping = true;
 
-		Assert.Equal((ushort)0x1234, module.DefaultInputValue);
 		Assert.Equal((byte)0xA5, module.RestingCoarseValue);
 		Assert.Equal((byte)0x3C, module.RestingFineValue);
 		Assert.True(module.EnableDefaultValueMapping);
 		Assert.NotSame(originalOutputs, module.Outputs);
 
-		module.Handle(new CommandDataFlowData(new _16BitCommand(0x1234)));
 		Assert.Equal(((byte)0xA5, (byte)0x3C), GetOutputBytes(module));
+
+		var enabledOutputs = module.Outputs;
+		module.RestingFineValue = 0x5E;
+
+		Assert.NotSame(enabledOutputs, module.Outputs);
+		Assert.Equal(((byte)0xA5, (byte)0x5E), GetOutputBytes(module));
 	}
 
 	[Fact]
@@ -107,19 +139,16 @@ public sealed class CoarseFineBreakdownModuleTests
 		var original = new CoarseFineBreakdownData
 		{
 			EnableDefaultValueMapping = true,
-			DefaultInputValue = 0x1234,
 			RestingCoarseValue = 0xA5,
 			RestingFineValue = 0x3C
 		};
 
 		var clone = Assert.IsType<CoarseFineBreakdownData>(original.Clone());
 		original.EnableDefaultValueMapping = false;
-		original.DefaultInputValue = 0;
 		original.RestingCoarseValue = 0;
 		original.RestingFineValue = 0;
 
 		Assert.True(clone.EnableDefaultValueMapping);
-		Assert.Equal((ushort)0x1234, clone.DefaultInputValue);
 		Assert.Equal((byte)0xA5, clone.RestingCoarseValue);
 		Assert.Equal((byte)0x3C, clone.RestingFineValue);
 	}
@@ -128,6 +157,20 @@ public sealed class CoarseFineBreakdownModuleTests
 	{
 		var module = CreateModule(data);
 		module.Handle(new CommandDataFlowData(new _16BitCommand(value)));
+		return GetOutputBytes(module);
+	}
+
+	private static (byte Coarse, byte Fine) ProcessMissingCommand(CoarseFineBreakdownData data)
+	{
+		var module = CreateModule(data);
+		module.Handle(new CommandDataFlowData(null!));
+		return GetOutputBytes(module);
+	}
+
+	private static (byte Coarse, byte Fine) ProcessMissingIntents(CoarseFineBreakdownData data)
+	{
+		var module = CreateModule(data);
+		module.Handle(new IntentsDataFlowData(null!));
 		return GetOutputBytes(module);
 	}
 

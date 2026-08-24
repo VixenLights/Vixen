@@ -15,28 +15,25 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CoarseFineBreakdownSetupViewModel"/> class.
 		/// </summary>
-		/// <param name="enableDefaultValueMapping"><see langword="true" /> to initially enable default-value mapping; otherwise, <see langword="false" />.</param>
-		/// <param name="defaultInputValue">The initial default input value.</param>
+		/// <param name="enableDefaultValueMapping"><see langword="true" /> to initially enable the resting output; otherwise, <see langword="false" />.</param>
 		/// <param name="restingCoarseValue">The initial resting coarse value.</param>
 		/// <param name="restingFineValue">The initial resting fine value.</param>
 		public CoarseFineBreakdownSetupViewModel(
 			bool enableDefaultValueMapping,
-			ushort defaultInputValue,
 			byte restingCoarseValue,
 			byte restingFineValue)
 		{
 			DeferValidationUntilFirstSaveCall = false;
 			EnableDefaultValueMapping = enableDefaultValueMapping;
-			DefaultInputValue = defaultInputValue;
 			RestingCoarseValue = restingCoarseValue;
 			RestingFineValue = restingFineValue;
 			Validate(true);
 		}
 
 		/// <summary>
-		/// Gets or sets a value that indicates whether the default input value is mapped to the resting values.
+		/// Gets or sets a value that indicates whether missing output values emit the resting values.
 		/// </summary>
-		/// <value><see langword="true" /> to enable mapping; otherwise, <see langword="false" />.</value>
+		/// <value><see langword="true" /> to emit resting values; otherwise, <see langword="false" />.</value>
 		public bool EnableDefaultValueMapping
 		{
 			get => GetValue<bool>(EnableDefaultValueMappingProperty);
@@ -48,26 +45,6 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		/// </summary>
 		public static readonly IPropertyData EnableDefaultValueMappingProperty =
 			RegisterProperty<bool>(nameof(EnableDefaultValueMapping), false);
-
-		/// <summary>
-		/// Gets or sets the staged 16-bit default input value.
-		/// </summary>
-		/// <value>A value from <c>0</c> through <c>65535</c>.</value>
-		public decimal DefaultInputValue
-		{
-			get => GetValue<decimal>(DefaultInputValueProperty);
-			set
-			{
-				SetValue(DefaultInputValueProperty, value);
-				_okCommand?.RaiseCanExecuteChanged();
-			}
-		}
-
-		/// <summary>
-		/// Identifies the <see cref="DefaultInputValue"/> property.
-		/// </summary>
-		public static readonly IPropertyData DefaultInputValueProperty =
-			RegisterProperty<decimal>(nameof(DefaultInputValue), 0m);
 
 		/// <summary>
 		/// Gets or sets the staged high-byte resting value.
@@ -130,7 +107,6 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		/// <inheritdoc />
 		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
 		{
-			ValidateRange(DefaultInputValue, DefaultInputValueProperty, 0m, ushort.MaxValue, "Default input value must be between 0 and 65535.", validationResults);
 			ValidateRange(RestingCoarseValue, RestingCoarseValueProperty, 0m, byte.MaxValue, "Resting coarse value must be between 0 and 255.", validationResults);
 			ValidateRange(RestingFineValue, RestingFineValueProperty, 0m, byte.MaxValue, "Resting fine value must be between 0 and 255.", validationResults);
 		}
@@ -147,7 +123,6 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 
 			Result = new CoarseFineBreakdownSetupResult(
 				EnableDefaultValueMapping,
-				(ushort)DefaultInputValue,
 				(byte)RestingCoarseValue,
 				(byte)RestingFineValue);
 			return this.SaveAndCloseViewModelAsync();

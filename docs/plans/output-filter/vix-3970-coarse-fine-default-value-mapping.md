@@ -4,9 +4,9 @@ This ExecPlan is a living document. The sections `Progress`, `Surprises & Discov
 
 ## Purpose / Big Picture
 
-The Coarse Fine Breakdown output filter converts one 16-bit lighting value into two 8-bit output channels: a coarse (high-byte) channel and a fine (low-byte) channel. After this work, a user can optionally configure one exact input value, normally the fixture's default or off value, to emit a distinct resting coarse/fine byte pair. The option is persisted with the filter, can be configured in its setup dialog, and can also be set by later code through documented module properties. With the option disabled—the persisted default—existing shows continue to split values exactly as they did before.
+The Coarse Fine Breakdown output filter converts one 16-bit lighting value into two 8-bit output channels: a coarse (high-byte) channel and a fine (low-byte) channel. After this work, a user can optionally configure a resting coarse/fine byte pair that is present as soon as each output is created and is restored when no incoming command or intent produces an output. Any incoming value, including zero, overrides this resting state and is split normally. The option is persisted with the filter, can be configured in its setup dialog, and can also be set by later code through documented module properties. With the option disabled—the persisted default—missing input continues to produce no output.
 
-The feature is observable by configuring default input `0` and resting bytes `12` / `34`, passing a zero input through the filter, and observing coarse command `12` and fine command `34`; a nonzero input remains conventionally split. Disabling the checkbox makes zero again produce `0` / `0`.
+The feature is observable by configuring resting bytes `12` / `34`, passing no input through the filter, and observing coarse command `12` and fine command `34`; a zero input still emits `0` / `0`. Disabling the checkbox leaves missing input without output commands.
 
 ## Progress
 
@@ -17,6 +17,8 @@ The feature is observable by configuring default input `0` and resting bytes `12
 - [x] (2026-08-24 00:00 -05:00) Added persisted configuration, documented module configuration properties, immutable runtime snapshots, and the renamed source files; the affected Debug module build succeeded.
 - [x] (2026-08-24 00:00 -05:00) Added the Catel WPF setup dialog with draft-only editing, inclusive decimal-range validation, and a single accepted-configuration rebuild; the affected Debug module build succeeded.
 - [x] (2026-08-24 00:00 -05:00) Added focused behavior, persistence, programmatic-setter, and setup-view-model tests. The full Vixen test target built successfully and `dotnet test --no-build` reported 822 passed, 0 failed, 0 skipped.
+- [x] (2026-08-24 00:00 -05:00) Corrected the POC after user testing: configured resting bytes now apply only when no command or filtered intent produces an output. Removed the obsolete input-value selection and updated the dialog, tests, and documentation. Focused tests reported 16 passed; the complete suite reported 823 passed, 0 failed, 0 skipped.
+- [x] (2026-08-24 00:00 -05:00) Initialized enabled resting values when output snapshots are created and verified that configuration changes replace the exposed outputs with the current resting bytes, without waiting for a data-flow update. The rebuilt focused test set reported 17 passed, 0 failed, 0 skipped.
 - [ ] Build, run the full test sequence, perform manual setup verification, and reconcile VIX-3970 with exact validation results.
 
 ## Surprises & Discoveries
@@ -42,6 +44,12 @@ The feature is observable by configuring default input `0` and resting bytes `12
 - Observation: the internal setup view model can be tested with normal xUnit facts; its Catel command/close helpers do not require a WPF dispatcher for these staging and validation cases.
   Evidence: `CoarseFineBreakdownSetupViewModelTests` ran as part of the complete `dotnet test` invocation, which reported 822 passed, 0 failed, and 0 skipped without an STA-specific attribute or another test package.
 
+- Observation: testing showed that a fixture's rest state is represented by no output value, not by an input value that should be remapped.
+  Evidence: `CommandDataFlowData.Value` is nullable and the coarse/fine intent path receives null or empty collections when no filtered intent produces an output.
+
+- Observation: a Debug module rebuild cannot replace several `Debug/Output` assemblies while the Vixen application and Rider debugger are running.
+  Evidence: the Debug build reached compilation but failed only on MSBuild copy retries for locked `Resources.dll` and `Vixen.Core.dll`; the Release test-project build and its focused/full tests completed successfully.
+
 ## Decision Log
 
 - Decision: Persist the four requested scalar values as `[DataMember]` properties on `CoarseFineBreakdownData`, initialized to disabled/zero defaults, and explicitly copy each one in `Clone()`.
@@ -56,6 +64,14 @@ The feature is observable by configuring default input `0` and resting bytes `12
   Rationale: a default mapping is a precise fixture configuration. The issue explicitly excludes fuzzy matching and behavior-changing input repair.
   Date/Author: 2026-08-24 / Codex
 
+- Decision: Supersede exact-input remapping with an opt-in missing-output fallback. Remove `DefaultInputValue` from persisted data, the public module API, the setup dialog, and tests; retain the existing `EnableDefaultValueMapping` name for serialized POC compatibility.
+  Rationale: user testing established that any supplied value, including zero, must override the rest state. The resting bytes are meaningful only when no incoming command or filtered intent produces an output.
+  Date/Author: 2026-08-24 / User direction recorded by Codex
+
+- Decision: Seed each newly created enabled output with its immutable resting value and replace output objects for every configuration change.
+  Rationale: the data-flow pipeline may not dispatch another value after configuration is loaded or edited. Initializing the command list at output construction ensures the controller can observe the correct rest state immediately.
+  Date/Author: 2026-08-24 / User direction recorded by Codex
+
 - Decision: Keep this issue limited to the output-filter module, its project dependencies, and its tests. Do not edit `src/Vixen.Application/Setup/ElementTemplates/IntelligentFixtureTemplate.cs` or another fixture/setup pipeline, even though it instantiates this module.
   Rationale: VIX-3970 supplies programmatic properties so a later fixture-flow issue can opt in deliberately; wiring it now would change unrelated configuration behavior.
   Date/Author: 2026-08-24 / Codex
@@ -66,7 +82,7 @@ The feature is observable by configuring default input `0` and resting bytes `12
 
 ## Outcomes & Retrospective
 
-The proof of concept now has automated coverage. Persisted defaults and documented programmatic configuration properties create immutable coarse/fine output snapshots, exact default-value substitution occurs before byte splitting, and a Catel setup dialog stages decimal inputs until a valid OK result applies all settings in one rebuild. Focused tests cover both input paths, exact matching, boundaries, setters, cloning, and dialog staging/validation; the complete test run reports 822 passing tests. Manual dialog validation and the tracker update remain outstanding. Update this section after each milestone with actual test totals, manual observations, and any scope adjustment.
+The proof of concept now has automated coverage. Persisted defaults and documented programmatic configuration properties create immutable coarse/fine output snapshots. When enabled, the snapshot emits the configured resting pair only when no command or filtered intent produces an output; all supplied values are conventionally split. The setup dialog stages the checkbox and two byte values until a valid OK result applies all settings in one rebuild. Focused tests cover both input paths, missing-output fallback, boundaries, setters, cloning, and dialog staging/validation. The Release test-project build completed, focused tests reported 16 passing, and the complete suite reported 823 passing tests with no failures or skips. The separate Debug rebuild remains blocked by a running application holding output files. Manual dialog validation and the tracker update remain outstanding.
 
 ## Context and Orientation
 
@@ -232,3 +248,7 @@ Revision note (2026-08-24): Implemented Milestone 2 as the initial POC. The modu
 Revision note (2026-08-24): Implemented Milestone 3. The module now enables WPF, references Catel.MVVM and WPFCommon, and supplies an internal Catel setup window/view model that validates staged decimal values. Valid OK results copy all settings into the persisted model and rebuild outputs once; Cancel/close leaves the model untouched. The module Debug build succeeds.
 
 Revision note (2026-08-24): Implemented Milestone 4. Added the CoarseFineBreakdown project reference and internal-test visibility to Vixen.Tests, then added focused module/output and setup-view-model tests. The full Vixen test build and no-build test execution complete with 822 passed, 0 failed, and 0 skipped.
+
+Revision note (2026-08-24): User testing corrected the POC premise. The default is now an opt-in resting output for missing command or intent values, rather than a replacement for a selected input value. `DefaultInputValue` and its UI/API/validation/test surface were removed; supplied values, including zero, retain normal byte splitting. Focused and full validation must be rerun after this correction.
+
+Revision note (2026-08-24): Refined the resting-output behavior after further testing. Enabled output snapshots now contain the resting command immediately at construction, so loading or changing configuration establishes the rest state even if no new data-flow event arrives. The Release test-project build succeeded and its focused test set reported 17 passed, 0 failed, and 0 skipped.
