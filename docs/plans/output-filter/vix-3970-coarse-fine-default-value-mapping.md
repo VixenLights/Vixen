@@ -19,6 +19,7 @@ The feature is observable by configuring resting bytes `12` / `34`, passing no i
 - [x] (2026-08-24 00:00 -05:00) Added focused behavior, persistence, programmatic-setter, and setup-view-model tests. The full Vixen test target built successfully and `dotnet test --no-build` reported 822 passed, 0 failed, 0 skipped.
 - [x] (2026-08-24 00:00 -05:00) Corrected the POC after user testing: configured resting bytes now apply only when no command or filtered intent produces an output. Removed the obsolete input-value selection and updated the dialog, tests, and documentation. Focused tests reported 16 passed; the complete suite reported 823 passed, 0 failed, 0 skipped.
 - [x] (2026-08-24 00:00 -05:00) Initialized enabled resting values when output snapshots are created and verified that configuration changes replace the exposed outputs with the current resting bytes, without waiting for a data-flow update. The rebuilt focused test set reported 17 passed, 0 failed, 0 skipped.
+- [x] (2026-08-24 00:00 -05:00) Assigned the setup window's native owner to the focused WinForms application window before showing it, so its existing `CenterOwner` placement consistently centers it on Vixen.
 - [ ] Build, run the full test sequence, perform manual setup verification, and reconcile VIX-3970 with exact validation results.
 
 ## Surprises & Discoveries
@@ -70,6 +71,10 @@ The feature is observable by configuring resting bytes `12` / `34`, passing no i
 
 - Decision: Seed each newly created enabled output with its immutable resting value and replace output objects for every configuration change.
   Rationale: the data-flow pipeline may not dispatch another value after configuration is loaded or edited. Initializing the command list at output construction ensures the controller can observe the correct rest state immediately.
+  Date/Author: 2026-08-24 / User direction recorded by Codex
+
+- Decision: Use the active WinForms window handle as the WPF setup dialog's native owner when one is available.
+  Rationale: the output-filter setup is initiated from the WinForms Vixen application. Native ownership makes the modal WPF window center on and remain associated with the focused parent while retaining a safe fallback when no parent exists.
   Date/Author: 2026-08-24 / User direction recorded by Codex
 
 - Decision: Keep this issue limited to the output-filter module, its project dependencies, and its tests. Do not edit `src/Vixen.Application/Setup/ElementTemplates/IntelligentFixtureTemplate.cs` or another fixture/setup pipeline, even though it instantiates this module.
@@ -252,3 +257,5 @@ Revision note (2026-08-24): Implemented Milestone 4. Added the CoarseFineBreakdo
 Revision note (2026-08-24): User testing corrected the POC premise. The default is now an opt-in resting output for missing command or intent values, rather than a replacement for a selected input value. `DefaultInputValue` and its UI/API/validation/test surface were removed; supplied values, including zero, retain normal byte splitting. Focused and full validation must be rerun after this correction.
 
 Revision note (2026-08-24): Refined the resting-output behavior after further testing. Enabled output snapshots now contain the resting command immediately at construction, so loading or changing configuration establishes the rest state even if no new data-flow event arrives. The Release test-project build succeeded and its focused test set reported 17 passed, 0 failed, and 0 skipped.
+
+Revision note (2026-08-24): Assigned the WPF setup dialog to the focused WinForms Vixen window using `WindowInteropHelper` before modal display. The view's existing `CenterOwner` placement now uses that parent rather than a fallback location.

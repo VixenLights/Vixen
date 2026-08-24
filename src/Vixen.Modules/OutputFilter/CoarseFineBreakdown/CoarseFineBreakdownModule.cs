@@ -1,3 +1,4 @@
+using System.Windows.Interop;
 using Vixen.Data.Flow;
 using Vixen.Module;
 using Vixen.Module.OutputFilter;
@@ -77,6 +78,11 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 				_data.RestingCoarseValue,
 				_data.RestingFineValue);
 			var view = new CoarseFineBreakdownSetupView(viewModel);
+			var owner = Form.ActiveForm;
+			if (owner != null)
+			{
+				new WindowInteropHelper(view).Owner = owner.Handle;
+			}
 
 			if (view.ShowDialog() != true || viewModel.Result is not { } result)
 			{
