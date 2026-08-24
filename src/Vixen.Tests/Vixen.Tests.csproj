@@ -32,6 +32,7 @@
 		<ProjectReference Include="..\Vixen.Modules\App\LivePreview\LivePreview.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\App\Marks\Marks.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Chase\Chase.csproj" />
+		<ProjectReference Include="..\Vixen.Modules\Effect\Fire\Fire.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\LipSync\LipSync.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\PinWheel\PinWheel.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Video\Video.csproj" />
