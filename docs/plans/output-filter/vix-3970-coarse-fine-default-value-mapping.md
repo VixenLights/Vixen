@@ -16,7 +16,7 @@ The feature is observable by configuring default input `0` and resting bytes `12
 - [ ] Update VIX-3970 with the final requirements, acceptance criteria, and test plan before modifying production code.
 - [x] (2026-08-24 00:00 -05:00) Added persisted configuration, documented module configuration properties, immutable runtime snapshots, and the renamed source files; the affected Debug module build succeeded.
 - [x] (2026-08-24 00:00 -05:00) Added the Catel WPF setup dialog with draft-only editing, inclusive decimal-range validation, and a single accepted-configuration rebuild; the affected Debug module build succeeded.
-- [ ] Add focused behavior, persistence, and setup-view-model tests.
+- [x] (2026-08-24 00:00 -05:00) Added focused behavior, persistence, programmatic-setter, and setup-view-model tests. The full Vixen test target built successfully and `dotnet test --no-build` reported 822 passed, 0 failed, 0 skipped.
 - [ ] Build, run the full test sequence, perform manual setup verification, and reconcile VIX-3970 with exact validation results.
 
 ## Surprises & Discoveries
@@ -38,6 +38,9 @@ The feature is observable by configuring default input `0` and resting bytes `12
 
 - Observation: enabling WPF and adding Catel.MVVM/WPFCommon is sufficient for a Catel setup window in this output-filter project; the project can retain its existing WinForms setting while hosting the new WPF dialog.
   Evidence: the Debug module rebuild after adding `<UseWPF>true</UseWPF>`, `Catel.MVVM`, WPFCommon, the XAML window, and the view model exited with code 0.
+
+- Observation: the internal setup view model can be tested with normal xUnit facts; its Catel command/close helpers do not require a WPF dispatcher for these staging and validation cases.
+  Evidence: `CoarseFineBreakdownSetupViewModelTests` ran as part of the complete `dotnet test` invocation, which reported 822 passed, 0 failed, and 0 skipped without an STA-specific attribute or another test package.
 
 ## Decision Log
 
@@ -63,7 +66,7 @@ The feature is observable by configuring default input `0` and resting bytes `12
 
 ## Outcomes & Retrospective
 
-The proof of concept now includes its configuration surface. Persisted defaults and documented programmatic configuration properties create immutable coarse/fine output snapshots, exact default-value substitution occurs before byte splitting, and a Catel setup dialog stages decimal inputs until a valid OK result applies all settings in one rebuild. The affected Debug module build succeeds; focused tests, full-suite/manual validation, and the tracker update remain outstanding. Update this section after each milestone with actual test totals, manual observations, and any scope adjustment.
+The proof of concept now has automated coverage. Persisted defaults and documented programmatic configuration properties create immutable coarse/fine output snapshots, exact default-value substitution occurs before byte splitting, and a Catel setup dialog stages decimal inputs until a valid OK result applies all settings in one rebuild. Focused tests cover both input paths, exact matching, boundaries, setters, cloning, and dialog staging/validation; the complete test run reports 822 passing tests. Manual dialog validation and the tracker update remain outstanding. Update this section after each milestone with actual test totals, manual observations, and any scope adjustment.
 
 ## Context and Orientation
 
@@ -227,3 +230,5 @@ Revision note (2026-08-24): Created the plan from the VIX-3970 handoff after ins
 Revision note (2026-08-24): Implemented Milestone 2 as the initial POC. The module now persists default mapping configuration, rebuilds immutable output snapshots after programmatic changes, and applies exact mapping for command and RangeValue inputs. The module Debug build succeeds; setup UI and tests remain later milestones.
 
 Revision note (2026-08-24): Implemented Milestone 3. The module now enables WPF, references Catel.MVVM and WPFCommon, and supplies an internal Catel setup window/view model that validates staged decimal values. Valid OK results copy all settings into the persisted model and rebuild outputs once; Cancel/close leaves the model untouched. The module Debug build succeeds.
+
+Revision note (2026-08-24): Implemented Milestone 4. Added the CoarseFineBreakdown project reference and internal-test visibility to Vixen.Tests, then added focused module/output and setup-view-model tests. The full Vixen test build and no-build test execution complete with 822 passed, 0 failed, and 0 skipped.
