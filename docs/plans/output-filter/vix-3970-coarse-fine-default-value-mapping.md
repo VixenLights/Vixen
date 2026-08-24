@@ -14,7 +14,7 @@ The feature is observable by configuring default input `0` and resting bytes `12
 - [x] (2026-08-24 00:00 -05:00) Identified the legacy source/file-name mismatch and the absence of both setup UI and focused output-filter tests.
 - [x] (2026-08-24 00:00 -05:00) Wrote this implementation plan only; no production source, test source, or tracker record was changed.
 - [ ] Update VIX-3970 with the final requirements, acceptance criteria, and test plan before modifying production code.
-- [ ] Add persisted configuration, documented module configuration properties, immutable runtime snapshots, and the renamed source files.
+- [x] (2026-08-24 00:00 -05:00) Added persisted configuration, documented module configuration properties, immutable runtime snapshots, and the renamed source files; the affected Debug module build succeeded.
 - [ ] Add Catel WPF setup dialog with draft-only editing and validation.
 - [ ] Add focused behavior, persistence, and setup-view-model tests.
 - [ ] Build, run the full test sequence, perform manual setup verification, and reconcile VIX-3970 with exact validation results.
@@ -32,6 +32,9 @@ The feature is observable by configuring default input `0` and resting bytes `12
 
 - Observation: `src/Vixen.Tests/Vixen.Tests.csproj` does not currently reference CoarseFineBreakdown, while it already contains `Xunit.StaFact` and references WPFCommon through other projects.
   Evidence: the test-project reference list has no CoarseFineBreakdown project entry, and central package management lists `Xunit.StaFact` 3.0.13.
+
+- Observation: the focused module build succeeds after the POC runtime change; warnings originate in existing Vixen.Core files rather than this module.
+  Evidence: `msbuild src/Vixen.Modules/OutputFilter/CoarseFineBreakdown/CoarseFineBreakdown.csproj -m -restore -t:Rebuild -p:Configuration=Debug -p:Platform=x64 -v:m` exited with code 0 and reported warnings only for `IElementTemplate.cs`, `HardwareUpdateThread.cs`, and `ProgramExecutor.cs` in Vixen.Core.
 
 ## Decision Log
 
@@ -51,9 +54,13 @@ The feature is observable by configuring default input `0` and resting bytes `12
   Rationale: VIX-3970 supplies programmatic properties so a later fixture-flow issue can opt in deliberately; wiring it now would change unrelated configuration behavior.
   Date/Author: 2026-08-24 / Codex
 
+- Decision: Treat the runtime change delivered in Milestone 2 as an initial proof of concept for the configuration and exact-remapping path.
+  Rationale: the POC validates persisted defaults, programmatic setup, immutable output snapshots, and byte mapping independently before the WPF configuration surface and complete test matrix are added in later milestones.
+  Date/Author: 2026-08-24 / User direction recorded by Codex
+
 ## Outcomes & Retrospective
 
-Planning is complete. No implementation, test, build, or JIRA change has occurred yet. The intended outcome is a backward-compatible opt-in remap with isolated configuration ownership and test coverage of both command and intent inputs. Update this section after each milestone with actual test totals, manual observations, and any scope adjustment.
+The runtime proof of concept is complete: persisted defaults and documented programmatic configuration properties now create immutable coarse/fine output snapshots, and exact default-value substitution occurs before byte splitting. The affected Debug module build succeeds; focused tests, the WPF setup dialog, full-suite validation, and the tracker update remain outstanding. Update this section after each milestone with actual test totals, manual observations, and any scope adjustment.
 
 ## Context and Orientation
 
@@ -213,3 +220,5 @@ At completion, `VixenModules.OutputFilter.CoarseFineBreakdown.CoarseFineBreakdow
 The CoarseFineBreakdown project has WPF enabled and uses the centrally-versioned `Catel.MVVM` package plus the existing WPFCommon project for Catel setup-window behavior and shared theme resources. The internal setup view model and immutable output configuration remain internal; `InternalsVisibleTo("Vixen.Tests")` is only for focused test access and does not expand the module's public API. The project continues to use the same namespace and descriptor TypeId. No `IntelligentFixtureTemplate` interface or fixture-flow interface changes in this issue.
 
 Revision note (2026-08-24): Created the plan from the VIX-3970 handoff after inspecting the existing output filter, current Catel WPF dialog conventions, test project, and repository plan requirements. No implementation was performed.
+
+Revision note (2026-08-24): Implemented Milestone 2 as the initial POC. The module now persists default mapping configuration, rebuilds immutable output snapshots after programmatic changes, and applies exact mapping for command and RangeValue inputs. The module Debug build succeeds; setup UI and tests remain later milestones.
