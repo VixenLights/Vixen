@@ -4,6 +4,7 @@ using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Fire
@@ -211,6 +212,39 @@ namespace VixenModules.Effect.Fire
 			}
 		}
 
+		/// <summary>
+		/// Renders Fire frames for the configured sparse preview locations.
+		/// </summary>
+		/// <param name="numFrames">The number of frames to render.</param>
+		/// <param name="frameBuffer">The sparse preview-location frame buffer that receives rendered colors.</param>
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			if (numFrames <= 0 || BufferWi <= 0 || BufferHt <= 0)
+			{
+				return;
+			}
+
+			var (maxWi, maxHt) = GetSimulationDimensions();
+			for (var frame = 0; frame < numFrames; frame++)
+			{
+				frameBuffer.CurrentFrame = frame;
+				var frameState = CreateFrameState(frame, maxHt);
+				GenerateFireBuffer(maxWi, maxHt, frameState.Step);
+
+				foreach (var elementLocation in frameBuffer.ElementLocations)
+				{
+					var outputX = elementLocation.X - BufferWiOffset;
+					var outputY = Math.Abs((BufferHtOffset - elementLocation.Y) + (BufferHt - 1 + BufferHtOffset));
+					outputY -= BufferHtOffset;
+					var (simulationX, simulationY) = GetSimulationCoordinate(Location, outputX, outputY);
+					if (TryGetFireColor(simulationX, simulationY, maxWi, maxHt, frameState, out var hsv))
+					{
+						frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+					}
+				}
+			}
+		}
+
 		private (int Width, int Height) GetSimulationDimensions()
 		{
 			var maxHt = BufferHt;
@@ -222,6 +256,18 @@ namespace VixenModules.Effect.Fire
 			}
 
 			return (maxWi, maxHt);
+		}
+
+		private (int X, int Y) GetSimulationCoordinate(FireDirection direction, int outputX, int outputY)
+		{
+			return direction switch
+			{
+				FireDirection.Bottom => (outputX, outputY),
+				FireDirection.Top => (outputX, BufferHt - outputY - 1),
+				FireDirection.Left => (outputY, outputX),
+				FireDirection.Right => (outputY, BufferWi - outputX - 1),
+				_ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+			};
 		}
 
 		private FireFrameState CreateFrameState(int frame, int maxHt)
