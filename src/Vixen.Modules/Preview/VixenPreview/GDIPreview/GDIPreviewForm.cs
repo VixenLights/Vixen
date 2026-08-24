@@ -398,12 +398,6 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			_contextMenuStrip.Show(MousePosition);
 		}
 
-		private bool AreCornersVisibleOnAnyScreen(Rectangle rect)
-		{
-			return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location)) ||
-			       Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(new Point(rect.Top, rect.Right)));
-		}
-
 		private bool IsVisibleOnAnyScreen(Rectangle rect)
 		{
 			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
@@ -708,7 +702,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				DesktopLocation = desktopBounds.Location;
 				WindowState = FormWindowState.Maximized;
 			}
-			else if (AreCornersVisibleOnAnyScreen(desktopBounds))
+			else if (PreviewWindowBounds.IsRecoverable(desktopBounds, Screen.AllScreens.Select(screen => screen.WorkingArea)))
 			{
 				StartPosition = FormStartPosition.Manual;
 				DesktopBounds = desktopBounds;

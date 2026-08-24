@@ -244,13 +244,6 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private bool IsVisibleOnAnyScreen(Rectangle rect)
-		{
-			return  Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location)) ||
-				Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(new Point(rect.Top, rect.Right)));
-
-		}
-
 		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (CheckForInValidElementLinks())
@@ -598,7 +591,7 @@ namespace VixenModules.Preview.VixenPreview
 					new Point(Data.SetupLeft, Data.SetupTop),
 					new Size(Data.SetupWidth, Data.SetupHeight));
 
-			if (IsVisibleOnAnyScreen(desktopBounds))
+			if (PreviewWindowBounds.IsRecoverable(desktopBounds, Screen.AllScreens.Select(screen => screen.WorkingArea)))
 			{
 				StartPosition = FormStartPosition.Manual;
 				DesktopBounds = desktopBounds;
