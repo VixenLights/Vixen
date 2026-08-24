@@ -15,7 +15,7 @@ The observable proof is that an off-screen saved Preview window falls back to th
 - [x] (2026-08-23 15:40Z) Updated the VIX-3990 Jira description by appending the confirmed scope, acceptance criteria, and test plan while preserving the reporter's original text and four attachments.
 - [x] (2026-08-23 15:43Z) Added `PreviewWindowBounds.IsRecoverable` and 12 monitor-independent xUnit boundary tests; `msbuild Vixen.sln -m -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` and the focused test run passed.
 - [x] (2026-08-23 15:49Z) Routed GDI Preview, OpenGL Preview, and Preview Setup through `PreviewWindowBounds`; preserved GDI's maximized intersection branch; restored OpenGL client size before placement validation; and stopped OpenGL from saving geometry while minimized. The `Vixen_Tests` build and focused policy tests passed.
-- [ ] (2026-08-23 15:19Z) Build and run the focused and full test commands, perform the renderer persistence checks, then update VIX-3990 with final requirements and validation results.
+- [x] (2026-08-23 16:29Z) Confirmed the full build and unit tests passed; manually verified off-screen Preview windows return to a visible monitor and existing valid-monitor placement restores; added those results as VIX-3990 comment 40380.
 
 ## Surprises & Discoveries
 
@@ -51,7 +51,7 @@ The observable proof is that an off-screen saved Preview window falls back to th
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. VIX-3990 preserves the original reporter text and attachments and adds the agreed user-facing scope, acceptance criteria, and test plan. `PreviewWindowBounds.IsRecoverable` now makes the intended pure recovery decision, its 12 focused xUnit tests pass, and all three in-scope forms use it. GDI retains its maximized intersection branch. OpenGL now restores a positive persisted/fallback client size before checking saved placement and does not overwrite valid saved geometry while minimized. Manual renderer verification and the final Jira validation comment remain for Milestone 4.
+VIX-3990 is complete. The original reporter text and attachments were preserved, and the issue now includes the agreed scope, acceptance criteria, test plan, and final validation comment. `PreviewWindowBounds.IsRecoverable` makes the pure recovery decision, all three in-scope forms use it, and GDI retains its maximized intersection branch. OpenGL restores a positive persisted/fallback client size before checking saved placement and does not overwrite valid saved geometry while minimized. The full build and unit tests passed. Manual testing confirmed that off-screen Preview windows return to a visible monitor and that a window restores to its existing location when that monitor remains available. The historic Timed Sequence Editor issue remains intentionally deferred outside VIX-3990.
 
 ## Context and Orientation
 
@@ -218,3 +218,5 @@ Revision note (2026-08-23 15:40Z): Marked Milestone 1 complete after appending t
 Revision note (2026-08-23 15:43Z): Marked Milestone 2 complete after adding the shared policy and 12 focused boundary tests. The `Vixen_Tests` MSBuild target and the focused `PreviewWindowBoundsTests` run both passed.
 
 Revision note (2026-08-23 15:49Z): Marked Milestone 3 complete after integrating the shared policy with both Preview viewers and Preview Setup, retaining the GDI maximized path, and correcting OpenGL geometry restore/save ordering. The `Vixen_Tests` MSBuild target and the focused `PreviewWindowBoundsTests` run both passed.
+
+Revision note (2026-08-23 16:29Z): Marked Milestone 4 and the ExecPlan complete after the user confirmed the full build and unit tests passed and manual recovery/valid-monitor restore behavior worked. Added the same concise results to VIX-3990 comment 40380; Timed Sequence Editor remains deferred.
