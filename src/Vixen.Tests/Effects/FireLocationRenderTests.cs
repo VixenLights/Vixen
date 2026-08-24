@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using Moq;
@@ -267,6 +268,63 @@ public sealed class FireLocationRenderTests
 	}
 
 	/// <summary>
+	/// Measures location rendering for a dense 50 by 50 preview rectangle.
+	/// </summary>
+	[Fact]
+	public void FireLocationBenchmark_Dense50By50()
+	{
+		// Arrange
+		const int width = 50;
+		const int height = 50;
+		const int locationCount = 2500;
+		const int frameCount = 100;
+
+		// Act
+		var measurements = MeasureLocationRendering(width, height, locationCount, frameCount);
+
+		// Assert
+		AssertMeasurements("Dense 50x50 / 2,500 locations / 100 frames", measurements);
+	}
+
+	/// <summary>
+	/// Measures location rendering for a medium sparse preview rectangle.
+	/// </summary>
+	[Fact]
+	public void FireLocationBenchmark_Sparse1000By500()
+	{
+		// Arrange
+		const int width = 1000;
+		const int height = 500;
+		const int locationCount = 5000;
+		const int frameCount = 20;
+
+		// Act
+		var measurements = MeasureLocationRendering(width, height, locationCount, frameCount);
+
+		// Assert
+		AssertMeasurements("Sparse 1000x500 / 5,000 locations / 20 frames", measurements);
+	}
+
+	/// <summary>
+	/// Measures location rendering for a large sparse preview rectangle.
+	/// </summary>
+	[Fact]
+	public void FireLocationBenchmark_Sparse2000By1000()
+	{
+		// Arrange
+		const int width = 2000;
+		const int height = 1000;
+		const int locationCount = 20000;
+		const int frameCount = 3;
+
+		// Act
+		var measurements = MeasureLocationRendering(width, height, locationCount, frameCount);
+
+		// Assert
+		AssertMeasurements("Sparse 2000x1000 / 20,000 locations / 3 frames", measurements);
+	}
+
+	/// <summary>
 	/// Verifies that each direction projects the generated source row to its selected edge.
 	/// </summary>
 	/// <param name="direction">The selected Fire source edge.</param>
@@ -408,6 +466,64 @@ public sealed class FireLocationRenderTests
 			X = x,
 			Y = y
 		};
+	}
+
+	private static (TimeSpan Elapsed, long AllocatedBytes)[] MeasureLocationRendering(int width, int height, int locationCount, int frameCount)
+	{
+		var locations = CreateBenchmarkLocations(width, height, locationCount);
+		RenderLocationFrames(CreateBenchmarkEffect(width, height, frameCount), new PixelLocationFrameBuffer(locations, frameCount), frameCount);
+		var measurements = new (TimeSpan Elapsed, long AllocatedBytes)[3];
+		for (var repeat = 0; repeat < measurements.Length; repeat++)
+		{
+			var effect = CreateBenchmarkEffect(width, height, frameCount);
+			var frameBuffer = new PixelLocationFrameBuffer(locations, frameCount);
+			var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+			var stopwatch = Stopwatch.StartNew();
+			RenderLocationFrames(effect, frameBuffer, frameCount);
+			stopwatch.Stop();
+			measurements[repeat] = (stopwatch.Elapsed, GC.GetAllocatedBytesForCurrentThread() - allocatedBefore);
+		}
+
+		return measurements;
+	}
+
+	private static Fire CreateBenchmarkEffect(int width, int height, int frameCount)
+	{
+		var effect = new Fire { TimeSpan = TimeSpan.FromMilliseconds(frameCount * 50) };
+		SetVirtualBuffer(effect, width, height);
+		return effect;
+	}
+
+	private static void RenderLocationFrames(Fire effect, PixelLocationFrameBuffer frameBuffer, int frameCount)
+	{
+		InvokeSetupRender(effect);
+		InvokeRenderByLocation(effect, frameCount, frameBuffer);
+	}
+
+	private static List<ElementLocation> CreateBenchmarkLocations(int width, int height, int locationCount)
+	{
+		var locations = new List<ElementLocation>(locationCount);
+		var virtualArea = width * height;
+		for (var locationIndex = 0; locationIndex < locationCount; locationIndex++)
+		{
+			var virtualIndex = (int)((long)locationIndex * virtualArea / locationCount);
+			locations.Add(CreateElementLocation(virtualIndex % width, virtualIndex / width));
+		}
+
+		return locations;
+	}
+
+	private static void AssertMeasurements(string scenario, (TimeSpan Elapsed, long AllocatedBytes)[] measurements)
+	{
+		Assert.All(measurements, measurement =>
+		{
+			Assert.True(measurement.Elapsed > TimeSpan.Zero);
+			Assert.True(measurement.AllocatedBytes > 0);
+		});
+
+		var averageMilliseconds = measurements.Average(measurement => measurement.Elapsed.TotalMilliseconds);
+		var averageAllocatedBytes = measurements.Average(measurement => measurement.AllocatedBytes);
+		TestContext.Current.TestOutputHelper?.WriteLine($"{scenario}: {averageMilliseconds:F1} ms; {averageAllocatedBytes:F0} bytes allocated for Fire setup and rendering (one warm-up, three measured runs; sparse-buffer construction excluded).");
 	}
 
 	private static PropertyDescriptor GetProperty(Fire effect, string propertyName)

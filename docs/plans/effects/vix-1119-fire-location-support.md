@@ -18,7 +18,7 @@ The existing setting named `Location` will continue to mean the flame-origin edg
 - [x] (2026-08-24) Enabled Fire's inherited target-positioning setup property and refreshed `StringOrientation` metadata after construction and `ModuleData` replacement. Added mode-toggle and replacement tests; all Milestone 3 tests pass.
 - [x] (2026-08-24) Extracted private simulation-dimension, frame-state, dense heat-generation, and color-evaluation helpers while retaining Fire's forward string projection. Added full-grid same-frame characterization for all four directions; string behavior remains covered before location projection is added.
 - [x] (2026-08-24) Implemented sparse preview-location projection over a single dense heat field per frame. Added offset-aware deterministic coverage for all directions, source edges, sparse gaps, controls, multi-frame narrow rectangles, and duplicate locations; the focused Release run passes 26 tests.
-- [ ] Record Release performance and allocation evidence for all required layouts.
+- [x] (2026-08-24) Added a Release benchmark harness and measured all required layouts with one warm-up and three measured runs. The dense-heat/sparse-projection implementation remains selected; no production optimization or dense-color buffer was introduced.
 - [ ] Run focused and full automated validation, complete manual UI validation, update Jira with outcomes, and complete this plan's retrospective.
 
 ## Surprises & Discoveries
@@ -41,6 +41,8 @@ The existing setting named `Location` will continue to mean the flame-origin edg
   Evidence: after the extraction, the focused Release run reported 12 total tests: 11 passed, including source-edge and full-grid same-frame projection theories for Bottom, Top, Left, and Right. The only failure remains the intentionally unimplemented location override.
 - Observation: the sparse location buffer stores output only at supplied preview coordinates, while Fire must still simulate the complete virtual rectangle.
   Evidence: `Fire.RenderEffectByLocation` generates `_fireBuffer` once per frame, then makes one pass through `PixelLocationFrameBuffer.ElementLocations`; `Fire_LocationRender_SparseCoordinatesSampleDenseHeatField` validates an offset, noncontiguous layout and confirms a missing coordinate has no sparse entry. The Release-focused run on 2026-08-24 passed all 26 Fire location tests.
+- Observation: Release performance scales with both the dense simulation rectangle and the count of actual sparse outputs, without requiring a second dense color frame.
+  Evidence: `FireLocationBenchmark_*` uses one warm-up plus three measured runs of Fire setup and location rendering, excluding sparse-buffer construction. On an AMD Ryzen 7 8845HS (8 cores/16 logical processors), 64 GB RAM, Windows 10.0.26200.0, and the .NET 10.0.8 test runtime: 50x50/2,500/100 averaged 177.2 ms and 81,555,901 bytes; 1000x500/5,000/20 averaged 99.1 ms and 30,055,035 bytes; 2000x1000/20,000/3 averaged 120.2 ms and 25,162,152 bytes.
 
 ## Decision Log
 
@@ -64,6 +66,9 @@ The existing setting named `Location` will continue to mean the flame-origin edg
   Date/Author: 2026-08-24 / Codex
 - Decision: Implement location sampling through one private inverse mapper and preserve the documented base-class absolute-coordinate conversion formula.
   Rationale: a single mapper covers all four origin directions without duplicating the generator, and the offset-aware tests detect swapped X/Y offsets or an omitted preview-Y inversion. The protected override is the existing extension point, so no new public API is required.
+  Date/Author: 2026-08-24 / Codex
+- Decision: Retain dense heat simulation with sparse output projection after measuring the required layouts.
+  Rationale: Fire's neighbor dependency makes virtual-area simulation unavoidable, while the benchmark confirms the renderer performs only actual-location color projection. A dense-color comparison prototype would add code that deliberately violates the selected allocation strategy without a demonstrated performance concern, so it was not retained.
   Date/Author: 2026-08-24 / Codex
 
 ## Outcomes & Retrospective
@@ -168,14 +173,15 @@ For Release performance measurements, use the focused benchmark filter created i
 
     dotnet test src\Vixen.Tests\Vixen.Tests.csproj -c Release --no-restore --filter FullyQualifiedName~FireLocationBenchmark --logger "console;verbosity=detailed"
 
-Record a compact transcript in this plan in the form below, replacing placeholders with observed values:
+Recorded Release benchmark transcript (2026-08-24; one warm-up, three measured runs; measurements include Fire setup and rendering but exclude sparse-buffer construction):
 
-    Runtime: .NET <version>; configuration: Release; machine: <CPU/RAM summary>
-    Dense 50x50 / 2,500 locations / 100 frames: <ms>; <bytes> allocated
-    Sparse 1,000x500 / 5,000 locations / 20 frames: <ms>; <bytes> allocated
-    Sparse 2,000x1,000 / 20,000 locations / 3 frames: <ms>; <bytes> allocated
-    Dense-color comparison (if run): <ms>; <bytes> allocated
-    Conclusion: <whether the proposed path remains selected and why>
+    Command: dotnet test src\Vixen.Tests\Vixen.Tests.csproj -c Release --no-build --no-restore --filter FullyQualifiedName~FireLocationBenchmark --logger "console;verbosity=detailed"
+    Runtime: .NET 10.0.8 test runtime; configuration: Release; machine: AMD Ryzen 7 8845HS (8 cores/16 logical processors), 64 GB RAM
+    Dense 50x50 / 2,500 locations / 100 frames: 177.2 ms; 81,555,901 bytes allocated
+    Sparse 1,000x500 / 5,000 locations / 20 frames: 99.1 ms; 30,055,035 bytes allocated
+    Sparse 2,000x1,000 / 20,000 locations / 3 frames: 120.2 ms; 25,162,152 bytes allocated
+    Dense-color comparison: not retained; the normal path contains no PixelFrameBuffer allocation and no measured concern justified a deliberately less-efficient prototype
+    Conclusion: retain dense heat plus sparse projection; virtual-area simulation is required for neighbor propagation, and output conversion remains limited to actual locations
 
 ## Validation and Acceptance
 
@@ -240,3 +246,5 @@ Revision note (2026-08-24): Completed Milestone 3. Enabled inherited target posi
 Revision note (2026-08-24): Completed Milestone 4. Separated private frame state, dense heat generation, and color evaluation from the retained forward string projection. Added full-grid same-frame string characterization for all four directions and preserved the existing random traversal structure.
 
 Revision note (2026-08-24): Completed Milestone 5. Added Fire's protected location-rendering override with a dense heat field generated once per frame and sparse absolute-coordinate output. Added deterministic offset, direction, source-edge, sparse-gap, control, multi-frame, narrow-buffer, and duplicate-location coverage; the focused Release run passed 26 tests.
+
+Revision note (2026-08-24): Completed Milestone 6. Added focused Release benchmark tests using one warm-up and three measured runs for all required dense and sparse layouts. Recorded machine/runtime context, timing, and setup-plus-render allocations; retained the production dense-heat/sparse-projection design without a dense-color prototype or optimization.
