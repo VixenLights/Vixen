@@ -19,7 +19,7 @@ The existing setting named `Location` will continue to mean the flame-origin edg
 - [x] (2026-08-24) Extracted private simulation-dimension, frame-state, dense heat-generation, and color-evaluation helpers while retaining Fire's forward string projection. Added full-grid same-frame characterization for all four directions; string behavior remains covered before location projection is added.
 - [x] (2026-08-24) Implemented sparse preview-location projection over a single dense heat field per frame. Added offset-aware deterministic coverage for all directions, source edges, sparse gaps, controls, multi-frame narrow rectangles, and duplicate locations; the focused Release run passes 26 tests.
 - [x] (2026-08-24) Added a Release benchmark harness and measured all required layouts with one warm-up and three measured runs. The dense-heat/sparse-projection implementation remains selected; no production optimization or dense-color buffer was introduced.
-- [ ] Run focused and full automated validation, complete manual UI validation, update Jira with outcomes, and complete this plan's retrospective.
+- [x] (2026-08-24) Full Release build and all 836 unit tests passed. Manual testing confirmed location-mode rendering and all tested functions behaved as expected. Added the final validation comment to Jira VIX-1119 and completed this ExecPlan.
 
 ## Surprises & Discoveries
 
@@ -43,6 +43,8 @@ The existing setting named `Location` will continue to mean the flame-origin edg
   Evidence: `Fire.RenderEffectByLocation` generates `_fireBuffer` once per frame, then makes one pass through `PixelLocationFrameBuffer.ElementLocations`; `Fire_LocationRender_SparseCoordinatesSampleDenseHeatField` validates an offset, noncontiguous layout and confirms a missing coordinate has no sparse entry. The Release-focused run on 2026-08-24 passed all 26 Fire location tests.
 - Observation: Release performance scales with both the dense simulation rectangle and the count of actual sparse outputs, without requiring a second dense color frame.
   Evidence: `FireLocationBenchmark_*` uses one warm-up plus three measured runs of Fire setup and location rendering, excluding sparse-buffer construction. On an AMD Ryzen 7 8845HS (8 cores/16 logical processors), 64 GB RAM, Windows 10.0.26200.0, and the .NET 10.0.8 test runtime: 50x50/2,500/100 averaged 177.2 ms and 81,555,901 bytes; 1000x500/5,000/20 averaged 99.1 ms and 30,055,035 bytes; 2000x1000/20,000/3 averaged 120.2 ms and 25,162,152 bytes.
+- Observation: end-to-end validation completed without a user-visible regression.
+  Evidence: the user reported a successful full Release build, all 836 unit tests passing, and manual testing of location mode and all tested functions producing expected results. Jira VIX-1119 received completion comment 40384 on 2026-08-24.
 
 ## Decision Log
 
@@ -73,7 +75,7 @@ The existing setting named `Location` will continue to mean the flame-origin edg
 
 ## Outcomes & Retrospective
 
-Planning is complete; implementation has not started. When implementation completes, replace this paragraph with the observed location-rendering behavior, focused/full test results, benchmark results, manual-validation result, Jira status, remaining gaps, and lessons learned compared with the Purpose section.
+Fire now renders a single continuous simulation over preview locations while keeping the independent flame-origin direction and existing string behavior. Deterministic focused validation passed 29 Fire tests, including the benchmark harness. The user confirmed the full Release build and all 836 unit tests passed, then manually verified location mode and all tested functions. The required Release performance evidence is recorded above. Jira VIX-1119 remains in progress with completion comment 40384; no remaining implementation gaps are known, and no production changes were required after the performance evidence.
 
 ## Context and Orientation
 
@@ -248,3 +250,5 @@ Revision note (2026-08-24): Completed Milestone 4. Separated private frame state
 Revision note (2026-08-24): Completed Milestone 5. Added Fire's protected location-rendering override with a dense heat field generated once per frame and sparse absolute-coordinate output. Added deterministic offset, direction, source-edge, sparse-gap, control, multi-frame, narrow-buffer, and duplicate-location coverage; the focused Release run passed 26 tests.
 
 Revision note (2026-08-24): Completed Milestone 6. Added focused Release benchmark tests using one warm-up and three measured runs for all required dense and sparse layouts. Recorded machine/runtime context, timing, and setup-plus-render allocations; retained the production dense-heat/sparse-projection design without a dense-color prototype or optimization.
+
+Revision note (2026-08-24): Completed Milestone 7. Recorded the user-reported successful full Release build, all 836 passing unit tests, and manual location-mode validation. Added the final Jira validation comment (40384) and completed the ExecPlan retrospective.
