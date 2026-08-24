@@ -8,14 +8,22 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Fire
 {
+	/// <summary>
+	/// Renders a heat-based fire effect for string and preview-location targets.
+	/// </summary>
 	public class Fire:PixelEffectBase
 	{
 		private FireData _data;
 		private int[] _fireBuffer = new int[1];
 		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Fire"/> class.
+		/// </summary>
 		public Fire()
 		{
 			_data = new FireData();
+			EnableTargetPositioning(true, true);
+			InitAllAttributes();
 		}
 
 		#region Setup
@@ -123,12 +131,17 @@ namespace VixenModules.Effect.Fire
 
 		#endregion
 
+		/// <summary>
+		/// Gets or sets the serialized Fire settings and refreshes setup-property visibility.
+		/// </summary>
+		/// <value>The Fire module data that supplies effect settings.</value>
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
 			set
 			{
 				_data = value as FireData;
+				InitAllAttributes();
 				IsDirty = true;
 			}
 		}
@@ -136,6 +149,11 @@ namespace VixenModules.Effect.Fire
 		protected override EffectTypeModuleData EffectModuleData
 		{
 			get { return _data; }
+		}
+
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
 		}
 
 		// 0 <= x < BufferWi

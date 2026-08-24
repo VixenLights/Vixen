@@ -15,7 +15,7 @@ The existing setting named `Location` will continue to mean the flame-origin edg
 - [x] (2026-08-24) Created this ExecPlan from the implementation contract after reading the current Fire renderer, `PixelEffectBase`, `PixelLocationFrameBuffer`, the existing Spiral location tests, and the completed VIX-3386 ExecPlan. No production code or tests have been changed.
 - [x] (2026-08-24) Updated Jira VIX-1119 with the user-facing preview-location scope, compatibility commitments, validation plan, and acceptance criteria. The issue is in progress; no implementation completion was claimed.
 - [x] (2026-08-24) Added `FireLocationRenderTests` and the Fire module project reference. The Release-focused baseline builds successfully; four string-direction characterizations pass while the target-positioning and location-render tests fail as expected against current Fire.
-- [ ] Expose inherited target positioning and correctly refresh Fire setup-property visibility.
+- [x] (2026-08-24) Enabled Fire's inherited target-positioning setup property and refreshed `StringOrientation` metadata after construction and `ModuleData` replacement. Added mode-toggle and replacement tests; all Milestone 3 tests pass.
 - [ ] Separate Fire's dense heat generation from its string and sparse-location output projections without changing existing string output.
 - [ ] Add location projection, deterministic behavioral coverage, and boundary coverage.
 - [ ] Record Release performance and allocation evidence for all required layouts.
@@ -35,6 +35,8 @@ The existing setting named `Location` will continue to mean the flame-origin edg
   Evidence: the initial `getJiraIssue(VIX-1119)` call on 2026-08-24 returned “Issue does not exist or you do not have permission to see it.” A retry returned issue 15583 and `editJiraIssue` saved the planned description at 2026-08-24T15:08:11-05:00.
 - Observation: the Milestone 2 focused baseline has four passing string-direction characterizations and two expected failures.
   Evidence: `dotnet test src\\Vixen.Tests\\Vixen.Tests.csproj -c Release --no-build --no-restore --filter FullyQualifiedName~FireLocation` on 2026-08-24 reported 6 total tests: 4 passed and 2 failed. The failures are `TargetPositioning` not browsable and the base `RenderEffectByLocation` throwing `NotImplementedException`.
+- Observation: enabling target positioning and refreshing attributes resolves the two setup-property failures without affecting string-direction characterization.
+  Evidence: after Milestone 3, the same focused Release run reported 8 total tests: 7 passed, including target-positioning visibility, mode toggling, module-data replacement, and all four string directions. The only failure remains `RenderEffectByLocation` inheriting the base `NotImplementedException`.
 
 ## Decision Log
 
@@ -222,3 +224,5 @@ Revision note (2026-08-24): Attempted Milestone 1. The Jira connection and VIX p
 Revision note (2026-08-24): Retried Milestone 1 after VIX-1119 became visible. Updated the Jira description with the user-facing scope and acceptance criteria, marked the milestone complete, and retained the earlier temporary-access observation for traceability.
 
 Revision note (2026-08-24): Completed Milestone 2. Added Fire location characterization tests and the Fire project reference without modifying production code. Recorded the expected two failures and four passing string-direction characterizations from the Release-focused baseline.
+
+Revision note (2026-08-24): Completed Milestone 3. Enabled inherited target positioning, refreshed StringOrientation attributes after construction and module-data replacement, added focused setup-property tests, and preserved all existing string-direction characterizations.

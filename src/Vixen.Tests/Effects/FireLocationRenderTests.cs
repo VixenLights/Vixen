@@ -30,6 +30,45 @@ public sealed class FireLocationRenderTests
 
 		// Assert
 		Assert.True(property?.IsBrowsable);
+		Assert.Equal(TargetPositioningType.Strings, effect.TargetPositioning);
+	}
+
+	/// <summary>
+	/// Verifies that switching target positioning updates the StringOrientation property visibility.
+	/// </summary>
+	[Fact]
+	public void Fire_TargetPositioning_TogglesStringOrientationVisibility()
+	{
+		// Arrange
+		var effect = new Fire();
+
+		// Act and Assert
+		Assert.True(GetProperty(effect, nameof(PixelEffectBase.StringOrientation)).IsBrowsable);
+		effect.TargetPositioning = TargetPositioningType.Locations;
+		Assert.False(GetProperty(effect, nameof(PixelEffectBase.StringOrientation)).IsBrowsable);
+		effect.TargetPositioning = TargetPositioningType.Strings;
+		Assert.True(GetProperty(effect, nameof(PixelEffectBase.StringOrientation)).IsBrowsable);
+	}
+
+	/// <summary>
+	/// Verifies that replacing Fire data configured for locations refreshes StringOrientation visibility.
+	/// </summary>
+	[Fact]
+	public void Fire_ModuleData_PreservesLocationAttributeState()
+	{
+		// Arrange
+		var effect = new Fire();
+		var data = new FireData
+		{
+			TargetPositioning = TargetPositioningType.Locations
+		};
+
+		// Act
+		effect.ModuleData = data;
+
+		// Assert
+		Assert.True(GetProperty(effect, nameof(PixelEffectBase.TargetPositioning)).IsBrowsable);
+		Assert.False(GetProperty(effect, nameof(PixelEffectBase.StringOrientation)).IsBrowsable);
 	}
 
 	/// <summary>
@@ -101,6 +140,13 @@ public sealed class FireLocationRenderTests
 			FireDirection.Right => (simulationHeight - 1, simulationX),
 			_ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
 		};
+	}
+
+	private static PropertyDescriptor GetProperty(Fire effect, string propertyName)
+	{
+		var property = TypeDescriptor.GetProperties(effect)[propertyName];
+		Assert.NotNull(property);
+		return property;
 	}
 
 	private static int[] GetFireBuffer(Fire effect)
