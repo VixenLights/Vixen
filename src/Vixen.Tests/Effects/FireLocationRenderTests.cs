@@ -130,6 +130,51 @@ public sealed class FireLocationRenderTests
 		}
 	}
 
+	/// <summary>
+	/// Verifies that every lit heat cell is projected to its existing string-render position.
+	/// </summary>
+	/// <param name="direction">The selected Fire source edge.</param>
+	[Theory]
+	[InlineData(FireDirection.Bottom)]
+	[InlineData(FireDirection.Top)]
+	[InlineData(FireDirection.Left)]
+	[InlineData(FireDirection.Right)]
+	public void Fire_StringRender_ProjectsEveryLitGeneratedHeatCell(FireDirection direction)
+	{
+		// Arrange
+		var effect = new Fire
+		{
+			Location = direction,
+			TimeSpan = TimeSpan.FromMilliseconds(1000)
+		};
+		SetVirtualBuffer(effect, DefaultWidth, DefaultHeight);
+		InvokeSetupRender(effect);
+		var frameBuffer = new PixelFrameBuffer(DefaultWidth, DefaultHeight);
+
+		// Act
+		InvokeRenderEffect(effect, 0, frameBuffer);
+		var heat = GetFireBuffer(effect);
+
+		// Assert
+		var simulationWidth = direction is FireDirection.Left or FireDirection.Right
+			? DefaultHeight
+			: DefaultWidth;
+		var simulationHeight = direction is FireDirection.Left or FireDirection.Right
+			? DefaultWidth
+			: DefaultHeight;
+		for (var y = 0; y < simulationHeight; y++)
+		{
+			for (var x = 0; x < simulationWidth; x++)
+			{
+				var colorIndex = heat[y * simulationWidth + x];
+				if (colorIndex == 0) continue;
+
+				var (outputX, outputY) = GetOutputCoordinate(direction, x, y, simulationHeight);
+				AssertSameRgb(FirePalette.GetColor(colorIndex).ToRGB(), frameBuffer.GetColorAt(outputX, outputY));
+			}
+		}
+	}
+
 	private static (int X, int Y) GetSourceOutputCoordinate(FireDirection direction, int simulationX, int simulationHeight)
 	{
 		return direction switch
@@ -140,6 +185,16 @@ public sealed class FireLocationRenderTests
 			FireDirection.Right => (simulationHeight - 1, simulationX),
 			_ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
 		};
+	}
+
+	private static (int X, int Y) GetOutputCoordinate(FireDirection direction, int simulationX, int simulationY, int simulationHeight)
+	{
+		var outputY = direction is FireDirection.Top or FireDirection.Right
+			? simulationHeight - simulationY - 1
+			: simulationY;
+		return direction is FireDirection.Left or FireDirection.Right
+			? (outputY, simulationX)
+			: (simulationX, outputY);
 	}
 
 	private static PropertyDescriptor GetProperty(Fire effect, string propertyName)

@@ -177,40 +177,79 @@ namespace VixenModules.Effect.Fire
 			_fireBuffer = null;
 		}
 
+		/// <summary>
+		/// Renders a Fire frame using the current string-target projection.
+		/// </summary>
+		/// <param name="frame">The zero-based frame index to render.</param>
+		/// <param name="frameBuffer">The string-target frame buffer that receives rendered colors.</param>
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
-			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-			double hueShift = CalculateHueShift(intervalPosFactor);
+			var (maxWi, maxHt) = GetSimulationDimensions();
+			var frameState = CreateFrameState(frame, maxHt);
+			GenerateFireBuffer(maxWi, maxHt, frameState.Step);
 
-			int x, y;
+			for (var y = 0; y < maxHt; y++)
+			{
+				for (var x = 0; x < maxWi; x++)
+				{
+					if (!TryGetFireColor(x, y, maxWi, maxHt, frameState, out var hsv)) continue;
 
-			int maxHt = BufferHt;
-			int maxWi = BufferWi;
+					int xp = x;
+					int yp = y;
+					if (Location == FireDirection.Top || Location == FireDirection.Right)
+					{
+						yp = maxHt - y - 1;
+					}
+					if (Location == FireDirection.Left || Location == FireDirection.Right)
+					{
+						int t = xp;
+						xp = yp;
+						yp = t;
+					}
+					frameBuffer.SetPixel(xp, yp, hsv);
+				}
+			}
+		}
+
+		private (int Width, int Height) GetSimulationDimensions()
+		{
+			var maxHt = BufferHt;
+			var maxWi = BufferWi;
 			if (Location == FireDirection.Left || Location == FireDirection.Right)
 			{
 				maxHt = BufferWi;
 				maxWi = BufferHt;
 			}
 
-			// build fire
-			for (x = 0; x < maxWi; x++)
+			return (maxWi, maxHt);
+		}
+
+		private FireFrameState CreateFrameState(int frame, int maxHt)
+		{
+			var intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
+			var effectiveHeight = (int)Height.GetValue(intervalPosFactor);
+			if (effectiveHeight <= 0)
+			{
+				effectiveHeight = 1;
+			}
+
+			return new FireFrameState(
+				LevelCurve.GetValue(intervalPosFactor) / 100,
+				CalculateHueShift(intervalPosFactor),
+				255 * 100 / maxHt / effectiveHeight);
+		}
+
+		private void GenerateFireBuffer(int maxWi, int maxHt, int step)
+		{
+			for (var x = 0; x < maxWi; x++)
 			{
 				var r = x % 2 == 0 ? 190 + (Rand() % 10) : 100 + (Rand() % 50);
 				_fireBuffer[x] = r;
 			}
 
-			int h = (int)Height.GetValue(intervalPosFactor);
-
-			if(h <= 0)
+			for (var y = 1; y < maxHt; y++)
 			{
-				h = 1;
-			}
-			int step = 255 * 100 / maxHt / h;
-
-			for (y = 1; y < maxHt; y++)
-			{
-				for (x = 0; x < maxWi; x++)
+				for (var x = 0; x < maxWi; x++)
 				{
 					var v1 = GetFireBuffer(x - 1, y - 1, maxWi, maxHt);
 					var v2 = GetFireBuffer(x + 1, y - 1, maxWi, maxHt);
@@ -248,40 +287,29 @@ namespace VixenModules.Effect.Fire
 					_fireBuffer[y * maxWi + x] = newIndex;
 				}
 			}
+		}
 
-			for (y = 0; y < maxHt; y++)
+		private bool TryGetFireColor(int x, int y, int maxWi, int maxHt, FireFrameState frameState, out HSV hsv)
+		{
+			var colorIndex = GetFireBuffer(x, y, maxWi, maxHt);
+			if (colorIndex == 0)
 			{
-				for (x = 0; x < maxWi; x++)
-				{
-					var colorIndex = GetFireBuffer(x, y, maxWi, maxHt);
-					if (colorIndex == 0) continue; // No point going any further if color index is 0 (Black). Significantly reduces render time.
-					
-					int xp = x;
-					int yp = y;
-					if (Location == FireDirection.Top || Location == FireDirection.Right)
-					{
-						yp = maxHt - y - 1;
-					}
-					if (Location == FireDirection.Left || Location == FireDirection.Right)
-					{
-						int t = xp;
-						xp = yp;
-						yp = t;
-					}
-					HSV hsv = FirePalette.GetColor(colorIndex);
-					if (hueShift > 0) hsv.H = hsv.H + hueShift / 100.0f;
-
-					hsv.V *= level;
-					
-					frameBuffer.SetPixel(xp, yp, hsv);
-				}
+				hsv = default;
+				return false;
 			}
+
+			hsv = FirePalette.GetColor(colorIndex);
+			if (frameState.HueShift > 0) hsv.H = hsv.H + frameState.HueShift / 100.0f;
+			hsv.V *= frameState.Level;
+			return true;
 		}
 
 		private double CalculateHueShift(double intervalPos)
 		{
 			return ScaleCurveToValue(HueShiftCurve.GetValue(intervalPos), 100, 0);
 		}
+
+		private readonly record struct FireFrameState(double Level, double HueShift, int Step);
 		
 	}
 }

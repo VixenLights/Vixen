@@ -16,7 +16,7 @@ The existing setting named `Location` will continue to mean the flame-origin edg
 - [x] (2026-08-24) Updated Jira VIX-1119 with the user-facing preview-location scope, compatibility commitments, validation plan, and acceptance criteria. The issue is in progress; no implementation completion was claimed.
 - [x] (2026-08-24) Added `FireLocationRenderTests` and the Fire module project reference. The Release-focused baseline builds successfully; four string-direction characterizations pass while the target-positioning and location-render tests fail as expected against current Fire.
 - [x] (2026-08-24) Enabled Fire's inherited target-positioning setup property and refreshed `StringOrientation` metadata after construction and `ModuleData` replacement. Added mode-toggle and replacement tests; all Milestone 3 tests pass.
-- [ ] Separate Fire's dense heat generation from its string and sparse-location output projections without changing existing string output.
+- [x] (2026-08-24) Extracted private simulation-dimension, frame-state, dense heat-generation, and color-evaluation helpers while retaining Fire's forward string projection. Added full-grid same-frame characterization for all four directions; string behavior remains covered before location projection is added.
 - [ ] Add location projection, deterministic behavioral coverage, and boundary coverage.
 - [ ] Record Release performance and allocation evidence for all required layouts.
 - [ ] Run focused and full automated validation, complete manual UI validation, update Jira with outcomes, and complete this plan's retrospective.
@@ -37,6 +37,8 @@ The existing setting named `Location` will continue to mean the flame-origin edg
   Evidence: `dotnet test src\\Vixen.Tests\\Vixen.Tests.csproj -c Release --no-build --no-restore --filter FullyQualifiedName~FireLocation` on 2026-08-24 reported 6 total tests: 4 passed and 2 failed. The failures are `TargetPositioning` not browsable and the base `RenderEffectByLocation` throwing `NotImplementedException`.
 - Observation: enabling target positioning and refreshing attributes resolves the two setup-property failures without affecting string-direction characterization.
   Evidence: after Milestone 3, the same focused Release run reported 8 total tests: 7 passed, including target-positioning visibility, mode toggling, module-data replacement, and all four string directions. The only failure remains `RenderEffectByLocation` inheriting the base `NotImplementedException`.
+- Observation: the Milestone 4 refactor preserves the established string projection for every lit heat cell in every direction.
+  Evidence: after the extraction, the focused Release run reported 12 total tests: 11 passed, including source-edge and full-grid same-frame projection theories for Bottom, Top, Left, and Right. The only failure remains the intentionally unimplemented location override.
 
 ## Decision Log
 
@@ -54,6 +56,9 @@ The existing setting named `Location` will continue to mean the flame-origin edg
   Date/Author: 2026-08-24 / Codex
 - Decision: Use test-only reflection to inspect Fire's completed dense heat field for the initial string-direction characterization.
   Rationale: Fire currently has no deterministic random-source seam. Comparing output to the exact heat field produced during the same render proves direction projection without asserting unrelated thread-local random values or modifying production APIs before the location-rendering design is implemented.
+  Date/Author: 2026-08-24 / Codex
+- Decision: Retain Fire's existing forward string projection while extracting generation and color evaluation.
+  Rationale: this minimizes string-mode regression risk and retains the original output ordering. The extracted dense generator preserves source-row X order, propagation Y/X order, duplicate center sample, and all random-call sites; Milestone 5 can use the shared dense field with a separate inverse location mapper.
   Date/Author: 2026-08-24 / Codex
 
 ## Outcomes & Retrospective
@@ -226,3 +231,5 @@ Revision note (2026-08-24): Retried Milestone 1 after VIX-1119 became visible. U
 Revision note (2026-08-24): Completed Milestone 2. Added Fire location characterization tests and the Fire project reference without modifying production code. Recorded the expected two failures and four passing string-direction characterizations from the Release-focused baseline.
 
 Revision note (2026-08-24): Completed Milestone 3. Enabled inherited target positioning, refreshed StringOrientation attributes after construction and module-data replacement, added focused setup-property tests, and preserved all existing string-direction characterizations.
+
+Revision note (2026-08-24): Completed Milestone 4. Separated private frame state, dense heat generation, and color evaluation from the retained forward string projection. Added full-grid same-frame string characterization for all four directions and preserved the existing random traversal structure.
