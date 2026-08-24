@@ -1,6 +1,8 @@
 using Vixen.Data.Flow;
 using Vixen.Module;
 using Vixen.Module.OutputFilter;
+using VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels;
+using VixenModules.OutputFilter.CoarseFineBreakdown.Setup.Views;
 
 namespace VixenModules.OutputFilter.CoarseFineBreakdown
 {
@@ -63,6 +65,34 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 		/// </summary>
 		/// <value><see langword="true" /> because this module has configurable default-value mapping; otherwise, <see langword="false" />.</value>
 		public override bool HasSetup => true;
+
+		/// <summary>
+		/// Displays the setup dialog and applies its accepted configuration.
+		/// </summary>
+		/// <returns><see langword="true" /> if the user accepts valid configuration values; otherwise, <see langword="false" />.</returns>
+		public override bool Setup()
+		{
+			var viewModel = new CoarseFineBreakdownSetupViewModel(
+				_data.EnableDefaultValueMapping,
+				_data.DefaultInputValue,
+				_data.RestingCoarseValue,
+				_data.RestingFineValue);
+			var view = new CoarseFineBreakdownSetupView(viewModel);
+
+			if (view.ShowDialog() != true || viewModel.Result is not { } result)
+			{
+				return false;
+			}
+
+			ApplyConfiguration(new CoarseFineBreakdownData
+			{
+				EnableDefaultValueMapping = result.EnableDefaultValueMapping,
+				DefaultInputValue = result.DefaultInputValue,
+				RestingCoarseValue = result.RestingCoarseValue,
+				RestingFineValue = result.RestingFineValue
+			});
+			return true;
+		}
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the configured default input value is mapped to the resting output values.

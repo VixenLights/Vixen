@@ -15,7 +15,7 @@ The feature is observable by configuring default input `0` and resting bytes `12
 - [x] (2026-08-24 00:00 -05:00) Wrote this implementation plan only; no production source, test source, or tracker record was changed.
 - [ ] Update VIX-3970 with the final requirements, acceptance criteria, and test plan before modifying production code.
 - [x] (2026-08-24 00:00 -05:00) Added persisted configuration, documented module configuration properties, immutable runtime snapshots, and the renamed source files; the affected Debug module build succeeded.
-- [ ] Add Catel WPF setup dialog with draft-only editing and validation.
+- [x] (2026-08-24 00:00 -05:00) Added the Catel WPF setup dialog with draft-only editing, inclusive decimal-range validation, and a single accepted-configuration rebuild; the affected Debug module build succeeded.
 - [ ] Add focused behavior, persistence, and setup-view-model tests.
 - [ ] Build, run the full test sequence, perform manual setup verification, and reconcile VIX-3970 with exact validation results.
 
@@ -35,6 +35,9 @@ The feature is observable by configuring default input `0` and resting bytes `12
 
 - Observation: the focused module build succeeds after the POC runtime change; warnings originate in existing Vixen.Core files rather than this module.
   Evidence: `msbuild src/Vixen.Modules/OutputFilter/CoarseFineBreakdown/CoarseFineBreakdown.csproj -m -restore -t:Rebuild -p:Configuration=Debug -p:Platform=x64 -v:m` exited with code 0 and reported warnings only for `IElementTemplate.cs`, `HardwareUpdateThread.cs`, and `ProgramExecutor.cs` in Vixen.Core.
+
+- Observation: enabling WPF and adding Catel.MVVM/WPFCommon is sufficient for a Catel setup window in this output-filter project; the project can retain its existing WinForms setting while hosting the new WPF dialog.
+  Evidence: the Debug module rebuild after adding `<UseWPF>true</UseWPF>`, `Catel.MVVM`, WPFCommon, the XAML window, and the view model exited with code 0.
 
 ## Decision Log
 
@@ -60,7 +63,7 @@ The feature is observable by configuring default input `0` and resting bytes `12
 
 ## Outcomes & Retrospective
 
-The runtime proof of concept is complete: persisted defaults and documented programmatic configuration properties now create immutable coarse/fine output snapshots, and exact default-value substitution occurs before byte splitting. The affected Debug module build succeeds; focused tests, the WPF setup dialog, full-suite validation, and the tracker update remain outstanding. Update this section after each milestone with actual test totals, manual observations, and any scope adjustment.
+The proof of concept now includes its configuration surface. Persisted defaults and documented programmatic configuration properties create immutable coarse/fine output snapshots, exact default-value substitution occurs before byte splitting, and a Catel setup dialog stages decimal inputs until a valid OK result applies all settings in one rebuild. The affected Debug module build succeeds; focused tests, full-suite/manual validation, and the tracker update remain outstanding. Update this section after each milestone with actual test totals, manual observations, and any scope adjustment.
 
 ## Context and Orientation
 
@@ -222,3 +225,5 @@ The CoarseFineBreakdown project has WPF enabled and uses the centrally-versioned
 Revision note (2026-08-24): Created the plan from the VIX-3970 handoff after inspecting the existing output filter, current Catel WPF dialog conventions, test project, and repository plan requirements. No implementation was performed.
 
 Revision note (2026-08-24): Implemented Milestone 2 as the initial POC. The module now persists default mapping configuration, rebuilds immutable output snapshots after programmatic changes, and applies exact mapping for command and RangeValue inputs. The module Debug build succeeds; setup UI and tests remain later milestones.
+
+Revision note (2026-08-24): Implemented Milestone 3. The module now enables WPF, references Catel.MVVM and WPFCommon, and supplies an internal Catel setup window/view model that validates staged decimal values. Valid OK results copy all settings into the persisted model and rebuild outputs once; Cancel/close leaves the model untouched. The module Debug build succeeds.
