@@ -14,7 +14,7 @@ The existing setting named `Location` will continue to mean the flame-origin edg
 
 - [x] (2026-08-24) Created this ExecPlan from the implementation contract after reading the current Fire renderer, `PixelEffectBase`, `PixelLocationFrameBuffer`, the existing Spiral location tests, and the completed VIX-3386 ExecPlan. No production code or tests have been changed.
 - [x] (2026-08-24) Updated Jira VIX-1119 with the user-facing preview-location scope, compatibility commitments, validation plan, and acceptance criteria. The issue is in progress; no implementation completion was claimed.
-- [ ] Add failing characterization tests and the Fire project reference.
+- [x] (2026-08-24) Added `FireLocationRenderTests` and the Fire module project reference. The Release-focused baseline builds successfully; four string-direction characterizations pass while the target-positioning and location-render tests fail as expected against current Fire.
 - [ ] Expose inherited target positioning and correctly refresh Fire setup-property visibility.
 - [ ] Separate Fire's dense heat generation from its string and sparse-location output projections without changing existing string output.
 - [ ] Add location projection, deterministic behavioral coverage, and boundary coverage.
@@ -33,6 +33,8 @@ The existing setting named `Location` will continue to mean the flame-origin edg
   Evidence: `ConfigureVirtualBuffer()` assigns raw preview Y extent to `_bufferWi` and X extent to `_bufferHt`; the public protected accessors swap them only when `StringOrientation` is horizontal. Tests must set or construct dimensions through the same orientation assumptions as production code.
 - Observation: VIX-1119 was temporarily unavailable to the connected Jira account but was retrievable and editable on retry.
   Evidence: the initial `getJiraIssue(VIX-1119)` call on 2026-08-24 returned “Issue does not exist or you do not have permission to see it.” A retry returned issue 15583 and `editJiraIssue` saved the planned description at 2026-08-24T15:08:11-05:00.
+- Observation: the Milestone 2 focused baseline has four passing string-direction characterizations and two expected failures.
+  Evidence: `dotnet test src\\Vixen.Tests\\Vixen.Tests.csproj -c Release --no-build --no-restore --filter FullyQualifiedName~FireLocation` on 2026-08-24 reported 6 total tests: 4 passed and 2 failed. The failures are `TargetPositioning` not browsable and the base `RenderEffectByLocation` throwing `NotImplementedException`.
 
 ## Decision Log
 
@@ -47,6 +49,9 @@ The existing setting named `Location` will continue to mean the flame-origin edg
   Date/Author: 2026-08-24 / Codex
 - Decision: Make no changes to `FireData`, `FireDirection`, `FirePalette`, `FireDescriptor`, `PixelEffectBase`, UI/MVVM code, serialized data, or public APIs unless implementation evidence establishes a separate documented need.
   Rationale: inherited target-positioning storage and the required protected virtual override already exist, so expanding the scope would add compatibility risk without serving VIX-1119.
+  Date/Author: 2026-08-24 / Codex
+- Decision: Use test-only reflection to inspect Fire's completed dense heat field for the initial string-direction characterization.
+  Rationale: Fire currently has no deterministic random-source seam. Comparing output to the exact heat field produced during the same render proves direction projection without asserting unrelated thread-local random values or modifying production APIs before the location-rendering design is implemented.
   Date/Author: 2026-08-24 / Codex
 
 ## Outcomes & Retrospective
@@ -215,3 +220,5 @@ Revision note (2026-08-24): Initial ExecPlan created from the user-supplied VIX-
 Revision note (2026-08-24): Attempted Milestone 1. The Jira connection and VIX project edit permission are available, but VIX-1119 itself is not visible to the connected account, so no remote update was made and the milestone remains pending.
 
 Revision note (2026-08-24): Retried Milestone 1 after VIX-1119 became visible. Updated the Jira description with the user-facing scope and acceptance criteria, marked the milestone complete, and retained the earlier temporary-access observation for traceability.
+
+Revision note (2026-08-24): Completed Milestone 2. Added Fire location characterization tests and the Fire project reference without modifying production code. Recorded the expected two failures and four passing string-direction characterizations from the Release-focused baseline.
