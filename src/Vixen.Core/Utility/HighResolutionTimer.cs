@@ -127,11 +127,12 @@ namespace Vixen.Utility
 		{
 			_isRunning = false;
 
-			// Even if _thread.Join may take time it is guaranteed that 
+			// Even if _thread.Join may take time, it is guaranteed that
 			// Elapsed event is never called overlapped with different threads
-			if (joinThread && Thread.CurrentThread != _thread)
+			var thread = _thread;
+			if (joinThread && thread is not null && Thread.CurrentThread != thread)
 			{
-				_thread.Join();
+				thread.Join();
 			}
 		}
 
