@@ -1,4 +1,24 @@
-Release Notes - Vixen 3
+Release Notes - Vixen 3 - 3.13u1 Build 
+
+** 12 issues resolved in this release. 
+
+** Improvements
+    * [VIX-1119] - Add location support to the Fire effect. 
+    * [VIX-3974] - Provide order adjustment mechanism for mutiple gradient selections
+    * [VIX-3982] - Refactor the version and release notes logic to use Github
+    * [VIX-3983] - Enable the mouse wheel left and right to pan and zoom the timeline when hovered over the Marks Bar
+    * [VIX-3985] - Performance of dragging Marks in the Marks Bar needs improvement.
+    * [VIX-3988] - Add Beyond mark import feature
+
+** Bugs
+    * [VIX-3705] - Unexpected error while drawing in the grid.
+    * [VIX-3984] - The same T entry in the Marks Collection and Layer Dock gets forwarded to toggle rows in the timeline.
+    * [VIX-3987] - Beyond mark export timing format incorrect
+    * [VIX-3989] - Increase Pinwheel size when using location based
+    * [VIX-3990] - Preview pane not appearing after upgrade to 3.13
+    * [VIX-3991] -  Fatal crash in loop play
+
+
 
 
 Release Notes - Vixen 3 - 3.13u0 Build 
