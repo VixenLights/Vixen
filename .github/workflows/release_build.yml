@@ -200,6 +200,7 @@ jobs:
     name: Commit Production Release Notes
     permissions:
       contents: write
+      pull-requests: write
 
     needs:
       - setup
@@ -224,23 +225,24 @@ jobs:
           name: _releaseNotes
           path: release-notes-artifact
 
-      - name: Commit release notes
+      - name: Update release notes file
         shell: pwsh
-        env:
-          APP_VERSION: ${{ needs.setup.outputs.app_version }}
         run: |
           $releaseNotes = [System.IO.File]::ReadAllText('release-notes-artifact/Release Notes.txt')
           $key = "Release Notes - Vixen 3`r`n`r`n`r`n"
           [System.IO.File]::WriteAllText('Release Notes.txt', "$key$releaseNotes", [System.Text.UTF8Encoding]::new($false))
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- 'Release Notes.txt'
-          git diff --cached --quiet
-          if ($LASTEXITCODE -eq 0) {
-            exit 0
-          }
-          git commit -m "Update release notes for $env:APP_VERSION"
-          git push origin HEAD:master
+
+      - name: Create release notes pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: Release Notes.txt
+          commit-message: Update release notes for ${{ needs.setup.outputs.app_version }}
+          branch: automation/release-notes-${{ needs.setup.outputs.release_tag }}
+          base: master
+          title: Update release notes for ${{ needs.setup.outputs.app_version }}
+          body: Automated update of production release notes.
+          delete-branch: true
 
   update_jira_build:
     name: Update Jira Fix Build Number
