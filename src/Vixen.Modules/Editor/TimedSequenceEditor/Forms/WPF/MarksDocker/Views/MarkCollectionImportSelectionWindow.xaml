@@ -1,0 +1,57 @@
+<catel:Window x:Class="TimedSequenceEditor.Forms.WPF.MarksDocker.Views.MarkCollectionImportSelectionWindow"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			  xmlns:catel="http://schemas.catelproject.com"
+			  xmlns:viewModels="clr-namespace:TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels"
+			  WindowStartupLocation="CenterScreen"
+			  CanCloseUsingEscape="True"
+			  WindowStyle="ToolWindow"
+			  Title="Select Imported Mark Collections"
+			  Height="400"
+			  Width="600">
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Window.Resources>
+	<DockPanel Background="{StaticResource BackColorBrush}">
+		<WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+			<Button Width="75" Margin="6" IsDefault="True" Command="{Binding OkCommand}">OK</Button>
+			<Button Width="75" Margin="6" IsCancel="True" Command="{Binding CancelCommand}">Cancel</Button>
+		</WrapPanel>
+		<StackPanel Margin="12">
+			<TextBlock Margin="0,0,0,8" Text="Select the imported Mark Collections to add to this sequence." TextWrapping="Wrap" />
+			<ListBox ItemsSource="{Binding Options}"
+					 SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
+					 HorizontalContentAlignment="Stretch">
+				<ListBox.InputBindings>
+					<KeyBinding Key="Space" Command="{Binding ToggleSelectedOptionCommand}" />
+				</ListBox.InputBindings>
+				<ListBox.ItemTemplate>
+					<DataTemplate DataType="{x:Type viewModels:MarkCollectionImportOptionViewModel}">
+						<Grid Margin="4">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<CheckBox Grid.Column="0"
+									  Margin="0,0,8,0"
+									  Focusable="False"
+									  IsChecked="{Binding IsIncluded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							<StackPanel Grid.Column="1">
+								<TextBlock Text="{Binding DisplayName}" />
+								<StackPanel Orientation="Horizontal"
+										Visibility="{Binding HasDuplicateName, Converter={StaticResource BooleanToVisibilityConverter}}">
+									<TextBlock Margin="0,2,4,0" Text="⚠" ToolTip="Duplicate collection name" />
+									<TextBlock Margin="0,2,0,0" Text="{Binding DuplicateNameMessage}" />
+								</StackPanel>
+							</StackPanel>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</StackPanel>
+	</DockPanel>
+</catel:Window>
