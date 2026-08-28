@@ -104,10 +104,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
-		#region ImportCollecton command
+		#region ImportCollection command
 
 		/// <summary>
-		/// Gets the ImportCollecton command.
+		/// Gets the command that imports Mark Collections after user selection.
 		/// </summary>
 		public TaskCommand ImportCollectionCommand
 		{
@@ -115,29 +115,65 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		}
 
 		/// <summary>
-		/// Method to invoke when the ImportCollecton command is executed.
+		/// Materializes the selected import source, confirms its collections, and commits the accepted subset.
 		/// </summary>
 		private async Task ImportCollection()
 		{
-			var aDialog = new MarkCollectionImportDialog();
-
-			if (aDialog.ShowDialog() == DialogResult.OK)
+			using var importDialog = new MarkCollectionImportDialog();
+			if (importDialog.ShowDialog() != DialogResult.OK)
 			{
-				if (aDialog.IsVixen3BeatSelection)
-					MarkImportExportService.ImportVixen3Beats();
-				if (aDialog.IsVampBarSelection || aDialog.IsAudacityBeatSelection)
-					MarkImportExportService.LoadBarLabels();
-				if (aDialog.IsVampBeatSelection)
-					MarkImportExportService.LoadBeatLabels();
-				if (aDialog.IsXTimingSelection)
-					MarkImportExportService.LoadXTiming();
-				if (aDialog.IsPapagayoSelection)
-					MarkImportExportService.ImportPapagayoTracks();
-				if(aDialog.IsTimingTrackBrowserSelection)
-					await MarkImportExportService.ImportSingingFacesTracksAsync();
-				if (aDialog.IsPangolinBeyondSelection)
-					MarkImportExportService.ImportPangolinBeyondMarks();
+				return;
 			}
+
+			MarkCollectionImportResult importResult;
+			if (importDialog.IsVixen3BeatSelection)
+			{
+				importResult = MarkImportExportService.ImportVixen3Beats();
+			}
+			else if (importDialog.IsVampBarSelection || importDialog.IsAudacityBeatSelection)
+			{
+				importResult = MarkImportExportService.LoadBarLabels();
+			}
+			else if (importDialog.IsVampBeatSelection)
+			{
+				importResult = MarkImportExportService.LoadBeatLabels();
+			}
+			else if (importDialog.IsXTimingSelection)
+			{
+				importResult = MarkImportExportService.LoadXTiming();
+			}
+			else if (importDialog.IsPapagayoSelection)
+			{
+				importResult = MarkImportExportService.ImportPapagayoTracks();
+			}
+			else if (importDialog.IsTimingTrackBrowserSelection)
+			{
+				importResult = await MarkImportExportService.ImportSingingFacesTracksAsync();
+			}
+			else if (importDialog.IsPangolinBeyondSelection)
+			{
+				importResult = MarkImportExportService.ImportPangolinBeyondMarks();
+			}
+			else
+			{
+				return;
+			}
+
+			if (importResult.Status != MarkCollectionImportStatus.Succeeded || importResult.Collections.Count == 0)
+			{
+				return;
+			}
+
+			var dependencyResolver = this.GetDependencyResolver();
+			var selectionViewModel = new MarkCollectionImportSelectionViewModel(MarkCollections, importResult.Collections);
+			var uiVisualizerService = dependencyResolver.Resolve<UIVisualizerService>();
+			var selectionResult = await uiVisualizerService.ShowDialogAsync(selectionViewModel);
+			if (selectionResult.DialogResult != true)
+			{
+				return;
+			}
+
+			MarkCollectionImportCommitter.Commit(MarkCollections, selectionViewModel.SelectedCollections);
 		}
 
 		#endregion
