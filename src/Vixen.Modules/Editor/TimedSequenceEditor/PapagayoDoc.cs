@@ -305,8 +305,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
                 }
 
-                Console.WriteLine(m_state.ToString() + " - " + line);
-                
             }
         }
 
