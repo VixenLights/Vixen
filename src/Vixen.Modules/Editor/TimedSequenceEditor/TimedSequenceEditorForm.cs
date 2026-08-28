@@ -4521,7 +4521,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 			if (!properties.Any()) return;
 			
-			if (properties.Count == 1 && elements.Count() == 1)
+			if (properties.Count == 1 && properties[0].PropertyType == typeof(Curve))
 			{
 				var property = properties.First();
 
@@ -4694,7 +4694,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var properties = GetPropertyMetaDataForTypes(element.EffectNode.Effect, GradientTypes).ToList();
 			
 			if (!properties.Any()) return;
-			if (properties.Count == 1 && elements.Count() == 1)
+			if (properties.Count == 1 && properties[0].PropertyType == typeof(ColorGradient))
 			{
 				var property = properties.First();
 				foreach (var e in elements)
