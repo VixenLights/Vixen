@@ -380,6 +380,8 @@
 				<None Include="minus.png" />
 				<None Include="arrow_undo.png" />
 				<None Include="arrow_redo.png" />
+				<None Remove="caution-icon.png" />
+				<Resource Include="caution-icon.png" />
 		</ItemGroup>
 		<ItemGroup>
 				<Compile Remove="LipSync\Tools.cs" />

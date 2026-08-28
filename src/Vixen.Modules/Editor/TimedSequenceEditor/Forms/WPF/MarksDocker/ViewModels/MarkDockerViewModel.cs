@@ -104,42 +104,76 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
-		#region ImportCollecton command
-
-		private Command _importCollectonCommand;
+		#region ImportCollection command
 
 		/// <summary>
-		/// Gets the ImportCollecton command.
+		/// Gets the command that imports Mark Collections after user selection.
 		/// </summary>
-		public Command ImportCollectionCommand
+		public TaskCommand ImportCollectionCommand
 		{
-			get { return _importCollectonCommand ?? (_importCollectonCommand = new Command(ImportCollection)); }
+			get { return field ??= new TaskCommand(ImportCollection); }
 		}
 
 		/// <summary>
-		/// Method to invoke when the ImportCollecton command is executed.
+		/// Materializes the selected import source, confirms its collections, and commits the accepted subset.
 		/// </summary>
-		private void ImportCollection()
+		private async Task ImportCollection()
 		{
-			var aDialog = new MarkCollectionImportDialog();
-
-			if (aDialog.ShowDialog() == DialogResult.OK)
+			using var importDialog = new MarkCollectionImportDialog();
+			if (importDialog.ShowDialog() != DialogResult.OK)
 			{
-				if (aDialog.IsVixen3BeatSelection)
-					MarkImportExportService.ImportVixen3Beats(MarkCollections);
-				if (aDialog.IsVampBarSelection || aDialog.IsAudacityBeatSelection)
-					MarkImportExportService.LoadBarLabels(MarkCollections);
-				if (aDialog.IsVampBeatSelection)
-					MarkImportExportService.LoadBeatLabels(MarkCollections);
-				if (aDialog.IsXTimingSelection)
-					MarkImportExportService.LoadXTiming(MarkCollections);
-				if (aDialog.IsPapagayoSelection)
-					MarkImportExportService.ImportPapagayoTracks(MarkCollections);
-				if(aDialog.IsTimingTrackBrowserSelection)
-					MarkImportExportService.ImportSingingFacesTracks(MarkCollections);
-				if (aDialog.IsPangolinBeyondSelection)
-					MarkImportExportService.ImportPangolinBeyondMarks(MarkCollections);
+				return;
 			}
+
+			MarkCollectionImportResult importResult;
+			if (importDialog.IsVixen3BeatSelection)
+			{
+				importResult = await MarkImportExportService.ImportVixen3BeatsAsync();
+			}
+			else if (importDialog.IsVampBarSelection || importDialog.IsAudacityBeatSelection)
+			{
+				importResult = await MarkImportExportService.LoadBarLabelsAsync();
+			}
+			else if (importDialog.IsVampBeatSelection)
+			{
+				importResult = await MarkImportExportService.LoadBeatLabelsAsync();
+			}
+			else if (importDialog.IsXTimingSelection)
+			{
+				importResult = await MarkImportExportService.LoadXTimingAsync();
+			}
+			else if (importDialog.IsPapagayoSelection)
+			{
+				importResult = await MarkImportExportService.ImportPapagayoTracksAsync();
+			}
+			else if (importDialog.IsTimingTrackBrowserSelection)
+			{
+				importResult = await MarkImportExportService.ImportSingingFacesTracksAsync();
+			}
+			else if (importDialog.IsPangolinBeyondSelection)
+			{
+				importResult = await MarkImportExportService.ImportPangolinBeyondMarksAsync();
+			}
+			else
+			{
+				return;
+			}
+
+			if (importResult.Status != MarkCollectionImportStatus.Succeeded || importResult.Collections.Count == 0)
+			{
+				return;
+			}
+
+			var dependencyResolver = this.GetDependencyResolver();
+			var selectionViewModel = new MarkCollectionImportSelectionViewModel(MarkCollections, importResult.Collections);
+			var uiVisualizerService = dependencyResolver.Resolve<UIVisualizerService>();
+			var selectionResult = await uiVisualizerService.ShowDialogAsync(selectionViewModel);
+			if (selectionResult.DialogResult != true)
+			{
+				return;
+			}
+
+			MarkCollectionImportCommitter.Commit(MarkCollections, selectionViewModel.SelectedCollections);
 		}
 
 		#endregion
@@ -172,7 +206,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 				busyIndicatorService.Show();
 				var selectedCollections =
 					vm.ExportOptionsVmList.Where(x => x.IsIncluded).Select(m => new ExportableMarkCollection(m.MarkCollection, m.IsTextIncluded)).ToList();
-				await MarkImportExportService.ExportMarkCollections(vm.MarkExportType, selectedCollections);
+				await MarkImportExportService.ExportMarkCollectionsAsync(vm.MarkExportType, selectedCollections);
 				busyIndicatorService.Hide();
 			}
 		}

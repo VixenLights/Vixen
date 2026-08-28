@@ -1,6 +1,6 @@
 using System.Drawing;
-using System.Collections.ObjectModel;
 using System.Windows.Forms;
+using System.Xml;
 using Vixen.Marks;
 using VixenModules.App.Marks;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services;
@@ -99,21 +99,16 @@ public sealed class PangolinBeyondMarkImportTests
 	}
 
 	[Fact]
-	public void TryAddPangolinBeyondMarks_Cancelled_DoesNotMutateCollections()
+	public void MaterializePangolinBeyondMarks_Cancelled_ReturnsCancelledResult()
 	{
-		// Arrange
-		var existingCollection = new MarkCollection { Name = "Existing", IsDefault = true };
-		var collections = new ObservableCollection<IMarkCollection> { existingCollection };
 		IReadOnlyList<PangolinBeyondMarkRecord> records = [new("Intro", TimeSpan.FromSeconds(1), Color.Red)];
 
 		// Act
-		var imported = MarkImportExportService.TryAddPangolinBeyondMarks(collections, records, null, Color.Empty);
+		var result = MarkImportExportService.MaterializePangolinBeyondMarks(records, null, Color.Empty);
 
 		// Assert
-		Assert.False(imported);
-		var collection = Assert.Single(collections);
-		Assert.Same(existingCollection, collection);
-		Assert.True(existingCollection.IsDefault);
+		Assert.Equal(MarkCollectionImportStatus.Cancelled, result.Status);
+		Assert.Empty(result.Collections);
 	}
 
 	[Theory]
@@ -182,43 +177,50 @@ public sealed class PangolinBeyondMarkImportTests
 	}
 
 	[Fact]
-	public void TryAddPangolinBeyondMarks_Success_UsesUniqueNamesAndPreservesDefault()
+	public void MaterializePangolinBeyondMarks_Success_ReturnsDetachedSourceName()
 	{
-		// Arrange
-		var existingCollection = new MarkCollection { Name = "Beyond Marks", IsDefault = true };
-		var collections = new ObservableCollection<IMarkCollection> { existingCollection };
 		IReadOnlyList<PangolinBeyondMarkRecord> records = [new("Intro", TimeSpan.FromSeconds(1), Color.Red)];
 
 		// Act
-		var imported = MarkImportExportService.TryAddPangolinBeyondMarks(
-			collections,
+		var result = MarkImportExportService.MaterializePangolinBeyondMarks(
 			records,
 			PangolinBeyondImportMode.SingleCollection,
 			Color.MediumPurple);
 
 		// Assert
-		Assert.True(imported);
-		Assert.Equal(["Beyond Marks", "Beyond Marks - 2"], collections.Select(collection => collection.Name));
-		Assert.True(existingCollection.IsDefault);
-		Assert.False(collections[1].IsDefault);
+		Assert.Equal(MarkCollectionImportStatus.Succeeded, result.Status);
+		Assert.Equal("Beyond Marks", Assert.Single(result.Collections).Name);
 	}
 
 	[Fact]
-	public void TryAddPangolinBeyondMarks_NoExistingDefault_SetsOneDefault()
+	public void MaterializePangolinBeyondMarks_Success_DoesNotAssignDefault()
 	{
-		// Arrange
-		var collections = new ObservableCollection<IMarkCollection>();
 		IReadOnlyList<PangolinBeyondMarkRecord> records = [new("Intro", TimeSpan.FromSeconds(1), Color.Red)];
 
 		// Act
-		var imported = MarkImportExportService.TryAddPangolinBeyondMarks(
-			collections,
+		var result = MarkImportExportService.MaterializePangolinBeyondMarks(
 			records,
 			PangolinBeyondImportMode.SingleCollection,
 			Color.MediumPurple);
 
 		// Assert
-		Assert.True(imported);
-		Assert.True(Assert.Single(collections).IsDefault);
+		Assert.False(Assert.Single(result.Collections).IsDefault);
+	}
+
+	[Fact]
+	public void MaterializeXTimingTracks_LipSyncLayers_LinkOnlyToLocalCandidates()
+	{
+		// Arrange
+		var xmlDocument = new XmlDocument();
+		xmlDocument.LoadXml("<timing name=\"Voice\"><EffectLayer><Effect label=\"Phrase\" starttime=\"0\" endtime=\"100\" /></EffectLayer><EffectLayer><Effect label=\"Word\" starttime=\"100\" endtime=\"200\" /></EffectLayer><EffectLayer><Effect label=\"Phoneme\" starttime=\"200\" endtime=\"300\" /></EffectLayer></timing>");
+
+		// Act
+		var result = MarkImportExportService.MaterializeXTimingTracks(xmlDocument, MarkCollectionImportType.XTiming);
+
+		// Assert
+		Assert.Equal(MarkCollectionImportStatus.Succeeded, result.Status);
+		Assert.Equal(["Voice - Phrase", "Voice - Word", "Voice - Phoneme"], result.Collections.Select(collection => collection.Name));
+		Assert.Equal(result.Collections[0].Id, result.Collections[1].LinkedMarkCollectionId);
+		Assert.Equal(result.Collections[1].Id, result.Collections[2].LinkedMarkCollectionId);
 	}
 }
