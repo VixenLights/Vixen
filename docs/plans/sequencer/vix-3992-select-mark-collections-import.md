@@ -18,7 +18,7 @@ The observable outcome is that Cancel at any file picker, source-specific dialog
 - [x] (2026-08-28 18:30Z) Added the UI-free `MarkCollectionImportCommitter` and focused unit coverage for ordered unique names, default selection, valid/cleared links, empty commits, and invalid candidates without target mutation. Full MSBuild test build succeeded; focused materializer/committer tests passed 26/26.
 - [x] (2026-08-28 19:00Z) Added the detached Catel collection-selection dialog, including duplicate-name indication, keyboard row toggling, command enablement, accepted-subset capture, and no-mutation selection tests. Full MSBuild test build succeeded; focused selection/materializer/committer tests passed 32/32.
 - [x] (2026-08-28 19:20Z) Replaced the import command's transitional materializer-only dispatch with the awaited materialize-select-commit workflow. The legacy chooser and all source-specific paths remain intact; only an accepted selection reaches the committer. Full MSBuild test build succeeded; focused selection/committer/materializer/name tests passed 44/44.
-- [ ] Run automated validation, manually exercise all import formats and keyboard/mouse dialog behavior, then update Jira with results.
+- [x] (2026-08-28 20:00Z) User confirmed the full build, complete unit-test suite, and functional validation passed for the import workflow. A Jira close-out comment was attempted but blocked by Atlassian's human-verification challenge; no Jira state was changed.
 
 ## Surprises & Discoveries
 
@@ -36,6 +36,12 @@ The observable outcome is that Cancel at any file picker, source-specific dialog
 
 - Observation: `dotnet test` cannot build the test project directly because its C++/CLI dependencies require the full Visual Studio C++ MSBuild targets, but the documented full-MSBuild-then-no-build workflow works.
   Evidence: the direct focused command failed in `QMLibrary.vcxproj` and `LiquidLiquidFunWrapper.vcxproj` with `MSB4278`; after `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Debug -p:Platform=x64 -p:PlatformTarget=x64 -v:m`, the no-build Pangolin filter passed 18/18.
+
+- Observation: The Marks Docker custom dialogs expose `ShowDialogAsync`, but the referenced WinForms file dialogs and Singing Faces vendor window do not.
+  Evidence: replacing those latter calls did not compile because their types have no `ShowDialogAsync` member, while the custom `MessageBoxForm` and color-picker calls compile and are awaited.
+
+- Observation: Jira rejected the final validation comment with an Atlassian human-verification challenge.
+  Evidence: `addCommentToJiraIssue` for VIX-3992 returned an AWS WAF human-verification page; the plan finalization made no Jira mutation.
 
 ## Decision Log
 
@@ -63,9 +69,17 @@ The observable outcome is that Cancel at any file picker, source-specific dialog
   Rationale: Singing Faces now returns `Task<MarkCollectionImportResult>` and must be awaited; retaining a synchronous command would require prohibited blocking or an unobserved task. This is a necessary transitional seam, not completion of the selection workflow.
   Date/Author: 2026-08-28 / Codex
 
+- Decision: Await only dialog APIs that expose a native asynchronous overload.
+  Rationale: Custom Marks Docker dialogs can yield without blocking the import task, while wrapping WinForms file dialogs or the vendor window would add unsupported behavior and risk UI-thread violations.
+  Date/Author: 2026-08-28 / Codex
+
 ## Outcomes & Retrospective
 
-Not implemented yet. At completion, record the final user-visible behavior, the test totals and build output, manual validation results, remaining gaps, and any deviations from the decisions above.
+The feature is complete from the user's perspective. Every supported Marks Docker import now produces detached candidates, presents the shared collection-selection dialog, and mutates the active sequence only after the user accepts a non-empty selection. Duplicate names appear inline with a caution icon and explanatory tooltip, and long candidate lists scroll without requiring the dialog to be resized.
+
+Automated validation included the repository's full-MSBuild test build and focused selection, committer, materializer, Pangolin, and name-service coverage; the focused run passed 44 tests. The user subsequently confirmed that the complete unit-test suite and full build pass, and that functional validation of the intended import behavior passed.
+
+No implementation gaps remain. The only administrative follow-up is a Jira close-out comment: an attempt to add it was blocked by Atlassian human verification, so it must be posted manually when Jira access is available. The issue description was already updated during Milestone 1 and requires no further content change.
 
 ## Context and Orientation
 
@@ -196,12 +210,15 @@ Do not delete or rewrite user sequence data to test this feature. Use a disposab
 
 ## Artifacts and Notes
 
-At implementation time, add compact evidence such as:
+Validation evidence:
 
-    Focused importer/selection/committer tests: Passed: <N>, Failed: 0.
-    Full Vixen.Tests run: Passed: <N>, Failed: 0.
-    Debug rebuild: 0 Error(s).
+    Full MSBuild Vixen_Tests build: succeeded.
+    Focused import selection/committer/materializer/Pangolin/name tests: Passed: 44, Failed: 0.
+    Full build and unit-test suite: passed (user-confirmed).
+    Functional validation: passed (user-confirmed).
     git diff --check: no output.
+
+    Jira close-out comment: not posted; Atlassian human-verification challenge blocked the API call.
 
 The essential flow to preserve is:
 
@@ -233,3 +250,5 @@ Out of scope: changing import file formats, changing serialized collection ids, 
 2026-08-28 / Codex: Completed Milestone 5 by wiring `MarkDockerViewModel.ImportCollection` through the universal materialize-select-commit sequence. It returns immediately for chooser cancellation, non-successful/empty materialization, or a cancelled selection window; only a successful dialog result calls `MarkCollectionImportCommitter` with the selected candidates in source order. The full MSBuild test build succeeded, and focused selection/committer/materializer/name tests passed 44/44.
 
 2026-08-28 / Codex: Follow-up async cleanup converted the remaining Marks Docker import entry points to task-returning methods and awaited them from the import command. File reads, supported custom dialogs, and export writes now use asynchronous APIs; synchronous format parsers continue after the read without `Task.Run`, so dialog and model work remain on the UI context. The full MSBuild test build succeeded, and focused selection/committer/materializer/name tests passed 44/44.
+
+2026-08-28 / Codex: Finalized the ExecPlan after the user confirmed the full build, complete unit-test suite, and functional validation all passed. Replaced the retrospective placeholder with final behavior and evidence, and recorded the attempted-but-blocked Jira close-out comment so a future contributor can complete that administrative follow-up without revalidating the implementation.
