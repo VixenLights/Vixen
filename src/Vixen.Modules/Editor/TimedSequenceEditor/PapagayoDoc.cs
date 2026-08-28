@@ -96,8 +96,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         }
 
+        /// <summary>
+        /// Loads a Papagayo document from a file.
+        /// </summary>
+        /// <param name="fileName">The path of the Papagayo document.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="fileName"/> is <see langword="null"/>.</exception>
+        /// <exception cref="IOException">The document cannot be read or has an invalid format.</exception>
         public void Load(string fileName)
         {
+            ArgumentNullException.ThrowIfNull(fileName);
+
+            using var file = new StreamReader(fileName);
+            Load(file);
+            m_fileNameStr = fileName;
+        }
+
+        internal void Load(StreamReader file)
+        {
+            ArgumentNullException.ThrowIfNull(file);
+
             string line;
 
             m_state = 0;
@@ -106,9 +123,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             m_numVoices = 0;
 
             m_voices.Clear();
-
-
-            StreamReader file = new StreamReader(fileName);
             while ((line = file.ReadLine()) != null)
             {
                 //Trim leading whitespace on the read string. 
@@ -164,9 +178,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
                         throw new IOException();
                 }
             }
-
-            m_fileNameStr = fileName;
-            file.Close();
         }
 
         public PapagayoPhoneme GetEventPhoneme(string voiceStr, int eventNum) 

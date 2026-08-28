@@ -31,8 +31,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		/// prompt for the collection arrangement.
 		/// Cancelling either import prompt leaves the collection set unchanged.
 		/// </remarks>
-		/// <returns>A result containing detached mark collection candidates, or a cancellation/failure status.</returns>
-		internal static MarkCollectionImportResult ImportPangolinBeyondMarks()
+		/// <returns>A task whose result contains detached mark collection candidates, or a cancellation/failure status.</returns>
+		internal static async Task<MarkCollectionImportResult> ImportPangolinBeyondMarksAsync()
 		{
 			using var openFileDialog = new OpenFileDialog
 			{
@@ -49,11 +49,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
 			try
 			{
-				var csv = File.ReadAllText(openFileDialog.FileName);
+				var csv = await File.ReadAllTextAsync(openFileDialog.FileName);
 				if (!PangolinBeyondMarkParser.TryParse(csv, out var records, out var error))
 				{
 					Logging.Error("Unable to import Pangolin Beyond marks from {FileName}: {Error}", openFileDialog.FileName, error);
-					ShowPangolinBeyondImportError();
+					await ShowPangolinBeyondImportErrorAsync();
 					return MarkCollectionImportResult.Failed(MarkCollectionImportType.PangolinBeyond);
 				}
 
@@ -65,7 +65,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 						"Pangolin Beyond Import",
 						MessageBoxButtons.YesNoCancel,
 						SystemIcons.Question);
-					var choice = GetPangolinBeyondImportMode(choiceDialog.ShowDialog());
+					var choice = GetPangolinBeyondImportMode(await choiceDialog.ShowDialogAsync());
 					if (choice is null)
 					{
 						return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.PangolinBeyond);
@@ -78,7 +78,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				if (importMode == PangolinBeyondImportMode.SingleCollection)
 				{
 					using var colorPicker = new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
-					if (colorPicker.ShowDialog() != DialogResult.OK)
+					if (await colorPicker.ShowDialogAsync() != DialogResult.OK)
 					{
 						return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.PangolinBeyond);
 					}
@@ -91,7 +91,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			catch (Exception ex)
 			{
 				Logging.Error(ex, "Unable to import Pangolin Beyond marks from {FileName}", openFileDialog.FileName);
-				ShowPangolinBeyondImportError();
+				await ShowPangolinBeyondImportErrorAsync();
 				return MarkCollectionImportResult.Failed(MarkCollectionImportType.PangolinBeyond);
 			}
 		}
@@ -128,18 +128,18 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.PangolinBeyond, importedCollections);
 		}
 
-		private static void ShowPangolinBeyondImportError()
+		private static async Task ShowPangolinBeyondImportErrorAsync()
 		{
 			const string message = "There was an error importing the Pangolin Beyond marks.";
 			using var messageBox = new MessageBoxForm(message, "Pangolin Beyond Import Error", MessageBoxButtons.OK, SystemIcons.Error);
-			messageBox.ShowDialog();
+			await messageBox.ShowDialogAsync();
 		}
 
 		/// <summary>
 		/// Materializes mark collections from a Vixen 3 mark collection file.
 		/// </summary>
-		/// <returns>A result containing detached mark collection candidates, or a cancellation/failure status.</returns>
-		internal static MarkCollectionImportResult ImportVixen3Beats()
+		/// <returns>A task whose result contains detached mark collection candidates, or a cancellation/failure status.</returns>
+		internal static async Task<MarkCollectionImportResult> ImportVixen3BeatsAsync()
 		{
 			using var openFileDialog = new OpenFileDialog
 			{
@@ -156,7 +156,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
 			try
 			{
-				var xdoc = XDocument.Load(openFileDialog.FileName);
+				var documentText = await File.ReadAllTextAsync(openFileDialog.FileName);
+				var xdoc = XDocument.Parse(documentText);
 				if (xdoc.Root is null)
 				{
 					return MarkCollectionImportResult.Failed(MarkCollectionImportType.Vixen3);
@@ -176,11 +177,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				else
 				{
 					Logging.Error("Could not determine type of Vixen Mark import file. Type {Type} Namespace {Namespace}", xdoc.Root.Name.LocalName, xdoc.Root.Name.NamespaceName);
-					ShowVixenImportError();
+					await ShowVixenImportErrorAsync();
 					return MarkCollectionImportResult.Failed(MarkCollectionImportType.Vixen3);
 				}
 
-				using var reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read);
+				using var reader = XmlReader.Create(new StringReader(documentText));
 				var serializer = CreateSerializer(type, migrate);
 				var markCollections = serializer.ReadObject(reader);
 				var candidates = migrate
@@ -191,7 +192,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			catch (Exception exception)
 			{
 				Logging.Error(exception, "Unable to import V3 Marks");
-				ShowVixenImportError();
+				await ShowVixenImportErrorAsync();
 				return MarkCollectionImportResult.Failed(MarkCollectionImportType.Vixen3);
 			}
 		}
@@ -231,13 +232,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			return migratedCollections;
 		}
 
-		private static void ShowVixenImportError()
+		private static async Task ShowVixenImportErrorAsync()
 		{
 			using var messageBox = new MessageBoxForm("There was an error importing the Vixen Marks.", "Vixen Marks Import Error", MessageBoxButtons.OK, SystemIcons.Error);
-			messageBox.ShowDialog();
+			await messageBox.ShowDialogAsync();
 		}
 
-		internal static MarkCollectionImportResult LoadBarLabels()
+		internal static async Task<MarkCollectionImportResult> LoadBarLabelsAsync()
 		{
 			using var openFileDialog = new OpenFileDialog
 			{
@@ -254,7 +255,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
 			try
 			{
-				var everything = File.ReadAllText(openFileDialog.FileName).Replace("\r", string.Empty);
+				var everything = (await File.ReadAllTextAsync(openFileDialog.FileName)).Replace("\r", string.Empty);
 				var lines = everything.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 				if (!lines.Any())
 				{
@@ -290,12 +291,12 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			}
 			catch (Exception exception)
 			{
-				ShowImportError(exception, "There was an error importing the Audacity bar marks.", "Audacity Import Error");
+				await ShowImportErrorAsync(exception, "There was an error importing the Audacity bar marks.", "Audacity Import Error");
 				return MarkCollectionImportResult.Failed(MarkCollectionImportType.BarLabels);
 			}
 		}
 
-		internal static MarkCollectionImportResult LoadBeatLabels()
+		internal static async Task<MarkCollectionImportResult> LoadBeatLabelsAsync()
 		{
 			using var openFileDialog = new OpenFileDialog
 			{
@@ -312,7 +313,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
 			try
 			{
-				var file = File.ReadAllText(openFileDialog.FileName);
+				var file = await File.ReadAllTextAsync(openFileDialog.FileName);
 				if (!file.Any())
 				{
 					return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.BeatLabels, []);
@@ -336,7 +337,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			}
 			catch (Exception exception)
 			{
-				ShowImportError(exception, "There was an error importing the Audacity beat marks.", "Audacity Import Error");
+				await ShowImportErrorAsync(exception, "There was an error importing the Audacity beat marks.", "Audacity Import Error");
 				return MarkCollectionImportResult.Failed(MarkCollectionImportType.BeatLabels);
 			}
 		}
@@ -350,7 +351,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			return newCollection;
 		}
 
-		internal static MarkCollectionImportResult LoadXTiming()
+		internal static async Task<MarkCollectionImportResult> LoadXTimingAsync()
 		{
 			using var openFileDialog = new OpenFileDialog { DefaultExt = ".txt", Filter = @"xTiming|*.xTiming|xTiming xml|*.xTiming.xml|All Files|*.*", FilterIndex = 0, InitialDirectory = _lastFolder };
 			if (openFileDialog.ShowDialog() != DialogResult.OK)
@@ -361,13 +362,14 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
 			try
 			{
+				var documentText = await File.ReadAllTextAsync(openFileDialog.FileName);
 				var xmlDocument = new XmlDocument();
-				xmlDocument.Load(openFileDialog.FileName);
+				xmlDocument.LoadXml(documentText);
 				return MaterializeXTimingTracks(xmlDocument, MarkCollectionImportType.XTiming);
 			}
 			catch (Exception exception)
 			{
-				ShowImportError(exception, "There was an error importing the xTiming marks.", "xTiming Import Error");
+				await ShowImportErrorAsync(exception, "There was an error importing the xTiming marks.", "xTiming Import Error");
 				return MarkCollectionImportResult.Failed(MarkCollectionImportType.XTiming);
 			}
 		}
@@ -474,7 +476,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			}
 		}
 
-		internal static MarkCollectionImportResult ImportPapagayoTracks()
+		internal static async Task<MarkCollectionImportResult> ImportPapagayoTracksAsync()
 		{
 			using FileDialog openDialog = new OpenFileDialog { Filter = @"Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*", FilterIndex = 1, InitialDirectory = _lastFolder };
 			if (openDialog.ShowDialog() != DialogResult.OK)
@@ -484,8 +486,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			_lastFolder = Path.GetDirectoryName(openDialog.FileName);
 			try
 			{
+				var documentBytes = await File.ReadAllBytesAsync(openDialog.FileName);
 				var papagayoFile = new PapagayoDoc();
-				papagayoFile.Load(openDialog.FileName);
+				using var documentStream = new MemoryStream(documentBytes);
+				using var documentReader = new StreamReader(documentStream);
+				papagayoFile.Load(documentReader);
 				var fileName = Path.GetFileNameWithoutExtension(openDialog.FileName);
 				var candidates = new List<IMarkCollection>();
 				foreach (var voice in papagayoFile.VoiceList)
@@ -493,12 +498,12 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					candidates.AddRange(MaterializePapagayoVoice(papagayoFile, fileName, voice));
 				}
 
-				ShowPapagayoImportSummary(papagayoFile.VoiceList);
+				await ShowPapagayoImportSummaryAsync(papagayoFile.VoiceList);
 				return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.Papagayo, candidates);
 			}
 			catch (Exception exception)
 			{
-				ShowImportError(exception, "There was an error importing the Papagayo marks.", "Papagayo Import Error");
+				await ShowImportErrorAsync(exception, "There was an error importing the Papagayo marks.", "Papagayo Import Error");
 				return MarkCollectionImportResult.Failed(MarkCollectionImportType.Papagayo);
 			}
 		}
@@ -517,7 +522,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				}
 				catch (Exception exception)
 				{
-					ShowImportError(exception, "There was an error importing the Singing Faces timing marks.", "Singing Faces Import Error");
+					await ShowImportErrorAsync(exception, "There was an error importing the Singing Faces timing marks.", "Singing Faces Import Error");
 					return MarkCollectionImportResult.Failed(MarkCollectionImportType.SingingFaces);
 				}
 			}
@@ -555,27 +560,33 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			return [phraseCollection, wordCollection, phonemeCollection];
 		}
 
-		private static void ShowPapagayoImportSummary(IReadOnlyCollection<string> voices)
+		private static async Task ShowPapagayoImportSummaryAsync(IReadOnlyCollection<string> voices)
 		{
 			var display = $"{voices.Count} voices imported as Mark Collections\n\n" + string.Join("\n", voices.Select((voice, index) => $"Row #{index + 1} - {voice}"));
 			MessageBoxForm.msgIcon = SystemIcons.Information;
 			using var messageBox = new MessageBoxForm(display, "Papagayo Import", false, false);
-			messageBox.ShowDialog();
+			await messageBox.ShowDialogAsync();
 		}
 
-		private static void ShowImportError(Exception exception, string message, string title)
+		private static async Task ShowImportErrorAsync(Exception exception, string message, string title)
 		{
 			Logging.Error(exception, message);
 			using var messageBox = new MessageBoxForm(message, title, MessageBoxButtons.OK, SystemIcons.Error);
-			messageBox.ShowDialog();
+			await messageBox.ShowDialogAsync();
 		}
 
 		//Beat Mark Collection Export routine 2-7-2014 JMB
 		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++
 		//Otherwise its beats, at least from the information I have studied, and we do not iMarkCollection++ to keep the collections together properly.
-		public static async Task ExportMarkCollections(MarkExportType exportType, IList<ExportableMarkCollection> collections)
+		/// <summary>
+		/// Exports the selected Mark Collections to the requested file format.
+		/// </summary>
+		/// <param name="exportType">One of the enumeration values that specifies the output format.</param>
+		/// <param name="collections">The Mark Collections and export options to write.</param>
+		/// <returns>A task that represents the asynchronous export operation.</returns>
+		public static async Task ExportMarkCollectionsAsync(MarkExportType exportType, IList<ExportableMarkCollection> collections)
 		{
-			var saveFileDialog = new SaveFileDialog();
+			using var saveFileDialog = new SaveFileDialog();
 			if (exportType == MarkExportType.Vixen)
 			{
 				saveFileDialog.DefaultExt = ".v3m";
@@ -592,10 +603,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 
 					try
 					{
-						DataContractSerializer ser = CreateSerializer(typeof(List<IMarkCollection>), false);
-						var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
-						ser.WriteObject(writer, collections.Select(x => x.MarkCollection).ToList());
-						writer.Close();
+						var serializer = CreateSerializer(typeof(List<IMarkCollection>), false);
+						using var stream = new MemoryStream();
+						using (var writer = XmlWriter.Create(stream, xmlsettings))
+						{
+							serializer.WriteObject(writer, collections.Select(x => x.MarkCollection).ToList());
+						}
+						await File.WriteAllBytesAsync(saveFileDialog.FileName, stream.ToArray());
 					}
 					catch (Exception ex)
 					{
@@ -624,13 +638,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				saveFileDialog.Filter = @"Audacity Marks (*.txt)|*.txt|All Files (*.*)|*.*";
 				if (saveFileDialog.ShowDialog() == DialogResult.OK)
 				{
-					string name = saveFileDialog.FileName;
-
-					await using StreamWriter file = new StreamWriter(name);
-					foreach (string bm in beatMarks.OrderBy(x => x))
-					{
-						await file.WriteLineAsync(bm);
-					}
+					await File.WriteAllLinesAsync(saveFileDialog.FileName, beatMarks.OrderBy(mark => mark));
 				}
 			}
 
@@ -668,13 +676,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				saveFileDialog.Filter = @"CSV Files (*.csv)|*.csv|All Files (*.*)|*.*";
 				if (saveFileDialog.ShowDialog() == DialogResult.OK)
 				{
-					string name = saveFileDialog.FileName;
-
-					await using StreamWriter file = new StreamWriter(name);
-					foreach (string bm in beatMarks)
-					{
-						await file.WriteLineAsync(bm);
-					}
+					await File.WriteAllLinesAsync(saveFileDialog.FileName, beatMarks);
 				}
 			}
 		}

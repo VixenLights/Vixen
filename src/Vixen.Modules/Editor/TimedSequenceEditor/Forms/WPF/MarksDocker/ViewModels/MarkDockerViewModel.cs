@@ -128,23 +128,23 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			MarkCollectionImportResult importResult;
 			if (importDialog.IsVixen3BeatSelection)
 			{
-				importResult = MarkImportExportService.ImportVixen3Beats();
+				importResult = await MarkImportExportService.ImportVixen3BeatsAsync();
 			}
 			else if (importDialog.IsVampBarSelection || importDialog.IsAudacityBeatSelection)
 			{
-				importResult = MarkImportExportService.LoadBarLabels();
+				importResult = await MarkImportExportService.LoadBarLabelsAsync();
 			}
 			else if (importDialog.IsVampBeatSelection)
 			{
-				importResult = MarkImportExportService.LoadBeatLabels();
+				importResult = await MarkImportExportService.LoadBeatLabelsAsync();
 			}
 			else if (importDialog.IsXTimingSelection)
 			{
-				importResult = MarkImportExportService.LoadXTiming();
+				importResult = await MarkImportExportService.LoadXTimingAsync();
 			}
 			else if (importDialog.IsPapagayoSelection)
 			{
-				importResult = MarkImportExportService.ImportPapagayoTracks();
+				importResult = await MarkImportExportService.ImportPapagayoTracksAsync();
 			}
 			else if (importDialog.IsTimingTrackBrowserSelection)
 			{
@@ -152,7 +152,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			}
 			else if (importDialog.IsPangolinBeyondSelection)
 			{
-				importResult = MarkImportExportService.ImportPangolinBeyondMarks();
+				importResult = await MarkImportExportService.ImportPangolinBeyondMarksAsync();
 			}
 			else
 			{
@@ -206,7 +206,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 				busyIndicatorService.Show();
 				var selectedCollections =
 					vm.ExportOptionsVmList.Where(x => x.IsIncluded).Select(m => new ExportableMarkCollection(m.MarkCollection, m.IsTextIncluded)).ToList();
-				await MarkImportExportService.ExportMarkCollections(vm.MarkExportType, selectedCollections);
+				await MarkImportExportService.ExportMarkCollectionsAsync(vm.MarkExportType, selectedCollections);
 				busyIndicatorService.Hide();
 			}
 		}
