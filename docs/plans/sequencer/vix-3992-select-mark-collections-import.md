@@ -14,7 +14,7 @@ The observable outcome is that Cancel at any file picker, source-specific dialog
 
 - [x] (2026-08-28 00:00Z) Read `.agents/PLANS.md`, the VIX-3992 handoff, the Marks Docker import entry point, current import service, Pangolin factory/parser tests, and the existing VIX-3947 naming plan.
 - [x] (2026-08-28 17:22Z) Updated Jira issue VIX-3992 with the finalized user-facing requirements, acceptance criteria, and automated/manual test plan. The issue remains In Progress.
-- [ ] Create detached import result types and refactor every loader to materialize candidates without mutating the target sequence.
+- [x] (2026-08-28 18:05Z) Created detached import result contracts and refactored Vixen 3, Bar Labels, Beat Labels, xTiming, Papagayo, Singing Faces, and Pangolin Beyond materializers to return candidates without mutating the target sequence. Adapted Pangolin tests and added xTiming local-link coverage.
 - [ ] Add the internal committer and unit tests for ordered names, defaults, links, and no-mutation outcomes.
 - [ ] Add the Catel selection view model/window and focused UI-state tests.
 - [ ] Replace the import command with the awaited materialize-select-commit workflow and apply XML documentation where public/protected APIs changed.
@@ -33,6 +33,9 @@ The observable outcome is that Cancel at any file picker, source-specific dialog
 
 - Observation: VIX-3947 already provides `MarkCollectionNameService.IsUniqueName` and `GetUniqueName`, including trimmed, case-insensitive collision behavior and suffixes such as ` - 2`.
   Evidence: `src/Vixen.Core/Marks/MarkCollectionNameService.cs` and `src/Vixen.Tests/Sequencer/MarkCollectionNameServiceTests.cs`.
+
+- Observation: `dotnet test` cannot build the test project directly because its C++/CLI dependencies require the full Visual Studio C++ MSBuild targets, but the documented full-MSBuild-then-no-build workflow works.
+  Evidence: the direct focused command failed in `QMLibrary.vcxproj` and `LiquidLiquidFunWrapper.vcxproj` with `MSB4278`; after `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Debug -p:Platform=x64 -p:PlatformTarget=x64 -v:m`, the no-build Pangolin filter passed 18/18.
 
 ## Decision Log
 
@@ -54,6 +57,10 @@ The observable outcome is that Cancel at any file picker, source-specific dialog
 
 - Decision: Keep the existing WinForms import-type chooser and existing Pangolin parser, import-mode prompt, color picker, and collection factory.
   Rationale: VIX-3992 changes the final collection-selection/commit stage, not source file formats or format-specific choices.
+  Date/Author: 2026-08-28 / Codex
+
+- Decision: Convert the import command to `TaskCommand` as part of the materialization refactor, but defer selection and commit wiring to Milestone 5.
+  Rationale: Singing Faces now returns `Task<MarkCollectionImportResult>` and must be awaited; retaining a synchronous command would require prohibited blocking or an unobserved task. This is a necessary transitional seam, not completion of the selection workflow.
   Date/Author: 2026-08-28 / Codex
 
 ## Outcomes & Retrospective
@@ -216,3 +223,5 @@ Out of scope: changing import file formats, changing serialized collection ids, 
 2026-08-28 / Codex: Created this ExecPlan from the VIX-3992 implementation handoff after inspecting the current Marks Docker import dispatch, all loader mutation seams, xTiming/Papagayo relationship construction, the Pangolin test suite, and the VIX-3947 shared naming behavior. No implementation or Jira mutation was performed while creating the plan.
 
 2026-08-28 / Codex: Completed Milestone 1 by replacing VIX-3992's issue description with the finalized user-facing summary, scope, acceptance criteria, and test plan. This records the implementation contract in Jira without exposing repository-internal design details.
+
+2026-08-28 / Codex: Completed Milestone 2 by introducing result/type/status contracts and refactoring all seven import paths into detached candidate materializers. xTiming and Papagayo now build links locally, Pangolin no longer assigns names/defaults during materialization, and Singing Faces is task-returning and awaited. The final selection/commit orchestration remains intentionally pending Milestone 5. The documented full-MSBuild test build completed, then the focused no-build Pangolin/xTiming filter passed 18/18; direct `dotnet test` remains unsuitable here because it cannot build the C++/CLI dependencies.

@@ -23,20 +23,17 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		private static string _lastFolder = Paths.DataRootPath;
 
 		/// <summary>
-		/// Imports mark collections from a Pangolin Beyond CSV file.
+		/// Materializes mark collections from a Pangolin Beyond CSV file.
 		/// </summary>
 		/// <remarks>
-		/// Parses the complete file before prompting for import options or changing <paramref name="collections" />.
+		/// Parses the complete file before prompting for import options or changing the active timed sequence.
 		/// Files with zero or one source color import directly with their source color; files with multiple source colors
 		/// prompt for the collection arrangement.
 		/// Cancelling either import prompt leaves the collection set unchanged.
 		/// </remarks>
-		/// <param name="collections">The mark collections in the active timed sequence.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="collections" /> is <see langword="null" />.</exception>
-		public static void ImportPangolinBeyondMarks(ObservableCollection<IMarkCollection> collections)
+		/// <returns>A result containing detached mark collection candidates, or a cancellation/failure status.</returns>
+		internal static MarkCollectionImportResult ImportPangolinBeyondMarks()
 		{
-			ArgumentNullException.ThrowIfNull(collections);
-
 			using var openFileDialog = new OpenFileDialog
 			{
 				DefaultExt = ".csv",
@@ -46,7 +43,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			};
 			if (openFileDialog.ShowDialog() != DialogResult.OK)
 			{
-				return;
+				return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.PangolinBeyond);
 			}
 
 			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
@@ -57,7 +54,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				{
 					Logging.Error("Unable to import Pangolin Beyond marks from {FileName}: {Error}", openFileDialog.FileName, error);
 					ShowPangolinBeyondImportError();
-					return;
+					return MarkCollectionImportResult.Failed(MarkCollectionImportType.PangolinBeyond);
 				}
 
 				var importMode = PangolinBeyondImportMode.GroupByColor;
@@ -71,7 +68,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					var choice = GetPangolinBeyondImportMode(choiceDialog.ShowDialog());
 					if (choice is null)
 					{
-						return;
+						return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.PangolinBeyond);
 					}
 
 					importMode = choice.Value;
@@ -83,18 +80,19 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					using var colorPicker = new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
 					if (colorPicker.ShowDialog() != DialogResult.OK)
 					{
-						return;
+						return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.PangolinBeyond);
 					}
 
 					replacementColor = colorPicker.Color.ToRGB().ToArgb();
 				}
 
-				TryAddPangolinBeyondMarks(collections, records, importMode, replacementColor);
+				return MaterializePangolinBeyondMarks(records, importMode, replacementColor);
 			}
 			catch (Exception ex)
 			{
 				Logging.Error(ex, "Unable to import Pangolin Beyond marks from {FileName}", openFileDialog.FileName);
 				ShowPangolinBeyondImportError();
+				return MarkCollectionImportResult.Failed(MarkCollectionImportType.PangolinBeyond);
 			}
 		}
 
@@ -115,31 +113,19 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			return records.Select(record => record.Color).Distinct().Skip(1).Any();
 		}
 
-		internal static bool TryAddPangolinBeyondMarks(
-			ObservableCollection<IMarkCollection> collections,
+		internal static MarkCollectionImportResult MaterializePangolinBeyondMarks(
 			IReadOnlyList<PangolinBeyondMarkRecord> records,
 			PangolinBeyondImportMode? importMode,
 			Color replacementColor)
 		{
-			ArgumentNullException.ThrowIfNull(collections);
 			ArgumentNullException.ThrowIfNull(records);
 			if (importMode is null)
 			{
-				return false;
+				return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.PangolinBeyond);
 			}
 
 			var importedCollections = PangolinBeyondMarkCollectionFactory.CreateCollections(records, importMode.Value, replacementColor);
-			foreach (var importedCollection in importedCollections)
-			{
-				AddUniqueCollection(collections, importedCollection);
-			}
-
-			if (importedCollections.Count > 0 && !collections.Any(collection => collection.IsDefault))
-			{
-				SetDefaultCollection(collections);
-			}
-
-			return true;
+			return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.PangolinBeyond, importedCollections);
 		}
 
 		private static void ShowPangolinBeyondImportError()
@@ -149,81 +135,64 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			messageBox.ShowDialog();
 		}
 
-		//Vixen 3 Beat Mark Collection Import routine 2-7-2014 JMB
-		public static void ImportVixen3Beats(ObservableCollection<IMarkCollection> collections)
+		/// <summary>
+		/// Materializes mark collections from a Vixen 3 mark collection file.
+		/// </summary>
+		/// <returns>A result containing detached mark collection candidates, or a cancellation/failure status.</returns>
+		internal static MarkCollectionImportResult ImportVixen3Beats()
 		{
-			var openFileDialog = new OpenFileDialog();
-			openFileDialog.DefaultExt = ".v3m";
-			openFileDialog.Filter = @"Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*";
-			openFileDialog.FilterIndex = 0;
-			openFileDialog.InitialDirectory = _lastFolder;
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			using var openFileDialog = new OpenFileDialog
 			{
+				DefaultExt = ".v3m",
+				Filter = @"Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*",
+				FilterIndex = 0,
+				InitialDirectory = _lastFolder
+			};
+			if (openFileDialog.ShowDialog() != DialogResult.OK)
+			{
+				return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.Vixen3);
+			}
 
-				_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			try
+			{
 				var xdoc = XDocument.Load(openFileDialog.FileName);
-				if (xdoc.Root != null)
+				if (xdoc.Root is null)
 				{
-					Type type;
-					bool migrate = false;
-					if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/" + typeof(IMarkCollection)))
-					{
-						type = typeof(List<IMarkCollection>);
-					}
-					else if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/VixenModules.Sequence.Timed"))
-					{
-						type = typeof(List<Sequence.Timed.MarkCollection>);
-						migrate = true;
-					}
-					else
-					{
-						Logging.Error($"Could not determine type of Vixen Mark import file. Type {xdoc.Root.Name.LocalName} Namspace {xdoc.Root.Name.NamespaceName}");
-						string msg = "There was an error importing the Vixen Marks.";
-						var messageBox = new MessageBoxForm(msg, "Vixen Marks Import Error", MessageBoxButtons.OK, SystemIcons.Error);
-						messageBox.ShowDialog();
-						return;
-					}
-
-					using (FileStream reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-					{
-						try
-						{
-							DataContractSerializer ser = CreateSerializer(type, migrate);
-							var markCollections = ser.ReadObject(reader);
-							if (!migrate)
-							{
-								var imc = markCollections as List<IMarkCollection>;
-								if (imc != null && collections.Any(x => x.IsDefault))
-								{
-									//make sure any imported are not default becasue we have a set and there will
-									//be a default there.
-									imc.ForEach(x => x.IsDefault = false);
-									
-								}
-
-								foreach (var markCollection in imc ?? Enumerable.Empty<IMarkCollection>())
-								{
-									AddUniqueCollection(collections, markCollection);
-								}
-							}
-							else
-							{
-								MigrateMarkCollections(collections, (List<Sequence.Timed.MarkCollection>) markCollections);
-							}
-
-							if (!collections.Any(x => x.IsDefault))
-							{
-								SetDefaultCollection(collections);
-							}
-						}
-						catch (Exception e)
-						{
-							Logging.Error(e, "Unable to import V3 Marks");
-						}
-
-					}
+					return MarkCollectionImportResult.Failed(MarkCollectionImportType.Vixen3);
 				}
-				
+
+				Type type;
+				var migrate = false;
+				if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/" + typeof(IMarkCollection)))
+				{
+					type = typeof(List<IMarkCollection>);
+				}
+				else if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/VixenModules.Sequence.Timed"))
+				{
+					type = typeof(List<Sequence.Timed.MarkCollection>);
+					migrate = true;
+				}
+				else
+				{
+					Logging.Error("Could not determine type of Vixen Mark import file. Type {Type} Namespace {Namespace}", xdoc.Root.Name.LocalName, xdoc.Root.Name.NamespaceName);
+					ShowVixenImportError();
+					return MarkCollectionImportResult.Failed(MarkCollectionImportType.Vixen3);
+				}
+
+				using var reader = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read);
+				var serializer = CreateSerializer(type, migrate);
+				var markCollections = serializer.ReadObject(reader);
+				var candidates = migrate
+					? MigrateMarkCollections((List<Sequence.Timed.MarkCollection>)markCollections)
+					: (markCollections as List<IMarkCollection> ?? []).ToList();
+				return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.Vixen3, candidates);
+			}
+			catch (Exception exception)
+			{
+				Logging.Error(exception, "Unable to import V3 Marks");
+				ShowVixenImportError();
+				return MarkCollectionImportResult.Failed(MarkCollectionImportType.Vixen3);
 			}
 		}
 
@@ -238,8 +207,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 
 		}
 
-		private static void MigrateMarkCollections(ObservableCollection<IMarkCollection> collections, List<Sequence.Timed.MarkCollection> oldCollections)
+		private static IReadOnlyList<IMarkCollection> MigrateMarkCollections(List<Sequence.Timed.MarkCollection> oldCollections)
 		{
+			var migratedCollections = new List<IMarkCollection>(oldCollections.Count);
 			foreach (var markCollection in oldCollections)
 			{
 				var lmc = new MarkCollection();
@@ -255,168 +225,119 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					IsSolidLine = markCollection.SolidLine
 				};
 				markCollection.Marks.ForEach(x => lmc.AddMark(new Mark(x)));
-				AddUniqueCollection(collections, lmc);
+				migratedCollections.Add(lmc);
 			}
 
-			if (!collections.Any(x => x.IsDefault))
-			{
-				SetDefaultCollection(collections);
-			}
+			return migratedCollections;
 		}
 
-		private static void SetDefaultCollection(ICollection<IMarkCollection> collections)
+		private static void ShowVixenImportError()
 		{
-			//Set one of them active
-			if (!collections.Any()) return;
-			var mc = collections.FirstOrDefault(x => x.IsVisible);
-			if (mc != null)
-			{
-				mc.IsDefault = true;
-			}
-			else
-			{
-				collections.First().IsDefault = true;
-			}
+			using var messageBox = new MessageBoxForm("There was an error importing the Vixen Marks.", "Vixen Marks Import Error", MessageBoxButtons.OK, SystemIcons.Error);
+			messageBox.ShowDialog();
 		}
 
-		public static void LoadBarLabels(ObservableCollection<IMarkCollection> collections)
+		internal static MarkCollectionImportResult LoadBarLabels()
 		{
-			var openFileDialog = new OpenFileDialog();
-			openFileDialog.DefaultExt = ".txt";
-			openFileDialog.Filter = @"Audacity Bar Labels|*.txt|All Files|*.*";
-			openFileDialog.FilterIndex = 0;
-			openFileDialog.InitialDirectory = _lastFolder;
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			using var openFileDialog = new OpenFileDialog
 			{
-				_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-				try
-				{
-					String everything;
-					using (StreamReader sr = new StreamReader(openFileDialog.FileName))
-					{
-						everything = sr.ReadToEnd();
-					}
-					// Remove the \r so we're just left with a \n (allows importing of Sean's Audacity beat marks
-					everything = everything.Replace("\r", "");
-					string[] lines = everything.Split(new [] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-					if (lines.Any())
-					{
-						var mc = CreateNewCollection(Color.Yellow, "Audacity Marks");
-						foreach (string line in lines)
-						{
-							string endTimeMark = "0";
-							string text = string.Empty;
-							string[] lineParts;
-							if (line.IndexOf("\t") > 0)
-							{
-								lineParts = line.Split('\t');
-							}
-							else
-							{
-								lineParts = line.Trim().Split(' ');
-							}
-
-							var startTimeMark = lineParts[0].Trim();
-							if (lineParts.Length > 1)
-							{
-								endTimeMark = lineParts[1].Trim();
-							}
-
-							if (lineParts.Length > 2)
-							{
-								text = lineParts[2].Trim();
-							}
-
-							TimeSpan startTime = TimeSpan.FromSeconds(Convert.ToDouble(startTimeMark)); 
-							TimeSpan endTime = TimeSpan.FromSeconds(Convert.ToDouble(endTimeMark));
-							TimeSpan duration = TimeSpan.Zero;
-							if (endTime > TimeSpan.Zero)
-							{
-								duration = endTime - startTime;
-							}
-							mc.AddMark(new Mark(startTime)
-							{
-								Duration = duration,
-								Text = text
-							});
-						}
-
-						AddUniqueCollection(collections, mc);
-						if (!collections.Any(x => x.IsDefault))
-						{
-							SetDefaultCollection(collections);
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					string msg = "There was an error importing the Audacity bar marks.";
-					Logging.Error(ex, msg);
-					var messageBox = new MessageBoxForm(msg, "Audacity Import Error", MessageBoxButtons.OK, SystemIcons.Error);
-					messageBox.ShowDialog();
-				}
-			}
-		}
-
-		public static void LoadBeatLabels(ObservableCollection<IMarkCollection> collections)
-		{
-			var openFileDialog = new OpenFileDialog();
-			openFileDialog.DefaultExt = ".txt";
-			openFileDialog.Filter = @"Audacity Beat Labels|*.txt|All Files|*.*";
-			openFileDialog.FilterIndex = 0;
-			openFileDialog.InitialDirectory = _lastFolder;
-			openFileDialog.FileName = "";
-			var colors = new List<Color>
-			{
-				Color.Yellow,Color.Gold, Color.Goldenrod, Color.SaddleBrown,Color.CadetBlue,Color.BlueViolet
+				DefaultExt = ".txt",
+				Filter = @"Audacity Bar Labels|*.txt|All Files|*.*",
+				FilterIndex = 0,
+				InitialDirectory = _lastFolder
 			};
-
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			if (openFileDialog.ShowDialog() != DialogResult.OK)
 			{
-				_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-				try
-				{
-					String file;
-					using (var sr = new StreamReader(openFileDialog.FileName))
-					{
-						file = sr.ReadToEnd();
-					}
-					if (file.Any())
-					{
-						const string pattern = @"(\d*\.\d*)\s(\d*\.\d*)\s(\d)";
-						MatchCollection matches = Regex.Matches(file, pattern);
-						int numBeats = Convert.ToInt32(matches.Max(x => x.Groups[3].Value));
-						var marks = new List<MarkCollection>(numBeats);
-						for (int i = 0; i < numBeats; i++)
-						{
-							marks.Add(CreateNewCollection(colors[i], $"Audacity Beat {i + 1} Marks"));
-						}
+				return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.BarLabels);
+			}
 
-						foreach (Match match in matches)
-						{
-							TimeSpan time = TimeSpan.FromSeconds(Convert.ToDouble(match.Groups[1].Value));
-							int beatNumber = Convert.ToInt32(match.Groups[3].Value);
-							marks[beatNumber - 1].AddMark(new Mark(time));
-						}
-						
-						foreach (var markCollection in marks)
-						{
-							AddUniqueCollection(collections, markCollection);
-						}
+			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			try
+			{
+				var everything = File.ReadAllText(openFileDialog.FileName).Replace("\r", string.Empty);
+				var lines = everything.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+				if (!lines.Any())
+				{
+					return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.BarLabels, []);
+				}
+
+				var markCollection = CreateNewCollection(Color.Yellow, "Audacity Marks");
+				foreach (var line in lines)
+				{
+					var endTimeMark = "0";
+					var text = string.Empty;
+					var lineParts = line.IndexOf('\t') > 0 ? line.Split('\t') : line.Trim().Split(' ');
+					var startTimeMark = lineParts[0].Trim();
+					if (lineParts.Length > 1)
+					{
+						endTimeMark = lineParts[1].Trim();
+					}
+					if (lineParts.Length > 2)
+					{
+						text = lineParts[2].Trim();
 					}
 
-					if (!collections.Any(x => x.IsDefault))
+					var startTime = TimeSpan.FromSeconds(Convert.ToDouble(startTimeMark));
+					var endTime = TimeSpan.FromSeconds(Convert.ToDouble(endTimeMark));
+					markCollection.AddMark(new Mark(startTime)
 					{
-						SetDefaultCollection(collections);
-					}
+						Duration = endTime > TimeSpan.Zero ? endTime - startTime : TimeSpan.Zero,
+						Text = text
+					});
 				}
-				catch (Exception ex)
+
+				return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.BarLabels, [markCollection]);
+			}
+			catch (Exception exception)
+			{
+				ShowImportError(exception, "There was an error importing the Audacity bar marks.", "Audacity Import Error");
+				return MarkCollectionImportResult.Failed(MarkCollectionImportType.BarLabels);
+			}
+		}
+
+		internal static MarkCollectionImportResult LoadBeatLabels()
+		{
+			using var openFileDialog = new OpenFileDialog
+			{
+				DefaultExt = ".txt",
+				Filter = @"Audacity Beat Labels|*.txt|All Files|*.*",
+				FilterIndex = 0,
+				InitialDirectory = _lastFolder
+			};
+			if (openFileDialog.ShowDialog() != DialogResult.OK)
+			{
+				return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.BeatLabels);
+			}
+
+			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			try
+			{
+				var file = File.ReadAllText(openFileDialog.FileName);
+				if (!file.Any())
 				{
-					string msg = "There was an error importing the Audacity beat marks.";
-					Logging.Error(ex, msg);
-					var messageBox = new MessageBoxForm(msg, "Audacity Import Error", MessageBoxButtons.OK, SystemIcons.Error);
-					messageBox.ShowDialog();
+					return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.BeatLabels, []);
 				}
+
+				const string pattern = @"(\d*\.\d*)\s(\d*\.\d*)\s(\d)";
+				var matches = Regex.Matches(file, pattern);
+				var numberOfBeats = Convert.ToInt32(matches.Max(match => match.Groups[3].Value));
+				var colors = new[] { Color.Yellow, Color.Gold, Color.Goldenrod, Color.SaddleBrown, Color.CadetBlue, Color.BlueViolet };
+				var collections = Enumerable.Range(0, numberOfBeats)
+					.Select(index => CreateNewCollection(colors[index], $"Audacity Beat {index + 1} Marks"))
+					.ToList();
+				foreach (Match match in matches)
+				{
+					var time = TimeSpan.FromSeconds(Convert.ToDouble(match.Groups[1].Value));
+					var beatNumber = Convert.ToInt32(match.Groups[3].Value);
+					collections[beatNumber - 1].AddMark(new Mark(time));
+				}
+
+				return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.BeatLabels, collections);
+			}
+			catch (Exception exception)
+			{
+				ShowImportError(exception, "There was an error importing the Audacity beat marks.", "Audacity Import Error");
+				return MarkCollectionImportResult.Failed(MarkCollectionImportType.BeatLabels);
 			}
 		}
 
@@ -429,235 +350,225 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			return newCollection;
 		}
 
-		public static void LoadXTiming(ObservableCollection<IMarkCollection> collections)
+		internal static MarkCollectionImportResult LoadXTiming()
 		{
-			var openFileDialog = new OpenFileDialog();
-			openFileDialog.DefaultExt = ".txt";
-			openFileDialog.Filter = @"xTiming|*.xTiming|xTiming xml|*.xTiming.xml|All Files|*.*";
-			openFileDialog.FilterIndex = 0;
-			openFileDialog.InitialDirectory = _lastFolder;
-			if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                _lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(openFileDialog.FileName);
-				LoadXTimingTracks(xmlDoc, collections);
-            }
+			using var openFileDialog = new OpenFileDialog { DefaultExt = ".txt", Filter = @"xTiming|*.xTiming|xTiming xml|*.xTiming.xml|All Files|*.*", FilterIndex = 0, InitialDirectory = _lastFolder };
+			if (openFileDialog.ShowDialog() != DialogResult.OK)
+			{
+				return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.XTiming);
+			}
+
+			_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+			try
+			{
+				var xmlDocument = new XmlDocument();
+				xmlDocument.Load(openFileDialog.FileName);
+				return MaterializeXTimingTracks(xmlDocument, MarkCollectionImportType.XTiming);
+			}
+			catch (Exception exception)
+			{
+				ShowImportError(exception, "There was an error importing the xTiming marks.", "xTiming Import Error");
+				return MarkCollectionImportResult.Failed(MarkCollectionImportType.XTiming);
+			}
 		}
 
-        private static void LoadXTimingTracks(XmlDocument xmlDoc, ICollection<IMarkCollection> collections)
-        {
-            try
-            {
-               
-                XmlNode timingGroups = xmlDoc.SelectSingleNode("/timings");
-                if (timingGroups != null)
-                {
-                    //We have multiples
-                    var timingNodes = timingGroups.SelectNodes("timing");
-                    foreach (XmlNode timingNode in timingNodes)
-                    {
-                        ProcessTiming(timingNode, collections);
-                    }
-                }
-                else
-                {
-                    XmlNode timingNode = xmlDoc.SelectSingleNode("/timing");
-                    if (timingNode != null)
-                    {
-                        ProcessTiming(timingNode, collections);
-                    }
-                }
-
-                if (!collections.Any(x => x.IsDefault))
-                {
-                    SetDefaultCollection(collections);
-                }
-            }
-            catch (Exception ex)
-            {
-                string msg = "There was an error importing the Audacity bar marks.";
-                Logging.Error(ex, msg);
-                var messageBox = new MessageBoxForm(msg, "Audacity Import Error", MessageBoxButtons.OK, SystemIcons.Error);
-                messageBox.ShowDialog();
-            }
-        }
-
-        private static void ProcessTiming(XmlNode timingNode,  ICollection<IMarkCollection> collections)
+		internal static MarkCollectionImportResult MaterializeXTimingTracks(XmlDocument xmlDocument, MarkCollectionImportType importType)
 		{
-			if (timingNode == null)
+			ArgumentNullException.ThrowIfNull(xmlDocument);
+			var candidates = new List<IMarkCollection>();
+			foreach (var timingNode in GetTimingNodes(xmlDocument))
 			{
-				return;
+				candidates.AddRange(MaterializeTiming(timingNode));
 			}
-			var name = timingNode.Attributes?.GetNamedItem("name").Value;
-			var effectLayers = timingNode.SelectNodes("EffectLayer");
-			if (effectLayers != null)
+
+			return MarkCollectionImportResult.Succeeded(importType, candidates);
+		}
+
+		private static IEnumerable<XmlNode> GetTimingNodes(XmlDocument xmlDocument)
+		{
+			var timingGroups = xmlDocument.SelectSingleNode("/timings");
+			if (timingGroups?.SelectNodes("timing") is { } timingNodes)
 			{
-				int counter = 1;
-				bool lipSyncTrack = effectLayers.Count > 1;
-				foreach (XmlNode effectLayer in effectLayers)
+				return timingNodes.Cast<XmlNode>();
+			}
+
+			return xmlDocument.SelectSingleNode("/timing") is { } timingNode ? [timingNode] : [];
+		}
+
+		private static IReadOnlyList<IMarkCollection> MaterializeTiming(XmlNode timingNode)
+		{
+			var name = timingNode.Attributes?.GetNamedItem("name")?.Value ?? "xTiming";
+			var effectLayers = timingNode.SelectNodes("EffectLayer");
+			if (effectLayers is null)
+			{
+				return [];
+			}
+
+			var candidates = new List<IMarkCollection>();
+			var lipSyncTrack = effectLayers.Count > 1;
+			var layerNumber = 1;
+			foreach (XmlNode effectLayer in effectLayers)
+			{
+				var collection = CreateNewCollection(Color.Brown, $"{name} - {layerNumber}");
+				if (lipSyncTrack)
 				{
-					var collectionName = $"{name ?? "xTiming"} - {counter}";
-					var mc = CreateNewCollection(Color.Brown, collectionName);
-					if (lipSyncTrack)
-					{
-						switch (counter)
-						{
-							case 1:
-								mc.CollectionType = MarkCollectionType.Phrase;
-								mc.Name = $"{name ?? "xTiming"} - Phrase";
-								break;
-							case 2:
-								mc.CollectionType = MarkCollectionType.Word;
-								mc.LinkedMarkCollectionId = collections.Last().Id;
-								mc.Name = $"{name ?? "xTiming"} - Word";
-								break;
-							case 3:
-								mc.CollectionType = MarkCollectionType.Phoneme;
-								mc.LinkedMarkCollectionId = collections.Last().Id;
-								mc.Name = $"{name ?? "xTiming"} - Phoneme";
-								break;
-						}
-					}
+					ConfigureTimingCollection(collection, name, layerNumber, candidates);
+				}
 
-					mc.ShowMarkBar = true; //We have labels, so make sure they are seen.
-					var effects = effectLayer?.SelectNodes("Effect");
-					if (effects != null)
+				collection.ShowMarkBar = true;
+				var effects = effectLayer.SelectNodes("Effect");
+				if (effects is not null)
+				{
+					foreach (XmlNode effect in effects)
 					{
-						//iterate the marks
-						foreach (XmlNode effect in effects)
+						var startTime = effect.Attributes?.GetNamedItem("starttime")?.Value;
+						var endTime = effect.Attributes?.GetNamedItem("endtime")?.Value;
+						if (startTime is null || endTime is null || startTime == endTime)
 						{
-							var label = effect.Attributes?.GetNamedItem("label").Value;
-							var startTime = effect.Attributes?.GetNamedItem("starttime").Value;
-							var endTime = effect.Attributes?.GetNamedItem("endtime").Value;
-							if(startTime == endTime) continue; //Due to some odd reason there can be zero length labels. Right/Wrong we are going to skip those.
-							var mark = new Mark(TimeSpan.FromMilliseconds(Convert.ToDouble(startTime)));
-							mark.Duration = TimeSpan.FromMilliseconds(Convert.ToDouble(endTime)) - mark.StartTime;
-							mark.Text = label;
-							mc.AddMark(mark);
+							continue;
 						}
-					}
 
-					if (mc.Marks.Any())
-					{
-						counter++;
-						AddUniqueCollection(collections, mc);
+						var mark = new Mark(TimeSpan.FromMilliseconds(Convert.ToDouble(startTime)))
+						{
+							Duration = TimeSpan.FromMilliseconds(Convert.ToDouble(endTime)) - TimeSpan.FromMilliseconds(Convert.ToDouble(startTime)),
+							Text = effect.Attributes?.GetNamedItem("label")?.Value
+						};
+						collection.AddMark(mark);
 					}
 				}
+
+				if (collection.Marks.Any())
+				{
+					candidates.Add(collection);
+					layerNumber++;
+				}
+			}
+
+			return candidates;
+		}
+
+		private static void ConfigureTimingCollection(MarkCollection collection, string name, int layerNumber, IReadOnlyList<IMarkCollection> candidates)
+		{
+			switch (layerNumber)
+			{
+				case 1:
+					collection.CollectionType = MarkCollectionType.Phrase;
+					collection.Name = $"{name} - Phrase";
+					break;
+				case 2:
+					collection.CollectionType = MarkCollectionType.Word;
+					collection.Name = $"{name} - Word";
+					if (candidates.LastOrDefault() is { } wordParent)
+					{
+						collection.LinkedMarkCollectionId = wordParent.Id;
+					}
+					break;
+				case 3:
+					collection.CollectionType = MarkCollectionType.Phoneme;
+					collection.Name = $"{name} - Phoneme";
+					if (candidates.LastOrDefault() is { } phonemeParent)
+					{
+						collection.LinkedMarkCollectionId = phonemeParent.Id;
+					}
+					break;
 			}
 		}
 
-		public static void ImportPapagayoTracks(ICollection<IMarkCollection> markCollection)
+		internal static MarkCollectionImportResult ImportPapagayoTracks()
 		{
-			FileDialog openDialog = new OpenFileDialog();
-			openDialog.Filter = @"Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*";
-			openDialog.FilterIndex = 1;
-			openDialog.InitialDirectory = _lastFolder;
+			using FileDialog openDialog = new OpenFileDialog { Filter = @"Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*", FilterIndex = 1, InitialDirectory = _lastFolder };
 			if (openDialog.ShowDialog() != DialogResult.OK)
 			{
-				return;
+				return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.Papagayo);
 			}
-			PapagayoDoc papagayoFile = new PapagayoDoc();
-			string fileName = openDialog.FileName;
 			_lastFolder = Path.GetDirectoryName(openDialog.FileName);
-			papagayoFile.Load(fileName);
-			var fileWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-			int rownum = 0;
-			foreach (string voice in papagayoFile.VoiceList)
+			try
 			{
-				var phraseCollection = new MarkCollection();
-				phraseCollection.Name = $"{fileWithoutExtension} {voice} Phrases";
-				phraseCollection.ShowMarkBar = true;
-				phraseCollection.Decorator.Color = Color.FromArgb(205,242,162);
-				var wordCollection = new MarkCollection();
-				wordCollection.Name = $"{fileWithoutExtension} {voice} Words";
-				wordCollection.ShowMarkBar = true;
-				wordCollection.Decorator.Color = Color.FromArgb(242,205,162);
-				var phonemeCollection = new MarkCollection();
-				phonemeCollection.Name = $"{fileWithoutExtension} {voice} Phonemes";
-				phonemeCollection.ShowMarkBar = true;
-				phonemeCollection.Decorator.Color = Color.FromArgb(235,185,210);
-				var phrases = papagayoFile.PhraseList(voice);
-				foreach (var phrase in phrases)
+				var papagayoFile = new PapagayoDoc();
+				papagayoFile.Load(openDialog.FileName);
+				var fileName = Path.GetFileNameWithoutExtension(openDialog.FileName);
+				var candidates = new List<IMarkCollection>();
+				foreach (var voice in papagayoFile.VoiceList)
 				{
-					var mark = new Mark(TimeSpan.FromMilliseconds(phrase.StartMS));
-					mark.Duration = TimeSpan.FromMilliseconds(phrase.DurationMS);
-					mark.Text = phrase.Text;
-					phraseCollection.AddMark(mark);
-					foreach (var word in phrase.Words)
-					{
-						mark = new Mark(TimeSpan.FromMilliseconds(word.StartMS));
-						mark.Duration = TimeSpan.FromMilliseconds(word.EndMS) - mark.StartTime;
-						mark.Text = word.Text;
-						wordCollection.AddMark(mark);
-						foreach (var phoneme in word.Phonemes)
-						{
-							mark = new Mark(TimeSpan.FromMilliseconds(phoneme.StartMS));
-							mark.Duration = TimeSpan.FromMilliseconds(phoneme.EndMS) - mark.StartTime;
-							mark.Text = phoneme.TypeName;
-							phonemeCollection.AddMark(mark);
-						}
-					}
+					candidates.AddRange(MaterializePapagayoVoice(papagayoFile, fileName, voice));
 				}
 
-				phraseCollection.CollectionType = MarkCollectionType.Phrase;
-				AddUniqueCollection(markCollection, phraseCollection);
-				wordCollection.CollectionType = MarkCollectionType.Word;
-				wordCollection.LinkedMarkCollectionId = phraseCollection.Id;
-				AddUniqueCollection(markCollection, wordCollection);
-				phonemeCollection.CollectionType = MarkCollectionType.Phoneme;
-				phonemeCollection.LinkedMarkCollectionId = wordCollection.Id;
-				AddUniqueCollection(markCollection, phonemeCollection);
-
-
-				//phonemeCollection = new MarkCollection();
-				//phonemeCollection.Name = $"{fileWithoutExtension} {voice} Phonemes Coalesced";
-				//phonemeCollection.ShowMarkBar = true;
-				//phonemeCollection.Decorator.Color = Color.FromArgb(245, 75, 210); ;
-				//foreach (var phoneme in papagayoFile.PhonemeList(voice))
-				//{
-				//	var mark = new Mark(TimeSpan.FromMilliseconds(phoneme.StartMS));
-				//	mark.Duration = TimeSpan.FromMilliseconds(phoneme.EndMS) - mark.StartTime;
-				//	mark.Text = phoneme.TypeName;
-				//	phonemeCollection.AddMark(mark);
-				//}
-				//phonemeCollection.CollectionType = MarkCollectionType.Phoneme;
-				//markCollection.Add(phonemeCollection);
-				rownum++;
+				ShowPapagayoImportSummary(papagayoFile.VoiceList);
+				return MarkCollectionImportResult.Succeeded(MarkCollectionImportType.Papagayo, candidates);
 			}
-
-			string displayStr = rownum + " Voices imported to clipboard as Mark Collctions\n\n";
-			int j = 1;
-			foreach (string voiceStr in papagayoFile.VoiceList)
+			catch (Exception exception)
 			{
-				displayStr += "Row #" + j + " - " + voiceStr + "\n";
-				j++;
+				ShowImportError(exception, "There was an error importing the Papagayo marks.", "Papagayo Import Error");
+				return MarkCollectionImportResult.Failed(MarkCollectionImportType.Papagayo);
 			}
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm(displayStr, @"Papagayo Import", false, false);
+		}
+
+		internal static async Task<MarkCollectionImportResult> ImportSingingFacesTracksAsync()
+		{
+			var vendorInventoryWindow = new VendorInventoryWindow();
+			if (vendorInventoryWindow.ShowDialog() == true && vendorInventoryWindow.ViewModel is VendorInventoryWindowViewModel { SelectedSong: not null } viewModel)
+			{
+				try
+				{
+					var timing = await viewModel.GetSelectedSongTiming();
+					var xmlDocument = new XmlDocument();
+					xmlDocument.LoadXml(timing);
+					return MaterializeXTimingTracks(xmlDocument, MarkCollectionImportType.SingingFaces);
+				}
+				catch (Exception exception)
+				{
+					ShowImportError(exception, "There was an error importing the Singing Faces timing marks.", "Singing Faces Import Error");
+					return MarkCollectionImportResult.Failed(MarkCollectionImportType.SingingFaces);
+				}
+			}
+
+			return MarkCollectionImportResult.Cancelled(MarkCollectionImportType.SingingFaces);
+		}
+
+		private static IReadOnlyList<IMarkCollection> MaterializePapagayoVoice(PapagayoDoc papagayoFile, string fileName, string voice)
+		{
+			var phraseCollection = CreateNewCollection(Color.FromArgb(205, 242, 162), $"{fileName} {voice} Phrases");
+			phraseCollection.ShowMarkBar = true;
+			phraseCollection.CollectionType = MarkCollectionType.Phrase;
+			var wordCollection = CreateNewCollection(Color.FromArgb(242, 205, 162), $"{fileName} {voice} Words");
+			wordCollection.ShowMarkBar = true;
+			wordCollection.CollectionType = MarkCollectionType.Word;
+			wordCollection.LinkedMarkCollectionId = phraseCollection.Id;
+			var phonemeCollection = CreateNewCollection(Color.FromArgb(235, 185, 210), $"{fileName} {voice} Phonemes");
+			phonemeCollection.ShowMarkBar = true;
+			phonemeCollection.CollectionType = MarkCollectionType.Phoneme;
+			phonemeCollection.LinkedMarkCollectionId = wordCollection.Id;
+
+			foreach (var phrase in papagayoFile.PhraseList(voice))
+			{
+				phraseCollection.AddMark(new Mark(TimeSpan.FromMilliseconds(phrase.StartMS)) { Duration = TimeSpan.FromMilliseconds(phrase.DurationMS), Text = phrase.Text });
+				foreach (var word in phrase.Words)
+				{
+					wordCollection.AddMark(new Mark(TimeSpan.FromMilliseconds(word.StartMS)) { Duration = TimeSpan.FromMilliseconds(word.EndMS - word.StartMS), Text = word.Text });
+					foreach (var phoneme in word.Phonemes)
+					{
+						phonemeCollection.AddMark(new Mark(TimeSpan.FromMilliseconds(phoneme.StartMS)) { Duration = TimeSpan.FromMilliseconds(phoneme.EndMS - phoneme.StartMS), Text = phoneme.TypeName });
+					}
+				}
+			}
+
+			return [phraseCollection, wordCollection, phonemeCollection];
+		}
+
+		private static void ShowPapagayoImportSummary(IReadOnlyCollection<string> voices)
+		{
+			var display = $"{voices.Count} voices imported as Mark Collections\n\n" + string.Join("\n", voices.Select((voice, index) => $"Row #{index + 1} - {voice}"));
+			MessageBoxForm.msgIcon = SystemIcons.Information;
+			using var messageBox = new MessageBoxForm(display, "Papagayo Import", false, false);
 			messageBox.ShowDialog();
 		}
 
-        public static async void ImportSingingFacesTracks(ICollection<IMarkCollection> markCollection)
-        {
-            VendorInventoryWindow viw = new VendorInventoryWindow();
-            var result = viw.ShowDialog();
-            if (result.HasValue && result.Value)
-            {
-                if (viw.ViewModel is VendorInventoryWindowViewModel vm)
-                {
-                    if (vm.SelectedSong != null)
-                    {
-                        var timing = await vm.GetSelectedSongTiming();
-                        var xmlDoc = new XmlDocument();
-						xmlDoc.LoadXml(timing);
-						LoadXTimingTracks(xmlDoc, markCollection);
-                    }
-                    
-                }
-            }
-        }
+		private static void ShowImportError(Exception exception, string message, string title)
+		{
+			Logging.Error(exception, message);
+			using var messageBox = new MessageBoxForm(message, title, MessageBoxButtons.OK, SystemIcons.Error);
+			messageBox.ShowDialog();
+		}
 
 		//Beat Mark Collection Export routine 2-7-2014 JMB
 		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++
@@ -778,13 +689,6 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		public static string ToBGRHex(Color color)
 		{
 			return $"#{color.B:X2}{color.G:X2}{color.R:X2}";
-		}
-
-		private static void AddUniqueCollection(ICollection<IMarkCollection> collections, IMarkCollection markCollection)
-		{
-			var desiredName = string.IsNullOrWhiteSpace(markCollection.Name) ? "Mark Collection" : markCollection.Name;
-			markCollection.Name = MarkCollectionNameService.GetUniqueName(desiredName, collections);
-			collections.Add(markCollection);
 		}
 
 	}

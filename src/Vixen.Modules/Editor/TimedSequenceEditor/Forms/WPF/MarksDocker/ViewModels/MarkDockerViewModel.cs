@@ -106,39 +106,37 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#region ImportCollecton command
 
-		private Command _importCollectonCommand;
-
 		/// <summary>
 		/// Gets the ImportCollecton command.
 		/// </summary>
-		public Command ImportCollectionCommand
+		public TaskCommand ImportCollectionCommand
 		{
-			get { return _importCollectonCommand ?? (_importCollectonCommand = new Command(ImportCollection)); }
+			get { return field ??= new TaskCommand(ImportCollection); }
 		}
 
 		/// <summary>
 		/// Method to invoke when the ImportCollecton command is executed.
 		/// </summary>
-		private void ImportCollection()
+		private async Task ImportCollection()
 		{
 			var aDialog = new MarkCollectionImportDialog();
 
 			if (aDialog.ShowDialog() == DialogResult.OK)
 			{
 				if (aDialog.IsVixen3BeatSelection)
-					MarkImportExportService.ImportVixen3Beats(MarkCollections);
+					MarkImportExportService.ImportVixen3Beats();
 				if (aDialog.IsVampBarSelection || aDialog.IsAudacityBeatSelection)
-					MarkImportExportService.LoadBarLabels(MarkCollections);
+					MarkImportExportService.LoadBarLabels();
 				if (aDialog.IsVampBeatSelection)
-					MarkImportExportService.LoadBeatLabels(MarkCollections);
+					MarkImportExportService.LoadBeatLabels();
 				if (aDialog.IsXTimingSelection)
-					MarkImportExportService.LoadXTiming(MarkCollections);
+					MarkImportExportService.LoadXTiming();
 				if (aDialog.IsPapagayoSelection)
-					MarkImportExportService.ImportPapagayoTracks(MarkCollections);
+					MarkImportExportService.ImportPapagayoTracks();
 				if(aDialog.IsTimingTrackBrowserSelection)
-					MarkImportExportService.ImportSingingFacesTracks(MarkCollections);
+					await MarkImportExportService.ImportSingingFacesTracksAsync();
 				if (aDialog.IsPangolinBeyondSelection)
-					MarkImportExportService.ImportPangolinBeyondMarks(MarkCollections);
+					MarkImportExportService.ImportPangolinBeyondMarks();
 			}
 		}
 
