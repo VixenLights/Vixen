@@ -21,11 +21,18 @@
 			<Button Width="75" Margin="6" IsDefault="True" Command="{Binding OkCommand}">OK</Button>
 			<Button Width="75" Margin="6" IsCancel="True" Command="{Binding CancelCommand}">Cancel</Button>
 		</WrapPanel>
-		<StackPanel Margin="12">
-			<TextBlock Margin="0,0,0,8" Text="Select the imported Mark Collections to add to this sequence." TextWrapping="Wrap" />
-			<ListBox ItemsSource="{Binding Options}"
+		<Grid Margin="12">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<TextBlock Grid.Row="0" Margin="0,0,0,8" Text="Select the imported Mark Collections to add to this sequence." TextWrapping="Wrap" />
+			<ListBox Grid.Row="1"
+					 ItemsSource="{Binding Options}"
 					 SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
-					 HorizontalContentAlignment="Stretch">
+					 HorizontalContentAlignment="Stretch"
+					 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+					 ScrollViewer.VerticalScrollBarVisibility="Auto">
 				<ListBox.InputBindings>
 					<KeyBinding Key="Space" Command="{Binding ToggleSelectedOptionCommand}" />
 				</ListBox.InputBindings>
@@ -40,18 +47,19 @@
 									  Margin="0,0,8,0"
 									  Focusable="False"
 									  IsChecked="{Binding IsIncluded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-							<StackPanel Grid.Column="1">
-								<TextBlock Text="{Binding DisplayName}" />
-								<StackPanel Orientation="Horizontal"
-										Visibility="{Binding HasDuplicateName, Converter={StaticResource BooleanToVisibilityConverter}}">
-									<TextBlock Margin="0,2,4,0" Text="⚠" ToolTip="Duplicate collection name" />
-									<TextBlock Margin="0,2,0,0" Text="{Binding DuplicateNameMessage}" />
-								</StackPanel>
+							<StackPanel Grid.Column="1" Orientation="Horizontal">
+								<TextBlock VerticalAlignment="Center" Text="{Binding DisplayName}" />
+								<Image Width="16"
+									   Height="16"
+									   Margin="6,0,0,0"
+									   Source="/Resources;component/caution-icon.png"
+									   ToolTip="{Binding DuplicateNameMessage}"
+									   Visibility="{Binding HasDuplicateName, Converter={StaticResource BooleanToVisibilityConverter}}" />
 							</StackPanel>
 						</Grid>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 			</ListBox>
-		</StackPanel>
+		</Grid>
 	</DockPanel>
 </catel:Window>

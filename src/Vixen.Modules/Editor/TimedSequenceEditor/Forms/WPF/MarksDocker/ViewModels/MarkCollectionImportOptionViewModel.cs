@@ -42,6 +42,6 @@ namespace TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels
 
 		public bool HasDuplicateName { get; }
 
-		public string DuplicateNameMessage => HasDuplicateName ? "Name already exists in this sequence." : string.Empty;
+		public string DuplicateNameMessage => HasDuplicateName ? "Collection name already exists in this sequence. This will be renamed during import." : string.Empty;
 	}
 }

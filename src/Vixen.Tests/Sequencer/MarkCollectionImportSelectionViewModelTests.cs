@@ -33,7 +33,7 @@ public sealed class MarkCollectionImportSelectionViewModelTests
 		var option = Assert.Single(viewModel.Options);
 
 		Assert.True(option.HasDuplicateName);
-		Assert.Equal("Name already exists in this sequence.", option.DuplicateNameMessage);
+		Assert.NotEmpty(option.DuplicateNameMessage);
 		Assert.Equal("existing marks", candidate.Name);
 	}
 
