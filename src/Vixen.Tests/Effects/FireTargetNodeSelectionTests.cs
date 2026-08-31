@@ -8,19 +8,25 @@ using Vixen.Module.Effect;
 using Vixen.Module.Property;
 using Vixen.Sys;
 using VixenModules.Effect.Effect;
-using VixenModules.Effect.Wipe;
+using VixenModules.Effect.Fire;
 using VixenModules.Property.Location;
 using Xunit;
 
 namespace Vixen.Tests.Effects;
 
-public sealed class WipeTargetNodeSelectionTests
+/// <summary>
+/// Characterizes the Fire target-node selection contract and preserves its group-mode location rendering.
+/// </summary>
+public sealed class FireTargetNodeSelectionTests
 {
+	/// <summary>
+	/// Verifies that a new Fire effect defaults to across-target handling at depth zero.
+	/// </summary>
 	[Fact]
-	public void WipeModule_DefaultsToGroupTargetHandlingAndDepthZero()
+	public void Fire_DefaultsToGroupTargetHandlingAndDepthZero()
 	{
 		// Arrange
-		var effect = new WipeModule();
+		var effect = new Fire();
 
 		// Act
 		var targetNodeHandling = GetTargetNodeSelectionValue(effect, "TargetNodeHandling");
@@ -31,11 +37,14 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(0, depthOfEffect);
 	}
 
+	/// <summary>
+	/// Verifies that new Fire data defaults to across-target handling at depth zero.
+	/// </summary>
 	[Fact]
-	public void WipeData_DefaultsToGroupTargetSelectionAndDepthZero()
+	public void FireData_DefaultsToGroupTargetSelectionAndDepthZero()
 	{
 		// Arrange
-		var data = new WipeData();
+		var data = new FireData();
 
 		// Act
 		var targetNodeSelection = GetTargetNodeSelectionValue(data, "TargetNodeSelection");
@@ -46,11 +55,14 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(0, depthOfEffect);
 	}
 
+	/// <summary>
+	/// Verifies that Fire persists the target-handling settings.
+	/// </summary>
 	[Fact]
-	public void WipeData_TargetSelectionFieldsAreSerialized()
+	public void FireData_TargetSelectionFieldsAreSerialized()
 	{
 		// Arrange
-		var dataType = typeof(WipeData);
+		var dataType = typeof(FireData);
 
 		// Act
 		var targetNodeSelection = GetRequiredProperty(dataType, "TargetNodeSelection");
@@ -61,11 +73,14 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Contains(depthOfEffect.GetCustomAttributes(), attribute => attribute is DataMemberAttribute);
 	}
 
+	/// <summary>
+	/// Verifies that data saved before target-handling settings existed retains compatible defaults.
+	/// </summary>
 	[Fact]
-	public void WipeData_LegacyPayloadDefaultsToGroupTargetSelectionAndDepthZero()
+	public void FireData_LegacyPayloadDefaultsToGroupTargetSelectionAndDepthZero()
 	{
 		// Arrange
-		const string legacyJson = @"{""PulseTime"":1000,""PassCount"":1,""PulsePercent"":33}";
+		const string legacyJson = @"{""Location"":0}";
 
 		// Act
 		var data = DeserializeJson(legacyJson);
@@ -77,11 +92,35 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(0, depthOfEffect);
 	}
 
+	/// <summary>
+	/// Verifies that deserialization normalizes invalid target settings.
+	/// </summary>
 	[Fact]
-	public void WipeProperties_DeepSingleTargetShowsTargetHandlingButHidesDepthInGroupMode()
+	public void FireData_OnDeserializedNormalizesInvalidTargetSettings()
 	{
 		// Arrange
-		var effect = new WipeModule();
+		var data = new FireData
+		{
+			DepthOfEffect = -1,
+			TargetNodeSelection = (TargetNodeSelection)99
+		};
+
+		// Act
+		data.OnDeserialized(default);
+
+		// Assert
+		Assert.Equal(0, data.DepthOfEffect);
+		Assert.Equal(TargetNodeSelection.Group, data.TargetNodeSelection);
+	}
+
+	/// <summary>
+	/// Verifies that a deep target exposes handling selection while group mode hides its depth picker.
+	/// </summary>
+	[Fact]
+	public void FireProperties_DeepSingleTargetShowsTargetHandlingButHidesDepthInGroupMode()
+	{
+		// Arrange
+		var effect = new Fire();
 		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(3)]);
 		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Group);
 
@@ -97,84 +136,37 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.False(depthOfEffect.IsBrowsable);
 	}
 
+	/// <summary>
+	/// Verifies that a deep individual target exposes the useful target-depth picker.
+	/// </summary>
 	[Fact]
-	public void WipeProperties_DeepSingleTargetInIndividualModeShowsDepth()
+	public void FireProperties_DeepSingleTargetInIndividualModeShowsDepth()
 	{
 		// Arrange
-		var effect = new WipeModule();
+		var effect = new Fire();
 		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(3)]);
 		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
 
 		// Act
-		var properties = TypeDescriptor.GetProperties(effect);
-		var depthOfEffect = properties["DepthOfEffect"];
+		var depthOfEffect = TypeDescriptor.GetProperties(effect)["DepthOfEffect"];
 
 		// Assert
 		Assert.NotNull(depthOfEffect);
 		Assert.True(depthOfEffect.IsBrowsable);
 	}
 
+	/// <summary>
+	/// Verifies that Fire depth choices exclude leaf-equivalent values.
+	/// </summary>
 	[Fact]
-	public void WipeRender_DefaultGroupModeRendersLocatedLeavesTogether()
+	public void FireDepthConverter_ExcludesZeroAndMaximumDepth()
 	{
 		// Arrange
-		var firstLeaf = CreateLocatedLeaf("Leaf 1", 1, 1);
-		var secondLeaf = CreateLocatedLeaf("Leaf 2", 3, 1);
-		var effect = new WipeModule
-		{
-			TimeSpan = TimeSpan.FromMilliseconds(1000)
-		};
-		SetTargetNodesWithoutPropertyValidation(effect, [CreateGroupNode("Parent", firstLeaf, secondLeaf)]);
-
-		// Act
-		var preRenderSucceeded = effect.PreRender();
-		var intents = effect.Render();
-
-		// Assert
-		Assert.True(preRenderSucceeded);
-		Assert.Equal(new[] { firstLeaf.Element.Id, secondLeaf.Element.Id }.OrderBy(id => id), intents.ElementIds.OrderBy(id => id));
-	}
-
-	[Fact]
-	public void WipeRender_IndividualModeRestartsForEachDepthGroup()
-	{
-		// Arrange
-		var firstGroupStartLeaf = CreateLocatedLeaf("Group 1 Leaf 1", 1, 1);
-		var firstGroupEndLeaf = CreateLocatedLeaf("Group 1 Leaf 2", 3, 1);
-		var secondGroupStartLeaf = CreateLocatedLeaf("Group 2 Leaf 1", 101, 1);
-		var secondGroupEndLeaf = CreateLocatedLeaf("Group 2 Leaf 2", 103, 1);
-		var firstGroup = CreateGroupNode("Group 1", firstGroupStartLeaf, firstGroupEndLeaf);
-		var secondGroup = CreateGroupNode("Group 2", secondGroupStartLeaf, secondGroupEndLeaf);
-		var root = CreateGroupNode("Root", [firstGroup, secondGroup], 3);
-		var effect = new WipeModule
-		{
-			TimeSpan = TimeSpan.FromMilliseconds(1000)
-		};
-		SetTargetNodesWithoutPropertyValidation(effect, [root]);
-		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
-		SetPropertyValue(effect, "DepthOfEffect", 1);
-
-		// Act
-		var preRenderSucceeded = effect.PreRender();
-		var intents = effect.Render();
-
-		// Assert
-		Assert.True(preRenderSucceeded);
-		Assert.Equal(TimeSpan.Zero, GetFirstIntentStartTime(intents, firstGroupStartLeaf));
-		Assert.Equal(TimeSpan.Zero, GetFirstIntentStartTime(intents, secondGroupStartLeaf));
-		Assert.True(GetFirstIntentStartTime(intents, firstGroupEndLeaf) > TimeSpan.Zero);
-		Assert.True(GetFirstIntentStartTime(intents, secondGroupEndLeaf) > TimeSpan.Zero);
-	}
-
-	[Fact]
-	public void WipeDepthConverter_ExcludesZeroAndMaximumDepth()
-	{
-		// Arrange
-		var effect = new WipeModule();
+		var effect = new Fire();
 		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
 		var context = new Mock<ITypeDescriptorContext>();
 		context.SetupGet(typeDescriptorContext => typeDescriptorContext.Instance).Returns(effect);
-		var converter = new WipeTargetElementDepthConverter();
+		var converter = new FireTargetElementDepthConverter();
 
 		// Act
 		var values = converter.GetStandardValues(context.Object).Cast<string>().ToArray();
@@ -183,28 +175,33 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(["1", "2"], values);
 	}
 
+	/// <summary>
+	/// Verifies that an invalid individual target depth resets to the first useful depth.
+	/// </summary>
 	[Fact]
-	public void WipeProperties_IndividualModeResetsMaximumDepthToFirstUsefulDepth()
+	public void FireProperties_IndividualModeResetsMaximumDepthToFirstUsefulDepth()
 	{
 		// Arrange
-		var effect = new WipeModule();
+		var effect = new Fire();
 		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
 		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
-		SetPropertyValue(effect, "DepthOfEffect", 3);
 
 		// Act
-		TypeDescriptor.GetProperties(effect);
+		SetPropertyValue(effect, "DepthOfEffect", 3);
 		var depthOfEffect = GetIntValue(effect, "DepthOfEffect");
 
 		// Assert
 		Assert.Equal(1, depthOfEffect);
 	}
 
+	/// <summary>
+	/// Verifies that changing depth does not rebuild the property descriptor while a selector binding is updating.
+	/// </summary>
 	[Fact]
-	public void WipeProperties_ChangingDepthDoesNotRefreshItsPropertyDescriptor()
+	public void FireProperties_ChangingDepthDoesNotRefreshItsPropertyDescriptor()
 	{
 		// Arrange
-		var effect = new WipeModule();
+		var effect = new Fire();
 		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
 		var refreshCount = 0;
 		RefreshEventHandler refreshed = eventArgs =>
@@ -230,15 +227,18 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(0, refreshCount);
 	}
 
+	/// <summary>
+	/// Verifies that a stale depth selection which normalizes to the existing depth does not notify bindings.
+	/// </summary>
 	[Fact]
-	public void WipeProperties_NormalizedStaleDepthDoesNotNotifyBindings()
+	public void FireProperties_NormalizedStaleDepthDoesNotNotifyBindings()
 	{
 		// Arrange
-		var effect = new WipeModule();
+		var effect = new Fire();
 		var depthChangedCount = 0;
 		PropertyChangedEventHandler propertyChanged = (_, eventArgs) =>
 		{
-			if (eventArgs.PropertyName == nameof(WipeModule.DepthOfEffect))
+			if (eventArgs.PropertyName == nameof(Fire.DepthOfEffect))
 			{
 				depthChangedCount++;
 			}
@@ -260,18 +260,22 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(0, depthChangedCount);
 	}
 
+	/// <summary>
+	/// Verifies that changing targets notifies bindings when target normalization changes the selected depth.
+	/// </summary>
 	[Fact]
-	public void WipeProperties_TargetChangeNormalizingDepthNotifiesBindings()
+	public void FireProperties_TargetChangeNormalizingDepthNotifiesBindings()
 	{
 		// Arrange
-		var effect = new WipeModule();
+		var effect = new Fire();
 		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+		InvokeTargetNodesChanged(effect);
 		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
 		SetPropertyValue(effect, "DepthOfEffect", 2);
 		var depthChangedCount = 0;
 		PropertyChangedEventHandler propertyChanged = (_, eventArgs) =>
 		{
-			if (eventArgs.PropertyName == nameof(WipeModule.DepthOfEffect))
+			if (eventArgs.PropertyName == nameof(Fire.DepthOfEffect))
 			{
 				depthChangedCount++;
 			}
@@ -282,6 +286,7 @@ public sealed class WipeTargetNodeSelectionTests
 		{
 			// Act
 			SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(3)]);
+			InvokeTargetNodesChanged(effect);
 		}
 		finally
 		{
@@ -293,11 +298,14 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(1, depthChangedCount);
 	}
 
+	/// <summary>
+	/// Verifies that reapplying the existing target handling does not refresh the property descriptor.
+	/// </summary>
 	[Fact]
-	public void WipeProperties_ReapplyingTargetHandlingDoesNotRefreshItsPropertyDescriptor()
+	public void FireProperties_ReapplyingTargetHandlingDoesNotRefreshItsPropertyDescriptor()
 	{
 		// Arrange
-		var effect = new WipeModule();
+		var effect = new Fire();
 		var refreshCount = 0;
 		RefreshEventHandler refreshed = eventArgs =>
 		{
@@ -322,12 +330,91 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(0, refreshCount);
 	}
 
-	private static WipeData DeserializeJson(string json)
+	/// <summary>
+	/// Verifies that Fire's current default location mode renders all leaves under one selected group.
+	/// </summary>
+	[Fact]
+	public void FireRender_DefaultGroupModeRendersLocatedLeavesTogether()
 	{
-		var serializer = new DataContractJsonSerializer(typeof(WipeData));
+		// Arrange
+		var firstLeaf = CreateLocatedLeaf("Leaf 1", 1, 1);
+		var secondLeaf = CreateLocatedLeaf("Leaf 2", 3, 1);
+		var effect = new Fire
+		{
+			TargetPositioning = TargetPositioningType.Locations,
+			TimeSpan = TimeSpan.FromMilliseconds(1000)
+		};
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateGroupNode("Parent", firstLeaf, secondLeaf)]);
+
+		// Act
+		var preRenderSucceeded = effect.PreRender();
+		var intents = effect.Render();
+
+		// Assert
+		Assert.True(preRenderSucceeded);
+		Assert.Equal(
+			new[] { firstLeaf.Element.Id, secondLeaf.Element.Id }.OrderBy(id => id),
+			intents.ElementIds.OrderBy(id => id));
+	}
+
+	/// <summary>
+	/// Verifies that individual depth groups use separate local location buffers.
+	/// </summary>
+	[Fact]
+	public void FireRender_IndividualDepthGroupsUseLocalLocationBuffers()
+	{
+		// Arrange
+		var firstGroup = CreateGroupNode("Group 1", CreateLocatedLeaf("Group 1 Leaf 1", 1, 1), CreateLocatedLeaf("Group 1 Leaf 2", 3, 1));
+		var secondGroup = CreateGroupNode("Group 2", CreateLocatedLeaf("Group 2 Leaf 1", 101, 1), CreateLocatedLeaf("Group 2 Leaf 2", 103, 1));
+		var effect = new RenderTrackingFire
+		{
+			TargetPositioning = TargetPositioningType.Locations,
+			TimeSpan = TimeSpan.FromMilliseconds(1000)
+		};
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateGroupNode("Root", [firstGroup, secondGroup], 3)]);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+		SetPropertyValue(effect, "DepthOfEffect", 1);
+
+		// Act
+		var preRenderSucceeded = effect.PreRender();
+
+		// Assert
+		Assert.True(preRenderSucceeded);
+		Assert.Equal([(3, 1), (3, 1)], effect.RenderDimensions);
+	}
+
+	/// <summary>
+	/// Verifies that individually selected target roots are not combined into one location buffer.
+	/// </summary>
+	[Fact]
+	public void FireRender_IndividualMultipleTargetsUseSeparateLocationBuffers()
+	{
+		// Arrange
+		var firstTarget = CreateGroupNode("Target 1", CreateLocatedLeaf("Target 1 Leaf 1", 1, 1), CreateLocatedLeaf("Target 1 Leaf 2", 3, 1));
+		var secondTarget = CreateGroupNode("Target 2", CreateLocatedLeaf("Target 2 Leaf 1", 101, 1), CreateLocatedLeaf("Target 2 Leaf 2", 103, 1));
+		var effect = new RenderTrackingFire
+		{
+			TargetPositioning = TargetPositioningType.Locations,
+			TimeSpan = TimeSpan.FromMilliseconds(1000)
+		};
+		SetTargetNodesWithoutPropertyValidation(effect, [firstTarget, secondTarget]);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+
+		// Act
+		var preRenderSucceeded = effect.PreRender();
+
+		// Assert
+		Assert.True(preRenderSucceeded);
+		Assert.Equal([(3, 1), (3, 1)], effect.RenderDimensions);
+		Assert.Equal(0, effect.DepthOfEffect);
+	}
+
+	private static FireData DeserializeJson(string json)
+	{
+		var serializer = new DataContractJsonSerializer(typeof(FireData));
 		using var readStream = new MemoryStream(Encoding.UTF8.GetBytes(json));
 
-		return (WipeData)serializer.ReadObject(readStream)!;
+		return (FireData)serializer.ReadObject(readStream)!;
 	}
 
 	private static TargetNodeSelection GetTargetNodeSelectionValue(object instance, string propertyName)
@@ -350,9 +437,7 @@ public sealed class WipeTargetNodeSelectionTests
 
 	private static void SetPropertyValue(object instance, string propertyName, object value)
 	{
-		var property = GetRequiredProperty(instance.GetType(), propertyName);
-
-		property.SetValue(instance, value);
+		GetRequiredProperty(instance.GetType(), propertyName).SetValue(instance, value);
 	}
 
 	private static PropertyInfo GetRequiredProperty(Type type, string propertyName)
@@ -438,22 +523,28 @@ public sealed class WipeTargetNodeSelectionTests
 		items[property.TypeId] = property;
 	}
 
-	private static TimeSpan GetFirstIntentStartTime(EffectIntents intents, IElementNode node)
-	{
-		var intentNodes = intents.GetIntentNodesForElement(node.Element.Id);
-		Assert.NotNull(intentNodes);
-
-		return intentNodes.Min(intentNode => intentNode.StartTime);
-	}
-
-	private static void SetTargetNodesWithoutPropertyValidation(WipeModule effect, IElementNode[] targetNodes)
+	private static void SetTargetNodesWithoutPropertyValidation(Fire effect, IElementNode[] targetNodes)
 	{
 		var targetNodesField = typeof(EffectModuleInstanceBase).GetField("_targetNodes", BindingFlags.Instance | BindingFlags.NonPublic);
 		Assert.NotNull(targetNodesField);
 		targetNodesField.SetValue(effect, targetNodes);
+	}
 
-		var targetNodesChanged = typeof(WipeModule).GetMethod("TargetNodesChanged", BindingFlags.Instance | BindingFlags.NonPublic);
+	private static void InvokeTargetNodesChanged(Fire effect)
+	{
+		var targetNodesChanged = typeof(Fire).GetMethod("TargetNodesChanged", BindingFlags.Instance | BindingFlags.NonPublic);
 		Assert.NotNull(targetNodesChanged);
 		targetNodesChanged.Invoke(effect, []);
+	}
+
+	private sealed class RenderTrackingFire : Fire
+	{
+		public List<(int Width, int Height)> RenderDimensions { get; } = [];
+
+		protected override void SetupRender()
+		{
+			RenderDimensions.Add((BufferWi, BufferHt));
+			base.SetupRender();
+		}
 	}
 }

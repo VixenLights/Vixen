@@ -1,6 +1,8 @@
 ﻿using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
+using System.ComponentModel;
 using Vixen.Module;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -25,6 +27,59 @@ namespace VixenModules.Effect.Fire
 			_data = new FireData();
 			EnableTargetPositioning(true, true);
 			InitAllAttributes();
+		}
+
+		/// <summary>
+		/// Updates target-specific property visibility and normalized targeting values after the selected targets change.
+		/// </summary>
+		protected override void TargetNodesChanged()
+		{
+			var previousTargetNodeHandling = _data.TargetNodeSelection;
+			var previousDepth = _data.DepthOfEffect;
+			base.TargetNodesChanged();
+			UpdateTargetingAttributes();
+			if (_data.TargetNodeSelection != previousTargetNodeHandling)
+			{
+				OnPropertyChanged(nameof(TargetNodeHandling));
+			}
+
+			if (_data.DepthOfEffect != previousDepth)
+			{
+				OnPropertyChanged(nameof(DepthOfEffect));
+			}
+
+			TypeDescriptor.Refresh(this);
+		}
+
+		/// <summary>
+		/// Gets the target-root groups that receive independent Fire simulations.
+		/// </summary>
+		/// <returns>The selected targets as one group, or the groups resolved by individual target handling.</returns>
+		protected override IEnumerable<IReadOnlyCollection<IElementNode>> GetRenderGroups()
+		{
+			if (TargetNodeHandling == TargetNodeSelection.Group)
+			{
+				return base.GetRenderGroups();
+			}
+
+			if (TargetNodes.Length > 1)
+			{
+				return TargetNodes
+					.Where(node => node != null)
+					.Distinct()
+					.Select(node => (IReadOnlyCollection<IElementNode>)new[] {node});
+			}
+
+			var targetNode = TargetNodes.FirstOrDefault();
+			if (targetNode == null)
+			{
+				return Enumerable.Empty<IReadOnlyCollection<IElementNode>>();
+			}
+
+			return GetNodesAtEffectDepth(targetNode, DepthOfEffect)
+				.Where(node => node != null)
+				.Distinct()
+				.Select(node => (IReadOnlyCollection<IElementNode>)new[] {node});
 		}
 
 		#region Setup
@@ -118,6 +173,61 @@ namespace VixenModules.Effect.Fire
 
 		#endregion
 
+		#region Target handling
+
+		/// <summary>
+		/// Gets or sets how Fire applies to the selected target nodes.
+		/// </summary>
+		/// <value>The target-node handling mode. The default is <see cref="TargetNodeSelection.Group" />.</value>
+		[Value]
+		[ProviderCategory(@"Behavior", 0)]
+		[ProviderDisplayName(@"FireTargetNodeSelection")]
+		[ProviderDescription(@"FireTargetNodeSelection")]
+		public TargetNodeSelection TargetNodeHandling
+		{
+			get { return _data.TargetNodeSelection; }
+			set
+			{
+				var previousTargetNodeSelection = _data.TargetNodeSelection;
+				_data.TargetNodeSelection = value;
+				UpdateTargetingAttributes();
+				if (_data.TargetNodeSelection != previousTargetNodeSelection)
+				{
+					IsDirty = true;
+					OnPropertyChanged();
+					TypeDescriptor.Refresh(this);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the target hierarchy depth used when target-node handling is individual.
+		/// </summary>
+		/// <value>The selected target hierarchy depth. The default is <c>0</c>.</value>
+		[Value]
+		[ProviderCategory(@"Depth", 20)]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
+		[TypeConverter(typeof(FireTargetElementDepthConverter))]
+		[PropertyEditor("SelectionEditor")]
+		public int DepthOfEffect
+		{
+			get { return _data.DepthOfEffect; }
+			set
+			{
+				var previousDepth = _data.DepthOfEffect;
+				_data.DepthOfEffect = value;
+				UpdateTargetingAttributes();
+				if (_data.DepthOfEffect != previousDepth)
+				{
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		#endregion
+
 		#region Information
 
 		public override string Information
@@ -155,6 +265,49 @@ namespace VixenModules.Effect.Fire
 		private void InitAllAttributes()
 		{
 			UpdateStringOrientationAttributes(true);
+			UpdateTargetingAttributes();
+		}
+
+		private void UpdateTargetingAttributes()
+		{
+			var depth = DetermineDepth();
+			var hasUsefulIntermediateDepth = HasUsefulIntermediateDepth(depth);
+			var targetNodeHandlingVisible = TargetNodes.Any() && (TargetNodes.Length > 1 || depth > 2);
+
+			if (!targetNodeHandlingVisible && TargetNodeHandling == TargetNodeSelection.Individual)
+			{
+				_data.TargetNodeSelection = TargetNodeSelection.Group;
+			}
+
+			if (TargetNodes.Length > 1 || TargetNodeHandling == TargetNodeSelection.Group)
+			{
+				_data.DepthOfEffect = 0;
+			}
+			else if (TargetNodeHandling == TargetNodeSelection.Individual && !IsUsefulIntermediateDepth(DepthOfEffect, depth))
+			{
+				_data.DepthOfEffect = GetFirstUsefulIntermediateDepth(depth);
+			}
+
+			SetBrowsable(new Dictionary<string, bool>(2)
+			{
+				{nameof(TargetNodeHandling), targetNodeHandlingVisible},
+				{nameof(DepthOfEffect), TargetNodeHandling == TargetNodeSelection.Individual && TargetNodes.Length == 1 && hasUsefulIntermediateDepth}
+			});
+		}
+
+		private static bool HasUsefulIntermediateDepth(int depth)
+		{
+			return depth > 2;
+		}
+
+		private static bool IsUsefulIntermediateDepth(int selectedDepth, int availableDepth)
+		{
+			return selectedDepth > 0 && selectedDepth < availableDepth - 1;
+		}
+
+		private static int GetFirstUsefulIntermediateDepth(int depth)
+		{
+			return HasUsefulIntermediateDepth(depth) ? 1 : 0;
 		}
 
 		// 0 <= x < BufferWi

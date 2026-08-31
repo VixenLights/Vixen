@@ -20,6 +20,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Common.WPFCommon.Controls;
 using Vixen.Attributes;
 using Vixen.Module.Effect;
@@ -140,6 +141,9 @@ namespace VixenModules.Editor.EffectEditor
 		private string _informationLink = InformationLinkUrl;
 		private GridEntryCollection<PropertyItem> _properties;
 		private IComparer<PropertyItem> _propertyComparer;
+		private bool _refreshAllStandardValues;
+		private readonly HashSet<PropertyItem> _standardValuesRefreshItems = [];
+		private bool _standardValuesRefreshQueued;
 
 		/// <summary>
 		///     Gets or sets the brush for items background. This is a dependency property.
@@ -854,9 +858,46 @@ namespace VixenModules.Editor.EffectEditor
 
 		#region Private members
 
-		internal void ComponentChanged()
+		/// <summary>
+		/// Queues a refresh of one property's standard values, or all properties when <paramref name="propertyItem" /> is <see langword="null" />.
+		/// </summary>
+		/// <param name="propertyItem">The property whose standard values changed, or <see langword="null" /> when every property's values may have changed.</param>
+		internal void QueueStandardValuesRefresh(PropertyItem propertyItem = null)
 		{
-			foreach (var propertyItem in Properties)
+			if (!Dispatcher.CheckAccess())
+			{
+				Dispatcher.BeginInvoke(new Action(() => QueueStandardValuesRefresh(propertyItem)));
+				return;
+			}
+
+			if (propertyItem == null)
+			{
+				_refreshAllStandardValues = true;
+				_standardValuesRefreshItems.Clear();
+			}
+			else if (!_refreshAllStandardValues)
+			{
+				_standardValuesRefreshItems.Add(propertyItem);
+			}
+
+			if (_standardValuesRefreshQueued)
+			{
+				return;
+			}
+
+			_standardValuesRefreshQueued = true;
+			Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(RefreshStandardValues));
+		}
+
+		private void RefreshStandardValues()
+		{
+			_standardValuesRefreshQueued = false;
+			var propertyItems = _refreshAllStandardValues
+				? Properties.ToList()
+				: _standardValuesRefreshItems.ToList();
+			_refreshAllStandardValues = false;
+			_standardValuesRefreshItems.Clear();
+			foreach (var propertyItem in propertyItems)
 			{
 				propertyItem.OnComponentChanged();
 			}
@@ -942,7 +983,6 @@ namespace VixenModules.Editor.EffectEditor
 						// clear our property hashes
 						//DoReload();
 						UpdateBrowsable();
-						ComponentChanged();
 						return;
 					}
 				}

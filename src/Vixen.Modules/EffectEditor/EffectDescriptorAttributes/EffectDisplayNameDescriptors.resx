@@ -993,6 +993,9 @@
   <data name="WipeTargetNodeSelection" xml:space="preserve">
     <value>Wipe</value>
   </data>
+  <data name="FireTargetNodeSelection" xml:space="preserve">
+    <value>Fire</value>
+  </data>
   <data name="PhaseShift" xml:space="preserve">
     <value>Phase Shift</value>
   </data>

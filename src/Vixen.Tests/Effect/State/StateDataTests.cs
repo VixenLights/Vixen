@@ -793,6 +793,56 @@ public class StateDataTests
 	}
 
 	[Fact]
+	public void StateDefinitionChange_UpdatesStateItemOptions()
+	{
+		// Arrange
+		var first = CreateDefinition("First", CreateStateItem("Open", Color.Green));
+		var second = CreateDefinition("Second", CreateStateItem("Closed", Color.Red));
+		var effect = CreateEffectWithDefinitions([first, second]);
+		var changedProperties = new List<string?>();
+		effect.PropertyChanged += (_, e) => changedProperties.Add(e.PropertyName);
+
+		// Act
+		effect.StateDefinition = "Second";
+
+		// Assert
+		Assert.Contains(nameof(StateEffect.StateItem), changedProperties);
+		Assert.Equal([StateEffect.AllStateItemsLabel, "Closed"], effect.GetStateItemOptions());
+	}
+
+	[Fact]
+	public void TargetNodesChange_RefreshesExistingCustomStateItemOptions()
+	{
+		// Arrange
+		var sourceDefinition = CreateDefinition("Door", CreateStateItem("Open", Color.Green));
+		var destinationDefinition = CreateDefinition("Door", CreateStateItem("Closed", Color.Red));
+		destinationDefinition.Id = sourceDefinition.Id;
+		var sourceTarget = CreateNode(Guid.NewGuid(), "Source");
+		var destinationTarget = CreateNode(Guid.NewGuid(), "Destination");
+		AddStateModule(sourceTarget, [sourceDefinition]);
+		AddStateModule(destinationTarget, [destinationDefinition]);
+		var effect = new StateEffect
+		{
+			TargetNodes = [sourceTarget],
+			ModuleData = new StateEffectData
+			{
+				SelectedStateDefinitionId = sourceDefinition.Id
+			}
+		};
+		effect.RenderSource = StateRenderSource.Custom;
+		var row = Assert.Single(effect.CustomStateItems);
+		var changedProperties = new List<string?>();
+		row.PropertyChanged += (_, e) => changedProperties.Add(e.PropertyName);
+
+		// Act
+		effect.TargetNodes = [destinationTarget];
+
+		// Assert
+		Assert.Contains(nameof(CustomStateItem.StateItem), changedProperties);
+		Assert.Contains("Closed", effect.GetCustomStateItemOptions(row));
+	}
+
+	[Fact]
 	public void SelectCustomStateItem_ResetsColorToSelectedStateItemColor()
 	{
 		// Arrange

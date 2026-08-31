@@ -35,10 +35,25 @@ namespace VixenModules.Effect.Wipe
 		private int _pulsePercent;
 		private int _steps;
 
+		/// <summary>
+		/// Updates target-specific property visibility and normalized targeting values after the selected targets change.
+		/// </summary>
 		protected override void TargetNodesChanged()
 		{
+			var previousTargetNodeHandling = _data.TargetNodeSelection;
+			var previousDepth = _data.DepthOfEffect;
 			CheckForInvalidColorData();
 			UpdateAttributes();
+			if (_data.TargetNodeSelection != previousTargetNodeHandling)
+			{
+				OnPropertyChanged(nameof(TargetNodeHandling));
+			}
+
+			if (_data.DepthOfEffect != previousDepth)
+			{
+				OnPropertyChanged(nameof(DepthOfEffect));
+			}
+
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -959,11 +974,15 @@ namespace VixenModules.Effect.Wipe
 			get { return _data.TargetNodeSelection; }
 			set
 			{
+				var previousTargetNodeSelection = _data.TargetNodeSelection;
 				_data.TargetNodeSelection = value;
-				IsDirty = true;
-				OnPropertyChanged();
 				UpdateAttributes();
-				TypeDescriptor.Refresh(this);
+				if (_data.TargetNodeSelection != previousTargetNodeSelection)
+				{
+					IsDirty = true;
+					OnPropertyChanged();
+					TypeDescriptor.Refresh(this);
+				}
 			}
 		}
 
@@ -982,11 +1001,14 @@ namespace VixenModules.Effect.Wipe
 			get { return _data.DepthOfEffect; }
 			set
 			{
+				var previousDepth = _data.DepthOfEffect;
 				_data.DepthOfEffect = value;
-				IsDirty = true;
-				OnPropertyChanged();
 				UpdateAttributes();
-				TypeDescriptor.Refresh(this);
+				if (_data.DepthOfEffect != previousDepth)
+				{
+					IsDirty = true;
+					OnPropertyChanged();
+				}
 			}
 		}
 

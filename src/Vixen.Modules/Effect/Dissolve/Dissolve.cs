@@ -32,11 +32,21 @@ namespace VixenModules.Effect.Dissolve
 			InitAllAttributes();
 		}
 
+		/// <summary>
+		/// Validates target-dependent color and depth settings after the selected targets change.
+		/// </summary>
 		protected override void TargetNodesChanged()
 		{
+			var previousDepth = _data.DepthOfEffect;
 			if (TargetNodes.Any())
 			{
 				CheckForInvalidColorData();
+			}
+
+			NormalizeDepthOfEffect();
+			if (_data.DepthOfEffect != previousDepth)
+			{
+				OnPropertyChanged(nameof(DepthOfEffect));
 			}
 		}
 
@@ -466,9 +476,32 @@ namespace VixenModules.Effect.Dissolve
 			get { return _data.DepthOfEffect; }
 			set
 			{
+				var previousDepth = _data.DepthOfEffect;
 				_data.DepthOfEffect = value;
-				IsDirty = true;
-				OnPropertyChanged();
+				NormalizeDepthOfEffect();
+				if (_data.DepthOfEffect != previousDepth)
+				{
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		private void NormalizeDepthOfEffect()
+		{
+			if (!TargetNodes.Any())
+			{
+				return;
+			}
+
+			var maximumDepth = TargetNodes
+				.Where(node => node != null)
+				.Select(node => node.GetMaxChildDepth())
+				.DefaultIfEmpty(0)
+				.Min();
+			if (_data.DepthOfEffect < 0 || _data.DepthOfEffect > maximumDepth - 1)
+			{
+				_data.DepthOfEffect = 0;
 			}
 		}
 
