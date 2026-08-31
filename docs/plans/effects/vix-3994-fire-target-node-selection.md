@@ -14,7 +14,7 @@ Existing Fire effects must remain visually and serially compatible. They will lo
 
 - [x] (2026-08-31 16:00Z) Read VIX-3994, its clarification comment, `.agents/PLANS.md`, the Wipe ExecPlan/implementation, Spin and Chase precedents, Fire, `PixelEffectBase`, and Fire's existing test coverage.
 - [x] (2026-08-31 21:42Z) Updated VIX-3994 with the final user-facing summary, scope, acceptance criteria, and validation plan. No repository code or tests changed.
-- [ ] Add focused characterization tests for Fire target handling and preserve the current group-render result.
+- [x] (2026-08-31 22:01Z) Added `FireTargetNodeSelectionTests` for default data/effect settings, serialized fields, legacy-data compatibility, editor visibility, and default group-mode location rendering. Full `Vixen_Tests` build passed; the focused filter passed 1 group-render test and failed 6 tests only for the deliberately absent Fire target-selection contract.
 - [ ] Add persisted Fire target settings, editor attributes, localized labels, and depth selection validation.
 - [ ] Add the narrow scoped-rendering seam and implement independent Fire rendering for strings and locations.
 - [ ] Run focused and broader validation, update the Jira issue, and record final evidence in this plan.
@@ -29,6 +29,8 @@ Existing Fire effects must remain visually and serially compatible. They will lo
   Evidence: `src/Vixen.Modules/Effect/Fire/Fire.cs` allocates `_fireBuffer` in `SetupRender()`, mutates it once per frame in `GenerateFireBuffer()`, and clears it in `CleanUpRender()`.
 - Observation: the VIX-3994 comment explicitly removes the initial location-only limitation.
   Evidence: Jira comment dated 2026-08-31: “This could be useful on strings or locations, so removing the original restriction that it should target only locations.”
+- Observation: The characterization tests can protect legacy group-mode output without adding a deterministic random source to Fire.
+  Evidence: `FireRender_DefaultGroupModeRendersLocatedLeavesTogether` passes through the existing Fire lifecycle and verifies both located leaves receive intents. The remaining focused failures all stop at missing `TargetNodeHandling`, `DepthOfEffect`, `TargetNodeSelection`, or their data members.
 
 ## Decision Log
 
@@ -53,6 +55,8 @@ Existing Fire effects must remain visually and serially compatible. They will lo
 Planning is complete. No production code, tests, JIRA fields, or issue comments were changed while creating this ExecPlan.
 
 Milestone 1 is complete. VIX-3994 now describes the Fire target-handling choice for both strings and preview locations, compatibility expectations for existing effects, user-facing acceptance criteria, and automated/manual validation outcomes. The issue remains in its existing Accepted status.
+
+Milestone 2 is complete. `src/Vixen.Tests/Effects/FireTargetNodeSelectionTests.cs` adds seven focused tests. `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` completed successfully. The focused `FireTargetNodeSelection` test run passed the existing group-mode location rendering characterization and failed the other six tests only because the Milestone 3 data and property APIs are intentionally not implemented yet.
 
 At implementation completion, replace this entry with the final user-visible outcome, the exact validation results, any remaining limitations, and lessons that affected the final design.
 
@@ -205,3 +209,5 @@ The implementation must end with these persisted Fire data members in `VixenModu
 Plan created 2026-08-31 / Codex. Reason: VIX-3994 requires a self-contained implementation plan following the established Wipe, Chase, and Spin target-node pattern while extending it safely to Fire's shared pixel rendering pipeline.
 
 Plan revised 2026-08-31 / Codex. Reason: Milestone 1 updated VIX-3994 with the final user-facing requirements, acceptance criteria, and validation plan before repository implementation begins.
+
+Plan revised 2026-08-31 / Codex. Reason: Milestone 2 added focused Fire target-selection characterization tests and recorded their expected pre-implementation results.
