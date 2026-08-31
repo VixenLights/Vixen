@@ -261,6 +261,39 @@ public sealed class WipeTargetNodeSelectionTests
 	}
 
 	[Fact]
+	public void WipeProperties_TargetChangeNormalizingDepthNotifiesBindings()
+	{
+		// Arrange
+		var effect = new WipeModule();
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+		SetPropertyValue(effect, "DepthOfEffect", 2);
+		var depthChangedCount = 0;
+		PropertyChangedEventHandler propertyChanged = (_, eventArgs) =>
+		{
+			if (eventArgs.PropertyName == nameof(WipeModule.DepthOfEffect))
+			{
+				depthChangedCount++;
+			}
+		};
+		effect.PropertyChanged += propertyChanged;
+
+		try
+		{
+			// Act
+			SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(3)]);
+		}
+		finally
+		{
+			effect.PropertyChanged -= propertyChanged;
+		}
+
+		// Assert
+		Assert.Equal(1, effect.DepthOfEffect);
+		Assert.Equal(1, depthChangedCount);
+	}
+
+	[Fact]
 	public void WipeProperties_ReapplyingTargetHandlingDoesNotRefreshItsPropertyDescriptor()
 	{
 		// Arrange

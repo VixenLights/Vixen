@@ -20,6 +20,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Common.WPFCommon.Controls;
 using Vixen.Attributes;
 using Vixen.Module.Effect;
@@ -140,6 +141,7 @@ namespace VixenModules.Editor.EffectEditor
 		private string _informationLink = InformationLinkUrl;
 		private GridEntryCollection<PropertyItem> _properties;
 		private IComparer<PropertyItem> _propertyComparer;
+		private bool _standardValuesRefreshQueued;
 
 		/// <summary>
 		///     Gets or sets the brush for items background. This is a dependency property.
@@ -854,8 +856,26 @@ namespace VixenModules.Editor.EffectEditor
 
 		#region Private members
 
-		internal void ComponentChanged()
+		internal void QueueStandardValuesRefresh()
 		{
+			if (!Dispatcher.CheckAccess())
+			{
+				Dispatcher.BeginInvoke(new Action(QueueStandardValuesRefresh));
+				return;
+			}
+
+			if (_standardValuesRefreshQueued)
+			{
+				return;
+			}
+
+			_standardValuesRefreshQueued = true;
+			Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(RefreshStandardValues));
+		}
+
+		private void RefreshStandardValues()
+		{
+			_standardValuesRefreshQueued = false;
 			foreach (var propertyItem in Properties)
 			{
 				propertyItem.OnComponentChanged();
@@ -942,7 +962,6 @@ namespace VixenModules.Editor.EffectEditor
 						// clear our property hashes
 						//DoReload();
 						UpdateBrowsable();
-						ComponentChanged();
 						return;
 					}
 				}

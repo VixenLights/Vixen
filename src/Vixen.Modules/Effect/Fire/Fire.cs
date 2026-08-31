@@ -30,12 +30,24 @@ namespace VixenModules.Effect.Fire
 		}
 
 		/// <summary>
-		/// Updates target-specific property visibility after the selected targets change.
+		/// Updates target-specific property visibility and normalized targeting values after the selected targets change.
 		/// </summary>
 		protected override void TargetNodesChanged()
 		{
+			var previousTargetNodeHandling = _data.TargetNodeSelection;
+			var previousDepth = _data.DepthOfEffect;
 			base.TargetNodesChanged();
 			UpdateTargetingAttributes();
+			if (_data.TargetNodeSelection != previousTargetNodeHandling)
+			{
+				OnPropertyChanged(nameof(TargetNodeHandling));
+			}
+
+			if (_data.DepthOfEffect != previousDepth)
+			{
+				OnPropertyChanged(nameof(DepthOfEffect));
+			}
+
 			TypeDescriptor.Refresh(this);
 		}
 

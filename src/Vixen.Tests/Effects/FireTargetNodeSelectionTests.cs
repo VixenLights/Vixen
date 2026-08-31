@@ -261,6 +261,44 @@ public sealed class FireTargetNodeSelectionTests
 	}
 
 	/// <summary>
+	/// Verifies that changing targets notifies bindings when target normalization changes the selected depth.
+	/// </summary>
+	[Fact]
+	public void FireProperties_TargetChangeNormalizingDepthNotifiesBindings()
+	{
+		// Arrange
+		var effect = new Fire();
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+		InvokeTargetNodesChanged(effect);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+		SetPropertyValue(effect, "DepthOfEffect", 2);
+		var depthChangedCount = 0;
+		PropertyChangedEventHandler propertyChanged = (_, eventArgs) =>
+		{
+			if (eventArgs.PropertyName == nameof(Fire.DepthOfEffect))
+			{
+				depthChangedCount++;
+			}
+		};
+		effect.PropertyChanged += propertyChanged;
+
+		try
+		{
+			// Act
+			SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(3)]);
+			InvokeTargetNodesChanged(effect);
+		}
+		finally
+		{
+			effect.PropertyChanged -= propertyChanged;
+		}
+
+		// Assert
+		Assert.Equal(1, effect.DepthOfEffect);
+		Assert.Equal(1, depthChangedCount);
+	}
+
+	/// <summary>
 	/// Verifies that reapplying the existing target handling does not refresh the property descriptor.
 	/// </summary>
 	[Fact]
@@ -490,6 +528,13 @@ public sealed class FireTargetNodeSelectionTests
 		var targetNodesField = typeof(EffectModuleInstanceBase).GetField("_targetNodes", BindingFlags.Instance | BindingFlags.NonPublic);
 		Assert.NotNull(targetNodesField);
 		targetNodesField.SetValue(effect, targetNodes);
+	}
+
+	private static void InvokeTargetNodesChanged(Fire effect)
+	{
+		var targetNodesChanged = typeof(Fire).GetMethod("TargetNodesChanged", BindingFlags.Instance | BindingFlags.NonPublic);
+		Assert.NotNull(targetNodesChanged);
+		targetNodesChanged.Invoke(effect, []);
 	}
 
 	private sealed class RenderTrackingFire : Fire

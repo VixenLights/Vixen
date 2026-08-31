@@ -35,10 +35,25 @@ namespace VixenModules.Effect.Wipe
 		private int _pulsePercent;
 		private int _steps;
 
+		/// <summary>
+		/// Updates target-specific property visibility and normalized targeting values after the selected targets change.
+		/// </summary>
 		protected override void TargetNodesChanged()
 		{
+			var previousTargetNodeHandling = _data.TargetNodeSelection;
+			var previousDepth = _data.DepthOfEffect;
 			CheckForInvalidColorData();
 			UpdateAttributes();
+			if (_data.TargetNodeSelection != previousTargetNodeHandling)
+			{
+				OnPropertyChanged(nameof(TargetNodeHandling));
+			}
+
+			if (_data.DepthOfEffect != previousDepth)
+			{
+				OnPropertyChanged(nameof(DepthOfEffect));
+			}
+
 			TypeDescriptor.Refresh(this);
 		}
 

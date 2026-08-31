@@ -20,6 +20,8 @@ Existing Fire effects must remain visually and serially compatible. They will lo
 - [x] (2026-08-31 22:50Z) Removed the re-entrant descriptor refresh from Fire's `DepthOfEffect` setter after manual target-drag testing exposed a property-grid refresh loop. The setter now normalizes before raising its change notification. A focused regression test confirms depth changes do not issue a `TypeDescriptor` refresh; the full build and focused Fire filter passed (42 tests).
 - [x] (2026-08-31 23:15Z) The target-drag loop persisted because the property grid reapplied a stale depth after targeting normalized it back to its already-stored value. Fire and Wipe now notify bindings only if the final normalized depth changed. Focused Fire/Wipe tests passed 26/26, including new stale-selection notification regressions; the full `Vixen_Tests` build passed.
 - [x] (2026-08-31 23:30Z) A subsequent Wipe target-drag trace showed the descriptor refresh itself reapplying unchanged target-handling selection values. Fire and Wipe now suppress descriptor refreshes for no-op `TargetNodeHandling` writes. Focused Fire/Wipe tests passed 28/28; the full `Vixen_Tests` build passed.
+- [x] (2026-08-31 23:45Z) The next trace isolated the remaining recursion to the shared effect property grid: its `TypeDescriptor` handler invalidated every selector's `StandardValues` while a selector was writing. The grid now recalculates browsability without resetting all selector item sources. The full `Vixen_Tests` build passed and the focused Fire/Wipe filter passed 28/28.
+- [x] (2026-09-01 00:00Z) The final trace identified the original global selector broadcast: `PropertyItem.ComponentValueChanged` fanned a `TargetNodes` notification out to every property's `StandardValues`. Removed that fan-out; metadata visibility remains handled by the descriptor refresh. The full `Vixen_Tests` build passed and the focused Fire/Wipe filter passed 28/28.
 - [ ] Run focused and broader validation, update the Jira issue, and record final evidence in this plan.
 
 ## Surprises & Discoveries
@@ -44,6 +46,10 @@ Existing Fire effects must remain visually and serially compatible. They will lo
   Evidence: the second target-drag stack trace repeats `Fire.set_DepthOfEffect` through `PropertyItem.ComponentValueChanged` without `TypeDescriptor.Refresh` in the repeated cycle. Raising `PropertyChanged` for an unchanged final value causes the selector to reapply its stale value indefinitely.
 - Observation: `TypeDescriptor.Refresh` updates every selection editor's standard values; this can reassign the existing target-handling enum even when depth is already stable.
   Evidence: the Wipe trace reaches `WipeModule.TargetNodesChanged` and `TypeDescriptor.Refresh` at the start of every cycle, while the repeated frames contain `PropertyItem.SetValueCore` but no depth setter. Making the target-handling setter a no-op when normalization leaves its prior value breaks that refresh cycle.
+- Observation: broadcasting `StandardValues` changes from the property grid's metadata-refresh handler re-enters a selector even when no effect setter participates in the repeated cycle.
+  Evidence: the latest trace repeats `PropertyItem.ComponentValueChanged` through WPF `Selector.OnItemsSourceChanged` and returns to `EffectPropertyEditorGrid.OnTypeDescriptorRefreshedInvoke` through `TypeDescriptor.Refresh`, with no Fire or Wipe property setter in the recurring frames. `ComponentChanged()` sends `OnComponentChanged()` to every property item, and that method raises `PropertyChanged("StandardValues")`.
+- Observation: target reassignment also had a direct global selector-refresh path independent of `TypeDescriptor.Refresh`.
+  Evidence: the final trace ends `EffectModuleInstanceBase.TargetNodes.set` -> `PropertyItem.ComponentValueChanged` -> `EffectPropertyEditorGrid.ComponentChanged` -> `PropertyItem.OnComponentChanged`, then repeats WPF selector source resets. The `TargetNodes` property is not an editor selector, so notifying every other property's standard values is unnecessary and re-entrant.
 
 ## Decision Log
 
@@ -243,3 +249,13 @@ Plan revised 2026-08-31 / Codex. Reason: Manual target-drag testing exposed a re
 Plan revised 2026-08-31 / Codex. Reason: The follow-up target-drag trace exposed a stale selector value being re-notified after depth normalization; Fire and Wipe now suppress no-op depth notifications.
 
 Plan revised 2026-08-31 / Codex. Reason: The Wipe target-drag trace exposed no-op target-handling selector writes triggering recursive descriptor refreshes; Fire and Wipe now suppress those refreshes.
+
+Plan revised 2026-08-31 / Codex. Reason: The final target-drag trace showed the shared property grid resetting all selector item sources during a metadata refresh; it now updates property visibility without globally invalidating selector standard values.
+
+Plan revised 2026-09-01 / Codex. Reason: The next trace identified `TargetNodes`' direct global selector invalidation path; removing it eliminates the repeating `ComponentChanged` call chain while retaining descriptor-based browsability updates.
+
+Plan revised 2026-09-01 / Codex. Reason: A depth-selection trace then isolated the remaining recursion to `PropertyItem.ComponentValueChanged` rebinding a selector's `StandardValues` item source while that selector committed its selected value. Property changes now notify only `PropertyValue`; valid-value collections are no longer reset for every value write.
+
+Plan revised 2026-09-01 / Codex. Reason: Restored target-context standard-value recalculation through one coalesced idle-dispatch refresh after `TargetNodes` changes. This updates dynamic depth choices after a drag without rebinding selector sources while a property value is being committed.
+
+Plan revised 2026-09-01 / Codex. Reason: Target reassignment now raises `DepthOfEffect` (and target-handling, when applicable) notifications when target validation normalizes persisted values. This keeps the selector's selected value synchronized with its refreshed valid values; focused Fire/Wipe coverage asserts a depth of `2` becomes `1` after moving to a shallower target.
