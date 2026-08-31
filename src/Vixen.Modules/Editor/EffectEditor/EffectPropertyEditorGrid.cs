@@ -141,6 +141,8 @@ namespace VixenModules.Editor.EffectEditor
 		private string _informationLink = InformationLinkUrl;
 		private GridEntryCollection<PropertyItem> _properties;
 		private IComparer<PropertyItem> _propertyComparer;
+		private bool _refreshAllStandardValues;
+		private readonly HashSet<PropertyItem> _standardValuesRefreshItems = [];
 		private bool _standardValuesRefreshQueued;
 
 		/// <summary>
@@ -856,12 +858,26 @@ namespace VixenModules.Editor.EffectEditor
 
 		#region Private members
 
-		internal void QueueStandardValuesRefresh()
+		/// <summary>
+		/// Queues a refresh of one property's standard values, or all properties when <paramref name="propertyItem" /> is <see langword="null" />.
+		/// </summary>
+		/// <param name="propertyItem">The property whose standard values changed, or <see langword="null" /> when every property's values may have changed.</param>
+		internal void QueueStandardValuesRefresh(PropertyItem propertyItem = null)
 		{
 			if (!Dispatcher.CheckAccess())
 			{
-				Dispatcher.BeginInvoke(new Action(QueueStandardValuesRefresh));
+				Dispatcher.BeginInvoke(new Action(() => QueueStandardValuesRefresh(propertyItem)));
 				return;
+			}
+
+			if (propertyItem == null)
+			{
+				_refreshAllStandardValues = true;
+				_standardValuesRefreshItems.Clear();
+			}
+			else if (!_refreshAllStandardValues)
+			{
+				_standardValuesRefreshItems.Add(propertyItem);
 			}
 
 			if (_standardValuesRefreshQueued)
@@ -876,7 +892,12 @@ namespace VixenModules.Editor.EffectEditor
 		private void RefreshStandardValues()
 		{
 			_standardValuesRefreshQueued = false;
-			foreach (var propertyItem in Properties)
+			var propertyItems = _refreshAllStandardValues
+				? Properties.ToList()
+				: _standardValuesRefreshItems.ToList();
+			_refreshAllStandardValues = false;
+			_standardValuesRefreshItems.Clear();
+			foreach (var propertyItem in propertyItems)
 			{
 				propertyItem.OnComponentChanged();
 			}

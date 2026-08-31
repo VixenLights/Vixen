@@ -259,3 +259,5 @@ Plan revised 2026-09-01 / Codex. Reason: A depth-selection trace then isolated t
 Plan revised 2026-09-01 / Codex. Reason: Restored target-context standard-value recalculation through one coalesced idle-dispatch refresh after `TargetNodes` changes. This updates dynamic depth choices after a drag without rebinding selector sources while a property value is being committed.
 
 Plan revised 2026-09-01 / Codex. Reason: Target reassignment now raises `DepthOfEffect` (and target-handling, when applicable) notifications when target validation normalizes persisted values. This keeps the selector's selected value synchronized with its refreshed valid values; focused Fire/Wipe coverage asserts a depth of `2` becomes `1` after moving to a shallower target.
+
+Plan revised 2026-09-01 / Codex. Reason: State selectors also depended on the removed per-property standard-value signal. The property grid now coalesces that signal at idle for the affected property (or all properties after target changes), while State refreshes existing custom State item rows after target reassignment.

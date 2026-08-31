@@ -37,10 +37,14 @@ namespace VixenModules.Effect.State
 
 		#region Overrides of EffectModuleInstanceBase
 
+		/// <summary>
+		/// Refreshes the available State definitions and custom State item options after the selected targets change.
+		/// </summary>
 		protected override void TargetNodesChanged()
 		{
 			CheckForInvalidColorData();
 			RefreshStateDefinitionSelection();
+			RefreshCustomStateItemOptions();
 		}
 
 		protected override void _PreRender(CancellationTokenSource? cancellationToken = null)

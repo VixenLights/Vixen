@@ -247,10 +247,7 @@ namespace VixenModules.Editor.EffectEditor
 		private void ComponentValueChanged(object sender, EventArgs e)
 		{
 			OnPropertyChanged("PropertyValue");
-			if (Name.Equals("TargetNodes"))
-			{
-				Owner.QueueStandardValuesRefresh();
-			}
+			Owner.QueueStandardValuesRefresh(Name.Equals("TargetNodes") ? null : this);
 		}
 
 		#endregion
