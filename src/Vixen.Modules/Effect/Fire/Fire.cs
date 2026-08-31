@@ -200,10 +200,9 @@ namespace VixenModules.Effect.Fire
 			set
 			{
 				_data.DepthOfEffect = value;
+				UpdateTargetingAttributes();
 				IsDirty = true;
 				OnPropertyChanged();
-				UpdateTargetingAttributes();
-				TypeDescriptor.Refresh(this);
 			}
 		}
 

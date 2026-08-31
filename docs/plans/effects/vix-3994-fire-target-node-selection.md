@@ -17,6 +17,7 @@ Existing Fire effects must remain visually and serially compatible. They will lo
 - [x] (2026-08-31 22:01Z) Added `FireTargetNodeSelectionTests` for default data/effect settings, serialized fields, legacy-data compatibility, editor visibility, and default group-mode location rendering. Full `Vixen_Tests` build passed; the focused filter passed 1 group-render test and failed 6 tests only for the deliberately absent Fire target-selection contract.
 - [x] (2026-08-31 22:10Z) Added persisted Fire target settings, property-grid visibility/normalization, `FireTargetElementDepthConverter`, and Fire localization resources. The focused suite now passes all 10 tests.
 - [x] (2026-08-31 22:35Z) Added the documented `PixelEffectBase` render-group seam and Fire's group resolver. Each group now receives its own target-scoped buffer configuration, setup/render/cleanup lifecycle, and merged intents. Focused location lifecycle tests verify two intermediate-depth groups and two separately selected targets each use independent local `3 x 1` buffers. The full `Vixen_Tests` build and focused Fire filter passed (41 tests).
+- [x] (2026-08-31 22:50Z) Removed the re-entrant descriptor refresh from Fire's `DepthOfEffect` setter after manual target-drag testing exposed a property-grid refresh loop. The setter now normalizes before raising its change notification. A focused regression test confirms depth changes do not issue a `TypeDescriptor` refresh; the full build and focused Fire filter passed (42 tests).
 - [ ] Run focused and broader validation, update the Jira issue, and record final evidence in this plan.
 
 ## Surprises & Discoveries
@@ -35,6 +36,8 @@ Existing Fire effects must remain visually and serially compatible. They will lo
   Evidence: `ProviderDisplayNameAttribute` and `ProviderDescriptionAttribute` call `EffectResourceManager`, while the existing generated designer files do not contain Wipe's already-shipped `WipeTargetNodeSelection` key. Adding the Fire keys to the `.resx` files is therefore the complete runtime localization change.
 - Observation: the previous pixel lifecycle configured one shared location buffer, then invoked the location renderer for every selected root; explicit render groups need one renderer invocation for the complete group instead.
   Evidence: `PixelEffectBase.RenderNodeByLocation()` renders every entry in `ElementLocations`, which already contains all leaves of the configured group. The scoped renderer now calls `RenderNodes()` once per group and merges the resulting intents.
+- Observation: refreshing an effect's `TypeDescriptor` from the depth setter can re-enter the property-grid selector while a target change is already rebuilding it.
+  Evidence: the target-drag stack trace repeatedly alternates `Fire.set_DepthOfEffect`, `TypeDescriptor.Refresh`, and WPF `ItemCollection.SetCollectionView`. `DepthOfEffect` visibility does not depend on the chosen value, so it can normalize and notify without refreshing the descriptor.
 
 ## Decision Log
 
@@ -68,6 +71,8 @@ Milestone 2 is complete. `src/Vixen.Tests/Effects/FireTargetNodeSelectionTests.c
 Milestone 3 is complete. Fire now serializes `TargetNodeSelection` and `DepthOfEffect`, defaults new and legacy data to group handling and depth zero, normalizes invalid persisted values, and preserves these values when cloned. `Fire.TargetNodeHandling` and `Fire.DepthOfEffect` expose the Wipe-compatible editor behavior; depth is visible only for a single deep individual target, and its local converter offers intermediate values only. Fire rendering itself remains unchanged for Milestone 4. The full `Vixen_Tests` build and focused filter passed with 10 tests.
 
 Milestone 4 is complete. `PixelEffectBase` now exposes a documented protected render-group selector whose default is one group containing all selected targets. It configures, sets up, renders, cleans up, and clears location state independently for each supplied group, while merging every group's intents. Fire overrides that selector to preserve group mode, split multiple selected targets, or resolve one deep target at its selected depth. The shared string path builds a single scoped frame buffer and maps the scoped roots' elements once; the location path renders the scoped location buffer once. `FireTargetNodeSelectionTests` now verifies depth and multiple-target location groups use local buffers. The full `Vixen_Tests` build passed, and the focused Fire filter passed 41 tests.
+
+Manual drag testing found a Fire property-grid refresh loop after a target change. The depth setter now applies targeting normalization before its one property-change notification and deliberately does not refresh `TypeDescriptor`; a depth value does not affect which controls are visible. The regression test verifies no descriptor refresh occurs when selecting depth. The full build passed and the focused Fire filter passed 42 tests.
 
 At implementation completion, replace this entry with the final user-visible outcome, the exact validation results, any remaining limitations, and lessons that affected the final design.
 
@@ -226,3 +231,5 @@ Plan revised 2026-08-31 / Codex. Reason: Milestone 2 added focused Fire target-s
 Plan revised 2026-08-31 / Codex. Reason: Milestone 3 implemented Fire data compatibility, property-grid target handling, filtered depth selection, and runtime localization resources.
 
 Plan revised 2026-08-31 / Codex. Reason: Milestone 4 added target-scoped pixel rendering and Fire's independent group selection with focused lifecycle coverage.
+
+Plan revised 2026-08-31 / Codex. Reason: Manual target-drag testing exposed a re-entrant Fire depth-selector refresh, which is now covered and avoided.

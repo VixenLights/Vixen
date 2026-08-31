@@ -195,6 +195,39 @@ public sealed class FireTargetNodeSelectionTests
 	}
 
 	/// <summary>
+	/// Verifies that changing depth does not rebuild the property descriptor while a selector binding is updating.
+	/// </summary>
+	[Fact]
+	public void FireProperties_ChangingDepthDoesNotRefreshItsPropertyDescriptor()
+	{
+		// Arrange
+		var effect = new Fire();
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+		var refreshCount = 0;
+		RefreshEventHandler refreshed = eventArgs =>
+		{
+			if (ReferenceEquals(eventArgs.ComponentChanged, effect))
+			{
+				refreshCount++;
+			}
+		};
+		TypeDescriptor.Refreshed += refreshed;
+
+		try
+		{
+			// Act
+			effect.DepthOfEffect = 1;
+		}
+		finally
+		{
+			TypeDescriptor.Refreshed -= refreshed;
+		}
+
+		// Assert
+		Assert.Equal(0, refreshCount);
+	}
+
+	/// <summary>
 	/// Verifies that Fire's current default location mode renders all leaves under one selected group.
 	/// </summary>
 	[Fact]
