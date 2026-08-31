@@ -261,6 +261,38 @@ public sealed class FireTargetNodeSelectionTests
 	}
 
 	/// <summary>
+	/// Verifies that reapplying the existing target handling does not refresh the property descriptor.
+	/// </summary>
+	[Fact]
+	public void FireProperties_ReapplyingTargetHandlingDoesNotRefreshItsPropertyDescriptor()
+	{
+		// Arrange
+		var effect = new Fire();
+		var refreshCount = 0;
+		RefreshEventHandler refreshed = eventArgs =>
+		{
+			if (ReferenceEquals(eventArgs.ComponentChanged, effect))
+			{
+				refreshCount++;
+			}
+		};
+		TypeDescriptor.Refreshed += refreshed;
+
+		try
+		{
+			// Act
+			effect.TargetNodeHandling = TargetNodeSelection.Group;
+		}
+		finally
+		{
+			TypeDescriptor.Refreshed -= refreshed;
+		}
+
+		// Assert
+		Assert.Equal(0, refreshCount);
+	}
+
+	/// <summary>
 	/// Verifies that Fire's current default location mode renders all leaves under one selected group.
 	/// </summary>
 	[Fact]

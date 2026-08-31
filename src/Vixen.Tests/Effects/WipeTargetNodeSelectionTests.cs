@@ -260,6 +260,35 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(0, depthChangedCount);
 	}
 
+	[Fact]
+	public void WipeProperties_ReapplyingTargetHandlingDoesNotRefreshItsPropertyDescriptor()
+	{
+		// Arrange
+		var effect = new WipeModule();
+		var refreshCount = 0;
+		RefreshEventHandler refreshed = eventArgs =>
+		{
+			if (ReferenceEquals(eventArgs.ComponentChanged, effect))
+			{
+				refreshCount++;
+			}
+		};
+		TypeDescriptor.Refreshed += refreshed;
+
+		try
+		{
+			// Act
+			effect.TargetNodeHandling = TargetNodeSelection.Group;
+		}
+		finally
+		{
+			TypeDescriptor.Refreshed -= refreshed;
+		}
+
+		// Assert
+		Assert.Equal(0, refreshCount);
+	}
+
 	private static WipeData DeserializeJson(string json)
 	{
 		var serializer = new DataContractJsonSerializer(typeof(WipeData));

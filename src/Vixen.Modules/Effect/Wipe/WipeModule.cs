@@ -959,11 +959,15 @@ namespace VixenModules.Effect.Wipe
 			get { return _data.TargetNodeSelection; }
 			set
 			{
+				var previousTargetNodeSelection = _data.TargetNodeSelection;
 				_data.TargetNodeSelection = value;
-				IsDirty = true;
-				OnPropertyChanged();
 				UpdateAttributes();
-				TypeDescriptor.Refresh(this);
+				if (_data.TargetNodeSelection != previousTargetNodeSelection)
+				{
+					IsDirty = true;
+					OnPropertyChanged();
+					TypeDescriptor.Refresh(this);
+				}
 			}
 		}
 
