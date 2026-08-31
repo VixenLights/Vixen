@@ -56,21 +56,34 @@ namespace VixenModules.Effect.Effect
 			}
 		}
 
+		/// <summary>
+		/// Gets the target-root groups that are rendered independently.
+		/// </summary>
+		/// <returns>A sequence containing all selected target roots as one render group.</returns>
+		protected virtual IEnumerable<IReadOnlyCollection<IElementNode>> GetRenderGroups()
+		{
+			return new[] { (IReadOnlyCollection<IElementNode>)TargetNodes };
+		}
+
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
-			ConfigureDisplayElementSize();
-
-			SetupRender();
-			int bufferSize = StringPixelCounts.Sum();
-			EffectIntents data = new EffectIntents(bufferSize);
-			foreach (IElementNode node in TargetNodes)
+			EffectIntents data = null;
+			foreach (var renderGroup in GetRenderGroups())
 			{
-				if (node != null)
-					RenderNode(node, ref data);
+				var targetNodes = renderGroup?.Where(node => node != null).Distinct().ToArray();
+				if (targetNodes == null || targetNodes.Length == 0)
+				{
+					continue;
+				}
+
+				ConfigureDisplayElementSize(targetNodes);
+				SetupRender();
+				data ??= new EffectIntents(StringPixelCounts.Sum());
+				RenderNodes(targetNodes, ref data);
+				CleanUpRender();
+				ElementLocations = null;
 			}
-			_elementData = data;
-			CleanUpRender();
-			ElementLocations = null;
+			_elementData = data ?? new EffectIntents();
 		}
 
 		[ReadOnly(true)]
@@ -212,13 +225,19 @@ namespace VixenModules.Effect.Effect
 
 		protected IEnumerable<IElementNode> FindLeafParents()
 		{
+			return FindLeafParents(TargetNodes);
+		}
+
+		private IEnumerable<IElementNode> FindLeafParents(IEnumerable<IElementNode> targetNodes)
+		{
 			var nodes = new List<IElementNode>();
 			var nonLeafElements = Enumerable.Empty<IElementNode>();
 
-			if (TargetNodes.FirstOrDefault() != null)
+			var nodesToInspect = targetNodes.Where(node => node != null).ToArray();
+			if (nodesToInspect.Length > 0)
 			{
-				nonLeafElements = TargetNodes.SelectMany(x => x.GetNonLeafEnumerator());
-				foreach (var elementNode in TargetNodes)
+				nonLeafElements = nodesToInspect.SelectMany(x => x.GetNonLeafEnumerator());
+				foreach (var elementNode in nodesToInspect)
 				{
 					foreach (var leafNode in elementNode.GetLeafEnumerator())
 					{
@@ -258,6 +277,16 @@ namespace VixenModules.Effect.Effect
 			_bufferWiOffset = 0;
 		}
 
+		private void ConfigureStringBuffer(IEnumerable<IElementNode> targetNodes)
+		{
+			var nodes = FindLeafParents(targetNodes).ToArray();
+			CalculatePixelsPerString(nodes);
+			_bufferHt = CalculateMaxStringCount(nodes);
+			_bufferWi = StringPixelCounts.Concat(new[] {0}).Max();
+			_bufferHtOffset = 0;
+			_bufferWiOffset = 0;
+		}
+
 		private void CalculateStringCounts()
 		{
 			var nodes = FindLeafParents();
@@ -268,7 +297,12 @@ namespace VixenModules.Effect.Effect
 
 		private void ConfigureVirtualBuffer()
 		{
-			ElementLocations = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Select(x => new ElementLocation(x)).ToList();
+			ConfigureVirtualBuffer(TargetNodes);
+		}
+
+		private void ConfigureVirtualBuffer(IEnumerable<IElementNode> targetNodes)
+		{
+			ElementLocations = targetNodes.SelectMany(x => x.GetLeafEnumerator()).Select(x => new ElementLocation(x)).ToList();
 			var xMax = ElementLocations.Max(p => p.X);
 			var xMin = ElementLocations.Min(p => p.X);
 			var yMax = ElementLocations.Max(p => p.Y);
@@ -278,6 +312,18 @@ namespace VixenModules.Effect.Effect
 			_bufferHt = (xMax - xMin) + 1;
 			_bufferWiOffset = yMin;
 			_bufferHtOffset = xMin;
+		}
+
+		private void ConfigureDisplayElementSize(IEnumerable<IElementNode> targetNodes)
+		{
+			if (TargetPositioning == TargetPositioningType.Strings)
+			{
+				ConfigureStringBuffer(targetNodes);
+			}
+			else
+			{
+				ConfigureVirtualBuffer(targetNodes);
+			}
 		}
 
 		protected int StringCountOffset { get; set; }
@@ -354,6 +400,16 @@ namespace VixenModules.Effect.Effect
 			return RenderNodeByLocation(node, ref effectIntents);
 		}
 
+		private EffectIntents RenderNodes(IReadOnlyCollection<IElementNode> nodes, ref EffectIntents effectIntents)
+		{
+			if (TargetPositioning == TargetPositioningType.Strings)
+			{
+				return RenderNodesByStrings(nodes, ref effectIntents);
+			}
+
+			return RenderNodeByLocation(nodes.First(), ref effectIntents);
+		}
+
 		protected EffectIntents RenderNodeByLocation(IElementNode node, ref EffectIntents effectIntents)
 		{
 			int nFrames = GetNumberFrames();
@@ -377,6 +433,11 @@ namespace VixenModules.Effect.Effect
 		}
 
 		protected EffectIntents RenderNodeByStrings(IElementNode node, ref EffectIntents effectIntents)
+		{
+			return RenderNodesByStrings(new[] {node}, ref effectIntents);
+		}
+
+		private EffectIntents RenderNodesByStrings(IEnumerable<IElementNode> nodes, ref EffectIntents effectIntents)
 		{
 			int nFrames = GetNumberFrames();
 			if (nFrames <= 0 | BufferWi==0 || BufferHt==0) return new EffectIntents();
@@ -436,7 +497,7 @@ namespace VixenModules.Effect.Effect
 			
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
-			var elements = _elementsCached?_cachedElements:node.Distinct().ToList();
+			var elements = _elementsCached ? _cachedElements : nodes.SelectMany(node => node.Distinct()).Distinct().ToList();
 			int numElements = elements.Count;
 
 			for (int eidx = 0; eidx < numElements; eidx++)

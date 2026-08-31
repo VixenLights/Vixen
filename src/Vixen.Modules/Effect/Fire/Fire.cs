@@ -2,6 +2,7 @@
 using Vixen.Attributes;
 using System.ComponentModel;
 using Vixen.Module;
+using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -36,6 +37,37 @@ namespace VixenModules.Effect.Fire
 			base.TargetNodesChanged();
 			UpdateTargetingAttributes();
 			TypeDescriptor.Refresh(this);
+		}
+
+		/// <summary>
+		/// Gets the target-root groups that receive independent Fire simulations.
+		/// </summary>
+		/// <returns>The selected targets as one group, or the groups resolved by individual target handling.</returns>
+		protected override IEnumerable<IReadOnlyCollection<IElementNode>> GetRenderGroups()
+		{
+			if (TargetNodeHandling == TargetNodeSelection.Group)
+			{
+				return base.GetRenderGroups();
+			}
+
+			if (TargetNodes.Length > 1)
+			{
+				return TargetNodes
+					.Where(node => node != null)
+					.Distinct()
+					.Select(node => (IReadOnlyCollection<IElementNode>)new[] {node});
+			}
+
+			var targetNode = TargetNodes.FirstOrDefault();
+			if (targetNode == null)
+			{
+				return Enumerable.Empty<IReadOnlyCollection<IElementNode>>();
+			}
+
+			return GetNodesAtEffectDepth(targetNode, DepthOfEffect)
+				.Where(node => node != null)
+				.Distinct()
+				.Select(node => (IReadOnlyCollection<IElementNode>)new[] {node});
 		}
 
 		#region Setup

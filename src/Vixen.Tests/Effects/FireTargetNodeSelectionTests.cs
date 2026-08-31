@@ -221,6 +221,58 @@ public sealed class FireTargetNodeSelectionTests
 			intents.ElementIds.OrderBy(id => id));
 	}
 
+	/// <summary>
+	/// Verifies that individual depth groups use separate local location buffers.
+	/// </summary>
+	[Fact]
+	public void FireRender_IndividualDepthGroupsUseLocalLocationBuffers()
+	{
+		// Arrange
+		var firstGroup = CreateGroupNode("Group 1", CreateLocatedLeaf("Group 1 Leaf 1", 1, 1), CreateLocatedLeaf("Group 1 Leaf 2", 3, 1));
+		var secondGroup = CreateGroupNode("Group 2", CreateLocatedLeaf("Group 2 Leaf 1", 101, 1), CreateLocatedLeaf("Group 2 Leaf 2", 103, 1));
+		var effect = new RenderTrackingFire
+		{
+			TargetPositioning = TargetPositioningType.Locations,
+			TimeSpan = TimeSpan.FromMilliseconds(1000)
+		};
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateGroupNode("Root", [firstGroup, secondGroup], 3)]);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+		SetPropertyValue(effect, "DepthOfEffect", 1);
+
+		// Act
+		var preRenderSucceeded = effect.PreRender();
+
+		// Assert
+		Assert.True(preRenderSucceeded);
+		Assert.Equal([(3, 1), (3, 1)], effect.RenderDimensions);
+	}
+
+	/// <summary>
+	/// Verifies that individually selected target roots are not combined into one location buffer.
+	/// </summary>
+	[Fact]
+	public void FireRender_IndividualMultipleTargetsUseSeparateLocationBuffers()
+	{
+		// Arrange
+		var firstTarget = CreateGroupNode("Target 1", CreateLocatedLeaf("Target 1 Leaf 1", 1, 1), CreateLocatedLeaf("Target 1 Leaf 2", 3, 1));
+		var secondTarget = CreateGroupNode("Target 2", CreateLocatedLeaf("Target 2 Leaf 1", 101, 1), CreateLocatedLeaf("Target 2 Leaf 2", 103, 1));
+		var effect = new RenderTrackingFire
+		{
+			TargetPositioning = TargetPositioningType.Locations,
+			TimeSpan = TimeSpan.FromMilliseconds(1000)
+		};
+		SetTargetNodesWithoutPropertyValidation(effect, [firstTarget, secondTarget]);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+
+		// Act
+		var preRenderSucceeded = effect.PreRender();
+
+		// Assert
+		Assert.True(preRenderSucceeded);
+		Assert.Equal([(3, 1), (3, 1)], effect.RenderDimensions);
+		Assert.Equal(0, effect.DepthOfEffect);
+	}
+
 	private static FireData DeserializeJson(string json)
 	{
 		var serializer = new DataContractJsonSerializer(typeof(FireData));
@@ -272,12 +324,17 @@ public sealed class FireTargetNodeSelectionTests
 
 	private static IElementNode CreateGroupNode(string name, params IElementNode[] children)
 	{
+		return CreateGroupNode(name, children, children.Any() ? children.Max(child => child.GetMaxChildDepth()) + 1 : 0);
+	}
+
+	private static IElementNode CreateGroupNode(string name, IElementNode[] children, int maxChildDepth)
+	{
 		var targetNode = new Mock<IElementNode>();
 		targetNode.SetupGet(node => node.Name).Returns(name);
 		targetNode.SetupGet(node => node.Children).Returns(children);
 		targetNode.SetupGet(node => node.Properties).Returns(new PropertyManager(targetNode.Object));
 		targetNode.Setup(node => node.GetLeafEnumerator()).Returns(children.SelectMany(child => child.GetLeafEnumerator()));
-		targetNode.Setup(node => node.GetMaxChildDepth()).Returns(children.Max(child => child.GetMaxChildDepth()) + 1);
+		targetNode.Setup(node => node.GetMaxChildDepth()).Returns(maxChildDepth);
 
 		return targetNode.Object;
 	}
@@ -335,5 +392,16 @@ public sealed class FireTargetNodeSelectionTests
 		var targetNodesField = typeof(EffectModuleInstanceBase).GetField("_targetNodes", BindingFlags.Instance | BindingFlags.NonPublic);
 		Assert.NotNull(targetNodesField);
 		targetNodesField.SetValue(effect, targetNodes);
+	}
+
+	private sealed class RenderTrackingFire : Fire
+	{
+		public List<(int Width, int Height)> RenderDimensions { get; } = [];
+
+		protected override void SetupRender()
+		{
+			RenderDimensions.Add((BufferWi, BufferHt));
+			base.SetupRender();
+		}
 	}
 }
