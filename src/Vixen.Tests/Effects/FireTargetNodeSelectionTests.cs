@@ -93,6 +93,27 @@ public sealed class FireTargetNodeSelectionTests
 	}
 
 	/// <summary>
+	/// Verifies that deserialization normalizes invalid target settings.
+	/// </summary>
+	[Fact]
+	public void FireData_OnDeserializedNormalizesInvalidTargetSettings()
+	{
+		// Arrange
+		var data = new FireData
+		{
+			DepthOfEffect = -1,
+			TargetNodeSelection = (TargetNodeSelection)99
+		};
+
+		// Act
+		data.OnDeserialized(default);
+
+		// Assert
+		Assert.Equal(0, data.DepthOfEffect);
+		Assert.Equal(TargetNodeSelection.Group, data.TargetNodeSelection);
+	}
+
+	/// <summary>
 	/// Verifies that a deep target exposes handling selection while group mode hides its depth picker.
 	/// </summary>
 	[Fact]
@@ -132,6 +153,45 @@ public sealed class FireTargetNodeSelectionTests
 		// Assert
 		Assert.NotNull(depthOfEffect);
 		Assert.True(depthOfEffect.IsBrowsable);
+	}
+
+	/// <summary>
+	/// Verifies that Fire depth choices exclude leaf-equivalent values.
+	/// </summary>
+	[Fact]
+	public void FireDepthConverter_ExcludesZeroAndMaximumDepth()
+	{
+		// Arrange
+		var effect = new Fire();
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+		var context = new Mock<ITypeDescriptorContext>();
+		context.SetupGet(typeDescriptorContext => typeDescriptorContext.Instance).Returns(effect);
+		var converter = new FireTargetElementDepthConverter();
+
+		// Act
+		var values = converter.GetStandardValues(context.Object).Cast<string>().ToArray();
+
+		// Assert
+		Assert.Equal(["1", "2"], values);
+	}
+
+	/// <summary>
+	/// Verifies that an invalid individual target depth resets to the first useful depth.
+	/// </summary>
+	[Fact]
+	public void FireProperties_IndividualModeResetsMaximumDepthToFirstUsefulDepth()
+	{
+		// Arrange
+		var effect = new Fire();
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+
+		// Act
+		SetPropertyValue(effect, "DepthOfEffect", 3);
+		var depthOfEffect = GetIntValue(effect, "DepthOfEffect");
+
+		// Assert
+		Assert.Equal(1, depthOfEffect);
 	}
 
 	/// <summary>
