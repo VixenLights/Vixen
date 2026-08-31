@@ -983,10 +983,9 @@ namespace VixenModules.Effect.Wipe
 			set
 			{
 				_data.DepthOfEffect = value;
+				UpdateAttributes();
 				IsDirty = true;
 				OnPropertyChanged();
-				UpdateAttributes();
-				TypeDescriptor.Refresh(this);
 			}
 		}
 

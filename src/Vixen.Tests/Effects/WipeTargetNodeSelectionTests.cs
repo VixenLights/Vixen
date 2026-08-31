@@ -200,6 +200,36 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(1, depthOfEffect);
 	}
 
+	[Fact]
+	public void WipeProperties_ChangingDepthDoesNotRefreshItsPropertyDescriptor()
+	{
+		// Arrange
+		var effect = new WipeModule();
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+		var refreshCount = 0;
+		RefreshEventHandler refreshed = eventArgs =>
+		{
+			if (ReferenceEquals(eventArgs.ComponentChanged, effect))
+			{
+				refreshCount++;
+			}
+		};
+		TypeDescriptor.Refreshed += refreshed;
+
+		try
+		{
+			// Act
+			effect.DepthOfEffect = 1;
+		}
+		finally
+		{
+			TypeDescriptor.Refreshed -= refreshed;
+		}
+
+		// Assert
+		Assert.Equal(0, refreshCount);
+	}
+
 	private static WipeData DeserializeJson(string json)
 	{
 		var serializer = new DataContractJsonSerializer(typeof(WipeData));
