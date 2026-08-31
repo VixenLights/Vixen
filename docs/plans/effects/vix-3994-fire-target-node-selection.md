@@ -22,6 +22,7 @@ Existing Fire effects must remain visually and serially compatible. They will lo
 - [x] (2026-08-31 23:30Z) A subsequent Wipe target-drag trace showed the descriptor refresh itself reapplying unchanged target-handling selection values. Fire and Wipe now suppress descriptor refreshes for no-op `TargetNodeHandling` writes. Focused Fire/Wipe tests passed 28/28; the full `Vixen_Tests` build passed.
 - [x] (2026-08-31 23:45Z) The next trace isolated the remaining recursion to the shared effect property grid: its `TypeDescriptor` handler invalidated every selector's `StandardValues` while a selector was writing. The grid now recalculates browsability without resetting all selector item sources. The full `Vixen_Tests` build passed and the focused Fire/Wipe filter passed 28/28.
 - [x] (2026-09-01 00:00Z) The final trace identified the original global selector broadcast: `PropertyItem.ComponentValueChanged` fanned a `TargetNodes` notification out to every property's `StandardValues`. Removed that fan-out; metadata visibility remains handled by the descriptor refresh. The full `Vixen_Tests` build passed and the focused Fire/Wipe filter passed 28/28.
+- [x] (2026-09-01 15:20Z) Manual Dissolve drag testing found the same stale-depth reapplication risk: unlike the other target-depth effects, Dissolve did not normalize depth after its targets changed. It now resets an invalid depth to zero and suppresses a no-op stale binding notification. The focused State/Fire/Wipe/Dissolve filter passed 87/87.
 - [ ] Run focused and broader validation, update the Jira issue, and record final evidence in this plan.
 
 ## Surprises & Discoveries
@@ -261,3 +262,5 @@ Plan revised 2026-09-01 / Codex. Reason: Restored target-context standard-value 
 Plan revised 2026-09-01 / Codex. Reason: Target reassignment now raises `DepthOfEffect` (and target-handling, when applicable) notifications when target validation normalizes persisted values. This keeps the selector's selected value synchronized with its refreshed valid values; focused Fire/Wipe coverage asserts a depth of `2` becomes `1` after moving to a shallower target.
 
 Plan revised 2026-09-01 / Codex. Reason: State selectors also depended on the removed per-property standard-value signal. The property grid now coalesces that signal at idle for the affected property (or all properties after target changes), while State refreshes existing custom State item rows after target reassignment.
+
+Plan revised 2026-09-01 / Codex. Reason: Dissolve was the remaining depth-selector effect that retained an invalid depth after a target reassignment. It now normalizes stale values before notifying the property grid, preventing repeated rendering updates.
