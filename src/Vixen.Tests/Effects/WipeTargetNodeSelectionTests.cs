@@ -230,6 +230,36 @@ public sealed class WipeTargetNodeSelectionTests
 		Assert.Equal(0, refreshCount);
 	}
 
+	[Fact]
+	public void WipeProperties_NormalizedStaleDepthDoesNotNotifyBindings()
+	{
+		// Arrange
+		var effect = new WipeModule();
+		var depthChangedCount = 0;
+		PropertyChangedEventHandler propertyChanged = (_, eventArgs) =>
+		{
+			if (eventArgs.PropertyName == nameof(WipeModule.DepthOfEffect))
+			{
+				depthChangedCount++;
+			}
+		};
+		effect.PropertyChanged += propertyChanged;
+
+		try
+		{
+			// Act
+			effect.DepthOfEffect = 1;
+		}
+		finally
+		{
+			effect.PropertyChanged -= propertyChanged;
+		}
+
+		// Assert
+		Assert.Equal(0, effect.DepthOfEffect);
+		Assert.Equal(0, depthChangedCount);
+	}
+
 	private static WipeData DeserializeJson(string json)
 	{
 		var serializer = new DataContractJsonSerializer(typeof(WipeData));

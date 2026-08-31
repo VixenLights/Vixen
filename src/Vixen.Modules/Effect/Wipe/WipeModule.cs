@@ -982,10 +982,14 @@ namespace VixenModules.Effect.Wipe
 			get { return _data.DepthOfEffect; }
 			set
 			{
+				var previousDepth = _data.DepthOfEffect;
 				_data.DepthOfEffect = value;
 				UpdateAttributes();
-				IsDirty = true;
-				OnPropertyChanged();
+				if (_data.DepthOfEffect != previousDepth)
+				{
+					IsDirty = true;
+					OnPropertyChanged();
+				}
 			}
 		}
 

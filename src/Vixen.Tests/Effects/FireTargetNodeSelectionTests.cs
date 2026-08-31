@@ -228,6 +228,39 @@ public sealed class FireTargetNodeSelectionTests
 	}
 
 	/// <summary>
+	/// Verifies that a stale depth selection which normalizes to the existing depth does not notify bindings.
+	/// </summary>
+	[Fact]
+	public void FireProperties_NormalizedStaleDepthDoesNotNotifyBindings()
+	{
+		// Arrange
+		var effect = new Fire();
+		var depthChangedCount = 0;
+		PropertyChangedEventHandler propertyChanged = (_, eventArgs) =>
+		{
+			if (eventArgs.PropertyName == nameof(Fire.DepthOfEffect))
+			{
+				depthChangedCount++;
+			}
+		};
+		effect.PropertyChanged += propertyChanged;
+
+		try
+		{
+			// Act
+			effect.DepthOfEffect = 1;
+		}
+		finally
+		{
+			effect.PropertyChanged -= propertyChanged;
+		}
+
+		// Assert
+		Assert.Equal(0, effect.DepthOfEffect);
+		Assert.Equal(0, depthChangedCount);
+	}
+
+	/// <summary>
 	/// Verifies that Fire's current default location mode renders all leaves under one selected group.
 	/// </summary>
 	[Fact]

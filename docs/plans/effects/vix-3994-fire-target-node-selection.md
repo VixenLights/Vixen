@@ -18,6 +18,7 @@ Existing Fire effects must remain visually and serially compatible. They will lo
 - [x] (2026-08-31 22:10Z) Added persisted Fire target settings, property-grid visibility/normalization, `FireTargetElementDepthConverter`, and Fire localization resources. The focused suite now passes all 10 tests.
 - [x] (2026-08-31 22:35Z) Added the documented `PixelEffectBase` render-group seam and Fire's group resolver. Each group now receives its own target-scoped buffer configuration, setup/render/cleanup lifecycle, and merged intents. Focused location lifecycle tests verify two intermediate-depth groups and two separately selected targets each use independent local `3 x 1` buffers. The full `Vixen_Tests` build and focused Fire filter passed (41 tests).
 - [x] (2026-08-31 22:50Z) Removed the re-entrant descriptor refresh from Fire's `DepthOfEffect` setter after manual target-drag testing exposed a property-grid refresh loop. The setter now normalizes before raising its change notification. A focused regression test confirms depth changes do not issue a `TypeDescriptor` refresh; the full build and focused Fire filter passed (42 tests).
+- [x] (2026-08-31 23:15Z) The target-drag loop persisted because the property grid reapplied a stale depth after targeting normalized it back to its already-stored value. Fire and Wipe now notify bindings only if the final normalized depth changed. Focused Fire/Wipe tests passed 26/26, including new stale-selection notification regressions; the full `Vixen_Tests` build passed.
 - [ ] Run focused and broader validation, update the Jira issue, and record final evidence in this plan.
 
 ## Surprises & Discoveries
@@ -38,6 +39,8 @@ Existing Fire effects must remain visually and serially compatible. They will lo
   Evidence: `PixelEffectBase.RenderNodeByLocation()` renders every entry in `ElementLocations`, which already contains all leaves of the configured group. The scoped renderer now calls `RenderNodes()` once per group and merges the resulting intents.
 - Observation: refreshing an effect's `TypeDescriptor` from the depth setter can re-enter the property-grid selector while a target change is already rebuilding it.
   Evidence: the target-drag stack trace repeatedly alternates `Fire.set_DepthOfEffect`, `TypeDescriptor.Refresh`, and WPF `ItemCollection.SetCollectionView`. `DepthOfEffect` visibility does not depend on the chosen value, so it can normalize and notify without refreshing the descriptor.
+- Observation: removing the descriptor refresh alone is insufficient when a selector's stale value is normalized back to the value that was stored before its setter ran.
+  Evidence: the second target-drag stack trace repeats `Fire.set_DepthOfEffect` through `PropertyItem.ComponentValueChanged` without `TypeDescriptor.Refresh` in the repeated cycle. Raising `PropertyChanged` for an unchanged final value causes the selector to reapply its stale value indefinitely.
 
 ## Decision Log
 
@@ -72,7 +75,7 @@ Milestone 3 is complete. Fire now serializes `TargetNodeSelection` and `DepthOfE
 
 Milestone 4 is complete. `PixelEffectBase` now exposes a documented protected render-group selector whose default is one group containing all selected targets. It configures, sets up, renders, cleans up, and clears location state independently for each supplied group, while merging every group's intents. Fire overrides that selector to preserve group mode, split multiple selected targets, or resolve one deep target at its selected depth. The shared string path builds a single scoped frame buffer and maps the scoped roots' elements once; the location path renders the scoped location buffer once. `FireTargetNodeSelectionTests` now verifies depth and multiple-target location groups use local buffers. The full `Vixen_Tests` build passed, and the focused Fire filter passed 41 tests.
 
-Manual drag testing found a Fire property-grid refresh loop after a target change. The depth setter now applies targeting normalization before its one property-change notification and deliberately does not refresh `TypeDescriptor`; a depth value does not affect which controls are visible. The regression test verifies no descriptor refresh occurs when selecting depth. The full build passed and the focused Fire filter passed 42 tests.
+Manual drag testing found a Fire property-grid refresh loop after a target change. The depth setter applies targeting normalization without refreshing `TypeDescriptor`, because a depth value does not affect which controls are visible. A follow-up trace showed that an unchanged final depth could still be broadcast to the selector, which then reapplied its stale value. Fire and Wipe now raise `PropertyChanged` and set dirty state only when normalization leaves a depth that differs from the prior stored value. Regression tests cover both the absence of descriptor refresh and the absence of a notification for a normalized stale value. The full build passed and the focused Fire/Wipe filter passed 26 tests.
 
 At implementation completion, replace this entry with the final user-visible outcome, the exact validation results, any remaining limitations, and lessons that affected the final design.
 
@@ -233,3 +236,5 @@ Plan revised 2026-08-31 / Codex. Reason: Milestone 3 implemented Fire data compa
 Plan revised 2026-08-31 / Codex. Reason: Milestone 4 added target-scoped pixel rendering and Fire's independent group selection with focused lifecycle coverage.
 
 Plan revised 2026-08-31 / Codex. Reason: Manual target-drag testing exposed a re-entrant Fire depth-selector refresh, which is now covered and avoided.
+
+Plan revised 2026-08-31 / Codex. Reason: The follow-up target-drag trace exposed a stale selector value being re-notified after depth normalization; Fire and Wipe now suppress no-op depth notifications.
