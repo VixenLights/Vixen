@@ -23,7 +23,7 @@ Existing Fire effects must remain visually and serially compatible. They will lo
 - [x] (2026-08-31 23:45Z) The next trace isolated the remaining recursion to the shared effect property grid: its `TypeDescriptor` handler invalidated every selector's `StandardValues` while a selector was writing. The grid now recalculates browsability without resetting all selector item sources. The full `Vixen_Tests` build passed and the focused Fire/Wipe filter passed 28/28.
 - [x] (2026-09-01 00:00Z) The final trace identified the original global selector broadcast: `PropertyItem.ComponentValueChanged` fanned a `TargetNodes` notification out to every property's `StandardValues`. Removed that fan-out; metadata visibility remains handled by the descriptor refresh. The full `Vixen_Tests` build passed and the focused Fire/Wipe filter passed 28/28.
 - [x] (2026-09-01 15:20Z) Manual Dissolve drag testing found the same stale-depth reapplication risk: unlike the other target-depth effects, Dissolve did not normalize depth after its targets changed. It now resets an invalid depth to zero and suppresses a no-op stale binding notification. The focused State/Fire/Wipe/Dissolve filter passed 87/87.
-- [ ] Run focused and broader validation, update the Jira issue, and record final evidence in this plan.
+- [x] (2026-09-01) Completed final validation. The full solution build and all unit tests passed. Manual regression testing passed for Fire, Wipe, Dissolve, State, fixture property selectors, Mark Collection selectors, Waveform, and Vertical Meter, including moving effects from deeper to shallower targets. Added the VIX-3994 completion comment (40422) with the validation results and property-grid refresh cleanup record.
 
 ## Surprises & Discoveries
 
@@ -72,6 +72,9 @@ Existing Fire effects must remain visually and serially compatible. They will lo
 - Decision: Do not manually edit the generated resource designer files.
   Rationale: Runtime provider attributes use the embedded `.resx` resources via `EffectResourceManager`, and the designer files are already stale for Wipe's identical feature key. Editing generated code would not affect runtime behavior and would create avoidable generated-file drift.
   Date/Author: 2026-08-31 / Codex
+- Decision: Refresh dynamic selector values at idle and only within the affected property scope, except when a target change can affect all target-dependent values.
+  Rationale: Rebuilding every selector during a selector commit caused re-entrant WPF binding updates. Coalescing the necessary refresh retains dynamic depth, state, and mark-collection values while avoiding needless item-source rebuilds for unrelated edits.
+  Date/Author: 2026-09-01 / Codex
 
 ## Outcomes & Retrospective
 
@@ -87,7 +90,15 @@ Milestone 4 is complete. `PixelEffectBase` now exposes a documented protected re
 
 Manual drag testing found a Fire property-grid refresh loop after a target change. The depth setter applies targeting normalization without refreshing `TypeDescriptor`, because a depth value does not affect which controls are visible. A follow-up trace showed that an unchanged final depth could still be broadcast to the selector, which then reapplied its stale value. Fire and Wipe now raise `PropertyChanged` and set dirty state only when normalization leaves a depth that differs from the prior stored value. Regression tests cover both the absence of descriptor refresh and the absence of a notification for a normalized stale value. The full build passed and the focused Fire/Wipe filter passed 26 tests.
 
-At implementation completion, replace this entry with the final user-visible outcome, the exact validation results, any remaining limitations, and lessons that affected the final design.
+VIX-3994 is complete. Fire now supports `Across Elements/Groups` and `Each Element/Group` rendering for string and preview-location targets while retaining group mode as the compatible default for existing effects. The renderer scopes Fire state and buffers independently for each selected group in individual mode.
+
+The target-drag follow-up fixed a property-grid re-entrancy regression without returning to the previous blanket refresh behavior. Dynamic selector values are refreshed once at idle, scoped to the changed property where possible and expanded to all properties only after a target change. Effect-level normalization keeps selected values valid when a target becomes shallower. State also explicitly refreshes its dependent State Item choices after either its targets or State Definition change.
+
+Final validation is clean: the full solution build and all unit tests passed. Manual regression testing passed for Fire, Wipe, Dissolve, State, fixture property selectors, Mark Collection selectors, Waveform, and Vertical Meter. In particular, moving effects from depth `0–2` targets to `0–1` targets now recalculates choices, selects a valid value, and does not crash or enter a render-update loop.
+
+The key lesson is that `StandardValues` is an item-source invalidation, not merely a value notification: rebuilding it from a synchronous property change can re-enter the selector that is currently committing. Deferring and coalescing the refresh preserves dynamic property behavior while improving editor responsiveness by avoiding unrelated selector rebuilds.
+
+The VIX-3994 completion comment records the final user-visible result, full build and unit-test success, the manual regression coverage, and the blanket-refresh cleanup for future issue review.
 
 ## Context and Orientation
 
