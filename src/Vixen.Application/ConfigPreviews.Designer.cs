@@ -24,41 +24,41 @@
 		/// </summary>
 		private void InitializeComponent() {
 			System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
-			this.groupBoxSelectedController = new System.Windows.Forms.GroupBox();
+			this.groupBoxSelectedPreview = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.buttonUpdate = new System.Windows.Forms.Button();
 			this.label2 = new System.Windows.Forms.Label();
 			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.buttonConfigureController = new System.Windows.Forms.Button();
-			this.listViewControllers = new System.Windows.Forms.ListView();
+			this.buttonConfigurePreview = new System.Windows.Forms.Button();
+			this.listViewPreviews = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonDeleteController = new System.Windows.Forms.Button();
-			this.buttonAddController = new System.Windows.Forms.Button();
+			this.buttonDeletePreview = new System.Windows.Forms.Button();
+			this.buttonAddPreview = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.buttonDuplicateSelected = new System.Windows.Forms.Button();
-			this.groupBoxSelectedController.SuspendLayout();
+			this.groupBoxSelectedPreview.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// groupBoxSelectedController
+			// groupBoxSelectedPreview
 			// 
-			this.groupBoxSelectedController.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			this.groupBoxSelectedPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxSelectedController.Controls.Add(this.label1);
-			this.groupBoxSelectedController.Controls.Add(this.buttonUpdate);
-			this.groupBoxSelectedController.Controls.Add(this.label2);
-			this.groupBoxSelectedController.Controls.Add(this.textBoxName);
-			this.groupBoxSelectedController.Controls.Add(this.buttonConfigureController);
-			this.groupBoxSelectedController.Location = new System.Drawing.Point(14, 317);
-			this.groupBoxSelectedController.Name = "groupBoxSelectedController";
-			this.groupBoxSelectedController.Size = new System.Drawing.Size(455, 182);
-			this.groupBoxSelectedController.TabIndex = 1;
-			this.groupBoxSelectedController.TabStop = false;
-			this.groupBoxSelectedController.Text = "Selected Preview";
-			this.groupBoxSelectedController.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			this.groupBoxSelectedPreview.Controls.Add(this.label1);
+			this.groupBoxSelectedPreview.Controls.Add(this.buttonUpdate);
+			this.groupBoxSelectedPreview.Controls.Add(this.label2);
+			this.groupBoxSelectedPreview.Controls.Add(this.textBoxName);
+			this.groupBoxSelectedPreview.Controls.Add(this.buttonConfigurePreview);
+			this.groupBoxSelectedPreview.Location = new System.Drawing.Point(14, 317);
+			this.groupBoxSelectedPreview.Name = "groupBoxSelectedPreview";
+			this.groupBoxSelectedPreview.Size = new System.Drawing.Size(455, 182);
+			this.groupBoxSelectedPreview.TabIndex = 1;
+			this.groupBoxSelectedPreview.TabStop = false;
+			this.groupBoxSelectedPreview.Text = "Selected Preview";
+			this.groupBoxSelectedPreview.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// label1
 			// 
@@ -96,42 +96,42 @@
 			this.textBoxName.Size = new System.Drawing.Size(158, 23);
 			this.textBoxName.TabIndex = 1;
 			// 
-			// buttonConfigureController
+			// buttonConfigurePreview
 			// 
-			this.buttonConfigureController.Location = new System.Drawing.Point(15, 69);
-			this.buttonConfigureController.Name = "buttonConfigureController";
-			this.buttonConfigureController.Size = new System.Drawing.Size(128, 29);
-			this.buttonConfigureController.TabIndex = 0;
-			this.buttonConfigureController.Text = "Configure Preview";
-			this.buttonConfigureController.UseVisualStyleBackColor = false;
-			this.buttonConfigureController.Click += new System.EventHandler(this.buttonConfigureController_Click);
+			this.buttonConfigurePreview.Location = new System.Drawing.Point(15, 69);
+			this.buttonConfigurePreview.Name = "buttonConfigurePreview";
+			this.buttonConfigurePreview.Size = new System.Drawing.Size(128, 29);
+			this.buttonConfigurePreview.TabIndex = 0;
+			this.buttonConfigurePreview.Text = "Configure Preview";
+			this.buttonConfigurePreview.UseVisualStyleBackColor = false;
+			this.buttonConfigurePreview.Click += new System.EventHandler(this.buttonConfigurePreview_Click);
 			// 
-			// listViewControllers
+			// listViewPreviews
 			// 
-			this.listViewControllers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.listViewPreviews.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewControllers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.listViewControllers.CheckBoxes = true;
-			this.listViewControllers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewPreviews.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.listViewPreviews.CheckBoxes = true;
+			this.listViewPreviews.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-			this.listViewControllers.FullRowSelect = true;
+			this.listViewPreviews.FullRowSelect = true;
 			listViewGroup2.Header = "ListViewGroup";
 			listViewGroup2.Name = "listViewGroup1";
-			this.listViewControllers.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+			this.listViewPreviews.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup2});
-			this.listViewControllers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewControllers.HideSelection = false;
-			this.listViewControllers.Location = new System.Drawing.Point(14, 35);
-			this.listViewControllers.Name = "listViewControllers";
-			this.listViewControllers.ShowGroups = false;
-			this.listViewControllers.Size = new System.Drawing.Size(456, 219);
-			this.listViewControllers.TabIndex = 0;
-			this.listViewControllers.UseCompatibleStateImageBehavior = false;
-			this.listViewControllers.View = System.Windows.Forms.View.Details;
-			this.listViewControllers.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listViewControllers_ItemCheck);
-			this.listViewControllers.SelectedIndexChanged += new System.EventHandler(this.listViewControllers_SelectedIndexChanged);
+			this.listViewPreviews.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewPreviews.HideSelection = false;
+			this.listViewPreviews.Location = new System.Drawing.Point(14, 35);
+			this.listViewPreviews.Name = "listViewPreviews";
+			this.listViewPreviews.ShowGroups = false;
+			this.listViewPreviews.Size = new System.Drawing.Size(456, 219);
+			this.listViewPreviews.TabIndex = 0;
+			this.listViewPreviews.UseCompatibleStateImageBehavior = false;
+			this.listViewPreviews.View = System.Windows.Forms.View.Details;
+			this.listViewPreviews.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listViewPreviews_ItemCheck);
+			this.listViewPreviews.SelectedIndexChanged += new System.EventHandler(this.listViewPreviews_SelectedIndexChanged);
 			// 
 			// columnHeader1
 			// 
@@ -154,27 +154,27 @@
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = false;
 			// 
-			// buttonDeleteController
+			// buttonDeletePreview
 			// 
-			this.buttonDeleteController.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.buttonDeleteController.Location = new System.Drawing.Point(318, 272);
-			this.buttonDeleteController.Name = "buttonDeleteController";
-			this.buttonDeleteController.Size = new System.Drawing.Size(140, 29);
-			this.buttonDeleteController.TabIndex = 3;
-			this.buttonDeleteController.Text = "Delete Selected";
-			this.buttonDeleteController.UseVisualStyleBackColor = false;
-			this.buttonDeleteController.Click += new System.EventHandler(this.buttonDeleteController_Click);
+			this.buttonDeletePreview.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.buttonDeletePreview.Location = new System.Drawing.Point(318, 272);
+			this.buttonDeletePreview.Name = "buttonDeletePreview";
+			this.buttonDeletePreview.Size = new System.Drawing.Size(140, 29);
+			this.buttonDeletePreview.TabIndex = 3;
+			this.buttonDeletePreview.Text = "Delete Selected";
+			this.buttonDeletePreview.UseVisualStyleBackColor = false;
+			this.buttonDeletePreview.Click += new System.EventHandler(this.buttonDeletePreview_Click);
 			// 
-			// buttonAddController
+			// buttonAddPreview
 			// 
-			this.buttonAddController.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.buttonAddController.Location = new System.Drawing.Point(17, 272);
-			this.buttonAddController.Name = "buttonAddController";
-			this.buttonAddController.Size = new System.Drawing.Size(140, 29);
-			this.buttonAddController.TabIndex = 2;
-			this.buttonAddController.Text = "Add New Preview";
-			this.buttonAddController.UseVisualStyleBackColor = false;
-			this.buttonAddController.Click += new System.EventHandler(this.buttonAddPreview_Click);
+			this.buttonAddPreview.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.buttonAddPreview.Location = new System.Drawing.Point(17, 272);
+			this.buttonAddPreview.Name = "buttonAddPreview";
+			this.buttonAddPreview.Size = new System.Drawing.Size(140, 29);
+			this.buttonAddPreview.TabIndex = 2;
+			this.buttonAddPreview.Text = "Add New Preview";
+			this.buttonAddPreview.UseVisualStyleBackColor = false;
+			this.buttonAddPreview.Click += new System.EventHandler(this.buttonAddPreview_Click);
 			// 
 			// buttonCancel
 			// 
@@ -226,11 +226,11 @@
 			this.Controls.Add(this.buttonDuplicateSelected);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
-			this.Controls.Add(this.groupBoxSelectedController);
-			this.Controls.Add(this.listViewControllers);
+			this.Controls.Add(this.groupBoxSelectedPreview);
+			this.Controls.Add(this.listViewPreviews);
 			this.Controls.Add(this.buttonOk);
-			this.Controls.Add(this.buttonDeleteController);
-			this.Controls.Add(this.buttonAddController);
+			this.Controls.Add(this.buttonDeletePreview);
+			this.Controls.Add(this.buttonAddPreview);
 			this.Controls.Add(this.buttonCancel);
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -244,8 +244,8 @@
 			this.Text = "Setup Previews";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigPreviews_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigPreviews_Load);
-			this.groupBoxSelectedController.ResumeLayout(false);
-			this.groupBoxSelectedController.PerformLayout();
+			this.groupBoxSelectedPreview.ResumeLayout(false);
+			this.groupBoxSelectedPreview.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -253,18 +253,18 @@
 
 		#endregion
 
-		private System.Windows.Forms.GroupBox groupBoxSelectedController;
+		private System.Windows.Forms.GroupBox groupBoxSelectedPreview;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button buttonUpdate;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox textBoxName;
-		private System.Windows.Forms.Button buttonConfigureController;
-		private System.Windows.Forms.ListView listViewControllers;
+		private System.Windows.Forms.Button buttonConfigurePreview;
+		private System.Windows.Forms.ListView listViewPreviews;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonDeleteController;
-		private System.Windows.Forms.Button buttonAddController;
+		private System.Windows.Forms.Button buttonDeletePreview;
+		private System.Windows.Forms.Button buttonAddPreview;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
