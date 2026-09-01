@@ -12,7 +12,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Alternating
 {
-	public class Alternating : BaseEffect
+	public class Alternating : BaseEffect, IMarkCollectionSelection
 	{
 		private EffectIntents _elementData;
 		private AlternatingData _data;
@@ -116,6 +116,17 @@ namespace VixenModules.Effect.Alternating
 		{
 			get { return _data; }
 		}
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => AlternatingMode == AlternatingMode.MarkCollection;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 
 		#region Color
 

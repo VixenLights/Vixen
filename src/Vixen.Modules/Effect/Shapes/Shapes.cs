@@ -17,7 +17,7 @@ using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Shapes
 {
-	public class Shapes : PixelEffectBase
+	public class Shapes : PixelEffectBase, IMarkCollectionSelection
 	{
 		private ShapesData _data;
 		private List<ShapesClass> _shapes;
@@ -895,6 +895,17 @@ namespace VixenModules.Effect.Shapes
 		{
 			get { return _data; }
 		}
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => ShapeMode != ShapeMode.None;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 
 		private void UpdateAllAttributes()
 		{

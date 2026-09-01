@@ -14,7 +14,7 @@ namespace VixenModules.Effect.Liquid
 	/// Maintains an emitter.
 	/// </summary>
 	[ExpandableObject]
-	public class Emitter : ExpandoObjectBase, IEmitter
+	public class Emitter : ExpandoObjectBase, IEmitter, IMarkCollectionSelection
 	{
 		#region Constructor
 
@@ -897,6 +897,12 @@ namespace VixenModules.Effect.Liquid
 				OnPropertyChanged("MarkCollectionName");
 			}
 		}
+
+		bool IMarkCollectionSelection.IsActive => FlowControl == FlowControl.UseMarks;
+
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 		
 		private int _onTime = 0;
 

@@ -13,7 +13,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Strobe
 {
-	public class Strobe : BaseEffect
+	public class Strobe : BaseEffect, IMarkCollectionSelection
 	{
 		private EffectIntents _elementData;
 		private StrobeData _data;
@@ -94,6 +94,17 @@ namespace VixenModules.Effect.Strobe
 		{
 			get { return _data; }
 		}
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => StrobeSource != StrobeSource.TimeInterval;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 
 		#region Config
 

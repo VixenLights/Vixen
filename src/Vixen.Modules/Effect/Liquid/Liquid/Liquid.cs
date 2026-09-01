@@ -673,6 +673,12 @@ namespace VixenModules.Effect.Liquid
 			EmitterList.MarkNameCollection = _markCollectionNames;
 		}
 
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			return EmitterList.OfType<IMarkCollectionSelection>();
+		}
+
 		/// <summary>
 		/// Method for effects to manage mark collections changing.
 		/// </summary>

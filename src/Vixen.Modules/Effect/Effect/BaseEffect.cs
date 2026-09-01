@@ -71,23 +71,45 @@ namespace VixenModules.Effect.Effect
 		/// <inheritdoc />
 		protected sealed override void MarkCollectionsAdded(IList<IMarkCollection> addedCollections)
 		{
-			NormalizeMarkCollectionSelections();
+			var selectionChanged = NormalizeMarkCollectionSelections();
 			MarkCollectionsAddedCore(addedCollections);
+			if (selectionChanged)
+			{
+				MarkCollectionsChangedCore();
+			}
 		}
 
 		/// <inheritdoc />
 		protected sealed override void MarkCollectionsRemoved(IList<IMarkCollection> removedCollections)
 		{
-			NormalizeMarkCollectionSelections();
+			foreach (var removedCollection in removedCollections)
+			{
+				RemoveMarkCollectionListeners(removedCollection);
+			}
+
+			var selectionChanged = NormalizeMarkCollectionSelections();
 			MarkCollectionsRemovedCore(removedCollections);
+			if (selectionChanged)
+			{
+				MarkCollectionsChangedCore();
+			}
 		}
 
-		private void NormalizeMarkCollectionSelections()
+		/// <summary>
+		/// Normalizes active effect-local mark collection selections against the current sequence collections.
+		/// </summary>
+		/// <remarks>
+		/// Derived effects use this when a mode change activates a selection outside of a collection lifecycle callback.
+		/// </remarks>
+		/// <returns><see langword="true" /> if one or more effect-local selections changed; otherwise, <see langword="false" />.</returns>
+		protected bool NormalizeMarkCollectionSelections()
 		{
 			if (MarkCollections == null)
 			{
-				return;
+				return false;
 			}
+
+			var selectionChanged = false;
 
 			foreach (var selection in GetMarkCollectionSelections())
 			{
@@ -96,11 +118,12 @@ namespace VixenModules.Effect.Effect
 				{
 					selection.MarkCollectionId = normalizedId;
 					MarkDirty();
+					selectionChanged = true;
 				}
 			}
+
+			return selectionChanged;
 		}
-
-
 		/// <summary>
 		/// Indicates if there is any discrete colors assigned to any elements this effect targets. It does not mean all of the elements are discrete if true.
 		/// Each effect should set this if it can work on discrete elements

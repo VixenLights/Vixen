@@ -13,7 +13,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Dissolve
 {
-	public class Dissolve : BaseEffect
+	public class Dissolve : BaseEffect, IMarkCollectionSelection
 	{
 		private EffectIntents _elementData;
 		private DissolveData _data;
@@ -181,6 +181,17 @@ namespace VixenModules.Effect.Dissolve
 		{
 			get { return _data; }
 		}
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => DissolveMode == DissolveMode.MarkCollection;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 
 		#region Color
 

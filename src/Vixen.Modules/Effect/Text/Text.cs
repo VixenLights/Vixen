@@ -16,7 +16,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Text
 {
-	public class Text : PixelEffectBase
+	public class Text : PixelEffectBase, IMarkCollectionSelection
 	{
 		private TextData _data;
 		private static Color EmptyColor = Color.FromArgb(0, 0, 0, 0);
@@ -664,6 +664,17 @@ namespace VixenModules.Effect.Text
 		{
 			get { return _data; }
 		}
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => TextSource != TextSource.None;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 
 		private void UpdateAllAttributes()
 		{

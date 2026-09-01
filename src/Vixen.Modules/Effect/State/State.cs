@@ -14,7 +14,7 @@ using VixenModules.Property.State;
 
 namespace VixenModules.Effect.State
 {
-	public sealed class State: BaseEffect
+	public sealed class State: BaseEffect, IMarkCollectionSelection
 	{
 		internal const string AllStateItemsLabel = "<All>";
 		internal const string NoneStateItemLabel = "<None>";
@@ -63,6 +63,24 @@ namespace VixenModules.Effect.State
 		#region Overrides of BaseEffect
 
 		protected override EffectTypeModuleData EffectModuleData => _data;
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => RenderSource == StateRenderSource.MarkCollection;
+
+		Guid IMarkCollectionSelection.MarkCollectionId
+		{
+			get => _data.MarkCollectionId;
+			set => _data.MarkCollectionId = value;
+		}
+
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => MarkCollectionType.State;
+
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 
 		/// <inheritdoc />
 		public override string Information => "Visit the Vixen Lights website for more information on this effect.";
@@ -312,16 +330,10 @@ namespace VixenModules.Effect.State
 					_data.RenderSource = value;
 					EnsureCustomStateItemRequired();
 					SetRenderSourceBrowsables();
+					NormalizeMarkCollectionSelections();
+					MarkCollectionsChangedCore();
 					IsDirty = true;
 					OnPropertyChanged();
-					if (_data.RenderSource == StateRenderSource.MarkCollection && _data.MarkCollectionId == Guid.Empty)
-					{
-						var stateMarkCollection = GetFirstStateMarkCollection();
-						if (stateMarkCollection != null)
-						{
-							MarkCollectionId = stateMarkCollection.Name;
-						}
-					}
 				}
 			}
 		}
@@ -644,18 +656,6 @@ namespace VixenModules.Effect.State
 			{
 				var markCollection = GetSelectedMarkCollection();
 				InitializeMarkCollectionListeners(markCollection);
-			}
-		}
-
-		/// <inheritdoc />
-		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> removedCollections)
-		{
-			var markCollection = removedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
-			if (markCollection != null)
-			{
-				//Our collection is gone!!!!
-				RemoveMarkCollectionListeners(markCollection);
-				MarkCollectionId = String.Empty;
 			}
 		}
 
@@ -1081,7 +1081,6 @@ namespace VixenModules.Effect.State
 
 		private static string CreateMissingStateItemLabel(Guid stateItemId) =>
 			$"<Missing State Item: {StateDefinitionDiscovery.ToShortId(stateItemId)}>";
-
 		#endregion
 
 		#region Custom State Items
@@ -1287,15 +1286,6 @@ namespace VixenModules.Effect.State
 			return MarkCollections.FirstOrDefault(collection => collection.Id == _data.MarkCollectionId);
 		}
 
-		private IMarkCollection? GetFirstStateMarkCollection()
-		{
-			if (!Enum.TryParse<MarkCollectionType>("State", out var stateType))
-			{
-				return null;
-			}
-
-			return MarkCollections.FirstOrDefault(collection => collection.CollectionType == stateType);
-		}
 
 		#endregion
 

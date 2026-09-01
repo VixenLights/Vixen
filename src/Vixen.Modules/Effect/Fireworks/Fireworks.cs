@@ -14,7 +14,7 @@ using VixenModules.Media.Audio;
 
 namespace VixenModules.Effect.Fireworks
 {
-	public class Fireworks:PixelEffectBase
+	public class Fireworks:PixelEffectBase, IMarkCollectionSelection
 	{
 		private FireworksData _data;
 		private List<RgbFireworks> _fireworkBursts;
@@ -557,6 +557,17 @@ namespace VixenModules.Effect.Fireworks
 		{
 			get { return _data; }
 		}
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => FireworksSource == FireworksSource.MarkCollection;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 
 		#region Update Attributes
 		private void UpdateAttributes()

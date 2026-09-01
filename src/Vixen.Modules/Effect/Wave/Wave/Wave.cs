@@ -475,6 +475,12 @@ namespace VixenModules.Effect.Wave
 			Waves.MarkCollections = MarkCollections;
 		}
 
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			return Waves.OfType<IMarkCollectionSelection>();
+		}
+
 		/// <summary>
 		/// Method for effects to manage mark collections changing.
 		/// </summary>
