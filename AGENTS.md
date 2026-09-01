@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides repository guidance for coding agents working in this repository.
 
 ## About Vixen
 
@@ -28,6 +28,12 @@ dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restor
 
 This mirrors `.github/workflows/unit_tests.yml`.
 
+## Validation
+
+Run the narrowest relevant validation first. For changes that affect multiple projects or shared behavior, build the affected solution configuration. For changes to `src/Vixen.Tests/`, use the full-MSBuild test workflow above; `dotnet test` alone cannot build the required C++/CLI dependencies.
+
+In the handoff, state the commands run and their results. If validation was not run, state what was skipped and why.
+
 ## Code Style
 
 Defined in `src/.editorconfig`. Key rules:
@@ -37,7 +43,11 @@ Defined in `src/.editorconfig`. Key rules:
 - Nullable and ImplicitUsings enabled; C# 12+ features enabled
 
 Avoid reformatting unrelated code in a commit, instead put it in a separate commit clearly marked as such.
-Research the codebase before editing. Never change code you haven't read.
+Research the codebase before editing. Never change code you have not read.
+
+## Working Tree Hygiene
+
+Inspect `git status` before editing. Preserve unrelated user changes and avoid modifying files outside the requested scope. Do not create commits unless explicitly requested.
 
 ## Architecture
 
@@ -45,8 +55,7 @@ Vixen is a modular system
 
 ## Use Docs First
 
-Before changing architecture, naming, setup flow, or prop-pipeline behavior, check the relevant files under `docs/` first 
-and treat them as the primary repository reference unless the code clearly diverged and needs to be brought back into alignment.
+Before changing architecture, naming, setup flow, or prop-pipeline behavior, check the relevant files under `docs/` first and treat them as the primary repository reference. When documentation has demonstrably diverged from the source or tests, reconcile the difference deliberately rather than following either one blindly.
 
 ## XML Docs
 
@@ -77,7 +86,7 @@ Vixen is built around a descriptor-based plugin architecture. Every capability �
 - `IModuleInstance` — runtime instance: holds `InstanceId`, `ModuleData`, `StaticModuleData`
 - `IModuleDataModel` — serializable per-instance configuration
 
-**Module folder convention under** **src/Vixen.Modules/[ModuleType]/[ModuleName]**:
+**Module folder convention under `src/Vixen.Modules/[ModuleType]/[ModuleName]/`:**
 ```
 MyEffect.cs              # IEffect implementation
 MyEffectDescriptor.cs    # Inherits EffectModuleDescriptorBase
@@ -85,7 +94,7 @@ MyEffectData.cs          # Inherits ModuleDataModel (serialized state)
 MyEffect.csproj
 ```
 
-**Namespace convention:** VixenModules.[ModuleType].[ModuleName]
+**Namespace convention:** `VixenModules.[ModuleType].[ModuleName]`
 
 **Module types** (each a subdirectory under `src/Vixen.Modules/`):
 - `Effect` — visual effects rendered onto element timelines (50+ effects)
@@ -103,7 +112,7 @@ Effect modules inherit from `EffectModuleInstanceBase` and implement `IEffect`. 
 - `PreRender()` — called once before rendering begins; set up data structures here.
 - `Render()` — called per effect TimeSpan to produce command intents that the engine will execute.
 - `GenerateVisualRepresentation()` — produces the thumbnail shown in the sequence editor if the standard intent rasterizer needs to be overridden
-- Edits of an effect, run this lifecycle method to update the effect instance's data model.
+- When editing effect data, trace and use the existing update path that synchronizes the effect instance's data model; do not invent a new lifecycle call without reading the effect and editor code.
 
 ### Adding Projects to the Solution
 
@@ -145,7 +154,7 @@ Bugs and feature requests are tracked at <http://vixenlights.atlassian.net> (Jir
 
 # ExecPlans
 
-When writing complex features or significant refactors, use an ExecPlan (as described in .agents/PLANS.md) from design to implementation.
+For complex features or significant refactors, use an ExecPlan from design through implementation. Read the complete `.agents/PLANS.md` before creating or executing one. Store plans in `docs/plans/` and keep the required living-document sections current.
 
 # Skills
 
@@ -164,9 +173,4 @@ Available skills:
 | `summarize-changes` | `.agents/skills/summarize-changes/SKILL.md` | Summarizing a changeset or PR |
 | `jira` | `.agents/skills/jira/SKILL.md` | Use when asked to "create JIRA ticket", "search JIRA", "update JIRA issue", "transition issue", "sprint planning", or "epic management". |
 
-Task documents that say "use the X skill" always refer to the project version found in the skills directory.
-
-- Path pattern: .agents/skills/[skill-name]/SKILL.md
-
-
-
+Task documents that say "use the X skill" always refer to the project version at `.agents/skills/[skill-name]/SKILL.md`.
