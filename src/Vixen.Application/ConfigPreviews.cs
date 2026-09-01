@@ -1,5 +1,6 @@
 ﻿using Common.Controls;
 using Common.Controls.Theme;
+using NLog;
 using Vixen.Factory;
 using Vixen.Module;
 using Vixen.Module.Preview;
@@ -11,6 +12,7 @@ namespace VixenApplication
 {
 	public partial class ConfigPreviews : BaseForm
 	{
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private OutputPreview? _displayedPreview;
 		private bool _changesMade;
 
@@ -18,7 +20,7 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
-			this.ShowInTaskbar = false;
+			ShowInTaskbar = false;
 			_displayedPreview = null;
 			buttonDeletePreview.Enabled = buttonDuplicateSelected.Enabled = false;
 		}
@@ -43,47 +45,53 @@ namespace VixenApplication
 			buttonDuplicateSelected.Enabled = buttonDeletePreview.Enabled = listViewPreviews.SelectedItems.Count > 0;
 		}
 
-		private void buttonAddPreview_Click(object sender, EventArgs e)
+		private async void buttonAddPreview_Click(object sender, EventArgs e)
 		{
-			List<KeyValuePair<string, object>> outputModules = new List<KeyValuePair<string, object>>();
-			var availableModules = ApplicationServices.GetAvailableModules<IPreviewModuleInstance>();
-			var previewToAddKey = availableModules.Any()?availableModules.First().Key:Guid.Empty;
-			
-			if (outputModules.Count > 1)
+			try
 			{
-				foreach (KeyValuePair<Guid, string> kvp in availableModules)
+				List<KeyValuePair<string, object>> outputModules = new List<KeyValuePair<string, object>>();
+				var availableModules = ApplicationServices.GetAvailableModules<IPreviewModuleInstance>();
+				var previewToAddKey = availableModules.Any()?availableModules.First().Key:Guid.Empty;
+
+				if (outputModules.Count > 1)
 				{
-					outputModules.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
-				}
-				ListSelectDialog addForm = new ListSelectDialog("Add Preview", outputModules);
-				if (addForm.ShowDialog() != DialogResult.OK)
-				{
-					return;
+					foreach (KeyValuePair<Guid, string> kvp in availableModules)
+					{
+						outputModules.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
+					}
+					ListSelectDialog addForm = new ListSelectDialog("Add Preview", outputModules);
+					if (await addForm.ShowDialogAsync() != DialogResult.OK)
+					{
+						return;
+					}
+
+					previewToAddKey = (Guid)addForm.SelectedItem;
 				}
 
-				previewToAddKey = (Guid)addForm.SelectedItem;
+				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor(previewToAddKey);
+				string name = moduleDescriptor.TypeName;
+				PreviewFactory previewFactory = new PreviewFactory();
+				OutputPreview preview = (OutputPreview)previewFactory.CreateDevice(previewToAddKey, name);
+				VixenSystem.Previews.Add(preview);
+				// In the case of a preview that has a form, the form will not be shown
+				// until this event handler completes.  To make sure it's in a visible state
+				// before evaluating if it's running or not, we're calling DoEvents.
+				// I hate DoEvents calls, so if you know of a better way...
+				Application.DoEvents();
+
+				// Select the new preview, and then repopulate the list -- it will make sure the currently
+				// displayed preview is selected.
+				_PopulateFormWithPreview(preview);
+				_PopulatePreviewList();
+				await ConfigureSelectedPreviewAsync();
+
+				_changesMade = true;
+				Refresh();
 			}
-			
-			IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor(previewToAddKey);
-			string name = moduleDescriptor.TypeName;
-			PreviewFactory previewFactory = new PreviewFactory();
-			OutputPreview preview = (OutputPreview)previewFactory.CreateDevice(previewToAddKey, name);
-			VixenSystem.Previews.Add(preview);
-			// In the case of a preview that has a form, the form will not be shown
-			// until this event handler completes.  To make sure it's in a visible state
-			// before evaluating if it's running or not, we're calling DoEvents.
-			// I hate DoEvents calls, so if you know of a better way...
-			Application.DoEvents();
-
-			// Select the new preview, and then repopulate the list -- it will make sure the currently
-			// displayed preview is selected.
-			_PopulateFormWithPreview(preview);
-			_PopulatePreviewList();
-			ConfigureSelectedPreview();
-
-			_changesMade = true;
-			Refresh();
-			
+			catch (Exception exception)
+			{
+				Logging.Error(exception, "Failed to add and configure a preview.");
+			}
 		}
 
 		private void buttonDeletePreview_Click(object sender, EventArgs e)
@@ -170,11 +178,18 @@ namespace VixenApplication
 			_changesMade = true;
 		}
 
-		private void buttonConfigurePreview_Click(object sender, EventArgs e)
+		private async void buttonConfigurePreview_Click(object sender, EventArgs e)
 		{
-			ConfigureSelectedPreview();
-			_changesMade = true;
-			Refresh();
+			try
+			{
+				await ConfigureSelectedPreviewAsync();
+				_changesMade = true;
+				Refresh();
+			}
+			catch (Exception exception)
+			{
+				Logging.Error(exception, "Failed to configure the selected preview.");
+			}
 		}
 
 		private void _PopulatePreviewList()
@@ -184,9 +199,11 @@ namespace VixenApplication
 
 			foreach (OutputPreview oc in VixenSystem.Previews)
 			{
-				ListViewItem item = new ListViewItem();
-				item.Text = oc.Name;
-				item.Checked = oc.IsRunning;
+				ListViewItem item = new ListViewItem
+				{
+					Text = oc.Name,
+					Checked = oc.IsRunning
+				};
 				item.SubItems.Add(ApplicationServices.GetModuleDescriptor(oc.ModuleId).TypeName);
 				item.Tag = oc;
 				listViewPreviews.Items.Add(item);
@@ -233,12 +250,11 @@ namespace VixenApplication
 			}
 		}
 
-		private async void ConfigureSelectedPreview()
+		private async Task ConfigureSelectedPreviewAsync()
 		{
 			if (listViewPreviews.SelectedItems.Count == 1)
 			{
-				var preview = listViewPreviews.SelectedItems[0].Tag as OutputPreview;
-				if (preview != null)
+				if (listViewPreviews.SelectedItems[0].Tag is OutputPreview preview)
 				{
 					var running = preview.IsRunning;
 					if (running)
@@ -262,29 +278,36 @@ namespace VixenApplication
 
 		private async void listViewPreviews_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
-			OutputPreview? preview = listViewPreviews.Items[e.Index].Tag as OutputPreview;
-			if (preview == null)
+			try
 			{
-				return;
-			}
-			if (e.NewValue == CheckState.Unchecked)
-			{
-				if (preview.IsRunning)
+				OutputPreview? preview = listViewPreviews.Items[e.Index].Tag as OutputPreview;
+				if (preview == null)
 				{
-					VixenSystem.Previews.Stop(preview);
+					return;
+				}
+				if (e.NewValue == CheckState.Unchecked)
+				{
+					if (preview.IsRunning)
+					{
+						VixenSystem.Previews.Stop(preview);
+					}
+				}
+				else if (e.NewValue == CheckState.Checked)
+				{
+					if (!preview.IsRunning)
+					{
+						VixenSystem.Previews.Start(preview);
+						//A bit of a kludge, but need a bit of delay to give the preview a chance to load
+						//before we force ourselves back on top.
+						await Task.Delay(250);
+						TopMost = true;
+						TopMost = false;
+					}
 				}
 			}
-			else if (e.NewValue == CheckState.Checked)
+			catch (Exception exception)
 			{
-				if (!preview.IsRunning)
-				{
-					VixenSystem.Previews.Start(preview);
-					//A bit of a kludge, but need a bit of delay to give the preview a chance to load
-					//before we force ourselves back on top.
-					await Task.Delay(250);
-					TopMost = true;
-					TopMost = false;
-				}
+				Logging.Error(exception, "Failed to change the preview running state.");
 			}
 		}
 
