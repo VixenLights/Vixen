@@ -79,6 +79,7 @@ namespace VixenApplication
 			// displayed controller is selected.
 			_PopulateFormWithController(preview);
 			_PopulateControllerList();
+			ConfigureSelectedController();
 
 			_changesMade = true;
 			Refresh();
