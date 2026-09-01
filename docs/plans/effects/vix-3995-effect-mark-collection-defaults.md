@@ -11,7 +11,7 @@ The result is observable in the Timed Sequence Editor: State appears in the coll
 ## Progress
 
 - [x] (2026-09-01 17:49Z) Updated Jira issue VIX-3995 with the user-facing requirements, acceptance criteria, and regression intent; status remains New Ticket. Evidence: https://vixenlights.atlassian.net/browse/VIX-3995 (updated 2026-09-01 12:49:27.792-05:00).
-- [ ] Add the `State` enum value, its XML documentation, and serialization/menu/export coverage.
+- [x] (2026-09-01 18:08Z) Completed Milestone 2: appended documented `State = 4`, included State labels in export defaults, and added enum, native serialization, docker-menu/non-linkability, export-default, and external-timing classification regression coverage. Validation: `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded; the focused `MarkCollectionTypeTests` and `PangolinBeyondMarkImportTests` filter passed 22 of 22 tests.
 - [ ] Add the documented, stateless Core selection contract and selection service.
 - [ ] Move mark-collection lifecycle normalization into `BaseEffect` and migrate effect-specific lifecycle work to its template hooks.
 - [ ] Apply the State, ordinary, LipSync, Wave, and Liquid policies without changing persisted State effect data.
@@ -214,3 +214,5 @@ No new NuGet packages, dispatcher usage, UI service registration, serialization 
 Revision note (2026-09-01 / Codex): Created from the approved VIX-3995 handoff after source research. This is a planning-only change; no product implementation was performed.
 
 Revision note (2026-09-01 / Codex): Completed Milestone 1 by replacing VIX-3995's description with the approved user-facing Summary, Scope, and acceptance criteria. The issue remains in New Ticket; no transition or implementation work was performed.
+
+Revision note (2026-09-01 / Codex): Completed Milestone 2 by appending the documented State collection type, preserving all historic enum values, adding State export-text defaults, and adding focused persistence and docker behavior regression coverage. No collection-link behavior or external timing-import classification logic was changed.

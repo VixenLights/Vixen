@@ -220,6 +220,7 @@ public sealed class PangolinBeyondMarkImportTests
 		// Assert
 		Assert.Equal(MarkCollectionImportStatus.Succeeded, result.Status);
 		Assert.Equal(["Voice - Phrase", "Voice - Word", "Voice - Phoneme"], result.Collections.Select(collection => collection.Name));
+		Assert.Equal([MarkCollectionType.Phrase, MarkCollectionType.Word, MarkCollectionType.Phoneme], result.Collections.Select(collection => collection.CollectionType));
 		Assert.Equal(result.Collections[0].Id, result.Collections[1].LinkedMarkCollectionId);
 		Assert.Equal(result.Collections[1].Id, result.Collections[2].LinkedMarkCollectionId);
 	}

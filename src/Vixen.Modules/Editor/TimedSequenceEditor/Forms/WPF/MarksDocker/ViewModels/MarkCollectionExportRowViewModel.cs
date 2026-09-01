@@ -11,7 +11,7 @@ namespace TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels
 			MarkCollection = markCollection;
 			IsIncluded = true;
 			//Default to including text on the types that have text
-			IsTextIncluded = markCollection.CollectionType is MarkCollectionType.Phrase or MarkCollectionType.Word or MarkCollectionType.Phoneme;
+			IsTextIncluded = markCollection.CollectionType is MarkCollectionType.Phrase or MarkCollectionType.Word or MarkCollectionType.Phoneme or MarkCollectionType.State;
 		}
 
 		#region MarkCollection property
