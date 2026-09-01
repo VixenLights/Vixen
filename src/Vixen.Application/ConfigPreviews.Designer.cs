@@ -174,7 +174,7 @@
 			this.buttonAddController.TabIndex = 2;
 			this.buttonAddController.Text = "Add New Preview";
 			this.buttonAddController.UseVisualStyleBackColor = false;
-			this.buttonAddController.Click += new System.EventHandler(this.buttonAddController_Click);
+			this.buttonAddController.Click += new System.EventHandler(this.buttonAddPreview_Click);
 			// 
 			// buttonCancel
 			// 
