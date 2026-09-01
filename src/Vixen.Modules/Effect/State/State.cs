@@ -638,7 +638,7 @@ namespace VixenModules.Effect.State
 		#region Overrides of EffectModuleInstanceBase
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			if (RenderSource == StateRenderSource.MarkCollection)
 			{
@@ -648,7 +648,7 @@ namespace VixenModules.Effect.State
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> removedCollections)
+		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> removedCollections)
 		{
 			var markCollection = removedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if (markCollection != null)

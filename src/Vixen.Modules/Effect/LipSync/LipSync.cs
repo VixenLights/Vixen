@@ -326,7 +326,7 @@ namespace VixenModules.Effect.LipSync
 		#region Overrides of EffectModuleInstanceBase
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			if (LipSyncMode == LipSyncMode.MarkCollection)
 			{
@@ -336,7 +336,7 @@ namespace VixenModules.Effect.LipSync
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> addedCollections)
 		{
 			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if(mc != null)

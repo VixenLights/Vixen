@@ -17,6 +17,7 @@ namespace VixenModules.Effect.Effect
 	public abstract class BaseEffect : EffectModuleInstanceBase
 	{
 		private bool _hasDiscreteColors;
+		private static readonly MarkCollectionSelectionService MarkCollectionSelectionService = new();
 		protected int FrameTime;
 		protected TimeSpan FrameTimespan;
 
@@ -27,6 +28,77 @@ namespace VixenModules.Effect.Effect
 		}
 		
 		protected abstract EffectTypeModuleData EffectModuleData { get; }
+
+		/// <summary>
+		/// Gets the effect-local mark collection selections that participate in lifecycle normalization.
+		/// </summary>
+		/// <returns>The active and inactive selections owned by this effect.</returns>
+		protected virtual IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			return [];
+		}
+
+		/// <summary>
+		/// Handles effect-specific work after mark collection assignment or reset notifications are normalized.
+		/// </summary>
+		protected virtual void MarkCollectionsChangedCore()
+		{
+		}
+
+		/// <summary>
+		/// Handles effect-specific work after added mark collections are normalized.
+		/// </summary>
+		/// <param name="addedCollections">The collections added to the shared sequence collection.</param>
+		protected virtual void MarkCollectionsAddedCore(IList<IMarkCollection> addedCollections)
+		{
+		}
+
+		/// <summary>
+		/// Handles effect-specific work after removed mark collections are normalized.
+		/// </summary>
+		/// <param name="removedCollections">The collections removed from the shared sequence collection.</param>
+		protected virtual void MarkCollectionsRemovedCore(IList<IMarkCollection> removedCollections)
+		{
+		}
+
+		/// <inheritdoc />
+		protected sealed override void MarkCollectionsChanged()
+		{
+			NormalizeMarkCollectionSelections();
+			MarkCollectionsChangedCore();
+		}
+
+		/// <inheritdoc />
+		protected sealed override void MarkCollectionsAdded(IList<IMarkCollection> addedCollections)
+		{
+			NormalizeMarkCollectionSelections();
+			MarkCollectionsAddedCore(addedCollections);
+		}
+
+		/// <inheritdoc />
+		protected sealed override void MarkCollectionsRemoved(IList<IMarkCollection> removedCollections)
+		{
+			NormalizeMarkCollectionSelections();
+			MarkCollectionsRemovedCore(removedCollections);
+		}
+
+		private void NormalizeMarkCollectionSelections()
+		{
+			if (MarkCollections == null)
+			{
+				return;
+			}
+
+			foreach (var selection in GetMarkCollectionSelections())
+			{
+				var normalizedId = MarkCollectionSelectionService.Normalize(MarkCollections, selection);
+				if (selection.MarkCollectionId != normalizedId)
+				{
+					selection.MarkCollectionId = normalizedId;
+					MarkDirty();
+				}
+			}
+		}
 
 
 		/// <summary>

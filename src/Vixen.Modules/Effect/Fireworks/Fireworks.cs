@@ -856,7 +856,7 @@ namespace VixenModules.Effect.Fireworks
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			if (FireworksSource == FireworksSource.MarkCollection)
 			{
@@ -866,7 +866,7 @@ namespace VixenModules.Effect.Fireworks
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> addedCollections)
 		{
 			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if (mc != null)

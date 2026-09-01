@@ -458,7 +458,7 @@ namespace VixenModules.Effect.Wave
 		/// <summary>
 		/// Virtualized event handler for when the mark collection changes.
 		/// </summary>
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			// Loop over the mark collections
 			foreach (IMarkCollection collection in MarkCollections)
@@ -478,7 +478,7 @@ namespace VixenModules.Effect.Wave
 		/// <summary>
 		/// Method for effects to manage mark collections changing.
 		/// </summary>
-		protected override void MarkCollectionsAdded(IList<IMarkCollection> addedCollections)
+		protected override void MarkCollectionsAddedCore(IList<IMarkCollection> addedCollections)
 		{
 			// Loop over the added mark collections
 			foreach (IMarkCollection markCollection in addedCollections)
@@ -495,7 +495,7 @@ namespace VixenModules.Effect.Wave
 		/// <summary>
 		/// Virtualized event handler for when a mark collection has been removed.
 		/// </summary>		
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> removedCollections)
+		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> removedCollections)
 		{
 			// Make a copy of the waves in an attempt to minimize thread exceptions
 			IEnumerable<IWaveform> waves = Waves.ToList();
