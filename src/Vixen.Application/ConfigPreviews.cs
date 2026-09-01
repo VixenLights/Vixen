@@ -43,36 +43,46 @@ namespace VixenApplication
 			buttonDuplicateSelected.Enabled = buttonDeleteController.Enabled = listViewControllers.SelectedItems.Count > 0;
 		}
 
-		private void buttonAddController_Click(object sender, EventArgs e)
+		private void buttonAddPreview_Click(object sender, EventArgs e)
 		{
 			List<KeyValuePair<string, object>> outputModules = new List<KeyValuePair<string, object>>();
 			var availableModules = ApplicationServices.GetAvailableModules<IPreviewModuleInstance>();
-			foreach (KeyValuePair<Guid, string> kvp in availableModules)
+			var previewToAddKey = availableModules.Any()?availableModules.First().Key:Guid.Empty;
+			
+			if (outputModules.Count > 1)
 			{
-				outputModules.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
-			}
-			ListSelectDialog addForm = new ListSelectDialog("Add Preview", (outputModules));
-			if (addForm.ShowDialog() == DialogResult.OK)
-			{
-				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.SelectedItem);
-				string name = moduleDescriptor.TypeName;
-				PreviewFactory previewFactory = new PreviewFactory();
-				OutputPreview preview = (OutputPreview)previewFactory.CreateDevice((Guid)addForm.SelectedItem, name);
-				VixenSystem.Previews.Add(preview);
-				// In the case of a controller that has a form, the form will not be shown
-				// until this event handler completes.  To make sure it's in a visible state
-				// before evaluating if it's running or not, we're calling DoEvents.
-				// I hate DoEvents calls, so if you know of a better way...
-				Application.DoEvents();
+				foreach (KeyValuePair<Guid, string> kvp in availableModules)
+				{
+					outputModules.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
+				}
+				ListSelectDialog addForm = new ListSelectDialog("Add Preview", outputModules);
+				if (addForm.ShowDialog() != DialogResult.OK)
+				{
+					return;
+				}
 
-				// select the new controller, and then repopulate the list -- it will make sure the currently
-				// displayed controller is selected.
-				_PopulateFormWithController(preview);
-				_PopulateControllerList();
-
-				_changesMade = true;
-				Refresh();
+				previewToAddKey = (Guid)addForm.SelectedItem;
 			}
+			
+			IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor(previewToAddKey);
+			string name = moduleDescriptor.TypeName;
+			PreviewFactory previewFactory = new PreviewFactory();
+			OutputPreview preview = (OutputPreview)previewFactory.CreateDevice(previewToAddKey, name);
+			VixenSystem.Previews.Add(preview);
+			// In the case of a controller that has a form, the form will not be shown
+			// until this event handler completes.  To make sure it's in a visible state
+			// before evaluating if it's running or not, we're calling DoEvents.
+			// I hate DoEvents calls, so if you know of a better way...
+			Application.DoEvents();
+
+			// select the new controller, and then repopulate the list -- it will make sure the currently
+			// displayed controller is selected.
+			_PopulateFormWithController(preview);
+			_PopulateControllerList();
+
+			_changesMade = true;
+			Refresh();
+			
 		}
 
 		private void buttonDeleteController_Click(object sender, EventArgs e)
