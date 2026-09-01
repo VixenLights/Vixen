@@ -331,7 +331,10 @@ namespace VixenModules.Effect.State
 					EnsureCustomStateItemRequired();
 					SetRenderSourceBrowsables();
 					NormalizeMarkCollectionSelections();
-					MarkCollectionsChangedCore();
+					if (MarkCollections != null)
+					{
+						MarkCollectionsChangedCore();
+					}
 					IsDirty = true;
 					OnPropertyChanged();
 				}

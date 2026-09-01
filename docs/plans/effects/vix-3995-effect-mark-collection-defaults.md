@@ -14,8 +14,8 @@ The result is observable in the Timed Sequence Editor: State appears in the coll
 - [x] (2026-09-01 18:08Z) Completed Milestone 2: appended documented `State = 4`, included State labels in export defaults, and added enum, native serialization, docker-menu/non-linkability, export-default, and external-timing classification regression coverage. Validation: `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded; the focused `MarkCollectionTypeTests` and `PangolinBeyondMarkImportTests` filter passed 22 of 22 tests.
 - [x] (2026-09-01 18:05Z) Completed Milestone 3: added the documented, stateless Core selection contract/service and established `BaseEffect` as the sealed collection-lifecycle template. Migrated ten existing effect callback implementations to post-normalization hooks without adding policies yet. BaseEffect shares one immutable service instance across all effects. Validation: `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded; the focused selection-service and BaseEffect lifecycle filter passed 15 of 15 tests.
 - [x] (2026-09-01 19:11Z) Completed Milestone 4 implementation: bound ordinary policies to all ten scrubbed mark selectors, State preference to State, LipSync preference to Phoneme without generic fallback, and Wave/Liquid policies to active child models. `BaseEffect` now detaches removed collection listeners before repairing IDs and refreshes listeners after an add/remove repair. No serialized data model or default-exclusion attribute changed. Validation: Release/x64 `Vixen_Tests` build succeeded; the focused selection and BaseEffect lifecycle filter passed 15 of 15 tests.
-- [ ] Add unit and integration-path regression tests; run the required Release/x64 test workflow.
-- [ ] Update VIX-3995 with final acceptance and validation results; record the final outcome in this plan.
+- [ ] Add the remaining State/LipSync/Wave/Liquid lifecycle integration-path regressions described in Milestone 4. The shared-policy, BaseEffect lifecycle, enum, serialization, docker, and import regressions already exist; the full suite is green.
+- [x] (2026-09-01 20:30Z) Completed Milestone 5 automated validation and Jira closeout: Release/x64 `Vixen_Tests` MSBuild succeeded and `dotnet test --no-build --no-restore` passed 898 of 898 tests (0 failed, 0 skipped). Added VIX-3995 comment 40429 with the result; the issue remains In Progress and was not transitioned. The headless environment cannot perform the required Timed Sequence Editor walkthrough, so that manual verification remains a residual risk.
 
 ## Surprises & Discoveries
 
@@ -30,6 +30,9 @@ The result is observable in the Timed Sequence Editor: State appears in the coll
 
 - Observation: Ten effects currently override one or more collection lifecycle callbacks to manage listeners or refresh display names.
   Evidence: `rg` found callbacks in Alternating, Dissolve, Fireworks, LipSync, Liquid, Shapes, State, Strobe, Text, and Wave; all now use BaseEffect's post-normalization hooks.
+
+- Observation: Changing State mark mode before the sequence supplies `MarkCollections` caused the new post-normalization listener refresh to enumerate a null list.
+  Evidence: the initial Release/x64 full test run failed `StateDataTests.RenderSource_MarkCollectionBrowsability_ShowsOnlyMarkCollectionSelector` and `CycleOffset_IterateBrowsability_ShowsForEveryRenderSource` with `ArgumentNullException` from `State.GetSelectedMarkCollection`. Guarding the immediate State and LipSync refresh until a collection list exists restored the pre-existing no-sequence behavior; the final suite passed 898 of 898 tests.
 
 ## Decision Log
 
@@ -69,9 +72,15 @@ The result is observable in the Timed Sequence Editor: State appears in the coll
   Rationale: A collection reference is sequence-local. The collection's own persisted `CollectionType` already carries the new enum value; repair is local to each effect instance.
   Date/Author: 2026-09-01 / Codex, from the approved data and isolation requirements.
 
+- Decision: On a State or LipSync mode change, refresh selection listeners immediately only when the effect has received a mark collection list.
+  Rationale: Normalization is intentionally a no-op without sequence-owned collections, and a listener refresh cannot identify a selected collection until that list exists. The later BaseEffect collection lifecycle callback still performs the normal repair and listener setup.
+  Date/Author: 2026-09-01 / Codex, during Milestone 5 validation.
+
 ## Outcomes & Retrospective
 
-Not started. On completion, replace this paragraph with the implemented behavior, the exact test/build results, any deviations cross-referenced to the Decision Log, and remaining risks. Add a dated note at the end of this plan for every revision and why it was made.
+Milestones 1 through 4 delivered a persisted `State = 4` mark collection type, State docker defaults, a stateless ID-only selection service, central BaseEffect lifecycle normalization, and policies for State, ordinary selectors, LipSync, Wave, and Liquid. Validation exposed and corrected a no-sequence State/LipSync mode-switch regression. The Release/x64 `Vixen_Tests` build succeeded, and the final already-built test run passed 898 of 898 tests with no failures or skips. VIX-3995 received closeout comment 40429 and remains In Progress without a transition.
+
+The unperformed manual Timed Sequence Editor walkthrough remains the residual risk because this session has no interactive WPF desktop. The focused State/LipSync/Wave/Liquid lifecycle integration scenarios listed in Milestone 4 also remain explicitly tracked work; existing unit, docker, serialization, import, service, BaseEffect lifecycle, and full-suite coverage passed.
 
 ## Context and Orientation
 
@@ -236,3 +245,5 @@ Revision note (2026-09-01 / Codex): Completed Milestone 3 by introducing the Cor
 Revision note (2026-09-01 / Codex): Reused one static readonly MarkCollectionSelectionService from BaseEffect because the service has no per-effect state. This removes one otherwise unnecessary allocation per effect instance without changing its policy or threading behavior.
 
 Revision note (2026-09-01 / Codex): Completed Milestone 4 implementation by making active effect and child-model selectors directly declare their policies. State and LipSync mode changes now normalize through the shared ID-only lifecycle rather than selecting by display name; removal cleanup remains in BaseEffect so normalization cannot hide the removed selection from listener management.
+
+Revision note (2026-09-01 / Codex): Performed Milestone 5 automated validation and added the Jira closeout comment. The full suite initially exposed a null mark-collection-list mode-switch regression, which was fixed before the final 898/898 pass. The required interactive editor walkthrough could not run in the headless environment and remains recorded as residual risk.
