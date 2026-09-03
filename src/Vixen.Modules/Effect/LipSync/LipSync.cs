@@ -427,11 +427,7 @@ namespace VixenModules.Effect.LipSync
 				{
 					_data.LipSyncMode = value;
 					SetLipsyncModeBrowsables();
-					NormalizeMarkCollectionSelections();
-					if (MarkCollections != null)
-					{
-						MarkCollectionsChangedCore();
-					}
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}

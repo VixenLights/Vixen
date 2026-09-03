@@ -153,6 +153,10 @@ namespace VixenModules.Effect.Alternating
 
 		#region Config
 
+		/// <summary>
+		/// Gets or sets the timing source used by the alternating effect.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the timing source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[DisplayName(@"Timing Source")]
@@ -170,6 +174,7 @@ namespace VixenModules.Effect.Alternating
 				{
 					_data.AlternatingMode = value;
 					UpdateAlternatingModeAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}

@@ -82,6 +82,10 @@ namespace VixenModules.Effect.Shapes
 
 		#region Shape Effect properties
 
+		/// <summary>
+		/// Gets or sets the source used to determine the shapes to render.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the shape source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[DisplayName(@"Shape Source")]
@@ -99,6 +103,7 @@ namespace VixenModules.Effect.Shapes
 				{
 					_data.ShapeMode = value;
 					UpdateShapeModeAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}

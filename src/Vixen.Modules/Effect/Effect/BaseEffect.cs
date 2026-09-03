@@ -124,6 +124,21 @@ namespace VixenModules.Effect.Effect
 
 			return selectionChanged;
 		}
+
+		/// <summary>
+		/// Normalizes active mark collection selections after an effect mode activates them.
+		/// </summary>
+		/// <remarks>
+		/// This also refreshes effect-specific mark collection listeners when a sequence collection list is available.
+		/// </remarks>
+		protected void ActivateMarkCollectionSelections()
+		{
+			NormalizeMarkCollectionSelections();
+			if (MarkCollections != null)
+			{
+				MarkCollectionsChangedCore();
+			}
+		}
 		/// <summary>
 		/// Indicates if there is any discrete colors assigned to any elements this effect targets. It does not mean all of the elements are discrete if true.
 		/// Each effect should set this if it can work on discrete elements

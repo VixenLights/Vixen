@@ -108,6 +108,10 @@ namespace VixenModules.Effect.Strobe
 
 		#region Config
 
+		/// <summary>
+		/// Gets or sets the timing source used by the strobe effect.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the timing source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[ProviderDisplayName(@"TimingSource")]
@@ -125,6 +129,7 @@ namespace VixenModules.Effect.Strobe
 				{
 					_data.StrobeSource = value;
 					UpdateStrobeModeAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}

@@ -74,6 +74,10 @@ namespace VixenModules.Effect.Text
 
 		#region Config properties
 
+		/// <summary>
+		/// Gets or sets the source used to trigger text rendering.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the text source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[ProviderDisplayName(@"TextTrigger")]
@@ -91,6 +95,7 @@ namespace VixenModules.Effect.Text
 				{
 					_data.TextSource = value;
 					UpdateTextModeAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}

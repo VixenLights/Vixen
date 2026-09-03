@@ -35,6 +35,10 @@ namespace VixenModules.Effect.Fireworks
 
 		#region Config
 
+		/// <summary>
+		/// Gets or sets the source used to trigger fireworks bursts.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the trigger source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[ProviderDisplayName(@"FireworksSource")]
@@ -52,6 +56,7 @@ namespace VixenModules.Effect.Fireworks
 				{
 					_data.FireworksSource = value;
 					UpdateAudioAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}

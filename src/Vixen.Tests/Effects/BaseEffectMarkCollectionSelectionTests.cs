@@ -17,9 +17,24 @@ public sealed class BaseEffectMarkCollectionSelectionTests
 		// Arrange
 		var first = new MarkCollection { Id = Guid.NewGuid(), Name = "First" };
 		var effect = new TestEffect();
+		effect.ActivateSelection();
 
 		// Act
 		effect.MarkCollections = new ObservableCollection<IMarkCollection> { first };
+
+		// Assert
+		Assert.Equal(first.Id, effect.SelectionIdObservedByChangeHook);
+	}
+
+	[Fact]
+	public void ModeActivation_NormalizesAnEmptySelection()
+	{
+		// Arrange
+		var first = new MarkCollection { Id = Guid.NewGuid(), Name = "First" };
+		var effect = new TestEffect { MarkCollections = new ObservableCollection<IMarkCollection> { first } };
+
+		// Act
+		effect.ActivateSelection();
 
 		// Assert
 		Assert.Equal(first.Id, effect.SelectionIdObservedByChangeHook);
@@ -31,6 +46,12 @@ public sealed class BaseEffectMarkCollectionSelectionTests
 		private readonly TestSelection _selection = new();
 
 		public Guid SelectionIdObservedByChangeHook { get; private set; }
+
+		public void ActivateSelection()
+		{
+			_selection.IsActive = true;
+			ActivateMarkCollectionSelections();
+		}
 
 		protected override EffectTypeModuleData EffectModuleData => _data;
 
@@ -60,7 +81,7 @@ public sealed class BaseEffectMarkCollectionSelectionTests
 
 	private sealed class TestSelection : IMarkCollectionSelection
 	{
-		public bool IsActive => true;
+		public bool IsActive { get; set; }
 		public Guid MarkCollectionId { get; set; }
 		public MarkCollectionType? PreferredCollectionType => null;
 		public bool AllowsFirstCollectionFallback => true;

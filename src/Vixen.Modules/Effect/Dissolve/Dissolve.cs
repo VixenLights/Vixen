@@ -266,6 +266,10 @@ namespace VixenModules.Effect.Dissolve
 
 		#region Config
 
+		/// <summary>
+		/// Gets or sets the timing source used by the dissolve effect.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the timing source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[ProviderDisplayName(@"TimingSource")]
@@ -283,6 +287,7 @@ namespace VixenModules.Effect.Dissolve
 				{
 					_data.DissolveMode = value;
 					UpdateDissolveModeAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}
