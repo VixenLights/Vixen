@@ -26,6 +26,7 @@ namespace Vixen.Module.Effect
 		private DefaultValueArrayMember _parameterValues;
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, bool> _browsableState = new Dictionary<string, bool>();
+		private readonly Lock _preRenderLock = new();
 
 		protected EffectModuleInstanceBase()
 		{
@@ -46,7 +47,6 @@ namespace Vixen.Module.Effect
 			IsDirty = true;
 		}
 
-		private bool IsRendering;
 		private ObservableCollection<IMarkCollection> _markCollections;
 
 		[Browsable(false)]
@@ -105,40 +105,38 @@ namespace Vixen.Module.Effect
 			}
 		}
 
+		/// <summary>
+		/// Pre-renders the effect output when the effect is dirty.
+		/// </summary>
+		/// <param name="cancellationToken">An optional cancellation source passed to the derived pre-render operation.</param>
+		/// <returns><see langword="true" /> if pre-rendering completes successfully or the effect is already clean; otherwise, <see langword="false" />.</returns>
+		/// <remarks>
+		/// Simultaneous calls for the same effect instance are serialized. A caller that waits for another caller to
+		/// successfully pre-render the effect returns without rendering it again because the effect is then clean.
+		/// </remarks>
 		public bool PreRender(CancellationTokenSource cancellationToken = null)
 		{
-			bool success = true;
-			if (IsDirty && !IsRendering)
+			lock (_preRenderLock)
 			{
+				if (!IsDirty)
+				{
+					return true;
+				}
+
 				try
 				{
-					IsRendering = true;
-					_PreRender();
+					_PreRender(cancellationToken);
 					IsDirty = false;
+					return true;
 				}
 				catch (Exception e)
 				{
 					//Trap any errors to prevent the effect from staying in a state of rendering.
 					Logging.Error(e, $"Error rendering {EffectName} on element {TargetNodes?.FirstOrDefault()?.Name}");
 					Logging.Error($"Error rendering Effect Property settings: {PropertyInfo()}");
-					success = false;
-				}
-				finally
-				{
-					IsRendering = false;
+					return false;
 				}
 			}
-			else
-			{
-				//To prevent the effect from being rendered multiple times if multiple threads 
-				//try to access it all at the same time. I.E the editor pre rendering process.
-				while (IsRendering)
-				{
-					Thread.Sleep(1);
-				}
-			}
-
-			return success;
 		}
 
 		public EffectIntents Render()
