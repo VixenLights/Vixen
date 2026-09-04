@@ -12,7 +12,7 @@ The fix makes an effect instance's pre-render operation exclusive: when two call
 
 - [x] (2026-09-04 00:00Z) Investigated the VIX-3757 stack trace and created this implementation-only ExecPlan. No production or test code has been changed.
 - [x] (2026-09-04 18:53Z) Completed Milestone 1: updated Jira issue VIX-3757 with the user-facing summary, scope, and acceptance criteria; it remains In Progress. Evidence: https://vixenlights.atlassian.net/browse/VIX-3757 (updated 2026-09-04 13:53:32.514-05:00).
-- [ ] Add a deterministic concurrent-pre-render regression test that fails against the existing non-atomic render guard.
+- [x] (2026-09-04 19:01Z) Completed Milestone 2: added `EffectModuleInstanceBasePreRenderTests` with coordinated concurrent callers, bounded waits, exclusive-execution assertions, and cancellation-token forwarding coverage. `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded. The pre-fix focused `dotnet test` run failed deterministically in 57 ms because `PreRender` calls `_PreRender()` without the supplied token (expected `CancellationTokenSource` vs. actual `null`). In that run the 16 coordinated callers produced one `_PreRender` entry, so the test does not claim to have forced the narrower existing check-and-set interleaving without adding a production test seam.
 - [ ] Replace the unsafe render guard in `EffectModuleInstanceBase` with an exclusive per-instance gate and document the affected public API.
 - [ ] Run focused and full validation, manually reproduce the Wave scenario where possible, update Jira, and record results here.
 
@@ -29,6 +29,9 @@ The fix makes an effect instance's pre-render operation exclusive: when two call
 
 - Observation: the guard was intended to prevent this exact category of problem, but it spin-waits rather than synchronizing entry.
   Evidence: the `else` branch in `EffectModuleInstanceBase.PreRender` comments that it prevents multiple threads in the editor pre-render process, then loops over `IsRendering` with `Thread.Sleep(1)`.
+
+- Observation: the new concurrent regression scenario did not reproduce two `_PreRender` entries in its first pre-fix execution.
+  Evidence: the coordinated 16-caller run reached the exclusive-execution assertions with `PreRenderCount == 1` and `MaximumConcurrentPreRenders == 1`, then failed at the deterministic cancellation-token assertion because the derived method received `null`. The source-level non-atomic guard remains the root cause identified by the Wave trace; forcing the instruction-level check-and-set race would require a production test seam, which is intentionally out of scope for this test-only milestone.
 
 ## Decision Log
 
@@ -50,7 +53,7 @@ The fix makes an effect instance's pre-render operation exclusive: when two call
 
 ## Outcomes & Retrospective
 
-Milestone 1 is complete. Jira VIX-3757 now describes the user-facing rendering reliability outcome, preserves the original-report context, states that Wave visuals and saved settings remain unchanged, and contains reviewable acceptance criteria. Its status remains In Progress.
+Milestones 1 and 2 are complete. Jira VIX-3757 now describes the user-facing rendering reliability outcome, preserves the original-report context, states that Wave visuals and saved settings remain unchanged, and contains reviewable acceptance criteria. Its status remains In Progress. The new focused test keeps a render in progress while concurrent callers arrive, asserts the final exclusive lifecycle contract, bounds every wait, and verifies forwarding the supplied cancellation token. Against the current implementation it fails with the expected token versus actual `null`; the existing non-atomic race was not forced in that run without adding a production seam.
 
 Implementation has not started. The planned correction is intentionally shared because `EffectModuleInstanceBase.PreRender` owns the faulty concurrency boundary. The expected result is a Wave regression fix plus protection for other stateful effects that rely on the same base lifecycle.
 
@@ -222,3 +225,7 @@ Their documented contract must additionally state that concurrent calls for the 
 Plan created 2026-09-04 / Codex. Reason: VIX-3757's Wave stack trace proves concurrent mutation of Wave render state, and source inspection identifies the non-atomic pre-render guard in the shared effect base class as the lifecycle race to correct.
 
 Plan revised 2026-09-04 / Codex. Reason: Milestone 1 updated VIX-3757 with the final user-facing summary, scope, and acceptance criteria before repository implementation begins.
+
+Plan revised 2026-09-04 / Codex. Reason: Milestone 2 added bounded concurrent pre-render regression coverage and recorded the exact pre-fix failure and the observed limitation of forcing the legacy check-and-set race without a production test seam.
+
+Plan revised 2026-09-04 / Codex. Reason: The Milestone 2 test now passes its synchronization resources as explicit static-delegate state, removing Rider's captured-variable-disposed-in-outer-scope warnings without changing its assertions or expected pre-fix result.
