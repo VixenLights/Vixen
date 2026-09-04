@@ -20,7 +20,7 @@ namespace VixenModules.App.WebServer.Service
 			var contextStatuses = new List<ContextStatus>();
 			foreach (var context in VixenSystem.Contexts)
 			{
-				if (@"Web Server".Equals(context.Name))
+				if (Module.LiveContextName.Equals(context.Name))
 				{
 					//Skip the web server context.
 					continue;
