@@ -14,7 +14,7 @@ The fix makes an effect instance's pre-render operation exclusive: when two call
 - [x] (2026-09-04 18:53Z) Completed Milestone 1: updated Jira issue VIX-3757 with the user-facing summary, scope, and acceptance criteria; it remains In Progress. Evidence: https://vixenlights.atlassian.net/browse/VIX-3757 (updated 2026-09-04 13:53:32.514-05:00).
 - [x] (2026-09-04 19:01Z) Completed Milestone 2: added `EffectModuleInstanceBasePreRenderTests` with coordinated concurrent callers, bounded waits, exclusive-execution assertions, and cancellation-token forwarding coverage. `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded. The pre-fix focused `dotnet test` run failed deterministically in 57 ms because `PreRender` calls `_PreRender()` without the supplied token (expected `CancellationTokenSource` vs. actual `null`). In that run the 16 coordinated callers produced one `_PreRender` entry, so the test does not claim to have forced the narrower existing check-and-set interleaving without adding a production test seam.
 - [x] (2026-09-04 19:06Z) Completed Milestone 3: replaced the non-atomic `IsRendering` guard and busy-spin loop with a private per-instance monitor gate in `EffectModuleInstanceBase.PreRender`, forwarded the supplied cancellation token to `_PreRender`, and documented the concurrent-call contract in both `EffectModuleInstanceBase` and `IEffect`. The Release/x64 `Vixen_Tests` build succeeded, and the focused regression test passed: 1 passed, 0 failed in 28 ms.
-- [ ] Run focused and full validation, manually reproduce the Wave scenario where possible, update Jira, and record results here.
+- [x] (2026-09-04 19:18Z) Completed Milestone 4: the full build succeeded and all 901 tests passed. Manual testing with rapid effect changes across several effects produced no errors and all tested effects rendered as expected. Jira VIX-3757 received the user-facing completion comment: https://vixenlights.atlassian.net/browse/VIX-3757?focusedCommentId=40433. The issue remains In Progress (updated 2026-09-04 14:18:39.864-05:00).
 
 ## Surprises & Discoveries
 
@@ -53,11 +53,11 @@ The fix makes an effect instance's pre-render operation exclusive: when two call
 
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. Jira VIX-3757 now describes the user-facing rendering reliability outcome, preserves the original-report context, states that Wave visuals and saved settings remain unchanged, and contains reviewable acceptance criteria. Its status remains In Progress. `EffectModuleInstanceBase.PreRender` now serializes the dirty-state decision and derived pre-render lifecycle per effect instance without a polling loop, and forwards the supplied cancellation token. The focused regression test passes with exactly one derived pre-render call, both callers completing successfully, the effect clean afterward, and the same token source received by the derived method.
+All milestones are complete. Jira VIX-3757 describes the user-facing rendering reliability outcome, preserves the original-report context, states that Wave visuals and saved settings remain unchanged, and contains reviewable acceptance criteria. Its completion comment is [comment 40433](https://vixenlights.atlassian.net/browse/VIX-3757?focusedCommentId=40433); the issue remains In Progress for the project workflow to transition. `EffectModuleInstanceBase.PreRender` now serializes the dirty-state decision and derived pre-render lifecycle per effect instance without a polling loop, and forwards the supplied cancellation token. The focused regression test passes with exactly one derived pre-render call, both callers completing successfully, the effect clean afterward, and the same token source received by the derived method.
 
-No Wave algorithm or serialized setting changed. The correction is intentionally shared because `EffectModuleInstanceBase.PreRender` owns the faulty concurrency boundary. Milestone 4 remains to validate the broader suite, the reported Wave scenario where available, and the Jira completion update.
+No Wave algorithm or serialized setting changed. The correction is intentionally shared because `EffectModuleInstanceBase.PreRender` owns the faulty concurrency boundary. The Release/x64 full build succeeded, all 901 tests passed, and manual rapid changes across several effects produced no errors while effects rendered normally. This satisfies the automated and manual acceptance evidence available in the workspace.
 
-At completion, replace this section with the implemented behavior, exact test results, any manual reproduction evidence, residual limitations, and the Jira comment identifier or link.
+Residual limitation: the original Spinner sequence/profile was not identified in the workspace, so manual validation used rapid changes across several available effects rather than that exact saved layout. No Wave or general effect-rendering errors were observed.
 
 ## Context and Orientation
 
@@ -231,3 +231,5 @@ Plan revised 2026-09-04 / Codex. Reason: Milestone 2 added bounded concurrent pr
 Plan revised 2026-09-04 / Codex. Reason: The Milestone 2 test now passes its synchronization resources as explicit static-delegate state, removing Rider's captured-variable-disposed-in-outer-scope warnings without changing its assertions or expected pre-fix result.
 
 Plan revised 2026-09-04 / Codex. Reason: Milestone 3 implemented per-instance pre-render serialization, cancellation-token forwarding, and the documented concurrent-call contract; the focused regression test now passes.
+
+Plan revised 2026-09-04 / Codex. Reason: Milestone 4 recorded the successful full build, all 901 passing tests, successful manual rapid-effect-change testing, and Jira completion comment 40433.
