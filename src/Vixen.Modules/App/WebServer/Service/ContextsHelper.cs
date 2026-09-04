@@ -4,23 +4,23 @@ using VixenModules.App.WebServer.Model;
 
 namespace VixenModules.App.WebServer.Service
 {
+	/// <summary>
+	/// Provides snapshots of the active execution contexts for the web server.
+	/// </summary>
 	public class ContextsHelper
 	{
-		private static readonly List<ContextStatus> _contextStatuses = new List<ContextStatus>();
-		
+		/// <summary>
+		/// Gets a snapshot of the contexts that are currently playing or paused.
+		/// </summary>
+		/// <returns>
+		/// A materialized collection of the active context statuses.
+		/// </returns>
 		public static IEnumerable<ContextStatus> GetAllStates()
 		{
-			UpdateContextStatus();
-			return _contextStatuses.Where(x => x.State.Equals(ContextStatus.States.Playing) ||
-			                                   x.State.Equals(ContextStatus.States.Paused));
-		}
-
-		private static void UpdateContextStatus()
-		{
-			_contextStatuses.Clear();
+			var contextStatuses = new List<ContextStatus>();
 			foreach (var context in VixenSystem.Contexts)
 			{
-				if (@"Web Server".Equals(context.Name))
+				if (Module.LiveContextName.Equals(context.Name))
 				{
 					//Skip the web server context.
 					continue;
@@ -35,8 +35,7 @@ namespace VixenModules.App.WebServer.Service
 					Position = context.GetTimeSnapshot()
 				};
 
-				var sequenceContext = context as ISequenceContext;
-				if (sequenceContext != null)
+				if (context is ISequenceContext sequenceContext)
 				{
 					status.Sequence.FileName = Path.GetFileName(sequenceContext.Sequence.FilePath);
 				}
@@ -44,7 +43,6 @@ namespace VixenModules.App.WebServer.Service
 				if (context.IsPaused)
 				{
 					status.State = ContextStatus.States.Paused;
-
 				}
 				else if (context.IsRunning)
 				{
@@ -52,12 +50,13 @@ namespace VixenModules.App.WebServer.Service
 				}
 				else
 				{
-					status.State = ContextStatus.States.Stopped;
-					status.Position = TimeSpan.Zero; //Ensure reported time is set to zero when context is stopped
+					continue;
 				}
 
-				_contextStatuses.Add(status);
+				contextStatuses.Add(status);
 			}
+
+			return contextStatuses.ToArray();
 		}
 	}
 }

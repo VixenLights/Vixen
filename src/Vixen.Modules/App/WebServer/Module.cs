@@ -12,6 +12,10 @@ namespace VixenModules.App.WebServer
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private const string MENU_ID_ROOT = "WebserverRoot";
+		/// <summary>
+		/// Web server context name
+		/// </summary>
+		internal const string LiveContextName = "Web Server";
 		
 		internal static LiveContext? LiveContext { get; set; }
 
@@ -121,7 +125,7 @@ namespace VixenModules.App.WebServer
 				}
 				if (LiveContext == null)
 				{
-					LiveContext = VixenSystem.Contexts.CreateLiveContext("Web Server");
+					LiveContext = VixenSystem.Contexts.CreateLiveContext(LiveContextName);
 					LiveContext.Start();
 				}
 				
