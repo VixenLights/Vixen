@@ -191,6 +191,7 @@ namespace VixenModules.Editor.EffectEditor
 		{
 			//If our parent component changed, our standard values may have changed and we need to refresh them.
 			OnPropertyChanged("StandardValues");
+			OnPropertyChanged("PropertyValue");
 		}
 
 		public override IContainer Container
