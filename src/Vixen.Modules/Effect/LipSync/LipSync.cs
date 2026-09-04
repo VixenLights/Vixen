@@ -17,7 +17,7 @@ using VixenModules.Property.Face;
 namespace VixenModules.Effect.LipSync
 {
 
-	public class LipSync : BaseEffect
+	public class LipSync : BaseEffect, IMarkCollectionSelection
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private LipSyncData _data;
@@ -302,16 +302,6 @@ namespace VixenModules.Effect.LipSync
 				return;
 			}
 
-			if (string.IsNullOrEmpty(MarkCollectionId))
-			{
-				var dmc = MarkCollections.FirstOrDefault(x => x.CollectionType == MarkCollectionType.Phoneme);
-				if (dmc != null && string.IsNullOrEmpty(MarkCollectionId))
-				{
-					MarkCollectionId = dmc.Name;
-				}
-			}
-			
-			
 			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if (mc != null)
 			{
@@ -326,24 +316,12 @@ namespace VixenModules.Effect.LipSync
 		#region Overrides of EffectModuleInstanceBase
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			if (LipSyncMode == LipSyncMode.MarkCollection)
 			{
-				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				var markCollection = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 				InitializeMarkCollectionListeners(markCollection);
-			}
-		}
-
-		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
-		{
-			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
-			if(mc != null)
-			{
-				//Our collection is gone!!!!
-				RemoveMarkCollectionListeners(mc);
-				MarkCollectionId = String.Empty;
 			}
 		}
 
@@ -449,19 +427,9 @@ namespace VixenModules.Effect.LipSync
 				{
 					_data.LipSyncMode = value;
 					SetLipsyncModeBrowsables();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
-					if (_data.LipSyncMode == LipSyncMode.MarkCollection && _data.MarkCollectionId == Guid.Empty)
-					{
-						if (MarkCollections.Any())
-						{
-							var mc = MarkCollections.FirstOrDefault(x => x.CollectionType == MarkCollectionType.Phoneme);
-							if (mc != null)
-							{
-								MarkCollectionId = mc.Name;
-							}
-						}
-					}
 				}
 			}
 		}
@@ -889,6 +857,24 @@ namespace VixenModules.Effect.LipSync
 
 		/// <inheritdoc />
 		protected override EffectTypeModuleData EffectModuleData => _data;
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => LipSyncMode == LipSyncMode.MarkCollection;
+
+		Guid IMarkCollectionSelection.MarkCollectionId
+		{
+			get => _data.MarkCollectionId;
+			set => _data.MarkCollectionId = value;
+		}
+
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => MarkCollectionType.Phoneme;
+
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => false;
 		
 		#region Information
 

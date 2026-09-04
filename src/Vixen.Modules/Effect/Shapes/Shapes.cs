@@ -17,7 +17,7 @@ using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Shapes
 {
-	public class Shapes : PixelEffectBase
+	public class Shapes : PixelEffectBase, IMarkCollectionSelection
 	{
 		private ShapesData _data;
 		private List<ShapesClass> _shapes;
@@ -82,6 +82,10 @@ namespace VixenModules.Effect.Shapes
 
 		#region Shape Effect properties
 
+		/// <summary>
+		/// Gets or sets the source used to determine the shapes to render.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the shape source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[DisplayName(@"Shape Source")]
@@ -99,6 +103,7 @@ namespace VixenModules.Effect.Shapes
 				{
 					_data.ShapeMode = value;
 					UpdateShapeModeAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}
@@ -895,6 +900,17 @@ namespace VixenModules.Effect.Shapes
 		{
 			get { return _data; }
 		}
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => ShapeMode != ShapeMode.None;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 
 		private void UpdateAllAttributes()
 		{
@@ -1970,7 +1986,7 @@ namespace VixenModules.Effect.Shapes
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			if (ShapeMode != ShapeMode.None)
 			{
@@ -1980,7 +1996,7 @@ namespace VixenModules.Effect.Shapes
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> addedCollections)
 		{
 			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if (mc != null)

@@ -14,7 +14,7 @@ namespace VixenModules.Effect.Wave
 	/// Maintains a waveform for the wave effect.
 	/// </summary>
 	[ExpandableObject]
-	public class Waveform : ExpandoObjectBase, IWaveform
+	public class Waveform : ExpandoObjectBase, IWaveform, IMarkCollectionSelection
 	{
 		#region Constructor
 
@@ -423,6 +423,12 @@ namespace VixenModules.Effect.Wave
 				OnPropertyChanged("MarkCollectionName");
 			}
 		}
+
+		bool IMarkCollectionSelection.IsActive => WaveType == WaveType.DecayingSine && UseMarks;
+
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 		
 		private ObservableCollection<string> _markNameCollection = null;
 

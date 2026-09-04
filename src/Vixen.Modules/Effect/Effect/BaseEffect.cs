@@ -17,6 +17,7 @@ namespace VixenModules.Effect.Effect
 	public abstract class BaseEffect : EffectModuleInstanceBase
 	{
 		private bool _hasDiscreteColors;
+		private static readonly MarkCollectionSelectionService MarkCollectionSelectionService = new();
 		protected int FrameTime;
 		protected TimeSpan FrameTimespan;
 
@@ -28,7 +29,116 @@ namespace VixenModules.Effect.Effect
 		
 		protected abstract EffectTypeModuleData EffectModuleData { get; }
 
+		/// <summary>
+		/// Gets the effect-local mark collection selections that participate in lifecycle normalization.
+		/// </summary>
+		/// <returns>The active and inactive selections owned by this effect.</returns>
+		protected virtual IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			return [];
+		}
 
+		/// <summary>
+		/// Handles effect-specific work after mark collection assignment or reset notifications are normalized.
+		/// </summary>
+		protected virtual void MarkCollectionsChangedCore()
+		{
+		}
+
+		/// <summary>
+		/// Handles effect-specific work after added mark collections are normalized.
+		/// </summary>
+		/// <param name="addedCollections">The collections added to the shared sequence collection.</param>
+		protected virtual void MarkCollectionsAddedCore(IList<IMarkCollection> addedCollections)
+		{
+		}
+
+		/// <summary>
+		/// Handles effect-specific work after removed mark collections are normalized.
+		/// </summary>
+		/// <param name="removedCollections">The collections removed from the shared sequence collection.</param>
+		protected virtual void MarkCollectionsRemovedCore(IList<IMarkCollection> removedCollections)
+		{
+		}
+
+		/// <inheritdoc />
+		protected sealed override void MarkCollectionsChanged()
+		{
+			NormalizeMarkCollectionSelections();
+			MarkCollectionsChangedCore();
+		}
+
+		/// <inheritdoc />
+		protected sealed override void MarkCollectionsAdded(IList<IMarkCollection> addedCollections)
+		{
+			var selectionChanged = NormalizeMarkCollectionSelections();
+			MarkCollectionsAddedCore(addedCollections);
+			if (selectionChanged)
+			{
+				MarkCollectionsChangedCore();
+			}
+		}
+
+		/// <inheritdoc />
+		protected sealed override void MarkCollectionsRemoved(IList<IMarkCollection> removedCollections)
+		{
+			foreach (var removedCollection in removedCollections)
+			{
+				RemoveMarkCollectionListeners(removedCollection);
+			}
+
+			var selectionChanged = NormalizeMarkCollectionSelections();
+			MarkCollectionsRemovedCore(removedCollections);
+			if (selectionChanged)
+			{
+				MarkCollectionsChangedCore();
+			}
+		}
+
+		/// <summary>
+		/// Normalizes active effect-local mark collection selections against the current sequence collections.
+		/// </summary>
+		/// <remarks>
+		/// Derived effects use this when a mode change activates a selection outside of a collection lifecycle callback.
+		/// </remarks>
+		/// <returns><see langword="true" /> if one or more effect-local selections changed; otherwise, <see langword="false" />.</returns>
+		protected bool NormalizeMarkCollectionSelections()
+		{
+			if (MarkCollections == null)
+			{
+				return false;
+			}
+
+			var selectionChanged = false;
+
+			foreach (var selection in GetMarkCollectionSelections())
+			{
+				var normalizedId = MarkCollectionSelectionService.Normalize(MarkCollections, selection);
+				if (selection.MarkCollectionId != normalizedId)
+				{
+					selection.MarkCollectionId = normalizedId;
+					MarkDirty();
+					selectionChanged = true;
+				}
+			}
+
+			return selectionChanged;
+		}
+
+		/// <summary>
+		/// Normalizes active mark collection selections after an effect mode activates them.
+		/// </summary>
+		/// <remarks>
+		/// This also refreshes effect-specific mark collection listeners when a sequence collection list is available.
+		/// </remarks>
+		protected void ActivateMarkCollectionSelections()
+		{
+			NormalizeMarkCollectionSelections();
+			if (MarkCollections != null)
+			{
+				MarkCollectionsChangedCore();
+			}
+		}
 		/// <summary>
 		/// Indicates if there is any discrete colors assigned to any elements this effect targets. It does not mean all of the elements are discrete if true.
 		/// Each effect should set this if it can work on discrete elements

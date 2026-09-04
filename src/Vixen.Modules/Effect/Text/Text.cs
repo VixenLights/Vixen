@@ -16,7 +16,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Text
 {
-	public class Text : PixelEffectBase
+	public class Text : PixelEffectBase, IMarkCollectionSelection
 	{
 		private TextData _data;
 		private static Color EmptyColor = Color.FromArgb(0, 0, 0, 0);
@@ -74,6 +74,10 @@ namespace VixenModules.Effect.Text
 
 		#region Config properties
 
+		/// <summary>
+		/// Gets or sets the source used to trigger text rendering.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the text source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[ProviderDisplayName(@"TextTrigger")]
@@ -91,6 +95,7 @@ namespace VixenModules.Effect.Text
 				{
 					_data.TextSource = value;
 					UpdateTextModeAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}
@@ -664,6 +669,17 @@ namespace VixenModules.Effect.Text
 		{
 			get { return _data; }
 		}
+
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => TextSource != TextSource.None;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
 
 		private void UpdateAllAttributes()
 		{
@@ -1614,7 +1630,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			if (TextSource != TextSource.None)
 			{
@@ -1624,7 +1640,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> addedCollections)
 		{
 			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if (mc != null)

@@ -13,7 +13,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Strobe
 {
-	public class Strobe : BaseEffect
+	public class Strobe : BaseEffect, IMarkCollectionSelection
 	{
 		private EffectIntents _elementData;
 		private StrobeData _data;
@@ -95,8 +95,23 @@ namespace VixenModules.Effect.Strobe
 			get { return _data; }
 		}
 
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => StrobeSource != StrobeSource.TimeInterval;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
+
 		#region Config
 
+		/// <summary>
+		/// Gets or sets the timing source used by the strobe effect.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the timing source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[ProviderDisplayName(@"TimingSource")]
@@ -114,6 +129,7 @@ namespace VixenModules.Effect.Strobe
 				{
 					_data.StrobeSource = value;
 					UpdateStrobeModeAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}
@@ -437,7 +453,7 @@ namespace VixenModules.Effect.Strobe
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			if (StrobeSource != StrobeSource.TimeInterval)
 			{
@@ -447,7 +463,7 @@ namespace VixenModules.Effect.Strobe
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> addedCollections)
 		{
 			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if (mc != null)

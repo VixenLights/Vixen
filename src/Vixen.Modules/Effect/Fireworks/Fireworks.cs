@@ -14,7 +14,7 @@ using VixenModules.Media.Audio;
 
 namespace VixenModules.Effect.Fireworks
 {
-	public class Fireworks:PixelEffectBase
+	public class Fireworks:PixelEffectBase, IMarkCollectionSelection
 	{
 		private FireworksData _data;
 		private List<RgbFireworks> _fireworkBursts;
@@ -35,6 +35,10 @@ namespace VixenModules.Effect.Fireworks
 
 		#region Config
 
+		/// <summary>
+		/// Gets or sets the source used to trigger fireworks bursts.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the trigger source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[ProviderDisplayName(@"FireworksSource")]
@@ -52,6 +56,7 @@ namespace VixenModules.Effect.Fireworks
 				{
 					_data.FireworksSource = value;
 					UpdateAudioAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}
@@ -558,6 +563,17 @@ namespace VixenModules.Effect.Fireworks
 			get { return _data; }
 		}
 
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => FireworksSource == FireworksSource.MarkCollection;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
+
 		#region Update Attributes
 		private void UpdateAttributes()
 		{
@@ -856,7 +872,7 @@ namespace VixenModules.Effect.Fireworks
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			if (FireworksSource == FireworksSource.MarkCollection)
 			{
@@ -866,7 +882,7 @@ namespace VixenModules.Effect.Fireworks
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> addedCollections)
 		{
 			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if (mc != null)

@@ -12,7 +12,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Alternating
 {
-	public class Alternating : BaseEffect
+	public class Alternating : BaseEffect, IMarkCollectionSelection
 	{
 		private EffectIntents _elementData;
 		private AlternatingData _data;
@@ -117,6 +117,17 @@ namespace VixenModules.Effect.Alternating
 			get { return _data; }
 		}
 
+		/// <inheritdoc />
+		protected override IEnumerable<IMarkCollectionSelection> GetMarkCollectionSelections()
+		{
+			yield return this;
+		}
+
+		bool IMarkCollectionSelection.IsActive => AlternatingMode == AlternatingMode.MarkCollection;
+		Guid IMarkCollectionSelection.MarkCollectionId { get => _data.MarkCollectionId; set => _data.MarkCollectionId = value; }
+		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
+		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
+
 		#region Color
 
 		[Value]
@@ -142,6 +153,10 @@ namespace VixenModules.Effect.Alternating
 
 		#region Config
 
+		/// <summary>
+		/// Gets or sets the timing source used by the alternating effect.
+		/// </summary>
+		/// <value>One of the enumeration values that specifies the timing source.</value>
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[DisplayName(@"Timing Source")]
@@ -159,6 +174,7 @@ namespace VixenModules.Effect.Alternating
 				{
 					_data.AlternatingMode = value;
 					UpdateAlternatingModeAttributes();
+					ActivateMarkCollectionSelections();
 					IsDirty = true;
 					OnPropertyChanged();
 				}
@@ -476,7 +492,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
+		protected override void MarkCollectionsChangedCore()
 		{
 			if (AlternatingMode == AlternatingMode.MarkCollection)
 			{
@@ -486,7 +502,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		protected override void MarkCollectionsRemovedCore(IList<IMarkCollection> addedCollections)
 		{
 			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			if (mc != null)
