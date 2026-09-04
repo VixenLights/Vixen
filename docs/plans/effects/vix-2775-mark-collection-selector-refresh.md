@@ -14,7 +14,7 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 - [x] (2026-09-04 20:02Z) Completed Milestone 1: updated VIX-2775's description with user-facing summary, scope, acceptance criteria, and Release/x64 validation intent; status remains In Progress. Evidence: https://vixenlights.atlassian.net/browse/VIX-2775 (updated 2026-09-04 15:02:47.844-05:00).
 - [x] (2026-09-04 20:05Z) Completed Milestone 2: added BaseEffect's private reference-identity subscription tracking, lifecycle synchronization, add/remove cleanup, selector refresh notifications, and disposal cleanup. Validation: `msbuild src\\Vixen.Modules\\Effect\\Effect\\Effect.csproj -t:Build -p:Configuration=Release -p:Platform=x64 -v:m` succeeded with four warnings in dependent projects.
 - [x] (2026-09-04 20:11Z) Completed Milestone 3: added BaseEffect notification and cleanup regressions using the existing TestEffect seam. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused `BaseEffectMarkCollectionSelectionTests` passed 8 of 8 tests (0 failed, 0 skipped).
-- [x] (2026-09-04 20:38Z) Completed the selector-contract hardening: added `IMarkCollectionSelector`, opted in Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text, and made BaseEffect notify only contract participants. Added a non-selector boundary regression. Evidence: the required Release/x64 MSBuild target succeeded; focused tests passed 9/9; full suite passed 908/908.
+- [x] (2026-09-04 15:59Z) Expanded the selector contract to LipSync and added a special-converter regression for a renamed selected legacy collection. Evidence: required Release/x64 MSBuild target succeeded; focused BaseEffect/LipSync tests passed 18/18; full suite passed 909/909.
 - [ ] Align VIX-2775 with final behavior and add a validation-results comment.
 
 ## Surprises & Discoveries
@@ -33,6 +33,9 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 
 - Observation: the initial BaseEffect bridge used a property name that is not present on every derived effect.
   Evidence: the updated regression suite includes a BaseEffect-derived non-selector, whose renamed collection produces no `MarkCollectionId` event; focused tests passed 9/9.
+
+- Observation: LipSync's special converter already preserves a selected legacy collection while excluding other non-Phoneme collections.
+  Evidence: `LipSyncMarkCollectionNameConverter.GetAllowedMarkCollectionNames` includes a collection when it is Phoneme-typed or its ID is the selected ID; the new regression passes after renaming the selected Generic collection.
 
 ## Decision Log
 
@@ -53,12 +56,16 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
   Date/Author: 2026-09-04 / Codex, during Milestone 3 implementation.
 
 - Decision: Introduce `Vixen.Marks.IMarkCollectionSelector` as a separate editor-facing string-property contract; do not merge it with `IMarkCollectionSelection`.
-  Rationale: the latter represents persisted `Guid` selections used by both effects and child models such as Waveforms and Liquid Emitters. Only the former guarantees the public property BaseEffect must refresh. The seven existing converter-backed effects already satisfy it, while LipSync, Wave, and Liquid remain intentionally outside this scope.
+  Rationale: the latter represents persisted `Guid` selections used by both effects and child models such as Waveforms and Liquid Emitters. Only the former guarantees the public property BaseEffect must refresh. The standard converter-backed effects already satisfy it, while Wave and Liquid remain intentionally outside this scope.
   Date/Author: 2026-09-04 / Codex, during selector-contract hardening.
+
+- Decision: Include LipSync in `IMarkCollectionSelector` while retaining its specialized converter and collection filter.
+  Rationale: LipSync has the same editor-facing string selector property and needs the same BaseEffect refresh event. Its special allowed-value policy is already isolated in its converter and is preserved by a dedicated regression rather than a one-off notification path.
+  Date/Author: 2026-09-04 / Codex, at user direction.
 
 ## Outcomes & Retrospective
 
-Milestone 2 centralized the event bridge in BaseEffect without changing selection policy, persisted data, converter behavior, or property-grid behavior. Milestone 3 added eight focused regressions covering add, rename, arbitrary refresh names, ignored property changes, and removed/replaced/disposed cleanup. The selector-contract amendment added a documented Core contract, opted in the seven standard converter-backed effects, and added a ninth regression proving non-selectors receive no irrelevant notification. The Release/x64 target, focused suite, and full 908-test suite pass. User manual testing confirms the editor behavior. Jira closeout remains.
+Milestone 2 centralized the event bridge in BaseEffect without changing selection policy, persisted data, converter behavior, or property-grid behavior. Milestone 3 added eight focused regressions covering add, rename, arbitrary refresh names, ignored property changes, and removed/replaced/disposed cleanup. The selector-contract amendment added a documented Core contract, opted in every effect-level editor selector—including LipSync—and added regressions for the non-selector boundary and LipSync's renamed selected legacy collection. The Release/x64 target, 18-test focused suite, and full 909-test suite pass. User manual testing confirms the editor behavior. Jira closeout remains.
 
 ## Context and Orientation
 
@@ -68,7 +75,7 @@ Mark Collections are named tracks of marks owned by a timed sequence. Each `IMar
 
 The editor's property grid observes property changes from the selected effect and can refresh a property's standard values. It does not receive a notification when a Mark Collection's own `Name` changes, which is why an open effect selector becomes stale. This work adds that forwarding notification without changing the converter or grid.
 
-The initial bridge changes `src/Vixen.Modules/Effect/Effect/BaseEffect.cs` and `src/Vixen.Tests/Effects/BaseEffectMarkCollectionSelectionTests.cs`. The selector-contract amendment also adds `src/Vixen.Core/Marks/IMarkCollectionSelector.cs` and updates only the class declarations of Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text. The new public interface requires XML documentation; no converter, property-grid, persisted-data, or selector setter logic changes are needed.
+The initial bridge changes `src/Vixen.Modules/Effect/Effect/BaseEffect.cs` and `src/Vixen.Tests/Effects/BaseEffectMarkCollectionSelectionTests.cs`. The selector-contract amendment also adds `src/Vixen.Core/Marks/IMarkCollectionSelector.cs` and updates only the class declarations of Alternating, Dissolve, Fireworks, Shapes, State, Strobe, Text, and LipSync. The new public interface requires XML documentation; no converter, property-grid, persisted-data, or selector setter logic changes are needed.
 
 ## Plan of Work
 
@@ -109,9 +116,11 @@ Keep tests deterministic and free of WPF dispatcher dependencies. Assertions sho
 
 ### Milestone 3a — Harden the editor selector contract
 
-Add `src/Vixen.Core/Marks/IMarkCollectionSelector.cs` with a documented public `string MarkCollectionId { get; set; }` property. This contract represents only the editor-facing display-name proxy; it is not the persisted `Guid` selection contract. Declare Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text as implementations, relying on their existing public string properties. Do not include LipSync, Waveform, or Liquid Emitter types.
+Add `src/Vixen.Core/Marks/IMarkCollectionSelector.cs` with a documented public `string MarkCollectionId { get; set; }` property. This contract represents only the editor-facing display-name proxy; it is not the persisted `Guid` selection contract. Declare Alternating, Dissolve, Fireworks, Shapes, State, Strobe, Text, and LipSync as implementations, relying on their existing public string properties. Do not include Waveform or Liquid Emitter types.
 
 In `BaseEffect`, replace each literal selector refresh with a private helper that calls `OnPropertyChanged(nameof(IMarkCollectionSelector.MarkCollectionId))` only when the effect implements `IMarkCollectionSelector`. Retain all existing lifecycle positions and no-dirty rename behavior. Update the test seam to use a distinct persisted `Guid` accessor and a test-owned string selector, then add a non-selector derived-effect test that verifies name changes do not raise the selector property event.
+
+Extend `src/Vixen.Tests/Effects/LipSyncMarkCollectionNameConverterTests.cs` with a regression that assigns collections to a real `LipSync` effect, selects a Generic legacy collection, and renames it. Verify the effect raises `IMarkCollectionSelector.MarkCollectionId`, its selected display value changes to the new name, and the special converter includes that renamed value with Phoneme collections while excluding an unselected non-Phoneme collection. This proves the shared refresh target is active without weakening LipSync's specialized selection policy.
 
 ### Milestone 4 — Validate and close the tracker loop
 
@@ -220,4 +229,6 @@ It must issue `OnPropertyChanged("MarkCollectionId")` only for `Name`, null, or 
 
 2026-09-04 / Codex: Completed Milestone 3 by extending the existing BaseEffect test seam with real disposal configuration and eight focused lifecycle/notification regressions. The Release/x64 `Vixen_Tests` target rebuilt the test assembly, and the focused filter passed 8/8. Full-suite validation and the manual editor check remain deliberately deferred to Milestone 4.
 
-2026-09-04 / Codex: Amended the plan and completed selector-contract hardening after the bridge proved correct in manual testing. Added documented Core `IMarkCollectionSelector`; opted in Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text; guarded BaseEffect notification by that contract; and added a non-selector boundary regression. The required Release/x64 MSBuild target succeeded, focused tests passed 9/9, and the full suite passed 908/908. The contract is intentionally separate from `IMarkCollectionSelection`; LipSync, Waveform, and Liquid Emitter remain excluded.
+2026-09-04 / Codex: Amended the plan and completed selector-contract hardening after the bridge proved correct in manual testing. Added documented Core `IMarkCollectionSelector`; opted in Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text; guarded BaseEffect notification by that contract; and added a non-selector boundary regression. The required Release/x64 MSBuild target succeeded, focused tests passed 9/9, and the full suite passed 908/908. The contract is intentionally separate from `IMarkCollectionSelection`; Waveform and Liquid Emitter remain excluded.
+
+2026-09-04 / Codex: Expanded the selector contract to LipSync at user direction so all effect-level editor selectors participate consistently. LipSync retains its special phoneme-filtering converter; its regression proves a renamed selected legacy collection remains visible with Phoneme collections and nonselected non-Phoneme collections remain absent. The required Release/x64 build succeeded, focused tests passed 18/18, and the full suite passed 909/909.

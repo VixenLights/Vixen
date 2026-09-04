@@ -2,7 +2,7 @@
 
 ## Finding
 
-`BaseEffect` currently raises `PropertyChanged("MarkCollectionId")` to refresh the selected effect's Mark Collection dropdown. This works for the converter-backed effects because Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text each expose a public `string MarkCollectionId` property. However, that common property name is not currently represented by a shared type contract, so a future effect can participate in BaseEffect mark lifecycle behavior without providing the editor property that receives the notification.
+`BaseEffect` currently raises `PropertyChanged("MarkCollectionId")` to refresh the selected effect's Mark Collection dropdown. This works for editor-effect selectors because Alternating, Dissolve, Fireworks, Shapes, State, Strobe, Text, and LipSync each expose a public `string MarkCollectionId` property. However, that common property name is not currently represented by a shared type contract, so a future effect can participate in BaseEffect mark lifecycle behavior without providing the editor property that receives the notification.
 
 `Vixen.Marks.IMarkCollectionSelection` must remain separate. It models an effect-local persisted `Guid` selection and normalization policy. Its implementations include child objects such as Waveforms and Liquid Emitters, which do not necessarily expose the effect-editor's public string proxy property. Combining the two contracts would either force irrelevant UI members onto child models or falsely imply that every persisted selection is an editor property.
 
@@ -17,7 +17,7 @@ Add a small public Core interface named `IMarkCollectionSelector` in `src/Vixen.
 
 Its XML documentation should state that this is the editor-facing selection property: it displays a Mark Collection name but maps that displayed name to the owning effect's stable persisted `Guid`. It should also document that BaseEffect raises `PropertyChanged` for this member when the available collection names change. This interface has no dependency on WPF, a converter, or the concrete effect modules.
 
-Declare the seven affected converter-backed effect classes as implementing `IMarkCollectionSelector`. Their existing public `string MarkCollectionId` properties satisfy the new interface unchanged; no setter, data model, converter, or selection policy rewrite is needed. Do not add the interface to LipSync until its special converter is deliberately included in this UI-refresh scope, and do not add it to Wave/Liquid child selectors.
+Declare the eight affected editor-effect classes as implementing `IMarkCollectionSelector`: Alternating, Dissolve, Fireworks, Shapes, State, Strobe, Text, and LipSync. Their existing public `string MarkCollectionId` properties satisfy the new interface unchanged; no setter, data model, converter, or selection policy rewrite is needed. LipSync retains its special converter and requires its own filtered-list regression. Do not add the interface to Wave/Liquid child selectors.
 
 Replace every literal notification in `BaseEffect` with a private helper such as:
 
@@ -41,6 +41,6 @@ This is a narrow Interface Segregation Principle application: the persisted-sele
 
 ## Scope and validation
 
-Expected changed files are the new Core interface, `BaseEffect.cs`, the seven converter-backed effect class declarations, and `BaseEffectMarkCollectionSelectionTests.cs`. No converter, property-grid, serialized data, or individual selector implementation needs logic changes.
+Expected changed files are the new Core interface, `BaseEffect.cs`, the eight editor-effect class declarations, `BaseEffectMarkCollectionSelectionTests.cs`, and `LipSyncMarkCollectionNameConverterTests.cs`. No converter, property-grid, serialized data, or individual selector implementation needs logic changes.
 
-Run the prescribed Release/x64 `Vixen_Tests` MSBuild target, then the focused `BaseEffectMarkCollectionSelectionTests` filter and full `dotnet test --no-build` suite. In the editor, verify that a selected converter-backed effect updates its dropdown after a collection add or rename, while its persisted selected collection remains unchanged after rename.
+Run the prescribed Release/x64 `Vixen_Tests` MSBuild target, then the focused `BaseEffectMarkCollectionSelectionTests` and `LipSyncMarkCollectionNameConverterTests` filters and the full `dotnet test --no-build` suite. In the editor, verify that a selected converter-backed effect updates its dropdown after a collection add or rename, while its persisted selected collection remains unchanged after rename. For LipSync, also verify that its special dropdown continues to show Phoneme collections and a selected legacy collection only.
