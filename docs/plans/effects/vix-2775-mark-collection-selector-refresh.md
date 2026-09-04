@@ -13,7 +13,7 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 - [x] (2026-09-04 00:00Z) Researched the existing BaseEffect collection lifecycle, mark collection contract/model, name converter, property-grid refresh path, and the existing BaseEffect selection tests.
 - [x] (2026-09-04 20:02Z) Completed Milestone 1: updated VIX-2775's description with user-facing summary, scope, acceptance criteria, and Release/x64 validation intent; status remains In Progress. Evidence: https://vixenlights.atlassian.net/browse/VIX-2775 (updated 2026-09-04 15:02:47.844-05:00).
 - [x] (2026-09-04 20:05Z) Completed Milestone 2: added BaseEffect's private reference-identity subscription tracking, lifecycle synchronization, add/remove cleanup, selector refresh notifications, and disposal cleanup. Validation: `msbuild src\\Vixen.Modules\\Effect\\Effect\\Effect.csproj -t:Build -p:Configuration=Release -p:Platform=x64 -v:m` succeeded with four warnings in dependent projects.
-- [ ] Add focused BaseEffect notification and cleanup regression tests.
+- [x] (2026-09-04 20:11Z) Completed Milestone 3: added BaseEffect notification and cleanup regressions using the existing TestEffect seam. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused `BaseEffectMarkCollectionSelectionTests` passed 8 of 8 tests (0 failed, 0 skipped).
 - [ ] Run the prescribed Release/x64 full-MSBuild test build and already-built test run; record actual results.
 - [ ] Align VIX-2775 with final behavior and add a validation-results comment.
 
@@ -27,6 +27,9 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 
 - Observation: `BaseEffect` already centralizes mark-selection normalization through sealed lifecycle overrides, and tests supply a minimal derived `TestEffect` seam.
   Evidence: `src/Vixen.Modules/Effect/Effect/BaseEffect.cs` seals `MarkCollectionsChanged`, `MarkCollectionsAdded`, and `MarkCollectionsRemoved`; `src/Vixen.Tests/Effects/BaseEffectMarkCollectionSelectionTests.cs` uses `TestEffect` and `TestSelection` to exercise that behavior without a concrete effect module.
+
+- Observation: assignment and add/remove lifecycle callbacks themselves now raise `MarkCollectionId`, so cleanup tests must discard events emitted by the action that removes or replaces a collection before asserting a later rename is silent.
+  Evidence: the focused tests clear their recorded effect-property events after removal, replacement, or disposal and then raise a collection name change; all eight focused tests passed.
 
 ## Decision Log
 
@@ -42,9 +45,13 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
   Rationale: existing derived hooks depend on normalized selections and listener cleanup. The new notification is intentionally the final observable event so the UI never refreshes against partially updated effect state.
   Date/Author: 2026-09-04 / Codex, from the current BaseEffect implementation and handoff ordering requirement.
 
+- Decision: Configure the private TestEffect's descriptor and module data so its inherited disposal path can run as it does for a real effect while preserving the existing lightweight test seam.
+  Rationale: BaseEffect disposal consults descriptor and module-data infrastructure that the prior normalization-only seam did not need. The test configuration makes the disposed-collection regression exercise actual BaseEffect cleanup instead of a test-only substitute.
+  Date/Author: 2026-09-04 / Codex, during Milestone 3 implementation.
+
 ## Outcomes & Retrospective
 
-Milestone 2 centralizes the event bridge in BaseEffect without changing selection policy, persisted data, converter behavior, property-grid behavior, or individual effects. The affected Release/x64 module build succeeds. Focused notification and cleanup tests remain for Milestone 3, so no behavioral test result or manual-editor result is available yet.
+Milestone 2 centralized the event bridge in BaseEffect without changing selection policy, persisted data, converter behavior, property-grid behavior, or individual effects. Milestone 3 added eight focused regressions covering add, rename, arbitrary refresh names, ignored property changes, and removed/replaced/disposed cleanup. The Release/x64 test target and focused test filter pass. The full suite, manual editor walkthrough, and Jira closeout remain for Milestone 4.
 
 ## Context and Orientation
 
@@ -193,3 +200,5 @@ It must issue `OnPropertyChanged("MarkCollectionId")` only for `Name`, null, or 
 2026-09-04 / Codex: Completed Milestone 1 by replacing VIX-2775's stale two-item description with the approved user-facing summary, scope, acceptance criteria, and validation intent. The issue remains In Progress; no source or test implementation was performed.
 
 2026-09-04 / Codex: Completed Milestone 2 by adding BaseEffect-only reference-identity tracking for Mark Collection property notifications. Assignment/reset synchronizes the complete subscription set; add/remove manage the exact event instances; name, null, and empty collection notifications refresh `MarkCollectionId`; and disposal removes every tracked handler. The existing normalization and effect-specific callbacks remain before the new selector notification. A Release/x64 module build succeeded; behavioral regression tests remain planned for Milestone 3.
+
+2026-09-04 / Codex: Completed Milestone 3 by extending the existing BaseEffect test seam with real disposal configuration and eight focused lifecycle/notification regressions. The Release/x64 `Vixen_Tests` target rebuilt the test assembly, and the focused filter passed 8/8. Full-suite validation and the manual editor check remain deliberately deferred to Milestone 4.
