@@ -13,7 +13,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Strobe
 {
-	public class Strobe : BaseEffect, IMarkCollectionSelection
+	public class Strobe : BaseEffect, IMarkCollectionSelection, IMarkCollectionSelector
 	{
 		private EffectIntents _elementData;
 		private StrobeData _data;

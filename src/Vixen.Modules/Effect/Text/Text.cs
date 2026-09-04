@@ -16,7 +16,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Text
 {
-	public class Text : PixelEffectBase, IMarkCollectionSelection
+	public class Text : PixelEffectBase, IMarkCollectionSelection, IMarkCollectionSelector
 	{
 		private TextData _data;
 		private static Color EmptyColor = Color.FromArgb(0, 0, 0, 0);

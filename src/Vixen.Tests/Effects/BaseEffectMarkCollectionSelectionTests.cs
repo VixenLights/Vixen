@@ -63,7 +63,7 @@ public sealed class BaseEffectMarkCollectionSelectionTests
 		var effect = new TestEffect { MarkCollections = new ObservableCollection<IMarkCollection> { markCollection } };
 		effect.ActivateSelection();
 		effect.SetClean();
-		var selectedId = effect.MarkCollectionId;
+		var selectedId = effect.SelectionMarkCollectionId;
 		var propertyNames = CapturePropertyChanges(effect);
 
 		// Act
@@ -71,7 +71,7 @@ public sealed class BaseEffectMarkCollectionSelectionTests
 
 		// Assert
 		Assert.Contains("MarkCollectionId", propertyNames);
-		Assert.Equal(selectedId, effect.MarkCollectionId);
+		Assert.Equal(selectedId, effect.SelectionMarkCollectionId);
 		Assert.False(effect.IsDirty);
 	}
 
@@ -152,6 +152,22 @@ public sealed class BaseEffectMarkCollectionSelectionTests
 		}
 	}
 
+	[Fact]
+	public void NonSelectorEffect_DoesNotRaiseMarkCollectionIdPropertyChanged()
+	{
+		// Arrange
+		var markCollection = new MarkCollection { Id = Guid.NewGuid(), Name = "Original" };
+		var effect = new NonSelectorTestEffect { MarkCollections = new ObservableCollection<IMarkCollection> { markCollection } };
+		var propertyNames = new List<string>();
+		effect.PropertyChanged += (_, e) => propertyNames.Add(e.PropertyName);
+
+		// Act
+		markCollection.Name = "Renamed";
+
+		// Assert
+		Assert.DoesNotContain(nameof(IMarkCollectionSelector.MarkCollectionId), propertyNames);
+	}
+
 	private static List<string> CapturePropertyChanges(TestEffect effect)
 	{
 		var propertyNames = new List<string>();
@@ -159,7 +175,7 @@ public sealed class BaseEffectMarkCollectionSelectionTests
 		return propertyNames;
 	}
 
-	private sealed class TestEffect : BaseEffect
+	private sealed class TestEffect : BaseEffect, IMarkCollectionSelector
 	{
 		private readonly TestEffectData _data = new();
 		private readonly TestSelection _selection = new();
@@ -171,7 +187,8 @@ public sealed class BaseEffectMarkCollectionSelectionTests
 		}
 
 		public Guid SelectionIdObservedByChangeHook { get; private set; }
-		public Guid MarkCollectionId => _selection.MarkCollectionId;
+		public Guid SelectionMarkCollectionId => _selection.MarkCollectionId;
+		public string MarkCollectionId { get; set; }
 
 		public void ActivateSelection()
 		{
@@ -195,6 +212,32 @@ public sealed class BaseEffectMarkCollectionSelectionTests
 		{
 			SelectionIdObservedByChangeHook = _selection.MarkCollectionId;
 		}
+
+		protected override void TargetNodesChanged()
+		{
+		}
+
+		protected override void _PreRender(CancellationTokenSource cancellationToken)
+		{
+		}
+
+		protected override EffectIntents _Render()
+		{
+			return new EffectIntents();
+		}
+	}
+
+	private sealed class NonSelectorTestEffect : BaseEffect
+	{
+		private readonly TestEffectData _data = new();
+
+		public NonSelectorTestEffect()
+		{
+			ModuleData = _data;
+			Descriptor = Mock.Of<IEffectModuleDescriptor>(descriptor => !descriptor.SupportsMarks);
+		}
+
+		protected override EffectTypeModuleData EffectModuleData => _data;
 
 		protected override void TargetNodesChanged()
 		{

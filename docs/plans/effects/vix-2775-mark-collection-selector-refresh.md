@@ -14,7 +14,7 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 - [x] (2026-09-04 20:02Z) Completed Milestone 1: updated VIX-2775's description with user-facing summary, scope, acceptance criteria, and Release/x64 validation intent; status remains In Progress. Evidence: https://vixenlights.atlassian.net/browse/VIX-2775 (updated 2026-09-04 15:02:47.844-05:00).
 - [x] (2026-09-04 20:05Z) Completed Milestone 2: added BaseEffect's private reference-identity subscription tracking, lifecycle synchronization, add/remove cleanup, selector refresh notifications, and disposal cleanup. Validation: `msbuild src\\Vixen.Modules\\Effect\\Effect\\Effect.csproj -t:Build -p:Configuration=Release -p:Platform=x64 -v:m` succeeded with four warnings in dependent projects.
 - [x] (2026-09-04 20:11Z) Completed Milestone 3: added BaseEffect notification and cleanup regressions using the existing TestEffect seam. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused `BaseEffectMarkCollectionSelectionTests` passed 8 of 8 tests (0 failed, 0 skipped).
-- [ ] Run the prescribed Release/x64 full-MSBuild test build and already-built test run; record actual results.
+- [x] (2026-09-04 20:38Z) Completed the selector-contract hardening: added `IMarkCollectionSelector`, opted in Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text, and made BaseEffect notify only contract participants. Added a non-selector boundary regression. Evidence: the required Release/x64 MSBuild target succeeded; focused tests passed 9/9; full suite passed 908/908.
 - [ ] Align VIX-2775 with final behavior and add a validation-results comment.
 
 ## Surprises & Discoveries
@@ -30,6 +30,9 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 
 - Observation: assignment and add/remove lifecycle callbacks themselves now raise `MarkCollectionId`, so cleanup tests must discard events emitted by the action that removes or replaces a collection before asserting a later rename is silent.
   Evidence: the focused tests clear their recorded effect-property events after removal, replacement, or disposal and then raise a collection name change; all eight focused tests passed.
+
+- Observation: the initial BaseEffect bridge used a property name that is not present on every derived effect.
+  Evidence: the updated regression suite includes a BaseEffect-derived non-selector, whose renamed collection produces no `MarkCollectionId` event; focused tests passed 9/9.
 
 ## Decision Log
 
@@ -49,9 +52,13 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
   Rationale: BaseEffect disposal consults descriptor and module-data infrastructure that the prior normalization-only seam did not need. The test configuration makes the disposed-collection regression exercise actual BaseEffect cleanup instead of a test-only substitute.
   Date/Author: 2026-09-04 / Codex, during Milestone 3 implementation.
 
+- Decision: Introduce `Vixen.Marks.IMarkCollectionSelector` as a separate editor-facing string-property contract; do not merge it with `IMarkCollectionSelection`.
+  Rationale: the latter represents persisted `Guid` selections used by both effects and child models such as Waveforms and Liquid Emitters. Only the former guarantees the public property BaseEffect must refresh. The seven existing converter-backed effects already satisfy it, while LipSync, Wave, and Liquid remain intentionally outside this scope.
+  Date/Author: 2026-09-04 / Codex, during selector-contract hardening.
+
 ## Outcomes & Retrospective
 
-Milestone 2 centralized the event bridge in BaseEffect without changing selection policy, persisted data, converter behavior, property-grid behavior, or individual effects. Milestone 3 added eight focused regressions covering add, rename, arbitrary refresh names, ignored property changes, and removed/replaced/disposed cleanup. The Release/x64 test target and focused test filter pass. The full suite, manual editor walkthrough, and Jira closeout remain for Milestone 4.
+Milestone 2 centralized the event bridge in BaseEffect without changing selection policy, persisted data, converter behavior, or property-grid behavior. Milestone 3 added eight focused regressions covering add, rename, arbitrary refresh names, ignored property changes, and removed/replaced/disposed cleanup. The selector-contract amendment added a documented Core contract, opted in the seven standard converter-backed effects, and added a ninth regression proving non-selectors receive no irrelevant notification. The Release/x64 target, focused suite, and full 908-test suite pass. User manual testing confirms the editor behavior. Jira closeout remains.
 
 ## Context and Orientation
 
@@ -61,7 +68,7 @@ Mark Collections are named tracks of marks owned by a timed sequence. Each `IMar
 
 The editor's property grid observes property changes from the selected effect and can refresh a property's standard values. It does not receive a notification when a Mark Collection's own `Name` changes, which is why an open effect selector becomes stale. This work adds that forwarding notification without changing the converter or grid.
 
-The only source files to change are `src/Vixen.Modules/Effect/Effect/BaseEffect.cs` and `src/Vixen.Tests/Effects/BaseEffectMarkCollectionSelectionTests.cs`. The expected public/protected API surface is unchanged, so no XML-documentation change is expected. If implementation changes any public or protected C# API despite this plan, stop and first read `.agents/skills/csharp-docs/SKILL.md`, then update XML documentation in the same change.
+The initial bridge changes `src/Vixen.Modules/Effect/Effect/BaseEffect.cs` and `src/Vixen.Tests/Effects/BaseEffectMarkCollectionSelectionTests.cs`. The selector-contract amendment also adds `src/Vixen.Core/Marks/IMarkCollectionSelector.cs` and updates only the class declarations of Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text. The new public interface requires XML documentation; no converter, property-grid, persisted-data, or selector setter logic changes are needed.
 
 ## Plan of Work
 
@@ -83,7 +90,7 @@ Add a private collection `PropertyChanged` handler. When `PropertyChangedEventAr
 
 Update `Dispose(bool disposing)` so the disposing path removes the collection-`PropertyChanged` handler from every tracked collection and clears the tracking collection before calling `base.Dispose(disposing)`. Retain the existing mark-content listener cleanup. Cleanup must not depend on `SupportsMarks` or on the current `MarkCollections` reference, because a prior list may already have been replaced. This ensures old and disposed objects cannot retain the effect or trigger stale UI events.
 
-Do not change `src/Vixen.Core/TypeConverters/IMarkCollectionNameConverter.cs`, `src/Vixen.Modules/Editor/EffectEditor/EffectPropertyEditorGrid.cs`, selection normalization rules, persisted data types, individual effects, or dirty-state behavior other than preserving the existing lifecycle effects. Use tabs and LF line endings, and do not reformat unrelated legacy code.
+Do not change `src/Vixen.Core/TypeConverters/IMarkCollectionNameConverter.cs`, `src/Vixen.Modules/Editor/EffectEditor/EffectPropertyEditorGrid.cs`, selection normalization rules, persisted data types, or dirty-state behavior other than preserving the existing lifecycle effects. Use tabs and LF line endings, and do not reformat unrelated legacy code.
 
 ### Milestone 3 — Prove notifications, identity stability, and cleanup
 
@@ -99,6 +106,12 @@ Add focused xUnit tests with concrete `MarkCollection` instances and event-name 
 - A collection cannot notify a disposed effect. Subscribe to the effect event, dispose the test effect, clear any events already recorded, rename the formerly tracked collection, and assert no later effect notification. The test should dispose in a `finally` block when needed so test failures do not leave subscriptions alive.
 
 Keep tests deterministic and free of WPF dispatcher dependencies. Assertions should count or inspect only newly recorded events after each action so the expected add/remove/assignment notifications do not obscure the cleanup assertions.
+
+### Milestone 3a — Harden the editor selector contract
+
+Add `src/Vixen.Core/Marks/IMarkCollectionSelector.cs` with a documented public `string MarkCollectionId { get; set; }` property. This contract represents only the editor-facing display-name proxy; it is not the persisted `Guid` selection contract. Declare Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text as implementations, relying on their existing public string properties. Do not include LipSync, Waveform, or Liquid Emitter types.
+
+In `BaseEffect`, replace each literal selector refresh with a private helper that calls `OnPropertyChanged(nameof(IMarkCollectionSelector.MarkCollectionId))` only when the effect implements `IMarkCollectionSelector`. Retain all existing lifecycle positions and no-dirty rename behavior. Update the test seam to use a distinct persisted `Guid` accessor and a test-owned string selector, then add a non-selector derived-effect test that verifies name changes do not raise the selector property event.
 
 ### Milestone 4 — Validate and close the tracker loop
 
@@ -133,7 +146,7 @@ Expected successful output has this shape; replace placeholders with real totals
 
 ## Validation and Acceptance
 
-Automated acceptance requires the focused tests to fail before the bridge is implemented and pass afterward. They must establish that add and rename events raise `MarkCollectionId`, that rename preserves the exact selected `Guid` and a clean `IsDirty` state, and that removed, replaced, and disposed collections cannot generate stale notifications. The arbitrary null/empty property-name tests confirm the handler follows standard `INotifyPropertyChanged` semantics rather than only the current `MarkCollection.Name` setter implementation.
+Automated acceptance requires the focused tests to fail before the bridge is implemented and pass afterward. They must establish that add and rename events raise `MarkCollectionId` for a selector participant, that rename preserves the exact selected `Guid` and a clean `IsDirty` state, and that removed, replaced, and disposed collections cannot generate stale notifications. The arbitrary null/empty property-name tests confirm the handler follows standard `INotifyPropertyChanged` semantics rather than only the current `MarkCollection.Name` setter implementation. The contract test also establishes that a BaseEffect-derived non-selector receives no editor-selector event.
 
 Full acceptance requires a successful Release/x64 `Vixen_Tests` MSBuild target followed by the prescribed `dotnet test --no-build --no-restore` suite with zero failures.
 
@@ -185,7 +198,11 @@ The converter deliberately returns display strings, while effect data uses IDs. 
 
 ## Interfaces and Dependencies
 
-No new external dependency, project reference, project file change, serialization member, public API, or protected API is required.
+No new external dependency, project reference, project file change, serialization member, or protected API is required. `Vixen.Marks.IMarkCollectionSelector` is a new documented public Core interface with this member:
+
+    string MarkCollectionId { get; set; }
+
+It describes the editor's display-name proxy, not the persisted identifier exposed by `IMarkCollectionSelection`.
 
 The implementation uses existing BCL `System.ComponentModel.INotifyPropertyChanged` / `PropertyChangedEventArgs`, existing `Vixen.Marks.IMarkCollection`, and the inherited protected `EffectModuleInstanceBase.OnPropertyChanged(string)` and `MarkDirty()` behavior. The final BaseEffect private handler conceptually has this signature:
 
@@ -202,3 +219,5 @@ It must issue `OnPropertyChanged("MarkCollectionId")` only for `Name`, null, or 
 2026-09-04 / Codex: Completed Milestone 2 by adding BaseEffect-only reference-identity tracking for Mark Collection property notifications. Assignment/reset synchronizes the complete subscription set; add/remove manage the exact event instances; name, null, and empty collection notifications refresh `MarkCollectionId`; and disposal removes every tracked handler. The existing normalization and effect-specific callbacks remain before the new selector notification. A Release/x64 module build succeeded; behavioral regression tests remain planned for Milestone 3.
 
 2026-09-04 / Codex: Completed Milestone 3 by extending the existing BaseEffect test seam with real disposal configuration and eight focused lifecycle/notification regressions. The Release/x64 `Vixen_Tests` target rebuilt the test assembly, and the focused filter passed 8/8. Full-suite validation and the manual editor check remain deliberately deferred to Milestone 4.
+
+2026-09-04 / Codex: Amended the plan and completed selector-contract hardening after the bridge proved correct in manual testing. Added documented Core `IMarkCollectionSelector`; opted in Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text; guarded BaseEffect notification by that contract; and added a non-selector boundary regression. The required Release/x64 MSBuild target succeeded, focused tests passed 9/9, and the full suite passed 908/908. The contract is intentionally separate from `IMarkCollectionSelection`; LipSync, Waveform, and Liquid Emitter remain excluded.

@@ -13,7 +13,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Dissolve
 {
-	public class Dissolve : BaseEffect, IMarkCollectionSelection
+	public class Dissolve : BaseEffect, IMarkCollectionSelection, IMarkCollectionSelector
 	{
 		private EffectIntents _elementData;
 		private DissolveData _data;

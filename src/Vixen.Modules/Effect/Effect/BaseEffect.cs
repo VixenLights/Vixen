@@ -68,7 +68,7 @@ namespace VixenModules.Effect.Effect
 			SynchronizeMarkCollectionPropertyChangedSubscriptions();
 			NormalizeMarkCollectionSelections();
 			MarkCollectionsChangedCore();
-			OnPropertyChanged("MarkCollectionId");
+			NotifyMarkCollectionSelectorChanged();
 		}
 
 		/// <inheritdoc />
@@ -86,7 +86,7 @@ namespace VixenModules.Effect.Effect
 				SubscribeToMarkCollectionPropertyChanged(addedCollection);
 			}
 
-			OnPropertyChanged("MarkCollectionId");
+			NotifyMarkCollectionSelectorChanged();
 		}
 
 		/// <inheritdoc />
@@ -105,7 +105,7 @@ namespace VixenModules.Effect.Effect
 				MarkCollectionsChangedCore();
 			}
 
-			OnPropertyChanged("MarkCollectionId");
+			NotifyMarkCollectionSelectorChanged();
 		}
 
 		private void SynchronizeMarkCollectionPropertyChangedSubscriptions()
@@ -149,7 +149,15 @@ namespace VixenModules.Effect.Effect
 		{
 			if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(IMarkCollection.Name))
 			{
-				OnPropertyChanged("MarkCollectionId");
+				NotifyMarkCollectionSelectorChanged();
+			}
+		}
+
+		private void NotifyMarkCollectionSelectorChanged()
+		{
+			if (this is IMarkCollectionSelector)
+			{
+				OnPropertyChanged(nameof(IMarkCollectionSelector.MarkCollectionId));
 			}
 		}
 
