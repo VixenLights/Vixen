@@ -77,6 +77,7 @@ namespace VixenModules.Effect.Wave
 			{
 				_waveType = value;
 				UpdateWaveTypeAttributes();
+				SelectFirstMarkCollectionWhenNeeded();
 				OnPropertyChanged();
 			}
 		}
@@ -100,6 +101,7 @@ namespace VixenModules.Effect.Wave
 			{
 				_useMarks = value;
 				UpdateUseMarkAttributes();
+				SelectFirstMarkCollectionWhenNeeded();
 				OnPropertyChanged();
 			}
 		}
@@ -411,7 +413,7 @@ namespace VixenModules.Effect.Wave
 					if (oldSelectedMarkCollection != null)
 					{
 						// Unregister for events
-						Parent.RemoveMarkCollectionListeners(oldSelectedMarkCollection);
+						Parent?.RemoveMarkCollectionListeners(oldSelectedMarkCollection);
 					}
 				}
 
@@ -425,7 +427,7 @@ namespace VixenModules.Effect.Wave
 					if (selectedMarkCollection != null)
 					{
 						// Register for events from the selected mark collection
-						Parent.AddMarkCollectionListeners(selectedMarkCollection);
+						Parent?.AddMarkCollectionListeners(selectedMarkCollection);
 					}
 				}
 
@@ -587,6 +589,23 @@ namespace VixenModules.Effect.Wave
 			}
 
 			return markCollection;
+		}
+
+		/// <summary>
+		/// Selects the first Mark Collection when this waveform has entered mark-driven mode without a selection.
+		/// </summary>
+		private void SelectFirstMarkCollectionWhenNeeded()
+		{
+			if (WaveType != WaveType.DecayingSine || !UseMarks || _markCollectionId != Guid.Empty || MarkCollections == null)
+			{
+				return;
+			}
+
+			var firstMarkCollection = MarkCollections.FirstOrDefault();
+			if (firstMarkCollection != null)
+			{
+				MarkCollectionId = firstMarkCollection.Id;
+			}
 		}
 
 		/// <summary>

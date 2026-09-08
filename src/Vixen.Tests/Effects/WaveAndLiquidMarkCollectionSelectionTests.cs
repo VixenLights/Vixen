@@ -4,7 +4,6 @@ using VixenModules.App.Marks;
 using VixenModules.Effect.Liquid;
 using VixenModules.Effect.Wave;
 using Xunit;
-using LiquidEffect = VixenModules.Effect.Liquid.Liquid;
 
 namespace Vixen.Tests.Effects;
 
@@ -21,12 +20,11 @@ public sealed class WaveAndLiquidMarkCollectionSelectionTests
 	{
 		// Arrange
 		var first = CreateCollection("First");
-		var effect = new Wave
+		var waveform = new Waveform
 		{
-			MarkCollections = new ObservableCollection<IMarkCollection> { first }
+			MarkCollections = new ObservableCollection<IMarkCollection> { first },
+			WaveType = WaveType.DecayingSine
 		};
-		var waveform = new Waveform { WaveType = WaveType.DecayingSine };
-		effect.Waves.Add(waveform);
 
 		// Act
 		waveform.UseMarks = true;
@@ -43,18 +41,37 @@ public sealed class WaveAndLiquidMarkCollectionSelectionTests
 	{
 		// Arrange
 		var first = CreateCollection("First");
-		var effect = new LiquidEffect
+		var emitter = new Emitter
 		{
 			MarkCollections = new ObservableCollection<IMarkCollection> { first }
 		};
-		var emitter = new Emitter();
-		effect.EmitterList.Add(emitter);
 
 		// Act
 		emitter.FlowControl = FlowControl.UseMarks;
 
 		// Assert
 		Assert.Equal(first.Id, emitter.MarkCollectionId);
+	}
+
+	/// <summary>
+	/// Verifies that choosing Decaying Sine after enabling marks selects the first available collection.
+	/// </summary>
+	[Fact]
+	public void Waveform_DecayingSine_SelectsTheFirstCollectionWhenMarksAreAlreadyEnabled()
+	{
+		// Arrange
+		var first = CreateCollection("First");
+		var waveform = new Waveform
+		{
+			MarkCollections = new ObservableCollection<IMarkCollection> { first },
+			UseMarks = true
+		};
+
+		// Act
+		waveform.WaveType = WaveType.DecayingSine;
+
+		// Assert
+		Assert.Equal(first.Id, waveform.MarkCollectionId);
 	}
 
 	private static MarkCollection CreateCollection(string name)
