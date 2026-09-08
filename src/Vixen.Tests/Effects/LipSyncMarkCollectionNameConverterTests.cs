@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Vixen.Marks;
 using VixenModules.App.Marks;
 using VixenModules.Effect.LipSync;
@@ -42,6 +43,33 @@ public sealed class LipSyncMarkCollectionNameConverterTests
 
 		// Assert
 		Assert.Equal(["Old Manual Track", "Phonemes"], result);
+	}
+
+	[Fact]
+	public void LipSync_ImplementsSelectorContractAndPreservesRenamedLegacySelection()
+	{
+		// Arrange
+		var selectedCollection = CreateCollection("Old Manual Track", MarkCollectionType.Generic);
+		var collections = new ObservableCollection<IMarkCollection>
+		{
+			selectedCollection,
+			CreateCollection("Phonemes", MarkCollectionType.Phoneme),
+			CreateCollection("Words", MarkCollectionType.Word)
+		};
+		var effect = new LipSync { MarkCollections = collections };
+		effect.MarkCollectionId = selectedCollection.Name;
+		var propertyNames = new List<string>();
+		effect.PropertyChanged += (_, e) => propertyNames.Add(e.PropertyName ?? string.Empty);
+
+		// Act
+		selectedCollection.Name = "Renamed Manual Track";
+		var result = LipSyncMarkCollectionNameConverter.GetAllowedMarkCollectionNames(collections, selectedCollection.Id);
+
+		// Assert
+		Assert.True(typeof(IMarkCollectionSelector).IsAssignableFrom(typeof(LipSync)));
+		Assert.Contains(nameof(IMarkCollectionSelector.MarkCollectionId), propertyNames);
+		Assert.Equal("Renamed Manual Track", effect.MarkCollectionId);
+		Assert.Equal(["Renamed Manual Track", "Phonemes"], result);
 	}
 
 	[Fact]

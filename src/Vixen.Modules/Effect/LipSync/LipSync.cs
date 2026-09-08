@@ -17,7 +17,7 @@ using VixenModules.Property.Face;
 namespace VixenModules.Effect.LipSync
 {
 
-	public class LipSync : BaseEffect, IMarkCollectionSelection
+	public class LipSync : BaseEffect, IMarkCollectionSelection, IMarkCollectionSelector
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private LipSyncData _data;

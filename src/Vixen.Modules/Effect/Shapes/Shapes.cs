@@ -17,7 +17,7 @@ using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Shapes
 {
-	public class Shapes : PixelEffectBase, IMarkCollectionSelection
+	public class Shapes : PixelEffectBase, IMarkCollectionSelection, IMarkCollectionSelector
 	{
 		private ShapesData _data;
 		private List<ShapesClass> _shapes;

@@ -60,6 +60,10 @@ namespace VixenModules.Effect.Wave
 
 		private WaveType _waveType = WaveType.Sine;
 
+		/// <summary>
+		/// Gets or sets the waveform type.
+		/// </summary>
+		/// <value>The waveform type rendered by this waveform.</value>
 		[ProviderDisplayName(@"WaveType")]
 		[ProviderDescription(@"WaveType")]
 		[PropertyOrder(1)]
@@ -73,11 +77,17 @@ namespace VixenModules.Effect.Wave
 			{
 				_waveType = value;
 				UpdateWaveTypeAttributes();
+				SelectFirstMarkCollectionWhenNeeded();
+				OnPropertyChanged();
 			}
 		}
 
 		private bool _useMarks = false;
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether this waveform uses a Mark Collection.
+		/// </summary>
+		/// <value><see langword="true" /> if the waveform uses a Mark Collection; otherwise, <see langword="false" />.</value>
 		[ProviderDisplayName(@"UseMarks")]
 		[ProviderDescription(@"UseMarks")]
 		[PropertyOrder(2)]
@@ -91,6 +101,8 @@ namespace VixenModules.Effect.Wave
 			{
 				_useMarks = value;
 				UpdateUseMarkAttributes();
+				SelectFirstMarkCollectionWhenNeeded();
+				OnPropertyChanged();
 			}
 		}
 		
@@ -401,7 +413,7 @@ namespace VixenModules.Effect.Wave
 					if (oldSelectedMarkCollection != null)
 					{
 						// Unregister for events
-						Parent.RemoveMarkCollectionListeners(oldSelectedMarkCollection);
+						Parent?.RemoveMarkCollectionListeners(oldSelectedMarkCollection);
 					}
 				}
 
@@ -415,7 +427,7 @@ namespace VixenModules.Effect.Wave
 					if (selectedMarkCollection != null)
 					{
 						// Register for events from the selected mark collection
-						Parent.AddMarkCollectionListeners(selectedMarkCollection);
+						Parent?.AddMarkCollectionListeners(selectedMarkCollection);
 					}
 				}
 
@@ -577,6 +589,23 @@ namespace VixenModules.Effect.Wave
 			}
 
 			return markCollection;
+		}
+
+		/// <summary>
+		/// Selects the first Mark Collection when this waveform has entered mark-driven mode without a selection.
+		/// </summary>
+		private void SelectFirstMarkCollectionWhenNeeded()
+		{
+			if (WaveType != WaveType.DecayingSine || !UseMarks || _markCollectionId != Guid.Empty || MarkCollections == null)
+			{
+				return;
+			}
+
+			var firstMarkCollection = MarkCollections.FirstOrDefault();
+			if (firstMarkCollection != null)
+			{
+				MarkCollectionId = firstMarkCollection.Id;
+			}
 		}
 
 		/// <summary>

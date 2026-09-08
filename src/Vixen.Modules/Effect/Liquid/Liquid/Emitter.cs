@@ -706,6 +706,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Determines how the flow is controlled for the emitter (Continuous, Pulsating, Use Marks).
 		/// </summary>
+		/// <remarks>Changing this to <see cref="FlowControl.UseMarks" /> causes the parent Liquid effect to select the first available Mark Collection when this emitter has no valid selection.</remarks>
 		[ProviderDisplayName(@"FlowControl")]
 		[ProviderDescription(@"FlowControl")]
 		[PropertyOrder(22)]
@@ -719,6 +720,7 @@ namespace VixenModules.Effect.Liquid
 			{
 				_flowControl = value;				
 				UpdateEmitterFlowAttributes();
+				SelectFirstMarkCollectionWhenNeeded();
 				OnPropertyChanged();				
 			}
 		}
@@ -875,7 +877,7 @@ namespace VixenModules.Effect.Liquid
 					if (oldSelectedMarkCollection != null)
 					{
 						// Unregister for events
-						Parent.RemoveMarkCollectionListeners(oldSelectedMarkCollection);
+						Parent?.RemoveMarkCollectionListeners(oldSelectedMarkCollection);
 					}
 				}
 
@@ -889,7 +891,7 @@ namespace VixenModules.Effect.Liquid
 					if (selectedMarkCollection != null)
 					{
 						// Register for events from the selected mark collection
-						Parent.AddMarkCollectionListeners(selectedMarkCollection);
+						Parent?.AddMarkCollectionListeners(selectedMarkCollection);
 					}
 				}
 
@@ -903,6 +905,23 @@ namespace VixenModules.Effect.Liquid
 		MarkCollectionType? IMarkCollectionSelection.PreferredCollectionType => null;
 
 		bool IMarkCollectionSelection.AllowsFirstCollectionFallback => true;
+
+		/// <summary>
+		/// Selects the first Mark Collection when this emitter has entered mark-controlled flow without a selection.
+		/// </summary>
+		private void SelectFirstMarkCollectionWhenNeeded()
+		{
+			if (FlowControl != FlowControl.UseMarks || _markCollectionId != Guid.Empty || MarkCollections == null)
+			{
+				return;
+			}
+
+			var firstMarkCollection = MarkCollections.FirstOrDefault();
+			if (firstMarkCollection != null)
+			{
+				MarkCollectionId = firstMarkCollection.Id;
+			}
+		}
 		
 		private int _onTime = 0;
 

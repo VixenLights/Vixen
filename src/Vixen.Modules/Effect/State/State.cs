@@ -14,7 +14,7 @@ using VixenModules.Property.State;
 
 namespace VixenModules.Effect.State
 {
-	public sealed class State: BaseEffect, IMarkCollectionSelection
+	public sealed class State: BaseEffect, IMarkCollectionSelection, IMarkCollectionSelector
 	{
 		internal const string AllStateItemsLabel = "<All>";
 		internal const string NoneStateItemLabel = "<None>";

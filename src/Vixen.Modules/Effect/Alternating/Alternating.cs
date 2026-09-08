@@ -12,7 +12,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Alternating
 {
-	public class Alternating : BaseEffect, IMarkCollectionSelection
+	public class Alternating : BaseEffect, IMarkCollectionSelection, IMarkCollectionSelector
 	{
 		private EffectIntents _elementData;
 		private AlternatingData _data;

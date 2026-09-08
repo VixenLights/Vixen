@@ -18,6 +18,7 @@ namespace VixenModules.Effect.Effect
 	{
 		private bool _hasDiscreteColors;
 		private static readonly MarkCollectionSelectionService MarkCollectionSelectionService = new();
+		private readonly HashSet<IMarkCollection> _markCollectionPropertyChangedSubscriptions = new(ReferenceEqualityComparer.Instance);
 		protected int FrameTime;
 		protected TimeSpan FrameTimespan;
 
@@ -64,8 +65,10 @@ namespace VixenModules.Effect.Effect
 		/// <inheritdoc />
 		protected sealed override void MarkCollectionsChanged()
 		{
+			SynchronizeMarkCollectionPropertyChangedSubscriptions();
 			NormalizeMarkCollectionSelections();
 			MarkCollectionsChangedCore();
+			NotifyMarkCollectionSelectorChanged();
 		}
 
 		/// <inheritdoc />
@@ -77,6 +80,13 @@ namespace VixenModules.Effect.Effect
 			{
 				MarkCollectionsChangedCore();
 			}
+
+			foreach (var addedCollection in addedCollections)
+			{
+				SubscribeToMarkCollectionPropertyChanged(addedCollection);
+			}
+
+			NotifyMarkCollectionSelectorChanged();
 		}
 
 		/// <inheritdoc />
@@ -84,6 +94,7 @@ namespace VixenModules.Effect.Effect
 		{
 			foreach (var removedCollection in removedCollections)
 			{
+				UnsubscribeFromMarkCollectionPropertyChanged(removedCollection);
 				RemoveMarkCollectionListeners(removedCollection);
 			}
 
@@ -92,6 +103,61 @@ namespace VixenModules.Effect.Effect
 			if (selectionChanged)
 			{
 				MarkCollectionsChangedCore();
+			}
+
+			NotifyMarkCollectionSelectorChanged();
+		}
+
+		private void SynchronizeMarkCollectionPropertyChangedSubscriptions()
+		{
+			foreach (var subscribedCollection in _markCollectionPropertyChangedSubscriptions.ToArray())
+			{
+				if (MarkCollections == null || !MarkCollections.Any(collection => ReferenceEquals(collection, subscribedCollection)))
+				{
+					UnsubscribeFromMarkCollectionPropertyChanged(subscribedCollection);
+				}
+			}
+
+			if (MarkCollections == null)
+			{
+				return;
+			}
+
+			foreach (var markCollection in MarkCollections)
+			{
+				SubscribeToMarkCollectionPropertyChanged(markCollection);
+			}
+		}
+
+		private void SubscribeToMarkCollectionPropertyChanged(IMarkCollection markCollection)
+		{
+			if (markCollection != null && _markCollectionPropertyChangedSubscriptions.Add(markCollection))
+			{
+				markCollection.PropertyChanged += MarkCollection_PropertyChanged;
+			}
+		}
+
+		private void UnsubscribeFromMarkCollectionPropertyChanged(IMarkCollection markCollection)
+		{
+			if (markCollection != null && _markCollectionPropertyChangedSubscriptions.Remove(markCollection))
+			{
+				markCollection.PropertyChanged -= MarkCollection_PropertyChanged;
+			}
+		}
+
+		private void MarkCollection_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(IMarkCollection.Name))
+			{
+				NotifyMarkCollectionSelectorChanged();
+			}
+		}
+
+		private void NotifyMarkCollectionSelectorChanged()
+		{
+			if (this is IMarkCollectionSelector)
+			{
+				OnPropertyChanged(nameof(IMarkCollectionSelector.MarkCollectionId));
 			}
 		}
 
@@ -343,6 +409,11 @@ namespace VixenModules.Effect.Effect
 		{
 			if (disposing)
 			{
+				foreach (var markCollection in _markCollectionPropertyChangedSubscriptions.ToArray())
+				{
+					UnsubscribeFromMarkCollectionPropertyChanged(markCollection);
+				}
+
 				if (SupportsMarks && MarkCollections != null)
 				{
 					foreach (var markCollection in MarkCollections)

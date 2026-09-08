@@ -106,6 +106,11 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		ObservableCollection<string> _markCollectionNames = new ObservableCollection<string>();
 
+		/// <summary>
+		/// Indicates whether Emitter notifications are refreshing Mark Collection display names rather than changing effect data.
+		/// </summary>
+		bool _isRefreshingMarkCollectionNames;
+
 		#endregion
 
 		#region Constructor
@@ -1874,33 +1879,43 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>
 		private void UpdateMarkCollectionNames()
 		{
-			// Save off any selected Mark Collections
-			List<Guid> selectedMarkcollectionGuid = new List<Guid>();
-			foreach (IEmitter emitter in EmitterList)
+			_isRefreshingMarkCollectionNames = true;
+			try
 			{
-				selectedMarkcollectionGuid.Add(emitter.MarkCollectionId);
+				// Save off any selected Mark Collections
+				List<Guid> selectedMarkcollectionGuid = new List<Guid>();
+				foreach (IEmitter emitter in EmitterList)
+				{
+					selectedMarkcollectionGuid.Add(emitter.MarkCollectionId);
+				}
+
+				// Clear the mark collection names
+				_markCollectionNames.Clear();
+
+				// Loop through the mark collections
+				foreach (IMarkCollection collection in MarkCollections)
+				{
+					// Add the mark collection names to the collection
+					_markCollectionNames.Add(collection.Name);
+				}
+
+				// Check to see if selected mark collection names need to be updated
+				EmitterList.UpdateSelectedMarkCollectionNames();
+
+				// Restore the selected mark collections
+				int index = 0;
+				foreach (IEmitter emitter in EmitterList)
+				{
+					emitter.MarkCollectionId = selectedMarkcollectionGuid[index];
+					index++;
+				}
+			}
+			finally
+			{
+				_isRefreshingMarkCollectionNames = false;
 			}
 
-			// Clear the mark collection names
-			_markCollectionNames.Clear();
-
-			// Loop through the mark collections
-			foreach (IMarkCollection collection in MarkCollections)
-			{
-				// Add the mark collection names to the collection
-				_markCollectionNames.Add(collection.Name);
-			}
-
-			// Check to see if selected mark collection names need to be updated
-			EmitterList.UpdateSelectedMarkCollectionNames();
-
-			// Restore the selected mark collections
-			int index = 0;
-			foreach (IEmitter emitter in EmitterList)
-			{
-				emitter.MarkCollectionId = selectedMarkcollectionGuid[index];				
-				index++;
-			}			
+			OnPropertyChanged(nameof(EmitterList));
 		}
 
 		/// <summary>
@@ -1909,7 +1924,8 @@ namespace VixenModules.Effect.Liquid
 		private void MarkCollectionPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			// If a mark collection name changed then...
-			if (e.PropertyName == "Name")
+			if (e.PropertyName == nameof(IMarkCollection.Name) && sender is IMarkCollection markCollection &&
+				EmitterList.Any(emitter => emitter.MarkCollectionId == markCollection.Id))
 			{				
 				// Update the collection of mark collection names
 				UpdateMarkCollectionNames();				
@@ -1972,7 +1988,17 @@ namespace VixenModules.Effect.Liquid
 		/// Event handler for when a child property within the EmitterList is modified.
 		/// </summary>		
 		private void EmitterListChildPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{	
+		{
+			if (_isRefreshingMarkCollectionNames)
+			{
+				return;
+			}
+
+			if (e.PropertyName == nameof(IEmitter.FlowControl))
+			{
+				ActivateMarkCollectionSelections();
+			}
+
 			MarkDirty();
 			OnPropertyChanged(nameof(EmitterList));
 			// Updates the browseable state of the audio attributes

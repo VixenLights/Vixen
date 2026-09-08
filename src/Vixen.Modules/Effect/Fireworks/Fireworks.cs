@@ -14,7 +14,7 @@ using VixenModules.Media.Audio;
 
 namespace VixenModules.Effect.Fireworks
 {
-	public class Fireworks:PixelEffectBase, IMarkCollectionSelection
+	public class Fireworks:PixelEffectBase, IMarkCollectionSelection, IMarkCollectionSelector
 	{
 		private FireworksData _data;
 		private List<RgbFireworks> _fireworkBursts;
