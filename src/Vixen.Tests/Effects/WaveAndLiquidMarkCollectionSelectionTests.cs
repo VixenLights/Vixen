@@ -4,6 +4,7 @@ using VixenModules.App.Marks;
 using VixenModules.Effect.Liquid;
 using VixenModules.Effect.Wave;
 using Xunit;
+using LiquidEffect = VixenModules.Effect.Liquid.Liquid;
 
 namespace Vixen.Tests.Effects;
 
@@ -88,6 +89,8 @@ public sealed class WaveAndLiquidMarkCollectionSelectionTests
 		selectedEffect.Waves.Add(selectedWaveform);
 		selectedWaveform.UseMarks = true;
 		selectedEffect.SetClean();
+		var selectedPropertyNames = new List<string>();
+		selectedEffect.PropertyChanged += (_, e) => selectedPropertyNames.Add(e.PropertyName);
 
 		var unrelatedEffect = new TestWave { MarkCollections = collections };
 		unrelatedEffect.Waves.Add(new Waveform());
@@ -98,8 +101,116 @@ public sealed class WaveAndLiquidMarkCollectionSelectionTests
 
 		// Assert
 		Assert.Equal("Renamed", selectedWaveform.MarkCollectionName);
+		Assert.Contains(nameof(Wave.Waves), selectedPropertyNames);
 		Assert.False(selectedEffect.IsDirty);
 		Assert.False(unrelatedEffect.IsDirty);
+	}
+
+	/// <summary>
+	/// Verifies that adding a Mark Collection refreshes a selected Wave effect without dirtying it.
+	/// </summary>
+	[Fact]
+	public void MarkCollectionAdded_RefreshesWaveSelectorWithoutDirtyingEffect()
+	{
+		// Arrange
+		var first = CreateCollection("First");
+		var collections = new ObservableCollection<IMarkCollection> { first };
+		var effect = new TestWave { MarkCollections = collections };
+		var waveform = new Waveform { WaveType = WaveType.DecayingSine };
+		effect.Waves.Add(waveform);
+		waveform.UseMarks = true;
+		effect.SetClean();
+		var propertyNames = new List<string>();
+		effect.PropertyChanged += (_, e) => propertyNames.Add(e.PropertyName);
+
+		// Act
+		collections.Add(CreateCollection("Second"));
+
+		// Assert
+		Assert.Contains(nameof(Wave.Waves), propertyNames);
+		Assert.False(effect.IsDirty);
+	}
+
+	/// <summary>
+	/// Verifies that removing a Mark Collection refreshes a Wave selector without dirtying an unrelated effect.
+	/// </summary>
+	[Fact]
+	public void MarkCollectionRemoved_RefreshesWaveSelectorWithoutDirtyingUnrelatedEffect()
+	{
+		// Arrange
+		var removable = CreateCollection("Remove");
+		var retained = CreateCollection("Retain");
+		var collections = new ObservableCollection<IMarkCollection> { removable, retained };
+		var effect = new TestWave { MarkCollections = collections };
+		var waveform = new Waveform { WaveType = WaveType.DecayingSine };
+		effect.Waves.Add(waveform);
+		waveform.UseMarks = true;
+		effect.SetClean();
+		var propertyNames = new List<string>();
+		effect.PropertyChanged += (_, e) => propertyNames.Add(e.PropertyName);
+
+		// Act
+		collections.Remove(retained);
+
+		// Assert
+		Assert.Contains(nameof(Wave.Waves), propertyNames);
+		Assert.False(effect.IsDirty);
+	}
+
+	/// <summary>
+	/// Verifies that renaming a selected Mark Collection does not dirty or invalidate Liquid effects.
+	/// </summary>
+	[Fact]
+	public void MarkCollectionRename_RefreshesSelectedEmitterNameWithoutDirtyingLiquidEffects()
+	{
+		// Arrange
+		var selectedCollection = CreateCollection("Original");
+		var collections = new ObservableCollection<IMarkCollection> { selectedCollection };
+		var selectedEffect = new TestLiquid { MarkCollections = collections };
+		var selectedEmitter = new Emitter();
+		selectedEffect.EmitterList.Add(selectedEmitter);
+		selectedEmitter.FlowControl = FlowControl.UseMarks;
+		selectedEffect.SetClean();
+		var selectedPropertyNames = new List<string>();
+		selectedEffect.PropertyChanged += (_, e) => selectedPropertyNames.Add(e.PropertyName);
+
+		var unrelatedEffect = new TestLiquid { MarkCollections = collections };
+		unrelatedEffect.EmitterList.Add(new Emitter());
+		unrelatedEffect.SetClean();
+
+		// Act
+		selectedCollection.Name = "Renamed";
+
+		// Assert
+		Assert.Equal("Renamed", selectedEmitter.MarkCollectionName);
+		Assert.Contains(nameof(LiquidEffect.EmitterList), selectedPropertyNames);
+		Assert.False(selectedEffect.IsDirty);
+		Assert.False(unrelatedEffect.IsDirty);
+	}
+
+	/// <summary>
+	/// Verifies that adding and removing Mark Collections refreshes the Liquid emitter list.
+	/// </summary>
+	[Fact]
+	public void MarkCollectionChanges_RefreshLiquidEmitterList()
+	{
+		// Arrange
+		var first = CreateCollection("First");
+		var added = CreateCollection("Added");
+		var collections = new ObservableCollection<IMarkCollection> { first };
+		var effect = new TestLiquid { MarkCollections = collections };
+		var emitter = new Emitter();
+		effect.EmitterList.Add(emitter);
+		var propertyNames = new List<string>();
+		effect.PropertyChanged += (_, e) => propertyNames.Add(e.PropertyName);
+
+		// Act
+		collections.Add(added);
+		collections.Remove(added);
+
+		// Assert
+		Assert.Equal(["First"], emitter.MarkNameCollection);
+		Assert.Equal(2, propertyNames.Count(name => name == nameof(LiquidEffect.EmitterList)));
 	}
 
 	private static MarkCollection CreateCollection(string name)
@@ -108,6 +219,14 @@ public sealed class WaveAndLiquidMarkCollectionSelectionTests
 	}
 
 	private sealed class TestWave : Wave
+	{
+		public void SetClean()
+		{
+			IsDirty = false;
+		}
+	}
+
+	private sealed class TestLiquid : LiquidEffect
 	{
 		public void SetClean()
 		{

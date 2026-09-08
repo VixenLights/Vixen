@@ -501,6 +501,7 @@ namespace VixenModules.Effect.Wave
 
 			// Update the collection of mark collection names
 			UpdateMarkCollectionNames();
+			OnPropertyChanged(nameof(Waves));
 		}
 
 		/// <summary>
@@ -566,6 +567,7 @@ namespace VixenModules.Effect.Wave
 		{
 			if (_isRefreshingMarkCollectionNames)
 			{
+				OnPropertyChanged(nameof(Waves));
 				return;
 			}
 

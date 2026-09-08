@@ -13,6 +13,8 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 - [x] (2026-09-04 00:00Z) Researched the existing BaseEffect collection lifecycle, mark collection contract/model, name converter, property-grid refresh path, and the existing BaseEffect selection tests.
 - [x] (2026-09-08 15:53Z) Extended Wave and Liquid first-selection behavior: child mark-mode setters select the first current collection when their persisted ID is empty, while parent notifications continue to activate shared normalization for lifecycle repair. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused Wave/Liquid tests passed 3/3; full suite passed 912/912.
 - [x] (2026-09-08 16:19Z) Isolated Wave Mark Collection rename refreshes so display-only child notifications do not dirty or invalidate the selected or unrelated Wave effects. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused Wave/Liquid tests passed 4/4; full suite passed 913/913.
+- [x] (2026-09-08 16:27Z) Applied the same rename isolation to Liquid and restored Wave's non-dirty `Waves` notification after a collection add so its selector re-queries available values. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused Wave/Liquid tests passed 6/6; full suite passed 915/915.
+- [x] (2026-09-08 16:35Z) Restored presentation-only outer refresh notifications during Wave and Liquid name/list rebuilding so selected editors show renamed values and added/removed collections without marking effects dirty. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused Wave/Liquid tests passed 8/8; full suite passed 917/917.
 - [x] (2026-09-04 20:02Z) Completed Milestone 1: updated VIX-2775's description with user-facing summary, scope, acceptance criteria, and Release/x64 validation intent; status remains In Progress. Evidence: https://vixenlights.atlassian.net/browse/VIX-2775 (updated 2026-09-04 15:02:47.844-05:00).
 - [x] (2026-09-04 20:05Z) Completed Milestone 2: added BaseEffect's private reference-identity subscription tracking, lifecycle synchronization, add/remove cleanup, selector refresh notifications, and disposal cleanup. Validation: `msbuild src\\Vixen.Modules\\Effect\\Effect\\Effect.csproj -t:Build -p:Configuration=Release -p:Platform=x64 -v:m` succeeded with four warnings in dependent projects.
 - [x] (2026-09-04 20:11Z) Completed Milestone 3: added BaseEffect notification and cleanup regressions using the existing TestEffect seam. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused `BaseEffectMarkCollectionSelectionTests` passed 8 of 8 tests (0 failed, 0 skipped).
@@ -47,6 +49,9 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 
 - Observation: Wave subscribes to every sequence Mark Collection, and its rename refresh previously emitted child `MarkCollections` and `MarkCollectionName` notifications for every waveform. The generic child handler treated each as an effect-data edit.
   Evidence: `Wave.MarkCollectionPropertyChanged` called `UpdateMarkCollectionNames()` without checking whether a waveform selected the renamed ID; `OnWavesChildPropertyChanged` then called `MarkDirty()` and raised `Waves` for each forwarded child notification.
+
+- Observation: Liquid has the equivalent all-collection subscription and restored each emitter's ID while rebuilding names; Wave requires an outer `Waves` notification after an add because its expando converter reads the current child collection for standard values.
+  Evidence: `Liquid.UpdateMarkCollectionNames()` calls `EmitterList.UpdateSelectedMarkCollectionNames()` and reassigns every emitter ID; `ExpandoMarkCollectionNameConverter.GetStandardValues` reads `IMarkCollectionExpandoObject.MarkCollections`, and the focused add regression observes the required `Waves` notification.
 
 ## Decision Log
 
@@ -85,6 +90,10 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 - Decision: Treat Wave name-refresh child notifications as presentation-only and refresh only an effect that has a waveform selecting the renamed collection.
   Rationale: a rename does not change a persisted Wave setting, so it must not dirty or invalidate Wave effects. The waveform itself still raises its display-name notification for the nested editor; the parent ignores it while the scoped refresh is in progress.
   Date/Author: 2026-09-08 / Codex, after user-reported gray Wave effects on rename.
+
+- Decision: Apply the presentation-only rename guard to Liquid and explicitly notify Wave's outer `Waves` property after a collection add without marking the effect dirty.
+  Rationale: Liquid's emitter refresh has the same event shape as Wave's. Wave has no effect-level selector contract, so its nested expando editor needs a non-dirty outer notification to requery the live collection list after an add.
+  Date/Author: 2026-09-08 / Codex, at user direction.
 
 ## Outcomes & Retrospective
 
@@ -194,7 +203,7 @@ Expected successful output has this shape; replace placeholders with real totals
 
 Automated acceptance requires the focused tests to fail before the bridge is implemented and pass afterward. They must establish that add and rename events raise `MarkCollectionId` for a selector participant, that rename preserves the exact selected `Guid` and a clean `IsDirty` state, and that removed, replaced, and disposed collections cannot generate stale notifications. The arbitrary null/empty property-name tests confirm the handler follows standard `INotifyPropertyChanged` semantics rather than only the current `MarkCollection.Name` setter implementation. The contract test also establishes that a BaseEffect-derived non-selector receives no editor-selector event.
 
-Wave and Liquid acceptance requires that a child with no selected ID receives the first collection ID when it enters its mark-driven mode. This must happen at the child setter so the effect-property editor observes its name update. A pre-existing valid ID remains unchanged.
+Wave and Liquid acceptance requires that a child with no selected ID receives the first collection ID when it enters its mark-driven mode. This must happen at the child setter so the effect-property editor observes its name update. A pre-existing valid ID remains unchanged. Renaming a selected collection updates only the selected child display name and leaves selected and unrelated effects clean. Adding a collection emits Wave's non-dirty outer selector refresh.
 
 Wave rename acceptance requires that the selected waveform displays the new collection name while neither it nor unrelated Wave effects become dirty or are invalidated.
 
@@ -279,3 +288,7 @@ It must issue `OnPropertyChanged("MarkCollectionId")` only for `Name`, null, or 
 2026-09-08 / Codex: Corrected the Wave and Liquid implementation after user validation showed the parent-only trigger left editor selectors blank. The first-collection fallback now runs in the child setters that own the persisted ID and display name; it is limited to empty IDs and retains parent lifecycle normalization. Added the Wave mode-order regression. The required Release/x64 MSBuild target succeeded, focused tests passed 3/3, and the full suite passed 912/912. A Rider debugger probe was cleaned up after it could not bind to the dynamically loaded Wave module; no desktop manual check or Jira closeout was performed.
 
 2026-09-08 / Codex: Fixed user-reported gray Wave effects after a Mark Collection rename. Wave now scopes the rename refresh to effects with a matching selected ID and ignores the resulting display-only child notifications at the outer effect level. Added a regression proving the selected name updates while both selected and unrelated Wave effects remain clean. The required Release/x64 MSBuild target succeeded, focused tests passed 4/4, and the full suite passed 913/913. No desktop manual check or Jira closeout was performed.
+
+2026-09-08 / Codex: Extended rename isolation to Liquid and fixed Wave's missing collection-add selector refresh. Liquid now ignores internal display-only emitter notifications while rebuilding its name list; Wave emits `Waves` after an add without becoming dirty. Added focused regressions for both cases. The required Release/x64 MSBuild target succeeded, focused tests passed 6/6, and the full suite passed 915/915. No desktop manual check or Jira closeout was performed.
+
+2026-09-08 / Codex: Corrected the presentation-refresh guard after user testing showed that it also prevented nested editor lists from updating. Wave now raises `Waves` while suppressing only dirty-state mutation, and Liquid raises `EmitterList` once after rebuilding its display-name list. Added Wave removal and Liquid add/remove regressions plus outer-notification assertions. The required Release/x64 MSBuild target succeeded, focused tests passed 8/8, and the full suite passed 917/917. No desktop manual check or Jira closeout was performed.
