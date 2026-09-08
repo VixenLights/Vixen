@@ -706,6 +706,7 @@ namespace VixenModules.Effect.Liquid
 		/// <summary>
 		/// Determines how the flow is controlled for the emitter (Continuous, Pulsating, Use Marks).
 		/// </summary>
+		/// <remarks>Changing this to <see cref="FlowControl.UseMarks" /> causes the parent Liquid effect to select the first available Mark Collection when this emitter has no valid selection.</remarks>
 		[ProviderDisplayName(@"FlowControl")]
 		[ProviderDescription(@"FlowControl")]
 		[PropertyOrder(22)]

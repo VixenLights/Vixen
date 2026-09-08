@@ -11,6 +11,7 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 ## Progress
 
 - [x] (2026-09-04 00:00Z) Researched the existing BaseEffect collection lifecycle, mark collection contract/model, name converter, property-grid refresh path, and the existing BaseEffect selection tests.
+- [x] (2026-09-08 15:53Z) Extended the shared selection behavior to Wave and Liquid: entering a child mark-driven mode now activates BaseEffect normalization, and Waveform exposes the needed child change notifications. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused Wave/Liquid tests passed 2/2; full suite passed 911/911.
 - [x] (2026-09-04 20:02Z) Completed Milestone 1: updated VIX-2775's description with user-facing summary, scope, acceptance criteria, and Release/x64 validation intent; status remains In Progress. Evidence: https://vixenlights.atlassian.net/browse/VIX-2775 (updated 2026-09-04 15:02:47.844-05:00).
 - [x] (2026-09-04 20:05Z) Completed Milestone 2: added BaseEffect's private reference-identity subscription tracking, lifecycle synchronization, add/remove cleanup, selector refresh notifications, and disposal cleanup. Validation: `msbuild src\\Vixen.Modules\\Effect\\Effect\\Effect.csproj -t:Build -p:Configuration=Release -p:Platform=x64 -v:m` succeeded with four warnings in dependent projects.
 - [x] (2026-09-04 20:11Z) Completed Milestone 3: added BaseEffect notification and cleanup regressions using the existing TestEffect seam. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused `BaseEffectMarkCollectionSelectionTests` passed 8 of 8 tests (0 failed, 0 skipped).
@@ -36,6 +37,9 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 
 - Observation: LipSync's special converter already preserves a selected legacy collection while excluding other non-Phoneme collections.
   Evidence: `LipSyncMarkCollectionNameConverter.GetAllowedMarkCollectionNames` includes a collection when it is Phoneme-typed or its ID is the selected ID; the new regression passes after renaming the selected Generic collection.
+
+- Observation: Waveform exposes the active-selection inputs but did not notify the owning Wave effect when `WaveType` or `UseMarks` changed; Liquid's `FlowControl` already raises that notification.
+  Evidence: `Waveform` previously called only its attribute-update helpers from those setters, while `Emitter.FlowControl` calls `OnPropertyChanged()`; both child collections already forward child notifications to their parent effects.
 
 ## Decision Log
 
@@ -63,9 +67,15 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
   Rationale: LipSync has the same editor-facing string selector property and needs the same BaseEffect refresh event. Its special allowed-value policy is already isolated in its converter and is preserved by a dedicated regression rather than a one-off notification path.
   Date/Author: 2026-09-04 / Codex, at user direction.
 
+- Decision: Trigger existing BaseEffect selection activation from Wave and Liquid child-mode notifications instead of adding a second first-collection policy to their child models.
+  Rationale: Waveforms and Emitters already implement `IMarkCollectionSelection` with `AllowsFirstCollectionFallback` enabled. Calling `ActivateMarkCollectionSelections()` at the parent reuses the central policy, preserves valid selections, and performs the existing listener and display refresh work.
+  Date/Author: 2026-09-08 / Codex, at user direction.
+
 ## Outcomes & Retrospective
 
 Milestone 2 centralized the event bridge in BaseEffect without changing selection policy, persisted data, converter behavior, or property-grid behavior. Milestone 3 added eight focused regressions covering add, rename, arbitrary refresh names, ignored property changes, and removed/replaced/disposed cleanup. The selector-contract amendment added a documented Core contract, opted in every effect-level editor selector—including LipSync—and added regressions for the non-selector boundary and LipSync's renamed selected legacy collection. The Release/x64 target, 18-test focused suite, and full 909-test suite pass. User manual testing confirms the editor behavior. Jira closeout remains.
+
+The Wave and Liquid extension closes the remaining first-collection activation gap without extending the selector-refresh contract to their child editor properties. A Decaying Sine waveform that enables marks and an emitter that changes to mark-controlled flow now select the first current collection through the same shared service used by the other effects. The Release/x64 test target, two focused regressions, and the full 911-test suite pass. Jira closeout and a desktop manual check remain.
 
 ## Context and Orientation
 
@@ -76,6 +86,8 @@ Mark Collections are named tracks of marks owned by a timed sequence. Each `IMar
 The editor's property grid observes property changes from the selected effect and can refresh a property's standard values. It does not receive a notification when a Mark Collection's own `Name` changes, which is why an open effect selector becomes stale. This work adds that forwarding notification without changing the converter or grid.
 
 The initial bridge changes `src/Vixen.Modules/Effect/Effect/BaseEffect.cs` and `src/Vixen.Tests/Effects/BaseEffectMarkCollectionSelectionTests.cs`. The selector-contract amendment also adds `src/Vixen.Core/Marks/IMarkCollectionSelector.cs` and updates only the class declarations of Alternating, Dissolve, Fireworks, Shapes, State, Strobe, Text, and LipSync. The new public interface requires XML documentation; no converter, property-grid, persisted-data, or selector setter logic changes are needed.
+
+Wave and Liquid differ from the effect-level selectors because their persisted choices live in child models: `Waveform` and `Emitter`. Both child types already satisfy `IMarkCollectionSelection`, but their active state changes after BaseEffect's collection lifecycle has completed. Their parent effects already receive child property notifications, making those handlers the narrow place to call `ActivateMarkCollectionSelections()` when a child enters mark mode.
 
 ## Plan of Work
 
@@ -122,6 +134,12 @@ In `BaseEffect`, replace each literal selector refresh with a private helper tha
 
 Extend `src/Vixen.Tests/Effects/LipSyncMarkCollectionNameConverterTests.cs` with a regression that assigns collections to a real `LipSync` effect, selects a Generic legacy collection, and renames it. Verify the effect raises `IMarkCollectionSelector.MarkCollectionId`, its selected display value changes to the new name, and the special converter includes that renamed value with Phoneme collections while excluding an unselected non-Phoneme collection. This proves the shared refresh target is active without weakening LipSync's specialized selection policy.
 
+### Milestone 3b — Normalize child selections when Wave or Liquid enters mark mode
+
+In `src/Vixen.Modules/Effect/Wave/Wave/Waveform.cs`, raise the existing child `PropertyChanged` event after `WaveType` and `UseMarks` change. In `src/Vixen.Modules/Effect/Wave/Wave/Wave.cs`, have `OnWavesChildPropertyChanged` call `ActivateMarkCollectionSelections()` for either property. In `src/Vixen.Modules/Effect/Liquid/Liquid/Liquid.cs`, have `EmitterListChildPropertyChanged` make the same call for `IEmitter.FlowControl`. Do not duplicate the selection algorithm or set child `MarkCollectionId` directly; BaseEffect owns normalization.
+
+Add `src/Vixen.Tests/Effects/WaveAndLiquidMarkCollectionSelectionTests.cs`, and add direct Wave and Liquid project references to `src/Vixen.Tests/Vixen.Tests.csproj`. The tests must assign an ordered collection list, create a child without a selection, activate Decaying Sine plus `UseMarks` for Wave and `FlowControl.UseMarks` for Liquid, then assert that the child retains the first collection ID.
+
 ### Milestone 4 — Validate and close the tracker loop
 
 First run the focused BaseEffect test class while iterating, but build the test target using the repository's full MSBuild command before any `--no-build` execution. `Vixen.Tests` has C++/CLI transitive dependencies and cannot be reliably built by `dotnet test` alone. From `C:\Dev\Vixen`, run:
@@ -156,6 +174,8 @@ Expected successful output has this shape; replace placeholders with real totals
 ## Validation and Acceptance
 
 Automated acceptance requires the focused tests to fail before the bridge is implemented and pass afterward. They must establish that add and rename events raise `MarkCollectionId` for a selector participant, that rename preserves the exact selected `Guid` and a clean `IsDirty` state, and that removed, replaced, and disposed collections cannot generate stale notifications. The arbitrary null/empty property-name tests confirm the handler follows standard `INotifyPropertyChanged` semantics rather than only the current `MarkCollection.Name` setter implementation. The contract test also establishes that a BaseEffect-derived non-selector receives no editor-selector event.
+
+Wave and Liquid acceptance requires that a child with no selected ID receives the first collection ID when it enters its mark-driven mode. A pre-existing valid ID remains unchanged because the shared service returns it before considering fallbacks.
 
 Full acceptance requires a successful Release/x64 `Vixen_Tests` MSBuild target followed by the prescribed `dotnet test --no-build --no-restore` suite with zero failures.
 
@@ -232,3 +252,5 @@ It must issue `OnPropertyChanged("MarkCollectionId")` only for `Name`, null, or 
 2026-09-04 / Codex: Amended the plan and completed selector-contract hardening after the bridge proved correct in manual testing. Added documented Core `IMarkCollectionSelector`; opted in Alternating, Dissolve, Fireworks, Shapes, State, Strobe, and Text; guarded BaseEffect notification by that contract; and added a non-selector boundary regression. The required Release/x64 MSBuild target succeeded, focused tests passed 9/9, and the full suite passed 908/908. The contract is intentionally separate from `IMarkCollectionSelection`; Waveform and Liquid Emitter remain excluded.
 
 2026-09-04 / Codex: Expanded the selector contract to LipSync at user direction so all effect-level editor selectors participate consistently. LipSync retains its special phoneme-filtering converter; its regression proves a renamed selected legacy collection remains visible with Phoneme collections and nonselected non-Phoneme collections remain absent. The required Release/x64 build succeeded, focused tests passed 18/18, and the full suite passed 909/909.
+
+2026-09-08 / Codex: Implemented the requested Wave and Liquid first-collection activation extension. Waveform now notifies its parent after `WaveType` and `UseMarks` changes; Wave and Liquid parent child-change handlers activate the existing BaseEffect normalization for their mark-mode properties. Added direct test-project references and two focused regressions. The required Release/x64 MSBuild target succeeded, focused tests passed 2/2, and the full suite passed 911/911. No desktop manual check or Jira closeout was performed in this change.

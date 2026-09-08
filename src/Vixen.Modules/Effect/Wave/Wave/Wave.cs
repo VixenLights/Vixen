@@ -559,6 +559,11 @@ namespace VixenModules.Effect.Wave
 		/// <param name="e">Event arguments</param>
 		private void OnWavesChildPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
+			if (e.PropertyName is nameof(IWaveform.WaveType) or nameof(IWaveform.UseMarks))
+			{
+				ActivateMarkCollectionSelections();
+			}
+
 			MarkDirty();
 			OnPropertyChanged(nameof(Waves));
 		}

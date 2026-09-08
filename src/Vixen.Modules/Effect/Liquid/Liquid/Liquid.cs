@@ -1973,6 +1973,11 @@ namespace VixenModules.Effect.Liquid
 		/// </summary>		
 		private void EmitterListChildPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{	
+			if (e.PropertyName == nameof(IEmitter.FlowControl))
+			{
+				ActivateMarkCollectionSelections();
+			}
+
 			MarkDirty();
 			OnPropertyChanged(nameof(EmitterList));
 			// Updates the browseable state of the audio attributes
