@@ -74,8 +74,44 @@ public sealed class WaveAndLiquidMarkCollectionSelectionTests
 		Assert.Equal(first.Id, waveform.MarkCollectionId);
 	}
 
+	/// <summary>
+	/// Verifies that renaming a selected Mark Collection does not dirty or invalidate Wave effects.
+	/// </summary>
+	[Fact]
+	public void MarkCollectionRename_RefreshesSelectedWaveNameWithoutDirtyingWaveEffects()
+	{
+		// Arrange
+		var selectedCollection = CreateCollection("Original");
+		var collections = new ObservableCollection<IMarkCollection> { selectedCollection };
+		var selectedEffect = new TestWave { MarkCollections = collections };
+		var selectedWaveform = new Waveform { WaveType = WaveType.DecayingSine };
+		selectedEffect.Waves.Add(selectedWaveform);
+		selectedWaveform.UseMarks = true;
+		selectedEffect.SetClean();
+
+		var unrelatedEffect = new TestWave { MarkCollections = collections };
+		unrelatedEffect.Waves.Add(new Waveform());
+		unrelatedEffect.SetClean();
+
+		// Act
+		selectedCollection.Name = "Renamed";
+
+		// Assert
+		Assert.Equal("Renamed", selectedWaveform.MarkCollectionName);
+		Assert.False(selectedEffect.IsDirty);
+		Assert.False(unrelatedEffect.IsDirty);
+	}
+
 	private static MarkCollection CreateCollection(string name)
 	{
 		return new MarkCollection { Id = Guid.NewGuid(), Name = name };
+	}
+
+	private sealed class TestWave : Wave
+	{
+		public void SetClean()
+		{
+			IsDirty = false;
+		}
 	}
 }

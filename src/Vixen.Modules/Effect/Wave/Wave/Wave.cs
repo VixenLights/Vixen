@@ -88,6 +88,11 @@ namespace VixenModules.Effect.Wave
 		/// </summary>
 		private int _frameTime;
 
+		/// <summary>
+		/// Indicates whether Waveform notifications are refreshing Mark Collection display names rather than changing effect data.
+		/// </summary>
+		private bool _isRefreshingMarkCollectionNames;
+
 		#endregion
 
 		#region Constructor
@@ -559,6 +564,11 @@ namespace VixenModules.Effect.Wave
 		/// <param name="e">Event arguments</param>
 		private void OnWavesChildPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
+			if (_isRefreshingMarkCollectionNames)
+			{
+				return;
+			}
+
 			if (e.PropertyName is nameof(IWaveform.WaveType) or nameof(IWaveform.UseMarks))
 			{
 				ActivateMarkCollectionSelections();
@@ -1125,9 +1135,17 @@ namespace VixenModules.Effect.Wave
 		/// Updates the mark collection on the waveforms.
 		/// </summary>
 		private void UpdateMarkCollectionNames()
-		{						
-			// Check to see if selected mark collection names need to be updated
-			Waves.UpdateSelectedMarkCollectionNames();			
+		{
+			_isRefreshingMarkCollectionNames = true;
+			try
+			{
+				// Check to see if selected mark collection names need to be updated
+				Waves.UpdateSelectedMarkCollectionNames();
+			}
+			finally
+			{
+				_isRefreshingMarkCollectionNames = false;
+			}
 		}
 
 		/// <summary>
@@ -1136,7 +1154,8 @@ namespace VixenModules.Effect.Wave
 		private void MarkCollectionPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			// If a mark collection name changed then...
-			if (e.PropertyName == "Name")
+			if (e.PropertyName == nameof(IMarkCollection.Name) && sender is IMarkCollection markCollection &&
+				Waves.Any(waveform => waveform.MarkCollectionId == markCollection.Id))
 			{
 				// Update the collection of mark collection names
 				UpdateMarkCollectionNames();

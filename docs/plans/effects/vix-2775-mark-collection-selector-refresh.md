@@ -12,6 +12,7 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 
 - [x] (2026-09-04 00:00Z) Researched the existing BaseEffect collection lifecycle, mark collection contract/model, name converter, property-grid refresh path, and the existing BaseEffect selection tests.
 - [x] (2026-09-08 15:53Z) Extended Wave and Liquid first-selection behavior: child mark-mode setters select the first current collection when their persisted ID is empty, while parent notifications continue to activate shared normalization for lifecycle repair. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused Wave/Liquid tests passed 3/3; full suite passed 912/912.
+- [x] (2026-09-08 16:19Z) Isolated Wave Mark Collection rename refreshes so display-only child notifications do not dirty or invalidate the selected or unrelated Wave effects. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused Wave/Liquid tests passed 4/4; full suite passed 913/913.
 - [x] (2026-09-04 20:02Z) Completed Milestone 1: updated VIX-2775's description with user-facing summary, scope, acceptance criteria, and Release/x64 validation intent; status remains In Progress. Evidence: https://vixenlights.atlassian.net/browse/VIX-2775 (updated 2026-09-04 15:02:47.844-05:00).
 - [x] (2026-09-04 20:05Z) Completed Milestone 2: added BaseEffect's private reference-identity subscription tracking, lifecycle synchronization, add/remove cleanup, selector refresh notifications, and disposal cleanup. Validation: `msbuild src\\Vixen.Modules\\Effect\\Effect\\Effect.csproj -t:Build -p:Configuration=Release -p:Platform=x64 -v:m` succeeded with four warnings in dependent projects.
 - [x] (2026-09-04 20:11Z) Completed Milestone 3: added BaseEffect notification and cleanup regressions using the existing TestEffect seam. Validation: Release/x64 `Vixen_Tests` MSBuild target succeeded; focused `BaseEffectMarkCollectionSelectionTests` passed 8 of 8 tests (0 failed, 0 skipped).
@@ -43,6 +44,9 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
 
 - Observation: forwarding activation through the parent does not guarantee that the expando-model property edited by the UI receives its new display value in every editor path.
   Evidence: user testing still showed blank Wave and Liquid selectors after the parent-trigger implementation. A Rider test-debugger breakpoint could not bind to the dynamically loaded Wave module, so the fix was moved to the child setters that own `MarkCollectionId` and verified without a parent event bridge.
+
+- Observation: Wave subscribes to every sequence Mark Collection, and its rename refresh previously emitted child `MarkCollections` and `MarkCollectionName` notifications for every waveform. The generic child handler treated each as an effect-data edit.
+  Evidence: `Wave.MarkCollectionPropertyChanged` called `UpdateMarkCollectionNames()` without checking whether a waveform selected the renamed ID; `OnWavesChildPropertyChanged` then called `MarkDirty()` and raised `Waves` for each forwarded child notification.
 
 ## Decision Log
 
@@ -78,11 +82,15 @@ The behavior is demonstrable in the Timed Sequence Editor by selecting an effect
   Rationale: the child owns both the editor-facing name and persisted ID, so setting the ID at that boundary makes the editor update independent of collection-to-parent forwarding. The fallback applies only to an empty ID, preserving an existing valid choice; BaseEffect remains responsible for normalizing stale IDs and collection lifecycle changes.
   Date/Author: 2026-09-08 / Codex, after user validation of the parent-only implementation.
 
+- Decision: Treat Wave name-refresh child notifications as presentation-only and refresh only an effect that has a waveform selecting the renamed collection.
+  Rationale: a rename does not change a persisted Wave setting, so it must not dirty or invalidate Wave effects. The waveform itself still raises its display-name notification for the nested editor; the parent ignores it while the scoped refresh is in progress.
+  Date/Author: 2026-09-08 / Codex, after user-reported gray Wave effects on rename.
+
 ## Outcomes & Retrospective
 
 Milestone 2 centralized the event bridge in BaseEffect without changing selection policy, persisted data, converter behavior, or property-grid behavior. Milestone 3 added eight focused regressions covering add, rename, arbitrary refresh names, ignored property changes, and removed/replaced/disposed cleanup. The selector-contract amendment added a documented Core contract, opted in every effect-level editor selector—including LipSync—and added regressions for the non-selector boundary and LipSync's renamed selected legacy collection. The Release/x64 target, 18-test focused suite, and full 909-test suite pass. User manual testing confirms the editor behavior. Jira closeout remains.
 
-The Wave and Liquid extension closes the remaining first-collection activation gap without extending the selector-refresh contract to their child editor properties. A Decaying Sine waveform that enables marks, a waveform changed to Decaying Sine after marks are enabled, and an emitter that changes to mark-controlled flow now set their own empty ID to the first current collection. The parent still invokes shared normalization for lifecycle repair. The Release/x64 test target, three focused regressions, and the full 912-test suite pass. Jira closeout and a desktop manual check remain.
+The Wave and Liquid extension closes the remaining first-collection activation gap without extending the selector-refresh contract to their child editor properties. A Decaying Sine waveform that enables marks, a waveform changed to Decaying Sine after marks are enabled, and an emitter that changes to mark-controlled flow now set their own empty ID to the first current collection. Wave name renames now refresh only the selected waveform's displayed name without dirtying or invalidating any Wave effect. The Release/x64 test target, four focused regressions, and the full 913-test suite pass. Jira closeout and a desktop manual check remain.
 
 ## Context and Orientation
 
@@ -147,6 +155,10 @@ In `src/Vixen.Modules/Effect/Wave/Wave/Waveform.cs`, raise the existing child `P
 
 Add `src/Vixen.Tests/Effects/WaveAndLiquidMarkCollectionSelectionTests.cs`, and add direct Wave and Liquid project references to `src/Vixen.Tests/Vixen.Tests.csproj`. The tests must assign an ordered collection list directly to an unselected child, then assert that enabling marks on Decaying Sine Wave, selecting Decaying Sine after marks were enabled, and choosing `FlowControl.UseMarks` on Liquid each retain the first collection ID.
 
+### Milestone 3c — Keep Wave rename refreshes presentation-only
+
+In `src/Vixen.Modules/Effect/Wave/Wave/Wave.cs`, have the collection name-change handler refresh Waveforms only when one selects the renamed collection. While `UpdateMarkCollectionNames()` raises child display notifications, prevent `OnWavesChildPropertyChanged` from marking the effect dirty or raising the outer `Waves` property. This preserves the nested editor's child-name update without causing a render invalidation. Add a regression that renames a selected collection shared by a selected and unrelated Wave effect, verifies the selected waveform name changes, and verifies both effects remain clean.
+
 ### Milestone 4 — Validate and close the tracker loop
 
 First run the focused BaseEffect test class while iterating, but build the test target using the repository's full MSBuild command before any `--no-build` execution. `Vixen.Tests` has C++/CLI transitive dependencies and cannot be reliably built by `dotnet test` alone. From `C:\Dev\Vixen`, run:
@@ -183,6 +195,8 @@ Expected successful output has this shape; replace placeholders with real totals
 Automated acceptance requires the focused tests to fail before the bridge is implemented and pass afterward. They must establish that add and rename events raise `MarkCollectionId` for a selector participant, that rename preserves the exact selected `Guid` and a clean `IsDirty` state, and that removed, replaced, and disposed collections cannot generate stale notifications. The arbitrary null/empty property-name tests confirm the handler follows standard `INotifyPropertyChanged` semantics rather than only the current `MarkCollection.Name` setter implementation. The contract test also establishes that a BaseEffect-derived non-selector receives no editor-selector event.
 
 Wave and Liquid acceptance requires that a child with no selected ID receives the first collection ID when it enters its mark-driven mode. This must happen at the child setter so the effect-property editor observes its name update. A pre-existing valid ID remains unchanged.
+
+Wave rename acceptance requires that the selected waveform displays the new collection name while neither it nor unrelated Wave effects become dirty or are invalidated.
 
 Full acceptance requires a successful Release/x64 `Vixen_Tests` MSBuild target followed by the prescribed `dotnet test --no-build --no-restore` suite with zero failures.
 
@@ -263,3 +277,5 @@ It must issue `OnPropertyChanged("MarkCollectionId")` only for `Name`, null, or 
 2026-09-08 / Codex: Implemented the requested Wave and Liquid first-collection activation extension. Waveform now notifies its parent after `WaveType` and `UseMarks` changes; Wave and Liquid parent child-change handlers activate the existing BaseEffect normalization for their mark-mode properties. Added direct test-project references and two focused regressions. The required Release/x64 MSBuild target succeeded, focused tests passed 2/2, and the full suite passed 911/911. No desktop manual check or Jira closeout was performed in this change.
 
 2026-09-08 / Codex: Corrected the Wave and Liquid implementation after user validation showed the parent-only trigger left editor selectors blank. The first-collection fallback now runs in the child setters that own the persisted ID and display name; it is limited to empty IDs and retains parent lifecycle normalization. Added the Wave mode-order regression. The required Release/x64 MSBuild target succeeded, focused tests passed 3/3, and the full suite passed 912/912. A Rider debugger probe was cleaned up after it could not bind to the dynamically loaded Wave module; no desktop manual check or Jira closeout was performed.
+
+2026-09-08 / Codex: Fixed user-reported gray Wave effects after a Mark Collection rename. Wave now scopes the rename refresh to effects with a matching selected ID and ignores the resulting display-only child notifications at the outer effect level. Added a regression proving the selected name updates while both selected and unrelated Wave effects remain clean. The required Release/x64 MSBuild target succeeded, focused tests passed 4/4, and the full suite passed 913/913. No desktop manual check or Jira closeout was performed.
