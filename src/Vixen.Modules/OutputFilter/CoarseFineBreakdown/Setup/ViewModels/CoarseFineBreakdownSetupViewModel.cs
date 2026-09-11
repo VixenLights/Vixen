@@ -1,3 +1,5 @@
+#nullable enable
+
 using Catel.Data;
 using Catel.MVVM;
 
@@ -10,8 +12,8 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 	{
 		private readonly CoarseFineBreakdownSetupResult _originalConfiguration;
 		private readonly Action<CoarseFineBreakdownSetupResult>? _applyLiveConfiguration;
-		private TaskCommand _okCommand;
-		private TaskCommand _cancelCommand;
+		private TaskCommand? _okCommand;
+		private TaskCommand? _cancelCommand;
 		private CoarseFineBreakdownSetupResult? _lastAppliedLiveConfiguration;
 
 		/// <summary>
@@ -20,7 +22,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		/// <param name="enableDefaultValueMapping"><see langword="true" /> to initially enable the resting output; otherwise, <see langword="false" />.</param>
 		/// <param name="restingCoarseValue">The initial resting coarse value.</param>
 		/// <param name="restingFineValue">The initial resting fine value.</param>
-		/// <param name="applyLiveConfiguration">Applies a valid configuration while live mode is enabled.</param>
+		/// <param name="applyLiveConfiguration">An optional callback that applies a valid configuration while live mode is enabled.</param>
 		public CoarseFineBreakdownSetupViewModel(
 			bool enableDefaultValueMapping,
 			byte restingCoarseValue,
@@ -57,7 +59,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		/// Identifies the <see cref="EnableDefaultValueMapping"/> property.
 		/// </summary>
 		public static readonly IPropertyData EnableDefaultValueMappingProperty =
-			RegisterProperty<bool>(nameof(EnableDefaultValueMapping), false);
+			RegisterProperty(nameof(EnableDefaultValueMapping), false);
 
 		/// <summary>
 		/// Gets or sets the staged high-byte resting value.
@@ -78,7 +80,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		/// Identifies the <see cref="RestingCoarseValue"/> property.
 		/// </summary>
 		public static readonly IPropertyData RestingCoarseValueProperty =
-			RegisterProperty<decimal>(nameof(RestingCoarseValue), 0m);
+			RegisterProperty(nameof(RestingCoarseValue), 0m);
 
 		/// <summary>
 		/// Gets or sets the staged low-byte resting value.
@@ -99,7 +101,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		/// Identifies the <see cref="RestingFineValue"/> property.
 		/// </summary>
 		public static readonly IPropertyData RestingFineValueProperty =
-			RegisterProperty<decimal>(nameof(RestingFineValue), 0m);
+			RegisterProperty(nameof(RestingFineValue), 0m);
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether valid edits immediately update the filter.
@@ -119,7 +121,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		/// Identifies the <see cref="IsLiveMode"/> property.
 		/// </summary>
 		public static readonly IPropertyData IsLiveModeProperty =
-			RegisterProperty<bool>(nameof(IsLiveMode), false);
+			RegisterProperty(nameof(IsLiveMode), false);
 
 		/// <summary>
 		/// Gets the accepted configuration, if the dialog was accepted.
