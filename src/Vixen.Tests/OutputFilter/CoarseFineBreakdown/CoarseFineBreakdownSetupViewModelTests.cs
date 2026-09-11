@@ -77,6 +77,29 @@ public sealed class CoarseFineBreakdownSetupViewModelTests
 		Assert.Null(viewModel.Result);
 	}
 
+	[Fact]
+	public async Task LiveMode_AppliesValidEditsAndCancelRestoresOriginalConfiguration()
+	{
+		var appliedConfigurations = new List<CoarseFineBreakdownSetupResult>();
+		var viewModel = new CoarseFineBreakdownSetupViewModel(
+			false,
+			2,
+			3,
+			appliedConfigurations.Add)
+		{
+			IsLiveMode = true,
+			EnableDefaultValueMapping = true,
+			RestingCoarseValue = 0xA5,
+			RestingFineValue = 0x3C
+		};
+
+		await InvokeAsync(viewModel, "CancelDialogAsync");
+
+		Assert.Contains(new CoarseFineBreakdownSetupResult(true, 0xA5, 0x3C), appliedConfigurations);
+		Assert.Equal(new CoarseFineBreakdownSetupResult(false, 2, 3), Assert.Last(appliedConfigurations));
+		Assert.Null(viewModel.Result);
+	}
+
 	private static Task InvokeAsync(CoarseFineBreakdownSetupViewModel viewModel, string methodName)
 	{
 		var method = typeof(CoarseFineBreakdownSetupViewModel).GetMethod(

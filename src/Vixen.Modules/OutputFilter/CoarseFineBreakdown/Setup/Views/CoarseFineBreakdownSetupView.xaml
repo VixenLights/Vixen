@@ -41,6 +41,7 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
 			<CheckBox Grid.ColumnSpan="2"
@@ -48,12 +49,18 @@
 					  Content="Enable default value mapping"
 					  IsChecked="{Binding EnableDefaultValueMapping, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-			<TextBlock Grid.Row="1"
+			<CheckBox Grid.Row="1"
+					  Grid.ColumnSpan="2"
+					  Margin="0,4,0,8"
+					  Content="Live mode (apply changes immediately)"
+					  IsChecked="{Binding IsLiveMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+			<TextBlock Grid.Row="2"
 					   Grid.Column="0"
 					   Margin="0,8,8,3"
 					   VerticalAlignment="Center"
 					   Text="Resting coarse value (0-255)" />
-			<Slider Grid.Row="1"
+			<Slider Grid.Row="2"
 					Grid.Column="1"
 					Margin="0,8,0,4"
 					Minimum="0"
@@ -66,12 +73,12 @@
 					ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat={}{0:0}}"
 					Value="{Binding RestingCoarseValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-			<TextBlock Grid.Row="2"
+			<TextBlock Grid.Row="3"
 					   Grid.Column="0"
 					   Margin="0,8,8,3"
 					   VerticalAlignment="Center"
 					   Text="Resting fine value (0-255)" />
-			<Slider Grid.Row="2"
+			<Slider Grid.Row="3"
 					Grid.Column="1"
 					Margin="0,8,0,4"
 					Minimum="0"

@@ -1,6 +1,5 @@
 using Catel.Data;
 using Catel.MVVM;
-using WPFCommon.Extensions;
 
 namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 {
@@ -9,8 +8,11 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 	/// </summary>
 	internal sealed class CoarseFineBreakdownSetupViewModel : ViewModelBase
 	{
+		private readonly CoarseFineBreakdownSetupResult _originalConfiguration;
+		private readonly Action<CoarseFineBreakdownSetupResult>? _applyLiveConfiguration;
 		private TaskCommand _okCommand;
 		private TaskCommand _cancelCommand;
+		private CoarseFineBreakdownSetupResult? _lastAppliedLiveConfiguration;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CoarseFineBreakdownSetupViewModel"/> class.
@@ -18,12 +20,19 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		/// <param name="enableDefaultValueMapping"><see langword="true" /> to initially enable the resting output; otherwise, <see langword="false" />.</param>
 		/// <param name="restingCoarseValue">The initial resting coarse value.</param>
 		/// <param name="restingFineValue">The initial resting fine value.</param>
+		/// <param name="applyLiveConfiguration">Applies a valid configuration while live mode is enabled.</param>
 		public CoarseFineBreakdownSetupViewModel(
 			bool enableDefaultValueMapping,
 			byte restingCoarseValue,
-			byte restingFineValue)
+			byte restingFineValue,
+			Action<CoarseFineBreakdownSetupResult>? applyLiveConfiguration = null)
 		{
 			DeferValidationUntilFirstSaveCall = false;
+			_originalConfiguration = new CoarseFineBreakdownSetupResult(
+				enableDefaultValueMapping,
+				restingCoarseValue,
+				restingFineValue);
+			_applyLiveConfiguration = applyLiveConfiguration;
 			EnableDefaultValueMapping = enableDefaultValueMapping;
 			RestingCoarseValue = restingCoarseValue;
 			RestingFineValue = restingFineValue;
@@ -37,7 +46,11 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 		public bool EnableDefaultValueMapping
 		{
 			get => GetValue<bool>(EnableDefaultValueMappingProperty);
-			set => SetValue(EnableDefaultValueMappingProperty, value);
+			set
+			{
+				SetValue(EnableDefaultValueMappingProperty, value);
+				ApplyLiveConfiguration();
+			}
 		}
 
 		/// <summary>
@@ -57,6 +70,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 			{
 				SetValue(RestingCoarseValueProperty, value);
 				_okCommand?.RaiseCanExecuteChanged();
+				ApplyLiveConfiguration();
 			}
 		}
 
@@ -77,6 +91,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 			{
 				SetValue(RestingFineValueProperty, value);
 				_okCommand?.RaiseCanExecuteChanged();
+				ApplyLiveConfiguration();
 			}
 		}
 
@@ -87,10 +102,36 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 			RegisterProperty<decimal>(nameof(RestingFineValue), 0m);
 
 		/// <summary>
+		/// Gets or sets a value that indicates whether valid edits immediately update the filter.
+		/// </summary>
+		/// <value><see langword="true" /> to immediately apply valid edits; otherwise, <see langword="false" />. The default is <see langword="false" />.</value>
+		public bool IsLiveMode
+		{
+			get => GetValue<bool>(IsLiveModeProperty);
+			set
+			{
+				SetValue(IsLiveModeProperty, value);
+				ApplyLiveConfiguration();
+			}
+		}
+
+		/// <summary>
+		/// Identifies the <see cref="IsLiveMode"/> property.
+		/// </summary>
+		public static readonly IPropertyData IsLiveModeProperty =
+			RegisterProperty<bool>(nameof(IsLiveMode), false);
+
+		/// <summary>
 		/// Gets the accepted configuration, if the dialog was accepted.
 		/// </summary>
 		/// <value>The accepted configuration; otherwise, <see langword="null" />.</value>
 		public CoarseFineBreakdownSetupResult? Result { get; private set; }
+
+		/// <summary>
+		/// Gets a value that indicates whether the accepted result is already applied through live mode.
+		/// </summary>
+		/// <value><see langword="true" /> if the current accepted result is already applied; otherwise, <see langword="false" />.</value>
+		internal bool IsResultAppliedLive => Result is { } result && _lastAppliedLiveConfiguration == result;
 
 		/// <summary>
 		/// Gets the command that accepts the staged values and closes the dialog.
@@ -128,7 +169,46 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown.Setup.ViewModels
 			return this.SaveAndCloseViewModelAsync();
 		}
 
-		private Task CancelDialogAsync() => this.CancelAndCloseViewModelAsync();
+		private Task CancelDialogAsync()
+		{
+			RestoreOriginalConfiguration();
+			return this.CancelAndCloseViewModelAsync();
+		}
+
+		internal void RestoreOriginalConfiguration()
+		{
+			if (_lastAppliedLiveConfiguration is not null)
+			{
+				_applyLiveConfiguration?.Invoke(_originalConfiguration);
+				_lastAppliedLiveConfiguration = null;
+			}
+		}
+
+		private void ApplyLiveConfiguration()
+		{
+			if (!IsLiveMode || !TryGetValidConfiguration(out var configuration))
+			{
+				return;
+			}
+
+			_applyLiveConfiguration?.Invoke(configuration);
+			_lastAppliedLiveConfiguration = configuration;
+		}
+
+		private bool TryGetValidConfiguration(out CoarseFineBreakdownSetupResult configuration)
+		{
+			if (RestingCoarseValue is < 0m or > byte.MaxValue || RestingFineValue is < 0m or > byte.MaxValue)
+			{
+				configuration = default;
+				return false;
+			}
+
+			configuration = new CoarseFineBreakdownSetupResult(
+				EnableDefaultValueMapping,
+				(byte)RestingCoarseValue,
+				(byte)RestingFineValue);
+			return true;
+		}
 
 		private static void ValidateRange(
 			decimal value,

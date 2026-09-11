@@ -69,6 +69,7 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 
 		/// <summary>
 		/// Displays the setup dialog and applies its accepted configuration.
+		/// When the user enables live mode, valid edits update the filter immediately and cancellation restores the original configuration.
 		/// </summary>
 		/// <returns><see langword="true" /> if the user accepts valid configuration values; otherwise, <see langword="false" />.</returns>
 		public override bool Setup()
@@ -76,7 +77,8 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 			var viewModel = new CoarseFineBreakdownSetupViewModel(
 				_data.EnableDefaultValueMapping,
 				_data.RestingCoarseValue,
-				_data.RestingFineValue);
+				_data.RestingFineValue,
+				ApplyConfiguration);
 			var view = new CoarseFineBreakdownSetupView(viewModel);
 			var owner = Form.ActiveForm;
 			if (owner != null)
@@ -86,15 +88,14 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 
 			if (view.ShowDialog() != true || viewModel.Result is not { } result)
 			{
+				viewModel.RestoreOriginalConfiguration();
 				return false;
 			}
 
-			ApplyConfiguration(new CoarseFineBreakdownData
+			if (!viewModel.IsResultAppliedLive)
 			{
-				EnableDefaultValueMapping = result.EnableDefaultValueMapping,
-				RestingCoarseValue = result.RestingCoarseValue,
-				RestingFineValue = result.RestingFineValue
-			});
+				ApplyConfiguration(result);
+			}
 			return true;
 		}
 
@@ -160,6 +161,16 @@ namespace VixenModules.OutputFilter.CoarseFineBreakdown
 			_data.RestingCoarseValue = configuration.RestingCoarseValue;
 			_data.RestingFineValue = configuration.RestingFineValue;
 			CreateOutputs();
+		}
+
+		private void ApplyConfiguration(CoarseFineBreakdownSetupResult configuration)
+		{
+			ApplyConfiguration(new CoarseFineBreakdownData
+			{
+				EnableDefaultValueMapping = configuration.EnableDefaultValueMapping,
+				RestingCoarseValue = configuration.RestingCoarseValue,
+				RestingFineValue = configuration.RestingFineValue
+			});
 		}
 	}
 }

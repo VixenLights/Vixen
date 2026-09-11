@@ -147,6 +147,8 @@ Create `Setup/Views/CoarseFineBreakdownSetupView.xaml` as a `catel:Window`, with
 
 Implement `CoarseFineBreakdownModule.Setup()` to construct the view model from the current `_data` values, open the WPF view modally, and return `false` on cancel/close. On accepted result only, copy the result through `ApplyConfiguration` once and return `true`. Verify that pressing Cancel, closing the window, and entering an invalid decimal leave `_data` and current output instances untouched. Do not bind the view directly to the module data and do not rebuild outputs when checkbox/text fields change.
 
+Revision (2026-09-11): Add an opt-in Live mode checkbox to the setup dialog. When enabled, valid edits apply through the module's single configuration boundary immediately, so the live preview/output can reflect the values. Snapshot the original configuration when the dialog opens and restore it on Cancel or window close; the unchecked default preserves staged, apply-on-OK behavior.
+
 ### Milestone 4: Add focused automated coverage
 
 Add `CoarseFineBreakdown.csproj` to `src/Vixen.Tests/Vixen.Tests.csproj` with the solution's normal project-reference metadata. Add an `InternalsVisibleTo` assembly attribute for `Vixen.Tests` to the CoarseFineBreakdown project, matching `State.csproj`, so tests can construct the internal output configuration/setup view model without making implementation types public.
@@ -244,7 +246,7 @@ At completion, `VixenModules.OutputFilter.CoarseFineBreakdown.CoarseFineBreakdow
 
 `CoarseFineBreakdownModule` publicly exposes properties with those same names/types, documented with XML comments. It overrides `HasSetup` as `true` and implements the normal `Setup()` result contract: `true` only after a valid accepted configuration, `false` on Cancel/close. Its outputs are created from immutable configuration values and never read mutable data at render time.
 
-The CoarseFineBreakdown project has WPF enabled and uses the centrally-versioned `Catel.MVVM` package plus the existing WPFCommon project for Catel setup-window behavior and shared theme resources. The internal setup view model and immutable output configuration remain internal; `InternalsVisibleTo("Vixen.Tests")` is only for focused test access and does not expand the module's public API. The project continues to use the same namespace and descriptor TypeId. No `IntelligentFixtureTemplate` interface or fixture-flow interface changes in this issue.
+The CoarseFineBreakdown project has WPF enabled and uses the centrally-versioned `Catel.MVVM` package plus the existing WPFCommon project for Catel setup-window behavior and shared theme resources. The internal setup view model and immutable output configuration remain internal; `InternalsVisibleTo("Vixen.Tests")` is only for focused test access and does not expand the module's public API. The setup dialog defaults to staged apply-on-OK behavior and offers an opt-in live mode that restores the opening configuration on cancellation. The project continues to use the same namespace and descriptor TypeId. No `IntelligentFixtureTemplate` interface or fixture-flow interface changes in this issue.
 
 Revision note (2026-08-24): Created the plan from the VIX-3970 handoff after inspecting the existing output filter, current Catel WPF dialog conventions, test project, and repository plan requirements. No implementation was performed.
 
@@ -253,6 +255,8 @@ Revision note (2026-08-24): Implemented Milestone 2 as the initial POC. The modu
 Revision note (2026-08-24): Implemented Milestone 3. The module now enables WPF, references Catel.MVVM and WPFCommon, and supplies an internal Catel setup window/view model that validates staged decimal values. Valid OK results copy all settings into the persisted model and rebuild outputs once; Cancel/close leaves the model untouched. The module Debug build succeeds.
 
 Revision note (2026-08-24): Implemented Milestone 4. Added the CoarseFineBreakdown project reference and internal-test visibility to Vixen.Tests, then added focused module/output and setup-view-model tests. The full Vixen test build and no-build test execution complete with 822 passed, 0 failed, and 0 skipped.
+
+Revision note (2026-09-11): Added opt-in setup-dialog live mode. Valid live edits update the filter immediately; Cancel and window-close cancellation restore the opening configuration. Added focused view-model coverage for live apply and restoration.
 
 Revision note (2026-08-24): User testing corrected the POC premise. The default is now an opt-in resting output for missing command or intent values, rather than a replacement for a selected input value. `DefaultInputValue` and its UI/API/validation/test surface were removed; supplied values, including zero, retain normal byte splitting. Focused and full validation must be rerun after this correction.
 
