@@ -937,95 +937,126 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		    
 	    }
 
-	    /// <inheritdoc />
+		/// <summary>
+		/// Moves the dragged element view models to the location described by the drop metadata.
+		/// </summary>
+		/// <param name="dropInfo">The metadata that describes the dragged elements and their destination.</param>
+		/// <remarks>
+		/// Same-parent sibling moves preserve existing view model instances by using collection move notifications.
+		/// Cross-parent moves add each model to its destination before removing its source parent so that lights and
+		/// descendants are not treated as orphaned.
+		/// </remarks>
 		public void Drop(IDropInfo dropInfo)
 		{
 			var models = dropInfo.Data as IList<ElementModelViewModel>;
-			if (models != null)
+			if (models == null || dropInfo.Effects != DragDropEffects.Move)
 			{
-				var pms = PropModelServices.Instance();
-				var targetModel = dropInfo.TargetItem as ElementModelViewModel;
-				var targetModelParent = targetModel?.ParentViewModel as ElementModelViewModel;
-
-				SelectedItems.Clear();
-
-				if (targetModel != null)
-				{
-					bool reverse = dropInfo.KeyStates == DragDropKeyStates.ControlKey;
-					var elementIndex = 0;
-					foreach (var elementModelViewModel in reverse?models.Reverse():models)
-					{
-					    elementModelViewModel.IsSelected = false;
-                        if (dropInfo.Effects == DragDropEffects.Move)
-						{
-						   //Get our parent 
-						    var sourceModelParent = elementModelViewModel.ParentViewModel as ElementModelViewModel;
-
-                            if (dropInfo.InsertPosition == RelativeInsertPosition.BeforeTargetItem)
-						    {
-						        //We are inserting into a range.
-                                //Ensure the parent is a group node.
-                                if (sourceModelParent != null && sourceModelParent.ElementModel.IsGroupNode && targetModelParent != null)
-						        {
-						            if (sourceModelParent == targetModelParent)
-						            {
-                                        //Our parent is the same so we can just move it within the parent
-                                        pms.MoveWithinParent(sourceModelParent.ElementModel, elementModelViewModel.ElementModel, dropInfo.InsertIndex+elementIndex);
-						                elementModelViewModel.IsSelected = true;
-						            }
-						            else
-						            {
-                                        //We are moving to a new parent
-						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex+elementIndex);
-                                        pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
-										SelectModelWithParent(elementModelViewModel, targetModelParent);
-						            }
-                                }
-                            }
-						    else if(dropInfo.InsertPosition == RelativeInsertPosition.AfterTargetItem)
-						    {
-                                //We are inserting into a range.
-						        //Ensure the parent is a group node.
-						        if (sourceModelParent != null && sourceModelParent.ElementModel.IsGroupNode && targetModelParent != null)
-						        {
-                                    if (sourceModelParent == targetModelParent)
-						            {
-						                //We can just move it
-						                pms.MoveWithinParent(sourceModelParent.ElementModel, elementModelViewModel.ElementModel, dropInfo.InsertIndex-1);
-						                elementModelViewModel.IsSelected = true;
-						            }
-						            else
-						            {
-						                //We are moving to a new parent
-						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex+elementIndex);
-						                pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
-										SelectModelWithParent(elementModelViewModel, targetModelParent);
-                                    }
-                                }
-                            }
-						    else
-						    {
-                                //We are on the center and adding to a group hopefully
-						        //Ensure the target is a group node.
-						        if (targetModel.ElementModel.IsGroupNode && sourceModelParent != null &&
-						            targetModel.ElementModel != sourceModelParent.ElementModel) //We are not adding to our own parent.
-						        {
-						            pms.AddToParent(elementModelViewModel.ElementModel, targetModel.ElementModel);
-                                    pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
-						            SelectModelWithParent(elementModelViewModel, targetModel);
-                                }
-						        else
-						        {
-							        Logging.Warn($"Attempt to add item {elementModelViewModel.ElementModel.Name} to a non group node.");
-						        }
-                            }
-						}
-
-                        elementIndex++;
-					}
-				}
+				return;
 			}
 
+			var draggedModels = models.ToList();
+			if (dropInfo.KeyStates == DragDropKeyStates.ControlKey)
+			{
+				draggedModels.Reverse();
+			}
+
+			var targetModel = dropInfo.TargetItem as ElementModelViewModel;
+			if (targetModel == null)
+			{
+				return;
+			}
+
+			SelectedItems.Clear();
+			foreach (var draggedModel in draggedModels)
+			{
+				draggedModel.IsSelected = false;
+			}
+
+			var pms = PropModelServices.Instance();
+			if (dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter))
+			{
+				MoveToTargetGroup(pms, draggedModels, targetModel);
+				return;
+			}
+
+			if (!dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.BeforeTargetItem)
+				&& !dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.AfterTargetItem))
+			{
+				return;
+			}
+
+			var targetModelParent = targetModel.ParentViewModel as ElementModelViewModel;
+			if (targetModelParent == null)
+			{
+				return;
+			}
+
+			var sourceModelParents = draggedModels
+				.Select(model => model.ParentViewModel as ElementModelViewModel)
+				.ToList();
+			if (sourceModelParents.Any(parent => parent == null || !parent.ElementModel.IsGroupNode))
+			{
+				return;
+			}
+
+			var allInTargetParent = sourceModelParents.All(parent => parent == targetModelParent);
+			var noneInTargetParent = sourceModelParents.All(parent => parent != targetModelParent);
+			if (allInTargetParent)
+			{
+				if (pms.TryMoveWithinParent(
+					targetModelParent.ElementModel,
+					draggedModels.Select(model => model.ElementModel).ToList(),
+					dropInfo.UnfilteredInsertIndex))
+				{
+					foreach (var draggedModel in draggedModels)
+					{
+						draggedModel.IsSelected = true;
+					}
+				}
+
+				return;
+			}
+
+			if (!noneInTargetParent)
+			{
+				return;
+			}
+
+			var insertionIndex = dropInfo.UnfilteredInsertIndex;
+			for (var index = 0; index < draggedModels.Count; index++)
+			{
+				var draggedModel = draggedModels[index];
+				var sourceModelParent = sourceModelParents[index];
+				pms.InsertToParent(draggedModel.ElementModel, targetModelParent.ElementModel, insertionIndex);
+				insertionIndex++;
+				pms.RemoveFromParent(draggedModel.ElementModel, sourceModelParent.ElementModel);
+				SelectModelWithParent(draggedModel, targetModelParent);
+			}
+		}
+
+		private static void MoveToTargetGroup(
+			PropModelServices propModelServices,
+			IReadOnlyList<ElementModelViewModel> draggedModels,
+			ElementModelViewModel targetModel)
+		{
+			foreach (var draggedModel in draggedModels)
+			{
+				var sourceModelParent = draggedModel.ParentViewModel as ElementModelViewModel;
+				if (targetModel.ElementModel.IsGroupNode && sourceModelParent != null
+					&& targetModel.ElementModel != sourceModelParent.ElementModel)
+				{
+					propModelServices.AddToParent(draggedModel.ElementModel, targetModel.ElementModel);
+					propModelServices.RemoveFromParent(draggedModel.ElementModel, sourceModelParent.ElementModel);
+					SelectModelWithParent(draggedModel, targetModel);
+				}
+				else
+				{
+					Logging.Warn(
+						"Attempted to add element {ElementName} to non-group target {TargetName}.",
+						draggedModel.ElementModel.Name,
+						targetModel.ElementModel.Name);
+				}
+			}
 		}
 
 	    private static void SelectModelWithParent(ElementModelViewModel elementModelViewModel, ElementModelViewModel targetModelParent)
