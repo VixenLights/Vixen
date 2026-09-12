@@ -214,6 +214,86 @@ namespace VixenModules.App.CustomPropEditor.Services
 	        }
 	    }
 
+		internal bool TryMoveWithinParent(ElementModel parent, IReadOnlyList<ElementModel> models, int insertionIndex)
+		{
+			if (parent == null)
+			{
+				LogRejectedBatchMove("Parent is null.", parent, models, insertionIndex);
+				return false;
+			}
+
+			if (models == null)
+			{
+				LogRejectedBatchMove("Models is null.", parent, models, insertionIndex);
+				return false;
+			}
+
+			if (insertionIndex < 0 || insertionIndex > parent.Children.Count)
+			{
+				LogRejectedBatchMove("Insertion index is outside the target collection.", parent, models, insertionIndex);
+				return false;
+			}
+
+			if (models.Count == 0)
+			{
+				LogRejectedBatchMove("Models is empty.", parent, models, insertionIndex);
+				return false;
+			}
+
+			var uniqueModels = new HashSet<ElementModel>();
+			foreach (var model in models)
+			{
+				if (model == null)
+				{
+					LogRejectedBatchMove("Models contains a null entry.", parent, models, insertionIndex);
+					return false;
+				}
+
+				if (!uniqueModels.Add(model))
+				{
+					LogRejectedBatchMove("Models contains duplicate entries.", parent, models, insertionIndex);
+					return false;
+				}
+
+				if (parent.Children.IndexOf(model) < 0)
+				{
+					LogRejectedBatchMove("Models contains an entry that is not a child of the parent.", parent, models, insertionIndex);
+					return false;
+				}
+			}
+
+			var cursor = insertionIndex;
+			foreach (var model in models)
+			{
+				var oldIndex = parent.Children.IndexOf(model);
+				if (oldIndex < cursor)
+				{
+					cursor--;
+				}
+
+				var destination = cursor;
+				if (oldIndex != destination)
+				{
+					MoveWithinParent(parent, model, destination);
+				}
+
+				cursor = destination + 1;
+			}
+
+			return true;
+		}
+
+		private static void LogRejectedBatchMove(string reason, ElementModel parent, IReadOnlyList<ElementModel> models, int insertionIndex)
+		{
+			Logging.Warn(
+				"Rejected same-parent batch move: {Reason}; ParentId={ParentId}; InsertionIndex={InsertionIndex}; ChildCount={ChildCount}; ModelCount={ModelCount}",
+				reason,
+				parent?.Id,
+				insertionIndex,
+				parent?.Children.Count,
+				models?.Count);
+		}
+
 		public void InsertToParent(ElementModel model, ElementModel parentToJoin, int index)
 		{
 			parentToJoin.Children.Insert(index, model);
