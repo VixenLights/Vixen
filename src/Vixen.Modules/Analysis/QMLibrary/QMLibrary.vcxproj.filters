@@ -40,7 +40,19 @@
     <ClInclude Include="WrapperFiles\ManagedRealtime.h">
       <Filter>Vamp Wrapper Files</Filter>
     </ClInclude>
-    <ClInclude Include="QMFiles\vamp-plugin-sdk-2.5\vamp-sdk\RealTime.h">
+    <ClInclude Include="QMFiles\base\Restrict.h">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QMFiles\ext\kissfft\_kiss_fft_guts.h">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QMFiles\ext\kissfft\kiss_fft.h">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QMFiles\ext\kissfft\tools\kiss_fftr.h">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QMFiles\vamp-plugin-sdk-2.10\vamp-sdk\RealTime.h">
       <Filter>Vamp SDK Files</Filter>
     </ClInclude>
     <ClInclude Include="QMBarBeatTrack.h">
@@ -98,7 +110,7 @@
     <ClCompile Include="WrapperFiles\ManagedRealtime.cpp">
       <Filter>Vamp Wrapper Files</Filter>
     </ClCompile>
-    <ClCompile Include="QMFiles\vamp-plugin-sdk-2.5\src\vamp-sdk\RealTime.cpp">
+    <ClCompile Include="QMFiles\vamp-plugin-sdk-2.10\src\vamp-sdk\RealTime.cpp">
       <Filter>Vamp SDK Files</Filter>
     </ClCompile>
     <ClCompile Include="QMBarBeatTrack.cpp">
@@ -108,6 +120,12 @@
       <Filter>Queen Mary Plugin Files</Filter>
     </ClCompile>
     <ClCompile Include="VampOutputCtrl.cpp">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\ext\kissfft\kiss_fft.c">
+      <Filter>Queen Mary Plugin Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QMFiles\ext\kissfft\tools\kiss_fftr.c">
       <Filter>Queen Mary Plugin Files</Filter>
     </ClCompile>
   </ItemGroup>
