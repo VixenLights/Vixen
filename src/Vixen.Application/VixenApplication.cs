@@ -1271,7 +1271,7 @@ namespace VixenApplication
 
 		private void OnlineHelpMenu_Click(object sender, EventArgs e)
 		{
-			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Sequencer);
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Documentation);
 		}
 
 		private void VixenYouTubeChannelMenu_Click(object sender, EventArgs e)
