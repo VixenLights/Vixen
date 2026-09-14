@@ -17,32 +17,78 @@
 #define MATHUTILITIES_H
 
 #include <vector>
+
 #include "nan-inf.h"
 
+/**
+ * Static helper functions for simple mathematical calculations.
+ */
 class MathUtilities  
 {
-public:	
+public: 
+    /**
+     * Round x to the nearest integer.
+     */
     static double round( double x );
 
-    static void	  getFrameMinMax( const double* data, unsigned int len,  double* min, double* max );
+    /**
+     * Return through min and max pointers the highest and lowest
+     * values in the given array of the given length.
+     */
+    static void getFrameMinMax( const double* data, int len,
+                                double* min, double* max );
 
-    static double mean( const double* src, unsigned int len );
+    /**
+     * Return the mean of the given array of the given length.
+     */
+    static double mean( const double* src, int len );
+
+    /**
+     * Return the mean of the subset of the given vector identified by
+     * start and count.
+     */
     static double mean( const std::vector<double> &data,
-                        unsigned int start, unsigned int count );
-    static double sum( const double* src, unsigned int len );
-    static double median( const double* src, unsigned int len );
+                        int start, int count );
+    
+    /**
+     * Return the sum of the values in the given array of the given
+     * length.
+     */
+    static double sum( const double* src, int len );
 
+    /**
+     * Return the median of the values in the given array of the given
+     * length. If the array is even in length, the returned value will
+     * be half-way between the two values adjacent to median.
+     */
+    static double median( const double* src, int len );
+
+    /**
+     * The principle argument function. Map the phase angle ang into
+     * the range [-pi,pi).
+     */
     static double princarg( double ang );
+
+    /**
+     * Floating-point division modulus: return x % y.
+     */
     static double mod( double x, double y);
 
-    static void	  getAlphaNorm(const double *data, unsigned int len, unsigned int alpha, double* ANorm);
-    static double getAlphaNorm(const std::vector <double> &data, unsigned int alpha );
+    /**
+     * The alpha norm is the alpha'th root of the mean alpha'th power
+     * magnitude. For example if alpha = 2 this corresponds to the RMS
+     * of the input data, and when alpha = 1 this is the mean
+     * magnitude.
+     */
+    static void getAlphaNorm(const double *data, int len, int alpha, double* ANorm);
 
-    static void   circShift( double* data, int length, int shift);
-
-    static int	  getMax( double* data, unsigned int length, double* max = 0 );
-    static int	  getMax( const std::vector<double> &data, double* max = 0 );
-    static int    compareInt(const void * a, const void * b);
+    /**
+     * The alpha norm is the alpha'th root of the mean alpha'th power
+     * magnitude. For example if alpha = 2 this corresponds to the RMS
+     * of the input data, and when alpha = 1 this is the mean
+     * magnitude.
+     */
+    static double getAlphaNorm(const std::vector <double> &data, int alpha );
 
     enum NormaliseType {
         NormaliseNone,
@@ -50,19 +96,73 @@ public:
         NormaliseUnitMax
     };
 
-    static void   normalise(double *data, int length,
-                            NormaliseType n = NormaliseUnitMax);
+    static void normalise(double *data, int length,
+                          NormaliseType n = NormaliseUnitMax);
 
-    static void   normalise(std::vector<double> &data,
-                            NormaliseType n = NormaliseUnitMax);
+    static void normalise(std::vector<double> &data,
+                          NormaliseType n = NormaliseUnitMax);
 
-    // moving mean threshholding:
+    /**
+     * Calculate the L^p norm of a vector. Equivalent to MATLAB's
+     * norm(data, p).
+     */
+    static double getLpNorm(const std::vector<double> &data,
+                            int p);
+
+    /**
+     * Normalise a vector by dividing through by its L^p norm. If the
+     * norm is below the given threshold, the unit vector for that
+     * norm is returned. p may be 0, in which case no normalisation
+     * happens and the data is returned unchanged.
+     */
+    static std::vector<double> normaliseLp(const std::vector<double> &data,
+                                           int p,
+                                           double threshold = 1e-6);
+    
+    /**
+     * Threshold the input/output vector data against a moving-mean
+     * average filter.
+     */
     static void adaptiveThreshold(std::vector<double> &data);
 
+    static void circShift( double* data, int length, int shift);
+
+    static int getMax( double* data, int length, double* max = 0 );
+    static int getMax( const std::vector<double> &data, double* max = 0 );
+    static int compareInt(const void * a, const void * b);
+
+    /** 
+     * Return true if x is 2^n for some integer n >= 0.
+     */
     static bool isPowerOfTwo(int x);
-    static int nextPowerOfTwo(int x); // e.g. 1300 -> 2048, 2048 -> 2048
-    static int previousPowerOfTwo(int x); // e.g. 1300 -> 1024, 2048 -> 2048
-    static int nearestPowerOfTwo(int x); // e.g. 1300 -> 1024, 1700 -> 2048
+
+    /**
+     * Return the next higher integer power of two from x, e.g. 1300
+     * -> 2048, 2048 -> 2048.
+     */
+    static int nextPowerOfTwo(int x);
+
+    /**
+     * Return the next lower integer power of two from x, e.g. 1300 ->
+     * 1024, 2048 -> 2048.
+     */
+    static int previousPowerOfTwo(int x);
+
+    /**
+     * Return the nearest integer power of two to x, e.g. 1300 -> 1024,
+     * 12 -> 16 (not 8; if two are equidistant, the higher is returned).
+     */
+    static int nearestPowerOfTwo(int x);
+
+    /**
+     * Return x!
+     */
+    static double factorial(int x); // returns double in case it is large
+
+    /**
+     * Return the greatest common divisor of natural numbers a and b.
+     */
+    static int gcd(int a, int b);
 };
 
 #endif

@@ -2,32 +2,32 @@
 using Common.Controls.Theme;
 using QMLibrary;
 using System.ComponentModel;
-using Vixen.Marks;
 using VixenModules.Media.Audio;
 
 namespace VixenModules.Analysis.BeatsAndBars
 {
 	
-	public partial class BeatsAndBarsDialog : BaseForm
+	public sealed partial class BeatsAndBarsDialog : BaseForm
 	{
-		private static BeatBarSettingsData m_settingsData = null;
-		private bool m_allowUpdates;
-		private BeatBarPreviewData m_previewData;
-		private PreviewWaveform m_previewWaveForm;
+		private static BeatBarSettingsData _settingsData;
+		private readonly bool _allowUpdates;
+		private readonly PreviewWaveform _previewWaveForm;
 
 
 		public BeatsAndBarsDialog(Audio audio)
 		{
 			InitializeComponent();
 
-			var excludes = new List<Control>();
-			excludes.Add(BarsColorPanel);
-			excludes.Add(BeatCountsColorPanel);
-			excludes.Add(AllColorPanel);
-			excludes.Add(BeatSplitsColorPanel);
+			var excludes = new List<Control>
+			{
+				BarsColorPanel,
+				BeatCountsColorPanel,
+				AllColorPanel,
+				BeatSplitsColorPanel
+			};
 			ThemeUpdateControls.UpdateControls(this, excludes);
 
-			m_allowUpdates = false;
+			_allowUpdates = false;
 
 			var mToolTip = new ToolTip();
 			mToolTip.AutoPopDelay = 5000;
@@ -46,24 +46,24 @@ namespace VixenModules.Analysis.BeatsAndBars
 			mToolTip.SetToolTip(BeatCountsColorPanel, "Color of Beat Counts Collection");
 			mToolTip.SetToolTip(BeatSplitsColorPanel, "Color of Beat Splits Collection");
 
-			m_settingsData = m_settingsData ?? new BeatBarSettingsData("Beats");
+			_settingsData ??= new BeatBarSettingsData("Beats");
 
 			BarsCB.Checked = true;
 			AllFeaturesCB.Checked = true;
 			BeatCountsCB.Checked = true;
 			BeatSplitsCB.Checked = false;
 
-			m_allowUpdates = true;
+			_allowUpdates = true;
 			SetBeatBarOutputSettings();
 
 			musicStaff1.Width = grpDivisions.ClientSize.Width - 20;
 
-			m_previewWaveForm = new PreviewWaveform(audio);
-			m_previewWaveForm.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-			PreviewGroupBox.Controls.Add(m_previewWaveForm);
-			m_previewWaveForm.Width = PreviewGroupBox.ClientSize.Width-25;
-			m_previewWaveForm.Height = PreviewGroupBox.ClientSize.Height/2;
-			m_previewWaveForm.Location = new Point(musicStaff1.Location.X, PreviewGroupBox.ClientSize.Height/2 - m_previewWaveForm.Height/2);
+			_previewWaveForm = new PreviewWaveform(audio);
+			_previewWaveForm.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+			PreviewGroupBox.Controls.Add(_previewWaveForm);
+			_previewWaveForm.Width = PreviewGroupBox.ClientSize.Width-25;
+			_previewWaveForm.Height = PreviewGroupBox.ClientSize.Height/2;
+			_previewWaveForm.Location = new Point(musicStaff1.Location.X, PreviewGroupBox.ClientSize.Height/2 - _previewWaveForm.Height/2);
 
 			musicStaff1.SettingChanged += MusicStaffSettingsChanged;
 
@@ -74,7 +74,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 		{
 			get
 			{
-				return m_settingsData;
+				return _settingsData;
 			}
 		}
 
@@ -82,43 +82,37 @@ namespace VixenModules.Analysis.BeatsAndBars
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public BeatBarPreviewData PreviewData
 		{
-			get
-			{
-				return m_previewData;
-			}
+			get;
 
 			set
 			{
-				m_previewData = value;
-				musicStaff1.BeatPeriod = m_previewData.BeatPeriod;
+				field = value;
+				musicStaff1.BeatPeriod = field.BeatPeriod;
 				SetBeatBarOutputSettings();
 			}
 		}
-		public void Parameters(ICollection<ManagedParameterDescriptor> parameterDescriptors) { }
 
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public List<IMarkCollection> MarkCollectionList { private get; set; } 
+		public void Parameters(ICollection<ManagedParameterDescriptor> parameterDescriptors) { }
 
 		private void SetBeatBarOutputSettings()
 		{
-			if (m_allowUpdates)
+			if (_allowUpdates)
 			{
-				m_settingsData.AllFeaturesEnabled = AllFeaturesCB.Checked;
-				m_settingsData.BarsEnabled = BarsCB.Checked;
-				m_settingsData.BeatCollectionsEnabled = BeatCountsCB.Checked;
-				m_settingsData.BeatSplitsEnabled = BeatSplitsCB.Checked;
+				_settingsData.AllFeaturesEnabled = AllFeaturesCB.Checked;
+				_settingsData.BarsEnabled = BarsCB.Checked;
+				_settingsData.BeatCollectionsEnabled = BeatCountsCB.Checked;
+				_settingsData.BeatSplitsEnabled = BeatSplitsCB.Checked;
 
-				m_settingsData.CollectionBaseName = BeatsNameTB.Text;
-				m_settingsData.Divisions = (musicStaff1.SplitBeats ? 2 : 1);
+				_settingsData.CollectionBaseName = BeatsNameTB.Text;
+				_settingsData.Divisions = (musicStaff1.SplitBeats ? 2 : 1);
 
-				m_settingsData.AllFeaturesColor = AllColorPanel.BackColor;
-				m_settingsData.BarsColor = BarsColorPanel.BackColor;
-				m_settingsData.BeatCountsColor = BeatCountsColorPanel.BackColor;
-				m_settingsData.BeatSplitsColor = BeatSplitsColorPanel.BackColor;
+				_settingsData.AllFeaturesColor = AllColorPanel.BackColor;
+				_settingsData.BarsColor = BarsColorPanel.BackColor;
+				_settingsData.BeatCountsColor = BeatCountsColorPanel.BackColor;
+				_settingsData.BeatSplitsColor = BeatSplitsColorPanel.BackColor;
 
-				m_settingsData.BeatsPerBar = musicStaff1.BeatsPerBar;
-				m_settingsData.NoteSize = musicStaff1.NoteSize;
+				_settingsData.BeatsPerBar = musicStaff1.BeatsPerBar;
+				_settingsData.NoteSize = musicStaff1.NoteSize;
 
 				UpdatePreviewWaveform();
 
@@ -143,7 +137,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			DialogResult result = picker.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				colorPanel.BackColor = picker.Color.ToRGB().ToArgb();
+				colorPanel?.BackColor = picker.Color.ToRGB().ToArgb();
 			}
 			SetBeatBarOutputSettings();
 		}
@@ -171,13 +165,13 @@ namespace VixenModules.Analysis.BeatsAndBars
 		{
 			if (PreviewData != null)
 			{
-				m_previewWaveForm.IntervalMarks =
+				_previewWaveForm.IntervalMarks =
 					(musicStaff1.SplitBeats) ?
 					PreviewData.PreviewSplitCollection.Marks.Select(x => x.StartTime).ToList() :
 					PreviewData.PreviewCollection.Marks.Select(x => x.StartTime).ToList();
 				if (PreviewData.PreviewSplitCollection.Marks.Any())
 				{
-					m_previewWaveForm.PreviewPeriod = PreviewData.PreviewSplitCollection.Marks.Max(x => x.StartTime);
+					_previewWaveForm.PreviewPeriod = PreviewData.PreviewSplitCollection.Marks.Max(x => x.StartTime);
 				}
 	
 				Refresh();

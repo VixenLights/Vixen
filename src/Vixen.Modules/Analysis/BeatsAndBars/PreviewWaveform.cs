@@ -8,24 +8,26 @@ namespace VixenModules.Analysis.BeatsAndBars
 {
 	public partial class PreviewWaveform : UserControl
 	{
-		private Waveform m_waveform;
-		private TimeInfo m_info;
-		private Guid _instanceId = Guid.NewGuid();
+		private Waveform _waveform;
+		private readonly TimeInfo _info;
+		private readonly Guid _instanceId = Guid.NewGuid();
 		
 		public PreviewWaveform(Audio audio)
 		{
 			InitializeComponent();
 
-			m_info = new TimeInfo();
-			m_info.TotalTime = new TimeSpan(0, 0, 0, 1);
-			m_waveform = new Waveform(m_info, _instanceId);
-			m_waveform.WaveformStyle = WaveformStyle.Full;
-			m_waveform.BorderStyle = BorderStyle.FixedSingle;
-			m_waveform.Audio = audio;
-			m_waveform.BackColor = Color.LightGray;
-			m_waveform.Paint += PreviewWaveform_Paint;
+			_info = new TimeInfo
+			{
+				TotalTime = new TimeSpan(0, 0, 0, 1)
+			};
+			_waveform = new Waveform(_info, _instanceId);
+			_waveform.WaveformStyle = WaveformStyle.Full;
+			_waveform.BorderStyle = BorderStyle.FixedSingle;
+			_waveform.Audio = audio;
+			_waveform.BackColor = Color.LightGray;
+			_waveform.Paint += PreviewWaveform_Paint;
 
-			Controls.Add(m_waveform);
+			Controls.Add(_waveform);
 		}
 
 		[Browsable(false)]
@@ -36,7 +38,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			set
 			{
 				base.Width = value;
-				m_waveform.Width = value;
+				_waveform.Width = value;
 			}
 		}
 
@@ -48,7 +50,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			set
 			{
 				base.Height = value;
-				m_waveform.Height = value;
+				_waveform.Height = value;
 			}
 		}
 
@@ -56,17 +58,17 @@ namespace VixenModules.Analysis.BeatsAndBars
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan PreviewPeriod
 		{
-			get { return m_info.TotalTime; }
+			get { return _info.TotalTime; }
 			set
 			{
-				m_info.TotalTime = value;
-				m_info.TimePerPixel = 
-					new TimeSpan(value.Ticks / m_waveform.Width);
+				_info.TotalTime = value;
+				_info.TimePerPixel = 
+					new TimeSpan(value.Ticks / _waveform.Width);
 				Invalidate();
 			}
 		}
 
-		private List<TimeSpan> m_intervalMarks;
+		private List<TimeSpan> _intervalMarks;
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -74,23 +76,23 @@ namespace VixenModules.Analysis.BeatsAndBars
 		{
 			get
 			{
-				List<TimeSpan> retVal = new List<TimeSpan>(m_intervalMarks);
+				List<TimeSpan> retVal = new List<TimeSpan>(_intervalMarks);
 				retVal.Reverse();
 				return retVal;
 			}
 
 			set
 			{
-				m_intervalMarks = new List<TimeSpan>(value);
-				m_intervalMarks.Reverse();
+				_intervalMarks = new List<TimeSpan>(value);
+				_intervalMarks.Reverse();
 				Invalidate();
 			}
 		}
 
 		private void PreviewWaveform_Paint(object sender, PaintEventArgs e)
 		{
-			var timeStack = new Stack<TimeSpan>(m_intervalMarks);
-			long tpp = m_info.TimePerPixel.Ticks;
+			var timeStack = new Stack<TimeSpan>(_intervalMarks);
+			long tpp = _info.TimePerPixel.Ticks;
 			Pen drawPen = new Pen(Color.Yellow, 2);
 			Point x1 = new Point(0,0);
 			Point x2 = new Point(0,Height);
@@ -99,7 +101,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			{
 				long compareVal = timeStack.Pop().Ticks;
 
-				for (int j = 0; j < m_waveform.Width; j++)
+				for (int j = 0; j < _waveform.Width; j++)
 				{
 					if (compareVal <= tpp * j)
 					{
@@ -121,11 +123,11 @@ namespace VixenModules.Analysis.BeatsAndBars
 		{
 			TimeLineGlobalEventManager.CloseManager(_instanceId);
 			TimeLineGlobalStateManager.CloseManager(_instanceId);
-			if (m_waveform != null)
+			if (_waveform != null)
 			{
-				m_waveform.Paint += PreviewWaveform_Paint;
-				m_waveform.Dispose();
-				m_waveform = null;
+				_waveform.Paint += PreviewWaveform_Paint;
+				_waveform.Dispose();
+				_waveform = null;
 			}
 		}
 	}

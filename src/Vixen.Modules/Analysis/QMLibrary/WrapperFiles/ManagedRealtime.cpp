@@ -122,4 +122,3 @@ ManagedRealtime::ManagedRealtime(const ManagedRealtime %rhs)
 	{
 		return gcnew ManagedRealtime(Vamp::RealTime::frame2RealTime(frame, sampleRate));
 	}
-

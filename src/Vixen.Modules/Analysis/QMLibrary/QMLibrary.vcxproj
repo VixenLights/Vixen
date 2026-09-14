@@ -105,9 +105,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_USE_MATH_DEFINES;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;kiss_fft_scalar=double;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
-      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.5;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.10;QMFiles\ext\kissfft;QMFiles\ext\kissfft\tools;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
@@ -127,9 +127,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_USE_MATH_DEFINES;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;kiss_fft_scalar=double;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
-      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.5;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.10;QMFiles\ext\kissfft;QMFiles\ext\kissfft\tools;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
@@ -149,9 +149,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_USE_MATH_DEFINES;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;kiss_fft_scalar=double;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
-      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.5;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.10;QMFiles\ext\kissfft;QMFiles\ext\kissfft\tools;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
@@ -171,9 +171,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_USE_MATH_DEFINES;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;kiss_fft_scalar=double;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
-      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.5;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>WrapperFiles;QMFiles\vamp-plugin-sdk-2.10;QMFiles\ext\kissfft;QMFiles\ext\kissfft\tools;QMFiles;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
@@ -191,7 +191,11 @@
     <ClInclude Include="QMFiles\BarBeatTrack.h" />
     <ClInclude Include="QMFiles\dsp\onsets\DetectionFunction.h" />
     <ClInclude Include="QMFiles\maths\MathUtilities.h" />
-    <ClInclude Include="QMFiles\vamp-plugin-sdk-2.5\vamp-sdk\RealTime.h" />
+    <ClInclude Include="QMFiles\base\Restrict.h" />
+    <ClInclude Include="QMFiles\ext\kissfft\_kiss_fft_guts.h" />
+    <ClInclude Include="QMFiles\ext\kissfft\kiss_fft.h" />
+    <ClInclude Include="QMFiles\ext\kissfft\tools\kiss_fftr.h" />
+    <ClInclude Include="QMFiles\vamp-plugin-sdk-2.10\vamp-sdk\RealTime.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VampOutputCtrl.h">
@@ -208,7 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QMBarBeatTrack.cpp" />
-    <ClCompile Include="QMFiles\vamp-plugin-sdk-2.5\src\vamp-sdk\RealTime.cpp" />
+    <ClCompile Include="QMFiles\vamp-plugin-sdk-2.10\src\vamp-sdk\RealTime.cpp" />
     <ClCompile Include="QMFiles\BarBeatTrack.cpp">
       <AdditionalUsingDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </AdditionalUsingDirectories>
@@ -223,6 +227,12 @@
     <ClCompile Include="QMFiles\dsp\tempotracking\DownBeat.cpp" />
     <ClCompile Include="QMFiles\dsp\tempotracking\TempoTrackV2.cpp" />
     <ClCompile Include="QMFiles\dsp\transforms\FFT.cpp" />
+    <ClCompile Include="QMFiles\ext\kissfft\kiss_fft.c">
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="QMFiles\ext\kissfft\tools\kiss_fftr.c">
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
     <ClCompile Include="QMFiles\maths\MathUtilities.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="VampOutputCtrl.cpp" />
@@ -241,6 +251,9 @@
     <EmbeddedResource Include="VampParamCtrl.resx">
       <DependentUpon>VampParamCtrl.h</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="QMFiles\UPSTREAM-PROVENANCE.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

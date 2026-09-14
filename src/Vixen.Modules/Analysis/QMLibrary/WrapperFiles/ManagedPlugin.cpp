@@ -9,90 +9,109 @@ namespace QMLibrary
 {
 	ManagedPlugin::ManagedPlugin()
 	{
+	}
 
+	ManagedPlugin::~ManagedPlugin()
+	{
+		this->!ManagedPlugin();
+	}
 
+	ManagedPlugin::!ManagedPlugin()
+	{
+		delete m_plugin;
+		m_plugin = nullptr;
+	}
+
+	Vamp::Plugin* ManagedPlugin::GetPlugin()
+	{
+		if (m_plugin == nullptr)
+		{
+			throw gcnew ObjectDisposedException("ManagedPlugin");
+		}
+
+		return m_plugin;
 	}
 
 	bool ManagedPlugin::Initialise(size_t channels, size_t stepSize, size_t blockSize)
 	{
-		return m_plugin->initialise(channels, stepSize, blockSize);
+		return GetPlugin()->initialise(channels, stepSize, blockSize);
 	}
 
 	void ManagedPlugin::Reset()
 	{
-		m_plugin->reset();
+		GetPlugin()->reset();
 	}
 
 	String^ ManagedPlugin::GetIdentifier()
 	{
-		std::string str = m_plugin->getIdentifier();
+		std::string str = GetPlugin()->getIdentifier();
 		return gcnew String(str.c_str());
 	}
 
 	String^ ManagedPlugin::GetName()
 	{
-		std::string str = m_plugin->getName();
+		std::string str = GetPlugin()->getName();
 		return gcnew String(str.c_str());
 	}
 
 	String^ ManagedPlugin::GetDescription()
 	{
-		std::string str = m_plugin->getDescription();
+		std::string str = GetPlugin()->getDescription();
 		return gcnew String(str.c_str());
 	}
 
 	String^ ManagedPlugin::GetMaker()
 	{
-		std::string str = m_plugin->getMaker();
+		std::string str = GetPlugin()->getMaker();
 		return gcnew String(str.c_str());
 	}
 
 	int ManagedPlugin::GetPluginVersion()
 	{
-		return m_plugin->getPluginVersion();
+		return GetPlugin()->getPluginVersion();
 	}
 
 	String^ ManagedPlugin::GetCopyright()
 	{
-		std::string str = m_plugin->getCopyright();
+		std::string str = GetPlugin()->getCopyright();
 		return gcnew String(str.c_str());
 	}
 
 	float ManagedPlugin::GetParameter(String^ paramStr)
 	{
-		return m_plugin->getParameter(marshal_as<std::string>(paramStr));
+		return GetPlugin()->getParameter(marshal_as<std::string>(paramStr));
 	}
 
 	void ManagedPlugin::SetParameter(String^ paramStr, float value)
 	{
-		m_plugin->setParameter(marshal_as<std::string>(paramStr), value);
+		GetPlugin()->setParameter(marshal_as<std::string>(paramStr), value);
 	}
 
 	int ManagedPlugin::GetMinChannelCount()
 	{
-		return m_plugin->getMinChannelCount();
+		return GetPlugin()->getMinChannelCount();
 	}
 
 	int ManagedPlugin::GetMaxChannelCount()
 	{
-		return m_plugin->getMaxChannelCount();
+		return GetPlugin()->getMaxChannelCount();
 	}
 
 	int ManagedPlugin::GetPreferredStepSize()
 	{
-		return m_plugin->getPreferredStepSize();
+		return GetPlugin()->getPreferredStepSize();
 	}
 
 	int ManagedPlugin::GetPreferredBlockSize()
 	{
-		return m_plugin->getPreferredBlockSize();
+		return GetPlugin()->getPreferredBlockSize();
 	}
 
 	ManagedParameterList^ ManagedPlugin::GetParameterDescriptors()
 	{
 		ManagedParameterDescriptor^ paramDescr = nullptr;
 		ManagedParameterList^ retVal = nullptr;
-		Vamp::Plugin::ParameterList paramList = m_plugin->getParameterDescriptors();
+		Vamp::Plugin::ParameterList paramList = GetPlugin()->getParameterDescriptors();
 		if (!paramList.empty())
 		{
 			retVal = gcnew List<ManagedParameterDescriptor^>(paramList.size());
@@ -129,7 +148,7 @@ namespace QMLibrary
 	{
 		ManagedOutputDescriptor^ outDescr = nullptr;
 		ManagedOutputList^ retVal = nullptr;
-		Vamp::Plugin::OutputList outList = m_plugin->getOutputDescriptors();
+		Vamp::Plugin::OutputList outList = GetPlugin()->getOutputDescriptors();
 		if (!outList.empty())
 		{
 			retVal = gcnew List<ManagedOutputDescriptor^>(outList.size());
@@ -142,7 +161,7 @@ namespace QMLibrary
 				List<String^>^ binNames = gcnew List<String^>(binNameSize);
 				for (int k = 0; k < binNameSize; k++)
 				{
-					binNames[k] = gcnew String(outList[j].binNames[k].c_str());
+					binNames->Add(gcnew String(outList[j].binNames[k].c_str()));
 				}
 				outDescr->binNames = binNames;
 				outDescr->description = gcnew String(outList[j].description.c_str());
@@ -187,7 +206,7 @@ namespace QMLibrary
 				outDescr->unit = gcnew String(outList[j].unit.c_str());
 
 
-				retVal[j] = outDescr;
+				retVal->Add(outDescr);
 			}
 
 		}
@@ -197,7 +216,15 @@ namespace QMLibrary
 
 	ManagedPlugin::InputDomain ManagedPlugin::GetInputDomain()
 	{
-		return InputDomain::TimeDomain;
+		switch (GetPlugin()->getInputDomain())
+		{
+		case Vamp::Plugin::TimeDomain:
+			return InputDomain::TimeDomain;
+		case Vamp::Plugin::FrequencyDomain:
+			return InputDomain::FrequencyDomain;
+		default:
+			return InputDomain::Unknown;
+		}
 	}
 
 
@@ -248,17 +275,18 @@ namespace QMLibrary
 
 	ManagedFeatureSet^ ManagedPlugin::Process(array<float>^ inputBuffer, ManagedRealtime^ timestamp)
 	{
+		Vamp::Plugin* plugin = GetPlugin();
 		pin_ptr<float> pinnedData = &inputBuffer[0];
 		float* bufData = pinnedData;
 
-		Vamp::Plugin::FeatureSet features = m_plugin->process(&bufData, (Vamp::RealTime)timestamp);
+		Vamp::Plugin::FeatureSet features = plugin->process(&bufData, (Vamp::RealTime)timestamp);
 		return convertToManagedFeatureSet(features);
 
 	}
 
 	ManagedFeatureSet^ ManagedPlugin::GetRemainingFeatures()
 	{
-		Vamp::Plugin::FeatureSet features = m_plugin->getRemainingFeatures();
+		Vamp::Plugin::FeatureSet features = GetPlugin()->getRemainingFeatures();
 		return convertToManagedFeatureSet(features);
 
 	}

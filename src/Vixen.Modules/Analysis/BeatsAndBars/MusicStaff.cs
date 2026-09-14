@@ -6,20 +6,20 @@ namespace VixenModules.Analysis.BeatsAndBars
 {
 	public partial class MusicStaff : UserControl
 	{
-		private const int TSLABEL_XOFFSET = 80;
+		private const int TsLabelXOffset = 80;
 		private static int _firstBarOffset;
-		private const int DIV_Y_OFFSET = 20;
-		private const int VAL_LABEL_OFFSET = 25;
-		private const int LABEL_VAL_OFFSET = 5;
-		private double m_beatPeriod;
-		private double _scale = 1;
+		private const int DivYOffset = 20;
+		private const int ValLabelOffset = 25;
+		private const int LabelValOffset = 5;
+		private double _beatPeriod;
+		private readonly double _scale;
 
 		public MusicStaff()
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
 			_scale = ScalingTools.GetScaleFactor();
-			_firstBarOffset = ScaleValue(TSLABEL_XOFFSET) + ScaleValue(45);
+			_firstBarOffset = ScaleValue(TsLabelXOffset) + ScaleValue(45);
 
 			BeatsPerBar = 4;
 			//NoteSize = 4;
@@ -27,11 +27,18 @@ namespace VixenModules.Analysis.BeatsAndBars
 			BPMLabelVal.TextAlign = ContentAlignment.MiddleLeft;
 			BarPeriodLabelVal.TextAlign = ContentAlignment.MiddleLeft;
 			DivTimeLabelVal.TextAlign = ContentAlignment.MiddleLeft;
-			BeatsPerBarLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F, FontStyle.Bold);
-			NoteSizeLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F, FontStyle.Bold);
-			BPMLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size, FontStyle.Bold);
-			BarPeriodLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size, FontStyle.Bold);
-			DivTimeLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size, FontStyle.Bold);
+			if (SystemFonts.MessageBoxFont != null)
+			{
+				BeatsPerBarLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F, FontStyle.Bold);
+				NoteSizeLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F, FontStyle.Bold);
+				BPMLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size,
+					FontStyle.Bold);
+				BarPeriodLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size,
+					FontStyle.Bold);
+				DivTimeLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size,
+					FontStyle.Bold);
+			}
+
 			staffPictureBox.Width = ClientSize.Width - 5;
 		}
 
@@ -119,26 +126,26 @@ namespace VixenModules.Analysis.BeatsAndBars
 			NoteSizeLabel.Text = NoteSize.ToString();
 
 			BeatsPerBarLabel.Location =
-				new Point(ScaleValue(TSLABEL_XOFFSET), staffPictureBox.Location.Y + staffPictureBox.Height/2-BeatsPerBarLabel.Height);
+				new Point(ScaleValue(TsLabelXOffset), staffPictureBox.Location.Y + staffPictureBox.Height/2-BeatsPerBarLabel.Height);
 
 			NoteSizeLabel.Location =
-				new Point(ScaleValue(TSLABEL_XOFFSET), BeatsPerBarLabel.Location.Y + BeatsPerBarLabel.Height + 1);
+				new Point(ScaleValue(TsLabelXOffset), BeatsPerBarLabel.Location.Y + BeatsPerBarLabel.Height + 1);
 
-			BPMLabelVal.Text = (60000/m_beatPeriod).ToString("F1");
+			BPMLabelVal.Text = (60000/_beatPeriod).ToString("F1");
 			BPMLabelVal.Location = 
-				new Point(BPMLabel.Location.X + BPMLabel.PreferredWidth + ScaleValue(LABEL_VAL_OFFSET), BPMLabel.Location.Y);
+				new Point(BPMLabel.Location.X + BPMLabel.PreferredWidth + ScaleValue(LabelValOffset), BPMLabel.Location.Y);
 
 			BarPeriodLabel.Location =
-				new Point(BPMLabelVal.Location.X + BPMLabelVal.PreferredWidth + ScaleValue(VAL_LABEL_OFFSET), BPMLabelVal.Location.Y);
+				new Point(BPMLabelVal.Location.X + BPMLabelVal.PreferredWidth + ScaleValue(ValLabelOffset), BPMLabelVal.Location.Y);
 			BarPeriodLabelVal.Location =
-				new Point(BarPeriodLabel.Location.X + BarPeriodLabel.PreferredWidth + ScaleValue(LABEL_VAL_OFFSET), BarPeriodLabel.Location.Y);
+				new Point(BarPeriodLabel.Location.X + BarPeriodLabel.PreferredWidth + ScaleValue(LabelValOffset), BarPeriodLabel.Location.Y);
 			BarPeriodLabelVal.Text = (BarPeriod / 1000).ToString("F2");
 
-			double divTime = splitBeatsCB.Checked ? m_beatPeriod/2 : m_beatPeriod;
+			double divTime = splitBeatsCB.Checked ? _beatPeriod/2 : _beatPeriod;
 			DivTimeLabel.Location =
-				new Point(BarPeriodLabelVal.Location.X + BarPeriodLabelVal.PreferredWidth + ScaleValue(VAL_LABEL_OFFSET), BarPeriodLabelVal.Location.Y);
+				new Point(BarPeriodLabelVal.Location.X + BarPeriodLabelVal.PreferredWidth + ScaleValue(ValLabelOffset), BarPeriodLabelVal.Location.Y);
 			DivTimeLabelVal.Location =
-				new Point(DivTimeLabel.Location.X + DivTimeLabel.PreferredWidth + ScaleValue(LABEL_VAL_OFFSET), DivTimeLabel.Location.Y);
+				new Point(DivTimeLabel.Location.X + DivTimeLabel.PreferredWidth + ScaleValue(LabelValOffset), DivTimeLabel.Location.Y);
 			DivTimeLabelVal.Text = divTime.ToString("F0");
 
 		}
@@ -156,7 +163,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				Bitmap noteBitmap = NotesizeBitmap;
 
 				Point point1 = new Point(_firstBarOffset + (int)(interval * j), 
-					staffPictureBox.Location.Y - ScaleValue(DIV_Y_OFFSET));
+					staffPictureBox.Location.Y - ScaleValue(DivYOffset));
 
 				if ((splitBeatsCB.Checked) && ((j %2) == 1))
 				{
@@ -166,33 +173,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 				{
 					e.Graphics.DrawImage(noteBitmap, point1);
 				}
-			}
-		}
-
-		private void tsRightButton_Click(object sender, EventArgs e)
-		{
-			if (BeatsPerBar < 16)
-			{
-				BeatsPerBar++;
-				if (SettingChanged != null)
-				{
-					SettingChanged(sender, e);
-				}
-				Invalidate();
-			}
-		}
-
-		private void tsLeftButton_Click(object sender, EventArgs e)
-		{
-			if (BeatsPerBar > 2)
-			{
-				BeatsPerBar--;
-				if (SettingChanged != null)
-				{
-					SettingChanged(sender, e);
-				}
-					
-				Invalidate();
 			}
 		}
 
@@ -209,32 +189,32 @@ namespace VixenModules.Analysis.BeatsAndBars
 		 Description("Set the value for the number of beats per period")]
 		public double BeatPeriod
 		{
-			get { return m_beatPeriod; }
+			get { return _beatPeriod; }
 
 			set
 			{
-				m_beatPeriod = value;
+				_beatPeriod = value;
 				Invalidate();
 			}
 		}
 
 		public double BarPeriod
 		{
-			get { return m_beatPeriod*BeatsPerBar;  }
+			get { return _beatPeriod*BeatsPerBar;  }
 		}
 
-		private void ContextTSChanged(object sender, EventArgs e)
+		private void ContextTsChanged(object sender, EventArgs e)
 		{
-			ToolStripMenuItem mi = sender as ToolStripMenuItem;
-			BeatsPerBar = Convert.ToInt32(mi.Tag);
-
-			if (SettingChanged != null)
+			if (sender is ToolStripMenuItem mi)
 			{
-				SettingChanged(sender, e);
-			}
+				BeatsPerBar = Convert.ToInt32(mi.Tag);
+				if (SettingChanged != null)
+				{
+					SettingChanged(sender, e);
+				}
 
-			Invalidate();
-			
+				Invalidate();
+			}
 		}
 
 		private void ShowContextmenu(Control parentControl, Point displayPoint)
@@ -242,7 +222,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			ContextMenuStrip mnuContextMenu = new ContextMenuStrip();
 			for (int j = 2; j <= 16; j++)
 			{
-				ToolStripMenuItem mi = new ToolStripMenuItem(j + "/" + CalcNoteSize(j), null, new EventHandler(ContextTSChanged));
+				ToolStripMenuItem mi = new ToolStripMenuItem(j + "/" + CalcNoteSize(j), null, ContextTsChanged);
 				if (j == BeatsPerBar)
 				{
 					mi.Checked = true;

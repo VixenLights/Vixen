@@ -13,6 +13,7 @@
 */
 
 #include "BarBeatTrack.h"
+
 #include <dsp/onsets/DetectionFunction.h>
 #include <dsp/onsets/PeakPicking.h>
 #include <dsp/tempotracking/TempoTrackV2.h>
@@ -24,30 +25,26 @@ using std::vector;
 using std::cerr;
 using std::endl;
 
-#ifndef __GNUC__
-#include <alloca.h>
-#endif
-
 float BarBeatTracker::m_stepSecs = 0.01161; // 512 samples at 44100
 
 class BarBeatTrackerData
 {
 public:
     BarBeatTrackerData(float rate, const DFConfig &config) : dfConfig(config) {
-	df = new DetectionFunction(config);
+    df = new DetectionFunction(config);
         // decimation factor aims at resampling to c. 3KHz; must be power of 2
         int factor = MathUtilities::nextPowerOfTwo(rate / 3000);
 //        std::cerr << "BarBeatTrackerData: factor = " << factor << std::endl;
         downBeat = new DownBeat(rate, factor, config.stepSize);
     }
     ~BarBeatTrackerData() {
-	delete df;
+    delete df;
         delete downBeat;
     }
     void reset() {
-	delete df;
-	df = new DetectionFunction(dfConfig);
-	dfOutput.clear();
+    delete df;
+    df = new DetectionFunction(dfConfig);
+    dfOutput.clear();
         downBeat->resetAudioBuffer();
         origin = Vamp::RealTime::zeroTime;
     }
@@ -58,12 +55,16 @@ public:
     vector<double> dfOutput;
     Vamp::RealTime origin;
 };
-    
+
 
 BarBeatTracker::BarBeatTracker(float inputSampleRate) :
     Vamp::Plugin(inputSampleRate),
     m_d(0),
-    m_bpb(4)
+    m_bpb(4),
+    m_alpha(0.9), 			// changes are as per the BeatTrack.cpp
+    m_tightness(4.),		// changes are as per the BeatTrack.cpp
+    m_inputtempo(120.),		// changes are as per the BeatTrack.cpp
+    m_constraintempo(false) // changes are as per the BeatTrack.cpp
 {
 }
 
@@ -99,13 +100,13 @@ BarBeatTracker::getMaker() const
 int
 BarBeatTracker::getPluginVersion() const
 {
-    return 2;
+    return 3;
 }
 
 string
 BarBeatTracker::getCopyright() const
 {
-    return "Plugin by Matthew Davies, Christian Landone and Chris Cannam.  Copyright (c) 2006-2009 QMUL - All Rights Reserved";
+    return "Plugin by Matthew Davies, Christian Landone and Chris Cannam.  Copyright (c) 2006-2013 QMUL - All Rights Reserved";
 }
 
 BarBeatTracker::ParameterList
@@ -125,32 +126,88 @@ BarBeatTracker::getParameterDescriptors() const
     desc.quantizeStep = 1;
     list.push_back(desc);
 
+    // changes are as per the BeatTrack.cpp
+    //Alpha Parameter of Beat Tracker
+    desc.identifier = "alpha";
+    desc.name = "Alpha";
+    desc.description = "Inertia - Flexibility Trade Off";
+    desc.minValue =  0.1;
+    desc.maxValue = 0.99;
+    desc.defaultValue = 0.90;
+    desc.unit = "";
+    desc.isQuantized = false;
+    list.push_back(desc);
+
+    // We aren't exposing tightness as a parameter, it's fixed at 4
+
+    // changes are as per the BeatTrack.cpp
+    //User input tempo
+    desc.identifier = "inputtempo";
+    desc.name = "Tempo Hint";
+    desc.description = "User-defined tempo on which to centre the tempo preference function";
+    desc.minValue =  50;
+    desc.maxValue = 250;
+    desc.defaultValue = 120;
+    desc.unit = "BPM";
+    desc.isQuantized = true;
+    list.push_back(desc);
+
+    // changes are as per the BeatTrack.cpp
+    desc.identifier = "constraintempo";
+    desc.name = "Constrain Tempo";
+    desc.description = "Constrain more tightly around the tempo hint, using a Gaussian weighting instead of Rayleigh";
+    desc.minValue = 0;
+    desc.maxValue = 1;
+    desc.defaultValue = 0;
+    desc.isQuantized = true;
+    desc.quantizeStep = 1;
+    desc.unit = "";
+    desc.valueNames.clear();
+    list.push_back(desc);
+
+
     return list;
 }
 
 float
 BarBeatTracker::getParameter(std::string name) const
 {
-    if (name == "bpb") return m_bpb;
+    if (name == "bpb") {
+        return m_bpb;
+    } else if (name == "alpha") {
+        return m_alpha;
+    }  else if (name == "inputtempo") {
+        return m_inputtempo;
+    }  else if (name == "constraintempo") {
+        return m_constraintempo ? 1.0 : 0.0;
+    }
     return 0.0;
 }
 
 void
 BarBeatTracker::setParameter(std::string name, float value)
 {
-    if (name == "bpb") m_bpb = lrintf(value);
+    if (name == "bpb") {
+        m_bpb = lrintf(value);
+    } else if (name == "alpha") {
+        m_alpha = value;
+    } else if (name == "inputtempo") {
+        m_inputtempo = value;
+    } else if (name == "constraintempo") {
+        m_constraintempo = (value > 0.5);
+    }
 }
 
 bool
 BarBeatTracker::initialise(size_t channels, size_t stepSize, size_t blockSize)
 {
     if (m_d) {
-	delete m_d;
-	m_d = 0;
+    delete m_d;
+    m_d = 0;
     }
 
     if (channels < getMinChannelCount() ||
-	channels > getMaxChannelCount()) {
+    channels > getMaxChannelCount()) {
         std::cerr << "BarBeatTracker::initialise: Unsupported channel count: "
                   << channels << std::endl;
         return false;
@@ -176,7 +233,7 @@ BarBeatTracker::initialise(size_t channels, size_t stepSize, size_t blockSize)
     dfConfig.adaptiveWhitening = false;
     dfConfig.whiteningRelaxCoeff = -1;
     dfConfig.whiteningFloor = -1;
-    
+
     m_d = new BarBeatTrackerData(m_inputSampleRate, dfConfig);
     m_d->downBeat->setBeatsPerBar(m_bpb);
     return true;
@@ -266,10 +323,10 @@ BarBeatTracker::process(const float *const *inputBuffers,
                         Vamp::RealTime timestamp)
 {
     if (!m_d) {
-	cerr << "ERROR: BarBeatTracker::process: "
-	     << "BarBeatTracker has not been initialised"
-	     << endl;
-	return FeatureSet();
+    cerr << "ERROR: BarBeatTracker::process: "
+         << "BarBeatTracker has not been initialised"
+         << endl;
+    return FeatureSet();
     }
 
     // We use time domain input, because DownBeat requires it -- so we
@@ -280,14 +337,12 @@ BarBeatTracker::process(const float *const *inputBuffers,
     // We only support a single input channel
 
     const int fl = m_d->dfConfig.frameLength;
-#ifndef __GNUC__
-    double *dfinput = (double *)alloca(fl * sizeof(double));
-#else
-    double dfinput[fl];
-#endif
-    for (int i = 0; i < fl; ++i) dfinput[i] = inputBuffers[0][i];
+	double *dfinput = new double[fl];
 
-    double output = m_d->df->process(dfinput);
+	for (int i = 0; i < fl; ++i) dfinput[i] = inputBuffers[0][i];
+    double output = m_d->df->processTimeDomain(dfinput);
+
+	delete[] dfinput;
 
     if (m_d->dfOutput.empty()) m_d->origin = timestamp;
 
@@ -310,10 +365,10 @@ BarBeatTracker::FeatureSet
 BarBeatTracker::getRemainingFeatures()
 {
     if (!m_d) {
-	cerr << "ERROR: BarBeatTracker::getRemainingFeatures: "
-	     << "BarBeatTracker has not been initialised"
-	     << endl;
-	return FeatureSet();
+    cerr << "ERROR: BarBeatTracker::getRemainingFeatures: "
+         << "BarBeatTracker has not been initialised"
+         << endl;
+    return FeatureSet();
     }
 
     return barBeatTrack();
@@ -333,10 +388,18 @@ BarBeatTracker::barBeatTrack()
     if (df.empty()) return FeatureSet();
 
     TempoTrackV2 tt(m_inputSampleRate, m_d->dfConfig.stepSize);
-    tt.calculateBeatPeriod(df, beatPeriod, tempi);
+
+    // changes are as per the BeatTrack.cpp - allow m_inputtempo and m_constraintempo to be set be the user
+    tt.calculateBeatPeriod(df, beatPeriod, tempi, m_inputtempo, m_constraintempo);
 
     vector<double> beats;
-    tt.calculateBeats(df, beatPeriod, beats);
+    // changes are as per the BeatTrack.cpp - allow m_alpha and m_tightness to be set be the user
+    tt.calculateBeats(df, beatPeriod, beats, m_alpha, m_tightness);
+
+ //   tt.calculateBeatPeriod(df, beatPeriod, tempi, 0., 0); // use default parameters
+
+  //  vector<double> beats;
+   // tt.calculateBeats(df, beatPeriod, beats, 0.9, 4.); // use default parameters until i fix this plugin too
 
     vector<int> downbeats;
     size_t downLength = 0;
@@ -348,7 +411,7 @@ BarBeatTracker::barBeatTrack()
 
 //    std::cerr << "BarBeatTracker: found downbeats at: ";
 //    for (int i = 0; i < downbeats.size(); ++i) std::cerr << downbeats[i] << " " << std::endl;
-                                 
+
     FeatureSet returnFeatures;
 
     char label[20];
@@ -365,11 +428,11 @@ BarBeatTracker::barBeatTrack()
         if (beat == m_bpb) beat = 0;
     }
 
-    for (size_t i = 0; i < beats.size(); ++i) {
+    for (int i = 0; i < int(beats.size()); ++i) {
 
-	size_t frame = beats[i] * m_d->dfConfig.stepSize;
+        size_t frame = size_t(beats[i]) * m_d->dfConfig.stepSize;
 
-        if (dbi < downbeats.size() && i == downbeats[dbi]) {
+        if (dbi < int(downbeats.size()) && i == downbeats[dbi]) {
             beat = 0;
             ++bar;
             ++dbi;
@@ -382,20 +445,20 @@ BarBeatTracker::barBeatTrack()
         // 0 -> beats
         // 1 -> bars
         // 2 -> beat counter function
-        
-	Feature feature;
-	feature.hasTimestamp = true;
-	feature.timestamp = m_d->origin + Vamp::RealTime::frame2RealTime
-	    (frame, lrintf(m_inputSampleRate));
+
+        Feature feature;
+        feature.hasTimestamp = true;
+        feature.timestamp = m_d->origin + Vamp::RealTime::frame2RealTime
+            (frame, lrintf(m_inputSampleRate));
 
         sprintf(label, "%d", beat + 1);
         feature.label = label;
-	returnFeatures[0].push_back(feature); // labelled beats
+        returnFeatures[0].push_back(feature); // labelled beats
 
         feature.values.push_back(beat + 1);
         returnFeatures[2].push_back(feature); // beat function
 
-        if (i > 0 && i <= beatsd.size()) {
+        if (i > 0 && i <= int(beatsd.size())) {
             feature.values.clear();
             feature.values.push_back(beatsd[i-1]);
             feature.label = "";
