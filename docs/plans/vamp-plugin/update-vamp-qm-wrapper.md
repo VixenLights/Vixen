@@ -13,8 +13,8 @@ An operator can see the result by running Beat and Bar detection on the baseline
 - [x] (2026-09-14) Identified `QMLibrary` as a C++/CLI dynamic-library project that compiles Vixen-owned wrapper code plus selected native source files; it does not link or load a prebuilt QM VAMP plugin.
 - [x] (2026-09-14) Confirmed that `src/Vixen.Modules/Analysis/QMLibrary/qm-vamp-plugins-1.7` had no repository references and was removed in a separate committed checkpoint.
 - [x] (2026-09-14) Identified local VAMP SDK version 2.5 and current upstream release version 2.10; identified QM VAMP Plugin release 1.8.0 as the update target.
-- [ ] Milestone 1 partially completed (2026-09-14): captured a deterministic 44.1 kHz, 120 BPM, 32-bar click-track baseline and added direct QMLibrary regression coverage; remaining: run the manual UI comparison on licensed local audio and record the mark collections and preview period.
-- [ ] Stage the exact upstream VAMP 2.10 and QM 1.8.0 source dependencies outside the working tree.
+- [x] Milestone 1 completed (2026-09-14): captured a deterministic 44.1 kHz, 120 BPM, 32-bar click-track baseline, added direct QMLibrary regression coverage, and recorded a user-created real-audio Vixen export baseline for post-upgrade comparison.
+- [x] Milestone 2 completed (2026-09-14): staged VAMP SDK 2.10, QM VAMP Plugins 1.8.0, and the exact QM DSP lock revision outside the working tree; recorded provenance and the Bar/Beat direct-source closure; proved the closure compiles and links natively without OpenBLAS.
 - [ ] Replace only the embedded Bar/Beat Tracker dependency closure and update the QMLibrary project.
 - [ ] Adapt the C++/CLI wrapper only for necessary source compatibility and resource ownership.
 - [ ] Build, test, compare generated marks with the baseline, and record final results here.
@@ -39,6 +39,12 @@ An operator can see the result by running Beat and Bar detection on the baseline
 - Observation: the direct C++/CLI reference can be built and exercised from `Vixen.Tests` using the repository's prescribed full-MSBuild test-target workflow.
   Evidence: `msbuild Vixen.sln -m -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:q` completed successfully on 2026-09-14; the following focused `dotnet test` command reported 2 passed and 0 failed tests.
 
+- Observation: QM DSP 1.8.0 uses its own vendored KissFFT C sources for the Bar/Beat transform rather than OpenBLAS.
+  Evidence: the isolated native x64 compile and link of the complete `BarBeatTrack` closure succeeded only after adding `ext/kissfft/kiss_fft.c`, `ext/kissfft/tools/kiss_fftr.c`, and the upstream `kiss_fft_scalar=double` definition; no BLAS library was linked.
+
+- Observation: QM's `repoint.bat install` cannot run in the present staging environment because neither supported Standard ML runtime is installed.
+  Evidence: `Get-Command sml,polyml` returned no commands. The Git-backed QM DSP dependency was cloned directly at the complete hash in `repoint-lock.json`, which is mechanically equivalent to Repoint's fetch for that dependency.
+
 ## Decision Log
 
 - Decision: Target VAMP Plugin SDK 2.10 and QM VAMP Plugins 1.8.0, using the QM 1.8.0-pinned `qm-dsp` revision for QM algorithm sources.
@@ -61,9 +67,17 @@ An operator can see the result by running Beat and Bar detection on the baseline
   Rationale: the public managed descriptor call must work to establish and preserve the wrapper contract. The correction changes no API and is limited to appending items to the lists that the method already creates.
   Date/Author: 2026-09-14 / Codex.
 
+- Decision: Continue with the direct-source integration strategy and add QM DSP's KissFFT source closure; do not import OpenBLAS or the upstream all-plugin project.
+  Rationale: the standalone native probe compiled, linked, and ran with the Bar/Beat source closure and no BLAS symbols. This preserves Vixen's existing one-plugin, no-extra-binary deployment model.
+  Date/Author: 2026-09-14 / Codex.
+
+- Decision: Clone QM DSP directly at its complete Repoint lock hash because the Repoint launcher needs an unavailable Standard ML runtime.
+  Rationale: the lock file identifies a Git revision, so a detached checkout at that exact hash supplies the same immutable source material without choosing a branch or changing the dependency selection.
+  Date/Author: 2026-09-14 / Codex.
+
 ## Outcomes & Retrospective
 
-The automated portion of Milestone 1 is complete. `QmBarBeatTrackTests` directly exercises the existing C++/CLI wrapper with generated mono PCM, records the current feature baseline, and verifies the managed descriptor contract. The test also corrected an existing list-population defect exposed by that contract. Manual UI comparison on licensed local audio remains pending; the source upgrade itself has not begun. At completion, summarize the versions imported, every wrapper/API compatibility adjustment, the baseline comparison results, commands run, and any intentional timing deltas.
+Milestones 1 and 2 are complete. `QmBarBeatTrackTests` directly exercises the existing C++/CLI wrapper with generated mono PCM, records the current feature baseline, and verifies the managed descriptor contract. The test also corrected an existing list-population defect exposed by that contract. The operator has created and exported real-audio Beats and Bars mark collections in Vixen for the post-upgrade comparison. The upstream source provenance and minimal native Bar/Beat dependency closure are recorded in `QMFiles/UPSTREAM-PROVENANCE.md`; an isolated compile and link confirms the update does not need OpenBLAS. The next work is the controlled source import. At completion, summarize the versions imported, every wrapper/API compatibility adjustment, the baseline comparison results, commands run, and any intentional timing deltas.
 
 ## Context and Orientation
 
@@ -93,7 +107,7 @@ Acceptance for this milestone is a reproducible baseline test and a written list
 
 ### Milestone 2: Stage and inventory exact upstream dependencies
 
-Create a temporary directory outside the repository, such as `C:\\Temp\\vamp-qm-upgrade`. Clone VAMP Plugin SDK tag `vamp-plugin-sdk-v2.10` and QM VAMP Plugins tag `qm-vamp-plugins-v1.8.0`. In the QM checkout, run its `repoint.bat install` command to fetch the dependency source revisions defined by its `repoint-lock.json`. This lock file pins the matching `qm-dsp` source at commit `4d2a4a4e0c2ddf07bf9d2a224ded912712714`.
+Create a temporary directory outside the repository, such as `C:\\Temp\\vamp-qm-upgrade`. Clone VAMP Plugin SDK tag `vamp-plugin-sdk-v2.10` and QM VAMP Plugins tag `qm-vamp-plugins-v1.8.0`. In the QM checkout, run its `repoint.bat install` command to fetch the dependency source revisions defined by its `repoint-lock.json`. This lock file pins the matching `qm-dsp` source at commit `4d2a4a4e0c2dd0ddf07bf9d2a224ded912712714`.
 
 Do not use an unpinned `master` branch. Record the tags, commit IDs, download date, source URLs, and licenses in a new provenance document under `src/Vixen.Modules/Analysis/QMLibrary/QMFiles` or a repository-standard third-party notices location selected after inspecting existing notices. Preserve the VAMP SDK license and QM GPL license with the vendored source as required by their terms.
 
@@ -208,7 +222,7 @@ Current native source inputs compiled by `QMLibrary.vcxproj` are:
 
 The project additionally compiles Vixen code `QMBarBeatTrack.cpp`, `stdafx.cpp`, `VampOutputCtrl.cpp`, `VampParamCtrl.cpp`, `WrapperFiles\\ManagedPlugin.cpp`, and `WrapperFiles\\ManagedRealtime.cpp`. This list is an initial inventory, not permission to carry it forward unchanged: milestone 2 determines the matching QM 1.8.0 source closure.
 
-The automated Milestone 1 baseline uses 44,100 Hz mono PCM generated in `QmBarBeatTrackTests`. It is 32 bars at 120 BPM, uses a 25 ms decaying 880 Hz downbeat click followed by 1,760 Hz beat clicks, uses Vixen's present 16-bit-scale amplitudes, and ends with 257 samples to exercise final-block zero padding. Current expected output is: output 0 has 127 features (first label `2`, first/last timestamp 476/63,494 ms); output 1 has 31 features (first label `1`, 1,973/61,974 ms); output 2 has 127 features (first label `2`, 476/63,494 ms); and output 3 has 125 features (first label empty, 975/62,972 ms). The test validates all output timestamps and labels where Vixen consumes them.
+The automated Milestone 1 baseline uses 44,100 Hz mono PCM generated in `QmBarBeatTrackTests`. It is 32 bars at 120 BPM, uses a 25 ms decaying 880 Hz downbeat click followed by 1,760 Hz beat clicks, uses Vixen's present 16-bit-scale amplitudes, and ends with 257 samples to exercise final-block zero padding. Current expected output is: output 0 has 127 features (first label `2`, first/last timestamp 476/63,494 ms); output 1 has 31 features (first label `1`, 1,973/61,974 ms); output 2 has 127 features (first label `2`, 476/63,494 ms); and output 3 has 125 features (first label empty, 975/62,972 ms). The test validates all output timestamps and labels where Vixen consumes them. The operator also has an exported real-audio Vixen mark-collection baseline; retain the exact audio, Beats and Bars settings, collection names, and export for the post-upgrade comparison.
 
 Focused validation completed on 2026-09-14:
 
@@ -240,4 +254,4 @@ At the end of the work, these existing interfaces remain available to the BeatsA
 
 Plan created 2026-09-14 because the unused QM 1.7 source archive had been removed and the remaining embedded analysis stack needs a controlled, behavior-preserving upgrade path.
 
-Plan revision note (2026-09-14): Completed the automated portion of Milestone 1 with a direct C++/CLI wrapper regression test and generated PCM baseline. Fixed the existing `GetOutputDescriptors` list-population exception because descriptor verification could not otherwise run. Manual UI comparison on licensed local audio remains pending. The full MSBuild test target and the finalized focused baseline test ran successfully with 2 passed tests and zero failures.
+Plan revision note (2026-09-14): Completed Milestone 1 with a direct C++/CLI wrapper regression test, generated PCM baseline, and a user-created Vixen export of Beats and Bars collections from licensed real audio for post-upgrade comparison. Fixed the existing `GetOutputDescriptors` list-population exception because descriptor verification could not otherwise run. The full MSBuild test target and the finalized focused baseline test ran successfully with 2 passed tests and zero failures. Completed Milestone 2 by staging the pinned sources, documenting their provenance and native closure in `QMFiles/UPSTREAM-PROVENANCE.md`, and proving an x64 direct-source compile/link without OpenBLAS. The Repoint launcher itself was unavailable because no Standard ML runtime is installed, so the Git-backed QM DSP lock revision was cloned directly.
