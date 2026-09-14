@@ -17,7 +17,7 @@ An operator can see the result by running Beat and Bar detection on the baseline
 - [x] Milestone 2 completed (2026-09-14): staged VAMP SDK 2.10, QM VAMP Plugins 1.8.0, and the exact QM DSP lock revision outside the working tree; recorded provenance and the Bar/Beat direct-source closure; proved the closure compiles and links natively without OpenBLAS.
 - [x] Milestone 3 completed (2026-09-14): replaced the VAMP 2.5 source tree with VAMP 2.10, imported QM 1.8.0 Bar/Beat and its locked QM DSP source closure, added the required KissFFT sources, and built `QMLibrary` for Release x64 without an external VAMP, QM DSP, or OpenBLAS link input.
 - [x] Milestone 4 completed (2026-09-14 10:41Z): reviewed the VAMP 2.10 managed façade, delegated input-domain reporting to the native plugin, added idempotent `ManagedPlugin` disposal with predictable post-disposal errors, and expanded focused wrapper coverage to 3 passing tests.
-- [ ] Milestone 5 in progress (2026-09-14): moved the full-track analysis work off the WinForms UI thread, added an explicit finalization state, added feature-count diagnostics and deterministic native-plugin disposal, and passed the full 935-test suite; manual verification of responsive progress, diagnostic log output, and final mark comparison on the affected audio remain.
+- [ ] Milestone 5 in progress (2026-09-14): moved the full-track analysis work off the WinForms UI thread, added an explicit finalization state, added feature-count diagnostics and deterministic native-plugin disposal, and corrected pre-existing binary Beat Splits names; manual verification of responsive progress, diagnostic log output, the green split collections, and final mark comparison on the affected audio remain. The full test build for the split-name regression is pending because the running application holds `Release\\Output` assemblies open.
 
 ## Surprises & Discoveries
 
@@ -56,6 +56,15 @@ An operator can see the result by running Beat and Bar detection on the baseline
 
 - Observation: QM returns its four feature outputs only from `GetRemainingFeatures`; a sparse native feature map has no exception path through the wrapper or mark-collection builder.
   Evidence: `BarBeatTracker::process` always returns an empty `FeatureSet`, while `barBeatTrack` constructs outputs 0 through 3 only after all PCM has been accumulated. `ManagedPlugin::convertToManagedFeatureSet` converts only the keys QM supplies.
+
+- Observation: the existing Beat Splits collection-naming code assigns every binary subdivision the same `a` suffix.
+  Evidence: `BeatBarSettingsData.BeatCollectionNames(true)` uses `(j % 1) == 0`, which is true for every index. Consequently the intended `Beat #1a` and `Beat #1b` collections receive duplicate `Beat #1a` names. This predates the VAMP update and is independent of QM feature counts.
+
+- Observation: a normal Release test build cannot overwrite module outputs while the desktop application is running.
+  Evidence: the test build reported `MSB3021` and `LNK1104` for files under `Release\\Output`, held by `Vixen.Application` PID 15400. No process was terminated.
+
+- Observation: the first split-suffix correction also appended `b` to unsplit beat-collection names.
+  Evidence: the conditional selected `b` whenever `addDivisions` was false. The corrected conditional now emits no suffix for unsplit names and `a`/`b` only for split names; the regression test covers both cases.
 
 ## Decision Log
 
@@ -109,6 +118,14 @@ An operator can see the result by running Beat and Bar detection on the baseline
 
 - Decision: Dispose the preview tracker at the end of preview generation and dispose the full-track tracker in a `finally` block after every detection attempt, including Cancel and exception paths.
   Rationale: `ManagedPlugin.Dispose` releases the native `BarBeatTracker` deterministically. The full tracker is retained only for the duration of the settings dialog and collection build, so this does not alter its ownership or call sequence.
+  Date/Author: 2026-09-14 / Codex.
+
+- Decision: Name binary split collections with alternating `a` and `b` suffixes and protect that result with a direct settings-data test.
+  Rationale: the existing modulo-one condition could never produce the `b` collections that are the non-duplicate green midpoint marks when Beat Counts are also selected. This is a Vixen collection-naming defect, not a VAMP result change.
+  Date/Author: 2026-09-14 / Codex.
+
+- Decision: Keep unsplit beat-collection names suffix-free.
+  Rationale: split suffixes distinguish the two subdivisions of a beat and must not be applied when `BeatCollectionNames(false)` returns the original beat-count collections.
   Date/Author: 2026-09-14 / Codex.
 
 ## Outcomes & Retrospective

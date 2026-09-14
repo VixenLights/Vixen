@@ -511,6 +511,11 @@ namespace VixenModules.Analysis.BeatsAndBars
 			get { return CollectionBaseName + " 1/" + NoteSize + " Beat #1 (Bar)"; }
 		}
 
+		/// <summary>
+		/// Gets the names of the beat mark collections for the configured meter and subdivision.
+		/// </summary>
+		/// <param name="addDivisions"><see langword="true"/> to return names for each beat subdivision; otherwise, <see langword="false"/>.</param>
+		/// <returns>A collection of beat mark collection names.</returns>
 		public String[] BeatCollectionNames(bool addDivisions)
 		{
 			int collections = BeatsPerBar * ((addDivisions) ? Divisions : 1);
@@ -520,9 +525,10 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			for (int j = 0; j < collections; j++)
 			{
-				decimal colNum = ((addDivisions) ? (j/2) : j) + 1;
+				// ReSharper disable once PossibleLossOfFraction
+				decimal colNum = (addDivisions ? j/2 : j) + 1;
 				retVal[j] = CollectionBaseName + " Beat #" + colNum +
-				            ((addDivisions && (j%1) == 0) ? "a" : "");
+				            (addDivisions ? (j%2 == 0 ? "a" : "b") : "");
 			}
 
 			return retVal;
