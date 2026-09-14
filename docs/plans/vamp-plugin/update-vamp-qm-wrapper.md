@@ -16,7 +16,7 @@ An operator can see the result by running Beat and Bar detection on the baseline
 - [x] Milestone 1 completed (2026-09-14): captured a deterministic 44.1 kHz, 120 BPM, 32-bar click-track baseline, added direct QMLibrary regression coverage, and recorded a user-created real-audio Vixen export baseline for post-upgrade comparison.
 - [x] Milestone 2 completed (2026-09-14): staged VAMP SDK 2.10, QM VAMP Plugins 1.8.0, and the exact QM DSP lock revision outside the working tree; recorded provenance and the Bar/Beat direct-source closure; proved the closure compiles and links natively without OpenBLAS.
 - [x] Milestone 3 completed (2026-09-14): replaced the VAMP 2.5 source tree with VAMP 2.10, imported QM 1.8.0 Bar/Beat and its locked QM DSP source closure, added the required KissFFT sources, and built `QMLibrary` for Release x64 without an external VAMP, QM DSP, or OpenBLAS link input.
-- [ ] Adapt the C++/CLI wrapper only for necessary source compatibility and resource ownership.
+- [x] Milestone 4 completed (2026-09-14 10:41Z): reviewed the VAMP 2.10 managed façade, delegated input-domain reporting to the native plugin, added idempotent `ManagedPlugin` disposal with predictable post-disposal errors, and expanded focused wrapper coverage to 3 passing tests.
 - [ ] Build, test, compare generated marks with the baseline, and record final results here.
 
 ## Surprises & Discoveries
@@ -47,6 +47,9 @@ An operator can see the result by running Beat and Bar detection on the baseline
 
 - Observation: C++/CLI cannot compile a `.c` translation unit with the project's `/clr` option.
   Evidence: the first integrated QMLibrary build failed with `D8045` for `kiss_fft.c`. Marking both unchanged KissFFT implementation files as `CompileAsCpp` allowed the Release x64 build to complete; the standalone native probe had already demonstrated their C++ compatibility.
+
+- Observation: QM 1.8.0 exposes three additional optional Bar/Beat tuning parameters beyond `bpb`.
+  Evidence: the wrapper test received `bpb`, `alpha`, `inputtempo`, and `constraintempo` from `BarBeatTracker::getParameterDescriptors()`. `BeatsAndBars.cs` still only reads and writes `bpb`, so its parameter interaction remains compatible.
 
 ## Decision Log
 
@@ -82,9 +85,17 @@ An operator can see the result by running Beat and Bar detection on the baseline
   Rationale: C++/CLI applies `/clr` to project compilation and rejects C translation units. The sources are C++-compatible, and this project-level mode change avoids modifying third-party source while retaining the direct-source architecture.
   Date/Author: 2026-09-14 / Codex.
 
+- Decision: Add a `ManagedPlugin` destructor and finalizer that delete the owned `Vamp::Plugin` exactly once, and route all native calls through a null-checking accessor.
+  Rationale: `QMBarBeatTrack` constructs and transfers ownership of one native `BarBeatTracker` to the managed wrapper. Releasing it in the wrapper prevents the native allocation from surviving managed object disposal, and throwing `ObjectDisposedException` after disposal avoids undefined native-pointer access.
+  Date/Author: 2026-09-14 / Codex.
+
+- Decision: Keep `ManagedRealtime` integer-width frame/time conversion unchanged.
+  Rationale: VAMP 2.10 accepts the existing `long` frame and `unsigned int` sample-rate boundary values. The deterministic click-track baseline retained its timestamps exactly, so no compensating offset is warranted.
+  Date/Author: 2026-09-14 / Codex.
+
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete. `QmBarBeatTrackTests` directly exercises the existing C++/CLI wrapper with generated mono PCM, records the current feature baseline, and verifies the managed descriptor contract. The test also corrected an existing list-population defect exposed by that contract. The operator has created and exported real-audio Beats and Bars mark collections in Vixen for the post-upgrade comparison. The upstream source provenance and minimal native Bar/Beat dependency closure are recorded in `QMFiles/UPSTREAM-PROVENANCE.md`; that closure is now imported and builds under C++/CLI with no external VAMP, QM DSP, or OpenBLAS binary. The next work is wrapper-level compatibility review and regression execution. At completion, summarize the versions imported, every wrapper/API compatibility adjustment, the baseline comparison results, commands run, and any intentional timing deltas.
+Milestones 1 through 4 are complete. `QmBarBeatTrackTests` directly exercises the C++/CLI wrapper with generated mono PCM, verifies the VAMP 2.10 descriptor set and input domain, retains the click-track feature baseline, and proves that disposing the managed wrapper releases its native plugin and prevents subsequent use. The deterministic 44.1 kHz click-track timestamps and feature counts remained unchanged. QM 1.8.0 adds optional `alpha`, `inputtempo`, and `constraintempo` descriptors, but `BeatsAndBars.cs` continues to require only `bpb`. The operator has created and exported real-audio Beats and Bars mark collections in Vixen for the final post-upgrade comparison. The upstream source provenance and minimal native Bar/Beat dependency closure are recorded in `QMFiles/UPSTREAM-PROVENANCE.md`; that closure is now imported and builds under C++/CLI with no external VAMP, QM DSP, or OpenBLAS binary. The remaining work is the full regression suite and manual real-audio comparison.
 
 ## Context and Orientation
 
@@ -269,4 +280,4 @@ At the end of the work, these existing interfaces remain available to the BeatsA
 
 Plan created 2026-09-14 because the unused QM 1.7 source archive had been removed and the remaining embedded analysis stack needs a controlled, behavior-preserving upgrade path.
 
-Plan revision note (2026-09-14): Completed Milestone 1 with a direct C++/CLI wrapper regression test, generated PCM baseline, and a user-created Vixen export of Beats and Bars collections from licensed real audio for post-upgrade comparison. Fixed the existing `GetOutputDescriptors` list-population exception because descriptor verification could not otherwise run. The full MSBuild test target and the finalized focused baseline test ran successfully with 2 passed tests and zero failures. Completed Milestone 2 by staging the pinned sources, documenting their provenance and native closure in `QMFiles/UPSTREAM-PROVENANCE.md`, and proving an x64 direct-source compile/link without OpenBLAS. The Repoint launcher itself was unavailable because no Standard ML runtime is installed, so the Git-backed QM DSP lock revision was cloned directly. Completed Milestone 3 by importing that narrow closure, replacing the VAMP 2.5 tree, adding the matching KissFFT implementation files, and successfully rebuilding QMLibrary in Release x64. The C++/CLI project compiles the unchanged KissFFT `.c` sources as C++ because `/clr` does not permit C translation units.
+Plan revision note (2026-09-14): Completed Milestone 1 with a direct C++/CLI wrapper regression test, generated PCM baseline, and a user-created Vixen export of Beats and Bars collections from licensed real audio for post-upgrade comparison. Fixed the existing `GetOutputDescriptors` list-population exception because descriptor verification could not otherwise run. The full MSBuild test target and the finalized focused baseline test ran successfully with 2 passed tests and zero failures. Completed Milestone 2 by staging the pinned sources, documenting their provenance and native closure in `QMFiles/UPSTREAM-PROVENANCE.md`, and proving an x64 direct-source compile/link without OpenBLAS. The Repoint launcher itself was unavailable because no Standard ML runtime is installed, so the Git-backed QM DSP lock revision was cloned directly. Completed Milestone 3 by importing that narrow closure, replacing the VAMP 2.5 tree, adding the matching KissFFT implementation files, and successfully rebuilding QMLibrary in Release x64. The C++/CLI project compiles the unchanged KissFFT `.c` sources as C++ because `/clr` does not permit C translation units. Completed Milestone 4 by preserving VAMP 2.10-compatible frame/time conversion, delegating input-domain discovery to the native plugin, adding deterministic native plugin disposal, and expanding wrapper regression coverage. The full MSBuild test target built successfully and the focused test run reported 3 passed and 0 failed tests.

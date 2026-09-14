@@ -21,8 +21,13 @@ public sealed class QmBarBeatTrackTests
 
 		// Assert
 		Assert.Equal("qm-barbeattracker", plugin.GetIdentifier());
+		Assert.Equal(ManagedPlugin.InputDomain.TimeDomain, plugin.GetInputDomain());
 
-		var beatsPerBar = Assert.Single(parameters);
+		Assert.Equal(["bpb", "alpha", "inputtempo", "constraintempo"],
+			parameters.Select(parameter => parameter.identifier));
+
+		var beatsPerBar = Assert.Single(parameters,
+			parameter => parameter.identifier == "bpb");
 		Assert.Equal("bpb", beatsPerBar.identifier);
 		Assert.Equal(2, beatsPerBar.minValue);
 		Assert.Equal(16, beatsPerBar.maxValue);
@@ -32,6 +37,18 @@ public sealed class QmBarBeatTrackTests
 
 		Assert.Equal(["beats", "bars", "beatcounts", "beatsd"],
 			outputs.Select(output => output.identifier));
+	}
+
+	[Fact]
+	public void BarBeatTracker_DisposeReleasesNativePlugin()
+	{
+		var plugin = new QMBarBeatTrack(SampleRate);
+
+		plugin.Dispose();
+
+		Assert.Throws<ObjectDisposedException>(() => plugin.GetIdentifier());
+		Assert.Throws<ObjectDisposedException>(() =>
+			plugin.Process([0f], ManagedRealtime.frame2RealTime(0, SampleRate)));
 	}
 
 	[Fact]

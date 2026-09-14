@@ -16,8 +16,11 @@ namespace QMLibrary
 		ManagedPlugin();
 
 		Vamp::Plugin *m_plugin = nullptr;
+		Vamp::Plugin* GetPlugin();
 
 	public:
+		~ManagedPlugin();
+		!ManagedPlugin();
 
 		enum class InputDomain
 		{
