@@ -142,7 +142,7 @@ namespace QMLibrary
 				List<String^>^ binNames = gcnew List<String^>(binNameSize);
 				for (int k = 0; k < binNameSize; k++)
 				{
-					binNames[k] = gcnew String(outList[j].binNames[k].c_str());
+					binNames->Add(gcnew String(outList[j].binNames[k].c_str()));
 				}
 				outDescr->binNames = binNames;
 				outDescr->description = gcnew String(outList[j].description.c_str());
@@ -187,7 +187,7 @@ namespace QMLibrary
 				outDescr->unit = gcnew String(outList[j].unit.c_str());
 
 
-				retVal[j] = outDescr;
+				retVal->Add(outDescr);
 			}
 
 		}

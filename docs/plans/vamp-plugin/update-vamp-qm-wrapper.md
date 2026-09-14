@@ -13,7 +13,7 @@ An operator can see the result by running Beat and Bar detection on the baseline
 - [x] (2026-09-14) Identified `QMLibrary` as a C++/CLI dynamic-library project that compiles Vixen-owned wrapper code plus selected native source files; it does not link or load a prebuilt QM VAMP plugin.
 - [x] (2026-09-14) Confirmed that `src/Vixen.Modules/Analysis/QMLibrary/qm-vamp-plugins-1.7` had no repository references and was removed in a separate committed checkpoint.
 - [x] (2026-09-14) Identified local VAMP SDK version 2.5 and current upstream release version 2.10; identified QM VAMP Plugin release 1.8.0 as the update target.
-- [ ] Capture pre-upgrade behavioral baselines and add an automated regression harness.
+- [ ] Milestone 1 partially completed (2026-09-14): captured a deterministic 44.1 kHz, 120 BPM, 32-bar click-track baseline and added direct QMLibrary regression coverage; remaining: run the manual UI comparison on licensed local audio and record the mark collections and preview period.
 - [ ] Stage the exact upstream VAMP 2.10 and QM 1.8.0 source dependencies outside the working tree.
 - [ ] Replace only the embedded Bar/Beat Tracker dependency closure and update the QMLibrary project.
 - [ ] Adapt the C++/CLI wrapper only for necessary source compatibility and resource ownership.
@@ -33,6 +33,12 @@ An operator can see the result by running Beat and Bar detection on the baseline
 - Observation: the full upstream QM 1.8 Windows project builds all QM plugins and external numerical libraries, which is broader than Vixen's current embedded implementation.
   Evidence: upstream `build/msvc/QMVampPlugins.vcxproj` includes every plugin and links `qm-dsp.lib` plus OpenBLAS-related libraries. Vixen's current `QMLibrary.vcxproj` compiles source directly and only requires Bar/Beat behavior.
 
+- Observation: `ManagedPlugin::GetOutputDescriptors()` always threw before returning its descriptors.
+  Evidence: the first regression run threw `ArgumentOutOfRangeException` at `ManagedPlugin.cpp:190`, where a newly allocated managed `List` was assigned by index instead of appended. The same capacity-versus-count error existed for non-empty bin-name lists.
+
+- Observation: the direct C++/CLI reference can be built and exercised from `Vixen.Tests` using the repository's prescribed full-MSBuild test-target workflow.
+  Evidence: `msbuild Vixen.sln -m -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:q` completed successfully on 2026-09-14; the following focused `dotnet test` command reported 2 passed and 0 failed tests.
+
 ## Decision Log
 
 - Decision: Target VAMP Plugin SDK 2.10 and QM VAMP Plugins 1.8.0, using the QM 1.8.0-pinned `qm-dsp` revision for QM algorithm sources.
@@ -51,9 +57,13 @@ An operator can see the result by running Beat and Bar detection on the baseline
   Rationale: build success cannot demonstrate that beat labels, output indexes, or mark timing still mean the same thing to Vixen users.
   Date/Author: 2026-09-14 / Codex.
 
+- Decision: Correct the existing managed-list population defect while adding the baseline test.
+  Rationale: the public managed descriptor call must work to establish and preserve the wrapper contract. The correction changes no API and is limited to appending items to the lists that the method already creates.
+  Date/Author: 2026-09-14 / Codex.
+
 ## Outcomes & Retrospective
 
-No implementation has been performed. At completion, summarize the versions imported, every wrapper/API compatibility adjustment, the baseline comparison results, commands run, and any intentional timing deltas.
+The automated portion of Milestone 1 is complete. `QmBarBeatTrackTests` directly exercises the existing C++/CLI wrapper with generated mono PCM, records the current feature baseline, and verifies the managed descriptor contract. The test also corrected an existing list-population defect exposed by that contract. Manual UI comparison on licensed local audio remains pending; the source upgrade itself has not begun. At completion, summarize the versions imported, every wrapper/API compatibility adjustment, the baseline comparison results, commands run, and any intentional timing deltas.
 
 ## Context and Orientation
 
@@ -198,6 +208,15 @@ Current native source inputs compiled by `QMLibrary.vcxproj` are:
 
 The project additionally compiles Vixen code `QMBarBeatTrack.cpp`, `stdafx.cpp`, `VampOutputCtrl.cpp`, `VampParamCtrl.cpp`, `WrapperFiles\\ManagedPlugin.cpp`, and `WrapperFiles\\ManagedRealtime.cpp`. This list is an initial inventory, not permission to carry it forward unchanged: milestone 2 determines the matching QM 1.8.0 source closure.
 
+The automated Milestone 1 baseline uses 44,100 Hz mono PCM generated in `QmBarBeatTrackTests`. It is 32 bars at 120 BPM, uses a 25 ms decaying 880 Hz downbeat click followed by 1,760 Hz beat clicks, uses Vixen's present 16-bit-scale amplitudes, and ends with 257 samples to exercise final-block zero padding. Current expected output is: output 0 has 127 features (first label `2`, first/last timestamp 476/63,494 ms); output 1 has 31 features (first label `1`, 1,973/61,974 ms); output 2 has 127 features (first label `2`, 476/63,494 ms); and output 3 has 125 features (first label empty, 975/62,972 ms). The test validates all output timestamps and labels where Vixen consumes them.
+
+Focused validation completed on 2026-09-14:
+
+    msbuild Vixen.sln -m -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:q
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="$(Get-Location)\\" --filter "FullyQualifiedName~QmBarBeatTrackTests"
+
+Result: `Passed: 2, Failed: 0, Skipped: 0`.
+
 Upstream release facts used by this plan:
 
 - VAMP SDK 2.5 local `CHANGELOG` records its 2013-05-08 release.
@@ -220,3 +239,5 @@ At the end of the work, these existing interfaces remain available to the BeatsA
 `QMBarBeatTrack` must continue to wrap native `BarBeatTracker`, and the resulting native type must continue to derive from VAMP's plugin-side `Vamp::Plugin`. The embedded SDK target is VAMP Plugin SDK 2.10. The embedded QM plugin target is the Bar and Beat Tracker from QM VAMP Plugins 1.8.0 with the `qm-dsp` dependency revision pinned by that release. No dynamic plugin loading, external plugin registration, or additional user configuration is part of this plan.
 
 Plan created 2026-09-14 because the unused QM 1.7 source archive had been removed and the remaining embedded analysis stack needs a controlled, behavior-preserving upgrade path.
+
+Plan revision note (2026-09-14): Completed the automated portion of Milestone 1 with a direct C++/CLI wrapper regression test and generated PCM baseline. Fixed the existing `GetOutputDescriptors` list-population exception because descriptor verification could not otherwise run. Manual UI comparison on licensed local audio remains pending. The full MSBuild test target and the finalized focused baseline test ran successfully with 2 passed tests and zero failures.
