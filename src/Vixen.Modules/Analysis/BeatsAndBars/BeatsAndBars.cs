@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Runtime.ExceptionServices;
 using QMLibrary;
 using Vixen.Extensions;
 using Vixen.Marks;
@@ -31,15 +32,67 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		private IDictionary<int, ICollection<ManagedFeature>> GenerateFeatures(ManagedPlugin plugin, float[] fSampleData, bool showProgress = true)
 		{
-			IDictionary<int, ICollection<ManagedFeature>> retVal = 
+			if (!showProgress)
+			{
+				return GenerateFeatures(plugin, fSampleData, null);
+			}
+
+			IDictionary<int, ICollection<ManagedFeature>> result = null;
+			Exception exception = null;
+
+			using (var progressDialog = new BeatsAndBarsProgress())
+			{
+				progressDialog.Shown += async (sender, _) =>
+				{
+					var dialog = sender as BeatsAndBarsProgress;
+
+					try
+					{
+						ArgumentNullException.ThrowIfNull(dialog);
+						IProgress<(int Value, bool IsFinalizing)> progress =
+							new Progress<(int Value, bool IsFinalizing)>(update =>
+							{
+								if (update.IsFinalizing)
+								{
+									dialog.SetFinalizing();
+								}
+								else
+								{
+									dialog.UpdateProgress(update.Value);
+								}
+							});
+
+						result = await Task.Run(() => GenerateFeatures(plugin, fSampleData, progress));
+					}
+					catch (Exception ex)
+					{
+						exception = ex;
+					}
+					finally
+					{
+						dialog?.Close();
+					}
+				};
+
+				progressDialog.ShowDialog();
+			}
+
+			if (exception != null)
+			{
+				ExceptionDispatchInfo.Capture(exception).Throw();
+			}
+
+			return result;
+		}
+
+		private IDictionary<int, ICollection<ManagedFeature>> GenerateFeatures(
+			ManagedPlugin plugin,
+			float[] fSampleData,
+			IProgress<(int Value, bool IsFinalizing)> progress)
+		{
+			IDictionary<int, ICollection<ManagedFeature>> retVal =
 				new ConcurrentDictionary<int, ICollection<ManagedFeature>>();
 
-			BeatsAndBarsProgress progressDlg = new BeatsAndBarsProgress();
-			if (showProgress)
-			{
-				progressDlg.Show();	
-			}
-			
 			int stepSize = plugin.GetPreferredStepSize();
 
 			uint frequency = (uint)m_audioModule.Frequency;
@@ -52,7 +105,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				     j += stepSize)
 				{
 					var progressVal = (j / (double)fSampleData.Length) * 100.0;
-					progressDlg.UpdateProgress((int)progressVal);
+					progress?.Report(((int)progressVal, false));
 
 					Array.Copy(fSampleData, j, fSamples, 0, fSamples.Length);
 					plugin.Process(fSamples,
@@ -64,8 +117,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				plugin.Process(fSamples,
 						ManagedRealtime.frame2RealTime(j, (uint)m_audioModule.Frequency));
 
-				progressDlg.Close();
-
+				progress?.Report((100, true));
 				retVal = plugin.GetRemainingFeatures();	
 			}
 
