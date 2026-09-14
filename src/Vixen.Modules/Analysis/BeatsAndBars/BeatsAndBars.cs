@@ -11,6 +11,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 {
 	public class BeatsAndBars : AnalysisModuleInstanceBase
 	{
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		private ManagedPlugin m_plugin;
 		private IDictionary<int, ICollection<ManagedFeature>> m_featureSet;
 		private Audio m_audioModule;
@@ -94,6 +96,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				new ConcurrentDictionary<int, ICollection<ManagedFeature>>();
 
 			int stepSize = plugin.GetPreferredStepSize();
+			int processedBlockCount = 0;
 
 			uint frequency = (uint)m_audioModule.Frequency;
 			if (frequency != 0)
@@ -110,18 +113,44 @@ namespace VixenModules.Analysis.BeatsAndBars
 					Array.Copy(fSampleData, j, fSamples, 0, fSamples.Length);
 					plugin.Process(fSamples,
 							ManagedRealtime.frame2RealTime(j, (uint)m_audioModule.Frequency));
+					processedBlockCount++;
 				}
 
 				Array.Clear(fSamples, 0, fSamples.Length);
 				Array.Copy(fSampleData, j, fSamples, 0, fSampleData.Length - j);
 				plugin.Process(fSamples,
 						ManagedRealtime.frame2RealTime(j, (uint)m_audioModule.Frequency));
+				processedBlockCount++;
 
 				progress?.Report((100, true));
-				retVal = plugin.GetRemainingFeatures();	
+				retVal = plugin.GetRemainingFeatures();
+				LogFeatureSet(processedBlockCount, retVal);
 			}
 
 			return retVal;
+		}
+
+		private static void LogFeatureSet(int processedBlockCount, IDictionary<int, ICollection<ManagedFeature>> featureSet)
+		{
+			var missingOutputs = Enumerable.Range(0, 4)
+				.Where(outputIndex => !featureSet.ContainsKey(outputIndex))
+				.ToArray();
+			var featureCounts = string.Join(", ", featureSet
+				.OrderBy(output => output.Key)
+				.Select(output => $"{output.Key}={output.Value.Count}"));
+
+			Logging.Info(
+				"Beat analysis processed {ProcessedBlockCount} audio blocks and returned feature counts: {FeatureCounts}.",
+				processedBlockCount,
+				featureCounts);
+
+			if (missingOutputs.Length > 0)
+			{
+				Logging.Warn(
+					"Beat analysis did not return the expected output indexes: {MissingOutputIndexes}. Returned feature counts: {FeatureCounts}.",
+					string.Join(", ", missingOutputs),
+					featureCounts);
+			}
 		}
 
 		private void RemoveDuplicateMarks(ref MarkCollection mcOrig, List<MarkCollection> otherCollections)
@@ -298,7 +327,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 		private BeatBarPreviewData GeneratePreviewData()
 		{
 			BeatBarPreviewData previewData = new BeatBarPreviewData(1);
-			QMBarBeatTrack plugin = new QMBarBeatTrack(m_audioModule.Frequency);
+			using QMBarBeatTrack plugin = new QMBarBeatTrack(m_audioModule.Frequency);
 			plugin.SetParameter("bpb", 4);
 
 			plugin.Initialise(1,
@@ -391,38 +420,45 @@ namespace VixenModules.Analysis.BeatsAndBars
 			if (m_audioModule.Channels != 0)
 			{
 				m_plugin = new QMBarBeatTrack(m_audioModule.Frequency);
-
-				m_bSamples = m_audioModule.GetRawAudioSamples();
-				m_fSamplesAll = new float[m_bSamples.Length / m_audioModule.BytesPerSample];
-				m_fSamplesPreview = new float[(int)(m_audioModule.Frequency * PREVIEW_TIME)];
-
-				int dataStep = m_audioModule.BytesPerSample;
-
-				for (int j = 0, sampleNum = 0; j < m_bSamples.Length; j += dataStep, sampleNum++)
+				try
 				{
-					m_fSamplesAll[sampleNum] = dataStep == 2 ?
-						BitConverter.ToInt16(m_bSamples, j) : BitConverter.ToInt32(m_bSamples, j);
+					m_bSamples = m_audioModule.GetRawAudioSamples();
+					m_fSamplesAll = new float[m_bSamples.Length / m_audioModule.BytesPerSample];
+					m_fSamplesPreview = new float[(int)(m_audioModule.Frequency * PREVIEW_TIME)];
+
+					int dataStep = m_audioModule.BytesPerSample;
+
+					for (int j = 0, sampleNum = 0; j < m_bSamples.Length; j += dataStep, sampleNum++)
+					{
+						m_fSamplesAll[sampleNum] = dataStep == 2 ?
+							BitConverter.ToInt16(m_bSamples, j) : BitConverter.ToInt32(m_bSamples, j);
+					}
+
+					Array.Copy(m_fSamplesAll,
+								m_fSamplesPreview,
+								(int)Math.Min((m_audioModule.Frequency * PREVIEW_TIME), m_fSamplesAll.Length));
+
+					BeatsAndBarsDialog bbSettings = new BeatsAndBarsDialog(m_audioModule);
+					bbSettings.PreviewData = GeneratePreviewData();
+					bbSettings.MarkCollectionList = markCollection.ToList();
+
+					DialogResult result = bbSettings.ShowDialog();
+					if (result == DialogResult.OK)
+					{
+						m_plugin.SetParameter("bpb", bbSettings.Settings.BeatsPerBar);
+
+						m_plugin.Initialise(1,
+							(uint)m_plugin.GetPreferredStepSize(),
+							(uint)m_plugin.GetPreferredBlockSize());
+
+						BuildMarkCollections(markCollection, bbSettings.Settings);
+					}
 				}
-
-				Array.Copy(m_fSamplesAll,
-							m_fSamplesPreview,
-							(int)Math.Min((m_audioModule.Frequency * PREVIEW_TIME), m_fSamplesAll.Length));
-
-				BeatsAndBarsDialog bbSettings = new BeatsAndBarsDialog(m_audioModule);
-				bbSettings.PreviewData = GeneratePreviewData();
-				bbSettings.MarkCollectionList = markCollection.ToList();
-
-				DialogResult result = bbSettings.ShowDialog();
-				if (result == DialogResult.OK)
+				finally
 				{
-					m_plugin.SetParameter("bpb", bbSettings.Settings.BeatsPerBar);
-
-					m_plugin.Initialise(1,
-						(uint)m_plugin.GetPreferredStepSize(),
-						(uint)m_plugin.GetPreferredBlockSize());
-
-					BuildMarkCollections(markCollection, bbSettings.Settings);
-				}				
+					m_plugin.Dispose();
+					m_plugin = null;
+				}
 			}
 
 			if (markCollection.Any() && !markCollection.Any(x => x.IsDefault))
