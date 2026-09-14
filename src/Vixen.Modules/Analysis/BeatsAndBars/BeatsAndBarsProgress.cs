@@ -2,10 +2,10 @@
 
 namespace VixenModules.Analysis.BeatsAndBars
 {
-	public partial class BeatsAndBarsProgress : BaseForm
+	public sealed partial class BeatsAndBarsProgress : BaseForm
 	{
-		private int m_lastValue = -1;
-		private bool m_isFinalizing;
+		private int _lastValue = -1;
+		private bool _isFinalizing;
 		public BeatsAndBarsProgress()
 		{
 			InitializeComponent();
@@ -15,28 +15,28 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		public void UpdateProgress(int value)
 		{
-			if (m_isFinalizing)
+			if (_isFinalizing)
 			{
 				return;
 			}
 
-			if (value != m_lastValue)
+			if (value != _lastValue)
 			{
 				progressBar1.Value = value;
-				percentLabel.Text = value.ToString() + "%";
+				percentLabel.Text = value + @"%";
 
-				foreach (Control ctrl in this.Controls)
+				foreach (Control ctrl in Controls)
 				{
 					ctrl.Refresh();
 				}
 
-				m_lastValue = value;
+				_lastValue = value;
 			}
 		}
 
 		internal void SetFinalizing()
 		{
-			m_isFinalizing = true;
+			_isFinalizing = true;
 			generateLabel.Text = "Finalizing beat analysis...";
 			percentLabel.Visible = false;
 			progressBar1.Style = ProgressBarStyle.Marquee;

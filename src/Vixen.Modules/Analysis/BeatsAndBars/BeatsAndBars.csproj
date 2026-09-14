@@ -2,6 +2,7 @@
 
   <PropertyGroup>
 	  <AssemblyName>Module.Analysis.BeatsAndBars</AssemblyName>
+      <RootNamespace>VixenModules.Analysis.BeatsAndBars</RootNamespace>
 	  <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
