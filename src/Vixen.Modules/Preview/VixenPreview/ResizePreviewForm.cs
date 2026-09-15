@@ -54,7 +54,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
-			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Background);
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.PreviewBackground);
 		}
 
         private void pictureBoxLock_Click(object sender, EventArgs e)

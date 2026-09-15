@@ -9,46 +9,46 @@ namespace Common.VixenHelp
 		public enum HelpStrings
         {
             [Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-icicles/")]
-            Preview_Icicle,
+            PreviewIcicle,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-mega-tree/")]
-			Preview_MegaTree,
+			PreviewMegaTree,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-star/")]
-			Preview_Star,
+			PreviewStar,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/preview-linking-elements/")]
-			Preview_LinkElements,
+			PreviewLinkElements,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/preview-main-screen/#background")]
-			Preview_Background,
+			PreviewBackground,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/preview-main-screen/")]
-			Preview_Main,
+			PreviewMain,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/preview-basic-shapes/")]
-			Preview_BasicShapes,
+			PreviewBasicShapes,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-net/")]
-			Preview_Net,
+			PreviewNet,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-arch/")]
-			Preview_Arch,
+			PreviewArch,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-candy-cane/")]
-			Preview_Cane,
+			PreviewCane,
 
 			[Description("http://www.vixenlights.com/docs/")] // Deprecated: No longer documented
-			Preview_CustomShape,
+			PreviewCustomShape,
 
 			[Description("https://www.vixenlights.com/docs/usage/scheduler/")]
-			Scheduler_Main,
+			SchedulerMain,
 
 			[Description("https://www.vixenlights.com/docs/usage/scheduler/schedule-show-editor/")]
-			Show_Editor,
+			ShowEditor,
 
 			[Description("https://www.vixenlights.com/docs/usage/display-setup/")]
-			Setup_Main,
+			SetupMain,
 
 	        [Description("https://www.vixenlights.com/docs/usage/display-setup/display-patching/")]
 	        Patching,

@@ -27,7 +27,7 @@ namespace VixenModules.App.SuperScheduler
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
-			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Scheduler_Main);
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.SchedulerMain);
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)

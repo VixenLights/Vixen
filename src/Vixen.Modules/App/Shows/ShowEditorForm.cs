@@ -63,7 +63,7 @@ namespace VixenModules.App.Shows
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
-			VixenHelp.ShowHelp(VixenHelp.HelpStrings.Show_Editor);
+			VixenHelp.ShowHelp(VixenHelp.HelpStrings.ShowEditor);
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
