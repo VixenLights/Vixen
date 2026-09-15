@@ -776,7 +776,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void templateHelpToolStripMenuItem_Click(object sender, EventArgs e)
 	    {
-		    Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_CustomShape);
+		    Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.PreviewCustomShape);
 	    }
 
 		#endregion // Templates
@@ -1055,7 +1055,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.PreviewMain);
 		}
 
 	    private void vixenYouTubeChannelToolStripMenuItem_Click(object sender, EventArgs e)

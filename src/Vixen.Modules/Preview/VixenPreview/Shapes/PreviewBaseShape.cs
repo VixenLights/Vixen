@@ -465,7 +465,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				setupControl = new PreviewArchSetupControl((PreviewLightBaseShape)this);
 			}
 			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMegaTree") {
-				setupControl = new PreviewShapeBaseSetupControl(this);
+				setupControl = new PreviewMegaTreeSetupControl((PreviewLightBaseShape)this);
 			}
 			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewTriangle") {
 				setupControl = new PreviewShapeBaseSetupControl(this);

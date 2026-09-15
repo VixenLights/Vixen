@@ -32,7 +32,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
-			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_CustomShape);
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.PreviewCustomShape);
 		}
 
 		private void PreviewCustomSetupControl_Load(object sender, EventArgs e)

@@ -8,56 +8,59 @@ namespace Common.VixenHelp
 	{
 		public enum HelpStrings
         {
-            [Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/icicles/")]
-            Preview_Icicle,
+            [Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-icicles/")]
+            PreviewIcicle,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/mega-tree/")]
-			Preview_MegaTree,
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-mega-tree/")]
+			PreviewMegaTree,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/star/")]
-			Preview_Star,
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-star/")]
+			PreviewStar,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/how-to/linking-elements/")]
-			Preview_LinkElements,
+			[Description("https://www.vixenlights.com/docs/usage/preview/preview-linking-elements/")]
+			PreviewLinkElements,
 
 			[Description("https://www.vixenlights.com/docs/usage/preview/preview-main-screen/#background")]
-			Preview_Background,
+			PreviewBackground,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/main-preview-screen/")]
-			Preview_Main,
+			[Description("https://www.vixenlights.com/docs/usage/preview/preview-main-screen/")]
+			PreviewMain,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/basic-shapes/")]
-			Preview_BasicShapes,
+			[Description("https://www.vixenlights.com/docs/usage/preview/preview-basic-shapes/")]
+			PreviewBasicShapes,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/net/")]
-			Preview_Net,
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-net/")]
+			PreviewNet,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/arch/")]
-			Preview_Arch,
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-arch/")]
+			PreviewArch,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/candy-cane/")]
-			Preview_Cane,
+			[Description("https://www.vixenlights.com/docs/usage/preview/smart-objects/preview-candy-cane/")]
+			PreviewCane,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/custom-props/")] // TODO: Broken Link
-			Preview_CustomShape,
+			[Description("http://www.vixenlights.com/docs/")] // Deprecated: No longer documented
+			PreviewCustomShape,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/scheduling-a-show/show-scheduler/")]
-			Scheduler_Main,
+			[Description("https://www.vixenlights.com/docs/usage/scheduler/")]
+			SchedulerMain,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/scheduling-a-show/show-editor/")]
-			Show_Editor,
+			[Description("https://www.vixenlights.com/docs/usage/scheduler/schedule-show-editor/")]
+			ShowEditor,
 
-			[Description("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/")]
-			Setup_Main,
+			[Description("https://www.vixenlights.com/docs/usage/display-setup/")]
+			SetupMain,
 
-	        [Description("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/link-elements-to-controllers/")]
+	        [Description("https://www.vixenlights.com/docs/usage/display-setup/display-patching/")]
 	        Patching,
 
 			[Description("https://www.youtube.com/user/VixenLightsSoftware")]
 	        YouTubeChannel,
 
-	        [Description("http://www.vixenlights.com/vixen-3-documentation/sequencer/")]
-	        Sequencer
+	        [Description("https://www.vixenlights.com/docs/usage/sequencer/")]
+	        Sequencer,
+	        
+	        [Description("https://www.vixenlights.com/docs/")]
+	        Documentation
 		}
 		
 		public static void ShowHelp(HelpStrings helpString)
