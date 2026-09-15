@@ -1,18 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-		<PropertyGroup>
-			<RootNamespace>VixenModules.OutputFilter.CoarseFineBreakdown</RootNamespace>
-			<UseWindowsForms>true</UseWindowsForms>
-		</PropertyGroup>
+	<PropertyGroup>
+		<RootNamespace>VixenModules.OutputFilter.CoarseFineBreakdown</RootNamespace>
+		<UseWindowsForms>true</UseWindowsForms>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
 
-		<ItemGroup>
-				<PackageReference Include="NLog" />
-		</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Catel.MVVM" />
+		<PackageReference Include="NLog" />
+	</ItemGroup>
 
-		<ItemGroup>
-				<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
-				<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
-				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
-		</ItemGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Vixen.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Vixen.Common\Controls\Controls.csproj" />
+		<ProjectReference Include="..\..\..\Vixen.Common\Resources\Resources.csproj" />
+		<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
+		<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+	</ItemGroup>
 
 </Project>

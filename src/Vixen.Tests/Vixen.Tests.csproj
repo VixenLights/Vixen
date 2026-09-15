@@ -33,6 +33,7 @@
 		<ProjectReference Include="..\Vixen.Modules\App\Marks\Marks.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Analysis\BeatsAndBars\BeatsAndBars.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Analysis\QMLibrary\QMLibrary.vcxproj" />
+		<ProjectReference Include="..\Vixen.Modules\OutputFilter\CoarseFineBreakdown\CoarseFineBreakdown.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Chase\Chase.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Dissolve\Dissolve.csproj" />
 		<ProjectReference Include="..\Vixen.Modules\Effect\Fire\Fire.csproj" />
