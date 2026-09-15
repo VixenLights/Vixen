@@ -385,43 +385,57 @@ namespace Common.Controls.Timeline
 			return grid.MoveActiveRow(direction);
 		}
 
-		// Zoom in or out (ie. change the visible time span): give a scale < 1.0
-		// and it zooms in, > 1.0 and it zooms out.
+		/// <summary>
+		/// Changes the visible time span by the specified scale.
+		/// </summary>
+		/// <param name="scale">A factor less than one to zoom in or greater than one to zoom out.</param>
+		/// <remarks>
+		/// Rejects scales that would produce an unsupported resolution and shows the entire sequence when the requested
+		/// zoom-out exceeds its duration.
+		/// </remarks>
 		public void Zoom(double scale)
 		{
-			if (scale <= 0.0)
+			if (!TryGetZoomTimePerPixel(scale, out TimeSpan timePerPixel, out bool showsTotalTime))
 				return;
+
 			grid.BeginDraw();
-			if (VisibleTimeSpan.Scale(scale) > TotalTime) {
-				var t = TimeSpan.FromTicks(TotalTime.Ticks / grid.Width);
-				if(t.Ticks > 2000)
-				{
-					TimePerPixel = t;
-					VisibleTimeStart = TimeSpan.Zero;
-				}
+			TimePerPixel = timePerPixel;
+			if (showsTotalTime)
+			{
+				VisibleTimeStart = TimeSpan.Zero;
 			}
-			else {
-				var t = TimePerPixel.Scale(scale);
-				if (t.Ticks > 2000)
-				{
-					TimePerPixel = t;
-					if (VisibleTimeEnd >= TotalTime)
-						VisibleTimeStart = TotalTime - VisibleTimeSpan;
-				} 
-				
+			else if (VisibleTimeEnd >= TotalTime)
+			{
+				VisibleTimeStart = TotalTime - VisibleTimeSpan;
 			}
 			grid.EndDraw();
-			}
+		}
 
+		/// <summary>
+		/// Changes the visible time span by the specified scale while retaining the time beneath the mouse position.
+		/// </summary>
+		/// <param name="scale">A factor less than one to zoom in or greater than one to zoom out.</param>
+		/// <param name="mousePosition">The cursor position in the timeline control's client coordinates.</param>
+		/// <remarks>
+		/// Does nothing when the requested scale is unsupported. When zooming out would exceed the sequence duration,
+		/// shows the entire sequence from time zero instead of calculating a pointer-focused offset.
+		/// </remarks>
 		public void ZoomTime(double scale, Point mousePosition)
 		{
-			if (scale <= 0.0)
+			if (!TryGetZoomTimePerPixel(scale, out TimeSpan timePerPixel, out bool showsTotalTime))
 				return;
+
 			grid.BeginDraw();
+			TimeSpan originalTimeSpan = VisibleTimeSpan;
+			TimePerPixel = timePerPixel;
+			if (showsTotalTime)
+			{
+				VisibleTimeStart = TimeSpan.Zero;
+				grid.EndDraw();
+				return;
+			}
 
 			decimal gridPixelWidth = splitContainer.Panel2.Width;
-			TimeSpan originalTimeSpan = VisibleTimeSpan;
-			TimePerPixel = TimePerPixel.Scale(scale);
 			TimeSpan newTimeSpan = VisibleTimeSpan;
 			decimal timeSpanOffset = ((100 / gridPixelWidth) * (mousePosition.X - splitContainer.SplitterDistance) / 100);
 			VisibleTimeStart = scale > 1
@@ -429,6 +443,26 @@ namespace Common.Controls.Timeline
 				: VisibleTimeStart + (PixelsToTime((int)(timeToPixels(originalTimeSpan - newTimeSpan) * (float)timeSpanOffset)));
 
 			grid.EndDraw();
+		}
+
+		private bool TryGetZoomTimePerPixel(double scale, out TimeSpan timePerPixel, out bool showsTotalTime)
+		{
+			timePerPixel = TimeSpan.Zero;
+			showsTotalTime = false;
+			if (scale <= 0.0)
+				return false;
+
+			if (VisibleTimeSpan.Scale(scale) > TotalTime)
+			{
+				timePerPixel = TimeSpan.FromTicks(TotalTime.Ticks / grid.Width);
+				showsTotalTime = true;
+			}
+			else
+			{
+				timePerPixel = TimePerPixel.Scale(scale);
+			}
+
+			return timePerPixel.Ticks > 2000;
 		}
 
 		public void ZoomRows(double scale)
