@@ -16,6 +16,7 @@ The sequencer currently honors its horizontal zoom limits when users choose a to
 - [x] (2026-09-15 00:33Z) Added Jira comment 40485 with the x64 build and focused-test results.
 - [x] (2026-09-15 00:40Z) Moved timeline zoom-boundary tests into the dedicated `TimelineZoomTests` class; Marks Bar tests now cover event routing only.
 - [x] (2026-09-15 00:44Z) Rebuilt the x64 test target and passed all 15 combined timeline-zoom and Marks Bar wheel tests after the reorganization.
+- [x] (2026-09-15 00:35Z) Recorded user-provided full-suite and manual-validation evidence in Jira comment 40486.
 
 ## Surprises & Discoveries
 
@@ -37,7 +38,7 @@ The sequencer currently honors its horizontal zoom limits when users choose a to
 
 ## Outcomes & Retrospective
 
-The implementation now shares a single private zoom-validity calculation between toolbar and pointer-focused zoom. Ctrl-wheel no longer applies rejected scales, maximum zoom-out resets to zero like the toolbar, and valid pointer-focused zoom retains its established offset behavior. The behavior tests are owned by `TimelineZoomTests`, while the Marks Bar tests are limited to event-routing coverage. VIX-4001 has the finalized user-facing description and validation comment 40485. The x64 test build succeeded and all 15 focused Marks Bar mouse-wheel tests passed before this non-behavioral test reorganization; unrelated existing nullable-reference warnings were reported during the build.
+The implementation now shares a single private zoom-validity calculation between toolbar and pointer-focused zoom. Ctrl-wheel no longer applies rejected scales, maximum zoom-out resets to zero like the toolbar, and valid pointer-focused zoom retains its established offset behavior. The behavior tests are owned by `TimelineZoomTests`, while the Marks Bar tests are limited to event-routing coverage. VIX-4001 has the finalized user-facing description and validation comments 40485 and 40486. The x64 test build and all 939 unit tests passed. Manual testing confirmed the Time + and Time - buttons and Ctrl+mouse-wheel zoom share the same limits.
 
 ## Context and Orientation
 
@@ -121,6 +122,12 @@ Validation evidence:
     dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="C:\Dev\Vixen\\" --filter "FullyQualifiedName~TimelineZoomTests|FullyQualifiedName~MarksBarMouseWheelTests"
     Passed! - Failed: 0, Passed: 15, Skipped: 0, Total: 15.
 
+Final validation evidence provided by the user:
+
+    Full Vixen.Tests suite: 939 passed.
+    Manual testing: Time + and Time - buttons and Ctrl+mouse-wheel zoom
+    enforce identical limits.
+
 ## Interfaces and Dependencies
 
 Use only existing .NET WinForms and Vixen timeline types. The new shared routine remains a private `TimelineControl` helper; it must not introduce a public API, setting, or configuration value. `Zoom(double)` and `ZoomTime(double, Point)` keep their existing signatures. The tests use existing xUnit, `Xunit.WinFormsFactAttribute`, `System.Drawing.Point`, and `System.Windows.Forms.Keys` dependencies.
@@ -134,3 +141,5 @@ Plan revision note (2026-09-15): Completed the Jira closeout loop. Comment 40485
 Plan revision note (2026-09-15): Reorganized test ownership at the user's direction. Timeline zoom behavior is now tested directly through `TimelineZoomTests`; `MarksBarMouseWheelTests` retains only its narrow event-routing responsibility.
 
 Plan revision note (2026-09-15): Rebuilt the x64 test target after the test reorganization and verified all 15 combined timeline zoom and Marks Bar routing tests pass. The build emitted only existing nullable-reference warnings in unrelated tests.
+
+Plan revision note (2026-09-15): Recorded final user-provided validation evidence. Jira comment 40486 reports all 939 unit tests passing and manual confirmation that button and Ctrl-wheel zoom limits match.
