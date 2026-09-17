@@ -12,7 +12,7 @@ VIX-4002 fixes a sequencer freeze that occurs when an audio-backed loop reaches 
 - [x] (2026-09-17 09:53-05:00) Updated VIX-4002 with the finalized user-facing requirements, acceptance criteria, and validation plan.
 - [x] (2026-09-17 10:02-05:00) Added deterministic executor and audio-output ownership regression tests; the focused pre-fix baseline reports 7 passed and 5 expected failures.
 - [x] (2026-09-17 10:08-05:00) Removed executor position polling and implemented guarded stop-seek-start transitions with timing-advance gating; all 10 focused executor lifecycle tests pass.
-- [ ] Make CoreAudioPlayer natural-stop cleanup conditional on the originating output instance.
+- [x] (2026-09-17 10:19-05:00) Made CoreAudioPlayer natural-stop cleanup conditional on the originating output instance; the two focused ownership tests pass.
 - [ ] Run focused and full x64 validation, perform manual loop testing, update VIX-4002, and record final evidence here.
 
 ## Surprises & Discoveries
@@ -41,6 +41,9 @@ VIX-4002 fixes a sequencer freeze that occurs when an audio-backed loop reaches 
 - Observation: The existing executor generation checks work unchanged with the non-blocking loop transition.
   Evidence: The focused executor suite passes its stale Stop/Dispose callback tests alongside the new start, full-range, partial-range, ordering, gate, and zero-position end tests (10 passed, 0 failed).
 
+- Observation: Detaching the event and clearing `_soundOut` before disposal prevents a synchronous or delayed callback during disposal from affecting a replacement output.
+  Evidence: `CleanupSoundOut` now captures the matching output and releases `_soundOutLock` before invoking `Dispose`; the focused ownership tests report 2 passed, 0 failed.
+
 ## Decision Log
 
 - Decision: Treat every loop boundary as an explicit stop, seek, then start lifecycle transition.
@@ -67,9 +70,13 @@ VIX-4002 fixes a sequencer freeze that occurs when an audio-backed loop reaches 
   Rationale: A constructor-free CoreAudioPlayer test can set only its lock and current output then invoke the real private callback with fake `IWavePlayer` instances. This keeps Milestone 2 test-only and avoids expanding AudioPlayer's production surface before the ownership repair is implemented.
   Date/Author: 2026-09-17 / Codex
 
+- Decision: Keep `PlaybackEnded` notification timing unchanged while limiting only the cleanup target to the callback's sender.
+  Rationale: Existing consumers retain their completion notification behavior, while reference equality under the ownership lock ensures an obsolete output cannot dispose its replacement.
+  Date/Author: 2026-09-17 / Codex
+
 ## Outcomes & Retrospective
 
-Milestones 1 through 3 are complete: VIX-4002 records the agreed user-facing behavior, the regression suite covers the defect boundaries, and SequenceExecutor now restarts without position polling while deferring end detection until timing advances. CoreAudioPlayer ownership cleanup and final validation remain.
+Milestones 1 through 4 are complete: VIX-4002 records the agreed user-facing behavior, the regression suite covers the defect boundaries, SequenceExecutor now restarts without position polling while deferring end detection until timing advances, and CoreAudioPlayer rejects stale cleanup callbacks. Final full validation, manual testing, and Jira close-out remain.
 
 ## Context and Orientation
 
@@ -230,6 +237,10 @@ Add real validation transcripts here during implementation, for example:
     Full no-build Vixen.Tests: Passed: <actual>, Failed: 0.
     Manual loop exercise: full range <range> repeated <count> times; partial range <range> repeated <count> times; no freeze, normal non-loop end, Stop/close responsive.
 
+Milestone 4 validation (2026-09-17): `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded with pre-existing warnings and no errors. The prescribed no-build ownership filter passed 2 of 2 tests with no failures:
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="$(Get-Location)/" --filter "FullyQualifiedName~CoreAudioPlayerOwnershipTests"
+
 ## Interfaces and Dependencies
 
 Keep the public interfaces `Vixen.Execution.ISequenceExecutor`, `Vixen.Module.Timing.ITiming`, and `Common.AudioPlayer.IPlayer` unchanged. Continue using `SynchronizationContext.Post`, `HighResolutionTimer`, `IWavePlayer`, xUnit v3, and Moq; add no packages.
@@ -263,3 +274,5 @@ Plan revision note (2026-09-17): Completed Milestone 1. Replaced VIX-4002's brie
 Plan revision note (2026-09-17): Completed Milestone 2. Added the AudioPlayer test reference, seven new deterministic executor/audio ownership regressions, and configurable test timing/queued-dispatch helpers. The x64 `Vixen_Tests` build succeeded; the focused pre-fix baseline ran 12 tests with 7 passing and 5 expected failures. No production behavior was changed.
 
 Plan revision note (2026-09-17): Completed Milestone 3. SequenceExecutor now removes both position-wait loops, resets a lifecycle-lock-protected timing-advance gate before initial starts and valid loop restarts, and restarts looping timing in Stop, Position, Start order. It retains the VIX-3991 generation guards and zero-position natural-end rule after advancement. The x64 `Vixen_Tests` build succeeded and all 10 focused executor lifecycle tests passed.
+
+Plan revision note (2026-09-17): Completed Milestone 4. CoreAudioPlayer now retains unconditional owner cleanup for explicit lifecycle actions but makes natural-stop cleanup reference the sender instance. It detaches and clears the matching output under its ownership lock, then disposes it outside the lock. The x64 `Vixen_Tests` build succeeded and both focused ownership tests passed.
