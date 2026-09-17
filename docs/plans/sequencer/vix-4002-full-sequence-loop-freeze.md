@@ -10,7 +10,7 @@ VIX-4002 fixes a sequencer freeze that occurs when an audio-backed loop reaches 
 
 - [x] (2026-09-17) Read `.agents/PLANS.md`, the VIX-4002 design handoff, current executor and audio-player implementations, existing VIX-3991 lifecycle tests, project references, and the prescribed test workflow.
 - [x] (2026-09-17 09:53-05:00) Updated VIX-4002 with the finalized user-facing requirements, acceptance criteria, and validation plan.
-- [ ] Add deterministic executor and audio-output ownership regression tests that fail against the pre-fix behavior.
+- [x] (2026-09-17 10:02-05:00) Added deterministic executor and audio-output ownership regression tests; the focused pre-fix baseline reports 7 passed and 5 expected failures.
 - [ ] Remove executor position polling; implement guarded stop-seek-start loop transitions and timing-advance gating.
 - [ ] Make CoreAudioPlayer natural-stop cleanup conditional on the originating output instance.
 - [ ] Run focused and full x64 validation, perform manual loop testing, update VIX-4002, and record final evidence here.
@@ -31,6 +31,12 @@ VIX-4002 fixes a sequencer freeze that occurs when an audio-backed loop reaches 
 
 - Observation: `Vixen.Tests` currently references `BaseSequence` but not `AudioPlayer`; no CoreAudioPlayer ownership tests exist.
   Evidence: `src/Vixen.Tests/Vixen.Tests.csproj` includes `BaseSequence.csproj`, while searching `src/Vixen.Tests` finds no CoreAudioPlayer or `IWavePlayer` tests.
+
+- Observation: The new tests reproduce all intended pre-fix failures without a real UI, audio device, media file, or timer race.
+  Evidence: After the x64 `Vixen_Tests` build, the focused test filter ran 12 tests in one second: 7 passed and 5 failed. The failures are the initial timing stall, full-range restart stall, full-range timing-advance gate, partial-range restart stall, and stale output cleanup; the existing VIX-3991 Stop/Dispose callback tests remain passing.
+
+- Observation: Reflection can exercise CoreAudioPlayer's private ownership callback using an uninitialized instance and fake `IWavePlayer` objects, so an internal production test seam is unnecessary.
+  Evidence: `CoreAudioPlayerOwnershipTests` initializes only `_soundOutLock` and `_soundOut`, invokes `PlaybackDeviceOnPlaybackStopped`, and the stale-sender assertion fails against the current implementation because it clears/disposes the replacement.
 
 ## Decision Log
 
@@ -54,9 +60,13 @@ VIX-4002 fixes a sequencer freeze that occurs when an audio-backed loop reaches 
   Rationale: The regression is object ownership, so fake `IWavePlayer` instances must deterministically raise late callbacks. Keep this seam internal and add `InternalsVisibleTo` only if necessary; do not expose it through `IPlayer`.
   Date/Author: 2026-09-17 / Codex
 
+- Decision: Use the repository's existing reflection-based private-boundary test convention instead of adding an internal AudioPlayer seam.
+  Rationale: A constructor-free CoreAudioPlayer test can set only its lock and current output then invoke the real private callback with fake `IWavePlayer` instances. This keeps Milestone 2 test-only and avoids expanding AudioPlayer's production surface before the ownership repair is implemented.
+  Date/Author: 2026-09-17 / Codex
+
 ## Outcomes & Retrospective
 
-Milestone 1 is complete: VIX-4002 now records the agreed user-facing behavior and acceptance criteria. Implementation has not begun. This plan defines the required lifecycle behavior, ownership rule, deterministic regressions, and validation evidence for the remaining work.
+Milestones 1 and 2 are complete: VIX-4002 records the agreed user-facing behavior, and the deterministic regression suite exposes the current stalls and stale-output cleanup defect. Production implementation has not begun. This plan defines the required lifecycle behavior, ownership rule, and validation evidence for the remaining work.
 
 ## Context and Orientation
 
@@ -246,3 +256,5 @@ Out of scope: redesigning audio-device selection, changing NAudio packages, modi
 Plan revision note (2026-09-17): Created this VIX-4002 ExecPlan from the handoff and current source review. No production code, tests, Jira issue, or existing untracked design review was modified.
 
 Plan revision note (2026-09-17): Completed Milestone 1. Replaced VIX-4002's brief report with the finalized user-facing Summary, Scope, Acceptance Criteria, and validation approach. No production or test code was changed, and no interim Jira comment was added.
+
+Plan revision note (2026-09-17): Completed Milestone 2. Added the AudioPlayer test reference, seven new deterministic executor/audio ownership regressions, and configurable test timing/queued-dispatch helpers. The x64 `Vixen_Tests` build succeeded; the focused pre-fix baseline ran 12 tests with 7 passing and 5 expected failures. No production behavior was changed.
