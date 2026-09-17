@@ -11,7 +11,7 @@ VIX-4002 fixes a sequencer freeze that occurs when an audio-backed loop reaches 
 - [x] (2026-09-17) Read `.agents/PLANS.md`, the VIX-4002 design handoff, current executor and audio-player implementations, existing VIX-3991 lifecycle tests, project references, and the prescribed test workflow.
 - [x] (2026-09-17 09:53-05:00) Updated VIX-4002 with the finalized user-facing requirements, acceptance criteria, and validation plan.
 - [x] (2026-09-17 10:02-05:00) Added deterministic executor and audio-output ownership regression tests; the focused pre-fix baseline reports 7 passed and 5 expected failures.
-- [ ] Remove executor position polling; implement guarded stop-seek-start loop transitions and timing-advance gating.
+- [x] (2026-09-17 10:08-05:00) Removed executor position polling and implemented guarded stop-seek-start transitions with timing-advance gating; all 10 focused executor lifecycle tests pass.
 - [ ] Make CoreAudioPlayer natural-stop cleanup conditional on the originating output instance.
 - [ ] Run focused and full x64 validation, perform manual loop testing, update VIX-4002, and record final evidence here.
 
@@ -37,6 +37,9 @@ VIX-4002 fixes a sequencer freeze that occurs when an audio-backed loop reaches 
 
 - Observation: Reflection can exercise CoreAudioPlayer's private ownership callback using an uninitialized instance and fake `IWavePlayer` objects, so an internal production test seam is unnecessary.
   Evidence: `CoreAudioPlayerOwnershipTests` initializes only `_soundOutLock` and `_soundOut`, invokes `PlaybackDeviceOnPlaybackStopped`, and the stale-sender assertion fails against the current implementation because it clears/disposes the replacement.
+
+- Observation: The existing executor generation checks work unchanged with the non-blocking loop transition.
+  Evidence: The focused executor suite passes its stale Stop/Dispose callback tests alongside the new start, full-range, partial-range, ordering, gate, and zero-position end tests (10 passed, 0 failed).
 
 ## Decision Log
 
@@ -66,7 +69,7 @@ VIX-4002 fixes a sequencer freeze that occurs when an audio-backed loop reaches 
 
 ## Outcomes & Retrospective
 
-Milestones 1 and 2 are complete: VIX-4002 records the agreed user-facing behavior, and the deterministic regression suite exposes the current stalls and stale-output cleanup defect. Production implementation has not begun. This plan defines the required lifecycle behavior, ownership rule, and validation evidence for the remaining work.
+Milestones 1 through 3 are complete: VIX-4002 records the agreed user-facing behavior, the regression suite covers the defect boundaries, and SequenceExecutor now restarts without position polling while deferring end detection until timing advances. CoreAudioPlayer ownership cleanup and final validation remain.
 
 ## Context and Orientation
 
@@ -258,3 +261,5 @@ Plan revision note (2026-09-17): Created this VIX-4002 ExecPlan from the handoff
 Plan revision note (2026-09-17): Completed Milestone 1. Replaced VIX-4002's brief report with the finalized user-facing Summary, Scope, Acceptance Criteria, and validation approach. No production or test code was changed, and no interim Jira comment was added.
 
 Plan revision note (2026-09-17): Completed Milestone 2. Added the AudioPlayer test reference, seven new deterministic executor/audio ownership regressions, and configurable test timing/queued-dispatch helpers. The x64 `Vixen_Tests` build succeeded; the focused pre-fix baseline ran 12 tests with 7 passing and 5 expected failures. No production behavior was changed.
+
+Plan revision note (2026-09-17): Completed Milestone 3. SequenceExecutor now removes both position-wait loops, resets a lifecycle-lock-protected timing-advance gate before initial starts and valid loop restarts, and restarts looping timing in Stop, Position, Start order. It retains the VIX-3991 generation guards and zero-position natural-end rule after advancement. The x64 `Vixen_Tests` build succeeded and all 10 focused executor lifecycle tests passed.
