@@ -1,3 +1,34 @@
+Release Notes - Vixen 3
+
+
+Release Notes - Vixen 3 - 3.13u2 Build 
+
+** 15 issues resolved in this release. 
+
+** Bugs
+    * [VIX-2775] - Effect Editor Mark Collections ComboBox do not immediately refresh
+    * [VIX-3757] - Concurrent effect rendering race condition causing Null Reference Exception rendering a Wave effect
+    * [VIX-3765] - Collection modified error when using the web interface
+    * [VIX-3993] - Dropping a color on multiple of the same effects with a gradient prompts Gradient selector
+    * [VIX-3998] - Custom prop editor crashes attempting to move multiple elements
+    * [VIX-4001] - Ctrl + Mouse Wheel Zoom Limits
+    * [VIX-4002] - Sequencer hangs at the end when in loop mode
+
+** New Features
+    * [VIX-3970] - Add coarse fine filter rest state setting
+
+** Improvements
+    * [VIX-3992] - Ability to select which Mark timing collections to import
+    * [VIX-3994] - Add each element/group behavior to Fire effect
+    * [VIX-3995] - Effects that support using Mark Collections, the first collection should be auto selected
+    * [VIX-3996] - Only show preview type when more that one preview type is an option.
+    * [VIX-3997] - Automatically go into config mode on new preview windows
+    * [VIX-3999] - Update QM VAMP plugin
+    * [VIX-4000] - Update the urls in the Help project
+
+
+
+
 Release Notes - Vixen 3 - 3.13u1 Build 
 
 ** 12 issues resolved in this release. 
