@@ -17,6 +17,37 @@ namespace Vixen.Tests.Sequencer;
 public sealed class SequenceExecutorLifecycleTests
 {
 	private static readonly TimeSpan EndTime = TimeSpan.FromSeconds(1);
+	private static readonly TimeSpan PartialStartTime = TimeSpan.FromMilliseconds(250);
+	private static readonly TimeSpan PartialEndTime = TimeSpan.FromMilliseconds(750);
+	private static readonly TimeSpan DispatchTimeout = TimeSpan.FromMilliseconds(250);
+
+	/// <summary>
+	/// Verifies that an initial start returns promptly when timing remains at its configured start.
+	/// </summary>
+	[Fact]
+	public void Play_WhenTimingRemainsAtStart_ReturnsPromptly()
+	{
+		WithExecutor((executor, timing, _) =>
+		{
+			timing.AdvanceOnStart = false;
+
+			var playTask = Task.Run(() => executor.Play(TimeSpan.Zero, EndTime));
+			var completed = playTask.Wait(DispatchTimeout);
+
+			try
+			{
+				Assert.True(completed, "Initial playback blocked while timing remained at its start.");
+			}
+			finally
+			{
+				if (!completed)
+				{
+					timing.Advance(TimeSpan.FromMilliseconds(1));
+					playTask.Wait(DispatchTimeout);
+				}
+			}
+		});
+	}
 
 	/// <summary>
 	/// Verifies that a live looping sequence restarts when its queued natural-end callback is dispatched.
@@ -35,6 +66,112 @@ public sealed class SequenceExecutorLifecycleTests
 			Assert.Equal(2, timing.StartCount);
 			Assert.Equal(TimeSpan.FromMilliseconds(1), timing.Position);
 			Assert.Equal(1, restartCount);
+		});
+	}
+
+	/// <summary>
+	/// Verifies that a full-sequence restart remains responsive while timing reports zero and performs stop-seek-start.
+	/// </summary>
+	[Fact]
+	public void PlayLoop_WhenFullRangeRestartRemainsAtZero_ReturnsPromptlyAndUsesStopSeekStart()
+	{
+		WithExecutor((executor, timing, synchronizationContext) =>
+		{
+			var restartCount = 0;
+			executor.SequenceReStarted += (_, _) => restartCount++;
+			timing.AdvanceOnStart = true;
+
+			StartAndQueueNaturalEnd(executor, timing);
+			timing.AdvanceOnStart = false;
+			timing.ClearOperations();
+
+			var dispatchTask = Task.Run(synchronizationContext.DispatchSingle);
+			var completed = dispatchTask.Wait(DispatchTimeout);
+
+			try
+			{
+				Assert.True(completed, "Loop restart blocked while timing remained at zero.");
+			}
+			finally
+			{
+				if (!completed)
+				{
+					timing.Advance(TimeSpan.FromMilliseconds(1));
+					dispatchTask.Wait(DispatchTimeout);
+				}
+			}
+
+			Assert.Equal(["Stop", "Position:00:00:00", "Start"], timing.Operations);
+			Assert.Equal(1, restartCount);
+			Assert.True(executor.IsRunning);
+		});
+	}
+
+	/// <summary>
+	/// Verifies that a zero-position restart is not considered another natural end until timing advances.
+	/// </summary>
+	[Fact]
+	public void PlayLoop_WhenFullRangeRestartHasNotAdvanced_DoesNotQueueAnotherRestartUntilTimingAdvances()
+	{
+		WithExecutor((executor, timing, synchronizationContext) =>
+		{
+			timing.AdvanceOnStart = true;
+			StartAndQueueNaturalEnd(executor, timing);
+			timing.AdvanceOnStart = false;
+			DispatchAndReleaseIfBlocked(synchronizationContext, timing, TimeSpan.FromMilliseconds(1));
+
+			Assert.False(CheckForNaturalEnd(executor));
+			Assert.Empty(synchronizationContext.Callbacks);
+
+			timing.Advance(TimeSpan.FromMilliseconds(1));
+			Assert.False(CheckForNaturalEnd(executor));
+			timing.Position = EndTime;
+			Assert.True(CheckForNaturalEnd(executor));
+			Assert.Single(synchronizationContext.Callbacks);
+		});
+	}
+
+	/// <summary>
+	/// Verifies that a partial-range restart seeks to its configured start and waits for movement beyond that start.
+	/// </summary>
+	[Fact]
+	public void PlayLoop_WhenPartialRangeRestartHasNotAdvanced_UsesConfiguredStartAndDefersNaturalEnd()
+	{
+		WithExecutor((executor, timing, synchronizationContext) =>
+		{
+			timing.AdvanceOnStart = true;
+			executor.PlayLoop(PartialStartTime, PartialEndTime);
+			StopEndCheckTimer(executor);
+			timing.Position = PartialEndTime;
+			Assert.True(CheckForNaturalEnd(executor));
+			timing.AdvanceOnStart = false;
+			timing.ClearOperations();
+
+			DispatchAndReleaseIfBlocked(synchronizationContext, timing, PartialStartTime + TimeSpan.FromMilliseconds(1));
+
+			Assert.Equal(["Stop", $"Position:{PartialStartTime}", "Start"], timing.Operations);
+			timing.Position = PartialStartTime;
+			Assert.False(CheckForNaturalEnd(executor));
+			Assert.Empty(synchronizationContext.Callbacks);
+		});
+	}
+
+	/// <summary>
+	/// Verifies that non-loop playback still recognizes zero as a natural end after timing has advanced.
+	/// </summary>
+	[Fact]
+	public void Play_WhenTimingAdvancedThenReportsZero_RecognizesNaturalEnd()
+	{
+		WithExecutor((executor, timing, _) =>
+		{
+			executor.Play(TimeSpan.Zero, EndTime);
+			StopEndCheckTimer(executor);
+			timing.Position = TimeSpan.FromMilliseconds(1);
+			Assert.False(CheckForNaturalEnd(executor));
+
+			timing.Position = TimeSpan.Zero;
+
+			Assert.True(CheckForNaturalEnd(executor));
 		});
 	}
 
@@ -158,6 +295,25 @@ public sealed class SequenceExecutorLifecycleTests
 		Assert.True(CheckForNaturalEnd(executor));
 	}
 
+	private static void DispatchAndReleaseIfBlocked(QueuedSynchronizationContext synchronizationContext, TestTiming timing, TimeSpan releasePosition)
+	{
+		var dispatchTask = Task.Run(synchronizationContext.DispatchSingle);
+		var completed = dispatchTask.Wait(DispatchTimeout);
+
+		try
+		{
+			Assert.True(completed, "Loop restart blocked while timing remained at its configured start.");
+		}
+		finally
+		{
+			if (!completed)
+			{
+				timing.Advance(releasePosition);
+				dispatchTask.Wait(DispatchTimeout);
+			}
+		}
+	}
+
 	private static bool CheckForNaturalEnd(SequenceExecutor executor)
 	{
 		var method = typeof(SequenceExecutor).GetMethod("_CheckForNaturalEnd", BindingFlags.Instance | BindingFlags.NonPublic)!;
@@ -185,17 +341,36 @@ public sealed class SequenceExecutorLifecycleTests
 	private sealed class QueuedSynchronizationContext : SynchronizationContext
 	{
 		private readonly Queue<(SendOrPostCallback Callback, object? State)> _callbacks = [];
+		private readonly Lock _callbacksLock = new();
+
+		public IReadOnlyCollection<(SendOrPostCallback Callback, object? State)> Callbacks
+		{
+			get
+			{
+				lock (_callbacksLock)
+				{
+					return _callbacks.ToArray();
+				}
+			}
+		}
 
 		public override void Post(SendOrPostCallback callback, object? state)
 		{
-			_callbacks.Enqueue((callback, state));
+			lock (_callbacksLock)
+			{
+				_callbacks.Enqueue((callback, state));
+			}
 		}
 
 		public void DispatchSingle()
 		{
-			if (!_callbacks.TryDequeue(out var callback))
+			(SendOrPostCallback Callback, object? State) callback;
+			lock (_callbacksLock)
 			{
-				throw new InvalidOperationException("No callback was queued for dispatch.");
+				if (!_callbacks.TryDequeue(out callback))
+				{
+					throw new InvalidOperationException("No callback was queued for dispatch.");
+				}
 			}
 
 			callback.Callback(callback.State);
@@ -204,7 +379,20 @@ public sealed class SequenceExecutorLifecycleTests
 
 	private sealed class TestTiming : ITiming
 	{
-		public TimeSpan Position { get; set; }
+		private TimeSpan _position;
+
+		public List<string> Operations { get; } = [];
+		public bool AdvanceOnStart { get; set; } = true;
+
+		public TimeSpan Position
+		{
+			get => _position;
+			set
+			{
+				_position = value;
+				Operations.Add($"Position:{value}");
+			}
+		}
 		public bool SupportsVariableSpeeds => false;
 		public float Speed { get; set; }
 		public int StartCount { get; private set; }
@@ -213,15 +401,17 @@ public sealed class SequenceExecutorLifecycleTests
 		public void Start()
 		{
 			StartCount++;
-			if (Position == TimeSpan.Zero)
+			Operations.Add("Start");
+			if (AdvanceOnStart)
 			{
-				Position = TimeSpan.FromMilliseconds(1);
+				_position += TimeSpan.FromMilliseconds(1);
 			}
 		}
 
 		public void Stop()
 		{
 			StopCount++;
+			Operations.Add("Stop");
 		}
 
 		public void Pause()
@@ -230,6 +420,16 @@ public sealed class SequenceExecutorLifecycleTests
 
 		public void Resume()
 		{
+		}
+
+		public void Advance(TimeSpan position)
+		{
+			_position = position;
+		}
+
+		public void ClearOperations()
+		{
+			Operations.Clear();
 		}
 	}
 

@@ -323,21 +323,36 @@ namespace Common.AudioPlayer
 			_waveSource = null;
 		}
 
-		private object _soundOutLock = new();
+		private readonly Lock _soundOutLock = new();
 
 		private void CleanupSoundOut(bool dispose=true)
 		{
+			CleanupSoundOut(null, dispose, false);
+		}
+
+		private void CleanupSoundOut(IWavePlayer expectedSoundOut, bool dispose=true)
+		{
+			CleanupSoundOut(expectedSoundOut, dispose, true);
+		}
+
+		private void CleanupSoundOut(IWavePlayer? expectedSoundOut, bool dispose, bool requireExpectedSoundOut)
+		{
+			IWavePlayer? soundOut;
 			lock (_soundOutLock)
 			{
-				if (_soundOut != null)
+				if (_soundOut == null || (requireExpectedSoundOut && !ReferenceEquals(_soundOut, expectedSoundOut)))
 				{
-					_soundOut.PlaybackStopped -= PlaybackDeviceOnPlaybackStopped;
-					if (dispose)
-					{
-						_soundOut.Dispose();
-					}
-					_soundOut = null;
+					return;
 				}
+
+				soundOut = _soundOut;
+				soundOut.PlaybackStopped -= PlaybackDeviceOnPlaybackStopped;
+				_soundOut = null;
+			}
+
+			if (dispose)
+			{
+				soundOut.Dispose();
 			}
 		}
 
@@ -372,7 +387,10 @@ namespace Common.AudioPlayer
 		private void PlaybackDeviceOnPlaybackStopped(object? sender, StoppedEventArgs e)
 		{
 			PlaybackEnded?.Invoke();
-			CleanupSoundOut();
+			if (sender is IWavePlayer soundOut)
+			{
+				CleanupSoundOut(soundOut);
+			}
 		}
 
 		#region Implementation of IDisposable

@@ -18,6 +18,7 @@ namespace BaseSequence
 		private bool _isPaused;
 		private bool _loop;
 		private bool _isDisposed;
+		private bool _timingHasAdvanced;
 		private long _executionGeneration;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
@@ -211,15 +212,16 @@ namespace BaseSequence
 			_StartMedia();
 
 			TimingSource.Position = StartTime;
+			lock (_lifecycleLock)
+			{
+				if (_isDisposed || executionGeneration != _executionGeneration) return;
+
+				_timingHasAdvanced = false;
+			}
 			TimingSource.Start();
 
 			// Start the crazy train.
 			IsRunning = true;
-
-			while (TimingSource.Position == StartTime)
-			{
-				Thread.Sleep(1); //Give the train a chance to get out of the station.
-			}
 
 			_StartEndCheckTimer(executionGeneration);
 
@@ -245,17 +247,13 @@ namespace BaseSequence
 				startTime = StartTime;
 				endTime = EndTime;
 
-				//Reset our position. No need to stop the source, we will just reset its position.
+				timingSource.Stop();
+				_timingHasAdvanced = false;
 				timingSource.Position = startTime;
 				timingSource.Start();
 			}
 
 			OnSequenceReStarted(new SequenceStartedEventArgs(sequence, timingSource, startTime, endTime));
-			
-			while (_IsCurrentExecution(executionGeneration) && timingSource.Position == startTime)
-			{
-				Thread.Sleep(1); //Give the train a chance to get out of the station.
-			}
 
 			_StartEndCheckTimer(executionGeneration);
 		}
@@ -374,6 +372,7 @@ namespace BaseSequence
 			{
 				if (!IsRunning) return;
 				_executionGeneration++;
+				_timingHasAdvanced = false;
 
 				var endCheckTimer = _endCheckTimer;
 				endCheckTimer?.Stop(false);
@@ -480,7 +479,16 @@ namespace BaseSequence
 		private bool _IsEndOfSequence()
 		{
 			TimeSpan position = TimingSource.Position;
-			return _IsTimedSequence && (position >= EndTime || position == TimeSpan.Zero);
+			if (!_IsTimedSequence) return false;
+
+			if (!_timingHasAdvanced)
+			{
+				if (position <= StartTime) return false;
+
+				_timingHasAdvanced = true;
+			}
+
+			return position >= EndTime || position == TimeSpan.Zero;
 		}
 
 		protected bool _IsTimedSequence { get; set; }
@@ -506,6 +514,7 @@ namespace BaseSequence
 
 				_isDisposed = true;
 				_executionGeneration++;
+				_timingHasAdvanced = false;
 				wasRunning = IsRunning;
 				endCheckTimer = _endCheckTimer;
 				_endCheckTimer = null;
