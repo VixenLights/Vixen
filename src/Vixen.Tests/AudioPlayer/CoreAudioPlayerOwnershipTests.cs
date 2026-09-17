@@ -47,7 +47,7 @@ public sealed class CoreAudioPlayerOwnershipTests
 	private static CoreAudioPlayer CreateUninitializedPlayer()
 	{
 		var player = (CoreAudioPlayer) RuntimeHelpers.GetUninitializedObject(typeof(CoreAudioPlayer));
-		SetField(player, "_soundOutLock", new object());
+		SetField(player, "_soundOutLock", Activator.CreateInstance(typeof(Lock)));
 		return player;
 	}
 

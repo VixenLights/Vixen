@@ -241,6 +241,8 @@ Milestone 4 validation (2026-09-17): `msbuild Vixen.sln -m -restore -t:Vixen_Tes
 
     dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir="$(Get-Location)/" --filter "FullyQualifiedName~CoreAudioPlayerOwnershipTests"
 
+Post-milestone test-fixture validation (2026-09-17): The ownership fixture now creates the same `Lock` type as CoreAudioPlayer when constructing its uninitialized test subject. The x64 `Vixen_Tests` build succeeded with existing unrelated test warnings and no errors; the combined ownership and executor lifecycle filter passed 12 of 12 tests with no failures.
+
 ## Interfaces and Dependencies
 
 Keep the public interfaces `Vixen.Execution.ISequenceExecutor`, `Vixen.Module.Timing.ITiming`, and `Common.AudioPlayer.IPlayer` unchanged. Continue using `SynchronizationContext.Post`, `HighResolutionTimer`, `IWavePlayer`, xUnit v3, and Moq; add no packages.
@@ -276,3 +278,5 @@ Plan revision note (2026-09-17): Completed Milestone 2. Added the AudioPlayer te
 Plan revision note (2026-09-17): Completed Milestone 3. SequenceExecutor now removes both position-wait loops, resets a lifecycle-lock-protected timing-advance gate before initial starts and valid loop restarts, and restarts looping timing in Stop, Position, Start order. It retains the VIX-3991 generation guards and zero-position natural-end rule after advancement. The x64 `Vixen_Tests` build succeeded and all 10 focused executor lifecycle tests passed.
 
 Plan revision note (2026-09-17): Completed Milestone 4. CoreAudioPlayer now retains unconditional owner cleanup for explicit lifecycle actions but makes natural-stop cleanup reference the sender instance. It detaches and clears the matching output under its ownership lock, then disposes it outside the lock. The x64 `Vixen_Tests` build succeeded and both focused ownership tests passed.
+
+Plan revision note (2026-09-17): Corrected the CoreAudioPlayer ownership test fixture after the production lock was migrated from `object` to `Lock`. The reflection-created uninitialized player now receives a matching lock instance; the combined 12-test ownership and executor lifecycle filter passes.
