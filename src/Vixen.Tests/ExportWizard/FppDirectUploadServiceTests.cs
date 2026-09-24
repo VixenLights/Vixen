@@ -1,6 +1,8 @@
 using Moq;
+using Vixen.Export;
 using VixenModules.App.ExportWizard;
 using VixenModules.App.FPPClient.Client;
+using VixenModules.App.FPPClient.Models;
 using Xunit;
 
 namespace Vixen.Tests.ExportWizard;
@@ -30,6 +32,125 @@ public class FppDirectUploadServiceTests
 			// Assert
 			mockClient.Verify(c => c.UploadSequenceAsync(
 				"test.fseq", It.IsAny<Stream>(), ct), Times.Once);
+		}
+		finally
+		{
+			if (File.Exists(tempPath)) File.Delete(tempPath);
+		}
+	}
+
+	[Fact]
+	public async Task DetectAsync_EspPixelStick_RoutesMultipleSequencesWithoutFppExtras()
+	{
+		var ct = TestContext.Current.CancellationToken;
+		var mockClient = new Mock<IFppClient>();
+		mockClient.Setup(c => c.GetSystemInfoAsync(ct))
+			.ReturnsAsync(new FppSystemInfo { Platform = "ESPixelStick" });
+		mockClient.Setup(c => c.UploadEspPixelStickSequenceAsync(
+				It.IsAny<string>(), It.IsAny<Stream>(), ct)).Returns(Task.CompletedTask);
+		var service = await FppDirectUploadService.DetectAsync(mockClient.Object, ct);
+		var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".fseq");
+		await File.WriteAllBytesAsync(tempPath, [1, 2, 3], ct);
+
+		try
+		{
+			await service.UploadSequenceFileAsync(tempPath, "first.fseq", ct: ct);
+			await service.UploadSequenceFileAsync(tempPath, "second.fseq", ct: ct);
+
+			Assert.True(service.IsEspPixelStick);
+			Assert.False(service.SupportsFppExtras);
+			mockClient.Verify(c => c.GetSystemInfoAsync(ct), Times.Once);
+			mockClient.Verify(c => c.UploadEspPixelStickSequenceAsync(
+					"first.fseq", It.IsAny<Stream>(), ct), Times.Once);
+			mockClient.Verify(c => c.UploadEspPixelStickSequenceAsync(
+					"second.fseq", It.IsAny<Stream>(), ct), Times.Once);
+			mockClient.Verify(c => c.UploadSequenceAsync(
+					It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+			mockClient.Verify(c => c.UploadMusicAsync(
+					It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+			mockClient.Verify(c => c.RenameFileAsync(
+					It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+			mockClient.Verify(c => c.UploadFileAsync(
+					It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+			mockClient.Verify(c => c.RestartFppdAsync(
+					It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Never);
+		}
+		finally
+		{
+			if (File.Exists(tempPath)) File.Delete(tempPath);
+		}
+	}
+
+	[Theory]
+	[InlineData("Raspberry Pi")]
+	[InlineData("")]
+	public async Task DetectAsync_Fpp_KeepsExistingSequenceRoute(string platform)
+	{
+		var ct = TestContext.Current.CancellationToken;
+		var mockClient = new Mock<IFppClient>();
+		mockClient.Setup(c => c.GetSystemInfoAsync(ct))
+			.ReturnsAsync(new FppSystemInfo { Platform = platform });
+		mockClient.Setup(c => c.UploadSequenceAsync(
+				It.IsAny<string>(), It.IsAny<Stream>(), ct)).Returns(Task.CompletedTask);
+		var service = await FppDirectUploadService.DetectAsync(mockClient.Object, ct);
+		var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".fseq");
+		await File.WriteAllBytesAsync(tempPath, [1, 2, 3], ct);
+
+		try
+		{
+			await service.UploadSequenceFileAsync(tempPath, "test.fseq", ct: ct);
+
+			Assert.False(service.IsEspPixelStick);
+			Assert.True(service.SupportsFppExtras);
+			mockClient.Verify(c => c.GetSystemInfoAsync(ct), Times.Once);
+			mockClient.Verify(c => c.UploadSequenceAsync(
+					"test.fseq", It.IsAny<Stream>(), ct), Times.Once);
+			mockClient.Verify(c => c.UploadEspPixelStickSequenceAsync(
+					It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+		}
+		finally
+		{
+			if (File.Exists(tempPath)) File.Delete(tempPath);
+		}
+	}
+
+	[Fact]
+	public async Task DetectAsync_SystemInfoFailure_PreventsUploads()
+	{
+		var ct = TestContext.Current.CancellationToken;
+		var mockClient = new Mock<IFppClient>();
+		mockClient.Setup(c => c.GetSystemInfoAsync(ct))
+			.ThrowsAsync(new InvalidOperationException("Device unavailable"));
+
+		await Assert.ThrowsAsync<InvalidOperationException>(
+			() => FppDirectUploadService.DetectAsync(mockClient.Object, ct));
+		mockClient.Verify(c => c.UploadSequenceAsync(
+			It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+		mockClient.Verify(c => c.UploadEspPixelStickSequenceAsync(
+			It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+	}
+
+	[Fact]
+	public async Task UploadSequenceFileAsync_ReportsCompletionOnlyAfterSuccessfulUpload()
+	{
+		var ct = TestContext.Current.CancellationToken;
+		var mockClient = new Mock<IFppClient>();
+		mockClient.Setup(c => c.UploadEspPixelStickSequenceAsync(
+			It.IsAny<string>(), It.IsAny<Stream>(), ct))
+			.ThrowsAsync(new IOException("Upload failed"));
+		var progressValues = new List<int>();
+		var progress = new Mock<IProgress<ExportProgressStatus>>();
+		progress.Setup(p => p.Report(It.IsAny<ExportProgressStatus>()))
+			.Callback<ExportProgressStatus>(status => progressValues.Add(status.TaskProgressValue));
+		var service = new FppDirectUploadService(mockClient.Object, isEspPixelStick: true);
+		var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".fseq");
+		await File.WriteAllBytesAsync(tempPath, [1, 2, 3], ct);
+
+		try
+		{
+			await Assert.ThrowsAsync<IOException>(
+				() => service.UploadSequenceFileAsync(tempPath, "test.fseq", progress.Object, ct));
+			Assert.Equal([0], progressValues);
 		}
 		finally
 		{
