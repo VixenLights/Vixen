@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__gortex__analyze",
+      "mcp__gortex__capabilities",
+      "mcp__gortex__change",
+      "mcp__gortex__explore",
+      "mcp__gortex__read",
+      "mcp__gortex__recall",
+      "mcp__gortex__relations",
+      "mcp__gortex__response",
+      "mcp__gortex__search",
+      "mcp__gortex__trace",
+      "mcp__gortex__workspace"
+    ]
+  }
+}

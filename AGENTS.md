@@ -45,6 +45,11 @@ Defined in `src/.editorconfig`. Key rules:
 Avoid reformatting unrelated code in a commit, instead put it in a separate commit clearly marked as such.
 Research the codebase before editing. Never change code you have not read.
 
+## 🛠️ Scoped Linting & Refactoring Guardrails
+- **Scope of Modification:** You are strictly confined to modifying code directly related to the user's explicit task.
+- **Targeted Code Quality:** You MUST run file problem/linting checks (`get_file_problems`) after generating code, but you are only permitted to resolve warnings or hints triggered *within the lines of code you actively changed or added*.
+- **No Unrelated Changes:** Do NOT perform broad file cleanups, style fixes, or cosmetic restyling on untouched blocks of code in the file unless specifically requested. Unrelated code MUST remain completely intact to keep git diffs focused entirely on the logic shift at hand.
+
 ## Working Tree Hygiene
 
 Inspect `git status` before editing. Preserve unrelated user changes and avoid modifying files outside the requested scope. Do not create commits unless explicitly requested.
@@ -174,3 +179,31 @@ Available skills:
 | `jira` | `.agents/skills/jira/SKILL.md` | Use when asked to "create JIRA ticket", "search JIRA", "update JIRA issue", "transition issue", "sprint planning", or "epic management". |
 
 Task documents that say "use the X skill" always refer to the project version at `.agents/skills/[skill-name]/SKILL.md`.
+
+<!-- gortex:communities:start -->
+## Community Skills
+
+| Area | Description | Explore |
+|------|-------------|---------|
+| Curves Zedgraph 7 Dirs | 3464 symbols | `analyze(operation:"communities", id:"community-821")` |
+| Vixen Common Nshape 13 Dirs | 2955 symbols | `analyze(operation:"communities", id:"community-206")` |
+| Vixen Common Nshape 5 Dirs | 2522 symbols | `analyze(operation:"communities", id:"community-270")` |
+| Effect Effect 80 Dirs | 2383 symbols | `analyze(operation:"communities", id:"community-1218")` |
+| Vixen Common Nshape 3 Dirs Cachedrepository | 2319 symbols | `analyze(operation:"communities", id:"community-163")` |
+| Vixen Core Sys 79 Dirs | 2287 symbols | `analyze(operation:"communities", id:"community-650")` |
+| Vixen Common Nshape 8 Dirs | 2229 symbols | `analyze(operation:"communities", id:"community-271")` |
+| Editor Timedsequenceeditor 46 Dirs | 2018 symbols | `analyze(operation:"communities", id:"community-1145")` |
+| Editor Timedsequenceeditor 68 Dirs | 1944 symbols | `analyze(operation:"communities", id:"community-785")` |
+| Vixen Common Nshape 64 Dirs | 1658 symbols | `analyze(operation:"communities", id:"community-310")` |
+| Vixenpreview Shapes 22 Dirs | 1408 symbols | `analyze(operation:"communities", id:"community-1296")` |
+| Effect Effect 72 Dirs | 1093 symbols | `analyze(operation:"communities", id:"community-1148")` |
+| Sys Dispatch 47 Dirs | 904 symbols | `analyze(operation:"communities", id:"community-644")` |
+| Polygoneditor Viewmodels 17 Dirs | 873 symbols | `analyze(operation:"communities", id:"community-1101")` |
+| Controls Timelinecontrol 4 Dirs Grid | 861 symbols | `analyze(operation:"communities", id:"community-104")` |
+| Vixenpreview Undo 10 Dirs | 861 symbols | `analyze(operation:"communities", id:"community-1299")` |
+| Module Effect 61 Dirs | 853 symbols | `analyze(operation:"communities", id:"community-632")` |
+| Vixen Modules Effect Whirl | 628 symbols | `analyze(operation:"communities", id:"community-1232")` |
+| Sys Output 28 Dirs | 595 symbols | `analyze(operation:"communities", id:"community-1327")` |
+| Dynamics Joints 8 Dirs | 522 symbols | `analyze(operation:"communities", id:"community-41")` |
+
+<!-- gortex:communities:end -->
