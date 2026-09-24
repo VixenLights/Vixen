@@ -34,7 +34,7 @@ that materially informed a decision.
 
 # GUARDRAILS: BLOCKING QUESTIONS
 If the issue description is ambiguous or violates best practices, you MUST stop. Output a section titled "## 🚨 CRITICAL ARCHITECTURAL CLARIFICATIONS REQUIRED" with a numbered list of questions. Do not output the blueprint until resolved.
-Output either your 'CRITICAL ARCHITECTURAL CLARIFICATIONS REQUIRED' or your final 'Architecture Design' blueprint ending with the raw text block '## TERRA HAND-OFF CONTEXT'. 
+Output either your 'CRITICAL ARCHITECTURAL CLARIFICATIONS REQUIRED' or your final 'Architecture Design' blueprint ending with the raw text block '## CODING MODEL HAND-OFF CONTEXT'. 
 Once you output that text block, STOP and wait for my instruction so I can manually switch chat threads and model tiers.
 
 # OUTPUT ARCHITECTURE TEMPLATE
@@ -45,6 +45,6 @@ Once you output that text block, STOP and wait for my instruction so I can manua
 - **Subsystem Component Matrix:** Impacted system files and their execution loop shifts.
 - **Concurrency, Performance & Thread Safety:** Assessment of state isolation or synchronization mechanisms.
 
-## TERRA HAND-OFF CONTEXT
-Provide a compressed, highly explicit data-dump of the decisions made above, formatted specifically to be pasted directly into the generate-spec skill for hand off to the Terra model.
+## CODING MODEL HAND-OFF CONTEXT
+Provide a compressed, highly explicit data-dump of the decisions made above, formatted specifically to be pasted directly into the generate-spec skill for hand off to the coding model.
 
