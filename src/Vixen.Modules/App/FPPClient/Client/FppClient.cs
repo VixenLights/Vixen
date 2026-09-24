@@ -122,6 +122,64 @@ internal sealed class FppClient : IFppClient
 		UploadFileAsync("sequences", filename, content, cancellationToken);
 
 	/// <inheritdoc/>
+	public async Task UploadEspPixelStickSequenceAsync(
+		string filename, Stream content, CancellationToken cancellationToken = default)
+	{
+		ArgumentException.ThrowIfNullOrWhiteSpace(filename);
+		ArgumentNullException.ThrowIfNull(content);
+		if (filename.Contains('/') || filename.Contains('\\'))
+		{
+			throw new ArgumentException("The filename must not contain path separators.", nameof(filename));
+		}
+
+		if (!content.CanRead)
+		{
+			throw new ArgumentException("The content stream must be readable.", nameof(content));
+		}
+
+		var url = $"/fpp?path=uploadFile&filename={Uri.EscapeDataString(filename)}";
+		Log.Debug("Uploading ESPixelStick sequence {Filename}", filename);
+
+		using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+		cts.CancelAfter(_options.UploadTimeout);
+
+		using var streamContent = new StreamContent(content);
+		streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+		using var response = await _httpClient.PostAsync(url, streamContent, cts.Token).ConfigureAwait(false);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			Log.Error("ESPixelStick upload of {Filename} failed with HTTP {StatusCode}",
+				filename, (int)response.StatusCode);
+			throw new FppClientException(
+				$"ESPixelStick upload of '{filename}' failed with HTTP {(int)response.StatusCode}.",
+				(int)response.StatusCode);
+		}
+
+		try
+		{
+			await using var responseStream = await response.Content.ReadAsStreamAsync(cts.Token).ConfigureAwait(false);
+			using var metadata = await JsonDocument.ParseAsync(responseStream, cancellationToken: cts.Token)
+				.ConfigureAwait(false);
+			if (metadata.RootElement.ValueKind != JsonValueKind.Object ||
+				!metadata.RootElement.TryGetProperty("Name", out var name) ||
+				name.ValueKind != JsonValueKind.String ||
+				!string.Equals(name.GetString(), filename, StringComparison.Ordinal))
+			{
+				Log.Error("ESPixelStick upload of {Filename} returned unexpected file metadata", filename);
+				throw new FppClientException(
+					$"ESPixelStick upload of '{filename}' returned unexpected file metadata.");
+			}
+		}
+		catch (JsonException ex)
+		{
+			Log.Error(ex, "ESPixelStick upload of {Filename} returned invalid JSON", filename);
+			throw new FppClientException(
+				$"ESPixelStick upload of '{filename}' returned invalid JSON.", ex);
+		}
+	}
+
+	/// <inheritdoc/>
 	public Task UploadMusicAsync(string filename, Stream content, CancellationToken cancellationToken = default) =>
 		UploadFileAsync("music", filename, content, cancellationToken);
 

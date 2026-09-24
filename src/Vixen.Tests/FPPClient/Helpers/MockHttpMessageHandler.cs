@@ -8,19 +8,26 @@ namespace Vixen.Tests.FPPClient.Helpers;
 /// </summary>
 internal sealed class MockHttpMessageHandler : HttpMessageHandler
 {
-	private readonly Func<HttpRequestMessage, HttpResponseMessage> _handler;
+	private readonly Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> _handler;
 
-	internal MockHttpMessageHandler(Func<HttpRequestMessage, HttpResponseMessage> handler)
+	internal MockHttpMessageHandler(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handler)
 		=> _handler = handler;
 
 	protected override Task<HttpResponseMessage> SendAsync(
 		HttpRequestMessage request, CancellationToken cancellationToken)
-		=> Task.FromResult(_handler(request));
+		=> _handler(request, cancellationToken);
 
 	/// <summary>
 	/// Creates an <see cref="IFppClient"/> backed by the given handler function.
 	/// </summary>
-	internal static IFppClient CreateClient(Func<HttpRequestMessage, HttpResponseMessage> handler)
+	internal static IFppClient CreateClient(Func<HttpRequestMessage, HttpResponseMessage> handler) =>
+		CreateClient((request, _) => Task.FromResult(handler(request)));
+
+	/// <summary>
+	/// Creates an <see cref="IFppClient"/> backed by an asynchronous handler function.
+	/// </summary>
+	internal static IFppClient CreateClient(
+		Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handler)
 	{
 		var httpClient = new HttpClient(new MockHttpMessageHandler(handler));
 		return new FppClient(httpClient, new FppClientOptions { BaseUrl = "http://fpp.test/" });
