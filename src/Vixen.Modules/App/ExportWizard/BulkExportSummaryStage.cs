@@ -26,15 +26,10 @@ namespace VixenModules.App.ExportWizard
 		{
 			_data = data;
 			InitializeComponent();
-			lblUniverseFileWarning.MaximumSize = new System.Drawing.Size(
-				mainLayoutPanel.ClientSize.Width - lblUniverseFileWarning.Left - mainLayoutPanel.Padding.Right, 0);
-			mainLayoutPanel.SizeChanged += (_, _) => lblUniverseFileWarning.MaximumSize = new System.Drawing.Size(
-				mainLayoutPanel.ClientSize.Width - lblUniverseFileWarning.Left - mainLayoutPanel.Padding.Right, 0);
 			taskProgress.Minimum = 0;
 			taskProgress.Maximum = 100;
 			overallProgress.Minimum = 0;
 			overallProgress.Maximum = 100;
-			//lblSummary.Font = ThemeUpdateControls.SizeAndStyleFont(lblSummary.Font, lblSummary.Font.Size + 4, FontStyle.Bold);
 		}
 
 		private void ConfigureSummary()

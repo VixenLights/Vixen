@@ -66,6 +66,7 @@ namespace Common.Controls.Wizard
 			_currentStage = _wizard.CurrentStage;
 
 			panelContent.Controls.Add(_currentStage);
+			_currentStage.Dock = DockStyle.Fill;
 			_currentStage.WizardStageChanged += CurrentStage_WizardStageChanged;
 
 			buttonNext.Text = _wizard.IsFinalStage ? "Finish" : "Next >>";

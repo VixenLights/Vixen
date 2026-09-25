@@ -94,7 +94,6 @@
 			// 
 			// mainLayoutPanel
 			// 
-			mainLayoutPanel.AutoSize = true;
 			mainLayoutPanel.ColumnCount = 2;
 			mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			mainLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -333,10 +332,11 @@
 			// lblUniverseFileWarning
 			// 
 			lblUniverseFileWarning.AutoSize = true;
+			lblUniverseFileWarning.Dock = System.Windows.Forms.DockStyle.Fill;
 			lblUniverseFileWarning.ForeColor = System.Drawing.Color.Yellow;
 			lblUniverseFileWarning.Location = new System.Drawing.Point(145, 140);
 			lblUniverseFileWarning.Name = "lblUniverseFileWarning";
-			lblUniverseFileWarning.Size = new System.Drawing.Size(100, 15);
+			lblUniverseFileWarning.Size = new System.Drawing.Size(528, 15);
 			lblUniverseFileWarning.TabIndex = 22;
 			lblUniverseFileWarning.Text = "Universe Warning";
 			lblUniverseFileWarning.Visible = false;
@@ -440,7 +440,6 @@
 			mainLayoutPanel.ResumeLayout(false);
 			mainLayoutPanel.PerformLayout();
 			ResumeLayout(false);
-			PerformLayout();
 		}
 
 		#endregion
