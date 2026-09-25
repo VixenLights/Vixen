@@ -9,13 +9,30 @@ namespace VixenModules.App.ExportWizard;
 /// Receives <see cref="IFppClient"/> via its primary constructor so that the upload
 /// operations can be exercised in unit tests with a mocked client.
 /// </summary>
-internal sealed class FppDirectUploadService(IFppClient client)
+internal sealed class FppDirectUploadService(IFppClient client, bool isEspPixelStick = false, bool supportsZipArchives = false)
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-	/// <summary>Uploads an already-written fseq file to the FPP sequences directory.</summary>
+	internal bool IsEspPixelStick => isEspPixelStick;
+	internal bool SupportsZipArchives => isEspPixelStick && supportsZipArchives;
+	internal bool SupportsFppExtras => !isEspPixelStick;
+
+	internal static async Task<FppDirectUploadService> DetectAsync(IFppClient client, CancellationToken ct = default)
+	{
+		ArgumentNullException.ThrowIfNull(client);
+		var info = await client.GetSystemInfoAsync(ct).ConfigureAwait(false);
+		if (info == null)
+		{
+			throw new InvalidOperationException("The device did not provide valid system information.");
+		}
+
+		var isEspPixelStick = string.Equals(info.Platform, "ESPixelStick", StringComparison.Ordinal);
+		return new FppDirectUploadService(client, isEspPixelStick, isEspPixelStick && info.Zip);
+	}
+
+	/// <summary>Uploads an already-written FSEQ file to the detected target's sequence storage.</summary>
 	/// <param name="tempPath">Full path to the local temp file containing the fseq data.</param>
-	/// <param name="fseqFileName">The destination filename on the FPP device (e.g. <c>"MyShow.fseq"</c>).</param>
+	/// <param name="fseqFileName">The destination filename on the device (e.g. <c>"MyShow.fseq"</c>).</param>
 	/// <param name="progress">Optional progress sink; receives a task-level status message before and after the upload.</param>
 	/// <param name="ct">Optional cancellation token.</param>
 	internal async Task UploadSequenceFileAsync(
@@ -29,12 +46,41 @@ internal sealed class FppDirectUploadService(IFppClient client)
 			TaskProgressMessage = $"Uploading {fseqFileName}"
 		});
 		await using var stream = File.OpenRead(tempPath);
-		await client.UploadSequenceAsync(fseqFileName, stream, ct).ConfigureAwait(false);
+		if (isEspPixelStick)
+		{
+			await client.UploadEspPixelStickSequenceAsync(fseqFileName, stream, ct).ConfigureAwait(false);
+		}
+		else
+		{
+			await client.UploadSequenceAsync(fseqFileName, stream, ct).ConfigureAwait(false);
+		}
 		progress?.Report(new ExportProgressStatus(ExportProgressStatus.ProgressType.Task)
 		{
 			TaskProgressValue = 100,
 			TaskProgressMessage = $"Uploaded {fseqFileName}"
 		});
+	}
+
+	/// <summary>Uploads an archive file to a ZIP-capable ESPixelStick.</summary>
+	/// <param name="tempPath">Full path to the local ZIP archive.</param>
+	/// <param name="archiveFileName">The destination archive filename on the device.</param>
+	/// <param name="ct">Optional cancellation token.</param>
+	internal async Task UploadArchiveFileAsync(string tempPath, string archiveFileName, CancellationToken ct = default)
+	{
+		if (!SupportsZipArchives)
+		{
+			throw new InvalidOperationException("The detected device does not support ZIP archives.");
+		}
+
+		await using var stream = File.OpenRead(tempPath);
+		await client.UploadEspPixelStickArchiveAsync(archiveFileName, stream, ct).ConfigureAwait(false);
+	}
+
+	/// <summary>Requests an ESPixelStick reboot.</summary>
+	/// <param name="ct">Optional cancellation token.</param>
+	internal async Task RebootEspPixelStickAsync(CancellationToken ct = default)
+	{
+		await client.RebootEspPixelStickAsync(ct).ConfigureAwait(false);
 	}
 
 	/// <summary>Uploads an audio file to the FPP music directory.</summary>

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace VixenModules.App.FPPClient.Models;
 
 /// <summary>
@@ -11,6 +13,7 @@ public sealed record FppUtilization
 	/// <summary>Gets the memory usage as a percentage (0–100).</summary>
 	public double Memory { get; init; }
 
-	/// <summary>Gets the formatted uptime string (e.g. <c>"2 days, 4:30"</c>).</summary>
+	/// <summary>Gets the uptime as supplied by the device, formatting numeric milliseconds as a duration.</summary>
+	[JsonConverter(typeof(FppUptimeConverter))]
 	public string Uptime { get; init; } = string.Empty;
 }

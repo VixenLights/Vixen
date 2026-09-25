@@ -34,7 +34,7 @@ internal sealed class FppClient : IFppClient
 
 		var baseUrl = options.BaseUrl.EndsWith('/') ? options.BaseUrl : options.BaseUrl + '/';
 		_httpClient.BaseAddress = new Uri(baseUrl + "api/");
-		_httpClient.Timeout = options.Timeout;
+		_httpClient.Timeout = Timeout.InfiniteTimeSpan;
 	}
 
 	/// <inheritdoc/>
@@ -122,6 +122,114 @@ internal sealed class FppClient : IFppClient
 		UploadFileAsync("sequences", filename, content, cancellationToken);
 
 	/// <inheritdoc/>
+	public Task UploadEspPixelStickSequenceAsync(
+		string filename, Stream content, CancellationToken cancellationToken = default) =>
+		UploadEspPixelStickFileAsync(filename, content, "sequence", cancellationToken);
+
+	/// <inheritdoc/>
+	public Task UploadEspPixelStickArchiveAsync(
+		string filename, Stream content, CancellationToken cancellationToken = default) =>
+		UploadEspPixelStickFileAsync(filename, content, "archive", cancellationToken);
+
+	/// <inheritdoc/>
+	public async Task RebootEspPixelStickAsync(CancellationToken cancellationToken = default)
+	{
+		const string url = "/X6";
+		Log.Debug("Requesting ESPixelStick reboot");
+
+		using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+		cts.CancelAfter(_options.Timeout);
+
+		using var response = await _httpClient.PostAsync(url, content: null, cts.Token)
+			.ConfigureAwait(false);
+		if (!response.IsSuccessStatusCode)
+		{
+			Log.Error("ESPixelStick reboot request failed with HTTP {StatusCode}", (int)response.StatusCode);
+			throw new FppClientException(
+				$"ESPixelStick reboot request failed with HTTP {(int)response.StatusCode}.",
+				(int)response.StatusCode);
+		}
+
+		try
+		{
+			var body = await response.Content.ReadAsStringAsync(cts.Token).ConfigureAwait(false);
+			using var acknowledgement = JsonDocument.Parse(body);
+			if (acknowledgement.RootElement.ValueKind != JsonValueKind.Object ||
+				!acknowledgement.RootElement.TryGetProperty("status", out var status) ||
+				status.ValueKind != JsonValueKind.String ||
+				!string.Equals(status.GetString(), "Rebooting", StringComparison.Ordinal))
+			{
+				Log.Error("ESPixelStick reboot request returned an unexpected acknowledgement");
+				throw new FppClientException("ESPixelStick reboot request returned an unexpected acknowledgement.");
+			}
+		}
+		catch (JsonException ex)
+		{
+			Log.Error(ex, "ESPixelStick reboot request returned invalid JSON");
+			throw new FppClientException("ESPixelStick reboot request returned invalid JSON.", ex);
+		}
+	}
+
+	private async Task UploadEspPixelStickFileAsync(
+		string filename, Stream content, string fileType, CancellationToken cancellationToken)
+	{
+		ArgumentException.ThrowIfNullOrWhiteSpace(filename);
+		ArgumentNullException.ThrowIfNull(content);
+		if (filename.Contains('/') || filename.Contains('\\'))
+		{
+			throw new ArgumentException("The filename must not contain path separators.", nameof(filename));
+		}
+
+		if (!content.CanRead)
+		{
+			throw new ArgumentException("The content stream must be readable.", nameof(content));
+		}
+
+		var url = $"/fpp?path=uploadFile&filename={Uri.EscapeDataString(filename)}";
+		Log.Debug("Uploading ESPixelStick {FileType} {Filename}", fileType, filename);
+
+		using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+		cts.CancelAfter(_options.UploadTimeout);
+
+		using var streamContent = new StreamContent(content);
+		streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+		using var response = await _httpClient.PostAsync(url, streamContent, cts.Token).ConfigureAwait(false);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			Log.Error("ESPixelStick {FileType} upload of {Filename} failed with HTTP {StatusCode}",
+				fileType, filename, (int)response.StatusCode);
+			throw new FppClientException(
+				$"ESPixelStick {fileType} upload of '{filename}' failed with HTTP {(int)response.StatusCode}.",
+				(int)response.StatusCode);
+		}
+
+		try
+		{
+			await using var responseStream = await response.Content.ReadAsStreamAsync(cts.Token).ConfigureAwait(false);
+			using var metadata = await JsonDocument.ParseAsync(responseStream, cancellationToken: cts.Token)
+				.ConfigureAwait(false);
+			if (metadata.RootElement.ValueKind != JsonValueKind.Object ||
+				!metadata.RootElement.TryGetProperty("Name", out var name) ||
+				name.ValueKind != JsonValueKind.String ||
+				!string.Equals(name.GetString(), filename, StringComparison.Ordinal))
+			{
+				Log.Error("ESPixelStick {FileType} upload of {Filename} returned unexpected metadata",
+					fileType, filename);
+				throw new FppClientException(
+					$"ESPixelStick {fileType} upload of '{filename}' returned unexpected file metadata.");
+			}
+		}
+		catch (JsonException ex)
+		{
+			Log.Error(ex, "ESPixelStick {FileType} upload of {Filename} returned invalid JSON",
+				fileType, filename);
+			throw new FppClientException(
+				$"ESPixelStick {fileType} upload of '{filename}' returned invalid JSON.", ex);
+		}
+	}
+
+	/// <inheritdoc/>
 	public Task UploadMusicAsync(string filename, Stream content, CancellationToken cancellationToken = default) =>
 		UploadFileAsync("music", filename, content, cancellationToken);
 
@@ -142,7 +250,10 @@ internal sealed class FppClient : IFppClient
 
 		Log.Debug("Renaming {Source} to {Dest} in {DirName}", source, dest, dirName);
 
-		using var response = await _httpClient.PostAsync(url, content: null, cancellationToken)
+		using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+		cts.CancelAfter(_options.Timeout);
+
+		using var response = await _httpClient.PostAsync(url, content: null, cts.Token)
 			.ConfigureAwait(false);
 
 		if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -169,7 +280,10 @@ internal sealed class FppClient : IFppClient
 
 		Log.Debug("Restarting FPPD (quick={Quick})", quick);
 
-		using var response = await _httpClient.GetAsync(url, cancellationToken)
+		using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+		cts.CancelAfter(_options.Timeout);
+
+		using var response = await _httpClient.GetAsync(url, cts.Token)
 			.ConfigureAwait(false);
 
 		if (!response.IsSuccessStatusCode)
@@ -192,7 +306,10 @@ internal sealed class FppClient : IFppClient
 	{
 		Log.Debug("GET {RelativeUrl}", relativeUrl);
 
-		using var response = await _httpClient.GetAsync(relativeUrl, ct).ConfigureAwait(false);
+		using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+		cts.CancelAfter(_options.Timeout);
+
+		using var response = await _httpClient.GetAsync(relativeUrl, cts.Token).ConfigureAwait(false);
 
 		if (!response.IsSuccessStatusCode)
 		{
@@ -202,7 +319,7 @@ internal sealed class FppClient : IFppClient
 				(int)response.StatusCode);
 		}
 
-		var body = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+		var body = await response.Content.ReadAsStringAsync(cts.Token).ConfigureAwait(false);
 		return JsonSerializer.Deserialize<T>(body, JsonOptions)!;
 	}
 }

@@ -14,6 +14,10 @@ public sealed record FppSystemInfo
 	/// <summary>Gets the hardware platform name (e.g. <c>"Raspberry Pi"</c>).</summary>
 	public string Platform { get; init; } = string.Empty;
 
+	/// <summary>Gets a value that indicates whether the device supports ZIP uploads.</summary>
+	/// <value><see langword="true"/> if the device can extract uploaded ZIP archives; otherwise, <see langword="false"/>. The default is <see langword="false"/> when the field is omitted.</value>
+	public bool Zip { get; init; }
+
 	/// <summary>Gets the hardware variant (e.g. <c>"Pi 4"</c>).</summary>
 	public string Variant { get; init; } = string.Empty;
 

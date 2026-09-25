@@ -17,6 +17,8 @@ namespace VixenModules.App.ExportWizard
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly BulkExportWizardData _data;
 		private bool _cancelled;
+		private bool _uploadFailed;
+		private CancellationTokenSource _directUploadCancellation;
 		private AutoCompleteStringCollection _namesCollection = new();
 		private BindingList<ExportProfile> _profiles;
 
@@ -28,7 +30,6 @@ namespace VixenModules.App.ExportWizard
 			taskProgress.Maximum = 100;
 			overallProgress.Minimum = 0;
 			overallProgress.Maximum = 100;
-			//lblSummary.Font = ThemeUpdateControls.SizeAndStyleFont(lblSummary.Font, lblSummary.Font.Size + 4, FontStyle.Bold);
 		}
 
 		private void ConfigureSummary()
@@ -73,6 +74,7 @@ namespace VixenModules.App.ExportWizard
 			}
 
 			// FPP device info — hidden by default; shown only when Direct Upload is active
+			lblFppInfo.Text = "FPP Device Info";
 			lblFppInfo.Visible = false;
 			lblFppHostName.Visible = lblFppHostNameValue.Visible = false;
 			lblFppDescription.Visible = lblFppDescriptionValue.Visible = false;
@@ -96,6 +98,8 @@ namespace VixenModules.App.ExportWizard
 		{
 			try
 			{
+				_cancelled = false;
+				_uploadFailed = false;
 				taskProgress.Visible = false;
 				overallProgress.Visible = false;
 				lblTaskProgress.Visible = false;
@@ -138,6 +142,7 @@ namespace VixenModules.App.ExportWizard
 		public override void StageCancelled()
 		{
 			_cancelled = true;
+			_directUploadCancellation?.Cancel();
 			_data.Export.Cancel();
 		}
 
@@ -171,16 +176,95 @@ namespace VixenModules.App.ExportWizard
 		private async Task<bool> DoExport(IProgress<ExportProgressStatus> progress)
 		{
 			var updateIntervalHold = VixenSystem.DefaultUpdateInterval;
-			VixenSystem.DefaultUpdateInterval = _data.ActiveProfile.Interval;
+			IFppClient directClient = null;
+			FppDirectUploadService directService = null;
+			var zipSequences = new List<EspPixelStickSequenceFile>();
+			try
+			{
+				if (_data.ActiveProfile.FppDirectUpload && _data.ActiveProfile.IsFalcon2xFormat)
+				{
+					_directUploadCancellation = new CancellationTokenSource();
+					var factory = new FppClientFactory();
+					directClient = factory.Create(new FppClientOptions
+					{
+						BaseUrl = $"http://{_data.ActiveProfile.FppHostAddress}/"
+					});
+					directService = await FppDirectUploadService.DetectAsync(
+						directClient, _directUploadCancellation.Token);
+					if (directService.IsEspPixelStick)
+					{
+						UpdateEspPixelStickSummary(directService.SupportsZipArchives);
+					}
+				}
+
+				VixenSystem.DefaultUpdateInterval = _data.ActiveProfile.Interval;
 			var exportProgressStatus = new ExportProgressStatus();
-			var overallProgressSteps = _data.ActiveProfile.SequenceFiles.Count * 2d; //There are basically 2 steps for each. Render and export.
+			var sequenceCount = _data.ActiveProfile.SequenceFiles.Count;
+			var useZipArchives = directService?.SupportsZipArchives == true;
+			var plannedZipCount = (sequenceCount + EspPixelStickZipBatchUploader.BatchSize - 1) /
+				EspPixelStickZipBatchUploader.BatchSize;
+			var overallProgressSteps = Math.Max(1d, sequenceCount * 2d +
+				(useZipArchives ? Math.Ceiling(sequenceCount / (double)EspPixelStickZipBatchUploader.BatchSize) * 2 +
+					(sequenceCount > 0 ? 1 : 0) : 0));
 			var overallProgressStep = 0;
+
+			if (useZipArchives)
+			{
+				var duplicateName = _data.ActiveProfile.SequenceFiles
+					.Select(file => Path.GetFileNameWithoutExtension(file) + ".fseq")
+					.GroupBy(name => name, StringComparer.OrdinalIgnoreCase)
+					.FirstOrDefault(group => group.Count() > 1)?.Key;
+				if (duplicateName != null)
+				{
+					throw new InvalidOperationException($"Duplicate sequence filename '{duplicateName}' cannot be uploaded in a ZIP archive.");
+				}
+			}
 
 			exportProgressStatus.OverallProgressMessage = "Overall Progress";
 			progress.Report(exportProgressStatus);
 
 			await Task.Run(async () =>
 			{
+				var zipBatchCount = 0;
+				async Task FlushZipBatchAsync()
+				{
+					var batch = zipSequences.ToArray();
+					var part = ++zipBatchCount;
+					try
+					{
+						await EspPixelStickZipBatchUploader.UploadBatchAsync(batch, part, plannedZipCount,
+							(path, fileName, ct) => directService.UploadArchiveFileAsync(path, fileName, ct), progress,
+							() =>
+							{
+								overallProgressStep++;
+								progress.Report(new ExportProgressStatus(ExportProgressStatus.ProgressType.Overall)
+								{
+									OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100),
+									OverallProgressMessage = "Overall Progress"
+								});
+							}, _directUploadCancellation.Token).ConfigureAwait(false);
+					}
+					catch (OperationCanceledException) when (_cancelled)
+					{
+					}
+					catch (Exception ex)
+					{
+						_cancelled = true;
+						_uploadFailed = true;
+						Logging.Error(ex, "ZIP batch {Part} upload to '{Host}' failed", part,
+							_data.ActiveProfile.FppHostAddress);
+						ShowDirectUploadError(ex.Message);
+					}
+					finally
+					{
+						foreach (var sequenceFile in batch)
+						{
+							if (File.Exists(sequenceFile.Path)) File.Delete(sequenceFile.Path);
+						}
+						zipSequences.Clear();
+					}
+				}
+
 				foreach (var sequenceFile in _data.ActiveProfile.SequenceFiles)
 				{
 					if (_cancelled)
@@ -236,27 +320,111 @@ namespace VixenModules.App.ExportWizard
 					progress.Report(exportProgressStatus);
 
 					//Begin export step.
-					await Export(sequence, progress);
+					await Export(sequence, progress, directService, zipSequences);
 
 					overallProgressStep++;
 					exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
 					progress.Report(exportProgressStatus);
+					if (useZipArchives && !_cancelled && !_uploadFailed &&
+						zipSequences.Count == EspPixelStickZipBatchUploader.BatchSize)
+					{
+						await FlushZipBatchAsync();
+					}
 					
 				}
 
-				if (!_cancelled)
+				if (useZipArchives)
 				{
-					await CreateUniverseFile();
+					if (!_cancelled && !_uploadFailed && zipSequences.Count > 0)
+					{
+						await FlushZipBatchAsync();
+					}
+
+					if (!_cancelled && !_uploadFailed && zipBatchCount > 0)
+					{
+						var rebootService = directService ??
+							throw new InvalidOperationException("The ESPixelStick upload service is unavailable.");
+						overallProgressSteps = Math.Max(1d, overallProgressStep + 1d);
+						try
+						{
+							await EspPixelStickZipBatchUploader.RequestRebootAsync(
+								rebootService.RebootEspPixelStickAsync, progress,
+								() =>
+								{
+									overallProgressStep++;
+									progress.Report(new ExportProgressStatus(ExportProgressStatus.ProgressType.Overall)
+									{
+										OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100),
+										OverallProgressMessage = "Overall Progress"
+									});
+								}, _directUploadCancellation.Token).ConfigureAwait(false);
+						}
+						catch (OperationCanceledException) when (_cancelled)
+						{
+						}
+						catch (Exception ex)
+						{
+							_cancelled = true;
+							_uploadFailed = true;
+							Logging.Error(ex, "ESPixelStick reboot request to '{Host}' failed",
+								_data.ActiveProfile.FppHostAddress);
+							ShowDirectUploadError(ex.Message);
+						}
+					}
 				}
-				exportProgressStatus.TaskProgressMessage = "";
-				exportProgressStatus.TaskProgressValue = 0;
-				exportProgressStatus.OverallProgressMessage = "Completed";
-				progress.Report(exportProgressStatus);
+				else if (!_cancelled)
+				{
+					await CreateUniverseFile(directService);
+				}
+
+				var finalMessage = _uploadFailed ? "Failed" : _cancelled ? "Cancelled" : "Completed";
+				if (useZipArchives)
+				{
+					var finalOverallValue = _cancelled || _uploadFailed
+						? (int)(overallProgressStep / overallProgressSteps * 100)
+						: 100;
+					progress.Report(new ExportProgressStatus(ExportProgressStatus.ProgressType.Overall)
+					{
+						OverallProgressValue = finalOverallValue,
+						OverallProgressMessage = finalMessage
+					});
+				}
+				else
+				{
+					exportProgressStatus.TaskProgressMessage = "";
+					exportProgressStatus.TaskProgressValue = 0;
+					exportProgressStatus.OverallProgressMessage = finalMessage;
+					progress.Report(exportProgressStatus);
+				}
 
 			});
 
-			VixenSystem.DefaultUpdateInterval = updateIntervalHold;
-			return true;
+				return !_cancelled;
+			}
+			catch (OperationCanceledException) when (_cancelled)
+			{
+				return false;
+			}
+			catch (Exception ex)
+			{
+				_cancelled = true;
+				_uploadFailed = true;
+				Logging.Error(ex, "Export for '{Host}' failed", _data.ActiveProfile.FppHostAddress);
+				if (!_data.ActiveProfile.FppDirectUpload || !_data.ActiveProfile.IsFalcon2xFormat) throw;
+				ShowDirectUploadError(ex.Message);
+				return false;
+			}
+			finally
+			{
+				foreach (var sequenceFile in zipSequences)
+				{
+					if (File.Exists(sequenceFile.Path)) File.Delete(sequenceFile.Path);
+				}
+				if (directClient != null) await directClient.DisposeAsync();
+				_directUploadCancellation?.Dispose();
+				_directUploadCancellation = null;
+				VixenSystem.DefaultUpdateInterval = updateIntervalHold;
+			}
 		}
 
 		private bool ShowSequenceLoadError(string sequenceFile)
@@ -281,13 +449,13 @@ namespace VixenModules.App.ExportWizard
 			
 		}
 
-		private async Task CreateUniverseFile()
+		private async Task CreateUniverseFile(FppDirectUploadService service)
 		{
 			if (!_data.ActiveProfile.IsFalcon2xFormat) return;
 
 			if (_data.ActiveProfile.FppDirectUpload)
 			{
-				await CreateUniverseFileDirect();
+				if (service.SupportsFppExtras) await CreateUniverseFileDirect(service);
 			}
 			else
 			{
@@ -320,15 +488,10 @@ namespace VixenModules.App.ExportWizard
 		/// Direct-upload universe file code path: backs up the existing remote file (rename),
 		/// writes the new file to a temp path, uploads it, then deletes the temp file.
 		/// </summary>
-		private async Task CreateUniverseFileDirect()
+		private async Task CreateUniverseFileDirect(FppDirectUploadService svc)
 		{
 			if (!_data.ActiveProfile.CreateUniverseFile && !_data.ActiveProfile.BackupUniverseFile)
 				return;
-
-			var factory = new FppClientFactory();
-			await using var client = factory.Create(
-				new FppClientOptions { BaseUrl = $"http://{_data.ActiveProfile.FppHostAddress}/" });
-			var svc = new FppDirectUploadService(client);
 
 			try
 			{
@@ -337,7 +500,8 @@ namespace VixenModules.App.ExportWizard
 					var now = DateTime.Now;
 					var backupName = $"co-universes.json_{now.Month}{now.Day}{now.Year}"
 					               + $"-{now.Hour}{now.Minute}{now.Second}";
-					await svc.BackupUniverseFileAsync(backupName).ConfigureAwait(false);
+					await svc.BackupUniverseFileAsync(backupName, _directUploadCancellation.Token)
+						.ConfigureAwait(false);
 				}
 
 				if (_data.ActiveProfile.CreateUniverseFile)
@@ -347,8 +511,9 @@ namespace VixenModules.App.ExportWizard
 					try
 					{
 						await _data.Export.Write2xUniverseFile(tempUniverse);
-						await svc.UploadUniverseFileAsync(tempUniverse).ConfigureAwait(false);
-						await svc.RestartFppdAsync().ConfigureAwait(false);
+						await svc.UploadUniverseFileAsync(tempUniverse, _directUploadCancellation.Token)
+							.ConfigureAwait(false);
+						await svc.RestartFppdAsync(ct: _directUploadCancellation.Token).ConfigureAwait(false);
 					}
 					finally
 					{
@@ -356,8 +521,13 @@ namespace VixenModules.App.ExportWizard
 					}
 				}
 			}
+			catch (OperationCanceledException) when (_cancelled)
+			{
+			}
 			catch (Exception ex)
 			{
+				_cancelled = true;
+				_uploadFailed = true;
 				Logging.Error(ex, "Direct upload of universe file to '{Host}' failed",
 					_data.ActiveProfile.FppHostAddress);
 				ShowDirectUploadError(ex.Message);
@@ -382,7 +552,8 @@ namespace VixenModules.App.ExportWizard
 			return true;
 		}
 
-		private async Task Export(ISequence sequence, IProgress<ExportProgressStatus> progress)
+		private async Task Export(ISequence sequence, IProgress<ExportProgressStatus> progress,
+			FppDirectUploadService directService, List<EspPixelStickSequenceFile> zipSequences)
 		{
 			// Resolve audio filename for this sequence regardless of export mode
 			IEnumerable<string> mediaFileNames =
@@ -395,7 +566,7 @@ namespace VixenModules.App.ExportWizard
 			
 			if (_data.ActiveProfile.FppDirectUpload && _data.ActiveProfile.IsFalcon2xFormat)
 			{
-				await ExportDirect(sequence, progress);
+				await ExportDirect(sequence, progress, directService, zipSequences);
 			}
 			else
 			{
@@ -445,16 +616,14 @@ namespace VixenModules.App.ExportWizard
 		/// Direct-upload export code path: writes fseq/audio to temp files then pushes them
 		/// to the FPP device via <see cref="FppDirectUploadService"/>.
 		/// </summary>
-		private async Task ExportDirect(ISequence sequence, IProgress<ExportProgressStatus> progress)
+		private async Task ExportDirect(ISequence sequence, IProgress<ExportProgressStatus> progress,
+			FppDirectUploadService svc, List<EspPixelStickSequenceFile> zipSequences)
 		{
-			var factory = new FppClientFactory();
-			await using var client = factory.Create(
-				new FppClientOptions { BaseUrl = $"http://{_data.ActiveProfile.FppHostAddress}/" });
-			var svc = new FppDirectUploadService(client);
 
 			// Export fseq to a temp file, upload it, then delete the temp file.
 			var tempFseq = Path.Combine(Path.GetTempPath(),
 				Path.GetRandomFileName() + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
+			var retainForArchive = false;
 			try
 			{
 				_data.Export.OutFileName = tempFseq;
@@ -463,31 +632,52 @@ namespace VixenModules.App.ExportWizard
 
 				var fseqFileName = sequence.Name + "."
 					+ _data.Export.ExportFileTypes[_data.ActiveProfile.Format];
-				await svc.UploadSequenceFileAsync(tempFseq, fseqFileName, progress).ConfigureAwait(false);
+				if (svc.SupportsZipArchives)
+				{
+					zipSequences.Add(new EspPixelStickSequenceFile(tempFseq, fseqFileName));
+					retainForArchive = true;
+				}
+				else
+				{
+					await svc.UploadSequenceFileAsync(tempFseq, fseqFileName, progress,
+						_directUploadCancellation.Token).ConfigureAwait(false);
+				}
+			}
+			catch (OperationCanceledException) when (_cancelled)
+			{
+				return;
 			}
 			catch (Exception ex)
 			{
+				_cancelled = true;
+				_uploadFailed = true;
 				Logging.Error(ex, "Direct upload of sequence '{Name}' failed", sequence.Name);
 				ShowDirectUploadError(ex.Message);
 			}
 			finally
 			{
-				if (File.Exists(tempFseq)) File.Delete(tempFseq);
+				if (!retainForArchive && File.Exists(tempFseq)) File.Delete(tempFseq);
 			}
 
 			// Upload audio if included.
-			if (_data.ActiveProfile.IncludeAudio && !string.IsNullOrEmpty(_data.Export.AudioFilename))
+			if (svc.SupportsFppExtras && !_cancelled && _data.ActiveProfile.IncludeAudio
+				&& !string.IsNullOrEmpty(_data.Export.AudioFilename))
 			{
 				try
 				{
 					var audioFileName = _data.ActiveProfile.RenameAudio
 						? _data.Export.FormatAudioFileName(sequence.Name)
 						: Path.GetFileName(_data.Export.AudioFilename);
-					await svc.UploadAudioFileAsync(_data.Export.AudioFilename, audioFileName, progress)
-						.ConfigureAwait(false);
+					await svc.UploadAudioFileAsync(_data.Export.AudioFilename, audioFileName, progress,
+						_directUploadCancellation.Token).ConfigureAwait(false);
+				}
+				catch (OperationCanceledException) when (_cancelled)
+				{
 				}
 				catch (Exception ex)
 				{
+					_cancelled = true;
+					_uploadFailed = true;
 					Logging.Error(ex, "Direct upload of audio for '{Name}' failed", sequence.Name);
 					ShowDirectUploadError(ex.Message);
 				}
@@ -602,6 +792,26 @@ namespace VixenModules.App.ExportWizard
 			msgBox.ShowDialog(this);
 		}
 
+		private void UpdateEspPixelStickSummary(bool supportsZip)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new Action<bool>(UpdateEspPixelStickSummary), supportsZip);
+				return;
+			}
+
+			lblAudioOption.Text = "Not uploaded to ESPixelStick.";
+			lblAudioOutputFolder.Visible = lblAudioDestination.Visible = false;
+			lblUniverseFolder.Visible = lblUniverse.Visible =
+				_data.ActiveProfile.CreateUniverseFile || _data.ActiveProfile.BackupUniverseFile;
+			lblUniverseFolder.Text = "Not uploaded to ESPixelStick.";
+			var route = supportsZip
+				? "FSEQ sequences will be sent in ZIP archives of up to five files, followed by one reboot request."
+				: "FSEQ sequences will be uploaded individually; no reboot is requested.";
+			lblUniverseFileWarning.Text = $"ESPixelStick direct upload sends FSEQ sequences only; audio and universe settings are not uploaded. {route}";
+			lblUniverseFileWarning.Visible = true;
+		}
+
 		private async Task PopulateFppInfoAsync()
 		{
 			var host = _data.ActiveProfile.FppHostAddress;
@@ -615,7 +825,13 @@ namespace VixenModules.App.ExportWizard
 				// assignments do not require Invoke.
 				var info = await client.GetSystemInfoAsync().ConfigureAwait(true);
 
-				if (IsDisposed) return;
+				if (IsDisposed || !_data.ActiveProfile.FppDirectUpload
+					|| !string.Equals(host, _data.ActiveProfile.FppHostAddress, StringComparison.Ordinal)) return;
+
+				if (string.Equals(info.Platform, "ESPixelStick", StringComparison.Ordinal))
+				{
+					UpdateEspPixelStickSummary(info.Zip);
+				}
 
 				lblFppHostNameValue.Text = info.HostName;
 				lblFppDescriptionValue.Text = info.HostDescription;

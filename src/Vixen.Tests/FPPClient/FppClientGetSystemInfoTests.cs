@@ -40,6 +40,47 @@ public class FppClientGetSystemInfoTests
 		Assert.Contains("192.168.1.100", info.IPs);
 	}
 
+	[Theory]
+	[InlineData("\"zip\":true", true)]
+	[InlineData("\"zip\":false", false)]
+	[InlineData("", false)]
+	public async Task GetSystemInfoAsync_ZipCapability_DeserializesTrueFalseAndMissing(string zipProperty, bool expected)
+	{
+		// Arrange
+		var responseJson = $"{{{zipProperty}}}";
+		await using var client = MockHttpMessageHandler.CreateClient(_ =>
+			new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(responseJson) });
+
+		// Act
+		var info = await client.GetSystemInfoAsync(TestContext.Current.CancellationToken);
+
+		// Assert
+		Assert.Equal(expected, info.Zip);
+	}
+
+	[Theory]
+	[InlineData("\"2 days, 4:30\"", "2 days, 4:30")]
+	[InlineData("188100000", "2.04:15:00")]
+	public async Task GetSystemInfoAsync_UtilizationUptime_AcceptsStringOrMilliseconds(string uptimeJson, string expectedUptime)
+	{
+		// Arrange
+		var responseJson = "{\"Utilization\":{\"CPU\":12.5,\"Memory\":42,\"Uptime\":" + uptimeJson + "}}";
+		await using var client = MockHttpMessageHandler.CreateClient(_ =>
+			new HttpResponseMessage(HttpStatusCode.OK)
+			{
+				Content = new StringContent(responseJson)
+			});
+
+		// Act
+		var info = await client.GetSystemInfoAsync(TestContext.Current.CancellationToken);
+
+		// Assert
+		Assert.NotNull(info.Utilization);
+		Assert.Equal(12.5, info.Utilization.CPU);
+		Assert.Equal(42, info.Utilization.Memory);
+		Assert.Equal(expectedUptime, info.Utilization.Uptime);
+	}
+
 	[Fact]
 	public async Task GetSystemInfoAsync_HttpError_ThrowsFppClientException()
 	{
