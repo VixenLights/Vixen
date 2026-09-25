@@ -42,8 +42,23 @@ If the issue description is ambiguous or violates .NET/Catel best practices, you
 
 ## ACTIVE EXECUTION PLAN (Derived from plans.md)
 Provide an exact step-by-step file modification plan matching the structure found in `plans.md`.
-- **[ ] Step 1:** Detailed class/interface declaration changes.
-- **[ ] Step 2:** Implementation adjustments, DI registrations, or XAML bindings. [Include Rider tool tips or Visual Studio explicit file targets based on environment detection].
-- **[ ] Step 3:** Unit testing targets using [Rider Test Runner coverage tools / Visual Studio Test Explorer].
 
-State clearly at the end: "Analysis complete and plan integrated with plans.md. Tell me which file step to execute first."
+CRITICAL FORMATTING BOUNDARIES FOR DOWNSTREAM EXECUTION:
+1. SINGLE OUTER FENCE EXCEPTION: If writing to a standalone Markdown (.md) file, omit the triple backticks entirely. If outputting in chat, use exactly ONE outer fenced code block labeled as `md` that wraps the entire ExecPlan from the very first line to the very last line.
+2. NO NESTED BACKTICKS: Absolutely do not nest internal triple-backtick code fences inside the plan. When showing commands, terminal transcripts, diffs, signatures, or code blocks, you MUST present them as plain text blocks indented by exactly four spaces within the single outer fence.
+3. EXPLICIT STOPPING MARKERS: Group steps into clear, narrative "Milestones" rather than endless lists of individual tasks. Ensure every milestone explicitly states: "STOP HERE for manual review and commit execution before proceeding."
+
+Provide the plan details below using these rules:
+- **[ ] Milestone 1: [Descriptive Narrative Name]**
+    - Context: [Short orientation paragraph explaining impacted files by full path]
+    - Plan of Work: [Prose sequence of edits. Specify exact class/interface declaration changes]
+    - Concrete Steps: [Exact commands and workspace working directories. Show expected transcripts indented 4 spaces]
+    - Validation and Acceptance: [Rider Test Runner/dotCover/Linter instructions. Phrase acceptance as human-verifiable behavior]
+    - STOP BOUNDARY:
+        1. Halt all code execution. Do not proceed to the next milestone.
+        2. Run `git status --short` and `git diff` for the files modified in this milestone.
+        3. Invoke the `commit-msg` skill using the active JIRA ticket ID as the subject prefix.
+        4. Output the final paste-ready commit message inside a clean `Commit message` block as specified by the commit-msg skill workflow.
+        5. Pause and wait for explicit user confirmation before advancing.
+
+State clearly at the end: "Analysis complete and plan integrated with plans.md."
