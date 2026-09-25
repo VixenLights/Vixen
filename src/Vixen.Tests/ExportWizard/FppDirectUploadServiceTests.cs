@@ -59,6 +59,7 @@ public class FppDirectUploadServiceTests
 
 			Assert.True(service.IsEspPixelStick);
 			Assert.False(service.SupportsFppExtras);
+			Assert.False(service.SupportsZipArchives);
 			mockClient.Verify(c => c.GetSystemInfoAsync(ct), Times.Once);
 			mockClient.Verify(c => c.UploadEspPixelStickSequenceAsync(
 					"first.fseq", It.IsAny<Stream>(), ct), Times.Once);
@@ -74,10 +75,74 @@ public class FppDirectUploadServiceTests
 					It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
 			mockClient.Verify(c => c.RestartFppdAsync(
 					It.IsAny<bool>(), It.IsAny<CancellationToken>()), Times.Never);
+			mockClient.Verify(c => c.UploadEspPixelStickArchiveAsync(
+					It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+			mockClient.Verify(c => c.RebootEspPixelStickAsync(
+				It.IsAny<CancellationToken>()), Times.Never);
 		}
 		finally
 		{
 			if (File.Exists(tempPath)) File.Delete(tempPath);
+		}
+	}
+
+	[Fact]
+	public async Task DetectAsync_EspPixelStickZipFalse_UsesIndividualUploadWithoutReboot()
+	{
+		var ct = TestContext.Current.CancellationToken;
+		var mockClient = new Mock<IFppClient>();
+		mockClient.Setup(c => c.GetSystemInfoAsync(ct))
+			.ReturnsAsync(new FppSystemInfo { Platform = "ESPixelStick", Zip = false });
+		mockClient.Setup(c => c.UploadEspPixelStickSequenceAsync(
+				It.IsAny<string>(), It.IsAny<Stream>(), ct)).Returns(Task.CompletedTask);
+		mockClient.Setup(c => c.RebootEspPixelStickAsync(ct)).Returns(Task.CompletedTask);
+		var service = await FppDirectUploadService.DetectAsync(mockClient.Object, ct);
+		var sequencePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".fseq");
+		await File.WriteAllBytesAsync(sequencePath, [1], ct);
+
+		try
+		{
+			Assert.False(service.SupportsZipArchives);
+			await service.UploadSequenceFileAsync(sequencePath, "sequence.fseq", ct: ct);
+			await service.RebootEspPixelStickAsync(ct);
+			mockClient.Verify(c => c.UploadEspPixelStickSequenceAsync(
+				"sequence.fseq", It.IsAny<Stream>(), ct), Times.Once);
+			mockClient.Verify(c => c.UploadEspPixelStickArchiveAsync(
+				It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+			mockClient.Verify(c => c.RebootEspPixelStickAsync(ct), Times.Once);
+		}
+		finally
+		{
+			if (File.Exists(sequencePath)) File.Delete(sequencePath);
+		}
+	}
+
+	[Fact]
+	public async Task DetectAsync_ZipCapableEspPixelStick_UploadsArchiveAndReboots()
+	{
+		var ct = TestContext.Current.CancellationToken;
+		var mockClient = new Mock<IFppClient>();
+		mockClient.Setup(c => c.GetSystemInfoAsync(ct))
+			.ReturnsAsync(new FppSystemInfo { Platform = "ESPixelStick", Zip = true });
+		mockClient.Setup(c => c.UploadEspPixelStickArchiveAsync(
+				It.IsAny<string>(), It.IsAny<Stream>(), ct)).Returns(Task.CompletedTask);
+		mockClient.Setup(c => c.RebootEspPixelStickAsync(ct)).Returns(Task.CompletedTask);
+		var service = await FppDirectUploadService.DetectAsync(mockClient.Object, ct);
+		var archivePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".zip");
+		await File.WriteAllBytesAsync(archivePath, [1, 2, 3], ct);
+
+		try
+		{
+			Assert.True(service.SupportsZipArchives);
+			await service.UploadArchiveFileAsync(archivePath, "batch.zip", ct);
+			await service.RebootEspPixelStickAsync(ct);
+			mockClient.Verify(c => c.UploadEspPixelStickArchiveAsync(
+				"batch.zip", It.IsAny<Stream>(), ct), Times.Once);
+			mockClient.Verify(c => c.RebootEspPixelStickAsync(ct), Times.Once);
+		}
+		finally
+		{
+			if (File.Exists(archivePath)) File.Delete(archivePath);
 		}
 	}
 
@@ -102,11 +167,16 @@ public class FppDirectUploadServiceTests
 
 			Assert.False(service.IsEspPixelStick);
 			Assert.True(service.SupportsFppExtras);
+			Assert.False(service.SupportsZipArchives);
 			mockClient.Verify(c => c.GetSystemInfoAsync(ct), Times.Once);
 			mockClient.Verify(c => c.UploadSequenceAsync(
 					"test.fseq", It.IsAny<Stream>(), ct), Times.Once);
 			mockClient.Verify(c => c.UploadEspPixelStickSequenceAsync(
 					It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+			mockClient.Verify(c => c.UploadEspPixelStickArchiveAsync(
+					It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()), Times.Never);
+			mockClient.Verify(c => c.RebootEspPixelStickAsync(
+				It.IsAny<CancellationToken>()), Times.Never);
 		}
 		finally
 		{
