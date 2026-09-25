@@ -41,6 +41,24 @@ public class FppClientGetSystemInfoTests
 	}
 
 	[Theory]
+	[InlineData("\"zip\":true", true)]
+	[InlineData("\"zip\":false", false)]
+	[InlineData("", false)]
+	public async Task GetSystemInfoAsync_ZipCapability_DeserializesTrueFalseAndMissing(string zipProperty, bool expected)
+	{
+		// Arrange
+		var responseJson = $"{{{zipProperty}}}";
+		await using var client = MockHttpMessageHandler.CreateClient(_ =>
+			new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(responseJson) });
+
+		// Act
+		var info = await client.GetSystemInfoAsync(TestContext.Current.CancellationToken);
+
+		// Assert
+		Assert.Equal(expected, info.Zip);
+	}
+
+	[Theory]
 	[InlineData("\"2 days, 4:30\"", "2 days, 4:30")]
 	[InlineData("188100000", "2.04:15:00")]
 	public async Task GetSystemInfoAsync_UtilizationUptime_AcceptsStringOrMilliseconds(string uptimeJson, string expectedUptime)

@@ -91,6 +91,29 @@ public interface IFppClient : IAsyncDisposable
 	Task UploadEspPixelStickSequenceAsync(string filename, Stream content, CancellationToken cancellationToken = default);
 
 	/// <summary>
+	/// Uploads a ZIP archive to an ESPixelStick device.
+	/// </summary>
+	/// <param name="filename">The destination archive filename on the device.</param>
+	/// <param name="content">A readable stream containing the archive bytes.</param>
+	/// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+	/// <returns>A task that completes when the device confirms the uploaded filename.</returns>
+	/// <exception cref="ArgumentException"><paramref name="filename"/> contains a path separator or <paramref name="content"/> is not readable.</exception>
+	/// <exception cref="ArgumentNullException"><paramref name="filename"/> or <paramref name="content"/> is <see langword="null"/>.</exception>
+	/// <exception cref="FppClientException">The device rejects the upload or returns invalid archive metadata.</exception>
+	/// <exception cref="OperationCanceledException">The operation is canceled or the upload times out.</exception>
+	/// <remarks>The supplied <paramref name="content"/> stream is disposed when the request completes.</remarks>
+	Task UploadEspPixelStickArchiveAsync(string filename, Stream content, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Requests a reboot of the ESPixelStick device.
+	/// </summary>
+	/// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
+	/// <returns>A task that completes when the device acknowledges that it is rebooting.</returns>
+	/// <exception cref="FppClientException">The device rejects the reboot request or returns an invalid acknowledgement.</exception>
+	/// <exception cref="OperationCanceledException">The operation is canceled or the request times out.</exception>
+	Task RebootEspPixelStickAsync(CancellationToken cancellationToken = default);
+
+	/// <summary>
 	/// Uploads a music file to the FPP instance.
 	/// </summary>
 	/// <param name="filename">The destination filename on the FPP instance.</param>

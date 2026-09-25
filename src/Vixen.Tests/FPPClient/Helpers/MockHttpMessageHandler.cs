@@ -28,8 +28,16 @@ internal sealed class MockHttpMessageHandler : HttpMessageHandler
 	/// </summary>
 	internal static IFppClient CreateClient(
 		Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handler)
+		=> CreateClient(handler, new FppClientOptions { BaseUrl = "http://fpp.test/" });
+
+	/// <summary>
+	/// Creates an <see cref="IFppClient"/> backed by the given handler and connection options.
+	/// </summary>
+	internal static IFppClient CreateClient(
+		Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handler,
+		FppClientOptions options)
 	{
 		var httpClient = new HttpClient(new MockHttpMessageHandler(handler));
-		return new FppClient(httpClient, new FppClientOptions { BaseUrl = "http://fpp.test/" });
+		return new FppClient(httpClient, options);
 	}
 }
