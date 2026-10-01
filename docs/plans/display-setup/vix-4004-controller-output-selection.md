@@ -9,6 +9,8 @@ After using Find Patched Outputs in Display Setup, users must be able to select 
 
 The user confirms that the first find on a collapsed controller works, subsequent finds on that controller break selection until Display Setup is closed and reopened, and clicking empty space fails to remove the resulting highlights. This is the manual reproduction baseline; selection counts during the broken state have not been measured.
 
+Follow-up scope (2026-10-01): the original selection fix is implemented and manually validated. Removing outputs before surviving patched outputs now exposes a lookup offset equal to the removed count. This extension must make patch lookup immediately reflect each surviving output's new position during the same Display Setup session. Insertions must retain correct lookup too; the user has not confirmed an insertion failure. The completed milestones below remain historical records, and new work begins at Milestone 4.
+
 ## Progress
 
 
@@ -18,7 +20,11 @@ The user confirms that the first find on a collapsed controller works, subsequen
 - [x] (2026-10-01) Milestone 1: Updated VIX-4004 with user-facing scope, acceptance criteria, and a concise test scenario; preserved the existing status and affected versions.
 
 - [x] (2026-10-01) Milestone 2: Fixed complete selection projection and selection-neutral scroll lookup; added regression coverage for 5,000/5,001 outputs, empty result clearing, saved top output, and mouse gestures. Full-MSBuild test target built successfully; focused suite passed 24/24.
-- [ ] Milestone 3: Complete manual reproduction, solution validation, and final Jira reporting when authorized.
+- [x] (2026-10-01) Milestone 3: User reported a successful full build, all 1,019 unit tests passing, and manual confirmation that repeated finds replace and scroll to the right outputs, empty-space clicks clear selection, modifier selection adds/removes predictably, and finds across expanded groups work. Manual selection across a group boundary can select the group node; the user identified this as a pre-existing issue outside VIX-4004.
+
+- [x] (2026-10-01 22:12Z) Investigated the output-removal offset: ReIndexOutputs updates output objects but not the manager's cached output indexes. Confirmed insertion already updates shifted cached entries. Preserved the user's pre-existing plan edits.
+- [ ] Milestone 4: Record the extended requirements, add mutation regression coverage, and synchronize cached indexes during reindexing.
+- [ ] Milestone 5: Validate removal/insertion lookup in Display Setup and record final evidence.
 
 ## Surprises & Discoveries
 
@@ -35,7 +41,19 @@ Observation: existing coverage missed the reported behavior. `LogicalSelection_R
 
 Observation: the supplied-controller regression path now shares `_PopulateControllerTree(IEnumerable<IControllerDevice>)` with production, including expansion restoration, logical projection, and saved top-node restoration. STA tests create only hidden control handles through a test hook that skips startup population; they do not create or show a form. They verify saved top output and invoke the control's mouse handlers after repeated finds.
 
+Observation: manual selection across a group boundary can select the group node itself, including when selecting only the group node. The user identified this as a pre-existing issue and outside the VIX-4004 change.
+
 Observation: the prior reference plan, `docs/plans/display-setup/display-setup-ok-performance.md` for VIX-3955, establishes logical selection, collapse eviction, and a final 5,000-output page size. Some older narrative sections retain superseded page sizes or reuse-on-collapse behavior. Current source and the recorded final decisions establish the applicable behavior here: 5,000-output pages and eviction on collapse. Preserve those contracts.
+
+Observation (follow-up, 2026-10-01): output removal leaves a second representation of the output index stale. In src/Vixen.Core/Sys/Output/OutputController.cs, RemoveOutputs removes requested objects and calls ReIndexOutputs. ReIndexOutputs assigns sequential CommandOutput.Index values, but does not update OutputControllerManager's dictionary from data-flow adapter to controller/index tuple. getOutputDetailsForDataFlowComponent returns the old tuple.
+
+Evidence: removing original zero-based indexes 2 and 3 moves original output 8 to index 6, while its cached lookup remains 8. Near the end of a controller, the stale lookup can exceed the new OutputCount and be discarded by selection bounds checks. For noncontiguous removal, the offset is the number of removed outputs before each survivor, rather than necessarily the total removed count.
+
+Observation (follow-up): InsertOutputsAt already calls UpdateControllerOutputIndex when reattaching each shifted survivor. Newly inserted outputs use AddOutput and normal registration. The source therefore does not establish the same missing-update defect for insertion. Mixed removal/insertion sequences still need regression coverage; there is no user-confirmed insertion failure.
+
+Observation (follow-up): adapter identity is stable across output renumbering. CommandOutputDataFlowAdapterFactory caches adapters by CommandOutput.Id. Updating the existing manager entry can preserve the output object, adapter, and surviving patch. Re-registering or rebuilding the graph is unnecessary for this defect.
+
+Observation (follow-up): lookup directions use different source data. Elements to Find Patched Outputs uses getOutputDetailsForDataFlowComponent, which reads the stale cache. Outputs to Find Patched Elements in SetupControllersSimple.buttonSelectSourceElements_Click uses the selected current index into oc.Outputs and follows that output's source. Validate both directions with a freshly selected surviving output. An offset only in reverse lookup would require investigating retained logical selection separately; the cache defect alone does not prove that reverse lookup is broken.
 
 ## Decision Log
 
@@ -60,10 +78,28 @@ Decision: route supplied-controller regressions through the same private rebuild
 Rationale: tests must observe restored expansions, selection projection, and saved scroll state in production order.
 Date/Author: 2026-10-01 / Codex.
 
+Decision: leave standalone group-node selection behavior unchanged in VIX-4004.
+Rationale: the user identified it as a pre-existing issue outside this selection-after-find fix.
+Date/Author: 2026-10-01 / Codex.
+
+Decision: append output-index synchronization work as Milestones 4 and 5, preserving completed Milestones 1 through 3 and the user's existing completion records.
+Rationale: output removal is a newly discovered follow-up; the original selection and scroll repair is validated and must remain intact.
+Date/Author: 2026-10-01 22:12Z / Codex.
+
+Decision: update existing registered adapter indexes within OutputController.ReIndexOutputs using OutputControllerManager.UpdateControllerOutputIndex, the existing insertion update path.
+Rationale: the output object's Index and the cached tuple must describe the same current position. Repairing the mutation source fixes subsequent find consumers without rebuilding the data-flow graph or compensating in the tree.
+Date/Author: 2026-10-01 22:12Z / Codex.
+
+Decision: characterize insertion and both lookup directions without assuming an unconfirmed insertion or reverse-lookup defect.
+Rationale: insertion already updates shifted entries; reverse lookup reads current output objects. Covering these paths and mixed operations verifies the contract while keeping production changes tied to demonstrated failures.
+Date/Author: 2026-10-01 22:12Z / Codex.
+
 ## Outcomes & Retrospective
 
 
-Milestone 2 implementation and automated validation are complete. The selection projection now clears focus, anchor, and highlights before explicitly restoring all materialized logical matches. Saved scroll-node lookup now resolves output leaves by controller identity and output index without selecting them. The focused ControllerTreeVirtualizationTests suite passes 24/24 after a successful full-MSBuild Vixen_Tests build; the two new replacement-selection cases failed before the fix as expected. `git diff --check` passes. Rider file-problem diagnostics were unavailable because the configured Gortex connection has no C# LSP provider. Manual profile-based acceptance is still pending for milestone 3.
+Milestones 2 and 3 are complete. The selection projection clears focus, anchor, and highlights before restoring materialized logical matches. Saved scroll-node lookup resolves output leaves by controller identity and output index without selecting them. The focused ControllerTreeVirtualizationTests suite passed 24/24 after a successful full-MSBuild Vixen_Tests build; the two replacement-selection cases failed before the fix as expected. The user reports that the full build and all 1,019 unit tests pass. Manual validation confirmed repeated finds replace and scroll to the correct outputs, empty-space clicks clear selection, modifier selection adds/removes predictably, and finds across expanded group boundaries work. The remaining manually observed group-node selection behavior is pre-existing and outside this change. `git diff --check` passed. Rider file-problem diagnostics were unavailable because the configured Gortex connection has no C# LSP provider.
+
+Follow-up status (2026-10-01 22:12Z): source inspection identifies the missing cache update after removal and a minimal repair in ReIndexOutputs. This turn revises the plan only; the repair and new tests have not been implemented or run. The prior 24 focused tests and 1,019 full tests are historical results for the completed selection repair, not validation of this follow-up. A direction-clarification question was sent to the user; the identified cache defect applies to elements-to-outputs lookup. Both lookup directions remain explicit manual acceptance scenarios.
 
 ## Architecture Design: VIX-4004
 
@@ -85,12 +121,18 @@ Subsystem Component Matrix:
 | src/Vixen.Tests/Common/ControllerTreeVirtualizationTests.cs | Assert selected nodes, exported indexes, colors, clearing, repeated find projection, and saved-top-node restoration using the production rebuild sequence. |
 | src/Vixen.Application/Setup/SetupControllersSimple.cs | Existing selection property delegates to PopulateControllerTree and count UI consumes exported outputs. Verify counts manually; no production edit is currently required. |
 
+Follow-up component scope: src/Vixen.Core/Sys/Output/OutputController.cs is the planned production edit. src/Vixen.Core/Sys/Managers/OutputControllerManager.cs supplies the existing update API and is a read/validation target. Add src/Vixen.Tests/Core/OutputControllerOutputIndexTests.cs and src/Vixen.Tests/Core/OutputControllerOutputIndexTestCollection.cs for real mutation coverage. Existing ControllerTreeVirtualizationTests remain regression protection. No tree selection or patch-discovery rewrite is planned for the established missing-cache-update defect.
+
+Follow-up index contract: for every surviving output at array position j, its CommandOutput.Index and the manager lookup of its existing adapter must both equal j and refer to the owning controller. If an original output at i survives removal of the original-index set R, its new position is i minus the count of removed indexes less than i. Inserting c outputs at position p leaves i less than p unchanged and shifts original i greater than or equal to p to i + c. Preserve output and adapter identity, surviving sources, and removal of deleted adapters from the lookup and graph.
+
 ## Context and Orientation
 
 
 This part of Display Setup is WinForms. `SetupElementsTree.buttonSelectDestinationOutputs_Click()` in `src/Vixen.Application/Setup/SetupElementsTree.cs` discovers patched outputs and calls `DisplaySetup.SelectControllersAndOutputs()` in `src/Vixen.Application/Setup/DisplaySetup.cs`. That assigns `SetupControllersSimple.SelectedControllersAndOutputs`, whose setter calls `ControllerTree.PopulateControllerTree(dictionary)`, then scrolls to the results.
 
 A materialized node means a real TreeNode exists for an output. Collapsed branches discard output TreeNodes and retain logical selection, allowing later expansion to restore the highlights. `_projectingLogicalSelection` suppresses selection capture while rebuilding visual state so clearing/recreating nodes cannot erase the intended logical result.
+
+Follow-up orientation: OutputController owns the ordered output array through its mediator. Its private adapter factory returns the same adapter for a surviving output's GUID. VixenSystem.OutputControllers is a process-wide OutputControllerManager whose dictionary caches controller/index pairs; VixenSystem.DataFlow holds registered adapters and patch relationships. RemoveOutputs calls RemoveOutput on deleted objects, ReIndexOutputs on survivors, then updates names and raises OutputCountChanged. The repair must finish index synchronization before that event is raised. InsertOutputsAt already updates the cached indexes of retained shifted adapters as it reattaches them.
 
 ## ACTIVE EXECUTION PLAN (Derived from .agents/PLANS.md)
 
@@ -154,6 +196,55 @@ Update this plan's living sections with final evidence. When Jira reporting is a
 
 STOP HERE for manual review and commit execution before proceeding. Halt execution, inspect status and scoped diffs, invoke the project commit-msg skill if repository files changed, and output its complete VIX-4004 Commit message. Do not create a commit without explicit authorization.
 
+### Milestone 4: Synchronize output lookup after controller mutations
+
+
+Context: Milestones 1 through 3 are complete and must not be replayed or edited. The new defect is in src/Vixen.Core/Sys/Output/OutputController.cs, where removal renumbers surviving outputs without refreshing cached manager indexes. Read that file, src/Vixen.Core/Sys/Managers/OutputControllerManager.cs, src/Vixen.Core/Sys/CommandOutputDataFlowAdapterFactory.cs, and the relevant tests before editing. Apply the project dotnet-best-practices and csharp-docs skills, since ReIndexOutputs is public and its documented behavior will change. Keep all production signatures unchanged.
+
+Plan of Work: when Jira editing is authorized for this extension, use the project Jira skill to append user-facing scope, acceptance criteria, and test scenarios for lookup immediately after removing outputs. Describe insertion as required regression behavior, not a confirmed defect. Preserve the existing issue history, affected versions, and completed requirements; read the updated issue back. Current authorization is to investigate and revise the local plan, so no Jira write belongs to this revision turn.
+
+Add src/Vixen.Tests/Core/OutputControllerOutputIndexTests.cs. Exercise the real OutputController.RemoveOutputs, ReIndexOutputs, and InsertOutputsAt paths with an in-memory mediator and mocked hardware/module consumer; do not substitute a mocked ReIndexOutputs method or merely test the manager setter. Use a fresh OutputControllerManager and DataFlowManager, registering real output adapters through AddOutput. The constructor requires a module consumer whose Module.DataPolicyFactory can create an IDataPolicy; configure those mocks without starting hardware or loading a persisted profile. If assembly-internal constructor access is unavailable, follow the existing tests' narrow reflection-construction precedent without expanding production public APIs.
+
+Because these paths reference VixenSystem statics, save their prior OutputControllers and DataFlow property values, install test managers through their private setters in a disposable fixture, and restore them even when setup or assertions fail. Put these tests in a new collection with DisableParallelization = true, declared separately in src/Vixen.Tests/Core/OutputControllerOutputIndexTestCollection.cs; use src/Vixen.Tests/Sequencer/SequenceExecutorTestCollection.cs as the existing convention. Do not initialize or shut down the user's application, rewrite configuration, or introduce a production dependency-injection redesign for this regression.
+
+Build output lists with known stable IDs and saved adapter/source references before each mutation. For each survivor, assert its current array position, CommandOutput.Index, manager lookup controller and index, original object identity, adapter identity, and surviving patch source. For each removed output, assert its adapter no longer resolves in the manager and is absent from DataFlowManager. Use real graph source relationships for patched examples, so deletion cleanup and survival are both exercised.
+
+Include a deterministic example with ten outputs: remove original indexes 2 and 3; original index 8 must resolve to 6 and original index 9 to 7 immediately. Test noncontiguous removal, removal at the beginning/end, all outputs removed, and repeated removal. Include a survivor shifted across the 5,000-output page boundary and a count transition from 5,001 to below 5,001. For unaffected outputs before a removed region, indexes remain unchanged. Insertion coverage must include insertion before a patched survivor, at zero, at the end, and removal followed by insertion; verify new outputs are registered exactly once and survivor adapters retain their source connections. Prove ReIndexOutputs can run twice without moving indexes or duplicating registration. Existing insertion characterization may already pass before this fix; record that accurately.
+
+Capture failing removal regressions against the current source before implementing the repair. Change only the ReIndexOutputs loop so every survivor's sequential Index assignment is paired with UpdateControllerOutputIndex(_adapterFactory.GetAdapter(commandOutput), this, index). Use the existing update method rather than AddControllerOutputForDataFlowComponent or RemoveOutput/AddOutput, which would alter registrations or patches. Update the public method's XML summary/remarks to state that it synchronizes output positions and registered lookup indexes without changing output identities or surviving sources. Preserve RemoveOutputs event and naming behavior, insertion's existing cache updates, and all validated ControllerTree selection logic. No general output lifecycle or map-storage redesign is necessary.
+
+Concrete Steps: from C:\Dev\Vixen inspect git status and scoped diffs, run Gortex impact before source edits, and build with full MSBuild before running built tests. Repeat the focused tests after the repair, recording the failing-before/passing-after evidence. Start long-running commands with exec_command and yield_time_ms=10000; when waiting only, use write_stdin with yield_time_ms at least 30000.
+
+    git status --short
+    msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~OutputControllerOutputIndexTests|FullyQualifiedName~ControllerTreeVirtualizationTests"
+    git diff --check
+
+Validation and Acceptance: expect no build errors and no focused failures after the repair; removal cases must fail before it because the cached index differs from the survivor's current position. Record actual pass counts rather than reuse the prior 24-test baseline. Run get_file_problems on every changed C# file and address only diagnostics in changed lines. Run Gortex detect and relevant tests/guards/contract checks after source edits. Manager lookup must be correct before OutputCountChanged observers run; include an observer assertion in the removal regression. The existing selection repair tests must remain green.
+
+STOP BOUNDARY: STOP HERE for manual review and commit execution before proceeding. Stop execution, run git status --short and git diff for this milestone's changed files, invoke .agents/skills/commit-msg/SKILL.md using VIX-4004, output its complete paste-ready Commit message, and wait for explicit human review before starting Milestone 5. Do not create a commit unless explicitly authorized.
+
+### Milestone 5: Validate patch lookup after removal and insertion
+
+
+Context: verify the new cache synchronization through Display Setup using a copy of a profile, then record evidence. Prior selection-fix acceptance remains required. This milestone does not alter completed Milestone 3 or reinterpret its reported results.
+
+Plan of Work: in one Display Setup session, patch distinguishable elements to outputs before and after a removable region on a direct-output controller. Remove two outputs in the region. Find Patched Outputs for the surviving elements and verify their new positions, patch icons, and counts agree, including the final surviving output. Then freshly select each expected output and use Find Patched Elements to verify the original associated element is found. Record both lookup directions explicitly; reverse lookup starts from the selected current output, so a reverse-only failure must be traced separately rather than presumed fixed by the manager update.
+
+Repeat for noncontiguous removals, a paged controller crossing the 5,000 boundary, initially collapsed and already expanded branches, and a second unaffected controller. Insert outputs before a surviving patched element, then repeat both lookup directions. Perform remove-then-insert and repeated remove/find sequences without closing Display Setup. The inserted outputs should be unpatched, removed outputs should no longer have patch points, and surviving patch relationships should retain their elements. Verify normal unmodified clicks, empty-space clearing, Ctrl selection, and counts still satisfy the completed selection fix. Verify persistence once with OK/reopen and discard once with Cancel/reopen on the copied profile.
+
+Concrete Steps: from C:\Dev\Vixen reuse the already-built focused tests if source is unchanged, then run the full built suite and a Release x64 solution rebuild because the production change affects Vixen.Core and its application consumers.
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/
+    msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64
+    git diff --check
+
+Validation and Acceptance: expect no failures or build errors; record actual counts, warnings, and the manual outcomes for each lookup direction. Source-confirmed insertion updates are not a substitute for checking insertion at runtime. Do not claim the new bug fixed if manual removal lookup remains unavailable or if a reverse-only discrepancy remains unexplained.
+
+Update Progress, Surprises & Discoveries, Decision Log, Outcomes & Retrospective, and Artifacts and Notes with new results while preserving historical milestones. When Jira reporting is authorized, reconcile the extended acceptance criteria with the final implementation and add a concise user-facing validation comment using the project Jira skill. Read the issue back; workflow transitions are not included.
+
+STOP BOUNDARY: STOP HERE for manual review and commit execution before proceeding. Stop execution, run git status --short and scoped git diff, invoke .agents/skills/commit-msg/SKILL.md with VIX-4004 for any repository changes, output the complete Commit message, and wait for explicit human review. Do not create a commit unless explicitly authorized.
+
 ## Validation and Acceptance
 
 
@@ -161,20 +252,28 @@ The observable contract is exact agreement between highlighted outputs, Selected
 
 Automated coverage must expose the production rebuild order, not just assert the logical HashSet. Manual mouse acceptance is required even when keyboard and selection-helper tests pass.
 
+Follow-up acceptance: immediately after deletion or insertion, finding a surviving patched element's outputs must select their current positions with the right counts. Freshly selecting those outputs and finding their elements must resolve their surviving sources. Removed adapters must not resolve, new output adapters must register normally, and survivors must keep their output and adapter identities. Each removed index before a survivor subtracts one from its old position; insertion adds the inserted count for survivors at or after its insertion point. Exercise direct and paged outputs and mixed mutations within one session.
+
 ## Idempotence and Recovery
 
 
 Repeated find and population calls must produce the same result without accumulating highlights or selection entries. Use exception-safe projection guards and update scopes. Re-read files after user edits and preserve unrelated changes. To recover from an unsuccessful local implementation, inspect and reverse only this issue's scoped edits; never reset the entire working tree. Do not save profile experiments to the user's original configuration.
+
+For the follow-up, repeat ReIndexOutputs and verify no additional index shift or duplicate registration occurs. Tests replacing VixenSystem managers must always restore previous static values and must not overlap other test collections. Production repair must update existing map entries rather than reconstruct surviving adapters. Preserve the user's pre-existing plan edits, which already recorded Milestone 3 completion when this revision began.
 
 ## Artifacts and Notes
 
 
 Analysis command: `git status --short` returned no changes before plan creation. The Jira issue has no attachments or comments. Source inspection and user reproduction details are recorded above. No runtime debugger session, build, or test run was performed during planning.
 
+Follow-up analysis evidence (2026-10-01): git status --short showed only this plan modified before revision; git diff showed user-owned Milestone 3 completion and group-node scope records. Source inspection confirmed RemoveOutputs -> ReIndexOutputs changes only CommandOutput.Index, while manager lookup still returns its cached tuple. InsertOutputsAt already calls UpdateControllerOutputIndex for shifted survivors. No source edits, runtime debugger session, builds, tests, or Jira writes were performed for this revision. Pending implementation must record new validation independently of the original fix's reported results.
+
 ## Interfaces and Dependencies
 
 
 Preserve existing public ControllerTree population and selection signatures. Use existing ClearSelectedNodes, AddSelectedNode, logical identity records, and materialized-leaf enumeration. No persistence change, project addition, NuGet package, Catel binding, or async behavior change is required. Internal test access may be expanded only enough to invoke production sequencing. Read the applicable project skills before implementation.
+
+Follow-up public API contract: keep void OutputController.ReIndexOutputs() and all removal/insertion signatures unchanged. Its implementation will additionally synchronize existing output-adapter lookup entries through bool OutputControllerManager.UpdateControllerOutputIndex(IDataFlowComponent component, IControllerDevice controller, int outputIndex). Preserve that method's existing update-only behavior and return contract; do not create missing registrations inside ReIndexOutputs. Add XML documentation for ReIndexOutputs in the same source change. Use existing xUnit/Moq dependencies and the repository's nonparallel test collection convention; no new package or production abstraction is required.
 
 ## Revision Notes
 
@@ -182,3 +281,7 @@ Preserve existing public ControllerTree population and selection signatures. Use
 2026-10-01 / Codex: Created the plan after the user confirmed standard single-click replacement behavior, first-find success on a collapsed controller, later-find failure until reopening Display Setup, and failed empty-space clearing. Scoped implementation to selection projection and selection-neutral scroll lookup, with production-path regression and manual acceptance.
 
 Analysis complete and plan integrated with plans.md.
+
+2026-10-01 22:12Z / Codex: Appended Milestones 4 and 5 after the user reported incorrect patch lookup positions following output removal. Identified a stale manager index tuple because ReIndexOutputs renumbers only output objects, and prescribed update of existing cache entries with stable adapter identity. Added removal, insertion, mixed-operation, and both-direction validation while preserving completed Milestones 1 through 3 and the user's uncommitted completion records. Insertion remains an unconfirmed runtime concern; its current source already updates shifted entries.
+
+Plan revision complete and recorded in the Decision Log. Ready for coding model to implement the next milestone.
