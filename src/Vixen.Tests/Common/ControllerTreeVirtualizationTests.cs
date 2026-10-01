@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using Common.Controls;
@@ -219,6 +220,99 @@ public sealed class ControllerTreeVirtualizationTests
 		Assert.Equal([9999], selected.Value);
 	}
 
+	/// <summary>
+	/// Verifies replacement selection clears stale highlights on materialized outputs.
+	/// </summary>
+	/// <param name="outputCount">The controller output count.</param>
+	/// <param name="firstOutput">The output selected by the first projection.</param>
+	/// <param name="nextOutput">The output selected by the replacement projection.</param>
+	[Theory]
+	[InlineData(5000, 1, 4999)]
+	[InlineData(5001, 1, 5000)]
+	public void LogicalSelection_ReplacingMaterializedOutputsClearsOldHighlights(int outputCount, int firstOutput, int nextOutput)
+	{
+		var controller = CreateController(outputCount);
+		using var controllerTree = new ControllerTree();
+		controllerTree.PopulateControllerTreeForTests([controller]);
+
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [firstOutput] });
+		TreeNode firstNode = Assert.Single(controllerTree.SelectedTreeNodes);
+
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [nextOutput] });
+
+		TreeNode selectedNode = Assert.Single(controllerTree.SelectedTreeNodes);
+		Assert.Equal(nextOutput, Assert.IsType<int>(selectedNode.Tag));
+		Assert.Equal(SystemColors.Highlight, selectedNode.BackColor);
+		Assert.Equal(SystemColors.HighlightText, selectedNode.ForeColor);
+		Assert.Equal(controllerTree.TreeViewForTests.BackColor, firstNode.BackColor);
+		Assert.Equal(controllerTree.TreeViewForTests.ForeColor, firstNode.ForeColor);
+		Assert.Equal([nextOutput], Assert.Single(controllerTree.GetSelectedControllerOutputs()).Value);
+
+		controllerTree.SetLogicalSelectionForTests(new Dictionary<IControllerDevice, HashSet<int>>());
+
+		Assert.Empty(controllerTree.SelectedTreeNodes);
+		Assert.Empty(controllerTree.GetSelectedControllerOutputs());
+		Assert.Equal(controllerTree.TreeViewForTests.BackColor, selectedNode.BackColor);
+		Assert.Equal(controllerTree.TreeViewForTests.ForeColor, selectedNode.ForeColor);
+	}
+
+	/// <summary>
+	/// Verifies that restoring a saved top output does not add it to a replacement selection.
+	/// </summary>
+	[StaFact]
+	public void RebuildingTree_RestoresTopOutputWithoutSelectingIt()
+	{
+		var controller = CreateController(10000, outputNames: _ => "Duplicate output name");
+		using var controllerTree = new ControllerTree { Size = new Size(400, 400) };
+		controllerTree.CreateControlForTests();
+
+		controllerTree.RebuildControllerTreeForTests([controller], new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [1] });
+		TreeNode controllerNode = controllerTree.TreeViewForTests.Nodes[0];
+		controllerTree.ExpandNodeForTests(controllerNode);
+		TreeNode firstRange = controllerNode.Nodes[0];
+		controllerTree.ExpandNodeForTests(firstRange);
+		firstRange.Expand();
+		TreeNode oldTopNode = firstRange.Nodes[123];
+		controllerTree.TreeViewForTests.TopNode = oldTopNode;
+
+		controllerTree.RebuildControllerTreeForTests([controller], new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [9999] });
+
+		TreeNode selectedNode = Assert.Single(controllerTree.SelectedTreeNodes);
+		Assert.Equal(9999, Assert.IsType<int>(selectedNode.Tag));
+		Assert.Equal(123, Assert.IsType<int>(controllerTree.TreeViewForTests.TopNode.Tag));
+		Assert.Equal([9999], Assert.Single(controllerTree.GetSelectedControllerOutputs()).Value);
+	}
+
+	/// <summary>
+	/// Verifies ordinary mouse clicks replace selection and empty-space clicks clear it.
+	/// </summary>
+	[StaFact]
+	public void MouseSelection_AfterRepeatedFindsCanSelectOneOutputAndClear()
+	{
+		var controller = CreateController(3);
+		using var controllerTree = new ControllerTree { Size = new Size(400, 400) };
+		controllerTree.CreateControlForTests();
+
+		controllerTree.RebuildControllerTreeForTests([controller], new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [0] });
+		controllerTree.RebuildControllerTreeForTests([controller], new Dictionary<IControllerDevice, HashSet<int>> { [controller] = [1] });
+
+		TreeView treeView = controllerTree.TreeViewForTests;
+		TreeNode clickedNode = Assert.Single(treeView.Nodes[0].Nodes.Cast<TreeNode>(), node => node.Tag is int index && index == 2);
+		Point clickLocation = new(clickedNode.Bounds.X + 3, clickedNode.Bounds.Y + clickedNode.Bounds.Height / 2);
+		InvokeMouseEvent(treeView, "OnMouseDown", new MouseEventArgs(MouseButtons.Left, 1, clickLocation.X, clickLocation.Y, 0));
+		InvokeMouseEvent(treeView, "OnMouseUp", new MouseEventArgs(MouseButtons.Left, 1, clickLocation.X, clickLocation.Y, 0));
+
+		Assert.Same(clickedNode, Assert.Single(controllerTree.SelectedTreeNodes));
+		Assert.Equal([2], Assert.Single(controllerTree.GetSelectedControllerOutputs()).Value);
+
+		Point emptySpace = new(treeView.ClientSize.Width - 1, treeView.ClientSize.Height - 1);
+		Assert.Null(treeView.GetNodeAt(emptySpace));
+		InvokeMouseEvent(treeView, "OnMouseDown", new MouseEventArgs(MouseButtons.Left, 1, emptySpace.X, emptySpace.Y, 0));
+
+		Assert.Empty(controllerTree.SelectedTreeNodes);
+		Assert.Empty(controllerTree.GetSelectedControllerOutputs());
+	}
+
 	[Fact]
 	public void LogicalSelection_ExpandsMatchedRangesAndHighlightsOnlyMatchingOutputs()
 	{
@@ -238,6 +332,12 @@ public sealed class ControllerTreeVirtualizationTests
 			.Select(node => Assert.IsType<int>(node.Tag));
 		Assert.Equal([5001, 5599], selectedOutputs.Order());
 		Assert.DoesNotContain(controllerTree.GetSelectedControllerOutputs().SelectMany(pair => pair.Value), output => output is < 0 or >= 10000);
+	}
+
+	private static void InvokeMouseEvent(TreeView treeView, string methodName, MouseEventArgs eventArgs)
+	{
+		MethodInfo method = treeView.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)!;
+		method.Invoke(treeView, [eventArgs]);
 	}
 
 	private static ControllerTree PopulateTree(params IControllerDevice[] controllers)

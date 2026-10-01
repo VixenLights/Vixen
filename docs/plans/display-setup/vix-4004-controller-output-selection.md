@@ -17,7 +17,7 @@ The user confirms that the first find on a collapsed controller works, subsequen
 - [x] (2026-10-01) Identified source defects in visual selection projection and top-visible-node lookup; prepared this Rider execution plan.
 - [x] (2026-10-01) Milestone 1: Updated VIX-4004 with user-facing scope, acceptance criteria, and a concise test scenario; preserved the existing status and affected versions.
 
-- [ ] Milestone 2: Add meaningful regression coverage and repair selection projection and scroll lookup.
+- [x] (2026-10-01) Milestone 2: Fixed complete selection projection and selection-neutral scroll lookup; added regression coverage for 5,000/5,001 outputs, empty result clearing, saved top output, and mouse gestures. Full-MSBuild test target built successfully; focused suite passed 24/24.
 - [ ] Milestone 3: Complete manual reproduction, solution validation, and final Jira reporting when authorized.
 
 ## Surprises & Discoveries
@@ -31,7 +31,9 @@ Observation: the full production refresh creates a failure even though tests usi
 
 Observation: restoring scroll position can change selection. `FindNode()` calls `SelectOutput()` for an output identity and retrieves the node from SelectedNodes. This can add the formerly top visible output to the new find result.
 
-Observation: existing coverage misses the reported behavior. `LogicalSelection_ReplacesPreviousOutputs` asserts exported logical indexes, without checking highlight colors or interactions. The supplied-controller test population helper bypasses production expansion and top-node restoration.
+Observation: existing coverage missed the reported behavior. `LogicalSelection_ReplacesPreviousOutputs` asserted exported logical indexes without checking highlight colors or interactions. The original supplied-controller population helper also bypassed production expansion and top-node restoration. New pre-fix regressions failed for both 5,000 and 5,001 outputs: the direct-output case lost selected-node membership, and the paged case retained the old output highlight.
+
+Observation: the supplied-controller regression path now shares `_PopulateControllerTree(IEnumerable<IControllerDevice>)` with production, including expansion restoration, logical projection, and saved top-node restoration. STA tests create only hidden control handles through a test hook that skips startup population; they do not create or show a form. They verify saved top output and invoke the control's mouse handlers after repeated finds.
 
 Observation: the prior reference plan, `docs/plans/display-setup/display-setup-ok-performance.md` for VIX-3955, establishes logical selection, collapse eviction, and a final 5,000-output page size. Some older narrative sections retain superseded page sizes or reuse-on-collapse behavior. Current source and the recorded final decisions establish the applicable behavior here: 5,000-output pages and eviction on collapse. Preserve those contracts.
 
@@ -54,10 +56,14 @@ Decision: finish with regression and manual evidence before claiming runtime res
 Rationale: static source identifies defects, but mouse interactions, counts, and painting still require validation.
 Date/Author: 2026-10-01 / Codex.
 
+Decision: route supplied-controller regressions through the same private rebuild sequence as production.
+Rationale: tests must observe restored expansions, selection projection, and saved scroll state in production order.
+Date/Author: 2026-10-01 / Codex.
+
 ## Outcomes & Retrospective
 
 
-Analysis and planning are complete. Production code and Jira fields remain unchanged. No builds or tests have run during this analysis. The remaining work is implementation and validation, including the user's reproducible scenario. The repository was clean before creating this plan.
+Milestone 2 implementation and automated validation are complete. The selection projection now clears focus, anchor, and highlights before explicitly restoring all materialized logical matches. Saved scroll-node lookup now resolves output leaves by controller identity and output index without selecting them. The focused ControllerTreeVirtualizationTests suite passes 24/24 after a successful full-MSBuild Vixen_Tests build; the two new replacement-selection cases failed before the fix as expected. `git diff --check` passes. Rider file-problem diagnostics were unavailable because the configured Gortex connection has no C# LSP provider. Manual profile-based acceptance is still pending for milestone 3.
 
 ## Architecture Design: VIX-4004
 
