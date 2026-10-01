@@ -33,6 +33,7 @@ namespace Common.Controls
 		private HashSet<OutputIdentity> _selectedOutputs = [];
 		private List<NodeIdentity> _topDisplayedNodes = [];
 		private bool _projectingLogicalSelection;
+		private bool _skipInitialPopulationOnLoadForTests;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool _someSelectedControllersRunning;
 		private bool _someSelectedControllersNotRunning;
@@ -58,9 +59,16 @@ namespace Common.Controls
 
 		private void ControllerTree_Load(object sender, EventArgs e)
 		{
-			if (!(DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime)) {
+			if (!_skipInitialPopulationOnLoadForTests && !(DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime)) {
 				PopulateControllerTree();
 			}
+		}
+
+		internal void CreateControlForTests()
+		{
+			_skipInitialPopulationOnLoadForTests = true;
+			CreateControl();
+			_ = treeview.Handle;
 		}
 
 
@@ -113,6 +121,15 @@ namespace Common.Controls
 			{
 				treeview.EndUpdate();
 			}
+		}
+
+		internal void RebuildControllerTreeForTests(
+			IEnumerable<IControllerDevice> controllers,
+			Dictionary<IControllerDevice, HashSet<int>> controllersAndOutputs)
+		{
+			SetLogicalSelection(controllersAndOutputs);
+			_PopulateControllerTree(controllers);
+			OnControllerSelectionChanged();
 		}
 
 		internal void SelectOutputForTests(IControllerDevice controller, int outputIndex)
@@ -175,7 +192,9 @@ namespace Common.Controls
 		}
 
 
-		private void _PopulateControllerTree()
+		private void _PopulateControllerTree() => _PopulateControllerTree(VixenSystem.OutputControllers);
+
+		private void _PopulateControllerTree(IEnumerable<IControllerDevice> controllers)
 		{
 			_expandedControllerIds = [];
 			_expandedRanges = [];
@@ -186,10 +205,10 @@ namespace Common.Controls
 
 			// clear the treeview, and repopulate it
 			treeview.BeginUpdate();
+			treeview.ClearSelectedNodes();
 			treeview.Nodes.Clear();
-			treeview.SelectedNodes.Clear();
 
-			foreach (IControllerDevice controller in VixenSystem.OutputControllers) {
+			foreach (IControllerDevice controller in controllers) {
 				AddControllerToTree(treeview.Nodes, controller);
 			}
 
@@ -322,10 +341,8 @@ namespace Common.Controls
 			TreeNode controllerNode = FindControllerNode(identity.ControllerId);
 			if (controllerNode == null)
 				return null;
-			if (identity.OutputIndex is int outputIndex) {
-				SelectOutput(identity.ControllerId, outputIndex);
-				return treeview.SelectedNodes.LastOrDefault(node => node.Tag is int index && index == outputIndex);
-			}
+			if (identity.OutputIndex is int outputIndex)
+				return FindOutputNode(controllerNode, outputIndex);
 			if (identity.RangeStart is int rangeStart) {
 				ExpandController(identity.ControllerId);
 				return controllerNode.Nodes.Cast<TreeNode>().FirstOrDefault(node => node.Tag is OutputRange range && range.StartIndex == rangeStart);
@@ -434,34 +451,36 @@ namespace Common.Controls
 
 		private void SelectOutput(IControllerDevice controller, int outputIndex)
 		{
-			if (outputIndex < 0 || outputIndex >= controller.OutputCount)
-				return;
+			TreeNode controllerNode = FindControllerNode(controller.Id);
+			TreeNode outputNode = controllerNode == null ? null : FindOutputNode(controllerNode, outputIndex);
+			if (outputNode != null)
+				treeview.AddSelectedNode(outputNode);
+		}
 
-			var controllerNode = treeview.Nodes.Cast<TreeNode>()
-				.FirstOrDefault(node => node.Tag is IControllerDevice current && current.Id == controller.Id);
-			if (controllerNode == null)
-				return;
+		private TreeNode FindOutputNode(TreeNode controllerNode, int outputIndex)
+		{
+			if (controllerNode?.Tag is not IControllerDevice controller ||
+				outputIndex < 0 || outputIndex >= controller.OutputCount)
+				return null;
 
 			MaterializeNode(controllerNode);
 			controllerNode.Expand();
-			TreeNode outputNode;
 			if (controller.OutputCount <= OutputPageSize)
 			{
-				outputNode = controllerNode.Nodes.Cast<TreeNode>().FirstOrDefault(node => node.Tag is int index && index == outputIndex);
-			}
-			else
-			{
-				int pageStart = outputIndex / OutputPageSize * OutputPageSize;
-				var rangeNode = controllerNode.Nodes.Cast<TreeNode>().FirstOrDefault(node => node.Tag is OutputRange range && range.StartIndex == pageStart);
-				if (rangeNode == null)
-					return;
-				MaterializeNode(rangeNode);
-				rangeNode.Expand();
-				outputNode = rangeNode.Nodes.Cast<TreeNode>().FirstOrDefault(node => node.Tag is int index && index == outputIndex);
+				return controllerNode.Nodes.Cast<TreeNode>()
+					.FirstOrDefault(node => node.Tag is int index && index == outputIndex);
 			}
 
-			if (outputNode != null)
-				treeview.AddSelectedNode(outputNode);
+			int pageStart = outputIndex / OutputPageSize * OutputPageSize;
+			TreeNode rangeNode = controllerNode.Nodes.Cast<TreeNode>()
+				.FirstOrDefault(node => node.Tag is OutputRange range && range.StartIndex == pageStart);
+			if (rangeNode == null)
+				return null;
+
+			MaterializeNode(rangeNode);
+			rangeNode.Expand();
+			return rangeNode.Nodes.Cast<TreeNode>()
+				.FirstOrDefault(node => node.Tag is int index && index == outputIndex);
 		}
 
 		private void SetLogicalSelection(Dictionary<IControllerDevice, HashSet<int>> controllersAndOutputs)
@@ -484,7 +503,7 @@ namespace Common.Controls
 			_projectingLogicalSelection = true;
 			try
 			{
-				treeview.SelectedNodes.Clear();
+				treeview.ClearSelectedNodes();
 				foreach (Guid controllerId in _selectedControllerIds)
 					SelectController(controllerId);
 				foreach (var selectedController in _selectedOutputs.GroupBy(output => output.ControllerId))
@@ -510,6 +529,7 @@ namespace Common.Controls
 						rangeNode.Expand();
 					}
 				}
+				RestoreMaterializedLogicalSelection();
 			}
 			finally
 			{
