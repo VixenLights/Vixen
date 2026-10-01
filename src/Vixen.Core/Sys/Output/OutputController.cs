@@ -248,12 +248,19 @@ namespace Vixen.Sys.Output
 			}
 		}
 
+		/// <summary>
+		/// Reassigns sequential output indexes and synchronizes registered data-flow lookup indexes.
+		/// </summary>
+		/// <remarks>
+		/// Existing output and adapter identities remain unchanged, as do surviving data-flow sources.
+		/// </remarks>
 		public void ReIndexOutputs()
 		{
 			int index = 0;
 			foreach (var commandOutput in Outputs)
 			{
 				commandOutput.Index = index;
+				VixenSystem.OutputControllers.UpdateControllerOutputIndex(_adapterFactory.GetAdapter(commandOutput), this, index);
 				index++;
 			}
 		}
