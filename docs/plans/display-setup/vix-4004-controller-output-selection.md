@@ -15,7 +15,8 @@ The user confirms that the first find on a collapsed controller works, subsequen
 - [x] (2026-10-01) Read VIX-4004, its comments and attachment metadata, the planning and Jira skills, `.agents/PLANS.md`, relevant source and existing controller virtualization tests.
 - [x] (2026-10-01) Confirmed expected unmodified-click behavior and the collapsed-first-find/repeated-find reproduction with the user.
 - [x] (2026-10-01) Identified source defects in visual selection projection and top-visible-node lookup; prepared this Rider execution plan.
-- [ ] Milestone 1: Synchronize Jira requirements and acceptance criteria when issue editing is authorized.
+- [x] (2026-10-01) Milestone 1: Updated VIX-4004 with user-facing scope, acceptance criteria, and a concise test scenario; preserved the existing status and affected versions.
+
 - [ ] Milestone 2: Add meaningful regression coverage and repair selection projection and scroll lookup.
 - [ ] Milestone 3: Complete manual reproduction, solution validation, and final Jira reporting when authorized.
 
