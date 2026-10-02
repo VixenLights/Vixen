@@ -300,7 +300,7 @@ public sealed class WipeTargetNodeSelectionTests
 	}
 
 	[Fact]
-	public void WipeProperties_NormalizedStaleDepthDoesNotNotifyBindings()
+	public void WipeProperties_EmptyTargetsRetainDepthAndNotifyBindings()
 	{
 		// Arrange
 		var effect = new WipeModule();
@@ -325,8 +325,8 @@ public sealed class WipeTargetNodeSelectionTests
 		}
 
 		// Assert
-		Assert.Equal(0, effect.DepthOfEffect);
-		Assert.Equal(0, depthChangedCount);
+		Assert.Equal(1, effect.DepthOfEffect);
+		Assert.Equal(1, depthChangedCount);
 	}
 
 	[Fact]

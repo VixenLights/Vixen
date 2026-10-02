@@ -104,9 +104,21 @@ namespace VixenModules.Effect.Wipe {
 			}
 		}
 
+		/// <summary>
+		/// Creates a clone that preserves Wipe settings and independently copies editable data.
+		/// </summary>
+		/// <returns>A Wipe data clone with independent curves and gradient.</returns>
+		/// <remarks>
+		/// Scalar settings and library metadata are preserved by the memberwise copy. The curves and color gradient are copied
+		/// independently, while the owning <see cref="ModuleDataSet"/> reference remains shared.
+		/// </remarks>
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
-			return (WipeData)MemberwiseClone();
+			var clone = (WipeData)MemberwiseClone();
+			clone.Curve = Curve is null ? null : new Curve(Curve);
+			clone.MovementCurve = MovementCurve is null ? null : new Curve(MovementCurve);
+			clone.ColorGradient = ColorGradient is null ? null : new ColorGradient(ColorGradient);
+			return clone;
 		}
 	}
 

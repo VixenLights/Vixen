@@ -1,6 +1,6 @@
 # VIX-4005 Preserve Wipe settings and independent data when copying
 
-This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. Milestone 1 and the milestone 2 test-only checkpoint are complete; production implementation has not started. Do not create commits without an explicit user request.
+This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. Milestones 1–3 are complete; implementation has not yet had full-suite/manual verification. Do not create commits without an explicit user request.
 
 ## Purpose / Big Picture
 
@@ -14,7 +14,7 @@ Copying, pasting, or cloning a Wipe should retain its settings, including Each E
 - [x] (2026-10-02) Designed preservation of all data fields, independent mutable values, and deferred target validation.
 - [x] (2026-10-02) Milestone 1: Recorded the original Jira description here and aligned the Jira description with user outcomes and acceptance criteria.
 - [x] (2026-10-02) Milestone 2: Added clone-integrity, data-before-target, and empty-target reassignment regressions; pre-production focused run: 17 passed, 7 failed as expected.
-- [ ] Milestone 3: Implement independent Wipe data cloning and defer normalization until targets exist.
+- [x] (2026-10-02) Milestone 3: Deep-cloned Wipe curves/gradient and deferred targeting normalization for empty targets; focused suite: 24 passed.
 - [ ] Milestone 4: Complete automated and manual validation and reconcile Wipe documentation.
 - [ ] Milestone 5: Align the final Jira description and report actual validation results.
 
@@ -63,9 +63,11 @@ Milestone 1 Jira baseline (fetched 2026-10-02, before update):
 >
 > The Target Node Handling setting should maintain whatever setting is on the originating effect.
 
-Analysis and design are complete. Milestone 1 updated the Jira description. Milestone 2 added tests only; no production code or commits have been changed. This plan addresses both the source-obvious target reset and mutable data sharing. Implementation must demonstrate that the complete copy workflow works; a passing raw enum-copy test alone cannot close VIX-4005.
+Analysis and design are complete. Milestone 1 updated the Jira description. Milestone 2 added the regression tests and recorded expected pre-production failures. This plan addresses both the source-obvious target reset and mutable data sharing. Implementation must demonstrate that the complete copy workflow works; a passing raw enum-copy test alone cannot close VIX-4005.
 
-Milestone 2 outcome: `WipeDataCloneTests` inventories and checks all 21 serialized members across WipeData and its base classes, verifies owner identity, mutable-member ownership, null copying, library metadata, and bidirectional point edits. `WipeTargetNodeSelectionTests` covers raw clone and complete JSON clipboard-style assignment before targets, plus empty-target removal and reassignment. Rider reported no file problems in either changed C# file. The full-MSBuild test target exited successfully. The focused test run exited 1 as expected: 17 passed, 7 failed (shared references and target/depth resets). Failure categories and evidence are recorded above. Pause here for manual review before milestone 3.
+Milestone 2 outcome: `WipeDataCloneTests` inventories and checks all 21 serialized members across WipeData and its base classes, verifies owner identity, mutable-member ownership, null copying, library metadata, and bidirectional point edits. `WipeTargetNodeSelectionTests` covers raw clone and complete JSON clipboard-style assignment before targets, plus empty-target removal and reassignment. Rider reported no file problems in either changed C# file. The full-MSBuild test target exited successfully. The focused test run exited 1 as expected: 17 passed, 7 failed (shared references and target/depth resets).
+
+Milestone 3 outcome: `WipeData.CreateInstanceForClone` now preserves the memberwise state while copying Curve, MovementCurve, and ColorGradient via their copy constructors, retaining nulls and the shared ModuleDataSet owner. `WipeModule.UpdateTargetingAttributes` hides both controls and returns without normalizing mode or depth while targets are empty; populated-target rules are unchanged. Added XML documentation to the clone hook, ModuleData override, and TargetNodesChanged. Updated the former empty-target stale-depth test to assert retention and notification, consistent with the new contract. Rider reported no file problems in all three changed C# files. `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded (pre-existing warnings in unrelated files); the focused command from Concrete Steps passed all 24 tests. `git diff --check` passed. Pause here for manual review before milestone 4.
 
 ## Architecture Design: VIX-4005
 
