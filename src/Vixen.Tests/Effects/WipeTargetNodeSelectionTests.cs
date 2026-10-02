@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Drawing;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
@@ -7,10 +8,13 @@ using Moq;
 using Vixen.Module.Effect;
 using Vixen.Module.Property;
 using Vixen.Sys;
+using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Wipe;
 using VixenModules.Property.Location;
 using Xunit;
+using ZedGraph;
 
 namespace Vixen.Tests.Effects;
 
@@ -75,6 +79,71 @@ public sealed class WipeTargetNodeSelectionTests
 		// Assert
 		Assert.Equal(TargetNodeSelection.Group, targetNodeSelection);
 		Assert.Equal(0, depthOfEffect);
+	}
+
+	/// <summary>
+	/// Verifies that copied or deserialized settings survive assignment before destination targets are attached.
+	/// </summary>
+	/// <param name="useSerializedData">`<see langword="true" />` to use clipboard-style serialized data; otherwise, use a raw clone.</param>
+	/// <param name="targetNodeSelection">One of the enumeration values that specifies the copied target handling mode.</param>
+	[Theory]
+	[InlineData(false, TargetNodeSelection.Group)]
+	[InlineData(false, TargetNodeSelection.Individual)]
+	[InlineData(true, TargetNodeSelection.Group)]
+	[InlineData(true, TargetNodeSelection.Individual)]
+	public void WipeModule_ModuleDataAssignedBeforeTargets_PreservesSettingsUntilDestinationValidation(bool useSerializedData, TargetNodeSelection targetNodeSelection)
+	{
+		// Arrange
+		var sourceData = CreateCompleteWipeData(targetNodeSelection);
+		var assignedData = useSerializedData ? RoundTrip(sourceData) : (WipeData)sourceData.Clone();
+		var effect = new WipeModule();
+
+		// Act
+		effect.ModuleData = assignedData;
+
+		// Assert
+		Assert.Equal(targetNodeSelection, GetTargetNodeSelectionValue(effect, "TargetNodeHandling"));
+		Assert.Equal(2, GetIntValue(effect, "DepthOfEffect"));
+		AssertTargetingControlsHidden(effect);
+
+		// Act
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+
+		// Assert
+		Assert.Equal(targetNodeSelection, GetTargetNodeSelectionValue(effect, "TargetNodeHandling"));
+		Assert.Equal(targetNodeSelection == TargetNodeSelection.Individual ? 2 : 0, GetIntValue(effect, "DepthOfEffect"));
+		Assert.Equal(targetNodeSelection, sourceData.TargetNodeSelection);
+		Assert.Equal(2, sourceData.DepthOfEffect);
+		Assert.Equal(50, sourceData.Curve.Points[1].Y);
+		Assert.Equal(0.7, sourceData.ColorGradient.Alphas[1].Alpha);
+	}
+
+	/// <summary>
+	/// Verifies that removing and reattaching targets hides targeting controls without clearing settings.
+	/// </summary>
+	[Fact]
+	public void WipeModule_RemovingAndReassigningTargetsRetainsTargetingSettings()
+	{
+		// Arrange
+		var effect = new WipeModule();
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+		SetPropertyValue(effect, "TargetNodeHandling", TargetNodeSelection.Individual);
+		SetPropertyValue(effect, "DepthOfEffect", 2);
+
+		// Act
+		SetTargetNodesWithoutPropertyValidation(effect, []);
+
+		// Assert
+		Assert.Equal(TargetNodeSelection.Individual, GetTargetNodeSelectionValue(effect, "TargetNodeHandling"));
+		Assert.Equal(2, GetIntValue(effect, "DepthOfEffect"));
+		AssertTargetingControlsHidden(effect);
+
+		// Act
+		SetTargetNodesWithoutPropertyValidation(effect, [CreateTargetNode(4)]);
+
+		// Assert
+		Assert.Equal(TargetNodeSelection.Individual, GetTargetNodeSelectionValue(effect, "TargetNodeHandling"));
+		Assert.Equal(2, GetIntValue(effect, "DepthOfEffect"));
 	}
 
 	[Fact]
@@ -231,7 +300,7 @@ public sealed class WipeTargetNodeSelectionTests
 	}
 
 	[Fact]
-	public void WipeProperties_NormalizedStaleDepthDoesNotNotifyBindings()
+	public void WipeProperties_EmptyTargetsRetainDepthAndNotifyBindings()
 	{
 		// Arrange
 		var effect = new WipeModule();
@@ -256,8 +325,8 @@ public sealed class WipeTargetNodeSelectionTests
 		}
 
 		// Assert
-		Assert.Equal(0, effect.DepthOfEffect);
-		Assert.Equal(0, depthChangedCount);
+		Assert.Equal(1, effect.DepthOfEffect);
+		Assert.Equal(1, depthChangedCount);
 	}
 
 	[Fact]
@@ -320,6 +389,42 @@ public sealed class WipeTargetNodeSelectionTests
 
 		// Assert
 		Assert.Equal(0, refreshCount);
+	}
+
+	private static WipeData CreateCompleteWipeData(TargetNodeSelection targetNodeSelection)
+	{
+		var gradient = new ColorGradient(Color.White);
+		gradient.Colors.Add(new ColorPoint(Color.Blue, 0.5));
+		gradient.Alphas[1].Alpha = 0.7;
+		return new WipeData
+		{
+			Curve = new Curve(new PointPairList(new[] { 0.0, 50.0, 100.0 }, new[] { 0.0, 50.0, 100.0 })),
+			MovementCurve = new Curve(new PointPairList(new[] { 0.0, 50.0, 100.0 }, new[] { 100.0, 50.0, 0.0 })),
+			ColorGradient = gradient,
+			TargetNodeSelection = targetNodeSelection,
+			DepthOfEffect = 2
+		};
+	}
+
+	private static WipeData RoundTrip(WipeData data)
+	{
+		var serializer = new DataContractJsonSerializer(typeof(WipeData));
+		using var stream = new MemoryStream();
+		serializer.WriteObject(stream, data);
+		stream.Position = 0;
+		return (WipeData)serializer.ReadObject(stream)!;
+	}
+
+	private static void AssertTargetingControlsHidden(WipeModule effect)
+	{
+		var properties = TypeDescriptor.GetProperties(effect);
+		var targetNodeHandling = properties[nameof(WipeModule.TargetNodeHandling)];
+		var depthOfEffect = properties[nameof(WipeModule.DepthOfEffect)];
+
+		Assert.NotNull(targetNodeHandling);
+		Assert.False(targetNodeHandling.IsBrowsable);
+		Assert.NotNull(depthOfEffect);
+		Assert.False(depthOfEffect.IsBrowsable);
 	}
 
 	private static WipeData DeserializeJson(string json)

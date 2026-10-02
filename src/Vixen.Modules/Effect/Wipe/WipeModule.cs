@@ -36,8 +36,9 @@ namespace VixenModules.Effect.Wipe
 		private int _steps;
 
 		/// <summary>
-		/// Updates target-specific property visibility and normalized targeting values after the selected targets change.
+		/// Updates target-specific property visibility and normalizes targeting values for populated targets.
 		/// </summary>
+		/// <remarks>Targeting values are normalized only after targets have been attached.</remarks>
 		protected override void TargetNodesChanged()
 		{
 			var previousTargetNodeHandling = _data.TargetNodeSelection;
@@ -655,6 +656,11 @@ namespace VixenModules.Effect.Wipe
 			return _elementData;
 		}
 
+		/// <summary>
+		/// Gets or sets the Wipe effect data.
+		/// </summary>
+		/// <value>The Wipe effect data.</value>
+		/// <remarks>Assigning data loads its settings and defers target-dependent normalization until targets are attached.</remarks>
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -1053,6 +1059,17 @@ namespace VixenModules.Effect.Wipe
 
 		private void UpdateTargetingAttributes()
 		{
+			if (!TargetNodes.Any())
+			{
+				Dictionary<string, bool> emptyTargetPropertyStates = new Dictionary<string, bool>(2)
+				{
+					{nameof(TargetNodeHandling), false},
+					{nameof(DepthOfEffect), false}
+				};
+				SetBrowsable(emptyTargetPropertyStates);
+				return;
+			}
+
 			var depth = DetermineDepth();
 			var hasUsefulIntermediateDepth = HasUsefulIntermediateDepth(depth);
 			var targetNodeHandlingVisible = TargetNodes.Any() && (TargetNodes.Length > 1 || depth > 2);

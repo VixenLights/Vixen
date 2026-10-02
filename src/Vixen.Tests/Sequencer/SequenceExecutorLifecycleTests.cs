@@ -19,7 +19,8 @@ public sealed class SequenceExecutorLifecycleTests
 	private static readonly TimeSpan EndTime = TimeSpan.FromSeconds(1);
 	private static readonly TimeSpan PartialStartTime = TimeSpan.FromMilliseconds(250);
 	private static readonly TimeSpan PartialEndTime = TimeSpan.FromMilliseconds(750);
-	private static readonly TimeSpan DispatchTimeout = TimeSpan.FromMilliseconds(250);
+	private static readonly TimeSpan WorkerStartTimeout = TimeSpan.FromSeconds(5);
+	private static readonly TimeSpan DispatchTimeout = TimeSpan.FromSeconds(2);
 
 	/// <summary>
 	/// Verifies that an initial start returns promptly when timing remains at its configured start.
@@ -31,11 +32,13 @@ public sealed class SequenceExecutorLifecycleTests
 		{
 			timing.AdvanceOnStart = false;
 
-			var playTask = Task.Run(() => executor.Play(TimeSpan.Zero, EndTime));
-			var completed = playTask.Wait(DispatchTimeout);
+			var (playTask, workerStarted) = RunOnWorker(() => executor.Play(TimeSpan.Zero, EndTime));
+			var started = workerStarted.Wait(WorkerStartTimeout);
+			var completed = started && playTask.Wait(DispatchTimeout);
 
 			try
 			{
+				Assert.True(started, "Playback worker was not scheduled in time.");
 				Assert.True(completed, "Initial playback blocked while timing remained at its start.");
 			}
 			finally
@@ -43,7 +46,7 @@ public sealed class SequenceExecutorLifecycleTests
 				if (!completed)
 				{
 					timing.Advance(TimeSpan.FromMilliseconds(1));
-					playTask.Wait(DispatchTimeout);
+					playTask.Wait(WorkerStartTimeout);
 				}
 			}
 		});
@@ -85,11 +88,13 @@ public sealed class SequenceExecutorLifecycleTests
 			timing.AdvanceOnStart = false;
 			timing.ClearOperations();
 
-			var dispatchTask = Task.Run(synchronizationContext.DispatchSingle);
-			var completed = dispatchTask.Wait(DispatchTimeout);
+			var (dispatchTask, workerStarted) = RunOnWorker(synchronizationContext.DispatchSingle);
+			var started = workerStarted.Wait(WorkerStartTimeout);
+			var completed = started && dispatchTask.Wait(DispatchTimeout);
 
 			try
 			{
+				Assert.True(started, "Restart callback worker was not scheduled in time.");
 				Assert.True(completed, "Loop restart blocked while timing remained at zero.");
 			}
 			finally
@@ -97,7 +102,7 @@ public sealed class SequenceExecutorLifecycleTests
 				if (!completed)
 				{
 					timing.Advance(TimeSpan.FromMilliseconds(1));
-					dispatchTask.Wait(DispatchTimeout);
+					dispatchTask.Wait(WorkerStartTimeout);
 				}
 			}
 
@@ -297,11 +302,13 @@ public sealed class SequenceExecutorLifecycleTests
 
 	private static void DispatchAndReleaseIfBlocked(QueuedSynchronizationContext synchronizationContext, TestTiming timing, TimeSpan releasePosition)
 	{
-		var dispatchTask = Task.Run(synchronizationContext.DispatchSingle);
-		var completed = dispatchTask.Wait(DispatchTimeout);
+		var (dispatchTask, workerStarted) = RunOnWorker(synchronizationContext.DispatchSingle);
+		var started = workerStarted.Wait(WorkerStartTimeout);
+		var completed = started && dispatchTask.Wait(DispatchTimeout);
 
 		try
 		{
+			Assert.True(started, "Restart callback worker was not scheduled in time.");
 			Assert.True(completed, "Loop restart blocked while timing remained at its configured start.");
 		}
 		finally
@@ -309,9 +316,21 @@ public sealed class SequenceExecutorLifecycleTests
 			if (!completed)
 			{
 				timing.Advance(releasePosition);
-				dispatchTask.Wait(DispatchTimeout);
+				dispatchTask.Wait(WorkerStartTimeout);
 			}
 		}
+	}
+
+	private static (Task Completion, Task Started) RunOnWorker(Action action)
+	{
+		var started = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var completion = Task.Run(() =>
+		{
+			started.SetResult(true);
+			action();
+		});
+
+		return (completion, started.Task);
 	}
 
 	private static bool CheckForNaturalEnd(SequenceExecutor executor)
