@@ -3,35 +3,33 @@
 ## Purpose
 
 The Chase and Spin effects let users choose whether an effect runs across all selected targets as one group or independently
-for each selected element/group. Wipe currently always flattens all target leaves into one location set, so a wipe across a
-parent group spans every child prop together. This feature extends Wipe with the same target-node handling concept so users can
-apply Wipe independently to child groups at a selected hierarchy depth.
+for each selected element/group. Wipe now supports the same target-node handling concept: Group mode spans all selected child
+props together, while Individual mode applies Wipe independently at a useful selected hierarchy depth.
 
-This document is a feature specification and viability review. The feature is viable with the decisions recorded below. Create
-a Jira issue from the Jira-ready summary near the end of this document, then convert this specification into an ExecPlan under
-`docs/plans/effects/` before implementation.
+This document began as a feature specification and viability review. The feature is implemented; the current behavior and copy
+contract are summarized below. Sections explicitly labelled historical preserve the original pre-implementation analysis.
 
 ## Current Behavior
 
-`src/Vixen.Modules/Effect/Wipe/WipeModule.cs` inherits from `BaseEffect`.
+`src/Vixen.Modules/Effect/Wipe/WipeModule.cs` inherits from `BaseEffect` and supports Group and Individual target handling.
 
-On target changes, Wipe only calls `CheckForInvalidColorData()`. It does not currently:
+- New and legacy Wipe data default to Group with depth 0.
+- Individual mode is available only when the populated target hierarchy supports useful intermediate depths.
+- With no targets attached, Target Node Handling and Depth controls are hidden, but the stored mode and depth are retained. This is a temporary construction/detachment state, so Wipe does not yet know which destination rules to apply.
+- When targets are populated, existing destination rules normalize values: shallow single targets use Group; Group mode resets depth to 0; multiple targets reset depth to 0; a supported deep single target retains a valid intermediate depth or selects the first useful depth.
+- Copying or cloning Wipe data preserves scalar settings and independently copies the intensity curve, movement curve, and color gradient. Editing those values on the copy does not alter the source.
+- A populated destination that does not support the copied Individual mode or depth applies the rules above; unsupported source settings are not forced onto it.
 
-- inspect the target hierarchy depth,
-- expose `TargetNodeSelection`,
-- expose a depth selector,
-- reset an out-of-range depth setting, or
-- refresh browsable target-related attributes.
-
-During prerender, Wipe always builds one location set:
+During prerender, Wipe builds location sets according to the selected mode:
 
 ```csharp
 TargetNodes.SelectMany(x => x.GetLeafEnumerator())
 ```
 
-Each leaf is mapped to its `LocationData` X/Y/Z values, filtered to positive X values, grouped into wipe positions according to
-`Direction`, and rendered by the selected `WipeMovement` mode. Because all selected target leaves are combined before the wipe
-geometry is calculated, the effect uses one bounding rectangle and one wipe timing sequence across all selected targets.
+Each leaf in a render group is mapped to its `LocationData` X/Y/Z values, filtered to positive X values, grouped into wipe
+positions according to `Direction`, and rendered by the selected `WipeMovement` mode. Group mode combines all selected target
+leaves before calculating geometry, using one bounding rectangle and wipe timing sequence. Individual mode calculates these
+values separately for each selected render group.
 
 ## Related Precedent
 
@@ -63,9 +61,9 @@ Their render behavior is:
 - When multiple target nodes are selected, `DepthOfEffect` is reset to 0 and each selected target can be treated as its own
   independent unit in individual mode.
 
-## Proposed User Behavior
+## Implemented User Behavior
 
-Wipe gains a target handling setting with two values:
+Wipe provides a target handling setting with two values:
 
 - `Across Elements/Groups` (`TargetNodeSelection.Group`)
 - `Each Element/Group` (`TargetNodeSelection.Individual`)
@@ -131,7 +129,7 @@ rendering. Do not change Chase or Spin as part of this feature.
 - Multiple selected target nodes reset depth to 0 and each selected node renders independently.
 - The Jira and implementation scope is strictly Wipe. Do not change Chase or Spin behavior.
 
-## Implementation Design
+## Historical Implementation Design
 
 ### Data Model
 
@@ -313,7 +311,7 @@ and may be expensive on large selections, so they should be filtered from the UI
 The primary implementation risk is preserving exact group-mode behavior while factoring the current `_PreRender()` logic into
 helpers. Keep the refactor narrow and verify with a group-mode characterization test if possible.
 
-## Jira-Ready Draft
+## Original Jira-Ready Draft
 
 Title:
 

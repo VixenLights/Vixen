@@ -1,6 +1,6 @@
 # VIX-4005 Preserve Wipe settings and independent data when copying
 
-This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. Milestones 1–3 are complete; implementation has not yet had full-suite/manual verification. Do not create commits without an explicit user request.
+This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. Milestones 1–5 are complete. The local full-suite run retained four unrelated SequenceExecutorLifecycleTests failures; user-reported full-suite validation passed all 1,039 tests. Do not create commits without an explicit user request.
 
 ## Purpose / Big Picture
 
@@ -15,8 +15,8 @@ Copying, pasting, or cloning a Wipe should retain its settings, including Each E
 - [x] (2026-10-02) Milestone 1: Recorded the original Jira description here and aligned the Jira description with user outcomes and acceptance criteria.
 - [x] (2026-10-02) Milestone 2: Added clone-integrity, data-before-target, and empty-target reassignment regressions; pre-production focused run: 17 passed, 7 failed as expected.
 - [x] (2026-10-02) Milestone 3: Deep-cloned Wipe curves/gradient and deferred targeting normalization for empty targets; focused suite: 24 passed.
-- [ ] Milestone 4: Complete automated and manual validation and reconcile Wipe documentation.
-- [ ] Milestone 5: Align the final Jira description and report actual validation results.
+- [x] (2026-10-02) Milestone 4: Release rebuild succeeded; user-reported full test run passed 1,039 tests; recorded local full-suite discrepancy and manual observations; reconciled Wipe documentation.
+- [x] (2026-10-02) Milestone 5: Re-fetched VIX-4005; left its aligned requirements unchanged and added the verified validation summary as a Jira comment.
 
 ## Surprises & Discoveries
 
@@ -67,7 +67,11 @@ Analysis and design are complete. Milestone 1 updated the Jira description. Mile
 
 Milestone 2 outcome: `WipeDataCloneTests` inventories and checks all 21 serialized members across WipeData and its base classes, verifies owner identity, mutable-member ownership, null copying, library metadata, and bidirectional point edits. `WipeTargetNodeSelectionTests` covers raw clone and complete JSON clipboard-style assignment before targets, plus empty-target removal and reassignment. Rider reported no file problems in either changed C# file. The full-MSBuild test target exited successfully. The focused test run exited 1 as expected: 17 passed, 7 failed (shared references and target/depth resets).
 
-Milestone 3 outcome: `WipeData.CreateInstanceForClone` now preserves the memberwise state while copying Curve, MovementCurve, and ColorGradient via their copy constructors, retaining nulls and the shared ModuleDataSet owner. `WipeModule.UpdateTargetingAttributes` hides both controls and returns without normalizing mode or depth while targets are empty; populated-target rules are unchanged. Added XML documentation to the clone hook, ModuleData override, and TargetNodesChanged. Updated the former empty-target stale-depth test to assert retention and notification, consistent with the new contract. Rider reported no file problems in all three changed C# files. `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded (pre-existing warnings in unrelated files); the focused command from Concrete Steps passed all 24 tests. `git diff --check` passed. Pause here for manual review before milestone 4.
+Milestone 3 outcome: `WipeData.CreateInstanceForClone` preserves memberwise state while copying Curve, MovementCurve, and ColorGradient via their copy constructors, retaining nulls and the shared ModuleDataSet owner. `WipeModule.UpdateTargetingAttributes` hides both controls and returns without normalizing mode or depth while targets are empty; populated-target rules are unchanged. Added XML documentation to the clone hook, ModuleData override, and TargetNodesChanged. Updated the former empty-target stale-depth test to assert retention and notification, consistent with the new contract. Rider reported no file problems in all three changed C# files. The focused command from Concrete Steps passed all 24 tests; `git diff --check` passed.
+
+Milestone 4 outcome: The Release solution rebuild command `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64` succeeded with 0 errors and 75 warnings, predominantly pre-existing warnings. Two local full-suite runs each passed 1,035 of 1,039 tests and failed the same four `SequenceExecutorLifecycleTests` cases reporting playback/restart blocked while timing remained at its start. Running that class alone passed all 10 tests. The user separately reported a full run with all 1,039 tests passing. Manual review from the user confirmed Target Node Selection is retained when cloning Wipe to similar elements and fallback works on single-element targets. No manual result was provided for clipboard paste, save/reopen, or editing curves/gradient in the application; automated clone-isolation coverage passed in the focused Wipe suite. Updated `docs/effects/wipe-target-node-selection.md` to distinguish temporary empty targets (retain settings, hide controls) from populated unsupported destinations (apply existing normalization), document independent curve/gradient copies, and label original pre-implementation notes as historical.
+
+Milestone 5 outcome: Re-fetched VIX-4005 immediately before the final update. Its Summary, Scope, and Acceptance Criteria already matched the implemented behavior, so the description was left unchanged. Added Jira comment 40531 with the user-reported 1,039-test pass, the local full-suite results and isolated class rerun, the 24/24 focused result, and exactly the manual observations supplied. No status or assignee change was made.
 
 ## Architecture Design: VIX-4005
 
@@ -203,7 +207,7 @@ Source evidence for the data-before-target route:
         if (!targetNodeHandlingVisible && TargetNodeHandling == TargetNodeSelection.Individual)
             _data.TargetNodeSelection = TargetNodeSelection.Group;
 
-The source shows how settings are overwritten after a successful raw data clone. Runtime/manual evidence remains to be collected during implementation. No build or tests were run to author this plan because no executable code was changed.
+The source showed how settings were overwritten after a successful raw data clone. Implementation and automated tests now cover that route; user-provided manual observations are recorded under Outcomes & Retrospective. No migration, persisted schema change, or shared lifecycle change was needed.
 
 ## Interfaces and Dependencies
 
@@ -219,4 +223,4 @@ Use Curve(Curve) and ColorGradient(ColorGradient); preserve the existing EffectT
 
 Milestone 1 outcome: Jira VIX-4005 now has concise Summary, Scope, and Acceptance Criteria sections describing preserved Wipe settings, destination compatibility, and independent curve/gradient edits. The description does not claim implementation is complete.
 
-Milestone 2 outcome: See the test evidence and focused run results in Outcomes & Retrospective. Only the two scoped test files and this plan changed. Pause here for manual review before milestone 3.
+Milestone 2 outcome: See the test evidence and focused run results in Outcomes & Retrospective. The pre-production checkpoint changed only the two scoped test files and this plan.
