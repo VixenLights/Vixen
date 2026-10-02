@@ -1,6 +1,6 @@
 # VIX-4005 Preserve Wipe settings and independent data when copying
 
-This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This is a design deliverable; implementation and Jira updates have not started. Do not create commits without an explicit user request.
+This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. Milestone 1 is complete; implementation has not started. Do not create commits without an explicit user request.
 
 ## Purpose / Big Picture
 
@@ -12,7 +12,7 @@ Copying, pasting, or cloning a Wipe should retain its settings, including Each E
 
 - [x] (2026-10-02) Read VIX-4005, repository plan conventions, Wipe specification, clone contracts, and editor assignment order; inspected a clean working tree.
 - [x] (2026-10-02) Designed preservation of all data fields, independent mutable values, and deferred target validation.
-- [ ] Milestone 1: Align the Jira description with user outcomes and acceptance criteria.
+- [x] (2026-10-02) Milestone 1: Recorded the original Jira description here and aligned the Jira description with user outcomes and acceptance criteria.
 - [ ] Milestone 2: Add failing clone-integrity and data-before-target regression tests.
 - [ ] Milestone 3: Implement independent Wipe data cloning and defer normalization until targets exist.
 - [ ] Milestone 4: Complete automated and manual validation and reconcile Wipe documentation.
@@ -55,7 +55,13 @@ Date/Author: 2026-10-02 / Codex.
 ## Outcomes & Retrospective
 
 
-Analysis and design are complete. No production code, tests, Jira fields, or commits have been changed. This plan addresses both the source-obvious target reset and mutable data sharing. Implementation must demonstrate that the complete copy workflow works; a passing raw enum-copy test alone cannot close VIX-4005.
+Milestone 1 Jira baseline (fetched 2026-10-02, before update):
+
+> When copy and pasting or cloning a Wipe effect, the setting for the behavior of Across Element/Group, or Each Element Group is not maintained. It always lands on the default Across Elements/Group.
+>
+> The Target Node Handling setting should maintain whatever setting is on the originating effect.
+
+Analysis and design are complete. Milestone 1 updated only the Jira description; no production code, tests, or commits have been changed. This plan addresses both the source-obvious target reset and mutable data sharing. Implementation must demonstrate that the complete copy workflow works; a passing raw enum-copy test alone cannot close VIX-4005.
 
 ## Architecture Design: VIX-4005
 
@@ -205,4 +211,4 @@ Keep the existing signatures:
 
 Use Curve(Curve) and ColorGradient(ColorGradient); preserve the existing EffectTypeModuleData.Clone template. Tests use xUnit v3, Moq, and the current Wipe project reference. Introduce no new runtime dependencies or global copy helper. Apply project csharp-docs and dotnet-best-practices guidance to changed APIs and tests. The associated design-pattern review deliberately recommends retaining the existing plugin boundaries.
 
-Analysis complete and plan integrated with plans.md.
+Milestone 1 outcome: Jira VIX-4005 now has concise Summary, Scope, and Acceptance Criteria sections describing preserved Wipe settings, destination compatibility, and independent curve/gradient edits. The description does not claim implementation is complete. No validation was needed because no executable code changed. Pause here for manual review before milestone 2.
