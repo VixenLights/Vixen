@@ -1,6 +1,6 @@
 # VIX-4005 Preserve Wipe settings and independent data when copying
 
-This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. Milestone 1 is complete; implementation has not started. Do not create commits without an explicit user request.
+This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. Milestone 1 and the milestone 2 test-only checkpoint are complete; production implementation has not started. Do not create commits without an explicit user request.
 
 ## Purpose / Big Picture
 
@@ -13,7 +13,7 @@ Copying, pasting, or cloning a Wipe should retain its settings, including Each E
 - [x] (2026-10-02) Read VIX-4005, repository plan conventions, Wipe specification, clone contracts, and editor assignment order; inspected a clean working tree.
 - [x] (2026-10-02) Designed preservation of all data fields, independent mutable values, and deferred target validation.
 - [x] (2026-10-02) Milestone 1: Recorded the original Jira description here and aligned the Jira description with user outcomes and acceptance criteria.
-- [ ] Milestone 2: Add failing clone-integrity and data-before-target regression tests.
+- [x] (2026-10-02) Milestone 2: Added clone-integrity, data-before-target, and empty-target reassignment regressions; pre-production focused run: 17 passed, 7 failed as expected.
 - [ ] Milestone 3: Implement independent Wipe data cloning and defer normalization until targets exist.
 - [ ] Milestone 4: Complete automated and manual validation and reconcile Wipe documentation.
 - [ ] Milestone 5: Align the final Jira description and report actual validation results.
@@ -28,6 +28,8 @@ The current `WipeData.CreateInstanceForClone()` already returns `(WipeData)Membe
 The reset follows data assignment. `TimedSequenceEditorForm.CloneElements()` at line 3574 assigns cloned ModuleData to a fresh effect before CreateEffectNode attaches targets. Paste does the same at line 5343 with clipboard data. New effects have an empty TargetNodes array. The Wipe ModuleData setter calls UpdateAttributes, which calls UpdateTargetingAttributes. Its current condition resets Individual whenever targetNodeHandlingVisible is false, including when there are no targets; the next condition resets depth because the mode is now Group. This is direct source evidence; runtime reproduction has not been run during planning.
 
 The specification `docs/effects/wipe-target-node-selection.md` describes the original feature and includes historical “current behavior” statements that predate the implementation. Follow the source and existing tests for implemented behavior, while preserving the specification's useful-target and legacy-default contracts. Its instruction to update cloning if replacing MemberwiseClone does not establish that enum copying is currently broken.
+
+Milestone 2 test evidence: the Release test target builds successfully. The focused suite has 24 cases; 17 pass and 7 fail before production changes. Scalar and enum clone comparisons, including both target modes and inherited serialized members, pass. The 7 expected failures identify shared curve/gradient references and target normalization while targets are empty or removed: 2 ownership/isolation tests, 4 clone/clipboard assignment cases (mode or depth is reset), and 1 removal/reassignment case. The tests use complete WipeData JSON round trips for clipboard-style assignment. No runtime or production changes were made.
 
 ## Decision Log
 
@@ -61,7 +63,9 @@ Milestone 1 Jira baseline (fetched 2026-10-02, before update):
 >
 > The Target Node Handling setting should maintain whatever setting is on the originating effect.
 
-Analysis and design are complete. Milestone 1 updated only the Jira description; no production code, tests, or commits have been changed. This plan addresses both the source-obvious target reset and mutable data sharing. Implementation must demonstrate that the complete copy workflow works; a passing raw enum-copy test alone cannot close VIX-4005.
+Analysis and design are complete. Milestone 1 updated the Jira description. Milestone 2 added tests only; no production code or commits have been changed. This plan addresses both the source-obvious target reset and mutable data sharing. Implementation must demonstrate that the complete copy workflow works; a passing raw enum-copy test alone cannot close VIX-4005.
+
+Milestone 2 outcome: `WipeDataCloneTests` inventories and checks all 21 serialized members across WipeData and its base classes, verifies owner identity, mutable-member ownership, null copying, library metadata, and bidirectional point edits. `WipeTargetNodeSelectionTests` covers raw clone and complete JSON clipboard-style assignment before targets, plus empty-target removal and reassignment. Rider reported no file problems in either changed C# file. The full-MSBuild test target exited successfully. The focused test run exited 1 as expected: 17 passed, 7 failed (shared references and target/depth resets). Failure categories and evidence are recorded above. Pause here for manual review before milestone 3.
 
 ## Architecture Design: VIX-4005
 
@@ -211,4 +215,6 @@ Keep the existing signatures:
 
 Use Curve(Curve) and ColorGradient(ColorGradient); preserve the existing EffectTypeModuleData.Clone template. Tests use xUnit v3, Moq, and the current Wipe project reference. Introduce no new runtime dependencies or global copy helper. Apply project csharp-docs and dotnet-best-practices guidance to changed APIs and tests. The associated design-pattern review deliberately recommends retaining the existing plugin boundaries.
 
-Milestone 1 outcome: Jira VIX-4005 now has concise Summary, Scope, and Acceptance Criteria sections describing preserved Wipe settings, destination compatibility, and independent curve/gradient edits. The description does not claim implementation is complete. No validation was needed because no executable code changed. Pause here for manual review before milestone 2.
+Milestone 1 outcome: Jira VIX-4005 now has concise Summary, Scope, and Acceptance Criteria sections describing preserved Wipe settings, destination compatibility, and independent curve/gradient edits. The description does not claim implementation is complete.
+
+Milestone 2 outcome: See the test evidence and focused run results in Outcomes & Retrospective. Only the two scoped test files and this plan changed. Pause here for manual review before milestone 3.
