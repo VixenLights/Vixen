@@ -20,7 +20,9 @@ The existing numeric-dialog defaults, length bounds, divisibility warning, keybo
 - [x] (2026-10-06) Diagnosed the selected-position versus full-list-index error and designed a private-method repair with actual-handler regression coverage and manual dialog acceptance.
 - [x] (2026-10-06) Validated the saved plan: 14 required sections, three milestones and review stops, no Markdown fences, correct full-MSBuild test workflow, clean whitespace, and only this new untracked plan in git status.
 - [x] (2026-10-06) Milestone 1: Updated VIX-4008 to state that the reporter manually reproduced the defect against the listed scenarios; read back the saved issue and confirmed both expected sequences, acceptance criteria, and In Progress status were retained.
-- [ ] Milestone 2: Add failing real-handler regressions, repair all row accesses inside the swap loop, and complete build, diagnostics, automated, and manual acceptance.
+- [x] (2026-10-06) Added six StaFact regressions that invoke the real private handler. After fixing fixture-only compile/assertion issues, the pre-fix run failed four cases and passed two; both ticket cases failed on the incorrect identity at displayed position 3.
+- [x] (2026-10-06) Mapped swap positions through the frozen selected-index array. Full-MSBuild Release test-target builds and focused runs passed; final focused result: 6 passed, 0 failed. Rider checks found no diagnostics on changed production lines; test-file allocation suggestions remain.
+- [ ] Milestone 2: Manual dialog, warning, keyboard, and persistence acceptance remains pending; record actual UI results before marking this milestone complete.
 - [ ] Milestone 3: Record final evidence, reconcile the issue description, and add a concise validation comment.
 
 ## Surprises & Discoveries
@@ -44,6 +46,8 @@ Observation: ReIndexElementNodes updates the list's order text and the form's pr
 Observation: Gortex impact for PerformZigZag reports MEDIUM risk, eight affected graph entries including parameters and the existing click/menu path, and zero test files. A text search found no OrderSetupHelper or Zig Zag tests in src/Vixen.Tests. Rider findTests was attempted but did not return before its orchestration was canceled; do not describe that as a completed no-tests result. A scoped follow-up task exploration rejected its path filter; direct source reads and impact supplied the required evidence.
 
 Observation: src/Vixen.Tests/Setup/SetupPatchingSimpleOutputOrderTests.cs already uses StaFact, named child-control lookup, reflection to invoke private production behavior, and a non-parallel collection. The tests project already references Vixen.Application, which references the Order module. Existing xUnit v3, Xunit.StaFact, and Moq dependencies support focused tests without a new production API or package.
+
+Observation: the first regression build exposed a conditional-expression type mismatch in the new fixture. After correcting it, an initial test run exposed a reference-equality assertion issue with Moq interface proxies; the helper was changed to assert each node by reference. The subsequent pre-fix run had no setup failures and demonstrated the defect in the four offset/gapped cases while the all-row and single-group compatibility cases passed.
 
 ## Decision Log
 
@@ -71,7 +75,9 @@ Date/Author: 2026-10-06 / Codex.
 ## Outcomes & Retrospective
 
 
-The source-level cause and intended behavior are established, with a minimal production edit and concrete regression and dialog checks specified. The latest issue comment confirms the defect was reproduced. Milestone 1 updated the VIX-4008 description to reflect that report; read-back confirmed both reproduction examples, acceptance criteria, and In Progress status remain intact. Implementation, builds, tests, and runtime acceptance remain pending. No result from VIX-4007 is claimed as verification of this repair.
+Milestone 1 aligned VIX-4008 with the reporter-confirmed reproduction. Milestone 2 added six actual-handler STA regressions and mapped selected-subset positions back to full-list row indexes for every read, replacement, and selection update in the swap. Before the production edit, four tests failed on offset/gapped row identities and two compatibility cases passed. After the edit, the Release Vixen_Tests target built successfully and all six focused tests passed.
+
+Validation commands and results: `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` first exited 1 on the fixture's CS0173 conditional-expression type mismatch; after correcting the fixture it exited 0, and after the production edit it exited 0 again. Successful builds reported existing nullable warnings in other test files. `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~Vixen.Tests.Setup.OrderSetupHelperZigZagTests"` exited 1 before the fix with 4 failed and 2 passed, then exited 0 after the fix with 6 passed and 0 failed. `git diff --check` exited 0; `git diff --no-index --check -- NUL src/Vixen.Tests/Setup/OrderSetupHelperZigZagTests.cs` exited 1 with no whitespace diagnostics because the test file is untracked. Rider diagnostics reported no issue on changed production lines; the new test file has weak allocation suggestions only. Gortex change detection reports the production method's eight-entry blast radius; coverage analysis does not link the untracked test file, guards have no configured rules, and contract continues to warn about high change risk. Manual dialog, warning, keyboard, and outer OK/Cancel persistence checks were not run and remain pending. No result from VIX-4007 is claimed as verification of this repair.
 
 ## Architecture Design: VIX-4008 — Patching Order Zig Zag reorders wrong elements for partial selections
 
@@ -280,5 +286,7 @@ The new test type is Vixen.Tests.Setup.OrderSetupHelperZigZagTests in its matchi
 2026-10-06 / Codex: Recorded successful plan structure, whitespace, and worktree-scope checks. Documented the untracked-file limitation of diff-based detection and distinguished unchanged-symbol risk/coverage assessments from actual implementation validation. Builds, tests, and UI checks remain future execution work.
 
 2026-10-06 / Codex: Completed Milestone 1 by updating VIX-4008's stale reproduction statement based on the reporter's confirmation, then reading the issue back. The expected sequences, acceptance criteria, and In Progress status were preserved. No repository implementation files were changed.
+
+2026-10-06 / Codex: Implemented the selected-index mapping and six STA actual-handler regression cases for Milestone 2. The pre-fix focused run reported 4 failed and 2 passed; both ticket cases failed at the expected unselected identity. The post-fix Release test target built successfully and the focused run reported 6 passed. UI acceptance is still pending, including the dialogs, invalid-length warning, keyboard behavior, and persistence boundaries.
 
 Analysis complete and plan integrated with plans.md.
