@@ -1,6 +1,6 @@
 # Open the Patching Order Zig Zag dialog safely (VIX-4007)
 
-This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective in accordance with `.agents/PLANS.md`. Issue: https://vixenlights.atlassian.net/browse/VIX-4007. The design was prepared using `.agents/skills/analyze-and-plan-issue/SKILL.md`. This document records analysis and future implementation; no application code or Jira content has been changed.
+This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective in accordance with `.agents/PLANS.md`. Issue: https://vixenlights.atlassian.net/browse/VIX-4007. The design was prepared using `.agents/skills/analyze-and-plan-issue/SKILL.md`. This document records the analysis and implementation evidence. Milestone 1 updated the VIX-4007 description; application code is unchanged.
 
 ## Purpose / Big Picture
 
@@ -16,7 +16,7 @@ Demonstrate the repair with ten elements: select all ten in Patching Order and c
 - [x] (2026-10-06) Read VIX-4007, including its stack trace, status, comments, links, and attachment metadata. There are no comments, linked issues, or attachments.
 - [x] (2026-10-06) Confirmed a clean starting worktree and inspected HEAD history, OrderSetupHelper, NumberDialog, the Order project, shared-dialog callers, and the relevant VIX-4006 plan.
 - [x] (2026-10-06) Established the source-level cause and prepared a caller-scoped repair with concrete validation and review boundaries.
-- [ ] Milestone 1: Record the planned user outcomes and acceptance criteria in VIX-4007 when execution includes Jira editing.
+- [x] (2026-10-06) Milestone 1: Updated VIX-4007 with concise user outcomes, scope, and acceptance criteria; preserved the original report and exception trace. Read the saved description back and confirmed status remains In Progress.
 - [ ] Milestone 2: Repair dialog construction in the existing click handler and pass module build, Rider diagnostics, and focused manual acceptance.
 - [ ] Milestone 3: Record final validation in this plan and VIX-4007 when Jira reporting is authorized.
 
@@ -45,7 +45,7 @@ Observation: PerformZigZag copies the selected row indexes but its swaps use sta
 
 Observation: `docs/plans/display-setup/vix-4006-patched-output-range-order.md` explicitly records this crash as a separate issue discovered during its completed custom-order validation. Do not revisit its destination sorting or range-label design.
 
-Observation: Jira reports VIX-4007 as Merged / Building, but the selected checkout still contains the crashing constructor call. Starting HEAD is 8605b014c, the VIX-4006 merge. Preserve Jira status; a status label is not evidence that this checkout has the fix.
+Observation: before milestone 1, Jira reported VIX-4007 as In Progress (the user noted the issue had been moved back from an incorrect status). The selected checkout still contains the crashing constructor call. Starting HEAD is 8605b014c, the VIX-4006 merge. Status is unchanged by the milestone 1 description update.
 
 Observation: source searches in `src/Vixen.Tests/` found no NumberDialog or OrderSetupHelper tests. Gortex impact found zero test files for the handler. Rider findTests was invoked for this class/method but did not return before its orchestration call was canceled; do not interpret this as a successful no-tests response. No test runner or build was executed during planning.
 
@@ -68,14 +68,14 @@ Decision: retain the current reorder algorithm, messages, property persistence, 
 Rationale: VIX-4007 requests that the numeric dialog opens safely. The separate selected-row indexing concern does not explain this exception and needs its own scope and evidence.
 Date/Author: 2026-10-06 / Codex.
 
-Decision: finish this turn with a repository-local design and no Jira writes or application implementation.
-Rationale: the user requested analysis and a design. The initial and final Jira milestones below are future execution instructions. The analysis skill requires review stops between execution milestones; AGENTS.md forbids commits unless explicitly requested.
+Decision: execute milestone 1 by updating only the Jira description and recording that outcome here; stop before application implementation.
+Rationale: the user explicitly requested milestone 1, which authorizes the planned user-facing description update. Preserve issue status and unrelated fields; follow the plan's review boundary before milestone 2. The analysis skill requires review stops between execution milestones; AGENTS.md forbids commits unless explicitly requested.
 Date/Author: 2026-10-06 / Codex.
 
 ## Outcomes & Retrospective
 
 
-Analysis is complete. The stack trace matches the source, the invalid interval is identified precisely, and the planned repair is confined to the existing private click handler. Implementation, build results, manual acceptance, and Jira reporting remain pending. The design avoids changing a shared dialog API for one invalid caller and records the separate indexing concern so runtime acceptance does not accidentally claim coverage of that defect.
+Milestone 1 is complete. VIX-4007 now records the user-facing summary, scope, acceptance criteria, ten-element scenario, and 49/50/51 boundary check. The original reproduction and exception evidence remain in the description, and the issue remains In Progress. No application code or validation claims were added. The caller repair, build, diagnostics, and manual acceptance remain pending. The design avoids changing a shared dialog API for one invalid caller and records the separate indexing concern so runtime acceptance does not accidentally claim coverage of that defect.
 
 ## Architecture Design: VIX-4007 — ZigZag setup of Patching Order property crashes Vixen
 
@@ -113,7 +113,7 @@ Primary repository documentation for this area is the completed VIX-4006 plan at
 ## Plan of Work
 
 
-Execute the three milestones in order once implementation is requested. The current analysis request authorizes this local plan only. Do not perform future Jira writes merely while authoring or reviewing the plan. Every execution milestone ends at the explicit review boundary required by the analysis skill. Generate commit messages for repository changes with the project commit-msg skill, but create commits only when explicitly requested.
+Execute the three milestones in order. The user authorized milestone 1; continue to later milestones only after the explicit review boundary. Do not perform future Jira writes merely while authoring or reviewing the plan. Every execution milestone ends at the explicit review boundary required by the analysis skill. Generate commit messages for repository changes with the project commit-msg skill, but create commits only when explicitly requested.
 
 The single source edit replaces the current NumberDialog construction statement with a guarded local block. Keep ShowDialog, the OK check, button disabling/enabling, PerformZigZag, and persistence unchanged. Keep tabs and LF line endings; do not reformat untouched code or clean up existing warnings.
 
@@ -123,7 +123,7 @@ The single source edit replaces the current NumberDialog construction statement 
 ### Milestone 1: Record the dialog behavior and acceptance criteria in Jira
 
 
-Context: VIX-4007 describes a crash selecting Zig Zag and expects a numeric dialog. Preserve its original reproduction and exception evidence. The issue currently has no attachments/comments and is Merged / Building; retain its status and unrelated fields.
+Context: VIX-4007 describes a crash selecting Zig Zag and expects a numeric dialog. Preserve its original reproduction and exception evidence. At execution start the issue was In Progress; retain its status and unrelated fields. It has no attachments, comments, or linked issues.
 
 Plan of Work: when execution includes Jira editing, read the project Jira skill and current issue again, then add concise Summary, Scope, and Acceptance Criteria covering safe opening with 2–49 selected elements, the bounded initial value, the selectable range, cancellation, and existing divisibility feedback. Include the ten-element reproduction and a short 49/50/51 boundary check as the user-facing test scenario. Keep file names, formulas, internal types, and detailed test instructions in this local plan. Do not replace the original stack trace or claim validation has passed. Use a structured update for the description and read the result back.
 
@@ -221,7 +221,7 @@ STOP HERE for manual review and commit execution before proceeding.
 ## Concrete Steps
 
 
-The executable module-build and review commands are given in each milestone with C:\Dev\Vixen as their working directory. During planning, git status --short reported a clean worktree; git log -5 --oneline showed HEAD 8605b014c; source searches located the invalid call and related documentation. Jira was read through its connector and not modified. The module build and runtime scenarios above are future work.
+The executable module-build and review commands are given in each milestone with C:\Dev\Vixen as their working directory. During planning, git status --short reported a clean worktree; git log -5 --oneline showed HEAD 8605b014c; source searches located the invalid call and related documentation. Jira was read, its description was updated and read back, and status was verified as In Progress. The original stack trace remains present in the description. The module build and runtime scenarios above are future work.
 
 If later changes actually affect shared behavior or multiple projects, broaden validation deliberately and document why. For a full Release x64 solution build use:
 
@@ -277,4 +277,6 @@ Use the existing System.Math.Min method, ListView selection collection, NumberDi
 
 2026-10-06 / Codex: Recorded planning structure, whitespace, and worktree validation. Clarified that partial-selection dialog acceptance begins after the first row, and recorded the distinction between untracked-plan checks and source diagnostics.
 
-Analysis complete and plan integrated with plans.md.
+2026-10-06 / Codex: Completed milestone 1 by updating VIX-4007 with the planned user-facing summary, scope, acceptance criteria, and 49/50/51 scenario. Read the saved description back and verified the original exception evidence remains and status is In Progress. No repository source files changed. Paused for milestone review as required by the plan.
+
+Milestone 1 complete; paused at its review boundary before milestone 2.
