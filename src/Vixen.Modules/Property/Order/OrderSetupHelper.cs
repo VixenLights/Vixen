@@ -21,9 +21,13 @@ namespace VixenModules.Property.Order
 			elementList.KeyDown += OnKeyDown;
 		}
 
+		/// <summary>Handles the element list keyboard shortcut for selecting all rows.</summary>
+		/// <param name="sender">The control that raised the keyboard event.</param>
+		/// <param name="e">The keyboard event data.</param>
+		/// <remarks>Pressing A with Control selects all rows and suppresses the key press. Other input continues through the control's normal handling.</remarks>
 		protected void OnKeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.A | e.Control)
+			if (e.KeyCode == Keys.A && e.Control)
 			{
 				elementList.BeginUpdate();
 				foreach (ListViewItem item in elementList.Items)
@@ -79,7 +83,14 @@ namespace VixenModules.Property.Order
 
 		private void ZigZagItems_Click(object sender, EventArgs e)
 		{
-			NumberDialog numberDialog = new NumberDialog("ZigZag Length", "How many pixels to ZigZag?", 50, 2, elementList.SelectedIndices.Count);
+			var selectedCount = elementList.SelectedIndices.Count;
+			if (selectedCount < 2)
+			{
+				return;
+			}
+
+			using var numberDialog = new NumberDialog("ZigZag Length", "How many pixels to ZigZag?",
+				Math.Min(50, selectedCount), 2, selectedCount);
 			var answer = numberDialog.ShowDialog();
 			if (answer == DialogResult.OK)
 			{
