@@ -1,6 +1,6 @@
 # Open the Patching Order Zig Zag dialog safely (VIX-4007)
 
-This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective in accordance with `.agents/PLANS.md`. Issue: https://vixenlights.atlassian.net/browse/VIX-4007. The design was prepared using `.agents/skills/analyze-and-plan-issue/SKILL.md`. This document records the analysis and implementation evidence. Milestone 1 updated the VIX-4007 description; application code is unchanged.
+This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective in accordance with `.agents/PLANS.md`. Issue: https://vixenlights.atlassian.net/browse/VIX-4007. The design was prepared using `.agents/skills/analyze-and-plan-issue/SKILL.md`. This document records the analysis and implementation evidence. Milestone 1 updated VIX-4007, and milestone 2 implemented the caller-side dialog fix.
 
 ## Purpose / Big Picture
 
@@ -17,7 +17,7 @@ Demonstrate the repair with ten elements: select all ten in Patching Order and c
 - [x] (2026-10-06) Confirmed a clean starting worktree and inspected HEAD history, OrderSetupHelper, NumberDialog, the Order project, shared-dialog callers, and the relevant VIX-4006 plan.
 - [x] (2026-10-06) Established the source-level cause and prepared a caller-scoped repair with concrete validation and review boundaries.
 - [x] (2026-10-06) Milestone 1: Updated VIX-4007 with concise user outcomes, scope, and acceptance criteria; preserved the original report and exception trace. Read the saved description back and confirmed status remains In Progress.
-- [ ] Milestone 2: Repair dialog construction in the existing click handler and pass module build, Rider diagnostics, and focused manual acceptance.
+- [ ] Milestone 2: Implementation, Release x64 Order module build, and Rider file diagnostics completed; manual numeric-dialog and reorder acceptance remains pending because no confirmed Release/Output launch with an isolated test profile is configured.
 - [ ] Milestone 3: Record final validation in this plan and VIX-4007 when Jira reporting is authorized.
 
 ## Surprises & Discoveries
@@ -47,7 +47,11 @@ Observation: `docs/plans/display-setup/vix-4006-patched-output-range-order.md` e
 
 Observation: before milestone 1, Jira reported VIX-4007 as In Progress (the user noted the issue had been moved back from an incorrect status). The selected checkout still contains the crashing constructor call. Starting HEAD is 8605b014c, the VIX-4006 merge. Status is unchanged by the milestone 1 description update.
 
-Observation: source searches in `src/Vixen.Tests/` found no NumberDialog or OrderSetupHelper tests. Gortex impact found zero test files for the handler. Rider findTests was invoked for this class/method but did not return before its orchestration call was canceled; do not interpret this as a successful no-tests response. No test runner or build was executed during planning.
+Observation: source searches in `src/Vixen.Tests/` found no NumberDialog or OrderSetupHelper tests. Gortex impact found zero test files for the handler, and the post-edit tests assessment reports 0/1 changed symbols covered. Rider findTests was invoked during planning but did not return before its orchestration call was canceled; do not interpret this as a successful no-tests response. No test runner was run for milestone 2.
+
+Observation: the Release x64 Order module build succeeded and emitted four existing warnings from Vixen.Core (two CS8632 nullable-context warnings, one CS0618 obsolete API warning, and one CS0067 unused event warning). Rider file analysis returned no errors, but many WEAK WARNING suggestions across the legacy file. The changed NumberDialog construction is flagged only for object allocation, which is inherent to creating this dialog. Gortex has no C# LSP provider, and the post-edit contract assessment remains warn (risk score 100, blast size 6) after reviewing the six-symbol impact around the existing menu event path.
+
+Observation: the available Rider `Vixen.Application` configuration is a .NET project configuration and does not confirm a Release/Output launch or an isolated copied profile. Runtime acceptance was deferred to avoid launching the application with an unverified user profile or hardware-output configuration.
 
 ## Decision Log
 
@@ -68,14 +72,14 @@ Decision: retain the current reorder algorithm, messages, property persistence, 
 Rationale: VIX-4007 requests that the numeric dialog opens safely. The separate selected-row indexing concern does not explain this exception and needs its own scope and evidence.
 Date/Author: 2026-10-06 / Codex.
 
-Decision: execute milestone 1 by updating only the Jira description and recording that outcome here; stop before application implementation.
-Rationale: the user explicitly requested milestone 1, which authorizes the planned user-facing description update. Preserve issue status and unrelated fields; follow the plan's review boundary before milestone 2. The analysis skill requires review stops between execution milestones; AGENTS.md forbids commits unless explicitly requested.
+Decision: implement milestone 2 only in ZigZagItems_Click, leaving runtime acceptance pending until a Release/Output launch can be isolated from the user's profile and hardware output.
+Rationale: the user explicitly authorized milestone 2. The available application run configuration does not confirm a Release/Output launch or copied test profile, so compilation and static diagnostics can be reported while UI acceptance remains unverified. Preserve the review boundary before milestone 3; AGENTS.md forbids commits unless explicitly requested.
 Date/Author: 2026-10-06 / Codex.
 
 ## Outcomes & Retrospective
 
 
-Milestone 1 is complete. VIX-4007 now records the user-facing summary, scope, acceptance criteria, ten-element scenario, and 49/50/51 boundary check. The original reproduction and exception evidence remain in the description, and the issue remains In Progress. No application code or validation claims were added. The caller repair, build, diagnostics, and manual acceptance remain pending. The design avoids changing a shared dialog API for one invalid caller and records the separate indexing concern so runtime acceptance does not accidentally claim coverage of that defect.
+Milestone 1 is complete. VIX-4007 now records the user-facing summary, scope, acceptance criteria, ten-element scenario, and 49/50/51 boundary check. The original reproduction and exception evidence remain in the description, and the issue remains In Progress. Milestone 2 changed only ZigZagItems_Click: it returns for fewer than two selected rows, starts at Math.Min(50, selectedCount), keeps the 2..selectedCount range, and disposes the dialog after its value is consumed. The Release x64 Order module build and Rider file diagnostics completed; runtime dialog/reorder acceptance remains pending because no safe isolated Release launch was available. The design avoids changing a shared dialog API for one invalid caller and records the separate indexing concern so runtime acceptance does not accidentally claim coverage of that defect.
 
 ## Architecture Design: VIX-4007 — ZigZag setup of Patching Order property crashes Vixen
 
@@ -113,7 +117,7 @@ Primary repository documentation for this area is the completed VIX-4006 plan at
 ## Plan of Work
 
 
-Execute the three milestones in order. The user authorized milestone 1; continue to later milestones only after the explicit review boundary. Do not perform future Jira writes merely while authoring or reviewing the plan. Every execution milestone ends at the explicit review boundary required by the analysis skill. Generate commit messages for repository changes with the project commit-msg skill, but create commits only when explicitly requested.
+Execute the three milestones in order. The user authorized milestone 2; complete its review boundary before milestone 3. Do not perform future Jira writes merely while authoring or reviewing the plan. Every execution milestone ends at the explicit review boundary required by the analysis skill. Generate commit messages for repository changes with the project commit-msg skill, but create commits only when explicitly requested.
 
 The single source edit replaces the current NumberDialog construction statement with a guarded local block. Keep ShowDialog, the OK check, button disabling/enabling, PerformZigZag, and persistence unchanged. Keep tabs and LF line endings; do not reformat untouched code or clean up existing warnings.
 
@@ -239,7 +243,7 @@ These broader commands are conditional, not required repetitions for the planned
 
 The primary proof is the actual numeric dialog opening for 2, 10, 49, 50, 51, and 100 selected elements with the stated defaults and bounds. Confirmed valid lengths retain existing alternating-group order, invalid divisibility gives the existing warning, numeric cancellation changes nothing, and outer confirmation retains the accepted property order. The guard, bounded value, and scoped disposal must appear in the actual handler. Module compilation, Rider diagnostics, and whitespace checks complement these observable behaviors.
 
-No build, automated tests, or runtime acceptance was run while preparing the design. Before implementation handoff, record all commands and their results and explicitly identify skipped validation and its reason. Existing unrelated diagnostics are not authorization for cleanup.
+During planning, no build, automated tests, or runtime acceptance was run. Milestone 2 validation: `msbuild src/Vixen.Modules/Property/Order/Order.csproj -m -restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -p:SolutionDir=C:/Dev/Vixen/ -v:m` exited 0 and produced `Release/Output/Module.Property.Order.dll`; four Vixen.Core compiler warnings were reported as detailed above. Rider `get_file_problems` for this file (`rootFolder=C:/Dev/Vixen`, `errorsOnly=false`) returned no errors and legacy weak warnings; the warning on the changed dialog allocation is inherent to construction. `git diff --check` exited 0. Gortex tests found no test files; guards found no rules; contract stayed at warn after impact review (6 affected symbols); C# diagnostics had no LSP provider. Manual UI matrix, alternating-order checks, cancellation, and persistence were not run because the available app run configuration does not confirm Release/Output or an isolated test profile. Record these as pending, not passed. Existing unrelated diagnostics are not authorization for cleanup.
 
 ## Idempotence and Recovery
 
@@ -277,6 +281,6 @@ Use the existing System.Math.Min method, ListView selection collection, NumberDi
 
 2026-10-06 / Codex: Recorded planning structure, whitespace, and worktree validation. Clarified that partial-selection dialog acceptance begins after the first row, and recorded the distinction between untracked-plan checks and source diagnostics.
 
-2026-10-06 / Codex: Completed milestone 1 by updating VIX-4007 with the planned user-facing summary, scope, acceptance criteria, and 49/50/51 scenario. Read the saved description back and verified the original exception evidence remains and status is In Progress. No repository source files changed. Paused for milestone review as required by the plan.
+2026-10-06 / Codex: Completed milestone 1 by updating VIX-4007 with the planned user-facing summary, scope, acceptance criteria, and 49/50/51 scenario. Read the saved description back and verified the original exception evidence remains and status is In Progress. Paused for milestone review as required by the plan.
 
-Milestone 1 complete; paused at its review boundary before milestone 2.
+2026-10-06 / Codex: Implemented milestone 2's guarded, bounded, disposable NumberDialog construction in ZigZagItems_Click. The Order module Release x64 build and whitespace check passed; Rider diagnostics had no errors, with the changed dialog allocation's expected weak warning and unrelated legacy warnings. Gortex found no tests/guard rules and retained a contract risk warning after impact review. Runtime acceptance remains pending because the available application run configuration does not verify Release/Output or an isolated test profile. No Jira update or commit was made. Paused at milestone 2's review boundary before milestone 3.

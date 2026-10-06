@@ -79,7 +79,14 @@ namespace VixenModules.Property.Order
 
 		private void ZigZagItems_Click(object sender, EventArgs e)
 		{
-			NumberDialog numberDialog = new NumberDialog("ZigZag Length", "How many pixels to ZigZag?", 50, 2, elementList.SelectedIndices.Count);
+			var selectedCount = elementList.SelectedIndices.Count;
+			if (selectedCount < 2)
+			{
+				return;
+			}
+
+			using var numberDialog = new NumberDialog("ZigZag Length", "How many pixels to ZigZag?",
+				Math.Min(50, selectedCount), 2, selectedCount);
 			var answer = numberDialog.ShowDialog();
 			if (answer == DialogResult.OK)
 			{
