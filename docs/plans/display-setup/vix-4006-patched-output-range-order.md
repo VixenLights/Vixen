@@ -19,7 +19,7 @@ When patching, destinations must follow the controller pane's controller order a
 - [x] (2026-10-06 15:41Z) Prepared this implementation plan and recorded its test, review, and Jira reporting boundaries.
 - [x] (2026-10-06) Milestone 1: Updated VIX-4006 with user-facing Summary, Scope, and Acceptance Criteria; read it back and confirmed the issue context was preserved.
 - [x] (2026-10-06) Milestone 2: Added failing consumer regressions, normalized destination order, captured normal endpoints before reversal, and passed focused plus existing selection/index tests.
-- [ ] Milestone 3: Complete full validation, manual patching acceptance, and authorized Jira reporting.
+- [x] (2026-10-06) Milestone 3: Passed full-suite and Release x64 solution validation; user confirmed manual label/find behavior and actual patch connections for straight-through, Reverse Element Order, reversed custom-order, and zig-zag custom-order setups. Updated VIX-4006 with final validation and patching evidence, preserving issue status and description.
 
 ## Surprises & Discoveries
 
@@ -61,6 +61,8 @@ Observation: Rider findTests reported no existing tests for SetupPatchingSimple.
 
 Observation: three screenshots are attached (vixen1.jpg, vixen2.png, vixen3.jpg). Their metadata was reviewed, but anonymous downloads of attachments 18203, 18204, and 18205 returned HTTP 403. No screenshot content is claimed as inspected; the issue text, user clarification, source, and history establish the design without them.
 
+Observation: manual verification of the custom zig-zag patch-order setup exposed a separate zig-zag setup defect. The user filed it as VIX-4007. It is unrelated to selected-output normalization and remains outside VIX-4006 scope.
+
 ## Decision Log
 
 
@@ -91,7 +93,7 @@ Date/Author: 2026-10-06 / Codex.
 ## Outcomes & Retrospective
 
 
-Milestone 2 implementation and focused validation are complete. The regression suite failed before the production repair in four ordering/bounds cases (4 failed, 1 passed), then passed after the repair (6 passed). Full-MSBuild test-target builds succeeded, and the existing controller virtualization/output-index suites passed (34 tests). Manual patch-connection acceptance and the full solution/test validation remain for Milestone 3.
+Milestone 2 implementation and focused validation are complete. The regression suite failed before the production repair in four ordering/bounds cases (4 failed, 1 passed), then passed after the repair (6 passed). Full-MSBuild test-target builds succeeded, and the existing controller virtualization/output-index suites passed (34 tests). During Milestone 3, the user reported a successful full manual build and all 1,045 unit tests passing; the agent independently reran the full test suite (1,045 passed, 0 failed, 0 skipped) and a Release x64 full-solution rebuild (0 errors, 73 warnings). The user manually verified First/Last labels during manual selection and Find Elements for normally patched and custom-order props. They also verified actual patching with straight-through order, Reverse Element Order, and custom order set through the order property in reversed and zig-zagged arrangements. Automated coverage includes multi-controller ordering, the 5,001-output paging boundary, filtering/reverse behavior, and VIX-4004 controller virtualization/output-index regressions. A separate zig-zag setup defect found during manual testing was filed as VIX-4007 and was kept out of scope. Milestone 3 acceptance is complete.
 
 ## Architecture Design: VIX-4006 — Patched outputs showing incorrectly
 
@@ -259,7 +261,7 @@ Analysis started with git status --short reporting a clean worktree. Historical 
 
 Gortex impact of _updateControllerDetails identified public selection/detail updates, reverse checkbox changes, and buttonDoPatching_Click as direct callers, with DisplaySetup event consumers beyond them. The graph found no existing test file for this method. An impact query for this new Markdown plan returned file_not_indexed because it does not yet exist as an indexed code file.
 
-Planning validation confirmed every required section, three milestones and three explicit review stops, no nested/outer Markdown fences in the standalone file, and the required concluding statement. Milestone 1 updated VIX-4006 with the accepted behavior and verified preserved issue context. For Milestone 2, the initial full-MSBuild test-target build succeeded after importing the existing test collection namespace; the pre-fix focused suite failed in four cases (4 failed, 1 passed). After implementation, `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded. The focused suite passed 6/6 and the existing `ControllerTreeVirtualizationTests` plus `OutputControllerOutputIndexTests` passed 34/34. Rider file-problem checks reported zero errors in all three changed C# files; the broader lint output included existing diagnostics outside changed lines. `git diff --check` emitted no whitespace errors. No full solution rebuild or manual patch-connection acceptance was performed; those remain for Milestone 3.
+Planning validation confirmed every required section, three milestones and three explicit review stops, no nested/outer Markdown fences in the standalone file, and the required concluding statement. Milestone 1 updated VIX-4006 with the accepted behavior and verified preserved issue context. For Milestone 2, the initial full-MSBuild test-target build succeeded after importing the existing test collection namespace; the pre-fix focused suite failed in four cases (4 failed, 1 passed). After implementation, `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded. The focused suite passed 6/6 and the existing `ControllerTreeVirtualizationTests` plus `OutputControllerOutputIndexTests` passed 34/34. Rider file-problem checks reported zero errors in all three changed C# files; the broader lint output included existing diagnostics outside changed lines. `git diff --check` emitted no whitespace errors. In Milestone 3, `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/` passed all 1,045 tests, and `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64` completed with 0 errors and 73 warnings. The user manually verified First/Last labels with manual selection and Find Elements for normally patched and custom-order props, plus actual straight-through, Reverse Element Order, reversed custom-order, and zig-zag custom-order patching. Automated tests cover multi-controller destination order, selection across the 5,000-output paging boundary, filtering/reverse behavior, and VIX-4004 controller virtualization/output-index regressions. The separate zig-zag setup defect was filed as VIX-4007. Final Jira validation and patching evidence was appended without changing VIX-4006's status or description.
 
 ## Interfaces and Dependencies
 
@@ -276,5 +278,7 @@ Use existing LINQ OrderBy/FirstOrDefault/LastOrDefault, the current output-manag
 
 
 2026-10-06 / Codex: Created the design after the user resolved reverse-label and destination-order requirements and requested comparison with pre-51ca0cca history. Recorded VIX-3955 attribution, the logical-export ordering regression, older reverse-label behavior, and the separation between these concerns and VIX-4004's validated selection/index fixes. Scoped implementation to the destination consumer and regression files.
+
+2026-10-06 / Codex: Completed Milestone 3 after the user confirmed actual straight-through, Reverse Element Order, reversed custom-order, and zig-zag custom-order patching, in addition to range-label checks. Recorded the independent zig-zag setup bug under VIX-4007, appended final validation and patching results to VIX-4006 without changing its status, and documented the 1,045-test suite and Release x64 rebuild results.
 
 Analysis complete and plan integrated with plans.md.
