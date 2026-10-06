@@ -9,6 +9,8 @@ In Display Setup, a user can configure Patching Order, select multiple elements 
 
 Demonstrate the repair with ten elements: select all ten in Patching Order and choose Zig Zag. Before the repair, creating the dialog throws an exception because its value is 50 and its maximum is 10. Afterward, it opens with value 10, minimum 2, and maximum 10. Choose length 2 and confirm to see every second pair reverse.
 
+The adjacent keyboard-selection repair adds a second observable outcome: pressing Ctrl alone must leave the current selection intact, Ctrl-click must add or remove only the clicked row, and Ctrl+A must still select all rows. Plain A must not invoke Select All. Demonstrate this in the same Patching Order dialog with ten rows and one selected row. This is a separately scoped follow-up; the completed numeric-dialog repair and its recorded acceptance remain intact.
+
 ## Progress
 
 
@@ -18,7 +20,10 @@ Demonstrate the repair with ten elements: select all ten in Patching Order and c
 - [x] (2026-10-06) Established the source-level cause and prepared a caller-scoped repair with concrete validation and review boundaries.
 - [x] (2026-10-06) Milestone 1: Updated VIX-4007 with concise user outcomes, scope, and acceptance criteria; preserved the original report and exception trace. Read the saved description back and confirmed status remains In Progress.
 - [x] (2026-10-06) Milestone 2: Implemented the bounded dialog construction, built the Release x64 Order module, and completed Rider diagnostics. The user reports a full manual build, all 1045 unit tests passing, successful Zig Zag ordering for all six boundary counts (2, 10, 49, 50, 51, 100), correct defaults (selected count through 50, then 50), persistence after confirmation, and cancellation restoring the prior state.
-- [ ] Milestone 3: Record final validation in this plan and VIX-4007 when Jira reporting is authorized.
+- [x] (2026-10-06 19:07 UTC) Revised the active plan using the project revise-active-plan skill. Confirmed the Ctrl-only selection cause directly in the subscribed keyboard handler, identified the plain-A defect from the same condition, and prepared the focused repair and acceptance cases. The starting worktree is clean; milestones 1 and 2 are committed and their text is preserved.
+- [ ] Milestone 2A: Align Jira acceptance with the adjacent keyboard-selection requirement during authorized execution.
+- [ ] Milestone 2B: Require Ctrl+A in the Order dialog handler, document the protected method, build the module, run scoped diagnostics, and verify keyboard/mouse selection and prior Zig Zag behavior.
+- [ ] Milestone 3: Record final numeric-dialog and keyboard-selection validation in this plan and VIX-4007 when Jira reporting is authorized.
 
 ## Surprises & Discoveries
 
@@ -53,6 +58,18 @@ Observation: the Release x64 Order module build succeeded and emitted four exist
 
 Observation: the available Rider `Vixen.Application` configuration is a .NET project configuration and does not confirm a Release/Output launch or an isolated copied profile. Runtime acceptance was not run by Codex to avoid launching the application with an unverified user profile or hardware-output configuration. The user subsequently reported successful dialog defaults and Zig Zag ordering for all six boundary counts in the acceptance table, plus persistence after confirmation and cancellation restoring the prior state.
 
+Observation: the adjacent selection defect is caused by the existing OrderSetupHelper.OnKeyDown condition, not the numeric-dialog changes. The constructor subscribes this handler to the list's KeyDown event; the Designer declares the list as the existing DragDropListView control. The handler sets Selected on every ListViewItem and suppresses the key whenever either A is pressed or Control is held. On a Ctrl-only event the A comparison is false and Control is true, so the OR expression is true. Plain A also passes the condition. Ctrl-click then toggles already-selected rows, explaining the user's observed deselection. The source fully explains the report without needing runtime debugger state.
+
+    src/Vixen.Modules/Property/Order/OrderSetupHelper.cs
+    elementList.KeyDown += OnKeyDown;
+    if (e.KeyCode == Keys.A | e.Control)
+    item.Selected = true;
+    e.SuppressKeyPress = true;
+
+Observation: OnKeyDown is protected and currently has no XML documentation. Its behavior change requires a summary and parameter documentation under the repository API documentation rule. Keep its signature and event subscription intact. The Gortex impact assessment identifies three affected entries (the constructor and two parameters), no test files, and MEDIUM risk. Its inferred relationships are not evidence that this ListView uses MultiSelectTreeview; the Designer establishes the actual control type.
+
+Observation: the revision starts at HEAD 3c3fed877 after the acceptance-results commit. Prior commits 6c3852848 and c32d188ae contain the caller fix and Jira acceptance update. The working tree is clean. New keyboard acceptance has not been run, and the previous 1045 passing tests predate this proposed change.
+
 ## Decision Log
 
 
@@ -76,10 +93,24 @@ Decision: preserve user-reported validation separately from checks executed by C
 Rationale: the user reports all six boundary counts, successful ordering in each case, persistence after confirmation, cancellation restoring the previous state, a full manual build, and 1045 passing unit tests. Record provenance accurately; Codex independently ran the scoped Order module build and Rider diagnostics. Preserve the review boundary before milestone 3; AGENTS.md forbids commits unless explicitly requested.
 Date/Author: 2026-10-06 / Codex.
 
+Decision: append milestones 2A and 2B before the uncompleted final reporting milestone, preserving completed milestones 1 and 2 verbatim.
+Rationale: the user explicitly requested a revise-active-plan investigation for an adjacent Order dialog bug. Record its source cause and concrete fix separately from the accepted numeric-dialog work. Milestone 2A aligns issue acceptance before new implementation; milestone 2B owns the keyboard repair. This revision writes only the plan and does not perform Jira writes or application edits. Each future milestone retains the skill's explicit review stop.
+Date/Author: 2026-10-06 19:07 UTC / Codex.
+
+Decision: replace the Boolean OR with conditional AND in OrderSetupHelper.OnKeyDown, retaining the existing select-all loop and SuppressKeyPress only inside the Ctrl+A branch.
+Rationale: requiring both A and Control eliminates Ctrl-only, plain-A, and unrelated Ctrl-key selection while preserving the intended shortcut and ordinary control input. Merely replacing the single OR with a double OR would retain the bug. Keep the existing treatment of extra modifiers when Control and A are both present; this repair does not introduce a new exact-modifier shortcut policy. No shared control, Designer, persistence, or reorder algorithm change is needed. Add XML documentation to this protected handler in the same edit.
+Date/Author: 2026-10-06 19:07 UTC / Codex.
+
+Decision: verify the actual selection behavior manually after a focused module build and Rider diagnostics; do not add a test seam or a test that repeats the Boolean expression.
+Rationale: the source establishes the cause, while the actual dialog confirms Ctrl-only, Ctrl-click, Ctrl+A, plain A, and ordinary keyboard selection. The change is local and reversible; the existing full test result remains historical evidence until the new code is validated. Broader validation is warranted only if new findings expand scope or reveal failures.
+Date/Author: 2026-10-06 19:07 UTC / Codex.
+
 ## Outcomes & Retrospective
 
 
 Milestone 1 is complete. VIX-4007 now records the user-facing summary, scope, acceptance criteria, ten-element scenario, and 49/50/51 boundary check. The original reproduction and exception evidence remain in the description, and the issue remains In Progress. Milestone 2 changed only ZigZagItems_Click: it returns for fewer than two selected rows, starts at Math.Min(50, selectedCount), keeps the 2..selectedCount range, and disposes the dialog after its value is consumed. The Release x64 Order module build and Rider file diagnostics completed. The user reports a full manual build and all 1045 unit tests passed. The user manually tested all six boundary counts in the matrix (2, 10, 49, 50, 51, 100): each dialog opened with the expected default and each Zig Zag operation produced the expected ordering. The user also reports that Patching Order persists after confirmation and Cancel restores the prior state. These manual results were reported by the user, not independently run by Codex. The design avoids changing a shared dialog API for one invalid caller and records the separate indexing concern so runtime acceptance does not accidentally claim coverage of that defect.
+
+The adjacent Ctrl-selection investigation and plan revision are complete. The existing OR condition explains both Ctrl-only and plain-A selecting all rows; the proposed AND condition confines the custom selection loop to Ctrl+A. Implementation, updated Jira acceptance, and keyboard runtime validation remain in milestones 2A and 2B. The completed milestone text and accepted Zig Zag evidence are preserved. This planning revision changes no C# source and claims no new build, test, or manual-selection result.
 
 ## Architecture Design: VIX-4007 — ZigZag setup of Patching Order property crashes Vixen
 
@@ -103,6 +134,12 @@ Subsystem Component Matrix:
 | docs/plans/display-setup/vix-4007-zigzag-dialog-range.md | Living design and execution evidence. |
 | VIX-4007 | Initial acceptance clarification and final user-facing validation report during authorized execution. |
 
+Adjacent keyboard repair scope: the only production file remains OrderSetupHelper, but the new change belongs to its protected OnKeyDown event handler. Require both the A key and Control modifier, add accurate XML documentation to that handler, and leave its signature, event hookup, select-all loop, update batching, and suppression behavior intact. No Catel, shared-control, new WinForms UI, asynchronous, serialization, or public API redesign is required. Consult the project .NET and C# documentation skills before implementation.
+
+    src/Vixen.Modules/Property/Order/OrderSetupHelper.cs
+    .agents/skills/dotnet-best-practices/SKILL.md
+    .agents/skills/csharp-docs/SKILL.md
+
 ## Context and Orientation
 
 
@@ -117,9 +154,11 @@ Primary repository documentation for this area is the completed VIX-4006 plan at
 ## Plan of Work
 
 
-Execute the three milestones in order. The user authorized milestone 2; complete its review boundary before milestone 3. Do not perform future Jira writes merely while authoring or reviewing the plan. Every execution milestone ends at the explicit review boundary required by the analysis skill. Generate commit messages for repository changes with the project commit-msg skill, but create commits only when explicitly requested.
+Milestones 1 and 2 are complete and committed. Execute the newly added milestone 2A, then 2B, then the revised milestone 3. This revision records the adjacent bug's cause and fix for review under the explicitly invoked revise-active-plan skill. Do not perform Jira writes while revising the plan. Every new or modified milestone ends at an explicit human-review boundary. Generate commit messages for repository changes with the project commit-msg skill, but create commits only when explicitly requested.
 
-The single source edit replaces the current NumberDialog construction statement with a guarded local block. Keep ShowDialog, the OK check, button disabling/enabling, PerformZigZag, and persistence unchanged. Keep tabs and LF line endings; do not reformat untouched code or clean up existing warnings.
+The completed numeric-dialog implementation below is historical context, not an instruction to reapply it. The new production edit is the OnKeyDown condition plus its required protected-method XML documentation. Preserve the previously accepted ZigZagItems_Click block, selection/reorder algorithms, event subscription, and shared controls. After implementation, run the scoped module build and file diagnostics and exercise the keyboard-selection cases described in milestone 2B.
+
+The completed milestone 2 source edit replaced NumberDialog construction with a guarded local block. Its ShowDialog, OK check, button disabling/enabling, PerformZigZag, and persistence remain unchanged. The new milestone 2B changes only shortcut recognition and the protected handler's documentation. Keep tabs and LF line endings; do not reformat untouched code or clean up existing warnings.
 
 ## ACTIVE EXECUTION PLAN (Derived from .agents/PLANS.md)
 
@@ -199,10 +238,70 @@ STOP HERE for manual review and commit execution before proceeding.
 4. Output its complete paste-ready Commit message block; do not create a commit without an explicit request.
 5. Pause and wait for explicit user confirmation before advancing.
 
+### Milestone 2A: Record adjacent keyboard-selection acceptance in Jira
+
+
+Context: the user observed Ctrl alone selecting all rows while testing the accepted numeric-dialog repair. This is a distinct pre-existing defect in the same Patching Order helper. The local plan continues to use VIX-4007 as its active issue prefix; no new issue or transition is implied by this revision. Preserve the original crash report, trace, numeric-dialog acceptance, and current issue status.
+
+Plan of Work: during authorized execution, read the project Jira skill and current VIX-4007. Append a clearly labeled adjacent keyboard-selection scope and acceptance subsection. State that Ctrl alone preserves the existing selection, Ctrl-click toggles only the clicked row, Ctrl+A selects all rows, and plain A does not invoke Select All. Include the ten-row reproduction and expected behavior. Keep internal code details in this plan. Read the saved issue back, and record the result in the living sections. Do not claim the keyboard fix has been implemented or validated at this stage.
+
+    .agents/skills/jira/SKILL.md
+
+Concrete Steps: use the repository root as the working directory. Inspect status and the scoped plan diff before editing. Use structured Jira update arguments, preserving other fields and the existing numeric-dialog content.
+
+    C:\Dev\Vixen
+    git status --short
+    git diff -- docs/plans/display-setup/vix-4007-zigzag-dialog-range.md
+
+Validation and Acceptance: the saved issue clearly distinguishes the already accepted numeric-dialog behavior from the adjacent selection requirement; original evidence and status remain present. This milestone changes no application code.
+
+STOP BOUNDARY: Stop execution, run git status and git diff on the modified files, invoke the project commit-msg skill with VIX-4007 as the subject prefix for repository changes, output its complete paste-ready Commit message block, and wait for explicit human review before advancing. Do not create a commit unless explicitly requested.
+
+    .agents/skills/commit-msg/SKILL.md
+
+### Milestone 2B: Repair Ctrl+A recognition and verify selection behavior
+
+
+Context: OrderSetupHelper.OnKeyDown is subscribed directly to the element list's KeyDown event. Its current Boolean OR selects every row for either A or any key event with Control held. Replace that condition with AND so both inputs are required. This is separate from the completed Zig Zag dialog repair and the still-excluded partial-selection Zig Zag indexing concern.
+
+    src/Vixen.Modules/Property/Order/OrderSetupHelper.cs
+    src/Vixen.Modules/Property/Order/OrderSetupHelper.Designer.cs
+
+Plan of Work: inspect current git status, read the current handler and its constructor subscription, and read the project .NET and C# documentation skills. Run Gortex impact on the handler before editing. In the existing method, replace the condition below; change no other executable statements. Add a summary, both parameter descriptions, and remarks that only Ctrl+A invokes the custom Select All operation and suppresses the key. This method is a protected event handler with two parameters, not the one-parameter WinForms override. Preserve its exact signature and do not rename it, change access, add an overload, or modify Designer wiring.
+
+    .agents/skills/dotnet-best-practices/SKILL.md
+    .agents/skills/csharp-docs/SKILL.md
+    Before: if (e.KeyCode == Keys.A | e.Control)
+    After:  if (e.KeyCode == Keys.A && e.Control)
+    protected void OnKeyDown(object sender, KeyEventArgs e)
+
+Use a summary such as Handles the element list keyboard shortcut for selecting all rows. Document sender as The control that raised the keyboard event, and e as The keyboard event data. Remarks should state that A with Control selects all rows and suppresses the key press, while other input continues through the control's normal handling. No returns documentation is needed for this void method. Keep tabs and LF in the source; the four-space indentation in this plan is Markdown formatting. Leave BeginUpdate, EndUpdate, the row-selection loop, and SuppressKeyPress in the recognized-shortcut branch. Keep the bounded NumberDialog construction from milestone 2 untouched. Do not modify shared controls, introduce new UI or test infrastructure, or repair the separate Zig Zag indexing concern.
+
+Concrete Steps: use full MSBuild from the repository root to rebuild the Release x64 Order module and dependencies. Run Gortex detect and applicable tests, guards, and contract checks afterward. Run Rider get_file_problems for the changed source with rootFolder C:/Dev/Vixen and errorsOnly false; fix only diagnostics on changed or added lines. No signature changes are planned; if the scope requires any, use Gortex verify first and revise this plan before expanding it.
+
+    C:\Dev\Vixen
+    msbuild src/Vixen.Modules/Property/Order/Order.csproj -m -restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -p:SolutionDir=C:/Dev/Vixen/ -v:m
+    git diff --check
+    git diff -- src/Vixen.Modules/Property/Order/OrderSetupHelper.cs docs/plans/display-setup/vix-4007-zigzag-dialog-range.md
+
+Start the build with native exec_command and yield_time_ms=10000; while only waiting, use write_stdin with yield_time_ms at least 30000. Expect exit 0 and zero compiler errors; record actual warnings without unrelated cleanup. The scoped source diff must contain only the condition replacement and handler documentation. No new automated test is required for this condition-only repair; do not turn a truth-table assertion into a production test seam. If validation is broadened for a concrete failure or shared-behavior change, use the full-MSBuild test workflow already specified in this plan and report actual results. Earlier user-reported test passes do not validate this new edit.
+
+Validation and Acceptance: launch the rebuilt Release application with the just-built Order module, using a copied test profile and no hardware output as in milestone 2. Open Patching Order with ten identifiable rows. Click row 3 so only row 3 is selected. Press and release left Ctrl alone, then right Ctrl alone, and hold each long enough for repeated input: exactly row 3 must remain selected, with no global highlight change or row reorder. Repeat from a noncontiguous selection and confirm its membership stays unchanged.
+
+While holding Ctrl with only row 3 selected, click row 7: rows 3 and 7 must be selected. Click row 3 while still holding Ctrl: only row 7 must remain selected. Release Ctrl: row 7 must remain selected. Verify Ctrl+A selects all ten rows, including when started with no selected rows or a noncontiguous selection, and repeating Ctrl+A leaves all rows selected. Reset to one selected row, press A alone, and confirm it does not select all; allow the ListView's normal name-search behavior, so the exact single selected row may change. With one selected row, press Ctrl with another letter such as B and confirm no Select All. A held with Shift but without Control must not invoke Select All either.
+
+Check ordinary click, Shift-click, and Shift+arrow range selection still work. Selection gestures alone must never reorder row identities or displayed order numbers; canceling the outer helper must preserve prior persisted order. Perform a focused Zig Zag regression using all ten rows (Ctrl+A, dialog default 10, cancel unchanged), then all eight rows with length 2 and expected identity order 1,2,4,3,5,6,8,7. Confirm and reopen to check persistence, then repeat and cancel to check rollback. Do not run Zig Zag on the Ctrl-click subset to claim the separate indexing issue is fixed. Repeating every prior numeric boundary or all 1045 tests is unnecessary unless a new finding warrants it.
+
+Record manual observations with provenance. If Codex cannot launch the copied profile or automate real key input, leave the keyboard matrix pending until the user reports it; a successful build and expression inspection are not proof of UI acceptance. Mark implementation and runtime acceptance separately in Progress as needed.
+
+STOP BOUNDARY: Stop execution, run git status and git diff on the modified source and plan, invoke the project commit-msg skill with VIX-4007 as the subject prefix, output its complete paste-ready Commit message block, and wait for explicit human review before advancing. Do not create a commit unless explicitly requested.
+
+    .agents/skills/commit-msg/SKILL.md
+
 ### Milestone 3: Record the evidence and align the issue with the delivered fix
 
 
-Context: no further source changes are planned. Review the module build, diagnostics, matrix, order, cancellation, and persistence results from Milestone 2. The related VIX-4006 fix must remain intact. Complete any acceptance that was deferred before describing the runtime behavior as verified.
+Context: no further source changes are planned after milestone 2B. Review the accepted numeric-dialog results from milestone 2 and the new module build, diagnostics, keyboard-selection cases, and focused Zig Zag regression from milestone 2B. The related VIX-4006 fix must remain intact. Complete any deferred keyboard acceptance before describing it as verified. Preserve the distinction between the previously reported full build and 1045 passing tests and checks run after the adjacent repair.
 
 Plan of Work: update this plan's living sections with exact commands, exit results, manual outcomes, and any unavailable checks. If manual application access was unavailable, clearly retain that acceptance as pending and state precisely what build/source checks established. Do not mark implementation fully accepted from compilation alone. When Jira reporting is authorized, re-read VIX-4007, reconcile its user-facing acceptance criteria with the final delivered behavior, and add a concise validation comment. Preserve the original report/stack trace and status. Use the project Jira skill and read the result back.
 
@@ -212,7 +311,11 @@ Concrete Steps: working directory C:\Dev\Vixen. Inspect final scope and whitespa
     git diff --check
     git diff -- src/Vixen.Modules/Property/Order/OrderSetupHelper.cs docs/plans/display-setup/vix-4007-zigzag-dialog-range.md
 
-Validation and Acceptance: the final handoff states the bounded default, minimum/maximum, cancellation behavior, actual alternating reversal and persistence evidence, module build result, Rider diagnostics, and any remaining limitation. VIX-4007's final comment reports only validation actually performed. No issue transition or automatic commit is part of this plan.
+Validation and Acceptance: the final handoff states the bounded default, minimum/maximum, cancellation behavior, alternating reversal and persistence evidence, and the additional Ctrl-only, Ctrl-click, Ctrl+A, and plain-A results. Give the module build and Rider diagnostics for the adjacent edit and any pending manual cases. VIX-4007's final comment and any necessary description adjustments reflect both scoped repairs and report only validation actually performed, identifying user-reported results. No issue transition or automatic commit is part of this plan.
+
+STOP BOUNDARY: Stop execution, run git diff on all files modified in this milestone, invoke the project commit-msg skill with VIX-4007 as the subject prefix for repository changes, and wait for explicit human review. The existing detailed review instructions below continue to apply.
+
+    .agents/skills/commit-msg/SKILL.md
 
 STOP HERE for manual review and commit execution before proceeding.
 
@@ -245,12 +348,16 @@ The primary proof is the actual numeric dialog opening for 2, 10, 49, 50, 51, an
 
 During planning, no build, automated tests, or runtime acceptance was run. Milestone 2 validation: `msbuild src/Vixen.Modules/Property/Order/Order.csproj -m -restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -p:SolutionDir=C:/Dev/Vixen/ -v:m` exited 0 and produced `Release/Output/Module.Property.Order.dll`; four Vixen.Core compiler warnings were reported as detailed above. Rider `get_file_problems` for this file (`rootFolder=C:/Dev/Vixen`, `errorsOnly=false`) returned no errors and legacy weak warnings; the warning on the changed dialog allocation is inherent to construction. `git diff --check` exited 0. Gortex tests found no test files; guards found no rules; contract stayed at warn after impact review (6 affected symbols); C# diagnostics had no LSP provider. Codex did not run the manual UI matrix because the available app run configuration does not confirm Release/Output or an isolated test profile. The user reports testing every listed boundary count (2, 10, 49, 50, 51, 100), observing the expected initial values and proper Zig Zag ordering in all six cases, confirming persistence, and confirming Cancel restores the prior state. The user also reports a full manual build and 1045 unit tests passing. These manual and test results are user-reported; the scoped module build, Rider diagnostics, and diff check were run by Codex. Existing unrelated diagnostics are not authorization for cleanup.
 
+Adjacent keyboard acceptance is pending implementation. The source inspection during revision establishes that the OR condition accepts Ctrl-only and plain A, and that AND requires both A and Control. Milestone 2B must establish the actual selection outcomes in the rebuilt dialog and record the focused regression results; no prior build or unit-test report is claimed as post-repair validation. For this Markdown-only revision, verify whitespace, preservation of completed milestone bodies, new review boundaries, and absence of application edits; application build and C# lint do not apply.
+
 ## Idempotence and Recovery
 
 
 Re-read status/source before every edit and preserve unrelated user changes. The replacement is applied only once at the identified construction point. Repeated dialog cancellation must not accumulate changes. Repeated intentional confirmation may alternate the affected groups again; that is the existing behavior, not an idempotent command.
 
 Keep experiments confined to a copied profile and avoid hardware output. Cancel the outer helper when discarding a trial; save only the copy when deliberately checking persistence. Retry builds after resolving actual environmental errors without substituting dotnet's MSBuild for native dependency builds. If rollback is needed, remove only this issue's reviewed edits; do not reset the workspace, delete profiles, or undo VIX-4006.
+
+For the adjacent fix, repeated Ctrl-only presses and releases must preserve selection; repeated Ctrl+A must leave all rows selected. Ctrl-click intentionally toggles the clicked row. Preserve the completed caller fix if rolling back the adjacent condition change: remove only that change and its documentation, retaining unrelated user work and previously committed numeric-dialog behavior.
 
 ## Artifacts and Notes
 
@@ -260,6 +367,10 @@ Planning evidence: VIX-4007 reports ArgumentOutOfRangeException with Actual valu
 No external resources or attachments are required to follow this plan. Its source and mathematical evidence are sufficient for the reported crash. Rider findTests was attempted but canceled without a result. This limitation does not change the direct source diagnosis.
 
 Planning validation passed a PowerShell structural check for all required sections, three milestones, three explicit review stops, no triple-backtick fences, and the required concluding statement. Final git status --short showed only this untracked plan; git diff --check returned no errors. Because tracked diff checks omit new files, git diff --no-index --check -- NUL docs/plans/display-setup/vix-4007-zigzag-dialog-range.md was also run: it emitted no whitespace diagnostics and returned 1 for a differing file. Gortex detect likewise reported no tracked changes and explicitly excludes untracked files. Symbol-level tests/guards/contract checks do not apply to this Markdown-only addition. Rider's post-edit hook excluded the Markdown file because it is not part of a solution project; no C# lint or build result is claimed.
+
+Revision evidence: the constructor subscribes OnKeyDown to the element list; the handler currently tests A OR Control and explicitly selects every ListViewItem. The Boolean outcomes are Ctrl only: false OR true; plain A: true OR false; Ctrl+A: true OR true. All currently pass. The proposed AND accepts only the last case. Designer confirms the list is the legacy DragDropListView; no change to that control is proposed. Gortex impact reports three affected entries, zero test files, and MEDIUM risk. There is no runtime-selection transcript for the new repair at planning time.
+
+Revision validation: git status shows only the plan modified; git diff --check exits 0 with no whitespace diagnostics. A PowerShell structural comparison against HEAD verifies that completed milestone 1 and 2 bodies are unchanged, new milestones 2A and 2B and modified milestone 3 contain explicit review boundaries, no nested code fences exist, and the diff contains only this plan. The scoped git diff was reviewed for the commit-msg skill. Gortex detect reports only the plan changed with LOW risk and no affected dependents. Symbol-scoped plan assessments find no tests or guard rules and a contract verdict of allow with risk score 0. Build, unit tests, runtime acceptance, and C# file lint are not run for this Markdown-only revision.
 
 ## Interfaces and Dependencies
 
@@ -274,6 +385,14 @@ Keep these signatures and existing dependencies unchanged:
 
 Use the existing System.Math.Min method, ListView selection collection, NumberDialog, WinForms DialogResult, and disposal support. No new package, project, configuration, data migration, interface, production helper, or public API is required.
 
+The adjacent milestone also preserves the protected keyboard-handler signature and uses existing WinForms key event data. Add its required XML documentation without changing parameters or access. No new dependency or shared-control API is required.
+
+    protected void OrderSetupHelper.OnKeyDown(object sender, KeyEventArgs e)
+    System.Windows.Forms.KeyEventArgs.KeyCode
+    System.Windows.Forms.KeyEventArgs.Control
+    System.Windows.Forms.KeyEventArgs.SuppressKeyPress
+    System.Windows.Forms.Keys.A
+
 ## Revision Notes
 
 
@@ -284,3 +403,5 @@ Use the existing System.Math.Min method, ListView selection collection, NumberDi
 2026-10-06 / Codex: Completed milestone 1 by updating VIX-4007 with the planned user-facing summary, scope, acceptance criteria, and 49/50/51 scenario. Read the saved description back and verified the original exception evidence remains and status is In Progress. Paused for milestone review as required by the plan.
 
 2026-10-06 / Codex: Implemented milestone 2's guarded, bounded, disposable NumberDialog construction in ZigZagItems_Click. The Order module Release x64 build and whitespace check passed; Rider diagnostics had no errors, with the changed dialog allocation's expected weak warning and unrelated legacy warnings. Gortex found no test/guard rules and retained a contract risk warning after impact review. The user reports a full manual build, all 1045 unit tests passing, expected dialog defaults and Zig Zag ordering for all six boundary counts, persistence after confirmation, and Cancel restoring the prior state. These results are recorded as user-reported. No Jira update or commit was made. Milestone 2 is complete; paused at its review boundary before milestone 3.
+
+2026-10-06 19:07 UTC / Codex: Used the project revise-active-plan skill for the user's adjacent Ctrl-only selection report. Read the active plan, the plan rules, the event handler, and Designer declaration. Found Boolean OR in Select All detection; this also explains plain A selecting all. Added milestones 2A and 2B for issue acceptance and the focused AND-condition repair with protected-handler XML docs, manual keyboard/mouse cases, and focused Zig Zag regression. Expanded only the uncompleted final reporting milestone. Preserved the completed milestone bodies and prior acceptance; no production code, Jira fields, or commits changed during this revision. Whitespace and structural checks passed, the scoped diff was reviewed, and Gortex reports a plan-only change with LOW risk and contract allow. Paused for plan review under the revise-active-plan skill; milestone 2A is next.
