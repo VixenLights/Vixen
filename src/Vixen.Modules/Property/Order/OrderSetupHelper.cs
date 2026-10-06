@@ -21,9 +21,13 @@ namespace VixenModules.Property.Order
 			elementList.KeyDown += OnKeyDown;
 		}
 
+		/// <summary>Handles the element list keyboard shortcut for selecting all rows.</summary>
+		/// <param name="sender">The control that raised the keyboard event.</param>
+		/// <param name="e">The keyboard event data.</param>
+		/// <remarks>Pressing A with Control selects all rows and suppresses the key press. Other input continues through the control's normal handling.</remarks>
 		protected void OnKeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.A | e.Control)
+			if (e.KeyCode == Keys.A && e.Control)
 			{
 				elementList.BeginUpdate();
 				foreach (ListViewItem item in elementList.Items)
