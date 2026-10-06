@@ -116,13 +116,15 @@ namespace VixenModules.Property.Order
 					int start = i;
 					int end = i + every - 1;
 					while (start<end){
-						//Swap places
-						var i1 = elementList.Items[start];
-						var i2 = elementList.Items[end];
-						elementList.Items[start] = (ListViewItem)i2.Clone();
-						elementList.Items[end] = i1;
-						elementList.Items[start].Selected = true;
-						elementList.Items[end].Selected = true;
+						// Map positions within the selection to rows in the full list.
+						var startIndex = selectedIndexes[start];
+						var endIndex = selectedIndexes[end];
+						var i1 = elementList.Items[startIndex];
+						var i2 = elementList.Items[endIndex];
+						elementList.Items[startIndex] = (ListViewItem)i2.Clone();
+						elementList.Items[endIndex] = i1;
+						elementList.Items[startIndex].Selected = true;
+						elementList.Items[endIndex].Selected = true;
 						start++;
 						end--;
 					}
