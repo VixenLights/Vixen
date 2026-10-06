@@ -57,6 +57,11 @@ namespace VixenApplication.Setup
 		}
 
 		private ControllersAndOutputsSet _cachedControllersAndOutputs;
+		/// <summary>
+		/// Updates the selected controller outputs and their patching summary.
+		/// </summary>
+		/// <param name="controllersAndOutputs">The selected output indexes, grouped by controller in pane order.</param>
+		/// <remarks>Output indexes are normalized within each controller. Displayed bounds describe the normal selection order, while reverse output order affects patch destinations only.</remarks>
 		public void UpdateControllerSelection(ControllersAndOutputsSet controllersAndOutputs)
 		{
 			_cachedControllersAndOutputs = controllersAndOutputs;
@@ -64,6 +69,11 @@ namespace VixenApplication.Setup
 			_updatePatchingSummary();
 		}
 
+		/// <summary>
+		/// Refreshes details for the selected controller outputs.
+		/// </summary>
+		/// <param name="controllersAndOutputs">The selected output indexes, grouped by controller in pane order.</param>
+		/// <remarks>Output indexes are normalized within each controller. Displayed bounds describe the normal selection order, while reverse output order affects patch destinations only.</remarks>
 		public void UpdateControllerDetails(ControllersAndOutputsSet controllersAndOutputs)
 		{
 			_cachedControllersAndOutputs = controllersAndOutputs;
@@ -363,7 +373,7 @@ namespace VixenApplication.Setup
 				controllerCount++;
 				IControllerDevice controller = controllersAndOutput.Key;
 
-				foreach (int outputIndex in controllersAndOutput.Value)
+				foreach (int outputIndex in controllersAndOutput.Value.OrderBy(outputIndex => outputIndex))
 				{
 					if (outputIndex >= controller.Outputs.Length)
 					{
@@ -386,6 +396,10 @@ namespace VixenApplication.Setup
 				}
 			}
 
+			// Capture bounds in normal pane and output order so reversing patch destinations does not change the labels.
+			var firstSelectedOutput = _controllerInputs.FirstOrDefault();
+			var lastSelectedOutput = _controllerInputs.LastOrDefault();
+
 			if (checkBoxReverseOutputOrder.Checked)
 			{
 				_controllerInputs.Reverse();
@@ -403,14 +417,14 @@ namespace VixenApplication.Setup
 			labelFirstOutput.Text = "";
 			labelLastOutput.Text = "";
 
-			if (_controllerInputs.Any())
+			if (firstSelectedOutput != null && lastSelectedOutput != null)
 			{
 				IControllerDevice controller;
 				int outputIndex;
-				VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(_controllerInputs.First().Item, out controller, out outputIndex);
+				VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(firstSelectedOutput.Item, out controller, out outputIndex);
 				labelFirstOutput.Text = string.Format("{0} #{1}", controller.Name, outputIndex + 1);
 
-				VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(_controllerInputs.Last().Item, out controller, out outputIndex);
+				VixenSystem.OutputControllers.getOutputDetailsForDataFlowComponent(lastSelectedOutput.Item, out controller, out outputIndex);
 				labelLastOutput.Text = string.Format("{0} #{1}", controller.Name, outputIndex + 1);
 			}
 		}

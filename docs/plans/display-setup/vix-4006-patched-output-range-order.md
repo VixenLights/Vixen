@@ -18,7 +18,7 @@ When patching, destinations must follow the controller pane's controller order a
 - [x] (2026-10-06) Compared source before 51ca0cca67aadffb795c8d34dcf63a64ebe05dcd with the logical-selection implementation and VIX-4004 fixes; identified the loss of implicit tree sorting and the older reverse-label behavior.
 - [x] (2026-10-06 15:41Z) Prepared this implementation plan and recorded its test, review, and Jira reporting boundaries.
 - [x] (2026-10-06) Milestone 1: Updated VIX-4006 with user-facing Summary, Scope, and Acceptance Criteria; read it back and confirmed the issue context was preserved.
-- [ ] Milestone 2: Add failing ordering/range regressions and implement the focused consumer repair.
+- [x] (2026-10-06) Milestone 2: Added failing consumer regressions, normalized destination order, captured normal endpoints before reversal, and passed focused plus existing selection/index tests.
 - [ ] Milestone 3: Complete full validation, manual patching acceptance, and authorized Jira reporting.
 
 ## Surprises & Discoveries
@@ -55,6 +55,8 @@ Evidence:
 
 Observation: the same list feeds _selectedPatchDestinations. buttonDoPatching_Click rebuilds it with _updateControllerDetails(_cachedControllersAndOutputs, true) immediately before making connections. Fixing only the labels or sorting only a UI export would leave that preparation path vulnerable. The fix must sort in the consuming method and preserve reversal even when statistics are skipped.
 
+Observation: the Reverse Output Order checkbox handler refreshes controller inputs but does not refresh the summary's filtered destination list. The actual patch click rebuilds both inputs and eligible destinations. Tests therefore assert the private input list immediately after checkbox changes and exercise the filtered summary after calling the public details refresh, while the skipStats case asserts the actual patch-preparation input list.
+
 Observation: Rider findTests reported no existing tests for SetupPatchingSimple._updateControllerDetails. The test project already references Vixen.Application and uses xUnit, Moq, and Xunit.StaFact. Existing OutputControllerOutputIndexTests demonstrate real in-memory output registration and exception-safe restoration of VixenSystem.OutputControllers and VixenSystem.DataFlow.
 
 Observation: three screenshots are attached (vixen1.jpg, vixen2.png, vixen3.jpg). Their metadata was reviewed, but anonymous downloads of attachments 18203, 18204, and 18205 returned HTTP 403. No screenshot content is claimed as inspected; the issue text, user clarification, source, and history establish the design without them.
@@ -89,7 +91,7 @@ Date/Author: 2026-10-06 / Codex.
 ## Outcomes & Retrospective
 
 
-Analysis and design are complete. History identifies the logical-selection export change that exposed the unsorted destination consumer and separately proves that reverse-dependent labels predate that change. Implementation, fail-before/pass-after regression evidence, builds, and manual acceptance remain outstanding. Only this plan is being added during the analysis request; no Jira write, commit, or application source edit is included.
+Milestone 2 implementation and focused validation are complete. The regression suite failed before the production repair in four ordering/bounds cases (4 failed, 1 passed), then passed after the repair (6 passed). Full-MSBuild test-target builds succeeded, and the existing controller virtualization/output-index suites passed (34 tests). Manual patch-connection acceptance and the full solution/test validation remain for Milestone 3.
 
 ## Architecture Design: VIX-4006 — Patched outputs showing incorrectly
 
@@ -257,7 +259,7 @@ Analysis started with git status --short reporting a clean worktree. Historical 
 
 Gortex impact of _updateControllerDetails identified public selection/detail updates, reverse checkbox changes, and buttonDoPatching_Click as direct callers, with DisplaySetup event consumers beyond them. The graph found no existing test file for this method. An impact query for this new Markdown plan returned file_not_indexed because it does not yet exist as an indexed code file.
 
-No build, application run, runtime debugger, or unit test run was performed during planning because no application code is changed. Implementation evidence must be added after executing Milestones 2 and 3. Planning validation confirmed every required section, three milestones and three explicit review stops, no nested/outer Markdown fences in the standalone file, and the required concluding statement. git status --short showed only this new untracked plan. git diff --no-index --check -- /dev/null docs/plans/display-setup/vix-4006-patched-output-range-order.md emitted no whitespace diagnostics (exit 1 denotes the new-file difference). Gortex detect reported no tracked edits and explicitly excluded untracked files; guards do not apply to a Markdown file without code symbols.
+Planning validation confirmed every required section, three milestones and three explicit review stops, no nested/outer Markdown fences in the standalone file, and the required concluding statement. Milestone 1 updated VIX-4006 with the accepted behavior and verified preserved issue context. For Milestone 2, the initial full-MSBuild test-target build succeeded after importing the existing test collection namespace; the pre-fix focused suite failed in four cases (4 failed, 1 passed). After implementation, `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded. The focused suite passed 6/6 and the existing `ControllerTreeVirtualizationTests` plus `OutputControllerOutputIndexTests` passed 34/34. Rider file-problem checks reported zero errors in all three changed C# files; the broader lint output included existing diagnostics outside changed lines. `git diff --check` emitted no whitespace errors. No full solution rebuild or manual patch-connection acceptance was performed; those remain for Milestone 3.
 
 ## Interfaces and Dependencies
 
