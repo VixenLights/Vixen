@@ -24,6 +24,7 @@ on:
       - '.claude/**'
       - '.agents/**'
       - 'docs/**'
+      - '.mcp.json'
      
 jobs:
 
