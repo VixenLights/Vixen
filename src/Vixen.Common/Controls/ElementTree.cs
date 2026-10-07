@@ -490,6 +490,16 @@ namespace Common.Controls
 			get { return treeview.SelectedNodes.Select(x => x.Tag as ElementNode); }
 		}
 
+		/// <summary>
+		/// Gets selected elements in the active range's anchor-to-endpoint order.
+		/// </summary>
+		/// <value>The active directional range, or the current selected-element sequence for other selection operations.</value>
+		/// <remarks>This runtime-only projection preserves the canonical display order exposed by <see cref="SelectedElementNodes"/>.</remarks>
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public IEnumerable<ElementNode> SelectedElementNodesInSelectionOrder =>
+			treeview.SelectedNodesInSelectionOrder.Select(x => x.Tag as ElementNode);
+
 
 
 		public event EventHandler treeviewDeselected
@@ -1425,6 +1435,7 @@ namespace Common.Controls
 			}
 
 			PopulateNodeTree();
+			OnElementsChanged();
 		}
 
 		private void sortToolStripMenuItem_Click(object sender, EventArgs e)
