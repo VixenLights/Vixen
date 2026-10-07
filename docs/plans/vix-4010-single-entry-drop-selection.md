@@ -18,7 +18,7 @@ This document delivers the design for Jira improvement VIX-4010, “Dropping a G
 - [x] (2026-10-07 18:11Z) Designed a selection-only change that reuses the existing property/index application loops.
 - [x] (2026-10-07 18:20Z) Milestone 1: Updated VIX-4010's description with scope, acceptance criteria, manual regression scenarios, and the planned build/test commands. Re-read the issue and confirmed the description was saved; status remains Accepted and no validation results are claimed.
 - [x] (2026-10-07 18:33Z) Milestone 2: Updated `HandleCurveDrop` and `HandleGradientDropOnElements` to apply a sole flattened candidate through the existing property/index update loops; zero candidates skip the dialog and mutation; multiple candidates retain the picker; the auto-selected control is disposed after capturing its metadata. Gortex found no covering tests (0/2 changed handlers), no configured guards, and a high-risk contract warning across 22 lower-bound dependents. C# LSP diagnostics were unavailable. No build, test run, or runtime validation was performed; those belong to milestone 3.
-- [ ] Milestone 3: Complete build, IDE analysis, and manual regression acceptance.
+- [x] (2026-10-07) Milestone 3: User reports that the full build passed, all manual UI validation passed, and 1,062 unit tests passed. Exact command lines and scenario-by-scenario notes were not provided. The implementation agent did not independently rerun these checks.
 - [ ] Milestone 4: Align the final issue description and publish validation evidence.
 
 ## Surprises & Discoveries
@@ -67,7 +67,7 @@ The completed plan `docs/plans/vix-3965-inline-library-drag-regression.md` docum
 ## Outcomes & Retrospective
 
 
-Milestones 1 and 2 are complete. VIX-4010 records the agreed user behavior, acceptance criteria, regression scenarios, and validation commands. The two outer drop handlers now resolve a sole candidate directly and share the existing application loops with picker selections. Zero candidates skip selection and mutation; multiple candidates retain the selector. The issue remains Accepted. Gortex reports no covering tests, no configured guards, a high-risk contract warning across a lower-bound 22 dependents, and no registered C# LSP for file diagnostics. No build, test, or runtime result is claimed; those remain for milestone 3. The design finding remains that the existing leaf shortcuts are insufficient: the combined picker branches in the outer handlers must participate in automatic selection.
+Milestones 1–3 are complete. VIX-4010 records the agreed user behavior, acceptance criteria, regression scenarios, and validation commands. The two outer drop handlers resolve a sole candidate directly and share the existing application loops with picker selections. Zero candidates skip selection and mutation; multiple candidates retain the selector. The issue remains Accepted. The user reports a successful full build, all manual UI validation passing, and 1,062 passing unit tests. Exact commands and scenario-by-scenario results were not supplied, and those checks were not independently rerun during this plan update. Gortex found no automated test coverage for the changed handlers, no configured guard rules, and no registered C# LSP provider. Milestone 4 remains: align the final Jira description and publish validation evidence. The design finding remains that the existing leaf shortcuts are insufficient: the combined picker branches in the outer handlers must participate in automatic selection.
 
 ## Context and Orientation
 
@@ -207,6 +207,8 @@ The local selection uses existing `PropertyMetaData` and `int`; it needs no new 
 
 2026-10-07: Updated VIX-4010's description for milestone 1. It now includes singleton immediate application, multi/no-candidate and cancellation behavior, pair preservation, selected-effect propagation, linked/independent values, Undo/Redo, manual scenarios, and the repository validation commands. The issue was re-read after the update; its status was unchanged, and no validation result is represented as completed.
 
-2026-10-07: Implemented milestone 2 in the two outer handlers. Gortex change detection identified both changed methods; test mapping found 0/2 covered symbols, guard analysis found no configured rules, and contract analysis warned high risk with a lower-bound blast size of 22. C# diagnostics could not run because no C# LSP provider is registered. The build, automated tests, and manual timeline checks remain for milestone 3.
+2026-10-07: Implemented milestone 2 in the two outer handlers. Gortex change detection identified both changed methods; test mapping found 0/2 covered symbols, guard analysis found no configured rules, and contract analysis warned high risk with a lower-bound blast size of 22. C# diagnostics could not run because no C# LSP provider is registered.
+
+2026-10-07: The user reported milestone 3 passed: full build succeeded, manual UI validation passed, and 1,062 unit tests passed. Exact command lines and individual UI scenario outcomes were not provided; this record reflects the user's report and was not independently rerun.
 
 Analysis complete and plan integrated with plans.md.
