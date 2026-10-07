@@ -1,6 +1,6 @@
 # Restore element range selection direction when patching (VIX-4009)
 
-This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective in accordance with `.agents/PLANS.md`. Issue: https://vixenlights.atlassian.net/browse/VIX-4009. Related issue: https://vixenlights.atlassian.net/browse/VIX-938. This document records an implementation-ready design; application implementation has not begun.
+This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective in accordance with `.agents/PLANS.md`. Issue: https://vixenlights.atlassian.net/browse/VIX-4009. Related issue: https://vixenlights.atlassian.net/browse/VIX-938. This document records the implementation-ready design and execution evidence; Milestone 2 implementation is complete and Milestone 3 verification remains.
 
 ## Purpose / Big Picture
 
@@ -17,7 +17,7 @@ Preserve VIX-938's working keyboard navigation, stable anchor, range shrinking, 
 - [x] (2026-10-07) Verified VIX project creation access and its Bug type, checked related issue summaries, and read the final VIX-938 contract.
 - [x] (2026-10-07) Milestone 1: Created VIX-4009 with user-facing requirements and acceptance criteria, linked it to VIX-938 using Relates, and verified the description, Bug type, New Ticket status, and link by reading it back.
 - [x] (2026-10-07) Prepared this plan and the scoped design review in `docs/reviews/vix-4009-range-selection-order-design.md`.
-- [ ] Milestone 2: Add failing direction regressions, implement the separate range-order snapshot and Display Setup handoff, and pass focused checks.
+- [x] (2026-10-07) Milestone 2: Added keyboard, Shift-range, and Setup patch-cache regressions; implemented the directional selection snapshot and Display Setup handoff; Release x64 test-target build succeeded, 20 focused tests passed, and all 78 Common/Setup tests passed.
 - [ ] Milestone 3: Verify complete patch behavior, VIX-938 and controller regressions, Release x64 build, and final Jira reporting.
 
 ## Surprises & Discoveries
@@ -43,6 +43,8 @@ The VIX-4006 reference plan establishes that controller destinations follow pane
 
 Historical Gortex commit snapshots remained unavailable during the preceding investigation. Historical evidence was obtained through read-only Git comparisons under the session's performance-fallback instruction; current implementation and test source was inspected with Gortex. Historical observation is source evidence, not a live UI reproduction.
 
+Milestone 2's first focused test run failed because the Setup consumer fixture created ElementNode instances before VixenSystem.Nodes was initialized. The fixture now installs and restores a dedicated NodeManager. The focused suite then passed 20/20. The available Gortex C# diagnostics call reports that no C# LSP provider is registered, so Rider get_file_problems was unavailable; the final Release test-target build reported no warnings from the changed production files.
+
 ## Decision Log
 
 
@@ -62,6 +64,10 @@ Decision: clear the range snapshot on clearing selection or ordinary membership 
 Rationale: this prevents stale TreeNode references and prevents a previous range's order from leaking into ordinary clicks, Ctrl toggles, programmatic replacement, or tree rebuilding. It preserves existing non-range notification timing without promising full click chronology.
 Date/Author: 2026-10-07 / Codex.
 
+Decision: the Setup patch-cache regression uses null-element ElementNodes with an isolated NodeManager to verify the actual selection event/getter handoff without constructing data-flow components.
+Rationale: Milestone 2's contract is directional sequence retention through SetupElementsTree into SetupPatchingSimple's existing cache. Real output adapters and resulting connections remain Milestone 3 validation.
+Date/Author: 2026-10-07 / Codex.
+
 Decision: leave GetOrderedElementOutputs and controller destination logic intact.
 Rationale: existing ordered input is sufficient. Preferred order properties, first-occurrence deduplication, leaf expansion, Reverse Element Order, and destination normalization already belong to those consumers and must retain their behavior.
 Date/Author: 2026-10-07 / Codex.
@@ -73,7 +79,7 @@ Date/Author: 2026-10-07 / Codex.
 ## Outcomes & Retrospective
 
 
-Planning and issue creation are complete. VIX-4009 is a verified Bug in New Ticket status and relates to the closed VIX-938 issue. No application source or test code has changed, and no runtime, build, or automated test result is claimed for this proposed repair. Remaining work is Milestone 2 implementation and Milestone 3 validation/reporting.
+Milestone 2 is implemented. MultiSelectTreeview retains canonical display order and exposes an immutable anchor-to-endpoint snapshot for the active range; ElementTree and SetupElementsTree forward that order, including after the gesture returns, into SetupPatchingSimple's existing cache. Release x64 test-target build succeeded, the focused tests passed 20/20, the Common/Setup suites passed 78/78, and git diff --check passed. Rider get_file_problems was unavailable because no C# LSP provider is registered in Gortex. Actual patch connections, complete VIX-938/controller regression coverage, and final Jira reporting remain Milestone 3 work.
 
 ## Architecture Design: VIX-4009 — Restore element range selection direction when patching
 
@@ -166,7 +172,7 @@ Concrete Steps: from C:\Dev\Vixen use full MSBuild to build the test target befo
     dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~MultiSelectTreeviewKeyboardSelectionTests|FullyQualifiedName~MultiSelectTreeviewRangeSelectionOrderTests|FullyQualifiedName~SetupPatchingSimpleElementOrderTests"
     git diff --check
 
-Start long-running commands with exec_command and yield_time_ms=10000. When only waiting for completion use write_stdin with yield_time_ms at least 30000. Expected after implementation: the build has zero errors, the new directional tests and existing nine VIX-938 tests have zero failures, and whitespace validation has no errors. Record actual results rather than assuming a total count.
+Start long-running commands with exec_command and yield_time_ms=10000. When only waiting for completion use write_stdin with yield_time_ms at least 30000. Observed after implementation: the Release x64 `Vixen_Tests` target build exited 0, and the focused filter covering `MultiSelectTreeviewKeyboardSelectionTests`, `MultiSelectTreeviewRangeSelectionOrderTests`, and `SetupPatchingSimpleElementOrderTests` passed 20/20 tests. `git diff --check` exited 0. The covering Common/Setup test filter passed 78/78. The focused run was not performed against the pre-repair source, so no fail-before result is claimed. Actual mouse input and patch-connection behavior remain for Milestone 3.
 
 Validation and Acceptance: demonstrate the directional regressions fail against the pre-repair behavior and pass afterwards. Gortex impact is required before each production edit; verify any signature change if execution departs from this additive design. After edits use detect and its changed symbol IDs with tests, guards, and contract. Run Rider get_file_problems on every changed C# file and fix only diagnostics within changed lines. Confirm snapshot processing adds only a linear selected-range copy/reversal and does not add recursive sorting or force handle creation. Public-property XML docs must match the implemented fallback and invalidation behavior.
 
@@ -226,7 +232,7 @@ Fixtures restore all replaced global managers and dispose controls even on failu
 
 Planning began with a clean git status. Jira project/type validation succeeded. VIX-4009 was created as Bug, linked to VIX-938 with Relates, and read back with New Ticket status and the expected acceptance criteria. Gortex impact for SelectRange reported medium risk, 23 transitively affected symbols, and MultiSelectTreeviewKeyboardSelectionTests as an existing test target. Impact checks for the new Markdown paths returned file_not_indexed because the files did not yet exist; this does not represent a source edit.
 
-The plan and review are the only intended repository changes in this turn. Capture documentation validation and final status in the handoff. No C# was generated, no application tests/build were run, and no implementation commit was created.
+Milestone 2 changed the three planned production files and added/updated the three planned test files. Full MSBuild for the Release x64 test target exited 0. The focused dotnet test run passed 20/20 tests, and the covering Common/Setup test run passed 78/78 tests. `git diff --check` passed. The first focused run exposed only a test-fixture initialization issue; the fixture now restores the original NodeManager, and the rerun passed. No commit was created; Milestone 3 remains pending.
 
 ## Interfaces and Dependencies
 
@@ -249,6 +255,8 @@ Use existing collection/array/LINQ facilities, TreeNode references, ElementNodes
 ## Revision Notes
 
 
-2026-10-07 / Codex: Created the plan after the user requested restoring mouse and keyboard range direction without undoing VIX-938. Recorded the historical event-before-sort explanation, chose an explicit range-order snapshot while retaining canonical selection order, included the patching-view getter route, and created/verified VIX-4009 and its relation to VIX-938. Application implementation remains pending.
+2026-10-07 / Codex: Created the plan after the user requested restoring mouse and keyboard range direction without undoing VIX-938. Recorded the historical event-before-sort explanation, chose an explicit range-order snapshot while retaining canonical selection order, included the patching-view getter route, and created/verified VIX-4009 and its relation to VIX-938. Application implementation was pending at planning time.
+
+2026-10-07 / Codex: Implemented Milestone 2 after explicit user direction. Captured anchor-to-endpoint selection in a read-only snapshot without changing canonical SelectedNodes; forwarded it through ElementTree and SetupElementsTree selection notifications and the SelectedElements getter; added keyboard, range-state, event handoff, and patch-cache regressions. The Release x64 Vixen_Tests target build succeeded, the focused filter passed 20/20 tests, and the Common/Setup suites passed 78/78; git diff --check passed. Gortex reported no registered C# LSP provider, so IDE file problem checks were unavailable. Milestone 3 manual patch and broader validation remains.
 
 Analysis complete and plan integrated with plans.md.

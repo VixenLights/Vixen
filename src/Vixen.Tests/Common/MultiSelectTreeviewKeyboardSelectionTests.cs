@@ -74,6 +74,57 @@ public sealed class MultiSelectTreeviewKeyboardSelectionTests
 	}
 
 	[Fact]
+	public void ShiftUpExposesAnchorToEndpointOrderWithoutChangingCanonicalOrder()
+	{
+		var treeView = CreateTreeView("A", "B", "C");
+		treeView.SelectedNode = treeView.Nodes[2];
+		IReadOnlyList<TreeNode>? eventOrder = null;
+		treeView.AfterSelect += (_, _) => eventOrder = treeView.SelectedNodesInSelectionOrder.ToArray();
+
+		bool handled = treeView.ProcessKeyboardSelection(Keys.Up, Keys.Shift);
+
+		Assert.True(handled);
+		Assert.Equal(["B", "C"], SelectedNodeNames(treeView));
+		Assert.Equal(["C", "B"], eventOrder!.Select(node => node.Text));
+		Assert.Equal(["C", "B"], treeView.SelectedNodesInSelectionOrder.Select(node => node.Text));
+	}
+
+	[Fact]
+	public void ShiftHomeAndEndExposeTheirAnchorToEndpointDirection()
+	{
+		var treeView = CreateTreeView("A", "B", "C");
+		treeView.SelectedNode = treeView.Nodes[2];
+
+		treeView.ProcessKeyboardSelection(Keys.Home, Keys.Shift);
+
+		Assert.Equal(["A", "B", "C"], SelectedNodeNames(treeView));
+		Assert.Equal(["C", "B", "A"], treeView.SelectedNodesInSelectionOrder.Select(node => node.Text));
+
+		treeView.SelectedNode = treeView.Nodes[0];
+		treeView.ProcessKeyboardSelection(Keys.End, Keys.Shift);
+
+		Assert.Equal(["A", "B", "C"], SelectedNodeNames(treeView));
+		Assert.Equal(["A", "B", "C"], treeView.SelectedNodesInSelectionOrder.Select(node => node.Text));
+	}
+
+	[Fact]
+	public void RangeSnapshotRemainsStableAndOrdinarySelectionInvalidatesIt()
+	{
+		var treeView = CreateTreeView("A", "B", "C", "D");
+		treeView.SelectedNode = treeView.Nodes[2];
+		treeView.ProcessKeyboardSelection(Keys.Up, Keys.Shift);
+		TreeNode[] previousSnapshot = treeView.SelectedNodesInSelectionOrder.ToArray();
+
+		treeView.ProcessKeyboardSelection(Keys.Up, Keys.Shift);
+
+		Assert.Equal(["C", "B"], previousSnapshot.Select(node => node.Text));
+		Assert.Equal(["C", "B", "A"], treeView.SelectedNodesInSelectionOrder.Select(node => node.Text));
+		treeView.SelectedNode = treeView.Nodes[3];
+
+		Assert.Equal(["D"], treeView.SelectedNodesInSelectionOrder.Select(node => node.Text));
+	}
+
+	[Fact]
 	public void ShiftDownWithNoSelectionSelectsTopNode()
 	{
 		var treeView = CreateTreeView("A", "B");

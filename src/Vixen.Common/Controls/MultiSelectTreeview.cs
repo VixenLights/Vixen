@@ -72,6 +72,7 @@ namespace Common.Controls
 		private bool _clickedNodeWasInBounds = false;
 		private bool _selectedNodeWithControlKey = false;
 		private TreeNode _selectionAnchorNode;
+		private IReadOnlyList<TreeNode> _rangeSelectionOrder;
 
 		#endregion
 
@@ -189,6 +190,15 @@ namespace Common.Controls
 		#region Selected Node(s) Properties
 
 		private List<TreeNode> m_SelectedNodes = null;
+
+		/// <summary>
+		/// Gets the selected nodes in anchor-to-endpoint order while a range selection is active.
+		/// </summary>
+		/// <value>A read-only snapshot of the active range order, or the current selected-node sequence for other selection operations.</value>
+		/// <remarks>The snapshot is runtime-only and is replaced by each range gesture. Clearing or changing selection outside a range returns the canonical selected-node sequence.</remarks>
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public IReadOnlyList<TreeNode> SelectedNodesInSelectionOrder => _rangeSelectionOrder ?? m_SelectedNodes.AsReadOnly();
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -981,6 +991,7 @@ namespace Common.Controls
 
 		public void ClearSelectedNodes()
 		{
+			_rangeSelectionOrder = null;
 			try {
 				foreach (TreeNode node in m_SelectedNodes) {
 					node.BackColor = BackColor;
@@ -1015,6 +1026,7 @@ namespace Common.Controls
 
 		private void ToggleNode(TreeNode node, bool bSelectNode)
 		{
+			_rangeSelectionOrder = null;
 			if (bSelectNode) {
 				m_SelectedNode = node;
 				AddNodeToSelectedListIfNotInList(node);
@@ -1041,6 +1053,12 @@ namespace Common.Controls
 			foreach (TreeNode node in range) {
 				SelectRangeNode(node);
 			}
+
+			var selectionOrder = range.ToList();
+			if (selectionOrder[0] != anchorNode) {
+				selectionOrder.Reverse();
+			}
+			_rangeSelectionOrder = Array.AsReadOnly(selectionOrder.ToArray());
 
 			_selectionAnchorNode = anchorNode;
 			m_SelectedNode = targetNode;

@@ -91,11 +91,16 @@ namespace VixenApplication.Setup
 			ElementsChanged?.Invoke(this, e);
 		}
 
+		/// <summary>
+		/// Gets or sets the selected elements shown in the setup tree.
+		/// </summary>
+		/// <value>The selected elements in active range order when a range gesture is active; otherwise, the current selection sequence.</value>
+		/// <remarks>Reading retains anchor-to-endpoint order for range selections across patching-view changes. Setting repopulates the tree and clears any prior range snapshot.</remarks>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<ElementNode> SelectedElements
 		{
-			get { return elementTree.SelectedElementNodes; }
+			get { return elementTree.SelectedElementNodesInSelectionOrder; }
 			set
 			{
 				elementTree.PopulateNodeTree(value);
@@ -373,13 +378,13 @@ namespace VixenApplication.Setup
 		private void elementTree_treeviewAfterSelect(object sender, TreeViewEventArgs e)
 		{
 			UpdateFormWithNode();
-			OnElementSelectionChanged(new ElementNodesEventArgs(elementTree.SelectedElementNodes));
+			OnElementSelectionChanged(new ElementNodesEventArgs(SelectedElements));
 		}
 
 		private void elementTree_treeviewDeselected(object sender, EventArgs e)
 		{
 			UpdateFormWithNode();
-			OnElementSelectionChanged(new ElementNodesEventArgs(elementTree.SelectedElementNodes));
+			OnElementSelectionChanged(new ElementNodesEventArgs(SelectedElements));
 		}
 
 		private void listViewProperties_MouseDoubleClick(object sender, MouseEventArgs e)
