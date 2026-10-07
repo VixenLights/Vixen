@@ -185,25 +185,25 @@ Task documents that say "use the X skill" always refer to the project version at
 
 | Area | Description | Explore |
 |------|-------------|---------|
-| Curves Zedgraph 7 Dirs | 3464 symbols | `analyze(operation:"communities", id:"community-821")` |
-| Vixen Common Nshape 13 Dirs | 2955 symbols | `analyze(operation:"communities", id:"community-206")` |
-| Vixen Common Nshape 5 Dirs | 2522 symbols | `analyze(operation:"communities", id:"community-270")` |
-| Effect Effect 80 Dirs | 2383 symbols | `analyze(operation:"communities", id:"community-1218")` |
-| Vixen Common Nshape 3 Dirs Cachedrepository | 2319 symbols | `analyze(operation:"communities", id:"community-163")` |
-| Vixen Core Sys 79 Dirs | 2287 symbols | `analyze(operation:"communities", id:"community-650")` |
-| Vixen Common Nshape 8 Dirs | 2229 symbols | `analyze(operation:"communities", id:"community-271")` |
-| Editor Timedsequenceeditor 46 Dirs | 2018 symbols | `analyze(operation:"communities", id:"community-1145")` |
-| Editor Timedsequenceeditor 68 Dirs | 1944 symbols | `analyze(operation:"communities", id:"community-785")` |
-| Vixen Common Nshape 64 Dirs | 1658 symbols | `analyze(operation:"communities", id:"community-310")` |
-| Vixenpreview Shapes 22 Dirs | 1408 symbols | `analyze(operation:"communities", id:"community-1296")` |
-| Effect Effect 72 Dirs | 1093 symbols | `analyze(operation:"communities", id:"community-1148")` |
-| Sys Dispatch 47 Dirs | 904 symbols | `analyze(operation:"communities", id:"community-644")` |
-| Polygoneditor Viewmodels 17 Dirs | 873 symbols | `analyze(operation:"communities", id:"community-1101")` |
-| Controls Timelinecontrol 4 Dirs Grid | 861 symbols | `analyze(operation:"communities", id:"community-104")` |
-| Vixenpreview Undo 10 Dirs | 861 symbols | `analyze(operation:"communities", id:"community-1299")` |
-| Module Effect 61 Dirs | 853 symbols | `analyze(operation:"communities", id:"community-632")` |
-| Vixen Modules Effect Whirl | 628 symbols | `analyze(operation:"communities", id:"community-1232")` |
-| Sys Output 28 Dirs | 595 symbols | `analyze(operation:"communities", id:"community-1327")` |
-| Dynamics Joints 8 Dirs | 522 symbols | `analyze(operation:"communities", id:"community-41")` |
+| Curves Zedgraph 10 Dirs | 3392 symbols | `analyze(operation:"communities", id:"community-852")` |
+| App Colorgradients 92 Dirs | 3144 symbols | `analyze(operation:"communities", id:"community-1275")` |
+| Vixen Common Nshape 4 Dirs | 2488 symbols | `analyze(operation:"communities", id:"community-285")` |
+| Vixen Common Nshape 12 Dirs | 2475 symbols | `analyze(operation:"communities", id:"community-217")` |
+| Vixen Common Nshape 8 Dirs | 2342 symbols | `analyze(operation:"communities", id:"community-286")` |
+| Vixen Common Nshape 3 Dirs Cachedrepository | 2308 symbols | `analyze(operation:"communities", id:"community-175")` |
+| Editor Timedsequenceeditor 70 Dirs | 1912 symbols | `analyze(operation:"communities", id:"community-812")` |
+| Vixen Common Nshape 69 Dirs | 1863 symbols | `analyze(operation:"communities", id:"community-325")` |
+| Vixen Core Sys 64 Dirs | 1759 symbols | `analyze(operation:"communities", id:"community-676")` |
+| Timedsequenceeditor Forms 37 Dirs | 1688 symbols | `analyze(operation:"communities", id:"community-1194")` |
+| Vixenpreview Shapes 20 Dirs | 1413 symbols | `analyze(operation:"communities", id:"community-1348")` |
+| Vixen Common Controls 51 Dirs | 1185 symbols | `analyze(operation:"communities", id:"community-413")` |
+| App Curves 53 Dirs | 1083 symbols | `analyze(operation:"communities", id:"community-1269")` |
+| Module Effect 60 Dirs | 844 symbols | `analyze(operation:"communities", id:"community-604")` |
+| Sys Dispatch 48 Dirs | 790 symbols | `analyze(operation:"communities", id:"community-669")` |
+| Polygoneditor Viewmodels 7 Dirs | 708 symbols | `analyze(operation:"communities", id:"community-1150")` |
+| Sys Output 32 Dirs | 681 symbols | `analyze(operation:"communities", id:"community-1378")` |
+| Dynamics Joints 9 Dirs | 658 symbols | `analyze(operation:"communities", id:"community-39")` |
+| Vixenpreview Undo 10 Dirs | 594 symbols | `analyze(operation:"communities", id:"community-1352")` |
+| Vixen Modules Effect Whirl | 582 symbols | `analyze(operation:"communities", id:"community-1289")` |
 
 <!-- gortex:communities:end -->

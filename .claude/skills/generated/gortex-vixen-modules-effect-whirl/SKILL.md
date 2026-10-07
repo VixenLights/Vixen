@@ -1,20 +1,17 @@
 ---
 name: gortex-vixen-modules-effect-whirl
-description: "Work in the Vixen.Modules/Effect · Whirl area — 628 symbols across 14 files (89% cohesion)"
+description: "Work in the Vixen.Modules/Effect · Whirl area — 582 symbols across 11 files (89% cohesion)"
 ---
 
 # Vixen.Modules/Effect · Whirl
 
-628 symbols | 14 files | 89% cohesion
+582 symbols | 11 files | 89% cohesion
 
 ## When to Use
 
 Use this skill when working on files in:
 - `src/Vixen.Modules/Effect/Effect/IPixelFrameBuffer.cs`
-- `src/Vixen.Modules/Effect/Whirlpool/Whirl/IWhirl.cs`
-- `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolColorMode.cs`
 - `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolDirection.cs`
-- `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolMode.cs`
 - `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolRotation.cs`
 - `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolSideType.cs`
 - `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolStartLocation.cs`
@@ -30,31 +27,26 @@ Use this skill when working on files in:
 | File | Symbols |
 |------|---------|
 | `src/Vixen.Modules/Effect/Effect/IPixelFrameBuffer.cs` | IPixelFrameBuffer |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirl/IWhirl.cs` | Height, RightColor, Width, StartLocation, BandLength, ... |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolColorMode.cs` | GradientOverTime, Bands, WhirlpoolColorMode, RectangularRings, LegColors |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolDirection.cs` | In, InAndOut, Out, WhirlpoolDirection |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolMode.cs` | WhirlpoolMode, Meteor, RecurrentWhirls, SymmetricalWhirls |
+| `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolDirection.cs` | In, Out, InAndOut, WhirlpoolDirection |
 | `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolRotation.cs` | WhirlpoolRotation, CounterClockwise, Clockwise |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolSideType.cs` | BottomSide, RightSide, LeftSide, TopSide, WhirlpoolSideType |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolStartLocation.cs` | WhirlpoolStartLocation, BottomRight, TopRight, BottomLeft, TopLeft |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirl.cs` | SetupRender, width, maxNumberOfPixels, UpdateThicknessAttributes, height, ... |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/WhirlVortexMetadata.cs` | DrawLeft, DrawRight, LastX, LastHeight, LastY, ... |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirl_ConcentricDrawMethods.cs` | width, DrawWhirlSymmetricalIn, intervalPos, x, thickness, ... |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirl_DrawInMethods.cs` | height, x, spacing, DrawBottomRightClockwiseIn, x, ... |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirl_DrawOutMethods.cs` | height, width, width, intervalPos, intervalPos, ... |
-| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirlpool.cs` | UpdateWhirlMode, frame, whirlMode, RenderEffect, frameBuffer, ... |
+| `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolSideType.cs` | TopSide, WhirlpoolSideType, RightSide, LeftSide, BottomSide |
+| `src/Vixen.Modules/Effect/Whirlpool/Whirl/WhirlpoolStartLocation.cs` | BottomLeft, WhirlpoolStartLocation, TopRight, BottomRight, TopLeft |
+| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirl.cs` | height, _colorMode, firstPass, width, x, ... |
+| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/WhirlVortexMetadata.cs` | LastY, LastWidth, DrawRight, LastHeight, DrawLeft, ... |
+| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirl_ConcentricDrawMethods.cs` | width, spacing, y, intervalPos, frameBuffer, ... |
+| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirl_DrawInMethods.cs` | intervalPos, DrawTopRightCounterClockwiseIn, spacing, y, height, ... |
+| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirl_DrawOutMethods.cs` | intervalPos, drawBottom, height, height, drawTop, ... |
+| `src/Vixen.Modules/Effect/Whirlpool/Whirlpool/Whirlpool.cs` | bufferHt, RenderEffect, intervalPos, numFrames, RenderEffectByLocation, ... |
 
 ## Connected Communities
 
-- **Whirlpool/Whirlpool · DoubleThickness** (8 cross-edges)
-- **Effect/Meteors +30 dirs** (4 cross-edges)
-- **Vixen.Modules/Effect · ScaleCurveToValue** (2 cross-edges)
-- **Effect/Fireworks +11 dirs** (1 cross-edges)
+- **Whirlpool/Whirlpool** (8 cross-edges)
+- **OpenGL/Volumes +24 dirs** (2 cross-edges)
 
 ## How to Explore
 
 ```
-analyze(operation:"communities", id:"community-1232")
+analyze(operation:"communities", id:"community-1289")
 explore(operation:"context", task:"understand Vixen.Modules/Effect · Whirl", format:"gcx")
 ```
 

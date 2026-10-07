@@ -1,11 +1,11 @@
 ---
 name: gortex-editor-timedsequenceeditor-68-dirs
-description: "Work in the Editor/TimedSequenceEditor +68 dirs area — 1944 symbols across 247 files (72% cohesion)"
+description: "Work in the Editor/TimedSequenceEditor +68 dirs area — 1904 symbols across 244 files (72% cohesion)"
 ---
 
 # Editor/TimedSequenceEditor +68 dirs
 
-1944 symbols | 247 files | 72% cohesion
+1904 symbols | 244 files | 72% cohesion
 
 ## When to Use
 
@@ -23,7 +23,6 @@ Use this skill when working on files in:
 - `src/Vixen.Application/Setup/ElementTemplates/Icicles.Designer.cs`
 - `src/Vixen.Application/Setup/ElementTemplates/Icicles.cs`
 - `src/Vixen.Application/Setup/ElementTemplates/LipSync.Designer.cs`
-- `src/Vixen.Application/Setup/ElementTemplates/LipSync.cs`
 - `src/Vixen.Application/Setup/ElementTemplates/Megatree.Designer.cs`
 - `src/Vixen.Application/Setup/ElementTemplates/Megatree.cs`
 - `src/Vixen.Application/Setup/ElementTemplates/NumberedGroup.Designer.cs`
@@ -62,7 +61,6 @@ Use this skill when working on files in:
 - `src/Vixen.Common/Controls/Theme/ThemeColorTable.cs`
 - `src/Vixen.Common/Controls/Theme/ThemeToolStripRenderer.cs`
 - `src/Vixen.Common/Controls/TimeControl.cs`
-- `src/Vixen.Common/Controls/TimeLineControl/Grid.cs`
 - `src/Vixen.Common/Controls/TimeLineControl/Grid_Mouse.cs`
 - `src/Vixen.Common/Controls/TimeLineControl/MarksBar.cs`
 - `src/Vixen.Common/Controls/TimeLineControl/RowList.cs`
@@ -92,7 +90,6 @@ Use this skill when working on files in:
 - `src/Vixen.Common/NShapeWinFormsUI/ModelTreeViewPresenter.designer.cs`
 - `src/Vixen.Common/NShapeWinFormsUI/ShapeInfoDialog.Designer.cs`
 - `src/Vixen.Common/NShapeWinFormsUI/ShapeInfoDialog.cs`
-- `src/Vixen.Common/WpfPropertyGrid/KnownTypes.cs`
 - `src/Vixen.Core/Common/ColorSpaces.cs`
 - `src/Vixen.Core/Data/Value/LightingValue.cs`
 - `src/Vixen.Core/Data/Value/RGBValue.cs`
@@ -120,7 +117,6 @@ Use this skill when working on files in:
 - `src/Vixen.Modules/App/ExportWizard/BulkExportFinishedStage.Designer.cs`
 - `src/Vixen.Modules/App/ExportWizard/BulkExportFinishedStage.cs`
 - `src/Vixen.Modules/App/ExportWizard/BulkExportOutputFormatStage.Designer.cs`
-- `src/Vixen.Modules/App/ExportWizard/BulkExportOutputFormatStage.cs`
 - `src/Vixen.Modules/App/ExportWizard/BulkExportSourcesStage.Designer.cs`
 - `src/Vixen.Modules/App/ExportWizard/BulkExportSummaryStage.Designer.cs`
 - `src/Vixen.Modules/App/ExportWizard/BulkExportSummaryStage.cs`
@@ -171,6 +167,7 @@ Use this skill when working on files in:
 - `src/Vixen.Modules/Controller/Renard/SetupDialog.Designer.cs`
 - `src/Vixen.Modules/Controller/Renard/SetupDialog.cs`
 - `src/Vixen.Modules/Editor/FixtureGraphics/WPF/MovingHeadWPF.cs`
+- `src/Vixen.Modules/Editor/PolygonEditor/Adorners/RubberbandAdorner.cs`
 - `src/Vixen.Modules/Editor/TimedSequenceEditor/AutomaticMusicDetection.Designer.cs`
 - `src/Vixen.Modules/Editor/TimedSequenceEditor/AutomaticMusicDetection.cs`
 - `src/Vixen.Modules/Editor/TimedSequenceEditor/BulkEffectMoveForm.Designer.cs`
@@ -199,7 +196,6 @@ Use this skill when working on files in:
 - `src/Vixen.Modules/Editor/TimedSequenceEditor/SetSequenceLength.Designer.cs`
 - `src/Vixen.Modules/Editor/TimedSequenceEditor/SetSequenceLength.cs`
 - `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm.cs`
-- `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm_Toolstrip.cs`
 - `src/Vixen.Modules/Effect/CountDown/CountDown.cs`
 - `src/Vixen.Modules/Effect/Morph/Morph/Morph.cs`
 - `src/Vixen.Modules/Effect/Plasma/Plasma.cs`
@@ -209,6 +205,7 @@ Use this skill when working on files in:
 - `src/Vixen.Modules/Effect/Wave/Wave/Wave.cs`
 - `src/Vixen.Modules/LayerMixingFilter/ChromaKey/ChromaKeyData.cs`
 - `src/Vixen.Modules/LayerMixingFilter/ChromaKey/ChromaKeySetup.Designer.cs`
+- `src/Vixen.Modules/LayerMixingFilter/ChromaKey/ChromaKeySetup.cs`
 - `src/Vixen.Modules/LayerMixingFilter/LumaKey/LumaKeySetup.Designer.cs`
 - `src/Vixen.Modules/LayerMixingFilter/MaskFill/MaskAndFillSetup.Designer.cs`
 - `src/Vixen.Modules/OutputFilter/ColorBreakdown/ColorBreakdownSetup.Designer.cs`
@@ -267,176 +264,173 @@ Use this skill when working on files in:
 | `src/Vixen.Application/DataProfileForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Application/DataZipForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Application/InstalledModules.Designer.cs` | InitializeComponent |
-| `src/Vixen.Application/OptionsDialog.Designer.cs` | btnCancel, label4, label2, chkBoxClearEffectCacheOnExit, btnOK, ... |
+| `src/Vixen.Application/OptionsDialog.Designer.cs` | label4, grpVideoEffectCache, InitializeComponent, wasapiLatency, Dispose, ... |
 | `src/Vixen.Application/ReleaseNotes.Designer.cs` | InitializeComponent |
 | `src/Vixen.Application/SelectProfile.Designer.cs` | InitializeComponent |
 | `src/Vixen.Application/Setup/DisplaySetup.Designer.cs` | InitializeComponent |
-| `src/Vixen.Application/Setup/ElementTemplates/ElementTemplateBase.cs` | ConfigureColor, ConfigureDimming, Cancelled, ElementTemplateBase |
-| `src/Vixen.Application/Setup/ElementTemplates/Icicles.Designer.cs` | disposing, textBoxStringPrefix, label4, label1, components, ... |
-| `src/Vixen.Application/Setup/ElementTemplates/Icicles.cs` | _stringCount, _treeName, e, e, sender, ... |
-| `src/Vixen.Application/Setup/ElementTemplates/LipSync.Designer.cs` | label6, InitializeComponent, textBoxTreeName, buttonCancel, Dispose, ... |
-| `src/Vixen.Application/Setup/ElementTemplates/LipSync.cs` | sender, TemplateStrings, TemplateName, sender, e, ... |
-| `src/Vixen.Application/Setup/ElementTemplates/Megatree.Designer.cs` | textBoxPixelPrefix, label6, grpPatching, grpWireStart, buttonOk, ... |
-| `src/Vixen.Application/Setup/ElementTemplates/Megatree.cs` | e, sender, _stringCount, TemplateName, checkBoxPixelTree_CheckedChanged, ... |
+| `src/Vixen.Application/Setup/ElementTemplates/ElementTemplateBase.cs` | Cancelled, ConfigureDimming, ElementTemplateBase, ConfigureColor |
+| `src/Vixen.Application/Setup/ElementTemplates/Icicles.Designer.cs` | label5, buttonCancel, label6, numericUpDownStrings, textBoxTreeName, ... |
+| `src/Vixen.Application/Setup/ElementTemplates/Icicles.cs` | Icicles_FormClosing, _pixelsPerStringPattern, _stringCount, sender, e, ... |
+| `src/Vixen.Application/Setup/ElementTemplates/LipSync.Designer.cs` | InitializeComponent |
+| `src/Vixen.Application/Setup/ElementTemplates/Megatree.Designer.cs` | label1, InitializeComponent, grpPatching, radioBottomRight, disposing, ... |
+| `src/Vixen.Application/Setup/ElementTemplates/Megatree.cs` | _pixelTree, numericUpDownPixelsPerString_ValueChanged, checkBoxPixelTree_CheckedChanged, sender, e, ... |
 | `src/Vixen.Application/Setup/ElementTemplates/NumberedGroup.Designer.cs` | InitializeComponent |
-| `src/Vixen.Application/Setup/ElementTemplates/PixelGrid.Designer.cs` | e, sender, groupBoxes_Paint, InitializeComponent |
-| `src/Vixen.Application/Setup/ElementTemplates/StarBurst.Designer.cs` | InitializeComponent, label3, disposing, label4, numericUpDownStrings, ... |
-| `src/Vixen.Application/Setup/ElementTemplates/StarBurst.cs` | Megatree_Load, _treeName, sender, Megatree_FormClosed, sender, ... |
+| `src/Vixen.Application/Setup/ElementTemplates/PixelGrid.Designer.cs` | InitializeComponent, sender, e, groupBoxes_Paint |
+| `src/Vixen.Application/Setup/ElementTemplates/StarBurst.Designer.cs` | Dispose, textBoxTreeName, textBoxPixelPrefix, numericUpDownStrings, label4, ... |
+| `src/Vixen.Application/Setup/ElementTemplates/StarBurst.cs` | e, Megatree_Load, _stringCount, Megatree_FormClosed, e, ... |
 | `src/Vixen.Application/Setup/SetupControllersSimple.Designer.cs` | InitializeComponent |
 | `src/Vixen.Application/Setup/SetupElementsTree.Designer.cs` | InitializeComponent |
 | `src/Vixen.Application/Setup/SetupPatchingGraphical.Designer.cs` | InitializeComponent |
 | `src/Vixen.Application/Setup/SetupPatchingSimple.Designer.cs` | InitializeComponent |
-| `src/Vixen.Application/VixenApplication.Designer.cs` | stopToolStripMenuItem, contextMenuStripNewSequence, toolStripStatusLabelExecutionLight, systemConfigurationToolStripMenuItem, toolStripStatusLabel_memory, ... |
-| `src/Vixen.Common/Controls/BaseForm.Designer.cs` | BaseForm, components |
+| `src/Vixen.Application/VixenApplication.Designer.cs` | toolStripStatusLabel_memory, labelVixen, setupDisplayToolStripMenuItem, profilesToolStripMenuItem, titlePanel, ... |
+| `src/Vixen.Common/Controls/BaseForm.Designer.cs` | components, BaseForm |
 | `src/Vixen.Common/Controls/BaseForm.cs` | BaseForm.<init> |
 | `src/Vixen.Common/Controls/ColorPicker/ColorBgra.cs` | FromArgb, value |
-| `src/Vixen.Common/Controls/ColorPicker/ColorLabel.cs` | col, ColorToHexString, Color, e, OnPaint, ... |
+| `src/Vixen.Common/Controls/ColorPicker/ColorLabel.cs` | col, ColorToHexString, Color, e, OldColor, ... |
 | `src/Vixen.Common/Controls/ColorPicker/ColorPicker.cs` | InitializeComponent |
 | `src/Vixen.Common/Controls/ColorPicker/ColorSelectionFader.cs` | e, OnPaint |
-| `src/Vixen.Common/Controls/ColorPicker/ColorSelectionModules_HSV.cs` | ColorSelectionModuleHSV_V, bmp, OnUpdateFaderImage, OnUpdatePlaneImage, fader, ... |
-| `src/Vixen.Common/Controls/ColorPicker/ColorSelectionModules_RGB.cs` | fader, OnUpdateFaderPosition, OnUpdatePlaneImage, ColorSelectionModuleRGB_R, bmp, ... |
-| `src/Vixen.Common/Controls/ColorPicker/ColorUtility.cs` | value, MaxContrastRBTo, BlendOver, position, ColorUtility.<init>, ... |
-| `src/Vixen.Common/Controls/ControlsEx/UltimateWin32.cs` | PostMessage, wParam, hwnd, lParam, wMsg |
-| `src/Vixen.Common/Controls/ControlsEx/ValueControls/FloatingContainer.cs` | mainform, ctl, screenpos, AssignHandle, ShowByControl |
+| `src/Vixen.Common/Controls/ColorPicker/ColorSelectionModules_HSV.cs` | fader, bmp, OnUpdateFaderImage, OnUpdateFaderImage, OnUpdateFaderImage, ... |
+| `src/Vixen.Common/Controls/ColorPicker/ColorSelectionModules_RGB.cs` | OnUpdatePlaneImage, bmp, bmp, OnUpdateFaderImage, bmp, ... |
+| `src/Vixen.Common/Controls/ColorPicker/ColorUtility.cs` | value, MaxContrastTo, GrayScaleOf, position, b, ... |
+| `src/Vixen.Common/Controls/ControlsEx/UltimateWin32.cs` | wParam, wMsg, hwnd, lParam, PostMessage |
+| `src/Vixen.Common/Controls/ControlsEx/ValueControls/FloatingContainer.cs` | ctl, mainform, ShowByControl, screenpos, AssignHandle |
 | `src/Vixen.Common/Controls/ControlsEx/ValueControls/MiniTracker.cs` | GetTrackerPos |
-| `src/Vixen.Common/Controls/ControlsEx/ValueControls/ValueUpDown.cs` | ShowUp, TrackerOrientation, _trackerorientation, control |
-| `src/Vixen.Common/Controls/ListSelectDialog.Designer.cs` | tableLayoutPanel1, buttonCancel, buttonOk, InitializeComponent, flowLayoutPanel1, ... |
-| `src/Vixen.Common/Controls/ListSelectDialog.cs` | _formTitle, _items, listBoxItems_MouseDoubleClick, e, e, ... |
+| `src/Vixen.Common/Controls/ControlsEx/ValueControls/ValueUpDown.cs` | _trackerorientation, control, TrackerOrientation, ShowUp |
+| `src/Vixen.Common/Controls/ListSelectDialog.Designer.cs` | InitializeComponent, components, listBoxItems, ListSelectDialog, buttonCancel, ... |
+| `src/Vixen.Common/Controls/ListSelectDialog.cs` | sender, ListSelectDialog_KeyPress, sender, e, SelectionMode, ... |
 | `src/Vixen.Common/Controls/MessageBoxForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Common/Controls/NameGeneration/NameGenerator.Designer.cs` | InitializeComponent |
 | `src/Vixen.Common/Controls/NameGeneration/SubstitutionRenamer.Designer.cs` | InitializeComponent |
-| `src/Vixen.Common/Controls/NumberDialog.Designer.cs` | labelPrompt, button1, button2, NumberDialog, InitializeComponent, ... |
-| `src/Vixen.Common/Controls/NumberDialog.cs` | Value, numericUpDownChooser_KeyDown, sender, e |
-| `src/Vixen.Common/Controls/NumericTextBox.cs` | DecimalValue, UnsignedInteger, numberFormat, FloatValue, NumberFormat, ... |
-| `src/Vixen.Common/Controls/SerialPortConfig.Designer.cs` | label4, components, currentConfiguredPortLabel, comboBoxPortName, InitializeComponent, ... |
-| `src/Vixen.Common/Controls/SerialPortConfig.cs` | comboBox_DrawItem, SelectedPort, _StopBits, _HavePorts, _PortName, ... |
+| `src/Vixen.Common/Controls/NumberDialog.Designer.cs` | labelPrompt, button1, InitializeComponent, numericUpDownChooser, components, ... |
+| `src/Vixen.Common/Controls/NumberDialog.cs` | sender, e, Value, numericUpDownChooser_KeyDown |
+| `src/Vixen.Common/Controls/NumericTextBox.cs` | UnsignedInteger, SignedInteger, DecimalValue, NumberFormat, numberFormat, ... |
+| `src/Vixen.Common/Controls/SerialPortConfig.Designer.cs` | label4, buttonOK, label1, textBoxDataBits, buttonCancel, ... |
+| `src/Vixen.Common/Controls/SerialPortConfig.cs` | e, sender, _Validate, _Parity, e, ... |
 | `src/Vixen.Common/Controls/TextDialog.Designer.cs` | InitializeComponent |
-| `src/Vixen.Common/Controls/Theme/ThemeColorTable.cs` | _backgroundColor, _foreColor, _foreColorDisabled, _timeLineGridColor, _inputBackColor, ... |
+| `src/Vixen.Common/Controls/Theme/ThemeColorTable.cs` | _timeLineGridColor, _foreColorDisabled, _buttonBackColor, _highlightColor, _backgroundColor, ... |
 | `src/Vixen.Common/Controls/Theme/ThemeToolStripRenderer.cs` | e, OnRenderArrow, e, OnRenderSeparator |
-| `src/Vixen.Common/Controls/TimeControl.cs` | e, textBox_MouseDown, ButtonUpDown_MouseLeave, position, maxValue, ... |
-| `src/Vixen.Common/Controls/TimeLineControl/Grid.cs` | p, GridPoint |
+| `src/Vixen.Common/Controls/TimeControl.cs` | position, e, maxValue, key, delta, ... |
 | `src/Vixen.Common/Controls/TimeLineControl/Grid_Mouse.cs` | m_mouseOutside |
 | `src/Vixen.Common/Controls/TimeLineControl/MarksBar.cs` | originalLocation, TranslateLocation |
 | `src/Vixen.Common/Controls/TimeLineControl/RowList.cs` | e, OnPaint |
 | `src/Vixen.Common/Controls/Wizard/WizardForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Common/ElementTagManager/ViewModels/TagColorItem.cs` | PickColor |
-| `src/Vixen.Common/NShape/Caption.cs` | GetCaptionBounds, bottomLeft, topLeft, bottomRight, index, ... |
-| `src/Vixen.Common/NShape/CircularArcBase.cs` | IntersectsWithCore, x, y, height, width |
+| `src/Vixen.Common/NShape/Caption.cs` | GetCaptionBounds, topRight, bottomRight, bottomLeft, topLeft, ... |
+| `src/Vixen.Common/NShape/CircularArcBase.cs` | IntersectsWithCore, width, x, height, y |
 | `src/Vixen.Common/NShape/DiagramSetController.cs` | copyCutMousePos |
-| `src/Vixen.Common/NShape/DiameterShape.cs` | relativePosition, CalculateAbsolutePosition |
-| `src/Vixen.Common/NShape/Geometry.cs` | p2, p, x, line1End, angleDeg, ... |
-| `src/Vixen.Common/NShape/ImageBasedShape.cs` | imageDrawBounds, bottomRight, CalculateAbsolutePosition, relativePosition, bottomLeft, ... |
+| `src/Vixen.Common/NShape/DiameterShape.cs` | CalculateAbsolutePosition, relativePosition |
+| `src/Vixen.Common/NShape/Geometry.cs` | isSegment, p2, points, endY, b, ... |
+| `src/Vixen.Common/NShape/ImageBasedShape.cs` | relativePosition, imageDrawBounds, CalculateAbsolutePosition, topLeft, index, ... |
 | `src/Vixen.Common/NShape/Layouter.cs` | selectedPositions |
-| `src/Vixen.Common/NShape/LinearShape.cs` | CalculateCommonCells, cellSize, p, CalcNormalVector |
+| `src/Vixen.Common/NShape/LinearShape.cs` | CalcNormalVector, p, CalculateCommonCells, cellSize |
 | `src/Vixen.Common/NShape/PathBasedShape.cs` | location |
 | `src/Vixen.Common/NShape/Polygone.cs` | pointBuffer, CalculateAbsolutePosition, shapePoints, relativePosition |
-| `src/Vixen.Common/NShape/RectangleShape.cs` | pointBuffer, shapePoints, relativePosition, CalculateAbsolutePosition |
-| `src/Vixen.Common/NShape/RectangularLineBase.cs` | CalculateConnectionFoot, CalculateAbsolutePosition, CalcNormalVector, fromY, relativePosition, ... |
-| `src/Vixen.Common/NShape/Shape.cs` | y1, IntersectOutlineWithLineSegment, CalcNormalVector, cellSize, y2, ... |
-| `src/Vixen.Common/NShape/ShapeAggregation.cs` | center, rotationCenter |
-| `src/Vixen.Common/NShape/ShapeGroup.cs` | cellSize, CalculateCells, RotatePoint, CalculateAbsolutePosition, relativePosition |
+| `src/Vixen.Common/NShape/RectangleShape.cs` | shapePoints, relativePosition, pointBuffer, CalculateAbsolutePosition |
+| `src/Vixen.Common/NShape/RectangularLineBase.cs` | fromY, relativePosition, fromX, CalculateConnectionFoot, CalculateAbsolutePosition, ... |
+| `src/Vixen.Common/NShape/Shape.cs` | CalculateCells, cellSize, y1, x2, y2, ... |
+| `src/Vixen.Common/NShape/ShapeAggregation.cs` | rotationCenter, center |
+| `src/Vixen.Common/NShape/ShapeGroup.cs` | RotatePoint, CalculateCells, cellSize, relativePosition, CalculateAbsolutePosition |
 | `src/Vixen.Common/NShape/Shaper.cs` | MultiLineFigureShape.<init>, pixels, points |
 | `src/Vixen.Common/NShape/TextShape.cs` | bl |
 | `src/Vixen.Common/NShape/TriangleBase.cs` | shapePoints, pointBuffer |
-| `src/Vixen.Common/NShapeGeneralShapes/MiscShapes.cs` | newTipPos, oldTipPos, shapePoints |
-| `src/Vixen.Common/NShapeGeneralShapes/TextShapes.cs` | shapeType, template, CreateInstance, Label, Label.<init>, ... |
-| `src/Vixen.Common/NShapeWinFormsUI/Display.cs` | GetDiagramPosition, pointBuffer, copyCutMousePos, GetDiagramOffset, arrowShape |
+| `src/Vixen.Common/NShapeGeneralShapes/MiscShapes.cs` | newTipPos, shapePoints, oldTipPos |
+| `src/Vixen.Common/NShapeGeneralShapes/TextShapes.cs` | template, template, Label, Label.<init>, shapeType, ... |
+| `src/Vixen.Common/NShapeWinFormsUI/Display.cs` | copyCutMousePos, GetDiagramOffset, GetDiagramPosition, pointBuffer, arrowShape |
 | `src/Vixen.Common/NShapeWinFormsUI/ModelTreeViewPresenter.designer.cs` | contextMenuStrip_TrayLocation |
-| `src/Vixen.Common/NShapeWinFormsUI/ShapeInfoDialog.Designer.cs` | ctrlPointListView, columnId, panel1, columnCapabilities, columnConnectedShapes, ... |
-| `src/Vixen.Common/NShapeWinFormsUI/ShapeInfoDialog.cs` | shape, shapeClone, project |
-| `src/Vixen.Common/WpfPropertyGrid/KnownTypes.cs` | Rect, Point4D, Rect3D, Brush, FontWeight, ... |
-| `src/Vixen.Core/Common/ColorSpaces.cs` | value, ToArgb, saturation, hue, ToRGB |
+| `src/Vixen.Common/NShapeWinFormsUI/ShapeInfoDialog.Designer.cs` | panel1, splitContainer2, ShapeInfoDialog, templateNameLbl, columnId, ... |
+| `src/Vixen.Common/NShapeWinFormsUI/ShapeInfoDialog.cs` | shapeClone, shape, project |
+| `src/Vixen.Core/Common/ColorSpaces.cs` | saturation, ToArgb, ToRGB, value, hue |
 | `src/Vixen.Core/Data/Value/LightingValue.cs` | FullColor, FullColorWithAlpha |
-| `src/Vixen.Core/Data/Value/RGBValue.cs` | FullColorWithAlpha, d, ClampMaxByte, FullColor |
+| `src/Vixen.Core/Data/Value/RGBValue.cs` | FullColorWithAlpha, ClampMaxByte, FullColor, d |
 | `src/Vixen.Modules/Analysis/BeatsAndBars/BeatsAndBarsProgress.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Analysis/BeatsAndBars/BeatsAndBarsProgress.cs` | BeatsAndBarsProgress.<init> |
 | `src/Vixen.Modules/Analysis/BeatsAndBars/BeatsAndBarsSettings.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/Analysis/BeatsAndBars/BeatsAndBarsSettings.cs` | sender, e, ColorPanel_Click |
-| `src/Vixen.Modules/Analysis/BeatsAndBars/MusicStaff.Designer.cs` | disposing, Dispose, MusicStaff, BarPeriodLabel, DivTimeLabel, ... |
-| `src/Vixen.Modules/Analysis/BeatsAndBars/MusicStaff.cs` | LabelValOffset, e, staffBox1_Paint, sender, NoteSizeLabel_Click, ... |
-| `src/Vixen.Modules/App/ColorGradients/ColorGradient.cs` | _action, colorsAndProportions, DrawFader, colors, Position, ... |
+| `src/Vixen.Modules/Analysis/BeatsAndBars/BeatsAndBarsSettings.cs` | sender, ColorPanel_Click, e |
+| `src/Vixen.Modules/Analysis/BeatsAndBars/MusicStaff.Designer.cs` | BPMLabel, DivTimeLabelVal, BarPeriodLabel, Dispose, tsLabel, ... |
+| `src/Vixen.Modules/Analysis/BeatsAndBars/MusicStaff.cs` | displayPoint, ScaleValue, e, bpb, MusicStaff_Paint, ... |
+| `src/Vixen.Modules/App/ColorGradients/ColorGradient.cs` | value, GetColor, gr, value, Point.<init>, ... |
 | `src/Vixen.Modules/App/ColorGradients/ColorGradientEditor.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/ColorGradients/ColorGradientLibrarySelector.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/ColorGradients/GradientEdit.cs` | offset, OnMouseUp, e, flip, flip, ... |
+| `src/Vixen.Modules/App/ColorGradients/GradientEdit.cs` | _discreteColors, offset, PointToPos, UpdateSelection, focus, ... |
 | `src/Vixen.Modules/App/Curves/CurveEditor.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/Curves/CurveLibrarySelector.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/Curves/FunctionGenerator.Designer.cs` | lnkHelp, Dispose, txtDescription, components, btnGenerate, ... |
-| `src/Vixen.Modules/App/Curves/FunctionGenerator.cs` | Function, FunctionGenerator.<init>, sender, btnGenerate_Click, lnkHelp_LinkClicked, ... |
+| `src/Vixen.Modules/App/Curves/FunctionGenerator.Designer.cs` | txtFunction, components, disposing, FunctionGenerator, InitializeComponent, ... |
+| `src/Vixen.Modules/App/Curves/FunctionGenerator.cs` | Function, btnGenerate_Click, sender, FunctionGenerator.<init>, lnkHelp_LinkClicked, ... |
 | `src/Vixen.Modules/App/Curves/ZedGraph/HSBColor.cs` | hsbColor, ToRGB |
 | `src/Vixen.Modules/App/CustomPropEditor/Controls/PropDesigner.cs` | Coordinates |
-| `src/Vixen.Modules/App/CustomPropEditor/ViewModels/ConfigurationWindowViewModel.cs` | Convert, mediaColor, color, Convert |
+| `src/Vixen.Modules/App/CustomPropEditor/ViewModels/ConfigurationWindowViewModel.cs` | color, mediaColor, Convert, Convert |
 | `src/Vixen.Modules/App/CustomPropEditor/ViewModels/LightViewModel.cs` | Center |
 | `src/Vixen.Modules/App/CustomPropEditor/ViewModels/PropEditorViewModel.cs` | AddLightCommand |
 | `src/Vixen.Modules/App/ExportWizard/BulkExportConfigStage.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/ExportWizard/BulkExportControllersStage.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/ExportWizard/BulkExportFinishedStage.Designer.cs` | disposing, lblFinished, InitializeComponent, components, BulkExportFinishedStage, ... |
-| `src/Vixen.Modules/App/ExportWizard/BulkExportFinishedStage.cs` | BulkExportFinishedStage.<init>, StageStart, IsPreviousVisible, CanMovePrevious, IsCancelVisible |
+| `src/Vixen.Modules/App/ExportWizard/BulkExportFinishedStage.Designer.cs` | InitializeComponent, lblFinished, Dispose, disposing, BulkExportFinishedStage, ... |
+| `src/Vixen.Modules/App/ExportWizard/BulkExportFinishedStage.cs` | CanMovePrevious, IsPreviousVisible, BulkExportFinishedStage.<init>, StageStart, IsCancelVisible |
 | `src/Vixen.Modules/App/ExportWizard/BulkExportOutputFormatStage.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/ExportWizard/BulkExportOutputFormatStage.cs` | chkIncludeAudio_CheckedChanged, sender, e, e, groupBoxes_Paint, ... |
 | `src/Vixen.Modules/App/ExportWizard/BulkExportSourcesStage.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/ExportWizard/BulkExportSummaryStage.Designer.cs` | lblAudio, lblFppVariant, lblUniverseFileWarning, lblUniverseFolder, lblFormat, ... |
-| `src/Vixen.Modules/App/ExportWizard/BulkExportSummaryStage.cs` | _profiles, _data, _namesCollection, e, _cancelled, ... |
+| `src/Vixen.Modules/App/ExportWizard/BulkExportSummaryStage.Designer.cs` | lblAudioOutputFolder, lblFormatName, lblUniverseFolder, overallProgress, lblSequences, ... |
+| `src/Vixen.Modules/App/ExportWizard/BulkExportSummaryStage.cs` | sender, data, e, _data, sender, ... |
 | `src/Vixen.Modules/App/Instrumentation/InstrumentationForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/LipSyncApp/LipSyncMapMatrixEditor.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/LipSyncApp/LipSyncMapSelector.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/LipSyncApp/LipSyncMultiPicSelect.Designer.cs` | u_comboBox, wq_comboBox, MBP_Label, infoLabel, ETC_Label, ... |
-| `src/Vixen.Modules/App/LipSyncApp/LipSyncMultiPicSelect.cs` | acceptButton_Click, CurrentPhonemeString, key, sender, PicMappings, ... |
+| `src/Vixen.Modules/App/LipSyncApp/LipSyncMultiPicSelect.Designer.cs` | o_comboBox, WQ_Label, wq_comboBox, Dispose, L_Label, ... |
+| `src/Vixen.Modules/App/LipSyncApp/LipSyncMultiPicSelect.cs` | sender, CurrentMappings, PicMappings, CurrentPhonemeString, filterSelections, ... |
 | `src/Vixen.Modules/App/LipSyncApp/LipSyncNodeSelect.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/LipSyncApp/LipSyncTextConvertFailForm.Designer.cs` | label2, restButton, disposing, aiButton, phonemeTextBox, ... |
-| `src/Vixen.Modules/App/LipSyncApp/LipSyncTextConvertFailForm.cs` | aiButton_Click, sender, eButton_Click, e, e, ... |
+| `src/Vixen.Modules/App/LipSyncApp/LipSyncTextConvertFailForm.Designer.cs` | wqButton, label8, label9, label7, Dispose, ... |
+| `src/Vixen.Modules/App/LipSyncApp/LipSyncTextConvertFailForm.cs` | e, sender, eButton_Click, sender, sender, ... |
 | `src/Vixen.Modules/App/LipSyncApp/LipSyncTextConvertForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/Shows/Editors/LaunchTypeTester.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/Shows/Editors/PauseTypeEditor.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/Shows/Editors/SequenceTypeEditor.Designer.cs` | Dispose, components, labelName, SequenceTypeEditor, disposing, ... |
-| `src/Vixen.Modules/App/Shows/Editors/SequenceTypeEditor.cs` | sender, OpenFileDialog_FileOk, sender, e, e, ... |
+| `src/Vixen.Modules/App/Shows/Editors/SequenceTypeEditor.Designer.cs` | textBoxSequence, labelSequence, openFileDialog, Dispose, buttonSelectSequence, ... |
+| `src/Vixen.Modules/App/Shows/Editors/SequenceTypeEditor.cs` | e, _showItem, sender, SequenceTypeEditor_Load, buttonSelectSequence_Click, ... |
 | `src/Vixen.Modules/App/Shows/Editors/ShowTypeEditor.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/Shows/Editors/WebPageTypeEditor.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/Shows/Editors/WebPageTypeEditor.cs` | buttonTest_Click, e, sender |
-| `src/Vixen.Modules/App/Shows/Editors/WebPageTypeTester.Designer.cs` | WebPageTypeTester, InitializeComponent, components, labelURL, buttonClose, ... |
+| `src/Vixen.Modules/App/Shows/Editors/WebPageTypeEditor.cs` | buttonTest_Click, sender, e |
+| `src/Vixen.Modules/App/Shows/Editors/WebPageTypeTester.Designer.cs` | webBrowser, buttonClose, WebPageTypeTester, labelURL, InitializeComponent, ... |
 | `src/Vixen.Modules/App/Shows/ShowEditorForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/Shows/ShowEditorForm.cs` | listViewShowItems_DragOver, e, sender |
 | `src/Vixen.Modules/App/Shows/ShowListForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/SuperScheduler/SetupForm.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/SuperScheduler/SetupScheduleForm.Designer.cs` | label2, dateStart, groupBox1, checkWednesday, checkTuesday, ... |
-| `src/Vixen.Modules/App/SuperScheduler/SetupScheduleForm.cs` | date, SetTime, dateStartTime_ValueChanged, groupBoxes_Paint, SetupScheduleForm_Load, ... |
+| `src/Vixen.Modules/App/SuperScheduler/SetupScheduleForm.Designer.cs` | label3, groupBox1, dateEndTime, checkSaturday, groupBox4, ... |
+| `src/Vixen.Modules/App/SuperScheduler/SetupScheduleForm.cs` | sender, e, PopulateShowList, showID, sender, ... |
 | `src/Vixen.Modules/App/SuperScheduler/StatusForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/TimedSequenceMapper/SequencePackageExport/SequencePackageExportOutputStage.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/TimedSequenceMapper/SequencePackageExport/SequencePackageExportSourcesStage.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/App/TimedSequenceMapper/SequencePackageExport/SequencePackageExportSummaryStage.Designer.cs` | InitializeComponent, SequencePackageExportSummaryStage, mainLayoutPanel, taskProgress, Dispose, ... |
-| `src/Vixen.Modules/App/TimedSequenceMapper/SequencePackageExport/SequencePackageExportSummaryStage.cs` | ConfigureSummary, Logging, _cancelled, StageStart, _data, ... |
+| `src/Vixen.Modules/App/TimedSequenceMapper/SequencePackageExport/SequencePackageExportSummaryStage.Designer.cs` | lblSummary, overallProgress, disposing, Dispose, lblTaskProgress, ... |
+| `src/Vixen.Modules/App/TimedSequenceMapper/SequencePackageExport/SequencePackageExportSummaryStage.cs` | ConfigureSummary, Logging, StageStart, StageCancelled, _data, ... |
 | `src/Vixen.Modules/App/TimedSequenceMapper/SequencePackageImport/SequencePackageImportInputStage.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/TimedSequenceMapper/SequencePackageImport/SequencePackageImportSummaryStage.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/App/WebServer/Settings.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Controller/DDP/DDPSetup.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Controller/DummyLighting/DummyLightingSetup.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/Controller/E131/AboutBox.Designer.cs` | InitializeComponent, components, labelProductName, AboutBox, tableLayoutPanel, ... |
-| `src/Vixen.Modules/Controller/E131/AboutBox.cs` | AssemblyCompany, AboutBox.<init>, AssemblyDescription, AssemblyProduct, AssemblyTitle, ... |
+| `src/Vixen.Modules/Controller/E131/AboutBox.Designer.cs` | AboutBox, tableLayoutPanel, labelProductName, InitializeComponent, labelVersion, ... |
+| `src/Vixen.Modules/Controller/E131/AboutBox.cs` | AssemblyDescription, AssemblyCompany, AssemblyProduct, AssemblyCopyright, AssemblyVersion, ... |
 | `src/Vixen.Modules/Controller/E131/SetupForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Controller/E131/UnicastForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Controller/ElexolEtherIO/SetupDialog.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/Controller/GenericSerial/SetupDialog.Designer.cs` | btnCancel, gbPacketData, lblSettingsLbl, groupBox1, InitializeComponent, ... |
-| `src/Vixen.Modules/Controller/GenericSerial/SetupDialog.cs` | cbHeader_CheckedChanged, sender, Port, btnOkay_Click, groupBoxes_Paint, ... |
-| `src/Vixen.Modules/Controller/OpenDMX/SetupDialog.Designer.cs` | panel1, cmbDeviceList, Dispose, buttonOK, InitializeComponent, ... |
-| `src/Vixen.Modules/Controller/OpenDMX/SetupDialog.cs` | buttonOK_Click, Logging, e, _data, sender |
+| `src/Vixen.Modules/Controller/GenericSerial/SetupDialog.Designer.cs` | btnPortSetup, InitializeComponent, groupBox1, components, cbFooter, ... |
+| `src/Vixen.Modules/Controller/GenericSerial/SetupDialog.cs` | sender, sender, cbFooter_CheckedChanged, e, cbHeader_CheckedChanged, ... |
+| `src/Vixen.Modules/Controller/OpenDMX/SetupDialog.Designer.cs` | buttonCancel, panel1, components, cmbDeviceList, disposing, ... |
+| `src/Vixen.Modules/Controller/OpenDMX/SetupDialog.cs` | e, _data, buttonOK_Click, Logging, sender |
 | `src/Vixen.Modules/Controller/RDSController/SetupForm.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/Controller/RDSController/SetupForm.cs` | e, groupBoxes_Paint, sender |
-| `src/Vixen.Modules/Controller/Renard/SetupDialog.Designer.cs` | Dispose, components, groupBox1, buttonCancel, InitializeComponent, ... |
-| `src/Vixen.Modules/Controller/Renard/SetupDialog.cs` | sender, _port, e, buttonPortSetup_Click, sender, ... |
-| `src/Vixen.Modules/Editor/FixtureGraphics/WPF/MovingHeadWPF.cs` | vectorOver, CreateTextLabel3D, vectorUp, textColor, text, ... |
+| `src/Vixen.Modules/Controller/RDSController/SetupForm.cs` | e, sender, groupBoxes_Paint |
+| `src/Vixen.Modules/Controller/Renard/SetupDialog.Designer.cs` | buttonOK, components, buttonPortSetup, Dispose, groupBox1, ... |
+| `src/Vixen.Modules/Controller/Renard/SetupDialog.cs` | e, sender, sender, _data, _port, ... |
+| `src/Vixen.Modules/Editor/FixtureGraphics/WPF/MovingHeadWPF.cs` | height, textColor, isDoubleSided, vectorUp, basePoint, ... |
+| `src/Vixen.Modules/Editor/PolygonEditor/Adorners/RubberbandAdorner.cs` | StartPoint, dragStartPoint, _rubberbandPen, RubberbandAdorner.<init>, EndPoint, ... |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/AutomaticMusicDetection.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/AutomaticMusicDetection.cs` | buttonBackground_MouseLeave, groupBoxes_Paint, sender, checkBox_CheckedChanged, e, ... |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/BulkEffectMoveForm.Designer.cs` | BulkEffectMoveForm, txtEndTime, txtOffset, btnCancel, radioButtonBackward, ... |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/BulkEffectMoveForm.cs` | ProcessVisibleRows, Start, ClipEffects, Offset, End, ... |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/CreateEvenMarksForm.Designer.cs` | btnOk, components, btnCancel, Dispose, txtEndTime, ... |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/CreateEvenMarksForm.cs` | endTime, End, sequenceLength, CreateEvenMarksForm.<init>, Divisions, ... |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/AutomaticMusicDetection.cs` | groupBoxes_Paint, sender, sender, buttonBackground_MouseLeave, e, ... |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/BulkEffectMoveForm.Designer.cs` | toolTip, Dispose, InitializeComponent, btnCancel, txtOffset, ... |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/BulkEffectMoveForm.cs` | End, BulkEffectMoveForm.<init>, ClipEffects, ProcessMarks, ProcessVisibleRows, ... |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/CreateEvenMarksForm.Designer.cs` | toolTip, InitializeComponent, Dispose, btnOk, components, ... |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/CreateEvenMarksForm.cs` | startTime, sequenceLength, endTime, End, Start, ... |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/EffectDistributionDialog.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/EffectDistributionDialog.cs` | sender, groupBoxes_Paint, e |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/EffectDistributionDialog.cs` | groupBoxes_Paint, e, sender |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/EffectParameterPickerControl.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/EffectParameterPickerControl.cs` | EffectParameterPickerControl.<init> |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/EffectTimeEditor.Designer.cs` | txtEndTime, EffectTimeEditor, btnSetFullSequence, InitializeComponent, components, ... |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/EffectTimeEditor.cs` | sender, SequenceLength, End, btnSetFullSequence_Click, _sequenceLength, ... |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/EffectTimeEditor.Designer.cs` | txtStartTime, btnCancel, label2, EffectTimeEditor, lblSetSequenceLength, ... |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/EffectTimeEditor.cs` | e, Start, _sequenceLength, End, Duration, ... |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/ExportDialog.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/Forms/EffectDefaultsExportSelectionForm.Designer.cs` | EffectDefaultsExportSelectionForm, Dispose, btnOk, label1, components, ... |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/Forms/EffectDefaultsExportSelectionForm.Designer.cs` | btnOk, InitializeComponent, Dispose, disposing, label1, ... |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/Forms/EffectDefaultsExportSelectionForm.cs` | SelectedEffectTypeIds |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/Forms/FindEffectForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/Forms/FormParameterPicker.Designer.cs` | InitializeComponent |
@@ -447,49 +441,49 @@ Use this skill when working on files in:
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/InvalidAudioPathDialog.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/MarkCollectionImportDialog.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/MarkTapper.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/MarkTapper.cs` | executionControl, MarkTapper.<init>, timingSource |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/SetSequenceLength.Designer.cs` | label1, Dispose, InitializeComponent, disposing, timeControl, ... |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/MarkTapper.cs` | MarkTapper.<init>, executionControl, timingSource |
+| `src/Vixen.Modules/Editor/TimedSequenceEditor/SetSequenceLength.Designer.cs` | Dispose, buttonOK, disposing, SetSequenceLength, label1, ... |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/SetSequenceLength.cs` | SequenceLength |
 | `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm.cs` | _mouseOriginalPoint |
-| `src/Vixen.Modules/Editor/TimedSequenceEditor/TimedSequenceEditorForm_Toolstrip.cs` | SetToolBarLayout |
 | `src/Vixen.Modules/Effect/CountDown/CountDown.cs` | _emptyColor |
 | `src/Vixen.Modules/Effect/Morph/Morph/Morph.cs` | _emptyColor |
-| `src/Vixen.Modules/Effect/Plasma/Plasma.cs` | x, frameBuffer, frame, lineDensity, y, ... |
-| `src/Vixen.Modules/Effect/Plasma/PlasmaColorType.cs` | Preset3, Preset1, Preset4, PlasmaColorType, Preset2, ... |
+| `src/Vixen.Modules/Effect/Plasma/Plasma.cs` | time, y, CalculatePixel, x, frame, ... |
+| `src/Vixen.Modules/Effect/Plasma/PlasmaColorType.cs` | Normal, Preset1, Preset2, PlasmaColorType, Preset3, ... |
 | `src/Vixen.Modules/Effect/SnowStorm/SnowStorm.cs` | Points |
 | `src/Vixen.Modules/Effect/Text/Text.cs` | EmptyColor |
-| `src/Vixen.Modules/Effect/Wave/Wave/Wave.cs` | yoffset, frameBuffer, wspeed, GrowAndShrink, direction, ... |
+| `src/Vixen.Modules/Effect/Wave/Wave/Wave.cs` | frameBuffer, numberWaves, fillColor, thicknessWave, GrowAndShrink, ... |
 | `src/Vixen.Modules/LayerMixingFilter/ChromaKey/ChromaKeyData.cs` | ChromaKeyData.<init> |
-| `src/Vixen.Modules/LayerMixingFilter/ChromaKey/ChromaKeySetup.Designer.cs` | InitializeComponent |
+| `src/Vixen.Modules/LayerMixingFilter/ChromaKey/ChromaKeySetup.Designer.cs` | btnCancel, trkHueTolerance, label2, label7, colorPanel1, ... |
+| `src/Vixen.Modules/LayerMixingFilter/ChromaKey/ChromaKeySetup.cs` | _upperLimit, sender, HueTolerance, numLowerLimit_TextChanged, TransparentOnZeroBrightness, ... |
 | `src/Vixen.Modules/LayerMixingFilter/LumaKey/LumaKeySetup.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/LayerMixingFilter/MaskFill/MaskAndFillSetup.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/OutputFilter/ColorBreakdown/ColorBreakdownSetup.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/OutputFilter/ColorWheelFilter/ColorWheelFilterSetup.Designer.cs` | label1, InitializeComponent, ColorWheelFilterSetup, buttonOk, Dispose, ... |
-| `src/Vixen.Modules/OutputFilter/ColorWheelFilter/ColorWheelFilterSetup.cs` | sender, e, e, textBoxTag_TextChanged, buttonOk_Click, ... |
+| `src/Vixen.Modules/OutputFilter/ColorWheelFilter/ColorWheelFilterSetup.Designer.cs` | disposing, ColorWheelFilterSetup, textBoxTag, buttonCancel, buttonOk, ... |
+| `src/Vixen.Modules/OutputFilter/ColorWheelFilter/ColorWheelFilterSetup.cs` | sender, buttonOk_Click, e, _data, textBoxTag_TextChanged, ... |
 | `src/Vixen.Modules/OutputFilter/DimmingCurve/DimmingCurveHelper.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/OutputFilter/DimmingFilter/DimmingFilterSetup.Designer.cs` | InitializeComponent, label1, Dispose, buttonOk, textBoxTag, ... |
-| `src/Vixen.Modules/OutputFilter/DimmingFilter/DimmingFilterSetup.cs` | e, sender, _data, sender, e, ... |
+| `src/Vixen.Modules/OutputFilter/DimmingFilter/DimmingFilterSetup.Designer.cs` | components, checkBoxConvert, InitializeComponent, Dispose, flowLayoutPanel1, ... |
+| `src/Vixen.Modules/OutputFilter/DimmingFilter/DimmingFilterSetup.cs` | buttonOk_Click, sender, e, textBoxTag_TextChanged, e, ... |
 | `src/Vixen.Modules/OutputFilter/PrismFilter/PrismFilterSetup.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/OutputFilter/ShutterFilter/ShutterFilterSetup.Designer.cs` | InitializeComponent |
-| `src/Vixen.Modules/OutputFilter/TaggedFilter/TaggedFilterSetup.Designer.cs` | TaggedFilterSetup, disposing, label1, flowLayoutPanel1, buttonCancel, ... |
-| `src/Vixen.Modules/OutputFilter/TaggedFilter/TaggedFilterSetup.cs` | e, sender, _data, sender, buttonOk_Click, ... |
-| `src/Vixen.Modules/Preview/VixenPreview/PreviewPixelSetupForm.Designer.cs` | tableLayoutPanel1, disposing, button1, Dispose, lblPrefixName, ... |
-| `src/Vixen.Modules/Preview/VixenPreview/PreviewPixelSetupForm.cs` | LightSize, StartingIndex, PrefixName |
-| `src/Vixen.Modules/Preview/VixenPreview/ResizePreviewForm.Designer.cs` | pictureBoxLock, labelHeight, disposing, groupBox2, labelWidth, ... |
-| `src/Vixen.Modules/Preview/VixenPreview/ResizePreviewForm.cs` | Height, buttonHelp_Click, buttonOK_Click, _origWidth, ScaleShapes, ... |
+| `src/Vixen.Modules/OutputFilter/TaggedFilter/TaggedFilterSetup.Designer.cs` | components, buttonOk, TaggedFilterSetup, flowLayoutPanel1, Dispose, ... |
+| `src/Vixen.Modules/OutputFilter/TaggedFilter/TaggedFilterSetup.cs` | _data, e, sender, textBoxTag_TextChanged, sender, ... |
+| `src/Vixen.Modules/Preview/VixenPreview/PreviewPixelSetupForm.Designer.cs` | txtPrefixName, Dispose, button1, tableLayoutPanel1, InitializeComponent, ... |
+| `src/Vixen.Modules/Preview/VixenPreview/PreviewPixelSetupForm.cs` | LightSize, PrefixName, StartingIndex |
+| `src/Vixen.Modules/Preview/VixenPreview/ResizePreviewForm.Designer.cs` | groupBox1, buttonOK, imageListLocks, label3, label4, ... |
+| `src/Vixen.Modules/Preview/VixenPreview/ResizePreviewForm.cs` | numericWidth_ValueChanged, buttonOK_Click, e, _origHeight, ResizePreviewForm_Load, ... |
 | `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewBaseShape.cs` | Center |
 | `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewCustom.cs` | TopLeft |
-| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewCustomCreateForm.Designer.cs` | buttonOK, disposing, PreviewCustomCreateForm, buttonCancel, InitializeComponent, ... |
-| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewCustomCreateForm.cs` | TemplateName, e, buttonCancel_Click, sender |
-| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewCustomProp.cs` | ZoomPointToOriginal, p |
+| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewCustomCreateForm.Designer.cs` | InitializeComponent, PreviewCustomCreateForm, Dispose, buttonCancel, disposing, ... |
+| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewCustomCreateForm.cs` | sender, TemplateName, e, buttonCancel_Click |
+| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewCustomProp.cs` | p, ZoomPointToOriginal |
 | `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewCustomSetupControl.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewDoublePoint.cs` | ToPoint |
 | `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewFlood.cs` | Point1 |
 | `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewMovingHead.cs` | DrawRectangleOutline, fp |
-| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewMovingHeadPartial.cs` | BottomRightPoint, TopLeftPoint, TopRightPoint, y, BottomLeftPoint, ... |
-| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewSetElementString.cs` | PreviewSetElementString, _stringName, StringName |
-| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewSetElements.Designer.cs` | buttonOK, tblStringToLink, label11, tblMain, contextMenuLinkedElements, ... |
-| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewSetElements.cs` | e, buttonSetLightCount_Click, pixels, node, buttonCancel_Click, ... |
+| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewMovingHeadPartial.cs` | Left, TopRightPoint, TopLeftPoint, x, MoveTo, ... |
+| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewSetElementString.cs` | PreviewSetElementString, StringName, _stringName |
+| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewSetElements.Designer.cs` | label11, label9, tblStringToLink, tableLayoutPanel2, listLinkedElements, ... |
+| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewSetElements.cs` | e, channelNode, buttonHelp_Click, AddString, tree, ... |
 | `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewSingle.cs` | Point1 |
 | `src/Vixen.Modules/Preview/VixenPreview/TemplateDialog.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Preview/VixenPreview/VixenPreviewSetup3.Designer.cs` | InitializeComponent |
@@ -502,11 +496,11 @@ Use this skill when working on files in:
 | `src/Vixen.Modules/Property/Grid/SetupForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Property/Location/SetupForm.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Property/Order/OrderSetupHelper.Designer.cs` | disposing, Dispose |
-| `src/Vixen.Modules/Property/Order/SetupForm.Designer.cs` | InitializeComponent, disposing, buttonOK, buttonCancel, numericUpDownXPosition, ... |
+| `src/Vixen.Modules/Property/Order/SetupForm.Designer.cs` | buttonOK, InitializeComponent, numericUpDownXPosition, SetupForm, label1, ... |
 | `src/Vixen.Modules/Property/Order/SetupForm.cs` | Order |
-| `src/Vixen.Modules/Property/Orientation/Orientation.cs` | Orientation, Vertical, Horizontal |
-| `src/Vixen.Modules/Property/Orientation/SetupForm.Designer.cs` | label1, SetupForm, buttonCancel, disposing, comboBoxOrientation, ... |
-| `src/Vixen.Modules/Property/Orientation/SetupForm.cs` | e, SetupForm_Load, sender, Orientation |
+| `src/Vixen.Modules/Property/Orientation/Orientation.cs` | Vertical, Orientation, Horizontal |
+| `src/Vixen.Modules/Property/Orientation/SetupForm.Designer.cs` | label1, InitializeComponent, comboBoxOrientation, Dispose, disposing, ... |
+| `src/Vixen.Modules/Property/Orientation/SetupForm.cs` | sender, Orientation, e, SetupForm_Load |
 | `src/Vixen.Modules/Sequence/Vixen2x/Vixen2xSequenceImporterChannelMapper.Designer.cs` | InitializeComponent |
 | `src/Vixen.Modules/Sequence/Vixen2x/Vixen2xSequenceImporterForm.Designer.cs` | InitializeComponent |
 
@@ -521,42 +515,39 @@ Use this skill when working on files in:
 ## Connected Communities
 
 - **Vixen.Common/NShape +13 dirs** (13 cross-edges)
-- **Vixen.Application +18 dirs** (8 cross-edges)
+- **Vixen.Application/Setup +25 dirs** (10 cross-edges)
 - **Vixen.Common/NShape · DistancePointPoint · Geometry (141)** (7 cross-edges)
-- **Vixen.Application/Setup +24 dirs** (7 cross-edges)
-- **App/ColorGradients +7 dirs** (5 cross-edges)
-- **Vixen.Common/NShape +5 dirs** (5 cross-edges)
+- **Vixen.Application +19 dirs** (7 cross-edges)
+- **Vixen.Common/NShape +4 dirs** (5 cross-edges)
+- **Controls/ColorPicker +1 dirs · ColorSelectionFader** (5 cross-edges)
 - **Vixen.Common/NShape · CalcLine · Geometry (163)** (4 cross-edges)
-- **Editor/TimedSequenceEditor +46 dirs** (3 cross-edges)
+- **App/ColorGradients +6 dirs** (4 cross-edges)
 - **App/ColorGradients +3 dirs** (3 cross-edges)
-- **Vixen.Common/NShape · EllipseIntersectsWithLine · Geometry (36)** (2 cross-edges)
 - **Vixen.Common/NShape · RotatePoint · Geometry (17)** (2 cross-edges)
-- **Vixen.Application +48 dirs** (2 cross-edges)
-- **Vixen.Common/NShape · VectorCrossProduct** (2 cross-edges)
+- **Vixen.Common/NShape · EllipseIntersectsWithLine · Geometry (36)** (2 cross-edges)
 - **Vixen.Common/NShape · RotatePoint · Geometry (73)** (2 cross-edges)
-- **Vixen.Common/NShape · DistancePointPoint · Geometry (32)** (1 cross-edges)
-- **Effect/Meteors +30 dirs** (1 cross-edges)
-- **Vixen.Common/NShape · Angle** (1 cross-edges)
-- **Module/Service +10 dirs** (1 cross-edges)
-- **Vixen.Application/Setup +15 dirs** (1 cross-edges)
-- **Analysis/BeatsAndBars · BeatsAndBarsDialog** (1 cross-edges)
-- **VixenPreview/Shapes · PreviewCustom** (1 cross-edges)
-- **Effect/Effect +80 dirs** (1 cross-edges)
-- **Effect/Wave** (1 cross-edges)
+- **Vixen.Common/NShape · VectorCrossProduct** (2 cross-edges)
 - **VixenPreview/Shapes +22 dirs** (1 cross-edges)
-- **Effect/Plasma · Get2ColorBlend** (1 cross-edges)
-- **Vixen.Common/NShape · IntersectLineWithRectangle** (1 cross-edges)
-- **Controls/TimeLineControl · timeToPixels** (1 cross-edges)
-- **Controls/ColorPicker +1 dirs · RaiseColorChanged** (1 cross-edges)
-- **Vixen.Common/NShape · LineIntersectsWithLineSegment** (1 cross-edges)
-- **Shows/Editors · WebPageTypeEditor** (1 cross-edges)
 - **VixenPreview/Shapes · PreviewFlood** (1 cross-edges)
-- **Controls/TimeLineControl +4 dirs · Grid** (1 cross-edges)
+- **Controls/TimeLineControl · timeToPixels** (1 cross-edges)
+- **Analysis/BeatsAndBars · BeatsAndBarsDialog** (1 cross-edges)
+- **Vixen.Common/NShape · Angle** (1 cross-edges)
+- **Vixen.Common/NShape · IntersectLineWithRectangle** (1 cross-edges)
+- **Vixen.Common/NShape · LineIntersectsWithLineSegment** (1 cross-edges)
+- **Vixen.Common/NShape · DistancePointPoint · Geometry (32)** (1 cross-edges)
+- **Vixen.Common/Controls +50 dirs** (1 cross-edges)
+- **Effect/Plasma** (1 cross-edges)
+- **App/ColorGradients · SetFocusPosition** (1 cross-edges)
+- **Vixen.Application/Setup +15 dirs** (1 cross-edges)
+- **Shows/Editors · WebPageTypeEditor** (1 cross-edges)
+- **Effect/Meteors +32 dirs** (1 cross-edges)
+- **Effect/Wave · Wave** (1 cross-edges)
+- **VixenPreview/Shapes · PreviewCustom** (1 cross-edges)
 
 ## How to Explore
 
 ```
-analyze(operation:"communities", id:"community-785")
+analyze(operation:"communities", id:"community-782")
 explore(operation:"context", task:"understand Editor/TimedSequenceEditor +68 dirs", format:"gcx")
 relations(operation:"usages", target:{symbol:"src/Vixen.Modules/Preview/VixenPreview/VixenPreviewSetup3.Designer.cs::VixenPreviewSetup3.InitializeComponent"}, format:"gcx")
 ```

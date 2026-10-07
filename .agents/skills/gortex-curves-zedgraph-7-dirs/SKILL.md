@@ -1,11 +1,11 @@
 ---
 name: gortex-curves-zedgraph-7-dirs
-description: "Work in the Curves/ZedGraph +7 dirs area — 3464 symbols across 95 files (93% cohesion)"
+description: "Work in the Curves/ZedGraph +7 dirs area — 3372 symbols across 95 files (92% cohesion)"
 ---
 
 # Curves/ZedGraph +7 dirs
 
-3464 symbols | 95 files | 93% cohesion
+3372 symbols | 95 files | 92% cohesion
 
 ## When to Use
 
@@ -110,114 +110,115 @@ Use this skill when working on files in:
 
 | File | Symbols |
 |------|---------|
-| `src/Vixen.Application/GraphicalPatching/FilterSetupShapeBase.cs` | Draw, DrawCustom, graphics, graphics, _DrawTitle, ... |
-| `src/Vixen.Application/GraphicalPatching/NestingSetupShape.cs` | DrawCustom, graphics |
+| `src/Vixen.Application/GraphicalPatching/FilterSetupShapeBase.cs` | yOffset, graphics, _DrawTitle, Draw, xOffset, ... |
+| `src/Vixen.Application/GraphicalPatching/NestingSetupShape.cs` | graphics, DrawCustom |
 | `src/Vixen.Common/Controls/TimeLineControl/Grid.cs` | g, g, g, g, g |
 | `src/Vixen.Common/Controls/TimeLineControl/Ruler.cs` | g |
-| `src/Vixen.Common/NShape/GdiHelpers.cs` | ApplyGraphicsSettings, graphics, infoGraphics |
-| `src/Vixen.Common/NShape/Styles.cs` | CapStyle.<init>, CharacterStyle.<init> |
-| `src/Vixen.Core/Common/Graphics.cs` | cbFont, font, clipRectangle, pdv, fontResourceName, ... |
+| `src/Vixen.Common/NShape/GdiHelpers.cs` | ApplyGraphicsSettings, infoGraphics, graphics |
+| `src/Vixen.Common/NShape/Styles.cs` | CharacterStyle.<init>, CapStyle.<init> |
+| `src/Vixen.Core/Common/Graphics.cs` | GetFontFromResx, Graphics, clipRectangle, DisableEffectsEditorRendering, fontResourceName, ... |
 | `src/Vixen.Modules/App/Curves/Curve.cs` | size, GenerateCurveImage |
-| `src/Vixen.Modules/App/Curves/CurveEditor.cs` | sender, sender, sender, sender, e, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ArrowObj.cs` | ArrowObj, schema3, Clone, _size, IsArrowHead, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Axis.cs` | TitleGap, g, Axis.<init>, g, pane, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Bar.cs` | pos, Clone, scaleFactor, pane, Border, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/BarItem.cs` | BarItem.<init>, GetCoords, BarItem.<init>, x, pane, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/BarSettings.cs` | _clusterScaleWidthAuto, GetMinStepSize, MinBarGap, context, info, ... |
+| `src/Vixen.Modules/App/Curves/CurveEditor.cs` | sender, zedGraphControl_MouseDownEvent, zedGraphControl_PreMouseMoveEvent, btnReverse_Click, e, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ArrowObj.cs` | _size, ArrowObj.<init>, _isArrowHead, Clone, context, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Axis.cs` | pane, MinorTic, DrawGrid, TitleFillBrush, TitleFontBold, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Bar.cs` | BorderWidth, curve, Bar.<init>, Bar.<init>, Border, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/BarItem.cs` | color, isBarCenter, BarItem.<init>, GetObjectData, pane, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/BarSettings.cs` | BarSettings, ClusterScaleWidth, GetMinStepSize, parentPane, ClusterScaleWidth, ... |
 | `src/Vixen.Modules/App/Curves/ZedGraph/BasicArrayPointList.cs` | this[] |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Border.cs` | isVisible, Border.<init>, info, Border.<init>, width, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/BoxObj.cs` | y, height, shape, BoxObj.<init>, borderColor, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Chart.cs` | Clone, _isRectAuto, Fill, Border, IsRectAuto, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ColorSymbolRotator.cs` | NextSymbolIndex, _staticInstance, StaticNextColor, symbolIndex, StaticInstance, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/CurveItem.cs` | Init, IsX2Axis, IsZIncluded, type, AddPoint, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/CurveList.cs` | scale, GetStackRange, GetRange, label, barItem, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/DateAsOrdinalScale.cs` | DateAsOrdinalScale.<init>, scaleFactor, pane, SetDateFormat, pane, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/DateScale.cs` | owner, Type, rhs, DateScale.<init> |
-| `src/Vixen.Modules/App/Curves/ZedGraph/EllipseObj.cs` | pt, pane, scaleFactor, Draw, g, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ErrorBar.cs` | pane, pixBase, pane, curve, Size, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ErrorBarItem.cs` | pane, info, y, lowValue, pane, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ExponentScale.cs` | dVal, SetupScaleData, Clone, PickScale, owner, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Fill.cs` | pt, MakeBrush, color, blend, Fill.<init>, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Border.cs` | width, Border.<init>, scaleFactor, InflateFactor, Border.<init>, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/BoxObj.cs` | x, y, height, y, fillColor1, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Chart.cs` | info, _fill, schema, Clone, Border, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ColorSymbolRotator.cs` | NextSymbolIndex, NextColorIndex, StaticNextSymbol, ColorSymbolRotator, StaticInstance, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/CurveItem.cs` | pane, l, label, AddPoint, CurveItem.<init>, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/CurveList.cs` | Sort, IndexOf, NumClusterableBars, isBoundedRanges, Move, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/DateAsOrdinalScale.cs` | SetDateFormat, DateAsOrdinalScale.<init>, owner, Clone, Type, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/DateScale.cs` | rhs, DateScale.<init>, owner, Type |
+| `src/Vixen.Modules/App/Curves/ZedGraph/EllipseObj.cs` | g, scaleFactor, g, PointInBox, pane, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ErrorBar.cs` | pane, _color, g, rhs, ErrorBar, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ErrorBarItem.cs` | GetObjectData, color, scaleFactor, pane, rect, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ExponentScale.cs` | Type, owner, pane, DeLinearize, PickScale, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Fill.cs` | positions, Fill.<init>, _color, Fill, RangeMax, ... |
 | `src/Vixen.Modules/App/Curves/ZedGraph/FilteredPointList.cs` | this[] |
-| `src/Vixen.Modules/App/Curves/ZedGraph/FontSpec.cs` | Draw, isItalic, x, info, MeasureString, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/GapLabel.cs` | Gap, scaleFactor, GetScaledGap |
-| `src/Vixen.Modules/App/Curves/ZedGraph/GasGaugeNeedle.cs` | rect, g, pane, label, FillType, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/GasGaugeRegion.cs` | label, IsBorderVisible, isVisible, pane, FillColor, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/GraphObj.cs` | alignH, IsClippedToChartRect, PointInBox, g, Draw, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/GraphObjList.cs` | this[], relativePos, Clone, pane, scaleFactor, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/GraphPane.cs` | GraphPane.<init>, points, AddJapaneseCandleStick, Chart, IsZoomed, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/HiLowBar.cs` | scaleFactor, Size, baseAxis, pane, GetBarWidth, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/HiLowBarItem.cs` | Clone, HiLowBarItem.<init>, Clone, HiLowBarItem.<init>, y, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/FontSpec.cs` | DropShadowAngle, FillType, rhs, _border, text, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/GapLabel.cs` | Gap, GetScaledGap, scaleFactor |
+| `src/Vixen.Modules/App/Curves/ZedGraph/GasGaugeNeedle.cs` | context, g, val, NeedleWidth, pos, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/GasGaugeRegion.cs` | GetObjectData, isVisible, info, FillColor, Draw, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/GraphObj.cs` | _location, GraphObj.<init>, AlignV, IsClippedToChartRect, coordType, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/GraphObjList.cs` | mousePt, scaleFactor, Draw, GraphObjList.<init>, relativePos, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/GraphPane.cs` | color, label, FindNearestPoint, schema2, x2, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/HiLowBar.cs` | pane, IsAutoSize, scaleFactor, Size, GetBarWidth, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/HiLowBarItem.cs` | x, context, HiLowBarItem.<init>, HiLowBarItem.<init>, points, ... |
 | `src/Vixen.Modules/App/Curves/ZedGraph/IPointList.cs` | this[], IPointList, Count |
-| `src/Vixen.Modules/App/Curves/ZedGraph/IPointListEdit.cs` | this[], index, IPointListEdit, RemoveAt, Clear |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ImageObj.cs` | shape, ImageObj.<init>, GetCoords, Clone, coordType, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/JapaneseCandleStick.cs` | halfSize, scaleFactor, pixBase, Clone, rhs, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/JapaneseCandleStickItem.cs` | i, rect, Stick, g, pane, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Label.cs` | Label.<init>, schema, context, IsVisible, FontSpec, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Legend.cs` | Legend.<init>, pane, Gap, scaleFactor, IsVisible, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Line.cs` | count, Fill, curve, g, Color, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/LineBase.cs` | _width, Clone, GetPen, rhs, IsVisible, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/LineItem.cs` | LineItem.<init>, LineItem.<init>, color, info, points, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/LineObj.cs` | rhs, x1, LineObj.<init>, Draw, scaleFactor, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/LinearAsOrdinalScale.cs` | Type, g, MakeLabel, scaleFactor, context, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/LinearScale.cs` | owner, owner, pane, PickScale, LinearScale.<init>, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Link.cs` | _isEnabled, Link, rhs, curve, url, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Location.cs` | BottomRight, X1, alignV, _y, alignH, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/LogScale.cs` | PickScale, Type, pane, owner, index, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/MajorGrid.cs` | IsVisible, MajorGrid.<init>, IsZeroLine, PenWidth, DashOn, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/MajorTic.cs` | MajorTic, Color, MajorTic.<init>, info, IsCrossOutside, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Margin.cs` | Margin.<init>, Left, Bottom, Right, Top |
-| `src/Vixen.Modules/App/Curves/ZedGraph/MasterPane.cs` | Clone, rows, schema2, ReSize, InnerPaneGap, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/MinorGrid.cs` | pane, Color, scaleFactor, IsVisible, DashOff, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/MinorTic.cs` | pane, PenWidth, scaleFactor, pane, IsCrossInside, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/NoDupePointList.cs` | this[], yAxis, FilterData, xAxis, pane |
-| `src/Vixen.Modules/App/Curves/ZedGraph/OHLCBar.cs` | Draw, _isAutoSize, scaleFactor, baseAxis, pixClose, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/OHLCBarItem.cs` | label, g, scaleFactor, context, Clone, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/OrdinalScale.cs` | pane, rhs, Type, Clone, context, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/PaneBase.cs` | x, IsShowTitle, penWidth, height, BaseDimension, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/PaneLayoutMgr.cs` | DoLayout, proportion, DoLayout, master, g, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/PaneList.cs` | context, GetObjectData, this[], schema, IndexOf, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/PieItem.cs` | pieValue, maxDisplacement, FontSize, label, pos, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/PointPair.cs` | z, PointPairComparer.<init>, x, Compare, r, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/PointPairBase.cs` | value, IsValueInvalid |
-| `src/Vixen.Modules/App/Curves/ZedGraph/PointPairList.cs` | point, type, Insert, x, y, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/PolyObj.cs` | pane, MakePath, pane, scaleFactor, Draw, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/RadarPointList.cs` | Clone, RadarPointList, this[], Count, Clone, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/RollingPointPairList.cs` | RemoveAt, RollingPointPairList.<init>, Pop, index, index, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/SampleMultiPointList.cs` | time, velocity, distance, distance, PerformanceData.<init>, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Scale.cs` | MajorStepAuto, step, FormatMillisecond, y, DrawLabels, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Selection.cs` | master, item, master, Contains, ciList, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/StickItem.cs` | lineWidth, points, color, color, label, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Symbol.cs` | dataValue, pane, Draw, IsBorderVisible, g, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/TextObj.cs` | Draw, Clone, text, alignV, coords, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/TextScale.cs` | Clone, rhs, index, TextScale.<init>, TextScale.<init>, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Types.cs` | H_BehindAll, F_BehindGrid, Top, PieLabelType, InsideBotRight, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ValueHandler.cs` | iPt, pane, GetValues, initialize, _pane, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/X2Axis.cs` | X2Axis.<init>, Clone, X2Axis.<init>, info, IsVisible, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/XAxis.cs` | g, pane, IsPrimary, SetTransformMatrix, XAxis.<init>, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/Y2Axis.cs` | schema2, Clone, Y2Axis.<init>, Y2Axis.<init>, rhs, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/YAxis.cs` | YAxis.<init>, CalcCrossShift, schema2, YAxis.<init>, pane, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.ContextMenu.cs` | InactiveSelection, pane, sender, ZoomOutAll, e, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.Events.cs` | axis, mousePt, MakeValueLabel, mousePt1, e, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.Printing.cs` | sender, Graph_PrintPage, e |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.ScrollBars.cs` | scrollBar, SetScroll, CalcScrollGrace, scrollMax, min, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.cs` | e, OnPaint, AxisChange, disposing, Dispose, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/ZoomStateStack.cs` | pane, PopAll |
-| `src/Vixen.Modules/Preview/VixenPreview/OpenGL/Drawable.cs` | cameraView, fov, IDrawable, Draw |
-| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewFlood.cs` | Draw, editMode, highlightedElements, b |
+| `src/Vixen.Modules/App/Curves/ZedGraph/IPointListEdit.cs` | Clear, RemoveAt, index, this[], IPointListEdit |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ImageObj.cs` | PointInBox, alignV, pt, Image, Clone, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/JapaneseCandleStick.cs` | _fallingColor, RisingBorder, pixHigh, fill, _fallingFill, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/JapaneseCandleStickItem.cs` | JapaneseCandleStickItem.<init>, pane, _stick, GetObjectData, schema2, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Label.cs` | context, Label.<init>, color, rhs, Label, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Legend.cs` | _isVisible, _gap, info, IsReverse, FontFillType, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Line.cs` | curve, scaleFactor, _smoothTension, pane, arrPoints, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/LineBase.cs` | _dashOff, DashOn, _isVisible, LineBase.<init>, Width, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/LineItem.cs` | Symbol, x, rect, x, symbolType, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/LineObj.cs` | Clone, LineObj.<init>, pane, x1, pane, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/LinearAsOrdinalScale.cs` | pane, owner, Type, Clone, schema2, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/LinearScale.cs` | pane, LinearScale.<init>, owner, PickScale, Type, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Link.cs` | pane, context, Tag, Target, IsEnabled, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Location.cs` | x, pane, rhs, context, Transform, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/LogScale.cs` | MakeLabel, Type, owner, dVal, PickScale, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/MajorGrid.cs` | MajorGrid.<init>, DashOn, IsZeroLine, IsVisible, PenWidth, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/MajorTic.cs` | MajorTic, MajorTic.<init>, Clone, context, IsInside, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Margin.cs` | Right, Bottom, Margin.<init>, Left, Top |
+| `src/Vixen.Modules/App/Curves/ZedGraph/MasterPane.cs` | ReSize, rhs, g, proportion, mousePt, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/MinorGrid.cs` | IsVisible, scaleFactor, DashOn, PenWidth, MinorGrid.<init>, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/MinorTic.cs` | IsCrossOutside, _penWidth, scaledTic, schema, topPix, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/NoDupePointList.cs` | yAxis, xAxis, this[], FilterData, pane |
+| `src/Vixen.Modules/App/Curves/ZedGraph/OHLCBar.cs` | IsOpenCloseVisible, pixLow, _userScaleSize, pixOpen, Draw, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/OHLCBarItem.cs` | rect, IsZIncluded, GetCoords, g, Bar, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/OrdinalScale.cs` | OrdinalScale.<init>, OrdinalScale.<init>, OrdinalScale, OrdinalScale.<init>, Clone, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/PaneBase.cs` | antiAlias, scaleFactor, IsShowTitle, Fill, x, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/PaneLayoutMgr.cs` | g, master, proportion, master, g, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/PaneList.cs` | PaneList.<init>, context, tagStr, Clone, title, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/PieItem.cs` | rect, Displacement, PercentDecimalDigits, GetObjectData, g, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/PointPair.cs` | PointPairComparer.<init>, PointPairComparer.<init>, r, z, formatZ, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/PointPairBase.cs` | IsValueInvalid, value |
+| `src/Vixen.Modules/App/Curves/ZedGraph/PointPairList.cs` | x, index, Insert, y, z, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/PolyObj.cs` | pane, g, MakePath, PointInBox, scaleFactor, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/RadarPointList.cs` | index, Clone, Clone, Count, Clockwise, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/RollingPointPairList.cs` | count, RollingPointPairList.<init>, rhs, RemoveRange, index, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/SampleMultiPointList.cs` | velocity, acceleration, time, acceleration, distance, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Scale.cs` | pane, _isSkipFirstLabel, TargetXSteps, i, maxSpace, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Selection.cs` | Fill, sendEvent, item, Selection, Line, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/StickItem.cs` | label, points, context, label, GetObjectData, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Symbol.cs` | _border, curve, context, IsBorderVisible, color, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/TextObj.cs` | Init, shape, y, x, TextObj.<init>, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/TextScale.cs` | TextScale, schema2, Clone, dVal, context, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Types.cs` | Linear, ExplicitRow21, ForwardStep, GradientByColorValue, ChartFraction, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ValueHandler.cs` | val, ValueHandler, hiVal, pane, curve, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/X2Axis.cs` | info, IsZeroLine, X2Axis.<init>, CalcCrossShift, IsPrimary, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/XAxis.cs` | GetCrossAxis, schema2, info, pane, XAxis, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/Y2Axis.cs` | schema2, Y2Axis, GetCrossAxis, scaleFactor, g, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/YAxis.cs` | pane, IsZeroLine, YAxis.<init>, scaleFactor, Clone, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.ContextMenu.cs` | GetObjectState, sender, ZoomOutAll, ContextMenuObjectState, primaryPane, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.Events.cs` | axis, HandleCursorValues, e, zoomFraction, e, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.Printing.cs` | e, Graph_PrintPage, sender |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.ScrollBars.cs` | axis, SetScrollRangeFromData, min, scrollMax, SetScroll, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ZedGraphControl.cs` | OnPaint, Dispose, disposing, AxisChange, e, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/ZoomStateStack.cs` | PopAll, pane |
+| `src/Vixen.Modules/Preview/VixenPreview/OpenGL/Drawable.cs` | fov, IDrawable, cameraView, Draw |
+| `src/Vixen.Modules/Preview/VixenPreview/Shapes/PreviewFlood.cs` | b, highlightedElements, editMode, Draw |
 
 ## Connected Communities
 
 - **Curves/ZedGraph · GetValue** (7 cross-edges)
 - **Vixen.Modules · Add** (6 cross-edges)
 - **Curves/ZedGraph · ZoomState** (3 cross-edges)
-- **Curves/ZedGraph · CollectionPlus** (1 cross-edges)
-- **Vixen.Application +48 dirs** (1 cross-edges)
-- **Curves/ZedGraph +13 dirs** (1 cross-edges)
-- **Curves/ZedGraph · GasGaugeNeedle** (1 cross-edges)
-- **Editor/TimedSequenceEditor +46 dirs** (1 cross-edges)
-- **Curves/ZedGraph · GasGaugeRegion** (1 cross-edges)
 - **Vixen.Common/NShape +2 dirs · Draw** (1 cross-edges)
+- **Editor/TimedSequenceEditor +44 dirs** (1 cross-edges)
+- **Curves/ZedGraph · GasGaugeRegion** (1 cross-edges)
+- **Curves/ZedGraph · CollectionPlus** (1 cross-edges)
+- **Vixen.Common/Controls +50 dirs** (1 cross-edges)
+- **Curves/ZedGraph +14 dirs** (1 cross-edges)
+- **Curves/ZedGraph · GasGaugeNeedle** (1 cross-edges)
+- **Curves/ZedGraph · PieItem** (1 cross-edges)
 
 ## How to Explore
 

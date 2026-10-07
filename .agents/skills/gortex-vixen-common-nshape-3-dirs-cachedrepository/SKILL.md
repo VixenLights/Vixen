@@ -1,11 +1,11 @@
 ---
 name: gortex-vixen-common-nshape-3-dirs-cachedrepository
-description: "Work in the Vixen.Common/NShape +3 dirs · CachedRepository area — 2319 symbols across 34 files (85% cohesion)"
+description: "Work in the Vixen.Common/NShape +3 dirs · CachedRepository area — 2308 symbols across 34 files (85% cohesion)"
 ---
 
 # Vixen.Common/NShape +3 dirs · CachedRepository
 
-2319 symbols | 34 files | 85% cohesion
+2308 symbols | 34 files | 85% cohesion
 
 ## When to Use
 
@@ -49,40 +49,40 @@ Use this skill when working on files in:
 
 | File | Symbols |
 |------|---------|
-| `src/Vixen.Common/NShape/AdoNetStore.cs` | DoReadInt32, cache, cache, modelObjectId, dbCommand, ... |
-| `src/Vixen.Common/NShape/Buffers.cs` | False, logicalValue, ToString, LogicalValue, True, ... |
-| `src/Vixen.Common/NShape/CachedRepository.cs` | template, Update, loadedEntities, DoUpdateModelObjectOwner, diagram, ... |
+| `src/Vixen.Common/NShape/AdoNetStore.cs` | PrepareInnerObjectsReading, diagram, cache, cache, CreateCommand, ... |
+| `src/Vixen.Common/NShape/Buffers.cs` | False, ToString, Unknown, logicalValue, LogicalValue, ... |
+| `src/Vixen.Common/NShape/CachedRepository.cs` | GetProject, shapes, TEntity, NewModels, shape, ... |
 | `src/Vixen.Common/NShape/Collections.cs` | MoveNext |
-| `src/Vixen.Common/NShape/Command.cs` | DeleteModelObjectsCommand.<init>, ModelObjects, repository, modelObject, CreateModelObjectsCommand.<init>, ... |
-| `src/Vixen.Common/NShape/Core.cs` | IRegistrar, shapeType, modelObjectType, instances, GetRepositoryVersion, ... |
-| `src/Vixen.Common/NShape/Design.cs` | EntityTypeName, Design, Title, CapStyles, requiredStyle, ... |
-| `src/Vixen.Common/NShape/DesignController.cs` | newValue, ReplaceStyle, Designs, newName, propertyName, ... |
-| `src/Vixen.Common/NShape/DiagramSetController.cs` | modelObjects, SelectModelObjects, modelObjectEventArgs, ModelObjectsEventArgs.<init>, ModelObjects, ... |
-| `src/Vixen.Common/NShape/Entity.cs` | WriteTemplate, ModelObject, IEntityType, version, Delete, ... |
-| `src/Vixen.Common/NShape/Exceptions.cs` | message, NShapeException.<init>, NShapeException.<init>, message, NShapeException.<init>, ... |
+| `src/Vixen.Common/NShape/Command.cs` | propertyInfo, ExchangeTemplateCommand, design, modelObjectBuffer, CopyTemplateFromTemplateCommand, ... |
+| `src/Vixen.Common/NShape/Core.cs` | version, shapeType, LibraryData, GetPropertyDefinitions, LastSaved, ... |
+| `src/Vixen.Common/NShape/Design.cs` | requiredStyle, AssertValidStyle, previewAsGrayScale, styleToAdd, style, ... |
+| `src/Vixen.Common/NShape/DesignController.cs` | CreateDesign, Designs, newValue, propertyName, style, ... |
+| `src/Vixen.Common/NShape/DiagramSetController.cs` | SelectModelObjects, modelObjects, modelObjects, ModelObjectsEventArgs, modelObjects, ... |
+| `src/Vixen.Common/NShape/Entity.cs` | Category, EntityCategory, WriteTemplate, ModelMapping, Diagram, ... |
+| `src/Vixen.Common/NShape/Exceptions.cs` | NShapeException.<init>, NShapeException.<init>, format, NShapeException, innerException, ... |
 | `src/Vixen.Common/NShape/FlowLayouter.cs` | Prepare |
 | `src/Vixen.Common/NShape/FreeHandTool.cs` | matchingTemplates |
 | `src/Vixen.Common/NShape/Geometry.cs` | Conditional |
-| `src/Vixen.Common/NShape/Model.cs` | Type, version, id, Parent, AttachShape, ... |
-| `src/Vixen.Common/NShape/ModelController.cs` | selectedModelObjects, parent, CreateFindShapesAction, modelObjects, modelObjects, ... |
-| `src/Vixen.Common/NShape/Project.cs` | designName, libraryName, ApplyDesign, FindLibraryVersion, shapeType, ... |
+| `src/Vixen.Common/NShape/Model.cs` | id, ownTerminalId, Type, Model.<init>, ownTerminalId, ... |
+| `src/Vixen.Common/NShape/ModelController.cs` | EnsureVisibility, parent, ensureVisibility, ModelObjectSelectedEventArgs, ModelObjectSelectedEventArgs.<init>, ... |
+| `src/Vixen.Common/NShape/Project.cs` | RegisterBaseLibraryTypes, modelObjectType, libraryName, ApplyDesign, create, ... |
 | `src/Vixen.Common/NShape/PropertyController.cs` | objects, SetObjects |
-| `src/Vixen.Common/NShape/PropertyMappings.cs` | slope, value, this[], GetFloat, CanGetStyle, ... |
-| `src/Vixen.Common/NShape/Repository.cs` | GluePointId, design, RepositoryStyleEventArgs, modelMappings, Undelete, ... |
-| `src/Vixen.Common/NShape/Shape.cs` | provider, ToDateTime |
-| `src/Vixen.Common/NShape/ShapeBase.cs` | ModelObject, SecurityDomainName |
-| `src/Vixen.Common/NShape/Store.cs` | NewShapes, SetProjectOwnerId, id, LoadedDiagrams, LoadedProjects, ... |
-| `src/Vixen.Common/NShape/Styles.cs` | IStyle, Name, ToString, Title |
-| `src/Vixen.Common/NShape/Template.cs` | propertyMapping, UnmapAllProperties, Id, Shape, Description, ... |
-| `src/Vixen.Common/NShape/TemplateController.cs` | TemplateControllerTemplateEventArgs.<init>, newModelObject, TemplateControllerModelObjectReplacedEventArgs.<init>, TemplateControllerPropertyMappingChangedEventArgs, template, ... |
-| `src/Vixen.Common/NShape/Tool.cs` | template, category, Construct, PlanarShapeCreationTool.<init>, template, ... |
-| `src/Vixen.Common/NShape/TypeDescriptionProviders.cs` | GetValue, component |
-| `src/Vixen.Common/NShape/XmlStore.cs` | DoReadDate, CloseFile, overwrite, storeCache, reader, ... |
-| `src/Vixen.Common/NShapeGeneralShapes/LinearShapes.cs` | shapeType, persistentTypeName, Polyline.<init>, Polyline.<init>, RectangularLine.<init>, ... |
+| `src/Vixen.Common/NShape/PropertyMappings.cs` | IModelMapping, GetPropertyDefinitions, GetInteger, ShapePropertyId, Type, ... |
+| `src/Vixen.Common/NShape/Repository.cs` | Count, templates, modelObject, Undelete, style, ... |
+| `src/Vixen.Common/NShape/Shape.cs` | ToDateTime, provider |
+| `src/Vixen.Common/NShape/ShapeBase.cs` | SecurityDomainName |
+| `src/Vixen.Common/NShape/Store.cs` | NewStyles, id, LoadedDiagrams, NewModelMappings, id, ... |
+| `src/Vixen.Common/NShape/Styles.cs` | ToString, Name, Title, IStyle |
+| `src/Vixen.Common/NShape/Template.cs` | GetPropertyMapping, propertyMapping, UnmapAllTerminals, ToString, MapProperties, ... |
+| `src/Vixen.Common/NShape/TemplateController.cs` | TemplateControllerTemplateEventArgs, newModelObject, TemplateControllerModelObjectReplacedEventArgs.<init>, template, oldModelObject, ... |
+| `src/Vixen.Common/NShape/Tool.cs` | PlanarShapeCreationTool.<init>, category, template, template, RefreshIcons, ... |
+| `src/Vixen.Common/NShape/TypeDescriptionProviders.cs` | component, GetValue |
+| `src/Vixen.Common/NShape/XmlStore.cs` | modelmappingsTag, cache, projectId, WriteDiagrams, writer, ... |
+| `src/Vixen.Common/NShapeGeneralShapes/LinearShapes.cs` | template, RectangularLine.<init>, CircularArc.<init>, StartCapStyle, persistentTypeName, ... |
 | `src/Vixen.Common/NShapeWinFormsUI/Display.cs` | modelBuffer |
-| `src/Vixen.Common/NShapeWinFormsUI/ModelTreeViewPresenter.cs` | Current, ModelObjectDragInfo.<init>, e, ModelObjectDragInfo, modelObjectBuffer, ... |
-| `src/Vixen.Common/NShapeWinFormsUI/TemplatePresenter.cs` | IsIntegerType, IsStringType, e, numericMapping, styleMapping, ... |
-| `src/Vixen.Modules/App/Curves/ZedGraph/StockPt.cs` | format, isShowAll, isShowAll, ToString, ToString |
+| `src/Vixen.Common/NShapeWinFormsUI/ModelTreeViewPresenter.cs` | ModelObject, Current, nodesCollection, ModelObjectDragInfo, modelObjectBuffer, ... |
+| `src/Vixen.Common/NShapeWinFormsUI/TemplatePresenter.cs` | modelObjectComboBox_SelectedIndexChanged, e, formatMapping, shapePropertyInfo, IsIntegerType, ... |
+| `src/Vixen.Modules/App/Curves/ZedGraph/StockPt.cs` | ToString, isShowAll, ToString, isShowAll, format |
 
 ## Entry Points
 
@@ -90,32 +90,34 @@ Use this skill when working on files in:
 
 ## Connected Communities
 
-- **Vixen.Common/NShape +64 dirs** (29 cross-edges)
+- **Vixen.Common/NShape +69 dirs** (28 cross-edges)
 - **Vixen.Common/NShape · ReadStyles** (17 cross-edges)
 - **Vixen.Common/NShape +8 dirs** (15 cross-edges)
 - **Vixen.Common/NShape +3 dirs · CreatePreviewStyle** (10 cross-edges)
 - **Vixen.Common/NShape · NotifyColorStyleChanged** (9 cross-edges)
-- **Vixen.Common/NShape +5 dirs** (6 cross-edges)
+- **Vixen.Common/NShape +4 dirs** (5 cross-edges)
 - **Vixen.Common/NShape · Revert** (5 cross-edges)
 - **Vixen.Common/NShape · Append** (4 cross-edges)
-- **Vixen.Common/NShapeWinFormsUI +4 dirs** (3 cross-edges)
+- **Vixen.Common/NShapeWinFormsUI +5 dirs** (3 cross-edges)
+- **Vixen.Common/NShape · ShapeConnection** (2 cross-edges)
+- **Vixen.Common/NShape · DoDeleteShapeConnection** (2 cross-edges)
+- **Vixen.Common/NShape · Buffers** (1 cross-edges)
+- **Vixen.Common/NShape · RegisterCursorResource** (1 cross-edges)
 - **Vixen.Common/NShape +2 dirs · Permission** (1 cross-edges)
 - **Vixen.Common/NShape · DoWriteValue** (1 cross-edges)
+- **Vixen.Common/NShape · XmlStoreWriter** (1 cross-edges)
 - **Vixen.Common/NShape · RepositoryWriter** (1 cross-edges)
 - **Vixen.Common/NShape · FlowDirection** (1 cross-edges)
-- **Vixen.Common · Contains** (1 cross-edges)
-- **Vixen.Common/NShape · Reset** (1 cross-edges)
 - **Vixen.Common · FlowLayouter** (1 cross-edges)
-- **Vixen.Common/NShape · RegisterCursorResource** (1 cross-edges)
-- **Vixen.Common/NShape · Buffers** (1 cross-edges)
-- **Vixen.Common/NShape · XmlStoreWriter** (1 cross-edges)
 - **Vixen.Common/NShape · EntityPropertyDefinition** (1 cross-edges)
 - **Vixen.Common/NShape · GetStyleEventArgs** (1 cross-edges)
+- **Vixen.Common · Contains** (1 cross-edges)
+- **Vixen.Common/NShape · Reset** (1 cross-edges)
 
 ## How to Explore
 
 ```
-analyze(operation:"communities", id:"community-163")
+analyze(operation:"communities", id:"community-175")
 explore(operation:"context", task:"understand Vixen.Common/NShape +3 dirs · CachedRepository", format:"gcx")
 relations(operation:"usages", target:{symbol:"src/Vixen.Common/NShape/AdoNetStore.cs::AdoNetStore.SaveChanges"}, format:"gcx")
 ```

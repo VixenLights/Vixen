@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # Claude Instructions
 
 For general project rules and multi-agent setup, see [AGENTS.md](./AGENTS.md).
