@@ -1,6 +1,6 @@
 # Restore element range selection direction when patching (VIX-4009)
 
-This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective in accordance with `.agents/PLANS.md`. Issue: https://vixenlights.atlassian.net/browse/VIX-4009. Related issue: https://vixenlights.atlassian.net/browse/VIX-938. This document records the implementation-ready design and execution evidence; Milestone 2 implementation is complete and Milestone 3 verification remains.
+This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective in accordance with `.agents/PLANS.md`. Issue: https://vixenlights.atlassian.net/browse/VIX-4009. Related issue: https://vixenlights.atlassian.net/browse/VIX-938. This document records the implementation-ready design and execution evidence; Milestones 2 and 3 are complete.
 
 ## Purpose / Big Picture
 
@@ -18,7 +18,7 @@ Preserve VIX-938's working keyboard navigation, stable anchor, range shrinking, 
 - [x] (2026-10-07) Milestone 1: Created VIX-4009 with user-facing requirements and acceptance criteria, linked it to VIX-938 using Relates, and verified the description, Bug type, New Ticket status, and link by reading it back.
 - [x] (2026-10-07) Prepared this plan and the scoped design review in `docs/reviews/vix-4009-range-selection-order-design.md`.
 - [x] (2026-10-07) Milestone 2: Added keyboard, Shift-range, and Setup patch-cache regressions; implemented the directional selection snapshot and Display Setup handoff; Release x64 test-target build succeeded, 20 focused tests passed, and all 78 Common/Setup tests passed.
-- [ ] Milestone 3: Verify complete patch behavior, VIX-938 and controller regressions, Release x64 build, and final Jira reporting.
+- [x] (2026-10-07) Milestone 3: User reports the full Release build, all 1,062 unit tests, and all Milestone 3 validation steps passed; Reverse Elements graphical-editor refresh was separately retested in the UI and works. Posted the validation summary to VIX-4009 without changing issue status.
 
 ## Surprises & Discoveries
 
@@ -44,6 +44,8 @@ The VIX-4006 reference plan establishes that controller destinations follow pane
 Historical Gortex commit snapshots remained unavailable during the preceding investigation. Historical evidence was obtained through read-only Git comparisons under the session's performance-fallback instruction; current implementation and test source was inspected with Gortex. Historical observation is source evidence, not a live UI reproduction.
 
 Milestone 2's first focused test run failed because the Setup consumer fixture created ElementNode instances before VixenSystem.Nodes was initialized. The fixture now installs and restores a dedicated NodeManager. The focused suite then passed 20/20. The available Gortex C# diagnostics call reports that no C# LSP provider is registered, so Rider get_file_problems was unavailable; the final Release test-target build reported no warnings from the changed production files.
+
+Milestone 3 validation was reported by the user: the full Release build, all 1,062 unit tests, and all planned Milestone 3 validation steps passed. Exact command lines and per-step manual observations were not supplied, so this plan records the aggregate results without attributing an unreported command or individual result. Afterward, the user also retested Reverse Elements with the graphical editor open and confirmed that it refreshes as expected.
 
 ## Decision Log
 
@@ -76,10 +78,14 @@ Decision: this turn completes issue creation and planning only. Future implement
 Rationale: the user requested an execution plan and Jira bug, not application implementation in this turn.
 Date/Author: 2026-10-07 / Codex.
 
+Decision: record Milestone 3 validation from the user's explicit report, and do not infer individual test commands or manual observations beyond what they reported.
+Rationale: the user confirmed the full Release build, all 1,062 unit tests, and all Milestone 3 validation steps passed; they separately confirmed the Reverse Elements graphical-editor refresh works in the UI. Preserve issue workflow state because the user requested plan completion and validation reporting, not a Jira transition.
+Date/Author: 2026-10-07 / Codex.
+
 ## Outcomes & Retrospective
 
 
-Milestone 2 is implemented. MultiSelectTreeview retains canonical display order and exposes an immutable anchor-to-endpoint snapshot for the active range; ElementTree and SetupElementsTree forward that order, including after the gesture returns, into SetupPatchingSimple's existing cache. Release x64 test-target build succeeded, the focused tests passed 20/20, the Common/Setup suites passed 78/78, and git diff --check passed. Rider get_file_problems was unavailable because no C# LSP provider is registered in Gortex. Actual patch connections, complete VIX-938/controller regression coverage, and final Jira reporting remain Milestone 3 work.
+Milestones 2 and 3 are complete. MultiSelectTreeview retains canonical display order and exposes an immutable anchor-to-endpoint snapshot for the active range; ElementTree and SetupElementsTree forward that order, including after the gesture returns, into SetupPatchingSimple's existing cache. Milestone 2's Release x64 test-target build succeeded, the focused tests passed 20/20, the Common/Setup suites passed 78/78, and git diff --check passed. For Milestone 3, the user reports that a full Release build and all 1,062 unit tests passed and that all planned validation steps passed. The user also retested Reverse Elements with the graphical editor open and confirmed the editor now refreshes. The follow-up source change was built successfully with `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m`; `git diff --check` passed. Rider get_file_problems was unavailable because no C# LSP provider is registered in Gortex. Exact Milestone 3 command lines and per-step observations were not provided, so none are inferred.
 
 ## Architecture Design: VIX-4009 — Restore element range selection direction when patching
 
@@ -198,9 +204,9 @@ Concrete Steps: from C:\Dev\Vixen run the existing output-order and controller/i
     msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64
     git diff --check
 
-Validation and Acceptance: all relevant tests and the full suite pass, the Release x64 build has zero errors, actual patch connections follow range direction, and VIX-938 navigation/performance plus VIX-4006 destination behavior remain intact. Report warnings, unavailable IDE checks, and unperformed manual checks accurately. Do not claim runtime completion from source assertions alone.
+Validation and Acceptance: the user reports the full Release build and all 1,062 unit tests passed, and confirms all Milestone 3 validation steps passed, including the planned patch, VIX-938, controller, and performance checks. The exact commands and step-by-step observations were not supplied and are not reproduced here. The user separately confirmed in the UI that Reverse Elements refreshes the graphical editor after the follow-up notification fix. The Release x64 Vixen_Tests target was also built successfully after that fix, and `git diff --check` passed. These reports establish completion without treating source assertions as runtime evidence.
 
-Update this plan's living sections with the delivered design, exact commands, pass counts, and manual evidence. Use the Jira skill to reconcile VIX-4009's user-facing description if requirements changed and add a concise validation comment. Preserve VIX-938's existing state and do not transition either issue without separate authorization. Read VIX-4009 back after reporting. No implementation-complete comment is authorized during the planning-only turn.
+The living sections have been updated with the user-reported validation and the additional UI retest. VIX-4009's user-facing requirements did not change; a concise completion comment was added and read back. Its Accepted status and VIX-938's existing state were left unchanged.
 
 STOP HERE for manual review and commit execution before proceeding.
 
@@ -232,7 +238,7 @@ Fixtures restore all replaced global managers and dispose controls even on failu
 
 Planning began with a clean git status. Jira project/type validation succeeded. VIX-4009 was created as Bug, linked to VIX-938 with Relates, and read back with New Ticket status and the expected acceptance criteria. Gortex impact for SelectRange reported medium risk, 23 transitively affected symbols, and MultiSelectTreeviewKeyboardSelectionTests as an existing test target. Impact checks for the new Markdown paths returned file_not_indexed because the files did not yet exist; this does not represent a source edit.
 
-Milestone 2 changed the three planned production files and added/updated the three planned test files. Full MSBuild for the Release x64 test target exited 0. The focused dotnet test run passed 20/20 tests, and the covering Common/Setup test run passed 78/78 tests. `git diff --check` passed. The first focused run exposed only a test-fixture initialization issue; the fixture now restores the original NodeManager, and the rerun passed. No commit was created; Milestone 3 remains pending.
+Milestone 2 changed the three planned production files and added/updated the three planned test files. Full MSBuild for the Release x64 test target exited 0. The focused dotnet test run passed 20/20 tests, and the covering Common/Setup test run passed 78/78 tests. `git diff --check` passed. The first focused run exposed only a test-fixture initialization issue; the fixture now restores the original NodeManager, and the rerun passed. No commit was created. Milestone 3 validation is complete: the user reports that the full Release build, all 1,062 unit tests, and all planned validation steps passed. The subsequent Reverse Elements graphical-refresh change was built successfully with the Release x64 Vixen_Tests target and passed the user's UI retest. VIX-4009's validation comment was posted; its Accepted status was left unchanged.
 
 ## Interfaces and Dependencies
 
@@ -257,6 +263,6 @@ Use existing collection/array/LINQ facilities, TreeNode references, ElementNodes
 
 2026-10-07 / Codex: Created the plan after the user requested restoring mouse and keyboard range direction without undoing VIX-938. Recorded the historical event-before-sort explanation, chose an explicit range-order snapshot while retaining canonical selection order, included the patching-view getter route, and created/verified VIX-4009 and its relation to VIX-938. Application implementation was pending at planning time.
 
-2026-10-07 / Codex: Implemented Milestone 2 after explicit user direction. Captured anchor-to-endpoint selection in a read-only snapshot without changing canonical SelectedNodes; forwarded it through ElementTree and SetupElementsTree selection notifications and the SelectedElements getter; added keyboard, range-state, event handoff, and patch-cache regressions. The Release x64 Vixen_Tests target build succeeded, the focused filter passed 20/20 tests, and the Common/Setup suites passed 78/78; git diff --check passed. Gortex reported no registered C# LSP provider, so IDE file problem checks were unavailable. Milestone 3 manual patch and broader validation remains.
+2026-10-07 / Codex: Implemented Milestone 2 after explicit user direction. Captured anchor-to-endpoint selection in a read-only snapshot without changing canonical SelectedNodes; forwarded it through ElementTree and SetupElementsTree selection notifications and the SelectedElements getter; added keyboard, range-state, event handoff, and patch-cache regressions. The Release x64 Vixen_Tests target build succeeded, the focused filter passed 20/20 tests, and the Common/Setup suites passed 78/78; git diff --check passed. Gortex reported no registered C# LSP provider, so IDE file problem checks were unavailable. Milestone 3 was completed after the user reported that the full Release build, all 1,062 unit tests, and all planned validation steps passed. The additional Reverse Elements graphical-editor refresh was separately built with the Release x64 Vixen_Tests target and user-validated in the UI. A concise validation comment was posted to VIX-4009; no Jira status transition was made.
 
 Analysis complete and plan integrated with plans.md.
