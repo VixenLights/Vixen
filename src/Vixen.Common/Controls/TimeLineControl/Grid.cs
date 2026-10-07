@@ -2164,6 +2164,16 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Moves effects vertically between visible timeline rows relative to the pointer location.
+		/// </summary>
+		/// <param name="elements">The effects being moved.</param>
+		/// <param name="gridLocation">The pointer location in grid coordinates.</param>
+		/// <remarks>
+		/// When an effect is displayed in multiple rows, the occurrence in the tracked mouse row is
+		/// preferred and the tracked row advances with that occurrence after a successful move.
+		/// </remarks>
+		/// <exception cref="Exception">An effect would move off-grid and no other instance remains to move instead.</exception>
 		public void MoveElementsVerticallyToLocation(IEnumerable<Element> elements, Point gridLocation)
 		{
 			Row destRow = rowAt(gridLocation);
@@ -2267,14 +2277,20 @@ namespace Common.Controls.Timeline
 							continue;
 						}
 
-						visibleRows[i].RemoveElement(element);
-						visibleRows[i + visibleRowsToMove].AddElement(element);
-						elementsMoved.Add(element);
-						_ElementChangedRows(element, visibleRows[i], visibleRows[i + visibleRowsToMove]);
+						Row sourceRow = visibleRows[i];
+						Row destinationRow = visibleRows[i + visibleRowsToMove];
+						bool advancesMouseRow = ReferenceEquals(sourceRow, m_mouseDownElementRow) &&
+							ElementsToMoveInMouseRow.Contains(element);
 
-						// if this element was the mouse down element, update the mouse down element row that we're tracking
-						if (m_mouseDownElements != null && element == m_mouseDownElements.FirstOrDefault())
-							newMouseDownRow = visibleRows[i + visibleRowsToMove];
+						sourceRow.RemoveElement(element);
+						destinationRow.AddElement(element);
+						elementsMoved.Add(element);
+						_ElementChangedRows(element, sourceRow, destinationRow);
+
+						// Track the moved occurrence, not the original element identity: cloning replaces
+						// the mouse-down element with a different Element instance.
+						if (advancesMouseRow)
+							newMouseDownRow = destinationRow;
 					}
 				}
 

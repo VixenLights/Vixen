@@ -1,7 +1,7 @@
 # Keep cloned effects under the pointer across duplicate timeline rows (VIX-4011)
 
 
-This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document was prepared using `.agents/skills/analyze-and-plan-issue/SKILL.md`, the project .NET guidance, and the project C# documentation guidance. The current request authorizes Milestone 1, including the Jira description update and plan maintenance. Production implementation and commits remain future work.
+This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document was prepared using `.agents/skills/analyze-and-plan-issue/SKILL.md`, the project .NET guidance, and the project C# documentation guidance. The current authorization covers Milestone 1 and, after the user's manual-reproduction confirmation, Milestone 2 implementation and validation. Milestone 3 and commits remain future work.
 
 ## Purpose / Big Picture
 
@@ -21,9 +21,9 @@ The issue is https://vixenlights.atlassian.net/browse/VIX-4011, titled “Ctrl D
 - [x] (2026-10-07) Confirm from current source that clone selection switches to newly created `Element` objects while `m_mouseDownElements` remains the original mouse-down context.
 - [x] (2026-10-07) Confirm that the editor row-change handler updates the target and synchronizes the same moved element across rows representing the old and new lighting elements.
 - [x] (2026-10-07) Confirm the sequencer test framework is xUnit v3 with `Xunit.StaFact`; timeline-control tests use a non-parallel collection.
-- [ ] (2026-10-07) Reproduce and record the failing repeated-row interaction and verify ordinary movement through the same rows.
-- [ ] Milestone 1: Align Jira requirements, confirm the clone identity handoff, and establish the failing interaction.
-- [ ] Milestone 2: Add a failing repeated-transition regression and repair the tracked mouse row.
+- [x] (2026-10-07) User confirmed manual reproduction of the defect; accepted as sufficient to proceed without recording unprovided coordinates/debugger observations.
+- [x] Milestone 1: Align Jira requirements, confirm the clone identity handoff, and establish the failing interaction to the user's accepted manual-testing standard.
+- [x] Milestone 2: Repair tracked-row advancement and verify regression, clipping, hidden-row, deprecated-target, ordinary-move, and no-op behavior.
 - [ ] Milestone 3: Validate the complete editor workflow and report results in Jira.
 
 ## Surprises & Discoveries
@@ -43,8 +43,8 @@ The issue is https://vixenlights.atlassian.net/browse/VIX-4011, titled “Ctrl D
   Evidence: `TimedSequenceEditorForm.ElementChangedRowsHandler` changes the moved element's target, removes it from other rows representing the old target, and adds it to other rows representing the new target. This is why the duplicate row display does not imply extra logical clones.
 - Observation: Sequencer tests run with xUnit v3 and WinForms STA support; the current timeline-control fixture is serialized.
   Evidence: `src/Vixen.Tests/Vixen.Tests.csproj` references `xunit.v3` and `Xunit.StaFact`. `GridMarkSnapPointTests` uses `Xunit.WinFormsFactAttribute`, `[Collection(TimelineControlTestCollection.Name)]`, and a helper that constructs the actual `Grid`; `TimelineControlTestCollection` disables parallelization. Gortex still maps no tests to `MoveElementsVerticallyToLocation`, and Rider `findTests` previously found no mapped test for that method. This is a coverage-discovery limitation, not evidence that no related tests exist anywhere in the repository.
-- Observation: The failing mouse interaction and ordinary-move comparison have not yet been reproduced.
-  Evidence: The Rider session has no active debug session and has a `Vixen.Application` run configuration, but no disposable sequence is available in the workspace and the available tools provide no desktop input control for operating the editor. No runtime claim is made from the source evidence.
+- Observation: The user manually reproduced the defect and explicitly accepted that as sufficient to proceed; exact coordinates and debugger values were not captured in this plan.
+  Evidence: User confirmation in the task conversation on 2026-10-07. No independent ordinary-move comparison was recorded, and no additional runtime details are claimed.
 
 ## Decision Log
 
@@ -55,8 +55,11 @@ The issue is https://vixenlights.atlassian.net/browse/VIX-4011, titled “Ctrl D
 - Decision: Keep the existing clone delegate, duplicate-row preference, vertical boundaries, modifier locks, snapping, target validity checks, and undo routes.
   Rationale: The issue asks for clone dragging to match ordinary movement. VIX-3940 documents the established Ctrl+Shift vertical-only contract and clone-add/move undo behavior.
   Date/Author: 2026-10-07 / Codex.
-- Decision: Keep the stale-anchor diagnosis as a source-confirmed hypothesis, but do not treat it as a reproduced failure until the planned editor scenario is observed.
-  Rationale: Current source confirms that the moving selection contains new clone objects while the mouse-down list retains the original object, and the row tracker advances only when those identities match. Runtime reproduction and the ordinary-move comparison remain required before the regression or repair proceeds.
+- Decision: Treat the user's manual reproduction as sufficient to proceed, while keeping its unrecorded details and the ordinary-move comparison explicitly unclaimed.
+  Rationale: The user confirmed the defect was manually reproduced and authorized moving forward. Automated characterization then demonstrated stale anchor state before the repair.
+  Date/Author: 2026-10-07 / Codex.
+- Decision: Keep milestone boundaries: finish M2 automated regression/build work, then stop for review before M3 editor validation.
+  Rationale: The user authorized moving on after accepting manual reproduction, not execution of M3's full editor workflow or Jira completion reporting.
   Date/Author: 2026-10-07 / Codex.
 - Decision: Update the Jira description during Milestone 1, and reserve issue comments or workflow transitions for later milestones if authorized.
   Rationale: The user explicitly authorized Milestone 1. The issue description now states user-visible behavior and acceptance criteria; no issue status transition or completion comment was made.
@@ -65,7 +68,7 @@ The issue is https://vixenlights.atlassian.net/browse/VIX-4011, titled “Ctrl D
 ## Outcomes & Retrospective
 
 
-Milestone 1 requirements are now aligned in Jira, and source inspection confirms the clone identity handoff, shared-row synchronization, and current sequencer test conventions. The editor failure and ordinary-move comparison remain unverified because no disposable sequence or desktop input control is available in this session. No production code or tests were changed, and milestone 2 has not started. The next required action is to establish the interaction in the editor before changing the diagnosis or proceeding to the regression.
+Milestone 1 requirements were aligned in Jira and source inspection confirmed clone identity handoff, shared-row synchronization, and test conventions. The user confirmed manual reproduction and accepted it as sufficient to proceed; exact interaction coordinates and an independent ordinary-move comparison were not recorded. In Milestone 2, the repeated-row clone regressions failed on the unfixed implementation with stale-anchor assertions and passed after the row-identity-based advancement change. Seven focused tests now cover consecutive moves, upward/downward transitions, repeated-row starts, ordinary movement, multi-effect selection, no-op movement, the last row, clipped displacement, hidden repeated occurrences, and deprecated-target refusal without changing either tracker. Full editor workflow and Jira completion reporting remain in Milestone 3.
 
 ## Context and Orientation
 
@@ -101,7 +104,7 @@ Subsystem Component Matrix:
 | Grid_Mouse.cs / HandleMouseMove and MouseMove_DragMoving | Verify the clone handoff and repeated movement; no planned modifier or state-machine rewrite. |
 | Row.cs / element membership and notifications | Inspect sharing behavior so the test models duplicate rows accurately; no planned production edit. |
 | TimedSequenceEditorForm.cs / CloneElements and row-change handling | Verify clone selection, shared target updates, and undo; no planned production edit. |
-| src/Vixen.Tests/Timeline/GridCloneDragDuplicateRowsTests.cs | Add focused regression coverage following the actual neighboring test infrastructure. |
+| src/Vixen.Tests/Sequencer/GridCloneDragDuplicateRowsTests.cs | Add focused regression coverage following the actual neighboring test infrastructure. |
 
 ## ACTIVE EXECUTION PLAN (Derived from .agents/PLANS.md)
 
@@ -122,7 +125,7 @@ STOP HERE for manual review and commit execution before proceeding. Halt code ex
 ### Milestone 2: Repair anchor advancement and prove consecutive moves
 
 
-Context: The expected production edit is limited to `src/Vixen.Common/Controls/TimeLineControl/Grid.cs`, inside `MoveElementsVerticallyToLocation`. Use the existing timeline test infrastructure to add `src/Vixen.Tests/Timeline/GridCloneDragDuplicateRowsTests.cs`. Do not add projects or package dependencies solely for this regression.
+Context: The production edit is limited to `src/Vixen.Common/Controls/TimeLineControl/Grid.cs`, inside `MoveElementsVerticallyToLocation`. The regression fixture is `src/Vixen.Tests/Sequencer/GridCloneDragDuplicateRowsTests.cs`, matching existing sequencer tests. No project or package dependencies were added.
 
 Plan of Work: First add a failing regression that exercises the real vertical movement method on consecutive transitions, with a cloned effect selected and the original effect retained as mouse-down context. Use the existing fixture conventions and thread setup; instantiate the actual Grid, Row, and Element types using their current constructors. Model duplicate membership through the actual row-sharing behavior or the equivalent existing host notification path. A test that has two unrelated effects with matching labels does not reproduce this bug. Use an existing test seam where available. Otherwise initialize the small amount of private drag state in a fixture helper using reflection, keeping reflection confined to tests and adding no public production API. Specifically initialize `m_mouseDownElements`, `m_mouseDownElementRow`, and `CurrentRowIndexUnderMouse` consistently with clone initiation.
 
@@ -142,7 +145,7 @@ Use these locals in the existing successful transfer branch and replace only the
     if (advancesMouseRow)
         newMouseDownRow = destinationRow;
 
-This excerpt is a proposed implementation, not a patch already applied. Verify the real host events and failing regression before committing to it. Multiple effects moving from the anchor row have the same destination; they should not advance the anchor multiple row distances. Other selected effects must not replace that anchor.
+This is the implementation applied in `Grid.MoveElementsVerticallyToLocation`; the regression suite verifies it against the real movement method and the fixture's host-equivalent row-sharing event. Multiple effects moving from the anchor row have the same destination; they must not advance the anchor multiple row distances. Other selected effects must not replace that anchor.
 
 Add XML documentation to the public method in accordance with the project `csharp-docs` skill: describe moving effects relative to visible rows, document both parameters, explain duplicate occurrences and tracked-row advancement, and document the existing exception if an effect would move off-grid with no alternative instance. Do not document a return value for this void method or modify unrelated APIs.
 
@@ -153,7 +156,7 @@ Concrete Steps: From `C:\Dev\Vixen`, build the test target with full Visual Stud
 
 Expected results are Build succeeded and all tests in the regression fixture passed after the fix. Capture the actual counts. First run the regression on the unfixed implementation and record a failure caused by incorrect row placement or stale row state, not a constructor, thread, or fixture setup error. Rebuild after the production repair and rerun once. Run Rider `get_file_problems` for each changed C# file, inspect all results, and resolve only issues introduced within changed lines. Complete Gortex detect, tests, guards, and contract checks and record any uncovered behavior requiring editor validation.
 
-Validation and Acceptance: The tests fail before the repair and pass afterward for consecutive moves in both directions. Check clipping at the first/last visible row, hidden repeated occurrences, no movement within the same row, blocked deprecated destinations, and selection spanning several rows. For every refused or zero-displacement move, both row trackers must stay consistent. Test the production movement behavior rather than only the new Boolean condition.
+Validation and Acceptance: The seven fixture tests establish the clone regression failed before the repair and passes afterward. Coverage includes clone moves in both directions, starting on a repeated occurrence, ordinary non-clone movement, multi-effect selection, unchanged destination, reaching the last visible row, displacement clipped by a multi-row selection, a hidden repeated occurrence, and a deprecated destination. Refused deprecated moves assert both the anchor row and pointer row remain unchanged. The tests exercise the production Grid movement method.
 
 STOP HERE for manual review and commit execution before proceeding. Halt code execution. Run `git status --short` and a scoped `git diff` for Grid.cs, the regression fixture, and this plan. Invoke the project `commit-msg` skill with VIX-4011 as the subject prefix and output the required paste-ready Commit message block. Do not commit unless requested. Pause for explicit confirmation before advancing.
 
@@ -195,7 +198,7 @@ The working tree was clean before this plan was created:
 
 Gortex mapped the clone entry point to `Grid_Mouse.HandleMouseMove` and its normal/auto-scroll callers. Its edit-plan operation also listed other controls with similarly named mouse methods; those controls are outside the issue and must not be modified merely because they appeared in that list.
 
-Rider test discovery did not identify a fixture for the movement method. The clone selection, editor clone delegate, and shared-row handler have now been confirmed from source. No application tests or builds ran during Milestone 1. Runtime behavior remains unverified because no disposable sequence or desktop input control was available; this plan does not present source evidence as runtime reproduction.
+Rider test discovery did not identify an existing fixture for the movement method. The clone selection, editor clone delegate, and shared-row handler were confirmed from source. The user manually reproduced the defect; the exact sequence, coordinates, and debugger observations were not captured here. M2 automated validation recorded the full-MSBuild `Vixen_Tests` target build and the filtered regression run (7 passed). Rider file-problem analysis of the new fixture returned no errors; remaining suggestions are test-only style/allocation hints. Rider continues to report existing Grid.cs errors on unrelated lines. Full editor workflow remains for M3.
 
 ## Interfaces and Dependencies
 
@@ -205,6 +208,6 @@ Retain `public void MoveElementsVerticallyToLocation(IEnumerable<Element> elemen
 ## Plan Revision Note
 
 
-2026-10-07: Initial plan records the likely stale-anchor cause, the minimal row-based repair, evidence limits, future Jira milestones, and repeated-transition validation. Milestone 1 aligned the Jira description and verified the clone identity handoff, row synchronization, and sequencer test conventions. Manual reproduction remains pending; production implementation remains pending.
+2026-10-07: Initial plan records the stale-anchor cause, minimal row-based repair, evidence limits, and Jira milestones. Milestone 1 aligned Jira and verified clone identity handoff, row synchronization, and test conventions. The user confirmed manual reproduction. M2 added the source/destination-row anchor update, XML documentation, and seven passing regression/edge-case tests after observing the targeted clone tests fail before repair. Coverage includes both movement directions, repeated-occurrence starts, ordinary movement, multi-effect selection, no-op movement, last-row movement, clipped displacement, a hidden repeated occurrence, and a deprecated destination. The fixture must mark `VisibleRows` dirty after directly adding test rows; otherwise `rowAt` sees an empty cached list and the test only exercises setup failure. M3 editor validation has not begun.
 
 Analysis complete and plan integrated with plans.md.
