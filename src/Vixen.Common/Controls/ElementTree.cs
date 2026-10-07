@@ -1435,6 +1435,7 @@ namespace Common.Controls
 			}
 
 			PopulateNodeTree();
+			OnElementsChanged();
 		}
 
 		private void sortToolStripMenuItem_Click(object sender, EventArgs e)
