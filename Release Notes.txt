@@ -1,6 +1,26 @@
 Release Notes - Vixen 3
 
 
+Release Notes - Vixen 3 - 3.13u3 Build 
+
+** 9 issues resolved in this release. 
+
+** Improvements
+    * [VIX-4003] - Direct upload to a ESPixelstick in FPP export
+    * [VIX-4010] - Dropping a Gradient or a Curve on a list that only has one entry still prompts the selector
+
+** Bugs
+    * [VIX-4004] - Erratic selection behavior when using find patched outputs function
+    * [VIX-4005] - Wipe clone does not respect the Across/Each Element/Group setting
+    * [VIX-4006] - Patched outputs showing incorrectly
+    * [VIX-4007] - ZigZag setup of Patching Order property causes fatal crash
+    * [VIX-4008] - Patching Order Zig Zag reorders wrong elements for partial selections
+    * [VIX-4009] - Restore element range selection direction when patching
+    * [VIX-4011] - Ctrl Drag to clone an effect has issues when the same element is exposed multiple times in the sequencer tree
+
+
+
+
 Release Notes - Vixen 3 - 3.13u2 Build 
 
 ** 15 issues resolved in this release. 
