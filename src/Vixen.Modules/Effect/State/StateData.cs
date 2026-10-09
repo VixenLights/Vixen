@@ -12,7 +12,7 @@ namespace VixenModules.Effect.State
 	public sealed class StateData: EffectTypeModuleData
 	{
 		internal const int MinIterations = 1;
-		internal const int MaxIterations = 20;
+		internal const int MaxIterations = 5000;
 		internal const int MinCycleOffset = 0;
 		internal const int MaxCycleOffset = 100;
 
@@ -71,7 +71,7 @@ namespace VixenModules.Effect.State
 		/// <summary>
 		/// Gets or sets the number of times the active State item sequence repeats in Iterate playback mode.
 		/// </summary>
-		/// <value>The number of Iterate playback repetitions. The default is 1.</value>
+		/// <value>A whole-number count from 1 through <see cref="MaxIterations"/>. The default is 1.</value>
 		[DataMember]
 		public int Iterations
 		{

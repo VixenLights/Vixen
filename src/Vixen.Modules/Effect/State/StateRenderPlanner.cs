@@ -238,9 +238,9 @@ namespace VixenModules.Effect.State
 			var intervalStart = TimeSpan.Zero;
 			var normalizedIterations = StateData.NormalizeIterations(iterations);
 			var normalizedCycleOffset = NormalizeCycleOffset(cycleOffset, orderedNames.Count);
-			var intervalCount = orderedNames.Count * normalizedIterations;
+			var intervalCount = GetTotalSlotCount(orderedNames.Count, normalizedIterations);
 
-			for (var index = 0; index < intervalCount; index++)
+			for (long index = 0; index < intervalCount; index++)
 			{
 				var duration = GetIntervalDuration(effectDuration, intervalCount, index, intervalStart);
 				var name = orderedNames[GetOffsetSlotIndex(index, orderedNames.Count, normalizedCycleOffset)];
@@ -293,11 +293,11 @@ namespace VixenModules.Effect.State
 
 			var normalizedIterations = StateData.NormalizeIterations(iterations);
 			var normalizedCycleOffset = NormalizeCycleOffset(cycleOffset, customStateItems.Count);
-			var intervalCount = customStateItems.Count * normalizedIterations;
+			var intervalCount = GetTotalSlotCount(customStateItems.Count, normalizedIterations);
 			var intervals = new List<StateRenderInterval>();
 			var intervalStart = TimeSpan.Zero;
 
-			for (var index = 0; index < intervalCount; index++)
+			for (long index = 0; index < intervalCount; index++)
 			{
 				var duration = GetIntervalDuration(effectDuration, intervalCount, index, intervalStart);
 				var customStateItem = customStateItems[GetOffsetSlotIndex(index, customStateItems.Count, normalizedCycleOffset)];
@@ -328,11 +328,11 @@ namespace VixenModules.Effect.State
 
 			var normalizedIterations = StateData.NormalizeIterations(iterations);
 			var normalizedCycleOffset = NormalizeCycleOffset(cycleOffset, groups.Count);
-			var intervalCount = groups.Count * normalizedIterations;
+			var intervalCount = GetTotalSlotCount(groups.Count, normalizedIterations);
 			var intervals = new List<StateRenderInterval>();
 			var intervalStart = TimeSpan.Zero;
 
-			for (var index = 0; index < intervalCount; index++)
+			for (long index = 0; index < intervalCount; index++)
 			{
 				var duration = GetIntervalDuration(effectDuration, intervalCount, index, intervalStart);
 				var group = groups[GetOffsetSlotIndex(index, groups.Count, normalizedCycleOffset)];
@@ -394,10 +394,13 @@ namespace VixenModules.Effect.State
 				: $"Missing:{customStateItem.StateItemId:N}";
 		}
 
+		internal static long GetTotalSlotCount(int slotCount, int iterations) =>
+			(long)slotCount * StateData.NormalizeIterations(iterations);
+
 		private static TimeSpan GetIntervalDuration(
 			TimeSpan effectDuration,
-			int intervalCount,
-			int intervalIndex,
+			long intervalCount,
+			long intervalIndex,
 			TimeSpan intervalStart)
 		{
 			return intervalIndex == intervalCount - 1
@@ -410,9 +413,9 @@ namespace VixenModules.Effect.State
 			return cycleOffset > 0 ? cycleOffset % slotCount : 0;
 		}
 
-		private static int GetOffsetSlotIndex(int outputIndex, int slotCount, int normalizedCycleOffset)
+		private static int GetOffsetSlotIndex(long outputIndex, int slotCount, int normalizedCycleOffset)
 		{
-			return (outputIndex % slotCount + normalizedCycleOffset) % slotCount;
+			return (int)(((outputIndex % slotCount) + normalizedCycleOffset) % slotCount);
 		}
 
 		private static IReadOnlyList<string> GetUniqueStateItemNames(IEnumerable<StateItemData> items)
@@ -473,8 +476,8 @@ namespace VixenModules.Effect.State
 			var segmentStart = intervalStart;
 			var normalizedIterations = StateData.NormalizeIterations(iterations);
 			var normalizedCycleOffset = NormalizeCycleOffset(cycleOffset, names.Count);
-			var segmentCount = names.Count * normalizedIterations;
-			for (var index = 0; index < segmentCount; index++)
+			var segmentCount = GetTotalSlotCount(names.Count, normalizedIterations);
+			for (long index = 0; index < segmentCount; index++)
 			{
 				var segmentDuration = GetIntervalDuration(intervalDuration, segmentCount, index, segmentStart - intervalStart);
 				var name = names[GetOffsetSlotIndex(index, names.Count, normalizedCycleOffset)];

@@ -94,6 +94,39 @@ public class StateRenderPlannerTests
 	}
 
 	[Fact]
+	public void GetTotalSlotCount_WidensMultiplicationBeforeApplyingIterations()
+	{
+		Assert.Equal(10_737_418_235_000L,
+			StateRenderPlanner.GetTotalSlotCount(int.MaxValue, VixenModules.Effect.State.StateData.MaxIterations));
+		Assert.Equal(0L,
+			StateRenderPlanner.GetTotalSlotCount(0, VixenModules.Effect.State.StateData.MaxIterations));
+	}
+
+	[Fact]
+	public void CreateStateItemIntervals_IterateSupportsOneHundredRepetitions()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+
+		// Act
+		var intervals = StateRenderPlanner.CreateStateItemIntervals(
+			definition,
+			Guid.Empty,
+			PlaybackMode.Iterate,
+			100,
+			TimeSpan.FromSeconds(200));
+
+		// Assert
+		Assert.Equal(200, intervals.Count);
+		Assert.Equal(
+			Enumerable.Range(0, 100).SelectMany(_ => new[] { open.Id, closed.Id }),
+			intervals.Select(interval => interval.Item.Id));
+		Assert.Equal(TimeSpan.FromSeconds(200), intervals[^1].Start + intervals[^1].Duration);
+	}
+
+	[Fact]
 	public void CreateStateItemIntervals_CycleOffsetZeroPreservesIntervals()
 	{
 		// Arrange
@@ -324,6 +357,32 @@ public class StateRenderPlannerTests
 			[TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(6)],
 			intervals.Select(interval => interval.Start));
 		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(2), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateMarkCollectionIntervals_IterateSupportsOneHundredRepetitionsForSingleMark()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+		var marks = new[] { CreateMark(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(200), "Open,Closed") };
+
+		// Act
+		var intervals = StateRenderPlanner.CreateMarkCollectionIntervals(
+			definition,
+			marks,
+			PlaybackMode.Iterate,
+			100,
+			TimeSpan.FromSeconds(10),
+			TimeSpan.FromSeconds(200));
+
+		// Assert
+		Assert.Equal(200, intervals.Count);
+		Assert.Equal(
+			Enumerable.Range(0, 100).SelectMany(_ => new[] { open.Id, closed.Id }),
+			intervals.Select(interval => interval.Item.Id));
+		Assert.Equal(TimeSpan.FromSeconds(200), intervals[^1].Start + intervals[^1].Duration);
 	}
 
 	[Fact]
@@ -611,6 +670,32 @@ public class StateRenderPlannerTests
 	}
 
 	[Fact]
+	public void CreateCustomIntervals_IterateSupportsOneHundredIndividualRepetitions()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+		var customRows = new[] { CreateCustomRow(open.Id, Color.Blue), CreateCustomRow(closed.Id, Color.Yellow) };
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			100,
+			cycleIndividually: true,
+			TimeSpan.FromSeconds(200));
+
+		// Assert
+		Assert.Equal(200, intervals.Count);
+		Assert.Equal(
+			Enumerable.Range(0, 100).SelectMany(_ => new[] { open.Id, closed.Id }),
+			intervals.Select(interval => interval.Item.Id));
+		Assert.Equal(TimeSpan.FromSeconds(200), intervals[^1].Start + intervals[^1].Duration);
+	}
+
+	[Fact]
 	public void CreateCustomIntervals_CycleOffsetRotatesIndividualRowsIncludingBlankSlots()
 	{
 		// Arrange
@@ -821,6 +906,37 @@ public class StateRenderPlannerTests
 			[TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(5)],
 			intervals.Select(interval => interval.Start));
 		Assert.All(intervals, interval => Assert.Equal(TimeSpan.FromSeconds(1), interval.Duration));
+	}
+
+	[Fact]
+	public void CreateCustomIntervals_GroupedIterateSupportsOneHundredRepetitions()
+	{
+		// Arrange
+		var open = CreateItem(Guid.NewGuid(), "Open");
+		var closed = CreateItem(Guid.NewGuid(), "Closed");
+		var definition = CreateDefinition(open, closed);
+		var customRows = new[]
+		{
+			CreateCustomRow(open.Id, Color.Blue),
+			CreateCustomRow(open.Id, Color.Yellow),
+			CreateCustomRow(closed.Id, Color.White)
+		};
+
+		// Act
+		var intervals = StateRenderPlanner.CreateCustomIntervals(
+			definition,
+			customRows,
+			PlaybackMode.Iterate,
+			100,
+			cycleIndividually: false,
+			TimeSpan.FromSeconds(200));
+
+		// Assert
+		Assert.Equal(300, intervals.Count);
+		Assert.Equal(200, intervals.Select(interval => interval.Start).Distinct().Count());
+		Assert.Equal(2, intervals.Count(interval => interval.Start == TimeSpan.Zero));
+		Assert.Equal(closed.Id, Assert.Single(intervals, interval => interval.Start == TimeSpan.FromSeconds(199)).Item.Id);
+		Assert.Equal(TimeSpan.FromSeconds(200), intervals.Max(interval => interval.Start + interval.Duration));
 	}
 
 	[Fact]
