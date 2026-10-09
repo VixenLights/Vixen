@@ -15,7 +15,30 @@
 								 utils:TextBoxExtender.RollbackOnEscape="true"
 								 utils:TextBoxExtender.CommitOnTyping="false"/>
 						
-						<Rectangle x:Name="PART_dragger" Stroke="Transparent" Fill="Transparent" Height="5" ></Rectangle>
+						<Grid x:Name="PART_dragger" Background="Transparent" Height="7" Margin="0,1,0,0" ClipToBounds="True">
+							<Grid.Style>
+								<Style TargetType="{x:Type Grid}">
+									<Setter Property="Opacity" Value="0.85"/>
+									<Style.Triggers>
+										<Trigger Property="IsMouseOver" Value="True">
+											<Setter Property="Opacity" Value="1"/>
+										</Trigger>
+										<DataTrigger Binding="{Binding IsDragging, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
+											<Setter Property="Opacity" Value="1"/>
+										</DataTrigger>
+									</Style.Triggers>
+								</Style>
+							</Grid.Style>
+							<Path Data="M 0,8 L 0,6 L 1000,0 L 1000,8 Z" Stretch="Fill" Stroke="#2FFF" StrokeThickness="1">
+								<Path.Fill>
+									<LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0,0.5" EndPoint="1,0.5">
+										<GradientStop Offset="0" Color="#70000000"/>
+										<GradientStop Offset="0.4" Color="#30000000"/>
+										<GradientStop Offset="1" Color="#40FFFFFF"/>
+									</LinearGradientBrush>
+								</Path.Fill>
+							</Path>
+						</Grid>
 					</StackPanel>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="True" SourceName="PART_dragger">

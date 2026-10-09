@@ -373,12 +373,11 @@ namespace VixenModules.Effect.State
 		/// <summary>
 		/// Gets or sets the number of times the active State item sequence repeats in Iterate playback mode.
 		/// </summary>
-		/// <value>The number of Iterate playback repetitions. The default is 1.</value>
+		/// <value>A whole-number count from 1 through 2,147,483,647. The default is 1.</value>
 		[Value]
 		[ProviderCategory("Config", 2)]
 		[ProviderDisplayName(@"StateIterations")]
 		[ProviderDescription(@"StateIterations")]
-		[PropertyEditor("SliderEditor")]
 		[NumberRange(StateData.MinIterations, StateData.MaxIterations, 1)]
 		[PropertyOrder(4)]
 		public int Iterations

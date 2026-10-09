@@ -1382,9 +1382,10 @@
             <TickBar x:Name="TopTick" Height="1" Fill="#7FFF" Placement="Top" SnapsToDevicePixels="True" Visibility="Collapsed"/>
             <Path Height="12" Canvas.Top="11.98" Margin="4,0" Stretch="Fill" Stroke="#2FFF" StrokeThickness="1" Data="M80,320 L560,320 560,290 80,315 z">
                 <Path.Fill>
-                    <LinearGradientBrush StartPoint="0.198,0.457" EndPoint="0.215,2.283">
-                        <GradientStop Offset="0" Color="#3000"/>
-                        <GradientStop Offset="0.3" Color="#407F7F7F"/>
+                    <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0,0.5" EndPoint="1,0.5">
+                        <GradientStop Offset="0" Color="#70000000"/>
+                        <GradientStop Offset="0.4" Color="#30000000"/>
+                        <GradientStop Offset="1" Color="#40FFFFFF"/>
                     </LinearGradientBrush>
                 </Path.Fill>
             </Path>

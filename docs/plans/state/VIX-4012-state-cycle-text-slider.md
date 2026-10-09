@@ -1,0 +1,275 @@
+# VIX-4012: Enter larger State Cycle counts and reveal the numeric drag strip
+
+
+This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective as work proceeds. This document follows `.agents/PLANS.md` and the project `.agents/skills/analyze-and-plan-issue/SKILL.md`. Milestone 1's Jira description update and Milestone 4's final description/comment updates are complete. Milestones 2 and 3 are implemented and validated.
+
+## Purpose / Big Picture
+
+
+Sequence authors need more than 20 cycles when a State effect spans a long sequence. Replace the bounded Cycle slider with the existing numeric textbox that also supports dragging. The author can type 100, press Enter, save, and reopen the sequence with 100 still selected. Add a graduated shaded strip below numeric textboxes so authors can discover the drag area using a visual familiar from regular sliders. State and Spin should both show this cue. The strip occupies a seven-device-independent-pixel hit area and renders a fixed wedge: about one pixel high at the left, growing to seven pixels at the right, with the same translucent gradient and subtle outline as the regular slider and brighter hover state. Keep a one-device-independent-pixel gap between the textbox and strip; increase the whole control height to accommodate it without shortening the drag zone. Its shape and shading remain independent of the current numeric value; the rising wedge communicates that dragging right increases the value.
+
+These are two user-visible improvements, implemented in two code milestones. Keep the State count a whole number with a minimum of one and a maximum of 5,000. Rendering still allocates intervals in proportion to requested cycles and source contents.
+
+## Progress
+
+
+- [x] (2026-10-09) Read VIX-4012, its comments and attachments, the planning skill, `.agents/PLANS.md`, and applicable project C# guidance. Jira has no comments or attachments.
+- [x] (2026-10-09) Inspect current State data, rendering, Spin metadata, numeric editor selection, and integer/double templates; inspect the related VIX-3951 specification.
+- [x] (2026-10-09) Prepare this design and execution plan. Initial `git status --short` was empty; no application implementation had occurred at design time.
+- [x] (2026-10-09) Milestone 1: Published and reread the user-facing requirements on VIX-4012; title and Accepted status preserved.
+- [x] (2026-10-09) Milestone 2: Implemented and validated State Cycle count up to 5,000; focused tests pass, runtime drag/render checks pass, and count 318 persisted after closing and reopening the sequence.
+- [x] (2026-10-09 15:02 UTC) Revise the approved visual design from arrows to a static graduated shaded strip, height seven, with a defined edge and brighter hover feedback; implementation remains pending.
+- [x] (2026-10-09) Milestone 3: Shared 7-DIP wedge drag strips match the regular slider's gradient and outline, with a 1-DIP textbox gap; whole-control height increases to accommodate the gap. Rider analysis, full Release solution rebuild, focused State tests, and user-reported visual/function testing pass.
+- [x] (2026-10-09) Milestone 4: Reconciled and reread the VIX-4012 description, posted and reread a concise completion comment, recorded validation evidence, and preserved the issue's In Progress status.
+
+## Surprises & Discoveries
+
+
+Observation: Changing the editor attribute alone will silently preserve the old ceiling. Evidence: `StateData.MaxIterations` is 20, and `NormalizeIterations` uses `Math.Clamp(iterations, MinIterations, MaxIterations)`. The data property's getter and setter, effect setter, and four Iterate render helpers call this normalization.
+
+Observation: Spin and State should use counterpart controls rather than the same numeric type. Evidence: `Spin.RevolutionCount` is a double with no explicit editor attribute; `EditorCollection.Cache` maps double to `DoubleEditorKey` and integer to `IntegerEditorKey`. State's existing persisted `Iterations` is an integer. Both controls already provide textbox entry and dragging.
+
+Observation: There is already space for the cue. Evidence: both `Themes/IntegerEditor.xaml` and `Themes/DoubleEditor.xaml` place a transparent rectangle named `PART_dragger`, height five, directly beneath `textboxEditor`. Their hover triggers use that name and their code handles mouse capture, drag tolerance, and editing events. The revised design increases this existing strip to height seven, adding only two device-independent pixels to the editor row.
+
+Observation: Numeric dragging and conventional slider positioning have different meanings. Evidence: the numeric controls adjust their current value from mouse movement, while `Themes/SliderEditor.xaml` sets `IsMoveToPointEnabled="True"` on a bounded Slider. Use static graduated shading to suggest a drag surface; a moving thumb, numbered ticks, or value-dependent fill would imply a position-to-value mapping that these numeric controls do not provide.
+
+Observation: Larger counts expose arithmetic that was safe under the ceiling of 20. Evidence: State Item, Custom individual, Custom grouped, and Mark Iterate helpers multiply an integer base-slot count by normalized iterations; their total counts and indexes currently remain integers. Milestone 2 now centralizes this multiplication in `GetTotalSlotCount` after widening the slot count to `long`, and uses long output indexes while preserving integer source indexes after modulo.
+
+Observation: A newly constructed `State` starts dirty because its constructor initializes other effect state. Evidence: the public `Iterations` setter test saw `IsDirty` already true before assigning the unchanged default; the regression now verifies the setter leaves that initial dirty state unchanged and raises no Iterations notification.
+
+Observation: The implemented maximum is 5,000, not `int.MaxValue` as originally planned. Evidence: the user capped `MaxIterations` at 5,000 and confirmed the runtime count range reaches 5,000; unit tests now reference `StateData.MaxIterations` rather than assuming an integer maximum.
+
+Observation: Earlier offset documentation requires the existing slot arithmetic to remain unchanged for that earlier feature. VIX-4012 deliberately supersedes only the old count width and limit. The VIX-3951 specification at `docs/plans/effects/VIX-3951-state-offset-spec-requirements.md` preserves atomic groups, blank slots, offset-before-repetition, and the final-slot remainder. Its older direct `dotnet test` instructions also need the full-MSBuild preparation now specified by AGENTS.md; use the workflow below.
+
+Observation: The graph's zero-dependent result for the XAML template is not proof of isolation. It reports extraction gaps for named template elements. Treat the templates as shared UI and verify multiple consumers manually.
+
+Observation: The final user-tuned regular horizontal slider and numeric cue share a relative-to-bounding-box horizontal gradient (transparent black to translucent black to translucent white) and a subtle `#2FFF` outline. The numeric wedge retains its tapered geometry and independent relative-drag behavior. Exact brush configuration: StartPoint `0,0.5`, EndPoint `1,0.5`, stops `#70000000` at 0, `#30000000` at 0.4, and `#40FFFFFF` at 1.
+
+## Decision Log
+
+
+Decision: Retain `int Iterations`, its data-member identity, default of one, property ordering, localized names, and Iterate-only visibility. Reuse the default IntegerEditor by removing the explicit SliderEditor attribute. Rationale: this provides Spin's established interaction without changing State's whole-cycle semantics or serialized shape. Date/Author: 2026-10-09 / Codex.
+
+Decision (superseded): Initially set `StateData.MaxIterations` to `int.MaxValue`. Rationale: remove the prior ceiling while preserving the existing normalization path. Date/Author: 2026-10-09 / Codex.
+
+Decision: Cap `StateData.MaxIterations` at 5,000, retaining `MinIterations = 1` and the existing normalization path. Rationale: use the selected practical upper limit while keeping UI/data normalization consistent and testing against the configured constant rather than a hard-coded integer maximum. Date/Author: 2026-10-09 / user direction recorded by Codex.
+
+Decision: Widen total-slot arithmetic and output indexes to long in the four Iterate paths. Rationale: an integer count above 20 must not overflow when multiplied by the number of slots. Keep source collection indexes as integers after modulo. Date/Author: 2026-10-09 / Codex.
+
+Decision (initial visual choice; superseded by the 15:02 UTC decision below): Add the same decoration in both numeric templates, inside the existing five-pixel strip. Rationale: State uses IntegerEditor, while the issue explicitly cites Spin, which uses DoubleEditor. This also consistently benefits other existing consumers. No new control, service, view model, or dependency is required. Date/Author: 2026-10-09 / Codex.
+
+Decision (superseded by the 2026-10-09 16:32 UTC direction below): Replace the arrow-ended line with a static graduated shaded strip in both numeric templates; increase height from five to seven, define its edge, and brighten it on hover and during dragging. Rationale: the user approved a visual closer to familiar regular sliders and permitted one to two extra pixels. Preserve relative adjustment behavior, existing cursor, and textbox editing. Date/Author: 2026-10-09 15:02 UTC / user direction recorded by Codex.
+
+Decision: Shape the static strip as a left-to-right rising wedge, about one pixel high on the left and seven pixels high on the right, with the regular slider's translucent gradient and subtle outline, plus brighter hover/drag state. Keep the wedge independent of the current Value; it communicates direction (drag right increases), not the current value or a bounded slider position. Add 1 DIP of space below the textbox by increasing overall control height, not by reducing the seven-DIP wedge/hit zone. Rationale: match the slider reference and surrounding control styling while preserving relative drag semantics. Date/Author: 2026-10-09 16:50 UTC / user direction recorded by Codex.
+
+Decision: Accept Milestone 3 as complete based on the user's report that the customized numeric cue and aligned regular-slider gradient were tested and have the desired appearance and function. Record the scope only at the level reported; do not infer unmentioned consumers or theme/scaling scenarios. Rationale: direct user runtime verification closes the plan's remaining visual/function acceptance criterion. Date/Author: 2026-10-09 / user confirmation recorded by Codex.
+
+Decision: The skill's explicit milestone review stops govern execution. Never create a commit without the user's explicit request. The user later authorized Milestone 1's Jira description update; subsequent Jira work remains subject to its milestone scope. Rationale: honor the plan's manual-review boundaries and repository commit policy while carrying out explicitly authorized work. Date/Author: 2026-10-09 / Codex.
+
+## Outcomes & Retrospective
+
+
+Milestone 1 is complete: VIX-4012 has user-facing Summary, Scope, and Acceptance Criteria, and rereading confirmed the original title and Accepted status were preserved. Milestone 2 is complete: State accepts whole-number Cycle counts from 1 through 5,000 through the default integer editor; all four Iterate rendering paths use widened slot arithmetic; persistence, cloning, setter behavior, and manageable repeated-rendering regressions are covered. The full-MSBuild test build succeeded, and all 103 focused State tests passed. Rider reported no errors in the two test files changed during the MaxIterations correction; earlier analysis of the implementation files found no issues. The user verified counts at the lower and upper limits, confirmed dragging changes the value as expected, observed no rendering errors in logs, and confirmed that a count of 318 persisted after closing and reopening the sequence.
+
+Milestone 3 implementation is in place in both numeric editor templates. Rider reported no XAML problems, the Release solution rebuild succeeded with zero errors (73 warnings), and the focused State suite passed all 103 tests. The follow-up visual refinement also passed Rider analysis, Release rebuild, and all 103 focused State tests. The user reports testing confirms the adjusted appearance and function after tuning the numeric cue and aligning the regular slider to the same gradient. Milestone 4 is complete: the Jira description was reconciled, completion comment 40576 was added and reread, and the attached text-slider.png was confirmed. The issue remains In Progress; no status transition or commit was made.
+
+## Architecture Design: VIX-4012
+
+
+Detected IDE environment: JetBrains Rider with available analysis automation. Apply changes as small, file-scoped blocks using Rider's Apply snippet from chat workflow when implementing manually. A coding agent must instead use the guarded Gortex edit/refactor workflow required by AGENTS.md. Use Rider's test runner for focused inspection, with the command-line build/test workflow below as reproducible validation.
+
+Core strategy: reuse the existing type-selected numeric editors and decorate their templates with the same fixed seven-pixel-high hit area containing a static left-to-right rising white-to-gray wedge, defined edge, and brighter hover/drag feedback. The wedge is directional but does not track or represent the current value. The project `dotnet-best-practices` and `csharp-docs` skills guide scoped C# changes and documentation. Existing custom WPF controls and template bindings suffice; the change does not introduce Catel view models, commands, bindings, object lifecycle changes, or new architectural boundaries.
+
+Data model and property contracts: `State.Iterations` and `[DataMember] StateData.Iterations` remain public integers. Accepted values are 1 through 5,000, default one. The existing normalized setter still marks the effect dirty and raises its property notification only for a changed normalized value. Cloning and deserialization retain larger values through the same data member. Preserve Cycle Offset, Cycle Individually, source selections, effect-default behavior, and display resources.
+
+Mathematical and boundary logic: a timing slot is one chronological share of the relevant duration. It may contain several simultaneously active State items or contain blank time. If S is the number of base slots and R is normalized repetitions, the total is `(long)S * R`. An integer slot count and integer repetition count multiply safely in long. Iterate with a long output index i. Preserve selection as `(int)(((i % S) + normalizedOffset) % S)` after the existing nonempty-source checks. Computing the addition in long also prevents intermediate overflow. Durations remain `TimeSpan.FromTicks(duration.Ticks / totalSlots)` except the final slot, which receives the remaining duration. This keeps rounding and final boundaries identical for existing counts. Do not introduce fractional cycles, a multiplier, a duration-based clamp, or new resampling behavior.
+
+## Context and Orientation
+
+
+`src/Vixen.Modules/Effect/State/State.cs` contains the public `Iterations` effect property, its editor attributes, dirty/notification behavior, conditional visibility, and the calls that pass its count to the render planner. The display name uses resource key `StateIterations`; the issue calls this the Cycle count. Do not confuse it with `CycleOffset`, which selects a starting slot.
+
+`src/Vixen.Modules/Effect/State/StateData.cs` stores the count, normalizes it, and copies it during cloning. `src/Vixen.Modules/Effect/State/StateRenderPlanner.cs` builds timed intervals. Its four relevant helpers are `CreateIteratedIntervals`, `CreateIteratedCustomIntervals`, `CreateGroupedCustomIntervals`, and `AddIteratedMarkIntervals`. State Item cycles unique exact names; Custom cycles rows or consecutive groups; Mark Collection repeats each mark's parsed segments independently. Unknown names and blank custom rows still occupy timing slots.
+
+`src/Vixen.Modules/Effect/Spin/Spin.cs` is the interaction precedent and needs no edit. `src/Vixen.Modules/Editor/EffectEditor/Editors/EditorCollection.cs` selects default integer/double editors. `src/Vixen.Modules/Editor/EffectEditor/Themes/EditorResources.xaml` binds those controls to the property value and NumberRange metadata. These two files also need no edit.
+
+`src/Vixen.Modules/Editor/EffectEditor/Themes/IntegerEditor.xaml` and `src/Vixen.Modules/Editor/EffectEditor/Themes/DoubleEditor.xaml` define the textbox and drag strip. Their respective code files under `Controls/` already handle dragging and limits and need no functional change. An editor template is the XAML describing the control's visible parts; preserving their names keeps existing code and hover triggers connected.
+
+`src/Vixen.Tests/Effect/State/StateDataTests.cs` has `Iterations_DefaultsToOne`, `Iterations_NormalizesRange`, and `Clone_CopiesIterations`. `src/Vixen.Tests/Effect/State/StateRenderPlannerTests.cs` already tests repetitions for the four sources, Cycle Offset, and grouped behavior. Extend those existing xUnit fixtures rather than adding another test project or UI snapshot framework.
+
+## Plan of Work
+
+
+### Milestone 1: Agree and publish the user-facing requirements
+
+
+Context: VIX-4012 is at https://vixenlights.atlassian.net/browse/VIX-4012. The user authorized this milestone during implementation.
+
+Plan of Work: Complete. The description now has concise Summary, Scope, and Acceptance Criteria sections. It explains entry of whole-number Cycle counts above 20 by typing or dragging, retention after save/reopen, a minimum of one, and the graduated shaded strip shared with Spin. Acceptance criteria cover entering 100 cycles on a long effect, save/reopen, lower-bound handling, a seven-pixel strip with defined edge and brighter hover, and existing relative drag behavior. The description states the strip is static and does not represent a bounded range, replacing the originally proposed arrow-ended line. It contains no implementation internals.
+
+Concrete Steps: Read the existing issue description, updated only its description, then reread it. The issue retained its original title, “Convert the Cycle slider in the State effect to the text entry slider that Spin uses,” and its Accepted status.
+
+Validation and Acceptance: Reread confirmed the published description includes both user-visible outcomes and save/reopen acceptance without implementation internals. Milestone 1 is complete.
+
+STOP HERE for manual review and commit execution before proceeding. Halt execution; run `git status --short` and review `git diff` for files changed in the milestone. If repository files changed, invoke the project commit-msg skill with VIX-4012 as the subject prefix and output its paste-ready Commit message block. Never create a commit without an explicit request. Wait for explicit user confirmation before advancing.
+
+### Milestone 2: Enable larger State Cycle counts end to end — COMPLETE
+
+
+Context: edit State.cs, StateData.cs, StateRenderPlanner.cs, and the two existing State test files listed above. The outcome is that a typed count of 100 remains 100 through editing, cloning, persistence, and all applicable Cycle rendering paths. The configured maximum is 5,000 (superseding the original `int.MaxValue` plan).
+
+Plan of Work (original implementation plan; final limit superseded): in `StateData`, replace the old `MaxIterations = 20` cap with the final configured cap of 5,000. Keep normalization and the existing serialized property name/type. Update the public property's XML value documentation to state the positive whole-number range and default. In `State.Iterations`, remove `[PropertyEditor("SliderEditor")]` and retain `[NumberRange(StateData.MinIterations, StateData.MaxIterations, 1)]`. The default type selection then supplies IntegerEditor. Update its XML value documentation to match; preserve the setter, metadata ordering, and visibility.
+
+In the planner, centralize the widened count calculation in a small internal helper with the final signature `internal static long GetTotalSlotCount(int slotCount, int iterations)`, returning `(long)slotCount * StateData.NormalizeIterations(iterations)`. This gives the four paths one calculation and permits a fast overflow regression without rendering billions of slots. Use it for their intervalCount or segmentCount, and use `long index = 0` for their loops. Change `GetIntervalDuration`'s intervalCount and intervalIndex parameters from int to long; keep its TimeSpan parameters and formula. Change `GetOffsetSlotIndex`'s outputIndex from int to long and explicitly cast the final modulo result to int. Do not change planner entry-point signatures, group creation, parsing, offset normalization, or interval construction.
+
+Extend `Iterations_NormalizesRange` with negative/zero => one, values through `StateData.MaxIterations` unchanged, and `StateData.MaxIterations + 1` clamped to the configured maximum. Update any test expecting values above 20 to clamp to 20. Extend clone coverage with 100 and `StateData.MaxIterations`. Add a serialization roundtrip and public effect setter check with 100, including dirty notification and same-value behavior, using the existing test conventions. Test the total-slot helper with two slots and int.MaxValue, expecting 4,294,967,294, and with zero slots, expecting zero; these tests must not allocate interval collections. Add manageable planner cases with two slots and 100 repetitions for State Item, Custom individual, Custom grouped, and a single Mark Collection mark. Verify 200 timing slots, correct repeating selections, and the exact final boundary. A grouped slot may emit more than one interval, so assert timing-slot count separately from interval-row count. Keep offset and blank-slot regressions passing.
+
+Concrete Steps: follow the Gortex workflow described below before each edit. Apply small snippets per file in Rider. Build the tests with full MSBuild and run the focused State suite using the commands below.
+
+Validation and Acceptance: automated State data/planner regressions pass, including the configured maximum and widened arithmetic. The focused State suite passed all 103 tests. The user verified the count reaches the minimum of 1 and maximum of 5,000, dragging changes the value as expected, no rendering errors appeared in logs, and a count of 318 persisted after closing and reopening the sequence. These observations satisfy milestone 2's interactive count, drag, rendering, and persistence checks. Undo/redo and fractional-entry behavior were not part of the reported manual checks.
+
+STOP HERE for manual review and commit execution before proceeding. Halt execution; run `git status --short` and `git diff` for the milestone's files. Invoke the project commit-msg skill with VIX-4012 as subject prefix and output its paste-ready Commit message block. Do not commit without an explicit request. Milestone 2 validation evidence is recorded; wait for explicit user confirmation before advancing.
+
+### Milestone 3: Show the graduated shaded strip beneath both numeric textboxes
+
+
+Context: edit only `src/Vixen.Modules/Editor/EffectEditor/Themes/IntegerEditor.xaml` and `src/Vixen.Modules/Editor/EffectEditor/Themes/DoubleEditor.xaml`. The cue appears below State's integer textbox and Spin's decimal textbox, as well as other users of these shared templates.
+
+Implementation status: both templates use a seven-pixel `PART_dragger` Grid containing the user-approved fixed left-to-right wedge. The numeric cue matches the regular horizontal slider's final user-tuned brush: relative-to-bounding-box horizontal gradient with `#70000000` at 0, `#30000000` at 0.4, and `#40FFFFFF` at 1; the subtle `#2FFF` outline is retained. A 1-DIP top margin separates the strip from the textbox; the seven-DIP drag zone remains intact. The original named drag target is preserved. Its visual opacity increases on hover and while the templated editor reports `IsDragging`; decorative contents are inside the named hit target. Rider reports no problems in IntegerEditor.xaml or DoubleEditor.xaml; the latest full Release solution rebuild passed (exit 0; existing warnings emitted), and the focused State suite passed all 103 tests. The user reports that testing confirms the customized gradient, regular-slider match, desired appearance, and function. Milestone 3 is complete; exact runtime scenarios were not specified.
+
+Plan of Work: replace each transparent rectangle with a Grid named `PART_dragger`, `Background="Transparent"`, and `Height="7"`, with `Margin="0,1,0,0"` to leave one DIP between textbox and drag surface. This preserves a full-width hit target and increases editor height by three device-independent pixels relative to the original five-DIP strip. Inside it, use a stretchable Path shaped as a wedge: approximately one pixel high on the left and seven pixels high on the right. Match the regular slider's gradient (`StartPoint="0.198,0.457"`, `EndPoint="0.215,2.283"`, stops `#3000` at 0 and `#407F7F7F` at 0.3) and its subtle `#2FFF` outline at thickness 1. Use a normalized Stretch="Fill" geometry so the wedge scales to the available width. Keep the decorative Path nonfocusable; the parent remains hit-testable across the full area. Verify the result in the running application before accepting the visual.
+
+Extend the existing `PART_dragger.IsMouseOver` trigger to brighten the decorative surface while retaining its current cursor setter. Use the same brighter state during `IsDragging`, so feedback persists while the pointer is captured outside the strip. Preserve the disabled presentation through existing theme resources or a template trigger and keep it visually noninteractive. The shading must not change with numeric Value: there is no moving thumb, value-proportional fill, numbered scale, or arrow decoration. Preserve the textbox bindings, extender commit/rollback settings, StackPanel, template part names, and existing IsDragging/cursor behavior.
+
+The textbox and drag-strip contract at the end is:
+
+    textboxEditor: existing TextBox, existing Text or Value binding
+    PART_dragger: transparent, hit-testable Grid, Height=7, Margin top=1 DIP
+    decorative graduated surface and defined edge: no hit testing or focus
+    normal appearance: fixed wedge using the regular slider's translucent gradient and subtle outline, ~1 DIP high at left rising to 7 DIP at right
+    hover/drag appearance: brighter static wedge, existing cursor
+    Value: no effect on the wedge shading or geometry; the slope communicates drag direction only
+
+This is a template-only change. Do not change dragging code, timer behavior, event handlers, or editor registrations. The small visual block and brushes can be repeated across the two dictionaries while reusing available theme resources; do not introduce a new shared resource system or public API for this cue.
+
+Concrete Steps: apply the visual block in both templates through guarded edits or Rider snippets. Run Rider `get_file_problems` on both changed files and resolve only issues introduced on changed lines. Build the solution configuration below because this is shared editor UI. Run the focused State regression suite once against the combined implementation.
+
+Validation and Acceptance: launch the built application, open a State Cycle effect and Spin Revolution Count, and confirm a seven-pixel graduated shaded strip with a defined edge appears under each textbox. Hover over the strip and verify it brightens and the existing drag cursor appears; move away and verify it returns to normal. Drag on the shaded area, border, and padding; the value must adjust through the existing interaction. While dragging outside the strip, the brighter feedback must remain until the drag ends. Change the numeric value by typing and dragging and confirm the shading/geometry stay static rather than depicting a range position. Clicking and typing in the textbox, Enter commit, Escape rollback, modifier-assisted dragging, and undo/redo must behave as before. Check an additional integer numeric property and a decimal property. Check available light/dark themes, disabled/read-only presentation, a narrow property panel, and Windows scaling at 100% and 150%. Disabled controls must not suggest an active drag operation. The intended row-height increase is three device-independent pixels relative to the original five-DIP strip: two to grow the wedge to seven DIP and one for textbox spacing. There must be no clipping, additional height growth, theme-invisible shading, or new focus target. Document actual observations; visual acceptance is manual, with no new snapshot tests.
+
+STOP HERE for manual review and commit execution before proceeding. Halt execution; run `git status --short` and the scoped `git diff`. Invoke the project commit-msg skill with VIX-4012 as subject prefix and output its paste-ready Commit message block. Do not commit without an explicit request. Update validation evidence in this plan and wait for explicit user confirmation before advancing.
+
+### Milestone 4: Record results and close the documentation loop
+
+
+Context: update this plan and, when publishing is authorized, the existing VIX-4012 description and one closing comment. This milestone reports delivered behavior and actual test results.
+
+Plan of Work: Complete. Reconciled the Jira description to the final user-visible contract: counts from 1 through 5,000, save/reopen persistence, a tapered cue matching the regular slider's gradient and outline, and existing relative drag behavior. Added a closing comment with user-visible results, automated validation, and the user's visual/function confirmation. The screenshot attachment `text-slider.png` was already present and retained. No internal implementation details were added to Jira.
+
+Concrete Steps: Updated the description and reread it; added comment 40576 and reread the issue, attachment list, status, and comment. Recorded the latest validation and final user-tuned gradient in Artifacts and Notes and Outcomes & Retrospective. No Jira status transition or commit was performed.
+
+Validation and Acceptance: Jira description and comment reflect the delivered behavior and actual results. The issue remains In Progress. Milestone 4 is complete.
+
+STOP HERE for manual review and commit execution before proceeding. Halt execution; run `git status --short` and the scoped `git diff`. If repository files changed, invoke the project commit-msg skill with VIX-4012 as subject prefix and output its paste-ready Commit message block. Never commit without an explicit request. Wait for explicit user confirmation before any further work.
+
+## Concrete Steps
+
+
+Run all commands from `C:\Dev\Vixen` in PowerShell. Verify the worktree before implementing and preserve unrelated changes. MSBuild must be the full Visual Studio installation with the C++ toolset; the tests depend transitively on C++/CLI projects.
+
+    git status --short
+    msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~Effect.State"
+
+Expected outcomes are a successful build and all selected State tests passing; record the actual selected/passed count during execution. Do not claim a fixed count before tests have been added and discovered.
+
+For the shared UI changes, build the affected solution configuration:
+
+    msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64
+
+Expected outcome is Build succeeded with no new errors. Existing unrelated warnings are recorded rather than cleaned up. Launch the newly built Vixen application from `Release/Output/` using Rider or the existing application entry point; verify the loaded build is the one just produced. Use a test sequence/profile for the manual scenarios, then record results in this plan.
+
+If the filter selects no tests, correct it using the actual fixture namespaces before claiming a pass. If full MSBuild is not on PATH, resolve the installed Visual Studio MSBuild executable and run the same arguments; do not substitute `dotnet test` with a build of the C++/CLI dependencies.
+
+During coding, use native Gortex MCP `explore(operation:"task")` for each implementation scope, the bounded follow-up permitted by AGENTS.md, and `change(operation:"impact")` before mutation. Verify proposed helper signature changes with `change(operation:"verify")`. Mutate only with Gortex edit/refactor. After mutation call `change(operation:"detect")` and use its returned symbol IDs with tests, guards, and contract operations. Run Rider `get_file_problems` for all generated/changed C# and XAML files; resolve only findings on changed lines. Do not reopen indexed source with shell reads/searches. Use tabs and preserve unrelated formatting.
+
+## Validation and Acceptance
+
+
+The count improvement is accepted when an author can enter 100 cycles, retain it after save/reopen and copy, and observe the expected repeated sequence for State Item, Mark Collection, Custom individual, and Custom grouped playback. A 200-second test duration with two base slots and 100 cycles gives 200 one-second slots; applying offset one starts at the second slot and repeats the same rotated pair. Marks repeat within their own clipped duration. A specifically selected State Item keeps its existing full-duration behavior. Existing counts 1 through 20 produce the same order, colors, grouping, blank slots, and timing boundaries as before.
+
+The cue improvement is accepted when State and Spin both show a static slider-matched translucent wedge below the numeric textbox, separated by 1 DIP and inside a seven-device-independent-pixel hit area; the wedge is short on the left and rises to the right, with a subtle outline and brighter hover/drag feedback. Dragging anywhere in the hit area must work with the established relative adjustment and cursor behavior. The slope communicates that dragging right increases values, but geometry and shading stay independent of the current numeric value; there is no thumb, numbered scale, or value-dependent fill. The intended row-height increase relative to the original five-DIP strip is three DIPs (two for strip height, one for spacing). The user reports testing confirmed the desired appearance and function; exact theme/scaling scenarios were not specified. The application build, focused tests, Rider file analysis, and manual checks are complementary evidence; passing compilation alone is insufficient for this visual feature.
+
+Boundary tests inspect storage, normalization, cloning, and count arithmetic using the configured 5,000 maximum. The planner's long multiplication is also exercised with the largest int slot count without rendering a large interval collection. This removes the former 20-cycle ceiling and prevents arithmetic overflow; it does not redesign interval allocation or guarantee responsiveness at the configured maximum for every possible source size.
+
+## Idempotence and Recovery
+
+
+The change preserves serialized names and types and adds no migration or dependency. Reapply only missing snippets; do not duplicate template names, shaded surfaces, or visual-state triggers. Repeat builds and focused tests safely. If a build or test fails, inspect the failure and fix only task-related code. Existing sequences with values 1 through 20 remain compatible. Opening a newly saved count above 20 in an older Vixen build can still apply that older build's cap; backward application behavior cannot be changed by this implementation.
+
+Before reverting work, inspect the current diff and remove only the edits made for this task; preserve user changes. Do not reset the worktree or restart/re-track the Gortex daemon. Record a failed or skipped check with its reason and resume the incomplete milestone after the cause is resolved.
+
+## Artifacts and Notes
+
+
+Design and milestone evidence observed on 2026-10-09:
+
+    Jira VIX-4012: Accepted; no comments, attachments, or linked issues at design time. Milestone 1 description update completed and reread; original title and Accepted status retained. Published description: “State effects currently limit Cycle counts to 20, which can be too few for long sequences. Authors need to enter larger whole-number counts directly and keep them when a sequence is saved and reopened. State should use the familiar numeric text-and-drag control used by Spin. A graduated shaded strip beneath the number should make its drag area easier to discover.” Scope and acceptance criteria specify counts above 20 by typing or dragging, retention after save/reopen, minimum one, a static seven-pixel strip with defined edge and brighter hover, 100 cycles on a long effect, and existing relative drag behavior.
+    Initial git status --short at design time: empty.
+    StateData.MaxIterations: 20.
+    State.Iterations: int; SliderEditor; NumberRange(1,20,1).
+    Spin.RevolutionCount: double; default numeric editor.
+    IntegerEditor.xaml and DoubleEditor.xaml: transparent PART_dragger, Height=5.
+
+Application builds, unit tests, and runtime/manual checks were not run during design because no application code changed. Milestone 2 validation on 2026-10-09:
+
+    msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m — passed (exit 0). Existing warnings were reported in unrelated files; the added grouped assertion initially triggered xUnit2031 and was changed to the predicate overload before the passing build.
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~Effect.State" — initially passed (102 passed, 0 failed, 0 skipped); after MaxIterations test cases were corrected to use StateData.MaxIterations, rerun passed (103 passed, 0 failed, 0 skipped).
+    Rider get_file_problems — no errors reported in StateDataTests.cs or StateRenderPlannerTests.cs after the MaxIterations test correction; existing warnings were unrelated to changed lines. Earlier analysis found no problems in State.cs, StateData.cs, and StateRenderPlanner.cs.
+    Runtime checks reported by the user for Milestone 2: tested State Cycle counts at 1 and 5,000; drag moved the value as expected; no rendering errors were seen in logs; count 318 persisted after closing and reopening the sequence. Undo/redo, fractional input, and other edge scenarios were not reported as tested.
+    Milestone 3: `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64` — passed (exit 0; 73 warnings, 0 errors).
+    Milestone 3: `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~Effect.State"` — passed (103 passed, 0 failed, 0 skipped).
+    Rider `get_file_problems` — no findings in IntegerEditor.xaml or DoubleEditor.xaml.
+    User-reported manual visual/function acceptance (2026-10-09): the user adjusted the style to the desired look, aligned the regular slider to that gradient, and reports that testing confirms the desired look and function. Exact scenarios and coverage were not specified.
+    After the user's clarification that the cue should rise from left to right, both templates were changed from flat gradient bars to a fixed tapered wedge. Rider `get_file_problems` reported no issues. Full Release solution rebuild passed; the focused State suite passed (103 passed, 0 failed, 0 skipped). This was superseded by the user's final gradient tuning and matching change in the regular slider.
+    Final visual refinement: IntegerEditor.xaml, DoubleEditor.xaml, and the regular horizontal slider use a matching horizontal relative gradient (`#70000000`, `#30000000`, `#40FFFFFF`) and subtle `#2FFF` outline. The numeric templates retain the seven-DIP hit zone and one-DIP textbox gap. Rider reported no problems in either numeric template; it reported existing warnings in Theme.xaml, including around the regular slider template. The latest `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:q` passed (exit 0; existing warnings emitted). `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~Effect.State"` passed (103 passed, 0 failed, 0 skipped). User-reported testing confirms desired look and function.
+    Jira VIX-4012: issue description revised to state the 1–5,000 count range, persistence, tapered slider-matched cue, and relative drag direction. Reread confirmed the update. Existing `text-slider.png` attachment was verified. Added completion comment 40576 with runtime and validation summary; reread confirmed the comment. Issue status remains In Progress; no transition was made.
+
+Earlier design notes: Gortex impact on the new plan path reported file_not_indexed before creation. Rider `get_file_problems` could not analyze the Markdown plan because it is not included in a solution project. Gortex detect excludes untracked files.
+
+## Interfaces and Dependencies
+
+
+Keep public `int State.Iterations` and `[DataMember] int StateData.Iterations`, together with existing NumberRange metadata, XML documentation, and notification routes. Set internal `MaxIterations` to 5,000; keep `NormalizeIterations(int)`'s signature.
+
+The planner's affected internal/private signatures are:
+
+    internal static long GetTotalSlotCount(int slotCount, int iterations)
+    private static TimeSpan GetIntervalDuration(TimeSpan effectDuration, long intervalCount, long intervalIndex, TimeSpan intervalStart)
+    private static int GetOffsetSlotIndex(long outputIndex, int slotCount, int normalizedCycleOffset)
+
+Use existing WPF Grid, Border, Rectangle, LinearGradientBrush, and template triggers with compatible existing theme resources. The final `PART_dragger` height is seven device-independent pixels, shading is static, and hover/drag feedback is brighter. Preserve `textboxEditor` and `PART_dragger` names in both existing control templates. No new package, project, public control property, Catel service, or serializer schema is required.
+
+## Revision Notes
+
+
+2026-10-09: Initial design derived from VIX-4012 and current source. Added data normalization and overflow work because changing only the editor would leave the cap in place or expose integer multiplication overflow. Kept the visual cue within the existing strip in both numeric templates to cover State and Spin consistently. Analysis complete and plan integrated with plans.md.
+
+2026-10-09 15:02 UTC: Incorporated the user's approved replacement of the arrow-ended line with a familiar graduated shaded surface. Updated purpose, progress, architectural strategy, future Jira criteria, Milestone 3, acceptance, recovery, and dependency guidance together. The strip increases from five to seven device-independent pixels, uses a defined edge and brighter hover/drag state, and remains independent of numeric Value to preserve the meaning of relative dragging. The initial visual decision is retained as superseded history; completed research and the State count design are unchanged. No application changes were made. Plan revision complete and recorded in the Decision Log.
+
+2026-10-09: Recorded the user's change to a 5,000 maximum and completed Milestone 2 after automated and runtime acceptance evidence. Updated the count contract and validation record, including the 103-test pass and save/reopen persistence confirmation. Plan revision complete and recorded in the Decision Log. Ready for coding model to implement the next milestone.
+
+2026-10-09: Published and reread Milestone 1's user-facing VIX-4012 description with Summary, Scope, and Acceptance Criteria. Verified the issue title and Accepted status were preserved. Updated Progress, Milestone 1, Decision Log, Outcomes, and Artifacts accordingly.
+
+2026-10-09: Implemented Milestone 2 code and regression tests. Release full-MSBuild test target passed; all 102 focused Effect.State tests passed initially. The user selected a maximum of 5,000 rather than `int.MaxValue`; the normalization/clone/planner unit tests were updated to use `StateData.MaxIterations`, including a clamp-above-cap case, and the focused suite then passed all 103 tests. User-reported runtime verification: count boundaries 1 and 5,000, expected relative drag behavior, no rendering errors in logs, and count 318 persisted across closing/reopening the sequence. Milestone 2 complete. Undo/redo and fractional-input behavior were not reported as tested.
+
+2026-10-09: Implemented the Milestone 3 numeric drag-strip visuals in IntegerEditor.xaml and DoubleEditor.xaml using seven-pixel hit targets, static system-color gradients and edges, and hover/drag opacity feedback. Rider file analysis found no issues. Full Release solution rebuild passed with 73 warnings and 0 errors; 103 focused State tests passed. Runtime appearance and interaction checks remain pending because no desktop interaction controls are available.
+
+2026-10-09 16:32 UTC: Revised the Milestone 3 visual after the user clarified the reference: use a white-to-gray wedge whose height rises from left to right, fixed independently of the current numeric value. This supersedes the flat-strip appearance while retaining the seven-pixel hit area and relative drag behavior. Plan revision complete and recorded in the Decision Log. Ready for coding model to implement the next milestone.
+
+2026-10-09 16:34 UTC: Implemented the revised wedge in both numeric editor templates. Full Release rebuild and focused State suite passed; Rider reported no XAML findings. Manual visual acceptance is still required in the running application before Milestone 3 can be marked complete.
+
+2026-10-09 16:50 UTC: Refined the wedge to match the regular slider's gradient and subtle outline exactly. Added a 1-DIP gap between the textbox and the drag zone by increasing total control height; the wedge remains seven DIP high and retains its full hit area. Updated the plan contract and acceptance dimensions. Rider analysis, full Release rebuild (74 warnings, 0 errors), and focused State tests (103 passed) pass. Runtime visual acceptance was then reported by the user, as recorded below.
+
+2026-10-09: The user reports they adjusted the style to the desired look, aligned the regular slider gradient to match, and tested that the resulting appearance and function are correct. Marked Milestone 3 complete based on this user-reported manual evidence together with Rider, build, and unit-test results. Exact runtime scenarios were not specified.
+
+2026-10-09: Completed Milestone 4. Updated and reread the VIX-4012 description; confirmed screenshot attachment `text-slider.png`; added and reread completion comment 40576 with the user-visible result and validation evidence. Latest Release rebuild passed (exit 0; existing warnings emitted), all 103 focused State tests passed, and Rider found no problems in the two numeric editor templates. The issue remains In Progress. Updated this plan's final visual treatment and artifacts; no commit or status transition was made. Plan revision complete and recorded in the Decision Log. Ready for coding model to implement the next milestone.

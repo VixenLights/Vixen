@@ -38,7 +38,10 @@ public class StateDataTests
 	[InlineData(-1, 1)]
 	[InlineData(1, 1)]
 	[InlineData(20, 20)]
-	[InlineData(21, 20)]
+	[InlineData(21, 21)]
+	[InlineData(100, 100)]
+	[InlineData(VixenModules.Effect.State.StateData.MaxIterations, VixenModules.Effect.State.StateData.MaxIterations)]
+	[InlineData(VixenModules.Effect.State.StateData.MaxIterations + 1, VixenModules.Effect.State.StateData.MaxIterations)]
 	public void Iterations_NormalizesRange(int value, int expected)
 	{
 		// Arrange
@@ -51,20 +54,80 @@ public class StateDataTests
 		Assert.Equal(expected, data.Iterations);
 	}
 
-	[Fact]
-	public void Clone_CopiesIterations()
+	[Theory]
+	[InlineData(100)]
+	[InlineData(VixenModules.Effect.State.StateData.MaxIterations)]
+	public void Clone_CopiesIterations(int iterations)
 	{
 		// Arrange
 		var data = new StateEffectData
 		{
-			Iterations = 7
+			Iterations = iterations
 		};
 
 		// Act
 		var clone = (StateEffectData)data.Clone();
 
 		// Assert
-		Assert.Equal(7, clone.Iterations);
+		Assert.Equal(iterations, clone.Iterations);
+	}
+
+	[Fact]
+	public void Iterations_SerializationRoundTripPreservesLargeCount()
+	{
+		// Arrange
+		var data = new VixenModules.Effect.State.StateData { Iterations = 100 };
+		var serializer = new System.Runtime.Serialization.DataContractSerializer(typeof(VixenModules.Effect.State.StateData));
+		using var stream = new System.IO.MemoryStream();
+
+		// Act
+		serializer.WriteObject(stream, data);
+		stream.Position = 0;
+		var deserialized = (VixenModules.Effect.State.StateData)serializer.ReadObject(stream)!;
+
+		// Assert
+		Assert.Equal(100, deserialized.Iterations);
+	}
+
+	[Fact]
+	public void StateIterations_AcceptsLargeCountsAndNotifiesOnChange()
+	{
+		// Arrange
+		var state = new VixenModules.Effect.State.State();
+		var iterationChanged = false;
+		state.PropertyChanged += (_, args) => iterationChanged |= args.PropertyName == nameof(state.Iterations);
+
+		// Act
+		state.Iterations = 100;
+
+		// Assert
+		Assert.Equal(100, state.Iterations);
+		Assert.True(state.IsDirty);
+		Assert.True(iterationChanged);
+	}
+
+	[Fact]
+	public void StateIterations_SameValueDoesNotNotifyOrMarkDirty()
+	{
+		// Arrange
+		var state = new VixenModules.Effect.State.State();
+		var wasDirty = state.IsDirty;
+		var notifications = 0;
+		state.PropertyChanged += (_, args) =>
+		{
+			if (args.PropertyName == nameof(state.Iterations))
+			{
+				notifications++;
+			}
+		};
+
+		// Act
+		state.Iterations = 1;
+
+		// Assert
+		Assert.Equal(1, state.Iterations);
+		Assert.Equal(wasDirty, state.IsDirty);
+		Assert.Equal(0, notifications);
 	}
 
 	[Fact]
