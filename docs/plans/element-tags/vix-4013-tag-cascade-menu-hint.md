@@ -15,7 +15,7 @@ The exact instruction is `💡 Hold Ctrl to cascade tag to child nodes`. Use a s
 - [x] (2026-10-09 19:16Z) Read VIX-4013, its empty attachment/comment lists, the planning skill, `.agents/PLANS.md`, the relevant Element Tags workflow specification, and both menu-population methods.
 - [x] (2026-10-09 19:16Z) Resolve the disabled-menu-item hover conflict by selecting a standard non-link label in response to the user's preference.
 - [x] (2026-10-09 19:16Z) Design the two small menu insertions and the manual validation scenarios.
-- [ ] Milestone 1: Align Jira with the clarified label behavior when external updates are authorized.
+- [x] (2026-10-09) Milestone 1: Updated VIX-4013's description with the clarified static instruction, nonselection behavior, scope, and user-facing acceptance criteria.
 - [ ] Milestone 2: Add and validate the instruction in both existing menu-population methods.
 - [ ] Milestone 3: Record final acceptance and validation results in Jira when external updates are authorized.
 
