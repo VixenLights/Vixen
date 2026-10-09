@@ -1,6 +1,6 @@
 # Show the Element Tag cascade instruction once per menu (VIX-4013)
 
-This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective as work proceeds. Follow `.agents/PLANS.md` and the project versions of skills under `.agents/skills/`. This document records a design; application implementation and Jira updates have not started.
+This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective as work proceeds. Follow `.agents/PLANS.md` and the project versions of skills under `.agents/skills/`. Milestone 1's Jira description update is complete. Milestone 2's source implementation and Release build are complete; themed interactive acceptance remains unverified.
 
 ## Purpose / Big Picture
 
@@ -17,6 +17,8 @@ The exact instruction is `💡 Hold Ctrl to cascade tag to child nodes`. Use a s
 - [x] (2026-10-09 19:16Z) Design the two small menu insertions and the manual validation scenarios.
 - [x] (2026-10-09) Milestone 1: Updated VIX-4013's description with the clarified static instruction, nonselection behavior, scope, and user-facing acceptance criteria.
 - [ ] Milestone 2: Add and validate the instruction in both existing menu-population methods.
+  - [x] (2026-10-09) Added the static label and separator after each submenu clear. Release x64 rebuild succeeded (0 errors, 73 warnings); Rider analysis found no issues in ElementTree and four serializer diagnostics elsewhere in TimelineControl. Gortex found no covering tests; none were added or run.
+  - [ ] Interactive menu, hover, keyboard, and tag-operation checks remain unverified because desktop-control tools are unavailable in this session.
 - [ ] Milestone 3: Record final acceptance and validation results in Jira when external updates are authorized.
 
 ## Surprises & Discoveries
@@ -60,7 +62,7 @@ The initial working tree was clean. The ElementTree impact query reported one di
 ## Outcomes & Retrospective
 
 
-Analysis resolves the original hover conflict using an existing framework component. The implementation is limited to two menu-population methods in Vixen.Common. This plan is the only requested repository artifact; no application behavior has changed and no runtime validation has been performed. The lesson is that a disabled command item and a nonselectable informational label have different WinForms behavior.
+The instruction is now prepended in both existing Tags submenu builders using a disabled, non-link `ToolStripLabel` and a separator. Existing selection, tag enumeration, click handlers, and Manage Tags entries are unchanged. `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64` succeeded with 0 errors and 73 warnings. Rider reported no issues in the changed ElementTree region; TimelineControl has four serializer diagnostics at lines 38, 43, 498, and 589, outside the changed region. Gortex found no test coverage for the changed symbols, so no tests were added or run. Interactive hover, keyboard, appearance, and tag-operation checks remain unverified because desktop-control tools are unavailable in this session; the plan's runtime acceptance is therefore incomplete. The Jira description was aligned in milestone 1.
 
 ## Context and Orientation
 

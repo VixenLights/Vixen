@@ -942,6 +942,13 @@ namespace Common.Controls.Timeline
 		private void PopulateTagsMenu(ToolStripMenuItem tagsMenuItem)
 		{
 			tagsMenuItem.DropDownItems.Clear();
+			tagsMenuItem.DropDownItems.Add(new ToolStripLabel("💡 Hold Ctrl to cascade tag to child nodes")
+			{
+				Enabled = false,
+				IsLink = false,
+				TextAlign = ContentAlignment.MiddleLeft
+			});
+			tagsMenuItem.DropDownItems.Add(new ToolStripSeparator());
 
 			var selectedElementNodes = SelectedRowElementNodes();
 			tagsMenuItem.Enabled = selectedElementNodes.Count > 0;
