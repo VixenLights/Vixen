@@ -942,6 +942,20 @@ namespace Common.Controls.Timeline
 		private void PopulateTagsMenu(ToolStripMenuItem tagsMenuItem)
 		{
 			tagsMenuItem.DropDownItems.Clear();
+			var cascadeHint = new ToolStripLabel("Ctrl+Click to cascade tag")
+			{
+				Enabled = true,
+				IsLink = false,
+				TextAlign = ContentAlignment.MiddleLeft
+			};
+			tagsMenuItem.DropDownItems.Add(cascadeHint);
+			tagsMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+			int minimumWidth = cascadeHint.GetPreferredSize(Size.Empty).Width +
+				SystemInformation.MenuCheckSize.Width + tagsMenuItem.DropDown.Padding.Horizontal;
+			tagsMenuItem.DropDown.MinimumSize = new Size(
+				Math.Max(tagsMenuItem.DropDown.MinimumSize.Width, minimumWidth),
+				tagsMenuItem.DropDown.MinimumSize.Height);
 
 			var selectedElementNodes = SelectedRowElementNodes();
 			tagsMenuItem.Enabled = selectedElementNodes.Count > 0;

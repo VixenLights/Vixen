@@ -1008,6 +1008,13 @@ namespace Common.Controls
 		private void PopulateTagsMenu()
 		{
 			tagsToolStripMenuItem.DropDownItems.Clear();
+			tagsToolStripMenuItem.DropDownItems.Add(new ToolStripLabel("Ctrl+Click to Cascade Tag")
+			{
+				Enabled = true,
+				IsLink = false,
+				TextAlign = ContentAlignment.MiddleLeft
+			});
+			tagsToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
 
 			var selectedElementNodes = SelectedElementNodes.ToList();
 
