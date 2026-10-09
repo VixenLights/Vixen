@@ -1,13 +1,13 @@
 # Show the Element Tag cascade instruction once per menu (VIX-4013)
 
-This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective as work proceeds. Follow `.agents/PLANS.md` and the project versions of skills under `.agents/skills/`. Milestones 1 and 2 are complete. The source implementation and Release build succeeded, and the user confirmed the menu presentation and tag interactions work as expected.
+This ExecPlan is a living document. Maintain Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective as work proceeds. Follow `.agents/PLANS.md` and the project versions of skills under `.agents/skills/`. Milestones 1, 2, and 3 are complete. The Jira description and completion comment were updated and read back without changing issue status. The source implementation and Release build succeeded, and the user confirmed the menu presentation and tag interactions work as expected.
 
 ## Purpose / Big Picture
 
 
 Users should discover that holding Ctrl while choosing an Element Tag cascades the operation to child nodes. Display Setup, Preview Setup, and the Sequencer will show one instruction at the top of their existing Tags submenu, followed by a separator and the normal tag choices. The instruction will neither highlight on hover nor participate in keyboard selection. Individual tags retain their existing names without repeated modifier hints.
 
-The exact instruction is `💡 Hold Ctrl to cascade tag to child nodes`. Use a standard non-link `ToolStripLabel`, rather than the disabled `ToolStripMenuItem` originally requested in Jira. This follows the user's clarification on 2026-10-09: avoid hover highlighting and complex overrides while keeping the modifier text out of individual tag entries.
+Each Tags submenu has a concise Ctrl+Click cascade reminder, followed by a separator and the normal tag choices. Use a standard non-link `ToolStripLabel`, rather than the disabled `ToolStripMenuItem` originally requested in Jira. The label is enabled so it remains readable, but `IsLink = false` keeps it nonselectable and noninteractive. The user shortened the text during implementation; ElementTree currently says `Ctrl+Click to Cascade Tag` and TimelineControl says `Ctrl+Click to cascade tag`. The timeline dropdown is sized to fit its label.
 
 ## Progress
 
@@ -20,14 +20,16 @@ The exact instruction is `💡 Hold Ctrl to cascade tag to child nodes`. Use a s
   - [x] Added the static label and separator after each submenu clear. Release x64 rebuild succeeded (0 errors, 73 warnings); Rider analysis found no issues in ElementTree and four serializer diagnostics elsewhere in TimelineControl. Gortex found no covering tests; none were added or run.
   - [x] User confirmed the Timeline label appears and fits, cannot be clicked, has no hover behavior, and the tag click functions still work.
   - [x] User confirmed the other menus work as expected and Ctrl cascade operations work as expected.
-- [ ] Milestone 3: Record final acceptance and validation results in Jira when external updates are authorized.
+- [x] (2026-10-09) Milestone 3: Updated the Jira description to reflect the concise Ctrl+Click reminder and acceptance criteria, added completion comment 40577, and read back both updates. No Jira status transition was made.
+  - [x] Recorded user-confirmed menu fit, non-clickability/no hover behavior, unchanged tag click functions, other menus, and Ctrl cascade operations.
+  - [x] Recorded the successful Release x64 solution build; no automated tests were added or run because no covering tests were found.
 
 ## Surprises & Discoveries
 
 
 The prescribed disabled `ToolStripMenuItem` does not fully meet the original non-highlight requirement. .NET 10 WinForms sets `SupportsDisabledHotTracking = true` in `ToolStripMenuItem.Initialize`; `ToolStripItem.HandleMouseEnter` can call `Select()` for a disabled item when that flag is true. Disabling activation alone therefore does not guarantee a nonselectable mouse-hover header.
 
-A standard `ToolStripLabel` supplies the needed behavior. At runtime its `CanSelect` getter returns false when `IsLink` is false; its expression is `IsLink || DesignMode`. Set `Enabled = false` as well to suppress activation. No custom subclass, renderer, event workaround, or new control is needed. Verified against the official .NET 10 source:
+A standard `ToolStripLabel` supplies the needed behavior. At runtime its `CanSelect` getter returns false when `IsLink` is false; its expression is `IsLink || DesignMode`. The implemented label remains enabled for readability; `IsLink = false` prevents selection and activation. No custom subclass, renderer, event workaround, or new control is needed. Verified against the official .NET 10 source:
 
 [ToolStripMenuItem initialization](https://github.com/dotnet/winforms/blob/v10.0.0/src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/ToolStripMenuItem.cs#L181-L190), [ToolStripItem mouse handling](https://github.com/dotnet/winforms/blob/v10.0.0/src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/ToolStripItem.cs#L2275-L2303), and [ToolStripLabel selection](https://github.com/dotnet/winforms/blob/v10.0.0/src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/ToolStripLabel.cs#L60-L63).
 
@@ -40,7 +42,7 @@ The initial working tree was clean. The ElementTree impact query reported one di
 ## Decision Log
 
 
-- Decision: Use a standard `ToolStripLabel` with `IsLink = false` and `Enabled = false` for the header.
+- Decision: Use a standard `ToolStripLabel` with `IsLink = false` and `Enabled = true` for the header.
   Rationale: The user prefers no hover highlighting without complex overrides. This standard item meets that behavior and changes only the originally prescribed header type.
   Date/Author: 2026-10-09 / Codex, based on the user's clarification.
 
@@ -63,7 +65,7 @@ The initial working tree was clean. The ElementTree impact query reported one di
 ## Outcomes & Retrospective
 
 
-The instruction is now prepended in both existing Tags submenu builders using a disabled, non-link `ToolStripLabel` and a separator. Existing selection, tag enumeration, click handlers, and Manage Tags entries are unchanged. `msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64` succeeded with 0 errors and 73 warnings. Rider reported no issues in the changed ElementTree region; TimelineControl has four serializer diagnostics at lines 38, 43, 498, and 589, outside the changed region. Gortex found no test coverage for the changed symbols, so no tests were added or run. The user confirmed the Timeline label is visible and fits, cannot be clicked, has no hover behavior, and the tag click functions still work; they also confirmed the other menus and Ctrl cascade operations work as expected. Milestone 2 acceptance is complete based on the user's UI validation. No tests were added or run because Gortex found no covering tests. The Jira description was aligned in milestone 1.
+The concise Ctrl+Click reminder and separator are prepended in both existing Tags submenu builders using an enabled, non-link `ToolStripLabel`. The Timeline dropdown has an adaptive minimum width based on the label's preferred size so the text is not clipped. Existing selection, tag enumeration, click handlers, and Manage Tags entries are unchanged. The Release x64 solution rebuild succeeded with 0 errors and 73 warnings; a later Release x64 build also succeeded. Rider reported no issues in the changed ElementTree region; TimelineControl has four serializer diagnostics outside the changed region. Gortex found no test coverage for the changed symbols, so no automated tests were added or run. The user confirmed that the Timeline label fits, is not clickable, and has no hover behavior; tag click functions, the other menus, and Ctrl cascade operations work as expected. Jira's description was updated and the completion comment (40577) was read back successfully; no status transition was made.
 
 ## Context and Orientation
 
@@ -114,9 +116,9 @@ Plan of Work: Inspect `git status --short` first and preserve unrelated edits. R
 
 In `ElementTree.PopulateTagsMenu()`, insert the following immediately after `tagsToolStripMenuItem.DropDownItems.Clear();`. Apply only this block through Rider's Apply snippet from chat workflow when working manually:
 
-    tagsToolStripMenuItem.DropDownItems.Add(new ToolStripLabel("💡 Hold Ctrl to cascade tag to child nodes")
+    tagsToolStripMenuItem.DropDownItems.Add(new ToolStripLabel("Ctrl+Click to cascade tag")
     {
-        Enabled = false,
+        Enabled = true,
         IsLink = false,
         TextAlign = ContentAlignment.MiddleLeft
     });
@@ -124,9 +126,9 @@ In `ElementTree.PopulateTagsMenu()`, insert the following immediately after `tag
 
 In `TimelineControl.PopulateTagsMenu(ToolStripMenuItem tagsMenuItem)`, insert the following immediately after `tagsMenuItem.DropDownItems.Clear();`:
 
-    tagsMenuItem.DropDownItems.Add(new ToolStripLabel("💡 Hold Ctrl to cascade tag to child nodes")
+    tagsMenuItem.DropDownItems.Add(new ToolStripLabel("Ctrl+Click to cascade tag")
     {
-        Enabled = false,
+        Enabled = true,
         IsLink = false,
         TextAlign = ContentAlignment.MiddleLeft
     });
@@ -171,7 +173,7 @@ STOP HERE for manual review and commit execution before proceeding. Halt executi
 
 Use a disposable profile with a group containing a child group and at least two leaf nodes, plus an unselected sibling group. Use the existing Prop tag for assignment checks so Hidden filtering and Deprecated restrictions do not obscure results. Confirm initial tag states before every comparison; repeat the fixture setup rather than relying on toggles to undo mixed states.
 
-In Display Setup, Preview Setup, and the Sequencer, select a node or row, open its context menu, and open Tags. The first item displays exactly `💡 Hold Ctrl to cascade tag to child nodes`; the second item is a standard separator. The functional tag list follows, with its existing order, names, check states, dots, and Manage Tags entry. No tag name contains modifier instructions or new shortcut text. The label is readable and fully visible at the tested display scale and current theme; the bulb glyph need not render as a colored emoji, but must not be missing or clipped.
+In Display Setup, Preview Setup, and the Sequencer, select a node or row, open its context menu, and open Tags. The first item displays the concise Ctrl+Click cascade reminder; the second item is a standard separator. The label is enabled for readable text, uses `IsLink = false` so it cannot be selected or activated, and the Timeline dropdown is wide enough to show the full label. The functional tag list follows, with its existing order, names, check states, dots, and Manage Tags entry. No tag name contains modifier instructions or new shortcut text. The label is readable and fully visible at the tested display scale and current theme; the bulb glyph need not render as a colored emoji, but must not be missing or clipped.
 
 Hover the instruction: it must not display a selected-menu background or act as a command. Clicking it must not assign/remove a tag or open Manage Tags. Open the submenu by keyboard and navigate with arrow keys: focus must skip the header and separator and reach functional entries normally. Enter/Space must not activate the header. Verify the actual themed application rather than only a default-framework sample.
 
@@ -208,6 +210,6 @@ The first declaration is owned by ElementTree; the second by TimelineControl. No
 ## Plan Revision Note
 
 
-2026-10-09: Created this plan after the user clarified that a simple header without hover highlighting is preferred and modifier text must not be repeated on tag entries. The chosen ToolStripLabel replaces Jira's originally prescribed disabled ToolStripMenuItem because official .NET 10 source demonstrates their different selection behavior. This revision records the rationale, current source ownership, small implementation blocks, and observable validation before application execution.
+2026-10-09: Created this plan after the user clarified that a simple header without hover highlighting is preferred and modifier text must not be repeated on tag entries. The chosen ToolStripLabel replaces Jira's originally prescribed disabled ToolStripMenuItem because official .NET 10 source demonstrates their different selection behavior. During implementation the user shortened the text and confirmed the timeline menu needed width adjustment; the label is enabled, non-link, and the timeline dropdown minimum width is sized from its preferred label width. Milestones 1–3 are complete; Jira description/comment were read back and no issue transition was made.
 
 Analysis complete and plan integrated with plans.md.
