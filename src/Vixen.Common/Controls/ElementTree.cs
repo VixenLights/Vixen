@@ -1008,9 +1008,9 @@ namespace Common.Controls
 		private void PopulateTagsMenu()
 		{
 			tagsToolStripMenuItem.DropDownItems.Clear();
-			tagsToolStripMenuItem.DropDownItems.Add(new ToolStripLabel("💡 Hold Ctrl to cascade tag to child nodes")
+			tagsToolStripMenuItem.DropDownItems.Add(new ToolStripLabel("Ctrl+Click to Cascade Tag")
 			{
-				Enabled = false,
+				Enabled = true,
 				IsLink = false,
 				TextAlign = ContentAlignment.MiddleLeft
 			});
