@@ -25,7 +25,7 @@ The existing output is SVG, a vector image whose shapes remain sharp when enlarg
 - [x] (2026-10-11) Milestone 7: Enlarged the whole SVG through physical dimensions; the user confirmed 200% exports scale the diagrams.
 - [x] (2026-10-11) Milestone 8: Added the validated Catel options view model and focused tests (12 passed); added the centrally managed Catel.MVVM package reference because Modeling had no direct reference.
 - [x] (2026-10-11) Milestone 9: Added the shared Catel WPF dialog and host bridge, with validated label-interval text entry defaulting to 50, marker/enlargement sliders, and focused tests (19 passed). Release test-target build succeeded. Per user decision, live visual/UI checks are deferred to M10 after the dialog is wired into the export flow.
-- [ ] Milestone 10: Connect the dialog to both shared export methods.
+- [x] (2026-10-11) Milestone 10: Connected the shared dialog to both common export methods; Release build and 55 focused tests passed. User manually verified all three entry points, individual and combined options, cancellation, bounds (marker size 1-30, enlargement 100%-400%, interval 1-1000), and expected SVG output. M11 remains open.
 - [ ] Milestone 11: Verify all entry points and update repository evidence.
 - [ ] Milestone 12: Reconcile Jira and record validation results.
 
@@ -277,6 +277,8 @@ Do not move the dialog into the three callers, change the ElementTree export del
 Concrete steps: build the affected solution configuration, run focused Modeling tests, and exercise one WPF and one WinForms export. Verify interval mode defaults to 50, values 50 and 100 can be entered, invalid/partial text blocks acceptance, and the marker/enlargement sliders retain their bounds. Also verify tab navigation, modal ownership from both host types, repeated cancellation, Escape, and window close. Acceptance: exactly one options popup appears before a valid export; OK opens one SVG with the chosen options; Cancel/Escape/close opens none and creates no export file. Empty input or missing Location data follows existing no-output behavior. Both directions pass the same options through the same builder.
 
 STOP HERE for manual review and commit execution before proceeding.
+
+M10 implementation and acceptance outcome (2026-10-11): Both exporters show the shared options dialog once after their existing no-output/eligibility checks. Cancellation returns before builder invocation or SVG file creation; accepted options pass to the shared builder with the existing `flip` argument. Public XML documentation records cancellation and preserved numbering/order. Release Modeling build and full-MSBuild `Vixen_Tests` target succeeded; focused `WireDiagram` tests passed 55 (0 failed, 0 skipped); `git diff --check` passed. Gortex found no tests covering the two adapters, and no C# LSP/file-problem provider is registered. The user manually confirmed the dialog launches from all three entry points; all options worked independently and in combinations; Cancel closed the dialog; enlargement was bounded 100%-400%; marker size was bounded 1-30 (the user's initial mention of 40 was a typo); interval values above 1000 or at/below 0 were rejected with an in-form warning; and all tested permutations produced the expected SVG. M10 is complete. M11 remains open for its six-workflow verification.
 
 ### Milestone 11: Verify the six user workflows
 
