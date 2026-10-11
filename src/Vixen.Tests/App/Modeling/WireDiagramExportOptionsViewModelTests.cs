@@ -14,6 +14,7 @@ public sealed class WireDiagramExportOptionsViewModelTests
 		Assert.True(viewModel.AllNumbers);
 		Assert.Equal(50, viewModel.LabelInterval);
 		Assert.Equal("50", viewModel.LabelIntervalText);
+		Assert.Equal(14, viewModel.LabelFontSize);
 		Assert.Equal(6, viewModel.NodeRadius);
 		Assert.Equal(100, viewModel.ExportScalePercent);
 		Assert.Null(viewModel.Options);
@@ -59,6 +60,30 @@ public sealed class WireDiagramExportOptionsViewModelTests
 
 		Assert.Equal(expectedInterval, viewModel.LabelInterval);
 		Assert.Equal(expectedInterval, viewModel.Options.LabelInterval);
+	}
+
+	[Theory]
+	[InlineData(6)]
+	[InlineData(14)]
+	[InlineData(24)]
+	public void Accepting_MapsSelectedLabelFontSize(int fontSize)
+	{
+		var viewModel = new WireDiagramExportOptionsViewModel { LabelFontSize = fontSize };
+
+		((ICommand)viewModel.OkCommand).Execute(null);
+
+		Assert.Equal(fontSize, viewModel.Options.LabelFontSize);
+	}
+
+	[Fact]
+	public void Accepting_MapsLabelFontSizeAndNodeRadiusIndependently()
+	{
+		var viewModel = new WireDiagramExportOptionsViewModel { LabelFontSize = 24, NodeRadius = 1 };
+
+		((ICommand)viewModel.OkCommand).Execute(null);
+
+		Assert.Equal(24, viewModel.Options.LabelFontSize);
+		Assert.Equal(1f, viewModel.Options.NodeRadius);
 	}
 
 	[Fact]
@@ -110,6 +135,17 @@ public sealed class WireDiagramExportOptionsViewModelTests
 		};
 
 		Assert.True(viewModel.OkCommand.CanExecute());
+	}
+
+	[Theory]
+	[InlineData(5)]
+	[InlineData(25)]
+	public void InvalidLabelFontSizePreventsAcceptance(int fontSize)
+	{
+		var viewModel = new WireDiagramExportOptionsViewModel { LabelFontSize = fontSize };
+
+		Assert.False(viewModel.OkCommand.CanExecute());
+		Assert.Null(viewModel.Options);
 	}
 
 	[Theory]

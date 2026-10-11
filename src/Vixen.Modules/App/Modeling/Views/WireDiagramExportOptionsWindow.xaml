@@ -73,6 +73,25 @@
 				        Margin="0,6,0,0" />
 			</Grid>
 
+			<Grid Margin="0,0,0,16">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="48" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Number label size"
+				           Foreground="{DynamicResource ForeColorBrush}" VerticalAlignment="Center" />
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding LabelFontSize}"
+				           Foreground="{DynamicResource ForeColorBrush}" TextAlignment="Right" />
+				<Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+				        Minimum="6" Maximum="24" TickFrequency="1" IsSnapToTickEnabled="True"
+				        Value="{Binding LabelFontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+				        Margin="0,6,0,0" />
+			</Grid>
+
 			<Grid Margin="0,0,0,12">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />

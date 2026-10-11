@@ -84,6 +84,28 @@ public sealed class WireDiagramExportOptionsViewModel : ViewModelBase
 	/// Identifies the <see cref="LabelIntervalText" /> property.
 	/// </summary>
 	public static readonly IPropertyData LabelIntervalTextProperty = RegisterProperty<string>(nameof(LabelIntervalText), "50");
+
+	/// <summary>
+	/// Gets or sets the number-label font size.
+	/// </summary>
+	/// <value>A value from 6 through 24. The default is 14.</value>
+	public int LabelFontSize
+	{
+		get => GetValue<int>(LabelFontSizeProperty);
+		set
+		{
+			SetValue(LabelFontSizeProperty, value);
+			ValidateAndUpdateCommand();
+		}
+	}
+
+	/// <summary>
+	/// Identifies the <see cref="LabelFontSize" /> property.
+	/// </summary>
+	public static readonly IPropertyData LabelFontSizeProperty = RegisterProperty<int>(nameof(LabelFontSize), 14);
+
+	/// <summary>
+	/// Gets or sets the size of each node marker.
 	/// </summary>
 	/// <value>A value from 1 through 30. The default is 6.</value>
 	public int NodeRadius
@@ -152,6 +174,11 @@ public sealed class WireDiagramExportOptionsViewModel : ViewModelBase
 			}
 		}
 
+		if (LabelFontSize is < 6 or > 24)
+		{
+			validationResults.Add(FieldValidationResult.CreateError(LabelFontSizeProperty, "Enter a number-label font size from 6 through 24."));
+		}
+
 		if (NodeRadius is < 1 or > 30)
 		{
 			validationResults.Add(FieldValidationResult.CreateError(NodeRadiusProperty, "Enter a node radius from 1 through 30."));
@@ -199,6 +226,7 @@ public sealed class WireDiagramExportOptionsViewModel : ViewModelBase
 	private WireDiagramExportOptions CreateOptions() => new()
 	{
 		LabelInterval = AllNumbers ? 1 : LabelInterval,
+		LabelFontSize = LabelFontSize,
 		NodeRadius = NodeRadius,
 		ExportScale = ExportScalePercent / 100f
 	};
