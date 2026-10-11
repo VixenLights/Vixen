@@ -17,7 +17,7 @@ The issue is [VIX-4014: Highlighting pixel in custom prop editor issue](https://
 - [x] (2026-10-11 14:08Z) Read the project analyze-and-plan-issue skill and `.agents/PLANS.md`; consulted Custom Prop Editor State requirements and implementation notes.
 - [x] (2026-10-11 14:08Z) Established the source-level cause and bounded production changes to three private PropDesigner methods. Rider test discovery reports no existing PropDesigner tests.
 - [x] (2026-10-11 14:08Z) Prepared this design and execution plan. The initial working tree was clean.
-- [ ] Milestone 1: Align Jira requirements and acceptance criteria when implementation is authorized.
+- [x] (2026-10-11 14:15Z) Milestone 1: Updated Jira VIX-4014 with user-facing Summary, Scope, Acceptance Criteria, and Testing sections. Read the issue back and confirmed the original report, reproduction comment 40579, attachment `vixen4.png` (18208), Accepted status, and unassigned state were preserved. No status, assignee, or comment changes were made.
 - [ ] Milestone 2: Add regression tests, correct notification ordering, and validate the viewer and State Definition behavior.
 - [ ] Milestone 3: Record validation and reconcile Jira with the completed change.
 
@@ -60,10 +60,12 @@ Decision: Use manual Control-click and rectangle interaction checks alongside au
 
 Decision: Follow analyze-and-plan-issue's explicit milestone review stops, and do not create commits automatically. Rationale: Its stopping instructions are more specific than PLANS.md's general continuation advice, and AGENTS.md requires explicit authorization to commit. Jira updates below are future execution work; the present design request does not execute them. Date/Author: 2026-10-11, Codex.
 
+Decision: Update only the VIX-4014 description in Milestone 1, retaining the reporter's original text under an Original report heading and leaving workflow fields and history untouched. Rationale: This adds concise, reviewable user-facing requirements without discarding the reproduction context. The updated issue was read back; its original report, comment 40579, attachment 18208, Accepted status, and unassigned state remain present. Date/Author: 2026-10-11, Codex.
+
 ## Outcomes & Retrospective
 
 
-Analysis has produced a source-backed cause, a minimal production change, and behavioral acceptance checks. Application code and Jira remain unchanged. Implementation, automated regression results, interactive viewer validation, and final Jira reporting remain pending. The main lesson is that updating two representations of selection requires setting flags before publishing collection changes.
+Analysis has produced a source-backed cause, a minimal production change, and behavioral acceptance checks. Milestone 1 updated Jira VIX-4014's description and verified the original report, reproduction comment, and attachment remain present. Application implementation, automated regression results, interactive viewer validation, and final Jira reporting remain pending. The main lesson is that updating two representations of selection requires setting flags before publishing collection changes.
 
 ## Context and Orientation
 
@@ -235,6 +237,6 @@ Retain PropDesigner : MultiSelector and LightViewModel : ViewModelBase, ISelecta
 
 Use the existing xUnit test project, WPF, System.Reflection, and System.Threading for the regression fixture. Do not add a new testing package or expose a production method for testing. The new public test class and test methods require XML summaries under the project csharp-docs rules. Production public/protected APIs are not modified.
 
-Plan creation note (2026-10-11): Created from VIX-4014 and comment 40579, current Gortex source evidence, Rider test discovery, and the documented State Definition contracts. Production implementation and Jira edits are pending.
+Plan creation note (2026-10-11): Created from VIX-4014 and comment 40579, current Gortex source evidence, Rider test discovery, and the documented State Definition contracts. Production implementation and further Jira reporting are pending; Milestone 1's requirements update is complete.
 
 Analysis complete and plan integrated with plans.md.
