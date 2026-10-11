@@ -8,126 +8,48 @@ namespace VixenModules.App.Modeling
 {
 	public class ElementModeling
 	{
-		private const int ExtraHeight = 50;
-		private const int ExtraWidth = 50;
-
 		public static void OrderedPointsToSvg(IEnumerable<Tuple<Point, int>> nodes, bool flip = false)
 		{
-			if(!nodes.Any()) return;
-			var points = nodes.Select(x => x.Item1);
-			var rect = CalculateModelRectangle(points);
-			var scale = 1f;
-			if (rect.Width < 800)
+			ArgumentNullException.ThrowIfNull(nodes);
+			var orderedNodes = nodes.ToList();
+			if (orderedNodes.Count == 0) return;
+
+			var document = WireDiagramSvgBuilder.Build(orderedNodes, flip, new WireDiagramExportOptions());
+			if (document != null)
 			{
-				scale = 800f / rect.Width;
+				OpenDoc(document);
 			}
-
-			SvgDocument doc = new SvgDocument { Width = rect.Width * scale, Height = rect.Height * scale };
-			doc.ViewBox = new SvgViewBox(-20, -20, doc.Width + ExtraWidth, doc.Height + ExtraHeight);
-
-			var group = new SvgGroup();
-			doc.Children.Add(group);
-
-			var lastPoint = new PointF();
-			var first = true;
-			var radius = 6;
-			
-			foreach (var p in nodes)
-			{
-				
-				var point = ScalePoint(p.Item1, scale, rect.Location);
-
-				if (flip)
-				{
-					point = new PointF(doc.ViewBox.Width - point.X - ExtraWidth, point.Y);
-				}
-
-				var lightNode = CreateLightNode(point, radius);
-				group.Children.Add(lightNode);
-				
-				var label = CreateLabel(p.Item2, point, radius);
-				group.Children.Add(label);
-
-				if (!first)
-				{
-					var line = CreateLine(lastPoint, point, radius);
-					group.Children.Add(line);
-				}
-				first = false;
-				lastPoint = point;
-			}
-
-			OpenDoc(doc);
 		}
 
 		public static void ElementsToSvg(ElementNode elementNode, bool flip = false)
 		{
-			if(elementNode == null) return;
-			var leafNodes = elementNode.GetLeafEnumerator().Distinct();
-			if (leafNodes.All(x => x.Properties.Contains(LocationDescriptor._typeId)))
+			if (elementNode == null) return;
+
+			var leafNodes = elementNode.GetLeafEnumerator().Distinct().ToList();
+			if (leafNodes.Count == 0 || !leafNodes.All(node => node.Properties.Contains(LocationDescriptor._typeId))) return;
+
+			IEnumerable<ElementNode> orderedNodes = leafNodes;
+			if (leafNodes.All(node => node.Properties.Contains(OrderDescriptor.ModuleId)))
 			{
-				var locations = leafNodes.Select(LocationModule.GetPositionForElement);
-				var rect = CalculateModelRectangle(locations);
-				var scale = 1f;
-				if (rect.Width < 800)
-				{
-					scale = 800f / rect.Width;
-				}
-				SvgDocument doc = new SvgDocument { Width = rect.Width*scale, Height = rect.Height*scale };
-				doc.ViewBox = new SvgViewBox(-20, -20, doc.Width+ExtraWidth, doc.Height+ExtraHeight);
-
-				var group = new SvgGroup();
-				doc.Children.Add(group);
-
-				if (leafNodes.All(x => x.Properties.Contains(OrderDescriptor.ModuleId)))
-				{
-					leafNodes = OrderNodes(leafNodes, elementNode);
-				}
-
-				var lastPoint = new PointF();
-				var first = true;
-				var radius = 6;
-				int counter = 1;
-				foreach (var node in leafNodes)
-				{
-					var point = ScalePoint(LocationModule.GetPositionForElement(node),scale, rect.Location);
-
-					if (flip)
-					{
-						point = new PointF(doc.ViewBox.Width - point.X - ExtraWidth, point.Y);
-					}
-
-					var lightNode = CreateLightNode(point, radius);
-					group.Children.Add(lightNode);
-					int order;
-					if (node.Properties.Get(OrderDescriptor.ModuleId) is OrderModule orderModule)
-					{
-						order = orderModule.Order;
-					}
-					else
-					{
-						order = counter;
-					}
-
-					var label = CreateLabel(order, point, radius);
-					group.Children.Add(label);
-
-					if (!first)
-					{
-						var line = CreateLine(lastPoint, point, radius);
-						group.Children.Add(line);
-					}
-					first = false;
-					lastPoint = point;
-					counter++;
-					
-
-				}
-				
-				OpenDoc(doc);
+				orderedNodes = OrderNodes(leafNodes, elementNode);
 			}
 
+			var nodes = new List<Tuple<Point, int>>();
+			var counter = 1;
+			foreach (var node in orderedNodes)
+			{
+				var order = node.Properties.Get(OrderDescriptor.ModuleId) is OrderModule orderModule
+					? orderModule.Order
+					: counter;
+				nodes.Add(Tuple.Create(LocationModule.GetPositionForElement(node), order));
+				counter++;
+			}
 
+			var document = WireDiagramSvgBuilder.Build(nodes, flip, new WireDiagramExportOptions());
+			if (document != null)
+			{
+				OpenDoc(document);
+			}
 		}
 
 		private static void OpenDoc(SvgDocument doc)
@@ -141,63 +63,6 @@ namespace VixenModules.App.Modeling
 				UseShellExecute = true
 			};
 			Process.Start(psi);
-		}
-
-		private static PointF ScalePoint(Point p, float scale, Point offset)
-		{
-			return new PointF((p.X-offset.X)*scale, (p.Y - offset.Y)*scale);
-		}
-
-		private static Rectangle CalculateModelRectangle(IEnumerable<Point> points)
-		{
-			var xMax = points.Max(p => p.X);
-			var xMin = points.Min(p => p.X);
-			var yMax = points.Max(p => p.Y);
-			var yMin = points.Min(p => p.Y);
-			var width = xMax - xMin;
-			var height = yMax - yMin;
-			return new Rectangle(xMin, yMin, width>0?width:50, height>0?height:50);
-		}
-
-		private static SvgLine CreateLine(PointF start, PointF end, int radius)
-		{
-			//TODO figure out which way the line is moving
-			return new SvgLine
-			{
-				StartX = start.X,
-				StartY = start.Y,
-				EndX = end.X,
-				EndY = end.Y,
-				Fill = new SvgColourServer(Color.Black),
-				StrokeWidth = 1,
-				Stroke = new SvgColourServer(Color.Black)
-
-			};
-		}
-
-		private static SvgText CreateLabel(int order, PointF p, int radius)
-		{
-			return new SvgText
-			{
-				Text = order.ToString(),
-				Fill = new SvgColourServer(Color.Black),
-				FontSize = 16,
-				X = { p.X + radius },
-				Y = { p.Y - radius }
-			};
-		}
-
-		private static SvgCircle CreateLightNode(PointF p, int radius)
-		{
-			return new SvgCircle
-			{
-				Radius = radius,
-				Fill = new SvgColourServer(Color.Red),
-				//Stroke = new SvgColourServer(Color.Black),
-				//StrokeWidth = 1,
-				CenterX = p.X,
-				CenterY = p.Y
-			};
 		}
 
 		private static List<ElementNode> OrderNodes(IEnumerable<ElementNode> leafNodes, ElementNode TopLevelNode)

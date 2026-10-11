@@ -18,7 +18,7 @@ The existing output is SVG, a vector image whose shapes remain sharp when enlarg
 - [x] (2026-10-11) Designed the small milestones below; implementation began with milestone 2 after Jira alignment.
 - [x] (2026-10-11) Milestone 1: Updated VIX-4017's description with the agreed user-facing scope and acceptance criteria; read back and verified the saved description.
 - [x] (2026-10-11) Milestone 2: Confirmed available project/test/host conventions; added validated export options and boundary tests (15 passed).
-- [ ] Milestone 3: Extract a testable shared SVG builder.
+- [x] (2026-10-11) Milestone 3: Extracted the shared SVG builder; automated checks passed and the user confirmed equivalent output at all three export locations.
 - [ ] Milestone 4: Add number filtering.
 - [ ] Milestone 5: Add configurable start, middle, and end markers.
 - [ ] Milestone 6: Fit the diagram into a letter canvas.
@@ -37,6 +37,8 @@ Checkboxes describe implementation status. Do not mark a milestone complete mere
 The three entry points already converge in `src/Vixen.Modules/App/Modeling/ElementModeling.cs`. Custom Prop Editor calls `OrderedPointsToSvg`; Display Setup and Preview call `ElementsToSvg`. Therefore the dialog can be inserted at these two common export methods without copying it into three hosts.
 
 The exporter currently draws red circles with radius 6, black labels with font size 16, and black connecting lines with stroke width 1. It enlarges props narrower than 800 units and uses prop-sized document dimensions rather than a paper-sized canvas. It writes a temporary `.svg` and opens it with `Process.Start` and `UseShellExecute = true`.
+
+Milestone 3 moved that existing geometry, dimensions, mirroring, and SVG element ordering into the UI-independent `WireDiagramSvgBuilder`; `ElementModeling` retains both adapters, ordering, and file opening. The extracted builder tests verify the legacy dimensions and mirrored node coordinates for a normal three-node diagram. Manual review confirmed that all three export locations still produce an equivalent SVG diagram that looks like the pre-change output.
 
 Numbering is not simply the loop counter. Custom Prop Editor supplies `(Point, int)` tuples. Element exports use `OrderModule.Order` when present and a counter otherwise. `OrderNodes` also handles duplicate order values by grouping leaves under parents. This improvement must not redefine that wiring order or overwrite stored order values.
 
@@ -81,6 +83,8 @@ Planning outcome: requirements and the rendering algorithm are defined, and work
 Milestone 1 outcome (2026-10-11): VIX-4017 was updated and read back. Its description now states the agreed user-facing requirements and Given/When/Then criteria across all three entry points and both directions. No comments were present before the update, and none were added. No source code or Jira fields other than the description were intentionally changed. The read-back showed Jira status `In Progress` although the pre-edit read showed `New Ticket`; see Surprises & Discoveries. No source validation or commit applies to that Jira-only milestone. Repository change validation consists of the Gortex-backed plan edit; no source tests were run.
 
 Milestone 2 outcome (2026-10-11): Added `WireDiagramExportOptions` with defaults LabelInterval=1, NodeRadius=6f, ExportScale=1f and validation for all supported bounds and nonfinite float inputs. Added focused xUnit v3 tests covering defaults, lower/upper boundaries, zero, out-of-range, NaN, and positive infinity. Rider reported no file problems in either new C# file. The full-MSBuild test-target build completed with exit code 0; it emitted existing warnings in other files. The focused command `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramExportOptionsTests` passed 15 tests (0 failed, 0 skipped). No test project reference or package changes were required.
+
+Milestone 3 implementation outcome (2026-10-11): Added `WireDiagramSvgBuilder` and its focused tests, then routed `OrderedPointsToSvg` and `ElementsToSvg` through the shared builder while retaining node ordering and `OpenDoc` in `ElementModeling`. The builder materializes no files and does not launch a process; it accepts and validates options while preserving the prior radius 6, label size 16, width-based scaling, view box padding, horizontal flip, and element sequence. The full-MSBuild command `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` exited 0. The focused command `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramSvgBuilderTests` passed 4 tests (0 failed, 0 skipped). Rider reported no file problems in the three changed C# files; `git diff --check` passed. Manual review (2026-10-11): the user confirmed that all three export locations still produce an equivalent SVG diagram that looks like the pre-change output. Milestone 3 is complete; milestone 4 remains open for separate confirmation.
 
 ## Context and Orientation
 
