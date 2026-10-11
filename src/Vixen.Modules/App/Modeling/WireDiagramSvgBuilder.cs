@@ -72,11 +72,12 @@ public static class WireDiagramSvgBuilder
 			{
 				0 => CreateStartMarker(point, options.NodeRadius),
 				_ when index == nodes.Count - 1 => CreateEndMarker(point, options.NodeRadius),
+				_ when options.LabelInterval > 1 && IsLabelSelected(index, nodes.Count, options.LabelInterval) => CreateDiamondMarker(point, options.NodeRadius),
 				_ => CreateMiddleMarker(point, options.NodeRadius)
 			};
 			group.Children.Add(marker);
 
-			if (index == 0 || (index + 1) % options.LabelInterval == 0 || index == nodes.Count - 1)
+			if (IsLabelSelected(index, nodes.Count, options.LabelInterval))
 			{
 				group.Children.Add(CreateLabel(nodes[index].Item2, point, options.NodeRadius));
 			}
@@ -88,6 +89,11 @@ public static class WireDiagramSvgBuilder
 		}
 
 		return document;
+	}
+
+	private static bool IsLabelSelected(int index, int count, int labelInterval)
+	{
+		return index == 0 || (index + 1) % labelInterval == 0 || index == count - 1;
 	}
 
 	private static Layout CalculateLayout(
@@ -110,7 +116,7 @@ public static class WireDiagramSvgBuilder
 			maxX = Math.Max(maxX, node.Item1.X);
 			minY = Math.Min(minY, node.Item1.Y);
 			maxY = Math.Max(maxY, node.Item1.Y);
-			if (index == 0 || (index + 1) % labelInterval == 0 || index == nodes.Count - 1)
+			if (IsLabelSelected(index, nodes.Count, labelInterval))
 			{
 				labelWidth = Math.Max(labelWidth, graphics.MeasureString(node.Item2.ToString(), font).Width);
 			}
@@ -220,6 +226,23 @@ public static class WireDiagramSvgBuilder
 			Y = point.Y - radius,
 			Width = radius * 2,
 			Height = radius * 2,
+			Fill = new SvgColourServer(Color.Red)
+		};
+	}
+
+	private static SvgPolygon CreateDiamondMarker(PointF point, float radius)
+	{
+		var points = new SvgPointCollection
+		{
+			point.X, point.Y - radius,
+			point.X + radius, point.Y,
+			point.X, point.Y + radius,
+			point.X - radius, point.Y
+		};
+
+		return new SvgPolygon
+		{
+			Points = points,
 			Fill = new SvgColourServer(Color.Red)
 		};
 	}

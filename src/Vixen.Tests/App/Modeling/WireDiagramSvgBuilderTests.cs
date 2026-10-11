@@ -157,8 +157,14 @@ public sealed class WireDiagramSvgBuilderTests
 		var children = group.Children.ToArray();
 
 		Assert.Equal(expectedLabels, children.OfType<SvgText>().Select(label => label.Text));
-		Assert.Single(children.OfType<SvgPolygon>());
-		Assert.Equal(Math.Max(count - 2, 0), children.OfType<SvgCircle>().Count());
+		var expectedDiamondCount = labelInterval > 1
+			? Enumerable.Range(1, Math.Max(count - 2, 0)).Count(index => (index + 1) % labelInterval == 0)
+			: 0;
+		var polygons = children.OfType<SvgPolygon>().ToArray();
+		Assert.Single(polygons, polygon => polygon.Points.Count == 20);
+		Assert.Equal(expectedDiamondCount, polygons.Count(polygon => polygon.Points.Count == 8));
+		Assert.Equal(expectedDiamondCount + 1, polygons.Length);
+		Assert.Equal(Math.Max(count - 2, 0) - expectedDiamondCount, children.OfType<SvgCircle>().Count());
 		Assert.Equal(count > 1 ? 1 : 0, children.OfType<SvgRectangle>().Count());
 		Assert.Equal(count - 1, children.OfType<SvgLine>().Count());
 	}
@@ -180,10 +186,118 @@ public sealed class WireDiagramSvgBuilderTests
 		var group = Assert.IsType<SvgGroup>(Assert.Single(document!.Children));
 
 		Assert.Equal(new[] { "8", "4", "8" }, group.Children.OfType<SvgText>().Select(label => label.Text));
-		Assert.Single(group.Children.OfType<SvgPolygon>());
-		Assert.Equal(3, group.Children.OfType<SvgCircle>().Count());
+		var polygons = group.Children.OfType<SvgPolygon>().ToArray();
+		Assert.Single(polygons, polygon => polygon.Points.Count == 20);
+		Assert.Single(polygons, polygon => polygon.Points.Count == 8);
+		Assert.Equal(2, group.Children.OfType<SvgCircle>().Count());
 		Assert.Single(group.Children.OfType<SvgRectangle>());
 		Assert.Equal(4, group.Children.OfType<SvgLine>().Count());
+	}
+
+	[Fact]
+	public void Build_UsesDiamondsAtSelectedInteriorPositionsInIntervalMode()
+	{
+		var nodes = Enumerable.Range(1, 123)
+			.Select(index => Tuple.Create(new Point(index, index), index))
+			.ToArray();
+		var document = WireDiagramSvgBuilder.Build(nodes, false, new WireDiagramExportOptions { LabelInterval = 50 })!;
+		var group = Assert.IsType<SvgGroup>(Assert.Single(document.Children));
+		var polygons = group.Children.OfType<SvgPolygon>().ToArray();
+		var star = Assert.Single(polygons, polygon => polygon.Points.Count == 20);
+		var diamonds = polygons.Where(polygon => polygon.Points.Count == 8).ToArray();
+		var labels = group.Children.OfType<SvgText>().ToArray();
+
+		Assert.Equal(2, diamonds.Length);
+		Assert.Equal(119, group.Children.OfType<SvgCircle>().Count());
+		Assert.Single(group.Children.OfType<SvgRectangle>());
+		Assert.Equal(122, group.Children.OfType<SvgLine>().Count());
+		Assert.Equal(new[] { "1", "50", "100", "123" }, labels.Select(label => label.Text));
+		Assert.Equal(Color.Green, Assert.IsType<SvgColourServer>(star.Fill).Colour);
+		Assert.Equal(Color.Red, Assert.IsType<SvgColourServer>(Assert.Single(group.Children.OfType<SvgRectangle>()).Fill).Colour);
+
+		foreach (var label in labels.Where(label => label.Text is "50" or "100"))
+		{
+			var expectedCenter = (X: label.X[0].Value - 6f, Y: label.Y[0].Value + 6f);
+			Assert.Contains(diamonds, diamond =>
+			{
+				var center = GetPolygonCenter(diamond);
+				return Math.Abs(center.X - expectedCenter.X) < 0.001f && Math.Abs(center.Y - expectedCenter.Y) < 0.001f;
+			});
+		}
+	}
+
+	[Fact]
+	public void Build_IntervalOneKeepsAllInteriorNodesAsCircles()
+	{
+		var nodes = Enumerable.Range(1, 123)
+			.Select(index => Tuple.Create(new Point(index, index), index))
+			.ToArray();
+		var document = WireDiagramSvgBuilder.Build(nodes, false, new WireDiagramExportOptions { LabelInterval = 1 })!;
+		var group = Assert.IsType<SvgGroup>(Assert.Single(document.Children));
+		var polygons = group.Children.OfType<SvgPolygon>().ToArray();
+
+		Assert.Single(polygons, polygon => polygon.Points.Count == 20);
+		Assert.DoesNotContain(polygons, polygon => polygon.Points.Count == 8);
+		Assert.Equal(121, group.Children.OfType<SvgCircle>().Count());
+		Assert.Single(group.Children.OfType<SvgRectangle>());
+		Assert.Equal(122, group.Children.OfType<SvgLine>().Count());
+		Assert.Equal(123, group.Children.OfType<SvgText>().Count());
+	}
+
+	[Fact]
+	public void Build_DiamondVerticesUseSelectedRadius()
+	{
+		var nodes = Enumerable.Range(1, 5)
+			.Select(index => Tuple.Create(new Point(index * 10, index * 20), index))
+			.ToArray();
+		var document = WireDiagramSvgBuilder.Build(nodes, false, new WireDiagramExportOptions { LabelInterval = 2, NodeRadius = 9f })!;
+		var group = Assert.IsType<SvgGroup>(Assert.Single(document.Children));
+		var diamonds = group.Children.OfType<SvgPolygon>().Where(polygon => polygon.Points.Count == 8).ToArray();
+
+		Assert.Equal(2, diamonds.Length);
+		foreach (var diamond in diamonds)
+		{
+			var points = diamond.Points.Select(point => point.Value).ToArray();
+			var center = GetPolygonCenter(diamond);
+			var expectedPoints = new[]
+			{
+				center.X, center.Y - 9f,
+				center.X + 9f, center.Y,
+				center.X, center.Y + 9f,
+				center.X - 9f, center.Y
+			};
+			Assert.Equal(expectedPoints.Length, points.Length);
+			for (var index = 0; index < points.Length; index++)
+			{
+				Assert.InRange(Math.Abs(points[index] - expectedPoints[index]), 0f, 0.001f);
+			}
+		}
+	}
+
+	[Fact]
+	public void Build_FlipMirrorsDiamondCentersAndPreservesLabelText()
+	{
+		var nodes = Enumerable.Range(1, 5)
+			.Select(index => Tuple.Create(new Point(index * 10, index * 20), index * 3))
+			.ToArray();
+		var options = new WireDiagramExportOptions { LabelInterval = 2 };
+		var front = WireDiagramSvgBuilder.Build(nodes, false, options)!;
+		var back = WireDiagramSvgBuilder.Build(nodes, true, options)!;
+		var frontGroup = Assert.IsType<SvgGroup>(Assert.Single(front.Children));
+		var backGroup = Assert.IsType<SvgGroup>(Assert.Single(back.Children));
+		var frontStar = GetPolygonCenter(Assert.Single(frontGroup.Children.OfType<SvgPolygon>(), polygon => polygon.Points.Count == 20));
+		var backStar = GetPolygonCenter(Assert.Single(backGroup.Children.OfType<SvgPolygon>(), polygon => polygon.Points.Count == 20));
+		var frontDiamonds = frontGroup.Children.OfType<SvgPolygon>().Where(polygon => polygon.Points.Count == 8).Select(GetPolygonCenter).ToArray();
+		var backDiamonds = backGroup.Children.OfType<SvgPolygon>().Where(polygon => polygon.Points.Count == 8).Select(GetPolygonCenter).ToArray();
+
+		Assert.Equal(2, frontDiamonds.Length);
+		Assert.Equal(frontDiamonds.Length, backDiamonds.Length);
+		for (var index = 0; index < frontDiamonds.Length; index++)
+		{
+			Assert.Equal(frontStar.X + backStar.X, frontDiamonds[index].X + backDiamonds[index].X, 0.001f);
+			Assert.Equal(frontDiamonds[index].Y, backDiamonds[index].Y, 0.001f);
+		}
+		Assert.Equal(frontGroup.Children.OfType<SvgText>().Select(label => label.Text), backGroup.Children.OfType<SvgText>().Select(label => label.Text));
 	}
 
 	[Theory]
@@ -373,6 +487,13 @@ public sealed class WireDiagramSvgBuilderTests
 			Assert.Equal(frontCenters[index].Y, backCenters[index].Y, 0.01f);
 		}
 		Assert.Equal(frontGroup.Children.OfType<SvgText>().Select(label => label.Text), backGroup.Children.OfType<SvgText>().Select(label => label.Text));
+	}
+
+	private static (float X, float Y) GetPolygonCenter(SvgPolygon polygon)
+	{
+		return (
+			polygon.Points.Where((_, index) => index % 2 == 0).Average(point => point.Value),
+			polygon.Points.Where((_, index) => index % 2 == 1).Average(point => point.Value));
 	}
 
 	private static (float X, float Y)[] GetMarkerCenters(SvgGroup group)
