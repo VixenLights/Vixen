@@ -528,6 +528,51 @@ public sealed class WireDiagramSvgBuilderTests
 		Assert.Equal(frontGroup.Children.OfType<SvgText>().Select(label => label.Text), backGroup.Children.OfType<SvgText>().Select(label => label.Text));
 	}
 
+	[Fact]
+	public void Build_SeparatesLabelsWhenNearbyNodesHaveClearAlternatives()
+	{
+		var nodes = new List<Tuple<Point, int>>
+		{
+			Tuple.Create(new Point(0, 0), 1),
+			Tuple.Create(new Point(500, 0), 2),
+			Tuple.Create(new Point(501, 0), 3),
+			Tuple.Create(new Point(502, 0), 4),
+			Tuple.Create(new Point(1000, 0), 5)
+		};
+		var options = new WireDiagramExportOptions
+		{
+			LabelInterval = 1,
+			NodeRadius = 5,
+			LabelFontSize = 8
+		};
+
+		var document = WireDiagramSvgBuilder.Build(nodes, false, options)!;
+		var labels = document.Children.OfType<SvgGroup>().Single().Children.OfType<SvgText>().ToArray();
+		var nearbyLabels = labels.Skip(1).Take(3).ToArray();
+		var centers = new PointF[nearbyLabels.Length];
+		for (var index = 0; index < nearbyLabels.Length; index++)
+		{
+			centers[index] = new PointF(nearbyLabels[index].X.Single().Value, nearbyLabels[index].Y.Single().Value);
+		}
+
+		var hasSeparatedPair = false;
+		for (var firstIndex = 0; firstIndex < centers.Length && !hasSeparatedPair; firstIndex++)
+		{
+			for (var secondIndex = firstIndex + 1; secondIndex < centers.Length; secondIndex++)
+			{
+				var deltaX = centers[firstIndex].X - centers[secondIndex].X;
+				var deltaY = centers[firstIndex].Y - centers[secondIndex].Y;
+				if (MathF.Sqrt(deltaX * deltaX + deltaY * deltaY) > 5f)
+				{
+					hasSeparatedPair = true;
+					break;
+				}
+			}
+		}
+
+		Assert.True(hasSeparatedPair);
+	}
+
 	private static (float X, float Y) GetPolygonCenter(SvgPolygon polygon)
 	{
 		return (

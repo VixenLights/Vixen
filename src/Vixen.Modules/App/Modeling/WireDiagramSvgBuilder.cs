@@ -85,10 +85,12 @@ public static class WireDiagramSvgBuilder
 
 		// Labels are deliberately emitted last so neither later markers nor wires obscure them.
 		var labels = MeasureLabels(nodes, options.LabelInterval, measurementGraphics, labelFont);
+		var placedLabels = new List<(LabelPlacement Placement, LabelMeasurement Measurement)>();
 		foreach (var label in labels)
 		{
-			var placement = PlaceLabel(points[label.Index], label, points, options.NodeRadius, layout.CanvasWidth, layout.CanvasHeight);
+			var placement = PlaceLabel(points[label.Index], label, points, placedLabels, options.NodeRadius, layout.CanvasWidth, layout.CanvasHeight);
 			group.Children.Add(CreateLabel(label.Text, placement, label, labelFont.Size));
+			placedLabels.Add((placement, label));
 		}
 
 		return document;
@@ -118,6 +120,7 @@ public static class WireDiagramSvgBuilder
 		PointF point,
 		LabelMeasurement label,
 		PointF[] points,
+		IReadOnlyList<(LabelPlacement Placement, LabelMeasurement Measurement)> placedLabels,
 		float radius,
 		float canvasWidth,
 		float canvasHeight)
@@ -157,9 +160,39 @@ public static class WireDiagramSvgBuilder
 		var inBounds = candidates.Where(candidate => IsInsidePage(candidate, label, canvasWidth, canvasHeight, clearance)).ToArray();
 		var clear = inBounds.Where(candidate => CountIntersections(candidate, label, wires, clearance) == 0).ToArray();
 		var best = clear.Length > 0
-			? clear.OrderBy(candidate => Math.Abs(candidate.Angle)).ThenBy(candidate => Math.Abs(candidate.CenterX - point.X) + Math.Abs(candidate.CenterY - point.Y)).ThenBy(candidate => candidate.Ordinal).First()
-			: inBounds.OrderBy(candidate => CountIntersections(candidate, label, wires, clearance)).ThenBy(candidate => Math.Abs(candidate.Angle)).ThenBy(candidate => Math.Abs(candidate.CenterX - point.X) + Math.Abs(candidate.CenterY - point.Y)).ThenBy(candidate => candidate.Ordinal).FirstOrDefault();
+			? clear.OrderBy(candidate => CalculateLabelOverlapArea(candidate, label, placedLabels)).ThenBy(candidate => Math.Abs(candidate.Angle)).ThenBy(candidate => Math.Abs(candidate.CenterX - point.X) + Math.Abs(candidate.CenterY - point.Y)).ThenBy(candidate => candidate.Ordinal).First()
+			: inBounds.OrderBy(candidate => CountIntersections(candidate, label, wires, clearance)).ThenBy(candidate => CalculateLabelOverlapArea(candidate, label, placedLabels)).ThenBy(candidate => Math.Abs(candidate.Angle)).ThenBy(candidate => Math.Abs(candidate.CenterX - point.X) + Math.Abs(candidate.CenterY - point.Y)).ThenBy(candidate => candidate.Ordinal).FirstOrDefault();
 		return inBounds.Length == 0 ? candidates[0] : best!;
+	}
+
+	private static float CalculateLabelOverlapArea(
+		LabelPlacement placement,
+		LabelMeasurement label,
+		IReadOnlyList<(LabelPlacement Placement, LabelMeasurement Measurement)> placedLabels)
+	{
+		const float clearance = 2f;
+		var bounds = RectangleF.Inflate(GetLabelBounds(placement, label), clearance, clearance);
+		var overlapArea = 0f;
+		foreach (var placedLabel in placedLabels)
+		{
+			var placedBounds = RectangleF.Inflate(GetLabelBounds(placedLabel.Placement, placedLabel.Measurement), clearance, clearance);
+			var intersection = RectangleF.Intersect(bounds, placedBounds);
+			overlapArea += Math.Max(0, intersection.Width) * Math.Max(0, intersection.Height);
+		}
+
+		return overlapArea;
+	}
+
+	private static RectangleF GetLabelBounds(LabelPlacement placement, LabelMeasurement label)
+	{
+		var radians = placement.Angle * MathF.PI / 180f;
+		var halfWidth = label.Width / 2f;
+		var halfHeight = (label.Ascent + label.Descent) / 2f;
+		var absoluteCosine = MathF.Abs(MathF.Cos(radians));
+		var absoluteSine = MathF.Abs(MathF.Sin(radians));
+		var width = 2 * (absoluteCosine * halfWidth + absoluteSine * halfHeight);
+		var height = 2 * (absoluteSine * halfWidth + absoluteCosine * halfHeight);
+		return new RectangleF(placement.CenterX - width / 2f, placement.CenterY - height / 2f, width, height);
 	}
 
 	private static bool IsInsidePage(LabelPlacement placement, LabelMeasurement label, float width, float height, float margin)
