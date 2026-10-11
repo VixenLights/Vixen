@@ -1,7 +1,7 @@
 # Restore immediate pixel selection highlighting in the Custom Prop Editor (VIX-4014)
 
 
-This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document contains the architecture design and active execution plan; milestone 2 is complete, and milestone 3 remains pending.
+This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document contains the architecture design and completed execution record; milestones 1, 2, and 3 are complete.
 
 ## Purpose / Big Picture
 
@@ -19,7 +19,7 @@ The issue is [VIX-4014: Highlighting pixel in custom prop editor issue](https://
 - [x] (2026-10-11 14:08Z) Prepared this design and execution plan. The initial working tree was clean.
 - [x] (2026-10-11 14:15Z) Milestone 1: Updated Jira VIX-4014 with user-facing Summary, Scope, Acceptance Criteria, and Testing sections. Read the issue back and confirmed the original report, reproduction comment 40579, attachment `vixen4.png` (18208), Accepted status, and unassigned state were preserved. No status, assignee, or comment changes were made.
 - [x] (2026-10-11 14:42Z) Milestone 2: Corrected viewer notification ordering, added actual WPF regression tests, and completed automated and manual acceptance. Focused tests passed 3/3; Custom Prop Editor tests passed 148/148; the Release `Vixen_Tests` target build and Release solution rebuild succeeded; Rider file analysis found no problems in either changed C# file; and `git diff --check` passed. The user manually confirmed single selection, replacement, Ctrl-click multi-selection, rectangle selection/removal and additive behavior, click-anywhere clearing (including repeated clear), tree synchronization, movement and handle behavior, Layout/Order regression expectations, and State Definition assignment/preview behavior except for the separate Layout/Order tab-switch issue recorded under Surprises & Discoveries. That switch issue predates this change and is deferred to another issue by user direction. Gortex detected the three changed production methods, found no configured guards, reported no indexed test edges for the changed methods because the new test file is untracked, and issued a behavioral-risk warning for review.
-- [ ] Milestone 3: Record validation and reconcile Jira with the completed change.
+- [x] (2026-10-11 15:22Z) Milestone 3: Re-read VIX-4014 and confirmed its user-facing requirements still match the accepted scope and preserve the original report and reproduction comment 40579. Added public completion comment 40580 with the actual automated/manual validation results and disclosed the pre-existing Layout/Order tab-switch issue as out of scope. Read-back verification is recorded below; issue status remained In Progress.
 
 ## Surprises & Discoveries
 
@@ -58,14 +58,14 @@ Decision: Test the actual private control paths using a small STA fixture and re
 
 Decision: Use manual Control-click and rectangle interaction checks alongside automated click/clear tests. Rationale: The current handler reads the physical keyboard state, and rectangle selection needs materialized visual containers. Do not add operating-system input injection or redesign keyboard handling for this small fix. Date/Author: 2026-10-11, Codex.
 
-Decision: Follow analyze-and-plan-issue's explicit milestone review stops, and do not create commits automatically. Rationale: Its stopping instructions are more specific than PLANS.md's general continuation advice, and AGENTS.md requires explicit authorization to commit. Jira updates below are future execution work; the present design request does not execute them. Date/Author: 2026-10-11, Codex.
+Decision: Follow analyze-and-plan-issue's explicit milestone review stops, and do not create commits automatically. Rationale: Its stopping instructions are more specific than PLANS.md's general continuation advice, and AGENTS.md requires explicit authorization to commit. At plan creation, Jira updates were pending; Milestones 1 and 3 subsequently completed the authorized description and completion-comment updates, while preserving workflow state. Date/Author: 2026-10-11, Codex.
 
 Decision: Update only the VIX-4014 description in Milestone 1, retaining the reporter's original text under an Original report heading and leaving workflow fields and history untouched. Rationale: This adds concise, reviewable user-facing requirements without discarding the reproduction context. The updated issue was read back; its original report, comment 40579, attachment 18208, Accepted status, and unassigned state remain present. Date/Author: 2026-10-11, Codex.
 
 ## Outcomes & Retrospective
 
 
-Analysis produced a source-backed cause and Milestone 1 updated Jira VIX-4014's description while preserving the original report, reproduction comment, and attachment. Milestone 2 contains the synchronous selection-order fix and three real WPF regression tests. The focused tests passed 3/3 and the Custom Prop Editor suite passed 148/148; both required Release builds, Rider file analysis, whitespace validation, and the user's manual acceptance sequence passed. The only observed Layout/Order tab-switch issue was confirmed by the user to predate this fix and is deferred to another issue; it is unrelated to immediate viewer selection highlighting. The key lesson is that selection flags must be finalized before publishing collection changes.
+Analysis produced a source-backed cause and Milestone 1 updated Jira VIX-4014's description while preserving the original report, reproduction comment, and attachment. Milestone 2 delivered the synchronous selection-order fix and three real WPF regression tests. The focused tests passed 3/3 and the Custom Prop Editor suite passed 148/148; the Release test-target build, Release solution rebuild, Rider file analysis, whitespace validation, and the user's manual acceptance sequence succeeded. Milestone 3 re-read the Jira issue, confirmed its description remains aligned with the accepted user-facing scope, and posted public completion comment 40580 with the results. Read-back confirmed the description and original reproduction comment remain intact alongside the new comment; issue status remains In Progress. Manual testing found the Layout/Order tab-switch selection issue, which the user confirmed predates this fix and will be handled under another issue. It remains explicitly out of scope. The key lesson is that selection flags must be finalized before publishing collection changes.
 
 ## Context and Orientation
 
@@ -198,7 +198,7 @@ STOP HERE for manual review and commit execution before proceeding. Halt executi
 
 The working directory for every command is `C:\Dev\Vixen`. Milestone 2 contains the exact build and test commands and expected before/after behavior. Start long-running commands with native exec_command and yield_time_ms=10000; poll completion with write_stdin and yield_time_ms of at least 30000. Keep the user informed during long builds.
 
-For this analysis, the initial git status --short returned no entries; the final status listed only this new plan. Rider found no existing PropDesigner tests. The command git diff --no-index --check -- /dev/null docs/plans/custom-prop-editor/VIX-4014-custom-prop-selection-highlight.md emitted no whitespace diagnostics (exit 1 reflects the new-file difference). Rider get_file_problems could not analyze the Markdown file because it is not included in a solution project. Gortex change.detect does not include untracked files; consequently it returned no changed symbols for this plan. No application build, unit test, or interactive application run was performed because the deliverable is a design document.
+Design-phase record: The initial git status --short returned no entries; the plan was then new and untracked. Rider found no existing PropDesigner tests. The command git diff --no-index --check -- /dev/null docs/plans/custom-prop-editor/VIX-4014-custom-prop-selection-highlight.md emitted no whitespace diagnostics (exit 1 reflects the new-file difference). Rider get_file_problems could not analyze the Markdown file because it is not included in a solution project. Gortex change.detect did not include the untracked plan at that time. No application build or unit test was run during design; both were completed and recorded in Milestone 2.
 
 ## Validation and Acceptance
 
@@ -239,6 +239,6 @@ Retain PropDesigner : MultiSelector and LightViewModel : ViewModelBase, ISelecta
 
 Use the existing xUnit test project, WPF, System.Reflection, and System.Threading for the regression fixture. Do not add a new testing package or expose a production method for testing. The new public test class and test methods require XML summaries under the project csharp-docs rules. Production public/protected APIs are not modified.
 
-Plan creation note (2026-10-11): Created from VIX-4014 and comment 40579, current Gortex source evidence, Rider test discovery, and the documented State Definition contracts. Production implementation and further Jira reporting are pending; Milestone 1's requirements update is complete.
+Plan creation note (2026-10-11): Created from VIX-4014 and comment 40579, current Gortex source evidence, Rider test discovery, and the documented State Definition contracts. Milestone 1's requirements update, Milestone 2's implementation and validation, and Milestone 3's Jira completion report are complete.
 
 Analysis complete and plan integrated with plans.md.
