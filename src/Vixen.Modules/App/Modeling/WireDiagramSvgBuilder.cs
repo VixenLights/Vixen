@@ -41,7 +41,11 @@ public static class WireDiagramSvgBuilder
 		using var measurementGraphics = Graphics.FromImage(measurementBitmap);
 		using var labelFont = new Font(LabelFontFamily, LabelFontSize, FontStyle.Regular, GraphicsUnit.Pixel);
 		var layout = CalculateLayout(nodes, options.LabelInterval, options.NodeRadius, measurementGraphics, labelFont);
-		var document = new SvgDocument { Width = layout.CanvasWidth, Height = layout.CanvasHeight };
+		var document = new SvgDocument
+		{
+			Width = new SvgUnit(SvgUnitType.Inch, layout.CanvasWidth / 96f * options.ExportScale),
+			Height = new SvgUnit(SvgUnitType.Inch, layout.CanvasHeight / 96f * options.ExportScale)
+		};
 		document.ViewBox = new SvgViewBox(0, 0, layout.CanvasWidth, layout.CanvasHeight);
 
 		var group = new SvgGroup();

@@ -202,8 +202,45 @@ public sealed class WireDiagramSvgBuilderTests
 
 		Assert.Equal(expectedWidth, document.ViewBox.Width);
 		Assert.Equal(expectedHeight, document.ViewBox.Height);
-		Assert.Equal(expectedWidth, document.Width.Value);
-		Assert.Equal(expectedHeight, document.Height.Value);
+		Assert.Equal(expectedWidth / 96f, document.Width.Value);
+		Assert.Equal(expectedHeight / 96f, document.Height.Value);
+		Assert.Equal(SvgUnitType.Inch, document.Width.Type);
+		Assert.Equal(SvgUnitType.Inch, document.Height.Type);
+	}
+
+	[Fact]
+	public void Build_AppliesExportScaleOnlyToSerializedPhysicalDimensions()
+	{
+		var nodes = new[]
+		{
+			Tuple.Create(new Point(10, 20), 1),
+			Tuple.Create(new Point(30, 1020), 2)
+		};
+		var standard = WireDiagramSvgBuilder.Build(nodes, false, new WireDiagramExportOptions())!;
+		var enlarged = WireDiagramSvgBuilder.Build(nodes, false, new WireDiagramExportOptions { ExportScale = 2f })!;
+
+		Assert.Equal(816f, standard.ViewBox.Width);
+		Assert.Equal(1056f, standard.ViewBox.Height);
+		Assert.Equal(standard.ViewBox.Width, enlarged.ViewBox.Width);
+		Assert.Equal(standard.ViewBox.Height, enlarged.ViewBox.Height);
+		Assert.Equal(standard.Width.Value * 2, enlarged.Width.Value);
+		Assert.Equal(standard.Height.Value * 2, enlarged.Height.Value);
+		Assert.Equal(SvgUnitType.Inch, enlarged.Width.Type);
+		Assert.Equal(SvgUnitType.Inch, enlarged.Height.Type);
+		var standardGroup = Assert.IsType<SvgGroup>(Assert.Single(standard.Children));
+		var enlargedGroup = Assert.IsType<SvgGroup>(Assert.Single(enlarged.Children));
+		Assert.Equal(standardGroup.Children.Select(element => element.ToString()), enlargedGroup.Children.Select(element => element.ToString()));
+
+		using var standardStream = new MemoryStream();
+		using var enlargedStream = new MemoryStream();
+		standard.Write(standardStream);
+		enlarged.Write(enlargedStream);
+		var standardSvg = System.Text.Encoding.UTF8.GetString(standardStream.ToArray());
+		var enlargedSvg = System.Text.Encoding.UTF8.GetString(enlargedStream.ToArray());
+		Assert.Contains("width=\"8.5in\"", standardSvg);
+		Assert.Contains("height=\"11in\"", standardSvg);
+		Assert.Contains("width=\"17in\"", enlargedSvg);
+		Assert.Contains("height=\"22in\"", enlargedSvg);
 	}
 
 	[Fact]
