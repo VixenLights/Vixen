@@ -529,6 +529,21 @@ public sealed class WireDiagramSvgBuilderTests
 	}
 
 	[Fact]
+	public void Build_KeepsLabelsHorizontalAndStartsTextNearNodeWhenClear()
+	{
+		var nodes = new[] { Tuple.Create(new Point(0, 0), 1) };
+		var options = new WireDiagramExportOptions { LabelInterval = 1, NodeRadius = 5f, LabelFontSize = 8f };
+
+		var document = WireDiagramSvgBuilder.Build(nodes, false, options)!;
+		var group = document.Children.OfType<SvgGroup>().Single();
+		var markerCenter = GetPolygonCenter(group.Children.OfType<SvgPolygon>().Single());
+		var label = group.Children.OfType<SvgText>().Single();
+
+		Assert.Empty(label.Transforms);
+		Assert.InRange(label.X.Single().Value - markerCenter.X, 5f, 10f);
+	}
+
+	[Fact]
 	public void Build_SeparatesLabelsWhenNearbyNodesHaveClearAlternatives()
 	{
 		var nodes = new List<Tuple<Point, int>>

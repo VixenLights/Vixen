@@ -127,32 +127,24 @@ public static class WireDiagramSvgBuilder
 	{
 		const float gap = 2f;
 		const float clearance = 2.5f;
-		var height = label.Ascent + label.Descent;
-		var halfDiagonal = MathF.Sqrt(label.Width * label.Width + height * height) / 2f;
+		var halfWidth = label.Width / 2f;
+		var halfHeight = (label.Ascent + label.Descent) / 2f;
 		var directions = new (float X, float Y)[]
 		{
 			(1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1)
 		};
 		var candidates = new List<LabelPlacement>();
 		var ordinal = 0;
-		foreach (var distance in new[] { radius + halfDiagonal + gap, radius + halfDiagonal + 2 * gap })
+		foreach (var direction in directions)
 		{
-			foreach (var direction in directions)
+			var length = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y);
+			var unitX = direction.X / length;
+			var unitY = direction.Y / length;
+			var projectedHalfSize = MathF.Abs(unitX) * halfWidth + MathF.Abs(unitY) * halfHeight;
+			foreach (var gapMultiplier in new[] { 1f, 2f })
 			{
-				var length = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y);
-				candidates.Add(new LabelPlacement(point.X + direction.X / length * distance, point.Y + direction.Y / length * distance, 0, ordinal++));
-			}
-		}
-
-		foreach (var angle in new[] { -30f, 30f, -45f, 45f })
-		{
-			foreach (var distance in new[] { radius + halfDiagonal + gap, radius + halfDiagonal + 2 * gap })
-			{
-				foreach (var direction in directions)
-				{
-					var length = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y);
-					candidates.Add(new LabelPlacement(point.X + direction.X / length * distance, point.Y + direction.Y / length * distance, angle, ordinal++));
-				}
+				var distance = radius + projectedHalfSize + gap * gapMultiplier;
+				candidates.Add(new LabelPlacement(point.X + unitX * distance, point.Y + unitY * distance, 0, ordinal++));
 			}
 		}
 
@@ -160,9 +152,18 @@ public static class WireDiagramSvgBuilder
 		var inBounds = candidates.Where(candidate => IsInsidePage(candidate, label, canvasWidth, canvasHeight, clearance)).ToArray();
 		var clear = inBounds.Where(candidate => CountIntersections(candidate, label, wires, clearance) == 0).ToArray();
 		var best = clear.Length > 0
-			? clear.OrderBy(candidate => CalculateLabelOverlapArea(candidate, label, placedLabels)).ThenBy(candidate => Math.Abs(candidate.Angle)).ThenBy(candidate => Math.Abs(candidate.CenterX - point.X) + Math.Abs(candidate.CenterY - point.Y)).ThenBy(candidate => candidate.Ordinal).First()
-			: inBounds.OrderBy(candidate => CountIntersections(candidate, label, wires, clearance)).ThenBy(candidate => CalculateLabelOverlapArea(candidate, label, placedLabels)).ThenBy(candidate => Math.Abs(candidate.Angle)).ThenBy(candidate => Math.Abs(candidate.CenterX - point.X) + Math.Abs(candidate.CenterY - point.Y)).ThenBy(candidate => candidate.Ordinal).FirstOrDefault();
-		return inBounds.Length == 0 ? candidates[0] : best!;
+			? clear.OrderBy(candidate => CalculateLabelOverlapArea(candidate, label, placedLabels)).ThenBy(candidate => GetLabelStartDistance(candidate, label, point)).ThenBy(candidate => candidate.Ordinal).First()
+			: inBounds.OrderBy(candidate => CountIntersections(candidate, label, wires, clearance)).ThenBy(candidate => CalculateLabelOverlapArea(candidate, label, placedLabels)).ThenBy(candidate => GetLabelStartDistance(candidate, label, point)).ThenBy(candidate => candidate.Ordinal).FirstOrDefault();
+		return inBounds.Length == 0
+			? candidates.OrderBy(candidate => GetLabelStartDistance(candidate, label, point)).ThenBy(candidate => candidate.Ordinal).First()
+			: best!;
+	}
+
+	private static float GetLabelStartDistance(LabelPlacement placement, LabelMeasurement label, PointF point)
+	{
+		var deltaX = placement.CenterX - label.Width / 2f - point.X;
+		var deltaY = placement.CenterY - point.Y;
+		return MathF.Sqrt(deltaX * deltaX + deltaY * deltaY);
 	}
 
 	private static float CalculateLabelOverlapArea(
