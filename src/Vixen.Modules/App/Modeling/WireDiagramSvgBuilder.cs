@@ -2,6 +2,7 @@
 
 using System.Drawing;
 using Svg;
+using Svg.Transforms;
 
 namespace VixenModules.App.Modeling;
 
@@ -75,11 +76,6 @@ public static class WireDiagramSvgBuilder
 				_ => CreateMiddleMarker(point, options.NodeRadius)
 			};
 			group.Children.Add(marker);
-
-			if (IsLabelSelected(index, nodes.Count, options.LabelInterval))
-			{
-				group.Children.Add(CreateLabel(nodes[index].Item2, point, options.NodeRadius, options.LabelFontSize));
-			}
 		}
 
 		for (var index = 1; index < points.Length; index++)
@@ -87,8 +83,155 @@ public static class WireDiagramSvgBuilder
 			group.Children.Add(CreateLine(points[index - 1], points[index]));
 		}
 
+		// Labels are deliberately emitted last so neither later markers nor wires obscure them.
+		var labels = MeasureLabels(nodes, options.LabelInterval, measurementGraphics, labelFont);
+		foreach (var label in labels)
+		{
+			var placement = PlaceLabel(points[label.Index], label, points, options.NodeRadius, layout.CanvasWidth, layout.CanvasHeight);
+			group.Children.Add(CreateLabel(label.Text, placement, label, labelFont.Size));
+		}
+
 		return document;
 	}
+
+	private static LabelMeasurement[] MeasureLabels(
+		IReadOnlyList<Tuple<Point, int>> nodes,
+		int labelInterval,
+		Graphics graphics,
+		Font font)
+	{
+		var family = font.FontFamily;
+		var emHeight = family.GetEmHeight(font.Style);
+		var ascent = font.Size * family.GetCellAscent(font.Style) / emHeight + 2f;
+		var descent = font.Size * family.GetCellDescent(font.Style) / emHeight + 2f;
+		return Enumerable.Range(0, nodes.Count)
+			.Where(index => IsLabelSelected(index, nodes.Count, labelInterval))
+			.Select(index =>
+			{
+				var text = nodes[index].Item2.ToString();
+				return new LabelMeasurement(index, text, graphics.MeasureString(text, font).Width + 2f, ascent, descent);
+			})
+			.ToArray();
+	}
+
+	private static LabelPlacement PlaceLabel(
+		PointF point,
+		LabelMeasurement label,
+		PointF[] points,
+		float radius,
+		float canvasWidth,
+		float canvasHeight)
+	{
+		const float gap = 2f;
+		const float clearance = 2.5f;
+		var height = label.Ascent + label.Descent;
+		var halfDiagonal = MathF.Sqrt(label.Width * label.Width + height * height) / 2f;
+		var directions = new (float X, float Y)[]
+		{
+			(1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1)
+		};
+		var candidates = new List<LabelPlacement>();
+		var ordinal = 0;
+		foreach (var distance in new[] { radius + halfDiagonal + gap, radius + halfDiagonal + 2 * gap })
+		{
+			foreach (var direction in directions)
+			{
+				var length = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y);
+				candidates.Add(new LabelPlacement(point.X + direction.X / length * distance, point.Y + direction.Y / length * distance, 0, ordinal++));
+			}
+		}
+
+		foreach (var angle in new[] { -30f, 30f, -45f, 45f })
+		{
+			foreach (var distance in new[] { radius + halfDiagonal + gap, radius + halfDiagonal + 2 * gap })
+			{
+				foreach (var direction in directions)
+				{
+					var length = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y);
+					candidates.Add(new LabelPlacement(point.X + direction.X / length * distance, point.Y + direction.Y / length * distance, angle, ordinal++));
+				}
+			}
+		}
+
+		var wires = Enumerable.Range(1, Math.Max(0, points.Length - 1)).Select(index => (points[index - 1], points[index])).ToArray();
+		var inBounds = candidates.Where(candidate => IsInsidePage(candidate, label, canvasWidth, canvasHeight, clearance)).ToArray();
+		var clear = inBounds.Where(candidate => CountIntersections(candidate, label, wires, clearance) == 0).ToArray();
+		var best = clear.Length > 0
+			? clear.OrderBy(candidate => Math.Abs(candidate.Angle)).ThenBy(candidate => Math.Abs(candidate.CenterX - point.X) + Math.Abs(candidate.CenterY - point.Y)).ThenBy(candidate => candidate.Ordinal).First()
+			: inBounds.OrderBy(candidate => CountIntersections(candidate, label, wires, clearance)).ThenBy(candidate => Math.Abs(candidate.Angle)).ThenBy(candidate => Math.Abs(candidate.CenterX - point.X) + Math.Abs(candidate.CenterY - point.Y)).ThenBy(candidate => candidate.Ordinal).FirstOrDefault();
+		return inBounds.Length == 0 ? candidates[0] : best!;
+	}
+
+	private static bool IsInsidePage(LabelPlacement placement, LabelMeasurement label, float width, float height, float margin)
+	{
+		var halfWidth = label.Width / 2f;
+		var halfHeight = (label.Ascent + label.Descent) / 2f;
+		var radians = placement.Angle * MathF.PI / 180f;
+		var extentX = Math.Abs(MathF.Cos(radians)) * halfWidth + Math.Abs(MathF.Sin(radians)) * halfHeight;
+		var extentY = Math.Abs(MathF.Sin(radians)) * halfWidth + Math.Abs(MathF.Cos(radians)) * halfHeight;
+		return placement.CenterX - extentX >= margin && placement.CenterX + extentX <= width - margin &&
+			placement.CenterY - extentY >= margin && placement.CenterY + extentY <= height - margin;
+	}
+
+	private static int CountIntersections(
+		LabelPlacement placement,
+		LabelMeasurement label,
+		(PointF Start, PointF End)[] wires,
+		float clearance)
+	{
+		var count = 0;
+		var radians = -placement.Angle * MathF.PI / 180f;
+		foreach (var wire in wires)
+		{
+			var start = ToLocal(wire.Start, placement, radians);
+			var end = ToLocal(wire.End, placement, radians);
+			if (SegmentIntersectsRectangle(start, end, label.Width / 2f + clearance, (label.Ascent + label.Descent) / 2f + clearance))
+			{
+				count++;
+			}
+		}
+		return count;
+	}
+
+	private static PointF ToLocal(PointF point, LabelPlacement placement, float radians)
+	{
+		var x = point.X - placement.CenterX;
+		var y = point.Y - placement.CenterY;
+		return new PointF(x * MathF.Cos(radians) - y * MathF.Sin(radians), x * MathF.Sin(radians) + y * MathF.Cos(radians));
+	}
+
+	private static bool SegmentIntersectsRectangle(PointF start, PointF end, float halfWidth, float halfHeight)
+	{
+		var min = 0f;
+		var max = 1f;
+		var dx = end.X - start.X;
+		var dy = end.Y - start.Y;
+		return Clip(-dx, start.X + halfWidth, ref min, ref max) && Clip(dx, halfWidth - start.X, ref min, ref max) &&
+			Clip(-dy, start.Y + halfHeight, ref min, ref max) && Clip(dy, halfHeight - start.Y, ref min, ref max);
+	}
+
+	private static bool Clip(float direction, float distance, ref float min, ref float max)
+	{
+		if (direction == 0)
+		{
+			return distance >= 0;
+		}
+		var amount = distance / direction;
+		if (direction < 0)
+		{
+			if (amount > max) return false;
+			min = Math.Max(min, amount);
+		}
+		else
+		{
+			if (amount < min) return false;
+			max = Math.Min(max, amount);
+		}
+		return true;
+	}
+
+	private sealed record LabelMeasurement(int Index, string Text, float Width, float Ascent, float Descent);
+	private sealed record LabelPlacement(float CenterX, float CenterY, float Angle, int Ordinal);
 
 	private static bool IsLabelSelected(int index, int count, int labelInterval)
 	{
@@ -107,7 +250,7 @@ public static class WireDiagramSvgBuilder
 		var maxX = firstPoint.X;
 		var minY = firstPoint.Y;
 		var maxY = firstPoint.Y;
-		var labelWidth = 0f;
+		var maxHalfDiagonal = 0f;
 		for (var index = 0; index < nodes.Count; index++)
 		{
 			var node = nodes[index];
@@ -117,28 +260,29 @@ public static class WireDiagramSvgBuilder
 			maxY = Math.Max(maxY, node.Item1.Y);
 			if (IsLabelSelected(index, nodes.Count, labelInterval))
 			{
-				labelWidth = Math.Max(labelWidth, graphics.MeasureString(node.Item2.ToString(), font).Width);
+				var measuredWidth = graphics.MeasureString(node.Item2.ToString(), font).Width + 2f;
+				var measureFamily = font.FontFamily;
+				var measureEmHeight = measureFamily.GetEmHeight(font.Style);
+				var labelHeight = font.Size * (measureFamily.GetCellAscent(font.Style) + measureFamily.GetCellDescent(font.Style)) / measureEmHeight + 4f;
+				maxHalfDiagonal = Math.Max(maxHalfDiagonal, MathF.Sqrt(measuredWidth * measuredWidth + labelHeight * labelHeight) / 2f);
 			}
 		}
 
 		var width = (double)maxX - minX;
 		var height = (double)maxY - minY;
-		labelWidth += 2f;
-		var family = font.FontFamily;
-		var emHeight = family.GetEmHeight(font.Style);
-		var ascent = font.Size * family.GetCellAscent(font.Style) / emHeight + 2f;
-		var descent = font.Size * family.GetCellDescent(font.Style) / emHeight + 2f;
 		var outerRadius = radius * 1.25f;
-		var right = Math.Max(outerRadius, radius + labelWidth);
-		var top = Math.Max(outerRadius, radius + ascent);
-		var bottom = Math.Max(outerRadius, descent - radius);
-		var portraitScale = GetScale(816f, 1056f, width, height, outerRadius, right, top, bottom);
-		var landscapeScale = GetScale(1056f, 816f, width, height, outerRadius, right, top, bottom);
+		const float labelGap = 2f;
+		var sideGuard = Math.Max(outerRadius, radius + 2 * maxHalfDiagonal + 2 * labelGap);
+		var right = sideGuard;
+		var top = sideGuard;
+		var bottom = sideGuard;
+		var portraitScale = GetScale(816f, 1056f, width, height, sideGuard, right, top, bottom);
+		var landscapeScale = GetScale(1056f, 816f, width, height, sideGuard, right, top, bottom);
 		var isPortrait = portraitScale >= landscapeScale;
 		var canvasWidth = isPortrait ? 816f : 1056f;
 		var canvasHeight = isPortrait ? 1056f : 816f;
 		var scale = isPortrait ? portraitScale : landscapeScale;
-		var originX = CanvasMargin + (canvasWidth - 2 * CanvasMargin - (width * scale + outerRadius + right)) / 2 + outerRadius;
+		var originX = CanvasMargin + (canvasWidth - 2 * CanvasMargin - (width * scale + sideGuard + right)) / 2 + sideGuard;
 		var originY = CanvasMargin + (canvasHeight - 2 * CanvasMargin - (height * scale + top + bottom)) / 2 + top;
 		return new Layout(minX, minY, width, scale, canvasWidth, canvasHeight, originX, originY);
 	}
@@ -177,16 +321,24 @@ public static class WireDiagramSvgBuilder
 		};
 	}
 
-	private static SvgText CreateLabel(int order, PointF point, float radius, float fontSize)
+	private static SvgText CreateLabel(string text, LabelPlacement placement, LabelMeasurement measurement, float fontSize)
 	{
-		return new SvgText
+		var centerY = placement.CenterY + (measurement.Ascent - measurement.Descent) / 2f;
+		var label = new SvgText
 		{
-			Text = order.ToString(),
+			Text = text,
 			Fill = new SvgColourServer(Color.Black),
+			FontFamily = LabelFontFamily,
 			FontSize = fontSize,
-			X = { point.X + radius },
-			Y = { point.Y - radius }
+			Transforms = new SvgTransformCollection(),
+			X = { placement.CenterX - measurement.Width / 2f },
+			Y = { centerY }
 		};
+		if (placement.Angle != 0)
+		{
+			label.Transforms.Add(new SvgRotate(placement.Angle, placement.CenterX, placement.CenterY));
+		}
+		return label;
 	}
 
 	private static SvgPolygon CreateStartMarker(PointF point, float radius)

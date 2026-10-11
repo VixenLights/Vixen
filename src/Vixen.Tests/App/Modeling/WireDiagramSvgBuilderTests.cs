@@ -1,6 +1,8 @@
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using Svg;
+using Svg.Transforms;
 using VixenModules.App.Modeling;
 using Xunit;
 
@@ -43,7 +45,7 @@ public sealed class WireDiagramSvgBuilderTests
 		Assert.Equal(2, children.OfType<SvgLine>().Count());
 		Assert.Equal(new[] { "17", "4", "29" }, children.OfType<SvgText>().Select(label => label.Text));
 		Assert.Equal(
-			new[] { typeof(SvgPolygon), typeof(SvgText), typeof(SvgCircle), typeof(SvgText), typeof(SvgRectangle), typeof(SvgText), typeof(SvgLine), typeof(SvgLine) },
+			new[] { typeof(SvgPolygon), typeof(SvgCircle), typeof(SvgRectangle), typeof(SvgLine), typeof(SvgLine), typeof(SvgText), typeof(SvgText), typeof(SvgText) },
 			children.Select(child => child.GetType()));
 		var lines = children.OfType<SvgLine>().ToArray();
 		var start = Assert.Single(children.OfType<SvgPolygon>());
@@ -57,6 +59,44 @@ public sealed class WireDiagramSvgBuilderTests
 		Assert.Equal(middle.CenterY.Value, lines[1].StartY.Value);
 		Assert.Equal(end.X.Value + end.Width.Value / 2, lines[1].EndX.Value);
 		Assert.Equal(end.Y.Value + end.Height.Value / 2, lines[1].EndY.Value);
+	}
+
+	[Fact]
+	public void Build_KeepsCoincidentNodeLabelPlacementFiniteAndDeterministic()
+	{
+		var nodes = Enumerable.Range(1, 5)
+			.Select(index => Tuple.Create(new Point(10, 10), index))
+			.ToArray();
+		var options = new WireDiagramExportOptions { LabelInterval = 1 };
+
+		var first = WireDiagramSvgBuilder.Build(nodes, false, options)!;
+		var second = WireDiagramSvgBuilder.Build(nodes, false, options)!;
+		var firstGroup = Assert.IsType<SvgGroup>(Assert.Single(first.Children));
+		var secondGroup = Assert.IsType<SvgGroup>(Assert.Single(second.Children));
+		var firstLabels = firstGroup.Children.OfType<SvgText>().ToArray();
+
+		Assert.Equal(5, firstLabels.Length);
+		Assert.Equal(new[] { "1", "2", "3", "4", "5" }, firstLabels.Select(label => label.Text));
+		Assert.Equal(firstLabels.Select(label => label.ToString()), secondGroup.Children.OfType<SvgText>().Select(label => label.ToString()));
+		Assert.All(firstLabels, label => Assert.True(float.IsFinite(label.X[0].Value) && float.IsFinite(label.Y[0].Value)));
+		Assert.All(firstGroup.Children.Skip(9), child => Assert.IsType<SvgText>(child));
+	}
+
+	[Fact]
+	public void CreateLabel_InitializesTransformsBeforeApplyingRotation()
+	{
+		var builderType = typeof(WireDiagramSvgBuilder);
+		var placementType = builderType.GetNestedType("LabelPlacement", BindingFlags.NonPublic)!;
+		var measurementType = builderType.GetNestedType("LabelMeasurement", BindingFlags.NonPublic)!;
+		var placement = Activator.CreateInstance(placementType, new object[] { 10f, 20f, 30f, 0 })!;
+		var measurement = Activator.CreateInstance(measurementType, new object[] { 0, "1", 10f, 10f, 4f })!;
+		var createLabel = builderType.GetMethod("CreateLabel", BindingFlags.NonPublic | BindingFlags.Static)!;
+
+		var label = Assert.IsType<SvgText>(createLabel.Invoke(null, ["1", placement, measurement, 14f]));
+
+		Assert.IsType<SvgRotate>(Assert.Single(label.Transforms));
+		Assert.Null(label.Stroke);
+		Assert.Equal(Color.Black, Assert.IsType<SvgColourServer>(label.Fill).Colour);
 	}
 
 	[Fact]
@@ -129,8 +169,8 @@ public sealed class WireDiagramSvgBuilderTests
 		Assert.Equal(Color.Green, Assert.IsType<SvgColourServer>(Assert.Single(standardGroup.Children.OfType<SvgPolygon>()).Fill).Colour);
 		Assert.Equal(Color.Red, Assert.IsType<SvgColourServer>(standardCircle.Fill).Colour);
 		Assert.Equal(Color.Red, Assert.IsType<SvgColourServer>(standardSquare.Fill).Colour);
-		Assert.Equal(standardCircle.CenterX.Value + standardCircle.Radius.Value, standardMiddleLabel.X[0].Value);
-		Assert.Equal(doubledCircle.CenterX.Value + doubledCircle.Radius.Value, doubledMiddleLabel.X[0].Value);
+		Assert.Equal(14f, standardMiddleLabel.FontSize.Value);
+		Assert.Equal(14f, doubledMiddleLabel.FontSize.Value);
 		var standardStar = Assert.Single(standardGroup.Children.OfType<SvgPolygon>());
 		var doubledStar = Assert.Single(doubledGroup.Children.OfType<SvgPolygon>());
 		var standardCenterY = standardStar.Points.Where((_, index) => index % 2 == 1).Average(point => point.Value);
@@ -215,15 +255,9 @@ public sealed class WireDiagramSvgBuilderTests
 		Assert.Equal(Color.Green, Assert.IsType<SvgColourServer>(star.Fill).Colour);
 		Assert.Equal(Color.Red, Assert.IsType<SvgColourServer>(Assert.Single(group.Children.OfType<SvgRectangle>()).Fill).Colour);
 
-		foreach (var label in labels.Where(label => label.Text is "50" or "100"))
-		{
-			var expectedCenter = (X: label.X[0].Value - 6f, Y: label.Y[0].Value + 6f);
-			Assert.Contains(diamonds, diamond =>
-			{
-				var center = GetPolygonCenter(diamond);
-				return Math.Abs(center.X - expectedCenter.X) < 0.001f && Math.Abs(center.Y - expectedCenter.Y) < 0.001f;
-			});
-		}
+		Assert.Equal(new[] { "1", "50", "100", "123" }, labels.Select(label => label.Text));
+		var markerCount = group.Children.TakeWhile(child => child is not SvgLine).Count();
+		Assert.All(group.Children.Skip(markerCount + 122), child => Assert.IsType<SvgText>(child));
 	}
 
 	[Fact]
@@ -303,7 +337,7 @@ public sealed class WireDiagramSvgBuilderTests
 	[Theory]
 	[InlineData(0, 0, 100, 1000, 816f, 1056f)]
 	[InlineData(0, 0, 1000, 100, 1056f, 816f)]
-	[InlineData(0, 0, 100, 100, 1056f, 816f)]
+	[InlineData(0, 0, 100, 100, 816f, 1056f)]
 	public void Build_SelectsOrientationAndViewBoxFromModelExtents(int x, int y, int width, int height, float expectedWidth, float expectedHeight)
 	{
 		var nodes = new[]
