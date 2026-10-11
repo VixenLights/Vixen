@@ -20,6 +20,12 @@ public sealed record WireDiagramExportOptions
 	public float NodeRadius { get; init; } = 6f;
 
 	/// <summary>
+	/// Gets or sets the font size used for node labels in SVG drawing units.
+	/// </summary>
+	/// <value>The whole-number font size from 6 through 24. The default is 14.</value>
+	public float LabelFontSize { get; init; } = 14f;
+
+	/// <summary>
 	/// Gets or sets the enlargement factor applied to the complete exported page.
 	/// </summary>
 	/// <value>The factor from 1 through 4. The default is 1.</value>
@@ -39,6 +45,11 @@ public sealed record WireDiagramExportOptions
 		if (!float.IsFinite(NodeRadius) || NodeRadius is < 1f or > 30f)
 		{
 			throw new ArgumentOutOfRangeException(nameof(NodeRadius), NodeRadius, "The node radius must be finite and between 1 and 30.");
+		}
+
+		if (!float.IsFinite(LabelFontSize) || LabelFontSize is < 6f or > 24f || LabelFontSize != MathF.Truncate(LabelFontSize))
+		{
+			throw new ArgumentOutOfRangeException(nameof(LabelFontSize), LabelFontSize, "The label font size must be a whole number between 6 and 24.");
 		}
 
 		if (!float.IsFinite(ExportScale) || ExportScale is < 1f or > 4f)

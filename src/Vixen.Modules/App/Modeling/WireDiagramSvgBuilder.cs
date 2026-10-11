@@ -11,7 +11,6 @@ namespace VixenModules.App.Modeling;
 public static class WireDiagramSvgBuilder
 {
 	private const float CanvasMargin = 24f;
-	private const float LabelFontSize = 16f;
 	private const string LabelFontFamily = "Arial";
 
 	/// <summary>
@@ -39,7 +38,7 @@ public static class WireDiagramSvgBuilder
 
 		using var measurementBitmap = new Bitmap(1, 1);
 		using var measurementGraphics = Graphics.FromImage(measurementBitmap);
-		using var labelFont = new Font(LabelFontFamily, LabelFontSize, FontStyle.Regular, GraphicsUnit.Pixel);
+		using var labelFont = new Font(LabelFontFamily, options.LabelFontSize, FontStyle.Regular, GraphicsUnit.Pixel);
 		var layout = CalculateLayout(nodes, options.LabelInterval, options.NodeRadius, measurementGraphics, labelFont);
 		var document = new SvgDocument
 		{
@@ -79,7 +78,7 @@ public static class WireDiagramSvgBuilder
 
 			if (IsLabelSelected(index, nodes.Count, options.LabelInterval))
 			{
-				group.Children.Add(CreateLabel(nodes[index].Item2, point, options.NodeRadius));
+				group.Children.Add(CreateLabel(nodes[index].Item2, point, options.NodeRadius, options.LabelFontSize));
 			}
 		}
 
@@ -178,13 +177,13 @@ public static class WireDiagramSvgBuilder
 		};
 	}
 
-	private static SvgText CreateLabel(int order, PointF point, float radius)
+	private static SvgText CreateLabel(int order, PointF point, float radius, float fontSize)
 	{
 		return new SvgText
 		{
 			Text = order.ToString(),
 			Fill = new SvgColourServer(Color.Black),
-			FontSize = 16,
+			FontSize = fontSize,
 			X = { point.X + radius },
 			Y = { point.Y - radius }
 		};

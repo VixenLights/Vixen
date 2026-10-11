@@ -13,6 +13,7 @@ public sealed class WireDiagramExportOptionsTests
 
 		Assert.Equal(1, options.LabelInterval);
 		Assert.Equal(6f, options.NodeRadius);
+		Assert.Equal(14f, options.LabelFontSize);
 		Assert.Equal(1f, options.ExportScale);
 		options.Validate();
 	}
@@ -50,6 +51,30 @@ public sealed class WireDiagramExportOptionsTests
 	public void Validate_RejectsNodeRadiusOutsideBoundsOrNonFinite(float nodeRadius)
 	{
 		var options = new WireDiagramExportOptions { NodeRadius = nodeRadius };
+
+		Assert.Throws<ArgumentOutOfRangeException>(options.Validate);
+	}
+
+	[Theory]
+	[InlineData(6f)]
+	[InlineData(14f)]
+	[InlineData(24f)]
+	public void Validate_AcceptsLabelFontSizeBounds(float labelFontSize)
+	{
+		new WireDiagramExportOptions { LabelFontSize = labelFontSize }.Validate();
+	}
+
+	[Theory]
+	[InlineData(0f)]
+	[InlineData(5f)]
+	[InlineData(25f)]
+	[InlineData(14.5f)]
+	[InlineData(float.NaN)]
+	[InlineData(float.PositiveInfinity)]
+	[InlineData(float.NegativeInfinity)]
+	public void Validate_RejectsLabelFontSizeOutsideBoundsNonWholeOrNonFinite(float labelFontSize)
+	{
+		var options = new WireDiagramExportOptions { LabelFontSize = labelFontSize };
 
 		Assert.Throws<ArgumentOutOfRangeException>(options.Validate);
 	}

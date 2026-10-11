@@ -428,15 +428,19 @@ public sealed class WireDiagramSvgBuilderTests
 		}
 	}
 
-	[Fact]
-	public void Build_KeepsLongEndpointLabelAndMarkersInsideCanvasMargins()
+	[Theory]
+	[InlineData(6f)]
+	[InlineData(14f)]
+	[InlineData(24f)]
+	public void Build_KeepsLongEndpointLabelAndMarkersInsideCanvasMargins(float labelFontSize)
 	{
 		var nodes = new[]
 		{
 			Tuple.Create(new Point(-1000, -1000), int.MinValue),
 			Tuple.Create(new Point(1000, 1000), int.MaxValue)
 		};
-		var document = WireDiagramSvgBuilder.Build(nodes, false, new WireDiagramExportOptions())!;
+		var options = new WireDiagramExportOptions { LabelFontSize = labelFontSize };
+		var document = WireDiagramSvgBuilder.Build(nodes, false, options)!;
 		var group = Assert.IsType<SvgGroup>(Assert.Single(document.Children));
 		var start = Assert.IsType<SvgPolygon>(group.Children.OfType<SvgPolygon>().Single());
 		var end = Assert.IsType<SvgRectangle>(group.Children.OfType<SvgRectangle>().Single());
@@ -449,12 +453,13 @@ public sealed class WireDiagramSvgBuilderTests
 		Assert.True(end.Y.Value + end.Height.Value <= document.ViewBox.Height - 23.9f);
 		using var measurementBitmap = new System.Drawing.Bitmap(1, 1);
 		using var graphics = System.Drawing.Graphics.FromImage(measurementBitmap);
-		using var font = new System.Drawing.Font("Arial", 16, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+		using var font = new System.Drawing.Font("Arial", labelFontSize, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
 		var emHeight = font.FontFamily.GetEmHeight(font.Style);
 		var ascent = font.Size * font.FontFamily.GetCellAscent(font.Style) / emHeight + 2f;
 		var descent = font.Size * font.FontFamily.GetCellDescent(font.Style) / emHeight + 2f;
 		foreach (var label in labels)
 		{
+			Assert.Equal(labelFontSize, label.FontSize.Value);
 			var labelWidth = graphics.MeasureString(label.Text, font).Width + 2f;
 			Assert.True(label.X[0].Value >= 24f);
 			Assert.True(label.X[0].Value + labelWidth <= document.ViewBox.Width - 24f);
