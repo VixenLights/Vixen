@@ -4,24 +4,40 @@ using Svg;
 using Vixen.Sys;
 using VixenModules.Property.Location;
 using VixenModules.Property.Order;
+using VixenModules.App.Modeling.Views;
 
 namespace VixenModules.App.Modeling
 {
 	public class ElementModeling
 	{
+		/// <summary>
+		/// Exports an SVG wire diagram for an already ordered sequence of points.
+		/// </summary>
+		/// <param name="nodes">The points and existing displayed node numbers in wiring order.</param>
+		/// <param name="flip"><see langword="true" /> to mirror point positions; otherwise, <see langword="false" />.</param>
+		/// <remarks>Numbering and sequence order are preserved. Canceling or closing the options dialog produces no export.</remarks>
 		public static void OrderedPointsToSvg(IEnumerable<Tuple<Point, int>> nodes, bool flip = false)
 		{
 			ArgumentNullException.ThrowIfNull(nodes);
 			var orderedNodes = nodes.ToList();
 			if (orderedNodes.Count == 0) return;
 
-			var document = WireDiagramSvgBuilder.Build(orderedNodes, flip, new WireDiagramExportOptions());
+			var options = WireDiagramExportOptionsWindow.ShowAsDialog();
+			if (options == null) return;
+
+			var document = WireDiagramSvgBuilder.Build(orderedNodes, flip, options);
 			if (document != null)
 			{
 				OpenDoc(document);
 			}
 		}
 
+		/// <summary>
+		/// Exports an SVG wire diagram for the located elements beneath the specified node.
+		/// </summary>
+		/// <param name="elementNode">The root of the element hierarchy to export.</param>
+		/// <param name="flip"><see langword="true" /> to mirror point positions; otherwise, <see langword="false" />.</param>
+		/// <remarks>Existing wiring order and displayed numbers are preserved. Canceling or closing the options dialog produces no export.</remarks>
 		public static void ElementsToSvg(ElementNode elementNode, bool flip = false)
 		{
 			if (elementNode == null) return;
@@ -46,7 +62,10 @@ namespace VixenModules.App.Modeling
 				counter++;
 			}
 
-			var document = WireDiagramSvgBuilder.Build(nodes, flip, new WireDiagramExportOptions());
+			var options = WireDiagramExportOptionsWindow.ShowAsDialog();
+			if (options == null) return;
+
+			var document = WireDiagramSvgBuilder.Build(nodes, flip, options);
 			if (document != null)
 			{
 				OpenDoc(document);
