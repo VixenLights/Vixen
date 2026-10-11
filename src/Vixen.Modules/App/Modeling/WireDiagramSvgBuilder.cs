@@ -36,8 +36,8 @@ public static class WireDiagramSvgBuilder
 			return null;
 		}
 
-		var points = nodes.Select(node => node.Item1);
-		var rect = CalculateModelRectangle(points);
+		var nodePoints = nodes.Select(node => node.Item1);
+		var rect = CalculateModelRectangle(nodePoints);
 		var scale = 1f;
 		if (rect.Width < 800)
 		{
@@ -50,32 +50,35 @@ public static class WireDiagramSvgBuilder
 		var group = new SvgGroup();
 		document.Children.Add(group);
 
-		var lastPoint = new PointF();
-		var first = true;
-		const int radius = 6;
+		var points = new PointF[nodes.Count];
+		for (var index = 0; index < nodes.Count; index++)
+		{
+			var point = ScalePoint(nodes[index].Item1, scale, rect.Location);
+			points[index] = flip
+				? new PointF(document.ViewBox.Width - point.X - ExtraWidth, point.Y)
+				: point;
+		}
 
 		for (var index = 0; index < nodes.Count; index++)
 		{
-			var node = nodes[index];
-			var point = ScalePoint(node.Item1, scale, rect.Location);
-			if (flip)
+			var point = points[index];
+			SvgElement marker = index switch
 			{
-				point = new PointF(document.ViewBox.Width - point.X - ExtraWidth, point.Y);
-			}
+				0 => CreateStartMarker(point, options.NodeRadius),
+				_ when index == nodes.Count - 1 => CreateEndMarker(point, options.NodeRadius),
+				_ => CreateMiddleMarker(point, options.NodeRadius)
+			};
+			group.Children.Add(marker);
 
-			group.Children.Add(CreateLightNode(point, radius));
 			if (index == 0 || (index + 1) % options.LabelInterval == 0 || index == nodes.Count - 1)
 			{
-				group.Children.Add(CreateLabel(node.Item2, point, radius));
+				group.Children.Add(CreateLabel(nodes[index].Item2, point, options.NodeRadius));
 			}
+		}
 
-			if (!first)
-			{
-				group.Children.Add(CreateLine(lastPoint, point));
-			}
-
-			first = false;
-			lastPoint = point;
+		for (var index = 1; index < points.Length; index++)
+		{
+			group.Children.Add(CreateLine(points[index - 1], points[index]));
 		}
 
 		return document;
@@ -128,7 +131,7 @@ public static class WireDiagramSvgBuilder
 		};
 	}
 
-	private static SvgText CreateLabel(int order, PointF point, int radius)
+	private static SvgText CreateLabel(int order, PointF point, float radius)
 	{
 		return new SvgText
 		{
@@ -140,14 +143,52 @@ public static class WireDiagramSvgBuilder
 		};
 	}
 
-	private static SvgCircle CreateLightNode(PointF point, int radius)
+	private static SvgPolygon CreateStartMarker(PointF point, float radius)
+	{
+		var outerRadius = radius * 1.25f;
+		var innerRadius = outerRadius / 2f;
+		var vertices = Enumerable.Range(0, 10)
+			.Select(index =>
+			{
+				var angle = -Math.PI / 2 + index * Math.PI / 5;
+				var vertexRadius = index % 2 == 0 ? outerRadius : innerRadius;
+				return new PointF(
+					point.X + (float)(Math.Cos(angle) * vertexRadius),
+					point.Y + (float)(Math.Sin(angle) * vertexRadius));
+			})
+			.ToArray();
+		var points = new SvgPointCollection();
+		foreach (var vertex in vertices)
+		{
+			points.Add(vertex.X);
+			points.Add(vertex.Y);
+		}
+
+		return new SvgPolygon
+		{
+			Points = points,
+			Fill = new SvgColourServer(Color.Green)
+		};
+	}
+
+	private static SvgRectangle CreateEndMarker(PointF point, float radius)
+	{
+		return new SvgRectangle
+		{
+			X = point.X - radius,
+			Y = point.Y - radius,
+			Width = radius * 2,
+			Height = radius * 2,
+			Fill = new SvgColourServer(Color.Red)
+		};
+	}
+
+	private static SvgCircle CreateMiddleMarker(PointF point, float radius)
 	{
 		return new SvgCircle
 		{
 			Radius = radius,
 			Fill = new SvgColourServer(Color.Red),
-			//Stroke = new SvgColourServer(Color.Black),
-			//StrokeWidth = 1,
 			CenterX = point.X,
 			CenterY = point.Y
 		};

@@ -37,12 +37,26 @@ public sealed class WireDiagramSvgBuilderTests
 		var group = Assert.IsType<SvgGroup>(Assert.Single(document!.Children));
 		var children = group.Children.ToArray();
 
-		Assert.Equal(3, children.OfType<SvgCircle>().Count());
+		Assert.Single(children.OfType<SvgPolygon>());
+		Assert.Single(children.OfType<SvgCircle>());
+		Assert.Single(children.OfType<SvgRectangle>());
 		Assert.Equal(2, children.OfType<SvgLine>().Count());
 		Assert.Equal(new[] { "17", "4", "29" }, children.OfType<SvgText>().Select(label => label.Text));
 		Assert.Equal(
-			new[] { typeof(SvgCircle), typeof(SvgText), typeof(SvgCircle), typeof(SvgText), typeof(SvgLine), typeof(SvgCircle), typeof(SvgText), typeof(SvgLine) },
+			new[] { typeof(SvgPolygon), typeof(SvgText), typeof(SvgCircle), typeof(SvgText), typeof(SvgRectangle), typeof(SvgText), typeof(SvgLine), typeof(SvgLine) },
 			children.Select(child => child.GetType()));
+		var lines = children.OfType<SvgLine>().ToArray();
+		var start = Assert.Single(children.OfType<SvgPolygon>());
+		var middle = Assert.Single(children.OfType<SvgCircle>());
+		var end = Assert.Single(children.OfType<SvgRectangle>());
+		Assert.InRange(Math.Abs(start.Points[0].Value - lines[0].StartX.Value), 0f, 0.001f);
+		Assert.Equal(start.Points[1].Value + 7.5f, lines[0].StartY.Value);
+		Assert.Equal(middle.CenterX.Value, lines[0].EndX.Value);
+		Assert.Equal(middle.CenterY.Value, lines[0].EndY.Value);
+		Assert.Equal(middle.CenterX.Value, lines[1].StartX.Value);
+		Assert.Equal(middle.CenterY.Value, lines[1].StartY.Value);
+		Assert.Equal(end.X.Value + end.Width.Value / 2, lines[1].EndX.Value);
+		Assert.Equal(end.Y.Value + end.Height.Value / 2, lines[1].EndY.Value);
 	}
 
 	[Fact]
@@ -59,12 +73,68 @@ public sealed class WireDiagramSvgBuilderTests
 		var back = WireDiagramSvgBuilder.Build(nodes, true, options)!;
 		var frontGroup = Assert.IsType<SvgGroup>(Assert.Single(front.Children));
 		var backGroup = Assert.IsType<SvgGroup>(Assert.Single(back.Children));
-		var frontCenters = frontGroup.Children.OfType<SvgCircle>().Select(circle => circle.CenterX.Value).ToArray();
-		var backCenters = backGroup.Children.OfType<SvgCircle>().Select(circle => circle.CenterX.Value).ToArray();
+		var frontStart = Assert.IsType<SvgPolygon>(frontGroup.Children.OfType<SvgPolygon>().Single());
+		var backStart = Assert.IsType<SvgPolygon>(backGroup.Children.OfType<SvgPolygon>().Single());
+		var frontMiddle = Assert.IsType<SvgCircle>(frontGroup.Children.OfType<SvgCircle>().Single());
+		var backMiddle = Assert.IsType<SvgCircle>(backGroup.Children.OfType<SvgCircle>().Single());
+		var frontEnd = Assert.IsType<SvgRectangle>(frontGroup.Children.OfType<SvgRectangle>().Single());
+		var backEnd = Assert.IsType<SvgRectangle>(backGroup.Children.OfType<SvgRectangle>().Single());
 
-		Assert.Equal(new[] { 0f, 320f, 800f }, frontCenters);
-		Assert.Equal(new[] { 800f, 480f, 0f }, backCenters);
+		Assert.InRange(Math.Abs(frontStart.Points[0].Value), 0f, 0.001f);
+		Assert.InRange(Math.Abs(backStart.Points[0].Value - 800f), 0f, 0.001f);
+		Assert.Equal(320f, frontMiddle.CenterX.Value);
+		Assert.Equal(480f, backMiddle.CenterX.Value);
+		Assert.Equal(794f, frontEnd.X.Value);
+		Assert.Equal(-6f, backEnd.X.Value);
 		Assert.Equal(new[] { "1", "2", "3" }, backGroup.Children.OfType<SvgText>().Select(label => label.Text));
+	}
+
+	[Fact]
+	public void Build_UsesStartMarkerForSingleNodeWithoutWireOrEndMarker()
+	{
+		var nodes = new[] { Tuple.Create(new Point(10, 20), 42) };
+
+		var document = WireDiagramSvgBuilder.Build(nodes, false, new WireDiagramExportOptions());
+		var group = Assert.IsType<SvgGroup>(Assert.Single(document!.Children));
+
+		Assert.Single(group.Children.OfType<SvgPolygon>());
+		Assert.Empty(group.Children.OfType<SvgCircle>());
+		Assert.Empty(group.Children.OfType<SvgRectangle>());
+		Assert.Empty(group.Children.OfType<SvgLine>());
+		Assert.Equal("42", Assert.Single(group.Children.OfType<SvgText>()).Text);
+	}
+
+	[Fact]
+	public void Build_ScalesMarkerDimensionsAndLabelOffsetWithRadius()
+	{
+		var nodes = new[]
+		{
+			Tuple.Create(new Point(10, 20), 1),
+			Tuple.Create(new Point(30, 30), 2),
+			Tuple.Create(new Point(60, 50), 3)
+		};
+		var standard = WireDiagramSvgBuilder.Build(nodes, false, new WireDiagramExportOptions())!;
+		var doubled = WireDiagramSvgBuilder.Build(nodes, false, new WireDiagramExportOptions { NodeRadius = 12 })!;
+		var standardGroup = Assert.IsType<SvgGroup>(Assert.Single(standard.Children));
+		var doubledGroup = Assert.IsType<SvgGroup>(Assert.Single(doubled.Children));
+		var standardCircle = Assert.IsType<SvgCircle>(standardGroup.Children.OfType<SvgCircle>().Single());
+		var doubledCircle = Assert.IsType<SvgCircle>(doubledGroup.Children.OfType<SvgCircle>().Single());
+		var standardSquare = Assert.IsType<SvgRectangle>(standardGroup.Children.OfType<SvgRectangle>().Single());
+		var doubledSquare = Assert.IsType<SvgRectangle>(doubledGroup.Children.OfType<SvgRectangle>().Single());
+		var standardMiddleLabel = standardGroup.Children.OfType<SvgText>().ElementAt(1);
+		var doubledMiddleLabel = doubledGroup.Children.OfType<SvgText>().ElementAt(1);
+
+		Assert.Equal(12f, doubledCircle.Radius.Value);
+		Assert.Equal(standardCircle.Radius.Value * 2, doubledCircle.Radius.Value);
+		Assert.Equal(12f, standardSquare.Width.Value);
+		Assert.Equal(24f, doubledSquare.Width.Value);
+		Assert.Equal(Color.Green, Assert.IsType<SvgColourServer>(Assert.Single(standardGroup.Children.OfType<SvgPolygon>()).Fill).Colour);
+		Assert.Equal(Color.Red, Assert.IsType<SvgColourServer>(standardCircle.Fill).Colour);
+		Assert.Equal(Color.Red, Assert.IsType<SvgColourServer>(standardSquare.Fill).Colour);
+		Assert.Equal(standardCircle.CenterX.Value + standardCircle.Radius.Value, standardMiddleLabel.X[0].Value);
+		Assert.Equal(doubledCircle.CenterX.Value + doubledCircle.Radius.Value, doubledMiddleLabel.X[0].Value);
+		Assert.Equal(7.5f, Math.Abs(Assert.Single(standardGroup.Children.OfType<SvgPolygon>()).Points[1].Value));
+		Assert.Equal(15f, Math.Abs(Assert.Single(doubledGroup.Children.OfType<SvgPolygon>()).Points[1].Value));
 	}
 
 	[Theory]
@@ -85,7 +155,9 @@ public sealed class WireDiagramSvgBuilderTests
 		var children = group.Children.ToArray();
 
 		Assert.Equal(expectedLabels, children.OfType<SvgText>().Select(label => label.Text));
-		Assert.Equal(count, children.OfType<SvgCircle>().Count());
+		Assert.Single(children.OfType<SvgPolygon>());
+		Assert.Equal(Math.Max(count - 2, 0), children.OfType<SvgCircle>().Count());
+		Assert.Equal(count > 1 ? 1 : 0, children.OfType<SvgRectangle>().Count());
 		Assert.Equal(count - 1, children.OfType<SvgLine>().Count());
 	}
 
@@ -106,7 +178,10 @@ public sealed class WireDiagramSvgBuilderTests
 		var group = Assert.IsType<SvgGroup>(Assert.Single(document!.Children));
 
 		Assert.Equal(new[] { "8", "4", "8" }, group.Children.OfType<SvgText>().Select(label => label.Text));
-		Assert.Equal(5, group.Children.OfType<SvgCircle>().Count());
+		Assert.Single(group.Children.OfType<SvgPolygon>());
+		Assert.Equal(3, group.Children.OfType<SvgCircle>().Count());
+		Assert.Single(group.Children.OfType<SvgRectangle>());
 		Assert.Equal(4, group.Children.OfType<SvgLine>().Count());
 	}
+
 }

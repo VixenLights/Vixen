@@ -20,7 +20,7 @@ The existing output is SVG, a vector image whose shapes remain sharp when enlarg
 - [x] (2026-10-11) Milestone 2: Confirmed available project/test/host conventions; added validated export options and boundary tests (15 passed).
 - [x] (2026-10-11) Milestone 3: Extracted the shared SVG builder; automated checks passed and the user confirmed equivalent output at all three export locations.
 - [x] (2026-10-11) Milestone 4: Added sequence-position label filtering; focused tests passed and the user confirmed interval 50 skips labels while defaults preserve previous behavior.
-- [ ] Milestone 5: Add configurable start, middle, and end markers.
+- [ ] Milestone 5: Add configurable start, middle, and end markers. Builder implementation and focused tests pass; existing-viewer inspection and manual review remain outstanding.
 - [ ] Milestone 6: Fit the diagram into a letter canvas.
 - [ ] Milestone 7: Enlarge the whole SVG.
 - [ ] Milestone 8: Add the options view model.
@@ -77,6 +77,8 @@ Decision: Use a WPF options dialog in the existing Modeling assembly with a Cate
 
 Decision: Keep each milestone to one responsibility and normally at most two production files, plus focused tests and this plan. Rationale: the user requested steps suitable for a lower reasoning model. Date/Author: 2026-10-11, planning agent.
 
+Decision: Paint each marker, then its number label, then paint all connecting wires last. This keeps labels above their markers but below the wires, which remain visible through marker centers. Rationale: the user clarified both the prechange wire visibility and label layering. Date/Author: 2026-10-11, user.
+
 ## Outcomes & Retrospective
 
 
@@ -89,6 +91,8 @@ Milestone 2 outcome (2026-10-11): Added `WireDiagramExportOptions` with defaults
 Milestone 3 implementation outcome (2026-10-11): Added `WireDiagramSvgBuilder` and its focused tests, then routed `OrderedPointsToSvg` and `ElementsToSvg` through the shared builder while retaining node ordering and `OpenDoc` in `ElementModeling`. The builder materializes no files and does not launch a process; it accepts and validates options while preserving the prior radius 6, label size 16, width-based scaling, view box padding, horizontal flip, and element sequence. The full-MSBuild command `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` exited 0. The focused command `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramSvgBuilderTests` passed 4 tests (0 failed, 0 skipped). Rider reported no file problems in the three changed C# files; `git diff --check` passed. Manual review (2026-10-11): the user confirmed that all three export locations still produce an equivalent SVG diagram that looks like the pre-change output. Milestone 3 is complete.
 
 Milestone 4 outcome (2026-10-11): Updated `WireDiagramSvgBuilder` to select number labels by sequence position: the first node, each interval position, and the final node. All markers and links remain, and the supplied number values remain unchanged. Added focused cases for 123 nodes at interval 50, the 100-node boundary without a duplicate endpoint, interval 1, an interval larger than the sequence, a singleton, and repeated/nonsequential displayed values. The full-MSBuild command `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` exited 0 with unrelated existing warnings. The focused command `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramSvgBuilderTests` passed 10 tests (0 failed, 0 skipped). Rider reported warnings in both changed files, with no changes made to warnings outside this milestone's new lines; `git diff --check` passed. Manual review (2026-10-11): the user confirmed interval 50 displays skipped labels and default options preserve the previous behavior. Milestone 4 is complete; milestone 5 remains open.
+
+Milestone 5 implementation outcome (2026-10-11): Changed only the shared builder and its focused test file. The builder now draws each marker, then its number label, then all wires, so labels overlay markers while wires overlay both. It uses a green ten-vertex start star with outer radius 1.25r, red middle circles, and a red square of side 2r at the final point. The wires therefore remain visible through marker centers, as the user requested to match the prechange appearance. It uses the selected `NodeRadius` for all markers and label offsets, and gives the start marker precedence for a singleton. Tests cover marker types/colors/counts, layering, exact star/square/circle dimensions, radius-dependent label offsets, front/back endpoint identity, and the singleton case. The full-MSBuild test-target command `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -verbosity:quiet` exited 0 (unrelated warnings remain); the focused `WireDiagramSvgBuilderTests` command passed 12 tests (0 failed, 0 skipped). Rider file analysis reported weak allocation/style warnings, including existing findings; no unrelated cleanup was made. `git diff --check` passed. The requested inspection in the existing SVG viewer has not been performed in this environment, so the milestone remains open at its manual review checkpoint.
 
 ## Context and Orientation
 
@@ -201,7 +205,7 @@ STOP HERE for manual review and commit execution before proceeding.
 ### Milestone 5: Render the three marker roles
 
 
-Context and work: change only the builder and its tests. Replace the first circle with the green star, the last circle with the centered square, and retain red circles in the middle. Use the selected radius and the exact star/square geometry above. Put wire elements before markers and labels so a connecting line cannot conceal the marker center. Use first-node precedence for a singleton.
+Context and work: change only the builder and its tests. Replace the first circle with the green star, the last circle with the centered square, and retain red circles in the middle. Use the selected radius and the exact star/square geometry above. For each node, add the marker followed by its number label; after all nodes, add every wire so labels are above their markers but below the connecting lines. Use first-node precedence for a singleton.
 
 Concrete steps: run the builder test class and inspect one SVG in the existing viewer. Acceptance: a three-node export has one green star, one red circle, one red square, and two black wires; doubling the radius doubles each marker's dimensions and label offset. The star's outer radius is 1.25r and square side is 2r. Back export retains endpoint identity while mirroring centers. A one-node export has one green star and one label, with no square or wire.
 
