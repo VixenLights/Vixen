@@ -1,7 +1,7 @@
 # Restore immediate pixel selection highlighting in the Custom Prop Editor (VIX-4014)
 
 
-This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document contains the architecture design and the active execution plan; analysis is complete, but implementation has not started.
+This ExecPlan is a living document maintained in accordance with `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document contains the architecture design and active execution plan; milestone 2 is complete, and milestone 3 remains pending.
 
 ## Purpose / Big Picture
 
@@ -18,7 +18,7 @@ The issue is [VIX-4014: Highlighting pixel in custom prop editor issue](https://
 - [x] (2026-10-11 14:08Z) Established the source-level cause and bounded production changes to three private PropDesigner methods. Rider test discovery reports no existing PropDesigner tests.
 - [x] (2026-10-11 14:08Z) Prepared this design and execution plan. The initial working tree was clean.
 - [x] (2026-10-11 14:15Z) Milestone 1: Updated Jira VIX-4014 with user-facing Summary, Scope, Acceptance Criteria, and Testing sections. Read the issue back and confirmed the original report, reproduction comment 40579, attachment `vixen4.png` (18208), Accepted status, and unassigned state were preserved. No status, assignee, or comment changes were made.
-- [ ] Milestone 2: Add regression tests, correct notification ordering, and validate the viewer and State Definition behavior.
+- [x] (2026-10-11 14:42Z) Milestone 2: Corrected viewer notification ordering, added actual WPF regression tests, and completed automated and manual acceptance. Focused tests passed 3/3; Custom Prop Editor tests passed 148/148; the Release `Vixen_Tests` target build and Release solution rebuild succeeded; Rider file analysis found no problems in either changed C# file; and `git diff --check` passed. The user manually confirmed single selection, replacement, Ctrl-click multi-selection, rectangle selection/removal and additive behavior, click-anywhere clearing (including repeated clear), tree synchronization, movement and handle behavior, Layout/Order regression expectations, and State Definition assignment/preview behavior except for the separate Layout/Order tab-switch issue recorded under Surprises & Discoveries. That switch issue predates this change and is deferred to another issue by user direction. Gortex detected the three changed production methods, found no configured guards, reported no indexed test edges for the changed methods because the new test file is untracked, and issued a behavioral-risk warning for review.
 - [ ] Milestone 3: Record validation and reconcile Jira with the completed change.
 
 ## Surprises & Discoveries
@@ -43,7 +43,7 @@ Observation: Movement handles appear only when SelectedModels.Count is greater t
 
 Observation: State Definition mode uses explicit assignment operations and temporary preview colors. The primary repository reference is `docs/plans/state/vix-3929-custom-prop-editor-state-requirements.md`, particularly State Item Assignment and Custom Prop Editor Preview. The related implementation plan, `docs/plans/state/vix-3929-custom-prop-editor-state.md`, documents temporary LightViewModel.DisplayColor values and restoration of configured normal colors on leaving that mode. The current code agrees with those requirements. Older test commands in the State requirements omit the full-MSBuild C++/CLI prerequisite; use the current AGENTS.md workflow below.
 
-Observation: Rider findTests for VixenModules.App.CustomPropEditor.Controls.PropDesigner returned: "There are no existing tests for VixenModules.App.CustomPropEditor.Controls.PropDesigner". Existing drawing color and State tests are in `src/Vixen.Tests/App/CustomPropEditor/State/CustomPropStateEditorViewModelTests.cs`; they use xUnit and the CustomPropEditor test collection. They do not exercise viewer-originated collection notifications.
+Observation: Rider findTests for VixenModules.App.CustomPropEditor.Controls.PropDesigner returned: "There are no existing tests for VixenModules.App.CustomPropEditor.Controls.PropDesigner". Existing drawing color and State tests are in `src/Vixen.Tests/App/CustomPropEditor/State/CustomPropStateEditorViewModelTests.cs`; they use xUnit and the CustomPropEditor test collection. They do not exercise viewer-originated collection notifications. Milestone 2 added `src/Vixen.Tests/App/CustomPropEditor/PropDesignerSelectionTests.cs` to exercise actual PropDesigner click and clear paths with the DrawingPanelViewModel color observer. Its fixture temporarily installs a `ConfigurationService.Config` with explicit Blue/HotPink colors and restores the prior service value in cleanup.
 
 Observation: The issue contains `vixen4.png`, attachment 18208. The public download endpoint returned "You do not have permission to view attachment with id: 18208". The image itself was not inspected. The detailed reproduction and decisive source ordering are sufficient for this design. No interactive runtime reproduction or application tests have been performed during analysis.
 
@@ -65,7 +65,7 @@ Decision: Update only the VIX-4014 description in Milestone 1, retaining the rep
 ## Outcomes & Retrospective
 
 
-Analysis has produced a source-backed cause, a minimal production change, and behavioral acceptance checks. Milestone 1 updated Jira VIX-4014's description and verified the original report, reproduction comment, and attachment remain present. Application implementation, automated regression results, interactive viewer validation, and final Jira reporting remain pending. The main lesson is that updating two representations of selection requires setting flags before publishing collection changes.
+Analysis produced a source-backed cause and Milestone 1 updated Jira VIX-4014's description while preserving the original report, reproduction comment, and attachment. Milestone 2 contains the synchronous selection-order fix and three real WPF regression tests. The focused tests passed 3/3 and the Custom Prop Editor suite passed 148/148; both required Release builds, Rider file analysis, whitespace validation, and the user's manual acceptance sequence passed. The only observed Layout/Order tab-switch issue was confirmed by the user to predate this fix and is deferred to another issue; it is unrelated to immediate viewer selection highlighting. The key lesson is that selection flags must be finalized before publishing collection changes.
 
 ## Context and Orientation
 
@@ -202,6 +202,8 @@ For this analysis, the initial git status --short returned no entries; the final
 
 ## Validation and Acceptance
 
+
+Milestone 2 manual results (2026-10-11): The user confirmed that single and replacement selection, Ctrl-click multi-selection, rectangle selection/removal and additive behavior, blank-space and repeated clearing, tree synchronization, multi-item movement and handle behavior, and State Definition assignment/preview behavior all pass. The user observed that Layout/Order tab switching retains selection only on the first switch and then fails in either direction; the user confirmed this behavior predates VIX-4014 and will be handled under another issue. This unrelated finding is excluded from the VIX-4014 acceptance result.
 
 Open or create a custom prop with at least five separated pixels. Use Layout selection mode rather than draw mode. Start with no selected pixels. Click the first pixel; it must immediately turn the configured selected color. Control-click four more; after each click, every selected pixel, including the newest one, must be selected-colored, and the tree must show the same selection. Move the selection and confirm all selected pixels move together.
 

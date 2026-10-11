@@ -320,8 +320,8 @@ namespace VixenModules.App.CustomPropEditor.Controls
 						if (!l.IsSelected)
 						{
 							ClearSelections();
-							SelectedModels.Add(l);
 							l.IsSelected = true;
+							SelectedModels.Add(l);
 						}
 
 					}
@@ -334,8 +334,8 @@ namespace VixenModules.App.CustomPropEditor.Controls
 						}
 						else
 						{
-							SelectedModels.Add(l);
 							l.IsSelected = true;
+							SelectedModels.Add(l);
 						}
 					}
 
@@ -487,7 +487,6 @@ namespace VixenModules.App.CustomPropEditor.Controls
 		{
 			if (SelectedModels.Count > 0)
 			{
-				SelectedModels.Clear();
 				if (ItemsSource != null)
 				{
 					foreach (ISelectable lvm in ItemsSource)
@@ -495,6 +494,8 @@ namespace VixenModules.App.CustomPropEditor.Controls
 						lvm.IsSelected = false;
 					}
 				}
+				// Synchronous selection observers compute colors from IsSelected.
+				SelectedModels.Clear();
 			}
 
 		}
@@ -543,8 +544,8 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
 					if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
 					{
-						SelectedModels.Remove(item);
 						item.IsSelected = false;
+						SelectedModels.Remove(item);
 					}
 				}
 			}
