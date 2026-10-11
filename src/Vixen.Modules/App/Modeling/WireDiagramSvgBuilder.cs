@@ -54,8 +54,9 @@ public static class WireDiagramSvgBuilder
 		var first = true;
 		const int radius = 6;
 
-		foreach (var node in nodes)
+		for (var index = 0; index < nodes.Count; index++)
 		{
+			var node = nodes[index];
 			var point = ScalePoint(node.Item1, scale, rect.Location);
 			if (flip)
 			{
@@ -63,7 +64,10 @@ public static class WireDiagramSvgBuilder
 			}
 
 			group.Children.Add(CreateLightNode(point, radius));
-			group.Children.Add(CreateLabel(node.Item2, point, radius));
+			if (index == 0 || (index + 1) % options.LabelInterval == 0 || index == nodes.Count - 1)
+			{
+				group.Children.Add(CreateLabel(node.Item2, point, radius));
+			}
 
 			if (!first)
 			{
