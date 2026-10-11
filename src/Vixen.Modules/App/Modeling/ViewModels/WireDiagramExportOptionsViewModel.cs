@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Globalization;
 using Catel.Data;
 using Catel.MVVM;
 
@@ -62,7 +60,30 @@ public sealed class WireDiagramExportOptionsViewModel : ViewModelBase
 	public static readonly IPropertyData LabelIntervalProperty = RegisterProperty<int>(nameof(LabelInterval), 50);
 
 	/// <summary>
-	/// Gets or sets the node marker radius in SVG drawing units.
+	/// Gets or sets the raw label interval text entered by the user.
+	/// </summary>
+	/// <value>A whole-number interval from 1 through 1000. The default is 50.</value>
+	public string LabelIntervalText
+	{
+		get => GetValue<string>(LabelIntervalTextProperty);
+		set
+		{
+			SetValue(LabelIntervalTextProperty, value);
+			if (int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var interval) && interval is >= 1 and <= 1000)
+			{
+				LabelInterval = interval;
+			}
+			else
+			{
+				ValidateAndUpdateCommand();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Identifies the <see cref="LabelIntervalText" /> property.
+	/// </summary>
+	public static readonly IPropertyData LabelIntervalTextProperty = RegisterProperty<string>(nameof(LabelIntervalText), "50");
 	/// </summary>
 	/// <value>A value from 1 through 30. The default is 6.</value>
 	public int NodeRadius
@@ -118,9 +139,17 @@ public sealed class WireDiagramExportOptionsViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override void ValidateFields(List<IFieldValidationResult> validationResults)
 	{
-		if (!AllNumbers && LabelInterval is < 1 or > 1000)
+		if (!AllNumbers)
 		{
-			validationResults.Add(FieldValidationResult.CreateError(LabelIntervalProperty, "Enter a label interval from 1 through 1000."));
+			if (LabelInterval is < 1 or > 1000)
+			{
+				validationResults.Add(FieldValidationResult.CreateError(LabelIntervalProperty, "Enter a label interval from 1 through 1000."));
+			}
+
+			if (!int.TryParse(LabelIntervalText, NumberStyles.None, CultureInfo.InvariantCulture, out var interval) || interval is < 1 or > 1000)
+			{
+				validationResults.Add(FieldValidationResult.CreateError(LabelIntervalTextProperty, "Enter a whole-number label interval from 1 through 1000."));
+			}
 		}
 
 		if (NodeRadius is < 1 or > 30)

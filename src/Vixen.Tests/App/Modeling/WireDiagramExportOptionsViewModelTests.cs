@@ -13,6 +13,7 @@ public sealed class WireDiagramExportOptionsViewModelTests
 
 		Assert.True(viewModel.AllNumbers);
 		Assert.Equal(50, viewModel.LabelInterval);
+		Assert.Equal("50", viewModel.LabelIntervalText);
 		Assert.Equal(6, viewModel.NodeRadius);
 		Assert.Equal(100, viewModel.ExportScalePercent);
 		Assert.Null(viewModel.Options);
@@ -47,6 +48,19 @@ public sealed class WireDiagramExportOptionsViewModelTests
 		Assert.Equal(50, viewModel.Options.LabelInterval);
 	}
 
+	[Theory]
+	[InlineData("50", 50)]
+	[InlineData("100", 100)]
+	public void IntervalMode_TextInputParsesCommonValues(string input, int expectedInterval)
+	{
+		var viewModel = new WireDiagramExportOptionsViewModel { AllNumbers = false, LabelIntervalText = input };
+
+		((ICommand)viewModel.OkCommand).Execute(null);
+
+		Assert.Equal(expectedInterval, viewModel.LabelInterval);
+		Assert.Equal(expectedInterval, viewModel.Options.LabelInterval);
+	}
+
 	[Fact]
 	public void Accepting_MapsTwoHundredPercentToScaleFactorTwo()
 	{
@@ -67,6 +81,20 @@ public sealed class WireDiagramExportOptionsViewModelTests
 			AllNumbers = false,
 			LabelInterval = interval
 		};
+
+		Assert.False(viewModel.OkCommand.CanExecute());
+		Assert.Null(viewModel.Options);
+	}
+
+	[Theory]
+	[InlineData("")]
+	[InlineData("abc")]
+	[InlineData("0")]
+	[InlineData("1001")]
+	[InlineData("50.5")]
+	public void IntervalMode_InvalidTextPreventsAcceptance(string input)
+	{
+		var viewModel = new WireDiagramExportOptionsViewModel { AllNumbers = false, LabelIntervalText = input };
 
 		Assert.False(viewModel.OkCommand.CanExecute());
 		Assert.Null(viewModel.Options);

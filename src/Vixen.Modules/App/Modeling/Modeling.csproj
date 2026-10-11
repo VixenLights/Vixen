@@ -3,6 +3,7 @@
 		<PropertyGroup>
 			<RootNamespace>VixenModules.App.Modeling</RootNamespace>
 			<UseWindowsForms>true</UseWindowsForms>
+			<UseWPF>true</UseWPF>
 		</PropertyGroup>
 
 		<ItemGroup>
@@ -12,6 +13,7 @@
 
 		<ItemGroup>
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
+				<ProjectReference Include="..\..\..\Vixen.Common\WPFCommon\WPFCommon.csproj" />
 				<ProjectReference Include="..\..\Property\Location\Location.csproj" />
 				<ProjectReference Include="..\..\Property\Order\Order.csproj" />
 		</ItemGroup>

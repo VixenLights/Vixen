@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using Svg;
 using Vixen.Sys;
 using VixenModules.Property.Location;
