@@ -10,8 +10,9 @@ namespace VixenModules.App.Modeling;
 /// </summary>
 public static class WireDiagramSvgBuilder
 {
-	private const int ExtraHeight = 50;
-	private const int ExtraWidth = 50;
+	private const float CanvasMargin = 24f;
+	private const float LabelFontSize = 16f;
+	private const string LabelFontFamily = "Arial";
 
 	/// <summary>
 	/// Creates an SVG document from the ordered nodes without opening or writing a file.
@@ -36,16 +37,12 @@ public static class WireDiagramSvgBuilder
 			return null;
 		}
 
-		var nodePoints = nodes.Select(node => node.Item1);
-		var rect = CalculateModelRectangle(nodePoints);
-		var scale = 1f;
-		if (rect.Width < 800)
-		{
-			scale = 800f / rect.Width;
-		}
-
-		var document = new SvgDocument { Width = rect.Width * scale, Height = rect.Height * scale };
-		document.ViewBox = new SvgViewBox(-20, -20, document.Width + ExtraWidth, document.Height + ExtraHeight);
+		using var measurementBitmap = new Bitmap(1, 1);
+		using var measurementGraphics = Graphics.FromImage(measurementBitmap);
+		using var labelFont = new Font(LabelFontFamily, LabelFontSize, FontStyle.Regular, GraphicsUnit.Pixel);
+		var layout = CalculateLayout(nodes, options.LabelInterval, options.NodeRadius, measurementGraphics, labelFont);
+		var document = new SvgDocument { Width = layout.CanvasWidth, Height = layout.CanvasHeight };
+		document.ViewBox = new SvgViewBox(0, 0, layout.CanvasWidth, layout.CanvasHeight);
 
 		var group = new SvgGroup();
 		document.Children.Add(group);
@@ -53,10 +50,15 @@ public static class WireDiagramSvgBuilder
 		var points = new PointF[nodes.Count];
 		for (var index = 0; index < nodes.Count; index++)
 		{
-			var point = ScalePoint(nodes[index].Item1, scale, rect.Location);
-			points[index] = flip
-				? new PointF(document.ViewBox.Width - point.X - ExtraWidth, point.Y)
-				: point;
+			var source = nodes[index].Item1;
+			var x = layout.OriginX + ((double)source.X - layout.MinX) * layout.Scale;
+			var y = layout.OriginY + ((double)source.Y - layout.MinY) * layout.Scale;
+			if (flip)
+			{
+				x = layout.OriginX + layout.Width * layout.Scale - (x - layout.OriginX);
+			}
+
+			points[index] = new PointF((float)x, (float)y);
 		}
 
 		for (var index = 0; index < nodes.Count; index++)
@@ -84,37 +86,72 @@ public static class WireDiagramSvgBuilder
 		return document;
 	}
 
-	private static PointF ScalePoint(Point point, float scale, Point offset)
+	private static Layout CalculateLayout(
+		IReadOnlyList<Tuple<Point, int>> nodes,
+		int labelInterval,
+		float radius,
+		Graphics graphics,
+		Font font)
 	{
-		return new PointF((point.X - offset.X) * scale, (point.Y - offset.Y) * scale);
-	}
-
-	private static Rectangle CalculateModelRectangle(IEnumerable<Point> points)
-	{
-		using var enumerator = points.GetEnumerator();
-		if (!enumerator.MoveNext())
+		var firstPoint = nodes[0].Item1;
+		var minX = firstPoint.X;
+		var maxX = firstPoint.X;
+		var minY = firstPoint.Y;
+		var maxY = firstPoint.Y;
+		var labelWidth = 0f;
+		for (var index = 0; index < nodes.Count; index++)
 		{
-			throw new InvalidOperationException("Sequence contains no elements.");
+			var node = nodes[index];
+			minX = Math.Min(minX, node.Item1.X);
+			maxX = Math.Max(maxX, node.Item1.X);
+			minY = Math.Min(minY, node.Item1.Y);
+			maxY = Math.Max(maxY, node.Item1.Y);
+			if (index == 0 || (index + 1) % labelInterval == 0 || index == nodes.Count - 1)
+			{
+				labelWidth = Math.Max(labelWidth, graphics.MeasureString(node.Item2.ToString(), font).Width);
+			}
 		}
 
-		var firstPoint = enumerator.Current;
-		var xMin = firstPoint.X;
-		var xMax = firstPoint.X;
-		var yMin = firstPoint.Y;
-		var yMax = firstPoint.Y;
-		while (enumerator.MoveNext())
-		{
-			var point = enumerator.Current;
-			xMin = Math.Min(xMin, point.X);
-			xMax = Math.Max(xMax, point.X);
-			yMin = Math.Min(yMin, point.Y);
-			yMax = Math.Max(yMax, point.Y);
-		}
-
-		var width = xMax - xMin;
-		var height = yMax - yMin;
-		return new Rectangle(xMin, yMin, width > 0 ? width : 50, height > 0 ? height : 50);
+		var width = (double)maxX - minX;
+		var height = (double)maxY - minY;
+		labelWidth += 2f;
+		var family = font.FontFamily;
+		var emHeight = family.GetEmHeight(font.Style);
+		var ascent = font.Size * family.GetCellAscent(font.Style) / emHeight + 2f;
+		var descent = font.Size * family.GetCellDescent(font.Style) / emHeight + 2f;
+		var outerRadius = radius * 1.25f;
+		var right = Math.Max(outerRadius, radius + labelWidth);
+		var top = Math.Max(outerRadius, radius + ascent);
+		var bottom = Math.Max(outerRadius, descent - radius);
+		var portraitScale = GetScale(816f, 1056f, width, height, outerRadius, right, top, bottom);
+		var landscapeScale = GetScale(1056f, 816f, width, height, outerRadius, right, top, bottom);
+		var isPortrait = portraitScale >= landscapeScale;
+		var canvasWidth = isPortrait ? 816f : 1056f;
+		var canvasHeight = isPortrait ? 1056f : 816f;
+		var scale = isPortrait ? portraitScale : landscapeScale;
+		var originX = CanvasMargin + (canvasWidth - 2 * CanvasMargin - (width * scale + outerRadius + right)) / 2 + outerRadius;
+		var originY = CanvasMargin + (canvasHeight - 2 * CanvasMargin - (height * scale + top + bottom)) / 2 + top;
+		return new Layout(minX, minY, width, scale, canvasWidth, canvasHeight, originX, originY);
 	}
+
+	private static double GetScale(float canvasWidth, float canvasHeight, double width, double height, float left, float right, float top, float bottom)
+	{
+		var usableWidth = canvasWidth - 2 * CanvasMargin - left - right;
+		var usableHeight = canvasHeight - 2 * CanvasMargin - top - bottom;
+		var scaleX = width > 0 ? usableWidth / width : double.PositiveInfinity;
+		var scaleY = height > 0 ? usableHeight / height : double.PositiveInfinity;
+		return width == 0 && height == 0 ? 1 : Math.Min(scaleX, scaleY);
+	}
+
+	private sealed record Layout(
+		int MinX,
+		int MinY,
+		double Width,
+		double Scale,
+		float CanvasWidth,
+		float CanvasHeight,
+		double OriginX,
+		double OriginY);
 
 	private static SvgLine CreateLine(PointF start, PointF end)
 	{
