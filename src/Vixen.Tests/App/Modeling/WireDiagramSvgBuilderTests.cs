@@ -52,7 +52,7 @@ public sealed class WireDiagramSvgBuilderTests
 		var middle = Assert.Single(children.OfType<SvgCircle>());
 		var end = Assert.Single(children.OfType<SvgRectangle>());
 		Assert.InRange(Math.Abs(start.Points[0].Value - lines[0].StartX.Value), 0f, 0.001f);
-		Assert.Equal(start.Points[1].Value + 7.5f, lines[0].StartY.Value);
+		Assert.Equal(start.Points[1].Value + 9f, lines[0].StartY.Value);
 		Assert.Equal(middle.CenterX.Value, lines[0].EndX.Value);
 		Assert.Equal(middle.CenterY.Value, lines[0].EndY.Value);
 		Assert.Equal(middle.CenterX.Value, lines[1].StartX.Value);
@@ -175,8 +175,8 @@ public sealed class WireDiagramSvgBuilderTests
 		var doubledStar = Assert.Single(doubledGroup.Children.OfType<SvgPolygon>());
 		var standardCenterY = standardStar.Points.Where((_, index) => index % 2 == 1).Average(point => point.Value);
 		var doubledCenterY = doubledStar.Points.Where((_, index) => index % 2 == 1).Average(point => point.Value);
-		Assert.Equal(7.5f, Math.Abs(standardStar.Points[1].Value - standardCenterY), 0.001f);
-		Assert.Equal(15f, Math.Abs(doubledStar.Points[1].Value - doubledCenterY), 0.001f);
+		Assert.Equal(9f, Math.Abs(standardStar.Points[1].Value - standardCenterY), 0.001f);
+		Assert.Equal(18f, Math.Abs(doubledStar.Points[1].Value - doubledCenterY), 0.001f);
 	}
 
 	[Theory]
