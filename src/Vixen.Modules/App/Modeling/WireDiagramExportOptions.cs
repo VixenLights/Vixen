@@ -26,7 +26,7 @@ public sealed record WireDiagramExportOptions
 	public float LabelFontSize { get; init; } = 14f;
 
 	/// <summary>
-	/// Gets or sets the enlargement factor applied to the complete exported page.
+	/// Gets or sets the scaling factor applied to the complete exported page.
 	/// </summary>
 	/// <value>The factor from 1 through 4. The default is 1.</value>
 	public float ExportScale { get; init; } = 1f;

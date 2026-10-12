@@ -124,7 +124,7 @@ public sealed class WireDiagramExportOptionsViewModel : ViewModelBase
 	public static readonly IPropertyData NodeRadiusProperty = RegisterProperty<int>(nameof(NodeRadius), 6);
 
 	/// <summary>
-	/// Gets or sets the whole-image enlargement percentage.
+	/// Gets or sets the whole-image scaling percentage.
 	/// </summary>
 	/// <value>A value from 100 through 400 percent. The default is 100 percent.</value>
 	public int ExportScalePercent
@@ -186,7 +186,7 @@ public sealed class WireDiagramExportOptionsViewModel : ViewModelBase
 
 		if (ExportScalePercent is < 100 or > 400)
 		{
-			validationResults.Add(FieldValidationResult.CreateError(ExportScalePercentProperty, "Enter an enlargement percentage from 100 through 400."));
+			validationResults.Add(FieldValidationResult.CreateError(ExportScalePercentProperty, "Enter an scaling percentage from 100 through 400."));
 		}
 	}
 

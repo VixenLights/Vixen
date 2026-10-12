@@ -36,7 +36,7 @@
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="88" />
 				</Grid.ColumnDefinitions>
-				<TextBlock Grid.Column="0" Text="Number label interval"
+				<TextBlock Grid.Column="0" Text="Number Label Interval"
 				           Foreground="{DynamicResource ForeColorBrush}" VerticalAlignment="Center" />
 				<TextBox Grid.Column="1"
 				         Text="{Binding LabelIntervalText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
@@ -63,7 +63,7 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
-				<TextBlock Grid.Row="0" Grid.Column="0" Text="Node marker size"
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Node Marker Size"
 				           Foreground="{DynamicResource ForeColorBrush}" VerticalAlignment="Center" />
 				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding NodeRadius}"
 				           Foreground="{DynamicResource ForeColorBrush}" TextAlignment="Right" />
@@ -82,7 +82,7 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
-				<TextBlock Grid.Row="0" Grid.Column="0" Text="Number label size"
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Number Label Size"
 				           Foreground="{DynamicResource ForeColorBrush}" VerticalAlignment="Center" />
 				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding LabelFontSize}"
 				           Foreground="{DynamicResource ForeColorBrush}" TextAlignment="Right" />
@@ -101,7 +101,7 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
-				<TextBlock Grid.Row="0" Grid.Column="0" Text="Enlargement"
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Scaling"
 				           Foreground="{DynamicResource ForeColorBrush}" VerticalAlignment="Center" />
 				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ExportScalePercent, StringFormat={}{0}%}"
 				           Foreground="{DynamicResource ForeColorBrush}" TextAlignment="Right" />
@@ -111,7 +111,7 @@
 				        Margin="0,6,0,0" />
 			</Grid>
 
-			<TextBlock Text="The diagram is fitted to a letter-sized page. Enlargement scales the entire result, including the page, labels, markers, and lines."
+			<TextBlock Text="The diagram is fitted to a letter-sized page. Scaling scales the entire result, including the page, labels, markers, and lines."
 			           TextWrapping="Wrap" Foreground="{DynamicResource ForeColorBrush}" />
 		</StackPanel>
 
