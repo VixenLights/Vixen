@@ -79,9 +79,9 @@ namespace VixenModules.App.CustomPropEditor.Model
 		}
 		
 		/// <summary>
-		/// Creates a deep copy for a distinct State definition.
+		/// Creates an independent copy of this State item.
 		/// </summary>
-		/// <returns>A deep copy with a new stable identifier.</returns>
+		/// <returns>A copy with a new stable identifier and assignment collection.</returns>
 		internal StateItemModel CloneAsNew()
 		{
 			return new StateItemModel

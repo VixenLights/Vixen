@@ -22,6 +22,28 @@ namespace VixenModules.Property.State
 			return GetNextName(DefaultItemName, existingNames);
 		}
 
+		/// <summary>
+		/// Generates an unused State Item name based on the source name.
+		/// </summary>
+		/// <param name="baseName">The complete source name, including any existing suffix.</param>
+		/// <param name="existingNames">The names already used in the selected State Definition.</param>
+		/// <returns>The trimmed base name with the first unused dash-number suffix, starting at 1.</returns>
+		/// <remarks>
+		/// Uses <see cref="DefaultItemName"/> when the trimmed base is empty.
+		/// Compares candidate names case-sensitively and preserves existing suffixes in the base.
+		/// </remarks>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="baseName"/> or <paramref name="existingNames"/> is <see langword="null"/>.
+		/// </exception>
+		public static string GetNextStateItemName(string baseName, IReadOnlyCollection<string> existingNames)
+		{
+			ArgumentNullException.ThrowIfNull(baseName);
+			ArgumentNullException.ThrowIfNull(existingNames);
+
+			var normalizedBaseName = baseName.Trim();
+			return GetNextName(normalizedBaseName.Length == 0 ? DefaultItemName : normalizedBaseName, existingNames);
+		}
+
 		private static string GetNextName(string baseName, IReadOnlyCollection<string> existingNames)
 		{
 			var index = 1;

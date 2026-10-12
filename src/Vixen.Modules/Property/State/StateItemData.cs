@@ -63,7 +63,7 @@ namespace VixenModules.Property.State
 		}
 
 		/// <summary>
-		/// Creates a deep copy for a distinct State definition.
+		/// Creates an independent deep copy with a new State item identity.
 		/// </summary>
 		/// <returns>A deep copy with a new stable identifier.</returns>
 		internal StateItemData CloneAsNew()

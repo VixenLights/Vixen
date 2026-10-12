@@ -108,6 +108,342 @@ public sealed class CustomPropStateEditorViewModelTests
 	}
 
 	[Fact]
+	public void CopyStateItemCommand_SelectionAndDefinitionChanges_RefreshAvailability()
+	{
+		var prop = CreatePropWithModel(out var model, out _);
+		model.ModelType = ElementModelType.Model;
+		var firstDefinition = StateDefinitionModel.CreateDefault("Wave");
+		firstDefinition.Items.Add(new StateItemModel { Name = "Arm" });
+		firstDefinition.Items.Add(new StateItemModel { Name = "Leg" });
+		var secondDefinition = StateDefinitionModel.CreateDefault("Pulse");
+		secondDefinition.Items.Add(new StateItemModel { Name = "Head" });
+		model.StateDefinitionModels.Add(firstDefinition);
+		model.StateDefinitionModels.Add(secondDefinition);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new FakeStateDefinitionDialogService());
+		var command = viewModel.CopyStateItemCommand;
+		var canExecuteChanges = 0;
+		command.CanExecuteChanged += (_, _) => canExecuteChanges++;
+
+		Assert.True(command.CanExecute(null));
+		viewModel.SelectedStateItems.Clear();
+		Assert.False(command.CanExecute(null));
+		viewModel.SelectedStateItems.Add(viewModel.SelectedStateDefinition.Items[0]);
+		Assert.True(command.CanExecute(null));
+		viewModel.SelectedStateItems.Add(viewModel.SelectedStateDefinition.Items[1]);
+		Assert.False(command.CanExecute(null));
+		viewModel.SelectedStateItems.RemoveAt(1);
+		Assert.True(command.CanExecute(null));
+		viewModel.SelectedStateItems.Clear();
+		viewModel.SelectedStateItems.Add(viewModel.StateDefinitions[1].Items[0]);
+		Assert.False(command.CanExecute(null));
+
+		viewModel.SelectedStateDefinition = viewModel.StateDefinitions[1];
+
+		Assert.True(command.CanExecute(null));
+		Assert.True(canExecuteChanges >= 6);
+	}
+
+	[Theory]
+	[InlineData("NoSelection")]
+	[InlineData("MultipleSelection")]
+	[InlineData("ForeignSelection")]
+	[InlineData("NoDefinition")]
+	[InlineData("RemovedSelection")]
+	public void CopyStateItem_InvalidSelection_DoesNotMutate(string invalidSelection)
+	{
+		var prop = CreatePropWithModel(out var model, out _);
+		model.ModelType = ElementModelType.Model;
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		definition.Items.Add(new StateItemModel { Name = "Arm" });
+		definition.Items.Add(new StateItemModel { Name = "Leg" });
+		var otherDefinition = StateDefinitionModel.CreateDefault("Pulse");
+		otherDefinition.Items.Add(new StateItemModel { Name = "Head" });
+		model.StateDefinitionModels.Add(definition);
+		model.StateDefinitionModels.Add(otherDefinition);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new FakeStateDefinitionDialogService());
+		var firstDefinitionViewModel = viewModel.StateDefinitions[0];
+		var foreignRow = viewModel.StateDefinitions[1].Items[0];
+
+		switch (invalidSelection)
+		{
+			case "NoSelection":
+				viewModel.SelectedStateItems.Clear();
+				break;
+			case "MultipleSelection":
+				viewModel.SelectedStateItems.Add(firstDefinitionViewModel.Items[1]);
+				break;
+			case "ForeignSelection":
+				viewModel.SelectedStateItems.Clear();
+				viewModel.SelectedStateItems.Add(foreignRow);
+				break;
+			case "NoDefinition":
+				viewModel.SelectedStateDefinition = null!;
+				break;
+			case "RemovedSelection":
+				var removedRow = firstDefinitionViewModel.Items[0];
+				firstDefinitionViewModel.Items.Remove(removedRow);
+				viewModel.SelectedStateItems.Clear();
+				viewModel.SelectedStateItems.Add(removedRow);
+				break;
+			default:
+				throw new ArgumentOutOfRangeException(nameof(invalidSelection));
+		}
+
+		viewModel.ClearIsDirty();
+		var itemModelsBefore = definition.Items.ToArray();
+		var foreignItemModelsBefore = otherDefinition.Items.ToArray();
+		var selectedRowsBefore = viewModel.SelectedStateItems.ToArray();
+		var rowsBefore = firstDefinitionViewModel.Items.ToArray();
+		var selectedDefinitionBefore = viewModel.SelectedStateDefinition;
+
+		Invoke(viewModel, "CopyStateItem");
+
+		Assert.Equal(itemModelsBefore, definition.Items);
+		Assert.Equal(foreignItemModelsBefore, otherDefinition.Items);
+		Assert.Equal(rowsBefore, firstDefinitionViewModel.Items);
+		Assert.Equal(selectedRowsBefore, viewModel.SelectedStateItems);
+		Assert.Same(selectedDefinitionBefore, viewModel.SelectedStateDefinition);
+		Assert.False(viewModel.IsDirty);
+	}
+
+	[Fact]
+	public void CopyStateItem_AppendsIndependentCopyAndSelectsIt()
+	{
+		var prop = CreatePropWithModel(out var model, out var leaf);
+		model.ModelType = ElementModelType.Model;
+		var definition = StateDefinitionModel.CreateDefault("Wave");
+		definition.Items.Clear();
+		var source = new StateItemModel
+		{
+			Name = "Arm",
+			Color = Color.FromArgb(91, 23, 45, 67),
+			ElementModelIds = [leaf.Id]
+		};
+		definition.Items.Add(source);
+		definition.Items.Add(new StateItemModel { Name = "Arm - 1" });
+		definition.Items.Add(new StateItemModel { Name = "Arm - 3" });
+		var otherDefinition = StateDefinitionModel.CreateDefault("Pulse");
+		otherDefinition.Items.Add(new StateItemModel { Name = "Head" });
+		model.StateDefinitionModels.Add(definition);
+		model.StateDefinitionModels.Add(otherDefinition);
+		var viewModel = new StateDefinitionEditorViewModel(prop, new FakeStateDefinitionDialogService());
+		var sourceRow = viewModel.StateDefinitions[0].Items[0];
+		var sourceId = source.Id;
+		var sourceAssignments = source.ElementModelIds.ToArray();
+		var otherDefinitionItemsBefore = otherDefinition.Items.ToArray();
+		viewModel.SelectedStateItems.Clear();
+		viewModel.SelectedStateItems.Add(sourceRow);
+		viewModel.ClearIsDirty();
+
+		Execute(viewModel.CopyStateItemCommand);
+
+		var copy = definition.Items[^1];
+		var copyRow = viewModel.StateDefinitions[0].Items[^1];
+		Assert.Equal(4, definition.Items.Count);
+		Assert.Equal(4, viewModel.StateDefinitions[0].Items.Count);
+		Assert.NotSame(sourceRow, copyRow);
+		Assert.Equal("Arm - 2", copy.Name);
+		Assert.NotEqual(Guid.Empty, copy.Id);
+		Assert.NotEqual(sourceId, copy.Id);
+		Assert.Equal(source.Color, copy.Color);
+		Assert.Equal(sourceAssignments, copy.ElementModelIds);
+		Assert.NotSame(source.ElementModelIds, copy.ElementModelIds);
+		Assert.Equal("Arm", source.Name);
+		Assert.Equal(sourceId, source.Id);
+		Assert.Equal(sourceAssignments, source.ElementModelIds);
+		Assert.Equal(otherDefinitionItemsBefore, otherDefinition.Items);
+		Assert.Same(viewModel.StateDefinitions[0], viewModel.SelectedStateDefinition);
+		Assert.Same(copyRow, viewModel.SelectedStateItem);
+		Assert.Same(copyRow, Assert.Single(viewModel.SelectedStateItems));
+		Assert.True(viewModel.IsDirty);
+	}
+
+	/// <summary>
+	/// Verifies repeated State item copies skip occupied suffixes and retain distinct assignment collections.
+	/// </summary>
+	[Fact]
+	public void CopyStateItem_RepeatedCopiesUseFirstAvailableSuffix()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out var secondLeaf, out _, out _);
+		var editor = viewModel.StateDefinitionEditorViewModel;
+		var definitionViewModel = editor.SelectedStateDefinition;
+		var source = definitionViewModel.Items[0];
+		var sourceModel = source.StateItem;
+		source.Name = "Arm";
+		source.Color = Color.Red;
+		source.AssignElementModelIds([firstLeaf.Id, secondLeaf.Id]);
+		definitionViewModel.AddItem(new StateItemModel { Name = "Arm - 1" });
+		definitionViewModel.AddItem(new StateItemModel { Name = "Arm - 3" });
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+
+		Execute(editor.CopyStateItemCommand);
+
+		var firstCopy = editor.SelectedStateItem;
+		Assert.Equal("Arm - 2", firstCopy.Name);
+		Assert.Equal(2, firstCopy.AssignmentCount);
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], firstCopy.StateItem.ElementModelIds);
+		Assert.Equal(2, firstCopy.StateItem.ElementModelIds.Distinct().Count());
+		Assert.NotSame(sourceModel.ElementModelIds, firstCopy.StateItem.ElementModelIds);
+		Assert.Equal(sourceModel.Color, firstCopy.StateItem.Color);
+		Assert.Same(firstCopy, Assert.Single(editor.SelectedStateItems));
+
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+		Execute(editor.CopyStateItemCommand);
+
+		var secondCopy = editor.SelectedStateItem;
+		Assert.Equal("Arm - 4", secondCopy.Name);
+		Assert.Equal(2, secondCopy.AssignmentCount);
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], secondCopy.StateItem.ElementModelIds);
+		Assert.NotSame(sourceModel.ElementModelIds, secondCopy.StateItem.ElementModelIds);
+		Assert.Equal(2, secondCopy.StateItem.ElementModelIds.Distinct().Count());
+	}
+
+	/// <summary>
+	/// Verifies source and copy edits stay independent and the copied row survives deletion and editor reconstruction.
+	/// </summary>
+	[Fact]
+	public async Task CopyStateItem_SourceAndCopyRemainIndependentAfterEditsAndSourceRemoval()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out var secondLeaf, out _, out _);
+		var editor = viewModel.StateDefinitionEditorViewModel;
+		var definitionViewModel = editor.SelectedStateDefinition;
+		var definition = definitionViewModel.StateDefinition;
+		var source = definitionViewModel.Items[0];
+		var sourceModel = source.StateItem;
+		source.AssignElementModelIds([firstLeaf.Id, secondLeaf.Id]);
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+
+		Execute(editor.CopyStateItemCommand);
+
+		var copy = editor.SelectedStateItem;
+		var copyModel = copy.StateItem;
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], copyModel.ElementModelIds);
+		Assert.Equal(2, copy.AssignmentCount);
+		Assert.NotSame(sourceModel.ElementModelIds, copyModel.ElementModelIds);
+
+		source.Color = Color.Blue;
+		copy.Color = Color.Green;
+		Assert.Equal(Color.Blue, sourceModel.Color);
+		Assert.Equal(Color.Green, copyModel.Color);
+
+		Assert.True(source.RemoveElementModelIds([firstLeaf.Id]));
+		Assert.Equal([secondLeaf.Id], sourceModel.ElementModelIds);
+		Assert.Equal(2, copy.AssignmentCount);
+		Assert.True(copy.RemoveElementModelIds([secondLeaf.Id]));
+		Assert.Equal([firstLeaf.Id], copyModel.ElementModelIds);
+		Assert.Equal([secondLeaf.Id], sourceModel.ElementModelIds);
+		Assert.Equal(1, source.AssignmentCount);
+		Assert.Equal(1, copy.AssignmentCount);
+		Assert.True(source.AssignElementModelIds([firstLeaf.Id]));
+		Assert.True(copy.AssignElementModelIds([secondLeaf.Id]));
+		Assert.Equal(2, source.AssignmentCount);
+		Assert.Equal(2, copy.AssignmentCount);
+		Assert.NotSame(sourceModel.ElementModelIds, copyModel.ElementModelIds);
+
+		var inMemoryReopenedEditor = new StateDefinitionEditorViewModel(viewModel.Prop, new FakeStateDefinitionDialogService());
+		var inMemoryReopenedDefinition = Assert.Single(inMemoryReopenedEditor.StateDefinitions);
+		Assert.Same(definition, inMemoryReopenedDefinition.StateDefinition);
+		Assert.Contains(inMemoryReopenedDefinition.Items, item => item.StateItem.Id == sourceModel.Id);
+		Assert.Contains(inMemoryReopenedDefinition.Items, item => item.StateItem.Id == copyModel.Id);
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], inMemoryReopenedDefinition.Items.Single(item => item.StateItem.Id == copyModel.Id).StateItem.ElementModelIds);
+
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+		await ExecuteAsync(editor.RemoveStateItemCommand);
+
+		Assert.DoesNotContain(definitionViewModel.Items, item => item.StateItem.Id == sourceModel.Id);
+		Assert.Contains(definitionViewModel.Items, item => item.StateItem.Id == copyModel.Id);
+		copy.Name = "Surviving copy";
+		copy.Color = Color.Yellow;
+		Assert.True(copy.RemoveElementModelIds([secondLeaf.Id]));
+		Assert.Equal("Surviving copy", copyModel.Name);
+		Assert.Equal(Color.Yellow, copyModel.Color);
+		Assert.Equal([firstLeaf.Id], copyModel.ElementModelIds);
+
+		var reopenedAfterRemoval = new StateDefinitionEditorViewModel(viewModel.Prop, new FakeStateDefinitionDialogService());
+		var retainedDefinition = Assert.Single(reopenedAfterRemoval.StateDefinitions);
+		Assert.DoesNotContain(retainedDefinition.Items, item => item.StateItem.Id == sourceModel.Id);
+		var retainedCopy = Assert.Single(retainedDefinition.Items, item => item.StateItem.Id == copyModel.Id);
+		Assert.Equal("Surviving copy", retainedCopy.Name);
+		Assert.Equal(Color.Yellow, retainedCopy.Color);
+		Assert.Equal([firstLeaf.Id], retainedCopy.StateItem.ElementModelIds);
+		Assert.Equal(1, retainedCopy.AssignmentCount);
+	}
+
+	/// <summary>
+	/// Verifies the nested editor selects a copied row and routes assignment edits and preview updates to that copy.
+	/// </summary>
+	[Fact]
+	public void CopyStateItem_NestedEditorSelectionAssignmentAndPreviewFollowCopy()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out var secondLeaf, out _, out var secondLight);
+		var editor = viewModel.StateDefinitionEditorViewModel;
+		var source = editor.SelectedStateDefinition.Items[0];
+		source.AssignElementModelIds([firstLeaf.Id, secondLeaf.Id]);
+		viewModel.SelectedTabIndex = 2;
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+
+		Execute(editor.CopyStateItemCommand);
+
+		var copy = editor.SelectedStateItem;
+		Assert.NotSame(source, copy);
+		Assert.Same(copy, Assert.Single(editor.SelectedStateItems));
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], copy.StateItem.ElementModelIds);
+		Assert.Equal(2, copy.StateItem.ElementModelIds.Distinct().Count());
+		Assert.Equal(Color.Red.ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.Red.ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+
+		Assert.True(viewModel.RemoveStateItemAssignment(secondLight));
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], source.StateItem.ElementModelIds);
+		Assert.Equal([firstLeaf.Id], copy.StateItem.ElementModelIds);
+		Assert.Equal(2, source.AssignmentCount);
+		Assert.Equal(1, copy.AssignmentCount);
+		Assert.Equal(Color.Red.ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.FromArgb(25, 25, 25).ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+
+		copy.Color = Color.Blue;
+		Assert.Equal(Color.Red, source.Color);
+		Assert.Equal(Color.Blue, copy.Color);
+		Assert.Equal(Color.Blue.ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.FromArgb(25, 25, 25).ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+		Assert.True(editor.IsDirty);
+	}
+
+	/// <summary>
+	/// Verifies an empty copied map uses existing validation and that assigning an element refreshes the error.
+	/// </summary>
+	[Fact]
+	public void CopyStateItem_EmptyAssignmentsUseExistingValidationAndRefreshAfterAssignment()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out _, out var firstLight, out _);
+		var editor = viewModel.StateDefinitionEditorViewModel;
+		var source = editor.SelectedStateDefinition.Items[0];
+		viewModel.SelectedTabIndex = 2;
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+
+		Execute(editor.CopyStateItemCommand);
+
+		var copy = editor.SelectedStateItem;
+		const string copiedItemValidation = "State item \"Arm - 1\" in \"Wave\" must assign at least one element.";
+		const string sourceItemValidation = "State item \"Arm\" in \"Wave\" must assign at least one element.";
+		Assert.Empty(copy.StateItem.ElementModelIds);
+		Assert.Contains(copiedItemValidation, editor.ValidationMessages);
+		Assert.Contains(sourceItemValidation, editor.ValidationMessages);
+		Assert.True(editor.HasValidationErrors);
+		Assert.True(viewModel.AssignStateItemAssignment(firstLight));
+		Assert.Equal([firstLeaf.Id], copy.StateItem.ElementModelIds);
+		Assert.DoesNotContain(copiedItemValidation, editor.ValidationMessages);
+		Assert.Contains(sourceItemValidation, editor.ValidationMessages);
+		Assert.True(editor.HasValidationErrors);
+		Assert.True(editor.IsDirty);
+	}
+
+	[Fact]
 	public async Task RemoveStateItemCommand_DeletesAllSelectedItems()
 	{
 		var prop = CreatePropWithModel(out var model, out _);
@@ -607,6 +943,15 @@ public sealed class CustomPropStateEditorViewModelTests
 		Assert.True(command.CanExecute(null));
 		command.Execute(null);
 		await command.Task;
+	}
+
+	private static void Invoke(object target, string methodName)
+	{
+		var method = target.GetType().GetMethod(
+			methodName,
+			System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+		Assert.NotNull(method);
+		method.Invoke(target, null);
 	}
 
 	private static async Task InvokeAsync(object target, string methodName)

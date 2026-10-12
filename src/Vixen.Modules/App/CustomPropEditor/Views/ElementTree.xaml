@@ -390,12 +390,14 @@
 													        Content="Add"
 													        Command="{Binding AddStateDefinitionCommand}"
 													        Style="{StaticResource RowButtonAutoStyle}"
-													        MinWidth="{Binding ElementName=RemoveBtn, Path=ActualWidth}"/>
+													        MinWidth="{Binding ElementName=DeleteBtn, Path=ActualWidth}"
+													        Margin="6,0,0,0"/>
 													<Button Grid.Column="3"
 													        Name="DeleteBtn"
 													        Content="Delete"
 													        Command="{Binding DeleteStateDefinitionCommand}"
-													        Style="{StaticResource RowButtonAutoStyle}"/>
+													        Style="{StaticResource RowButtonAutoStyle}"
+													        Margin="6,0,0,0"/>
 													<Menu Grid.Column="4" Margin="6,0,0,0">
 														<MenuItem Header="...">
 															<MenuItem Header="Rename" Command="{Binding RenameStateDefinitionCommand}"/>
@@ -428,7 +430,8 @@
 									 MinHeight="90">
 														<i:Interaction.Behaviors>
 																<behaviors1:MultiSelectorSelectedItemsBehavior SelectedItems="{Binding SelectedStateItems}"/>
-																<behaviors1:DataGridSortedItemsCommandBehavior SortedItemsCommand="{Binding PersistStateItemSortCommand}"/>
+																<behaviors1:DataGridSortedItemsCommandBehavior SortedItemsCommand="{Binding PersistStateItemSortCommand}"
+																                                                ClearSortAfterCommand="True"/>
 														</i:Interaction.Behaviors>
 														<DataGrid.Columns>
 																<DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -465,10 +468,12 @@
 												</DataGrid>
 												<WrapPanel Grid.Row="2" Style="{StaticResource RowButtonRightContainerStyle}">
 														<Button Content="Add" Command="{Binding AddStateItemCommand}"
-														        Style="{StaticResource RowButtonAutoStyle}"
+														        Style="{StaticResource RowButtonNarrowStyle}"
 														        MinWidth="{Binding ElementName=RemoveBtn, Path=ActualWidth}"/>
+														<Button Content="Copy" Command="{Binding CopyStateItemCommand}"
+														        Style="{StaticResource RowButtonNarrowStyle}"/>
 														<Button Name="RemoveBtn" Content="Remove" Command="{Binding RemoveStateItemCommand}"
-														        Style="{StaticResource RowButtonAutoStyle}"/>
+														        Style="{StaticResource RowButtonNarrowStyle}"/>
 														<Button Command="{Binding MoveStateItemUpCommand}"
 														        Style="{StaticResource RowButtonAutoStyle}"
 														        ToolTip="Move selected State Item up">

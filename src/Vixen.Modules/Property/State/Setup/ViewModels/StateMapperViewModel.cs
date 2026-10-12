@@ -35,6 +35,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		private TaskCommand? _renameStateDefinitionCommand;
 		private TaskCommand? _copyStateDefinitionCommand;
 		private TaskCommand? _addItemCommand;
+		private TaskCommand? _copyItemCommand;
 		private TaskCommand? _removeItemCommand;
 		private TaskCommand? _moveItemUpCommand;
 		private TaskCommand? _moveItemDownCommand;
@@ -310,6 +311,12 @@ namespace VixenModules.Property.State.Setup.ViewModels
 		public TaskCommand AddItemCommand => _addItemCommand ??= new TaskCommand(AddItemAsync, CanAddItem);
 
 		/// <summary>
+		/// Gets the command that copies exactly one selected State item row in the current definition.
+		/// </summary>
+		/// <value>The command that appends and selects an independent copy of the selected row.</value>
+		public TaskCommand CopyItemCommand => _copyItemCommand ??= new TaskCommand(CopyItemAsync, CanCopyItem);
+
+		/// <summary>
 		/// Gets the command that adds a State definition.
 		/// </summary>
 		/// <value>The command that adds a State definition.</value>
@@ -509,11 +516,32 @@ namespace VixenModules.Property.State.Setup.ViewModels
 			}
 
 			var name = StateNamingRules.GetNextStateItemName(GetSelectedStateDefinitionStateItemNames());
+			return AppendAndSelectItemAsync(CreateDefaultStateItem(name));
+		}
+
+		private bool CanCopyItem() => SelectedStateDefinition != null &&
+			SelectedItems.Count == 1 && Items.Contains(SelectedItems[0]);
+
+		private Task CopyItemAsync()
+		{
+			if (!CanCopyItem())
+			{
+				return Task.CompletedTask;
+			}
+
+			var source = SelectedItems[0];
+			var copiedItem = source.Item.CloneAsNew();
+			copiedItem.Name = StateNamingRules.GetNextStateItemName(
+				source.Name, GetSelectedStateDefinitionStateItemNames());
+			return AppendAndSelectItemAsync(copiedItem);
+		}
+
+		private Task AppendAndSelectItemAsync(StateItemData itemData)
+		{
 			_suppressPreviewRefresh = true;
 			try
 			{
-				var item = new StateItemViewModel(
-					CreateDefaultStateItem(name), _elementTree);
+				var item = new StateItemViewModel(itemData, _elementTree);
 				Items.Add(item);
 				SelectedItem = item;
 			}
@@ -929,6 +957,7 @@ namespace VixenModules.Property.State.Setup.ViewModels
 
 		private void RaiseItemCommandCanExecuteChanged()
 		{
+			_copyItemCommand?.RaiseCanExecuteChanged();
 			_removeItemCommand?.RaiseCanExecuteChanged();
 			_moveItemUpCommand?.RaiseCanExecuteChanged();
 			_moveItemDownCommand?.RaiseCanExecuteChanged();
