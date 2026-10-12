@@ -422,6 +422,202 @@ public class StateMapperDefinitionTests
 	}
 
 	/// <summary>
+	/// Verifies that copied hierarchy assignments use independent trees and remain independent through edits and removal.
+	/// </summary>
+	[Fact]
+	public async Task CopyItem_AssignmentTreesRemainIndependentWhenEditedAndSourceIsRemoved()
+	{
+		// Arrange
+		var parentId = Guid.NewGuid();
+		var firstLeafId = Guid.NewGuid();
+		var secondLeafId = Guid.NewGuid();
+		var separateLeafId = Guid.NewGuid();
+		var originalColor = Color.FromArgb(255, 17, 34, 51);
+		var copiedColor = Color.FromArgb(255, 68, 85, 102);
+		var source = CreateSource("Operating Mode", "Other Mode");
+		var sourceItem = source.StateDefinitions[0].Items[0];
+		sourceItem.Name = "Grouped Assignment";
+		sourceItem.Color = originalColor;
+		sourceItem.ElementNodeIds = [parentId, separateLeafId];
+		var parent = CreateNode(
+			parentId,
+			"Parent Group",
+			CreateNode(firstLeafId, "First Leaf"),
+			CreateNode(secondLeafId, "Second Leaf"));
+		var separateLeaf = CreateNode(separateLeafId, "Separate Leaf");
+		var viewModel = CreateViewModel(source, CreateNode(Guid.NewGuid(), "Root", parent, separateLeaf));
+		var original = viewModel.Items[0];
+		viewModel.SelectedItem = original;
+
+		// Act
+		await InvokeAsync(viewModel, "CopyItemAsync");
+
+		// Assert: the cloned assignments initially have equivalent effective hierarchy state.
+		var copy = viewModel.Items[^1];
+		var originalRoot = original.AssignmentRoots[0];
+		var copiedRoot = copy.AssignmentRoots[0];
+		var originalParent = originalRoot.Children[0];
+		var copiedParent = copiedRoot.Children[0];
+		var originalSeparate = originalRoot.Children[1];
+		var copiedSeparate = copiedRoot.Children[1];
+		Assert.Equal(3, original.AssignmentCount);
+		Assert.Equal(original.AssignmentCount, copy.AssignmentCount);
+		Assert.True(originalParent.IsChecked);
+		Assert.True(copiedParent.IsChecked);
+		Assert.False(originalParent.Children[0].IsEnabled);
+		Assert.False(copiedParent.Children[0].IsEnabled);
+		Assert.True(originalSeparate.IsChecked);
+		Assert.True(copiedSeparate.IsChecked);
+		Assert.NotSame(original, copy);
+		Assert.NotSame(original.AssignmentRoots, copy.AssignmentRoots);
+		Assert.NotSame(originalRoot, copiedRoot);
+		Assert.NotSame(originalParent, copiedParent);
+		Assert.NotSame(original.AssignmentSelection, copy.AssignmentSelection);
+		Assert.NotSame(original.Item.ElementNodeIds, copy.Item.ElementNodeIds);
+
+		// Act: changing the source's color and assignments leaves the copy unchanged.
+		original.Color = Color.Red;
+		originalParent.IsChecked = false;
+		originalParent.Children[0].IsChecked = true;
+
+		// Assert
+		Assert.Equal(originalColor, copy.Color);
+		Assert.True(copiedParent.IsChecked);
+		Assert.False(copiedParent.Children[0].IsEnabled);
+		Assert.Equal([parentId, separateLeafId], copy.Item.ElementNodeIds);
+		Assert.Equal(2, original.AssignmentCount);
+
+		// Act: changing the copy's color and assignments leaves the source unchanged.
+		copy.Color = copiedColor;
+		copiedSeparate.IsChecked = false;
+
+		// Assert
+		Assert.Equal(Color.Red, original.Color);
+		Assert.Equal([firstLeafId, separateLeafId], original.Item.ElementNodeIds);
+		Assert.Equal([parentId], copy.Item.ElementNodeIds);
+
+		// Act: remove the original through the existing command path.
+		viewModel.SelectedItem = original;
+		await InvokeAsync(viewModel, "RemoveItemAsync");
+
+		// Assert
+		Assert.DoesNotContain(original, viewModel.Items);
+		Assert.Contains(copy, viewModel.Items);
+		Assert.Equal(copy.Item.Id, viewModel.Items.Single().Item.Id);
+		Assert.Equal(copiedColor, copy.Color);
+		Assert.Equal([parentId], copy.Item.ElementNodeIds);
+	}
+
+	/// <summary>
+	/// Verifies that copying an unassigned row preserves its empty assignment map and valid editor state.
+	/// </summary>
+	[Fact]
+	public async Task CopyItem_UnassignedSource_PreservesEmptyMapAndValidationState()
+	{
+		// Arrange
+		var viewModel = CreateViewModel(CreateSource("Open"));
+		var original = viewModel.Items[0];
+		Assert.Empty(original.Item.ElementNodeIds);
+		viewModel.SelectedItem = original;
+
+		// Act
+		await InvokeAsync(viewModel, "CopyItemAsync");
+
+		// Assert
+		var copy = viewModel.Items[^1];
+		Assert.Empty(copy.Item.ElementNodeIds);
+		Assert.Equal(0, copy.AssignmentCount);
+		Assert.False(viewModel.HasErrors);
+		Assert.True(viewModel.OkCommand.CanExecute(null));
+	}
+
+	/// <summary>
+	/// Verifies that an unsaved copied draft leaves persisted State data unchanged for a fresh editor.
+	/// </summary>
+	[Fact]
+	public async Task CopyItem_UnsavedDraft_DoesNotMutatePersistedSource()
+	{
+		// Arrange
+		var source = CreateSource("Open", "Closed");
+		var originalDefinitionRows = source.StateDefinitions[0].Items.ToArray();
+		var otherDefinitionRows = source.StateDefinitions[1].Items.ToArray();
+		var viewModel = CreateViewModel(source);
+		viewModel.SelectedItem = viewModel.Items[0];
+
+		// Act
+		await InvokeAsync(viewModel, "CopyItemAsync");
+		var reopenedViewModel = CreateViewModel(source);
+
+		// Assert
+		Assert.Equal(originalDefinitionRows, source.StateDefinitions[0].Items);
+		Assert.Equal(otherDefinitionRows, source.StateDefinitions[1].Items);
+		Assert.Single(reopenedViewModel.StateDefinitions[0].Items);
+		Assert.Equal(originalDefinitionRows[0].Name, reopenedViewModel.StateDefinitions[0].Items[0].Name);
+		Assert.Equal(2, viewModel.Items.Count);
+	}
+
+	/// <summary>
+	/// Verifies that a saved copy survives reopening with its values and the order persisted after sorting.
+	/// </summary>
+	[Fact]
+	public async Task CopyItem_SaveAndReopen_PreservesValuesOrderAndOtherDefinitions()
+	{
+		// Arrange
+		var assignedNodeId = Guid.NewGuid();
+		var otherAssignedNodeId = Guid.NewGuid();
+		var source = CreateSource("Open", "Closed");
+		var originalData = source.StateDefinitions[0].Items[0];
+		originalData.Name = "Open";
+		originalData.Color = Color.FromArgb(255, 12, 34, 56);
+		originalData.ElementNodeIds = [assignedNodeId];
+		source.StateDefinitions[0].Items.Add(new StateItemData
+		{
+			Name = "Blink",
+			Color = Color.Blue,
+			ElementNodeIds = [otherAssignedNodeId]
+		});
+		var otherDefinitionData = source.StateDefinitions[1].Clone();
+		var rootNode = CreateNode(
+			Guid.NewGuid(),
+			"Root",
+			CreateNode(assignedNodeId, "Assigned Leaf"),
+			CreateNode(otherAssignedNodeId, "Other Leaf"));
+		var viewModel = CreateViewModel(source, rootNode);
+		var original = viewModel.Items[0];
+		var originalId = original.Item.Id;
+		viewModel.SelectedItem = original;
+
+		// Act: copy appends to the underlying order, then persist a changed visible order.
+		await InvokeAsync(viewModel, "CopyItemAsync");
+		var copy = viewModel.Items[^1];
+		copy.Color = Color.Orange;
+		var copyId = copy.Item.Id;
+		Assert.Equal("Open - 1", copy.Name);
+		Assert.Equal(["Open", "Blink", "Open - 1"], viewModel.Items.Select(item => item.Name));
+		viewModel.SynchronizeStateItemOrder([copy, viewModel.Items[1], viewModel.Items[0]]);
+		Assert.Equal(["Open - 1", "Blink", "Open"], viewModel.Items.Select(item => item.Name));
+
+		var saveResult = await InvokeSaveAsync(viewModel);
+		var reopenedViewModel = CreateViewModel(source, rootNode);
+
+		// Assert
+		Assert.True(saveResult);
+		Assert.Equal(["Open - 1", "Blink", "Open"], source.StateDefinitions[0].Items.Select(item => item.Name));
+		Assert.Equal([copyId, source.StateDefinitions[0].Items[1].Id, originalId],
+			source.StateDefinitions[0].Items.Select(item => item.Id));
+		var reopenedCopy = reopenedViewModel.StateDefinitions[0].Items[0];
+		Assert.Equal("Open - 1", reopenedCopy.Name);
+		Assert.Equal(copyId, reopenedCopy.Item.Id);
+		Assert.Equal(Color.Orange, reopenedCopy.Color);
+		Assert.Equal([assignedNodeId], reopenedCopy.Item.ElementNodeIds);
+		Assert.Equal(otherDefinitionData.Name, source.StateDefinitions[1].Name);
+		Assert.Equal(otherDefinitionData.Description, source.StateDefinitions[1].Description);
+		Assert.Equal(otherDefinitionData.Items.Select(item => item.Id), source.StateDefinitions[1].Items.Select(item => item.Id));
+		Assert.Equal(otherDefinitionData.Items.Select(item => item.ElementNodeIds),
+			source.StateDefinitions[1].Items.Select(item => item.ElementNodeIds));
+	}
+
+	/// <summary>
 	/// Verifies that the public command executes the selected row's Copy action.
 	/// </summary>
 	[Fact]
