@@ -22,6 +22,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		private TaskCommand _renameStateDefinitionCommand;
 		private TaskCommand _copyStateDefinitionCommand;
 		private Command _addStateItemCommand;
+		private Command _copyStateItemCommand;
 		private TaskCommand _removeStateItemCommand;
 		private Command _moveStateItemUpCommand;
 		private Command _moveStateItemDownCommand;
@@ -174,6 +175,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 		/// </summary>
 		public Command AddStateItemCommand =>
 			_addStateItemCommand ??= new Command(AddStateItem, CanAddStateItem);
+
+		/// <summary>
+		/// Gets the Copy State item command.
+		/// </summary>
+		public Command CopyStateItemCommand =>
+			_copyStateItemCommand ??= new Command(CopyStateItem, CanCopyStateItem);
 
 		/// <summary>
 		/// Gets the Remove State item command.
@@ -375,18 +382,46 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 				return;
 			}
 
-			SelectedStateDefinition.AddItem(new StateItemModel
+			var item = new StateItemModel
 			{
 				Name = StateNamingRules.GetNextStateItemName(GetSelectedDefinitionStateItemNames())
-			});
-			SelectSingleStateItem(SelectedStateDefinition.SelectedItem);
-			RaisePropertyChanged(nameof(SelectedStateItem));
-			OnStateDataChanged();
+			};
+			AppendAndSelectStateItem(item);
+		}
+
+		private void CopyStateItem()
+		{
+			if (!CanCopyStateItem())
+			{
+				return;
+			}
+
+			var source = SelectedStateItems[0].StateItem;
+			var copy = source.CloneAsNew();
+			copy.Name = StateNamingRules.GetNextStateItemName(
+				source.Name,
+				GetSelectedDefinitionStateItemNames());
+			AppendAndSelectStateItem(copy);
 		}
 
 		private bool CanAddStateItem()
 		{
 			return SelectedStateDefinition != null;
+		}
+
+		private bool CanCopyStateItem()
+		{
+			return SelectedStateDefinition != null &&
+			       SelectedStateItems.Count == 1 &&
+			       SelectedStateDefinition.Items.Contains(SelectedStateItems[0]);
+		}
+
+		private void AppendAndSelectStateItem(StateItemModel item)
+		{
+			SelectedStateDefinition.AddItem(item);
+			SelectSingleStateItem(SelectedStateDefinition.SelectedItem);
+			RaisePropertyChanged(nameof(SelectedStateItem));
+			OnStateDataChanged();
 		}
 
 		private async Task RemoveStateItemAsync()
@@ -609,6 +644,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels.State
 			_renameStateDefinitionCommand?.RaiseCanExecuteChanged();
 			_copyStateDefinitionCommand?.RaiseCanExecuteChanged();
 			_addStateItemCommand?.RaiseCanExecuteChanged();
+			_copyStateItemCommand?.RaiseCanExecuteChanged();
 			_removeStateItemCommand?.RaiseCanExecuteChanged();
 			_moveStateItemUpCommand?.RaiseCanExecuteChanged();
 			_moveStateItemDownCommand?.RaiseCanExecuteChanged();
