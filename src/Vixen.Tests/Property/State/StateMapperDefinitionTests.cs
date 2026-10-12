@@ -196,6 +196,251 @@ public class StateMapperDefinitionTests
 		Assert.Equal(Color.White, viewModel.SelectedItem!.Color);
 	}
 
+	/// <summary>
+	/// Verifies Copy availability and notifications as the authoritative row selection changes.
+	/// </summary>
+	[Fact]
+	public void CopyItemCommand_SelectionChanges_RefreshAvailability()
+	{
+		// Arrange
+		var viewModel = CreateViewModel(CreateItemOrderSource(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()));
+		var command = viewModel.CopyItemCommand;
+		List<bool> availabilityChanges = [];
+		command.CanExecuteChanged += (_, _) => availabilityChanges.Add(command.CanExecute(null));
+		Assert.False(command.CanExecute(null));
+
+		// Act
+		viewModel.SelectedItems.Add(viewModel.Items[0]);
+
+		// Assert
+		Assert.True(command.CanExecute(null));
+		Assert.Contains(true, availabilityChanges);
+		availabilityChanges.Clear();
+
+		// Act
+		viewModel.SelectedItems.Add(viewModel.Items[1]);
+
+		// Assert
+		Assert.False(command.CanExecute(null));
+		Assert.Contains(false, availabilityChanges);
+		availabilityChanges.Clear();
+
+		// Act
+		viewModel.SelectedItems.RemoveAt(1);
+
+		// Assert
+		Assert.True(command.CanExecute(null));
+		Assert.Contains(true, availabilityChanges);
+		availabilityChanges.Clear();
+
+		// Act
+		viewModel.SelectedItems.Clear();
+
+		// Assert
+		Assert.False(command.CanExecute(null));
+		Assert.Contains(false, availabilityChanges);
+	}
+
+	/// <summary>
+	/// Verifies that a definition switch clears Copy availability and rejects a foreign row.
+	/// </summary>
+	[Fact]
+	public void CopyItemCommand_DefinitionSwitch_RejectsStaleSelection()
+	{
+		// Arrange
+		var viewModel = CreateViewModel(CreateSource("Open", "Closed"));
+		var command = viewModel.CopyItemCommand;
+		List<bool> availabilityChanges = [];
+		command.CanExecuteChanged += (_, _) => availabilityChanges.Add(command.CanExecute(null));
+		var originalRow = viewModel.Items[0];
+		viewModel.SelectedItem = originalRow;
+		Assert.True(command.CanExecute(null));
+		availabilityChanges.Clear();
+
+		// Act
+		viewModel.SelectedStateDefinition = viewModel.StateDefinitions[1];
+
+		// Assert
+		Assert.False(command.CanExecute(null));
+		Assert.Empty(viewModel.SelectedItems);
+		Assert.Contains(false, availabilityChanges);
+
+		// Act
+		viewModel.SelectedItems.Add(originalRow);
+
+		// Assert
+		Assert.False(command.CanExecute(null));
+
+		// Act
+		availabilityChanges.Clear();
+		viewModel.SelectedItem = viewModel.Items[0];
+
+		// Assert
+		Assert.True(command.CanExecute(null));
+		Assert.Contains(true, availabilityChanges);
+	}
+
+	/// <summary>
+	/// Verifies that removing the selected row immediately disables Copy.
+	/// </summary>
+	[Fact]
+	public void CopyItemCommand_SelectedRowRemoved_RefreshesAvailability()
+	{
+		// Arrange
+		var viewModel = CreateViewModel(CreateSource("Open"));
+		var command = viewModel.CopyItemCommand;
+		List<bool> availabilityChanges = [];
+		command.CanExecuteChanged += (_, _) => availabilityChanges.Add(command.CanExecute(null));
+		viewModel.SelectedItem = viewModel.Items[0];
+		Assert.True(command.CanExecute(null));
+		availabilityChanges.Clear();
+
+		// Act
+		viewModel.Items.RemoveAt(0);
+
+		// Assert
+		Assert.False(command.CanExecute(null));
+		Assert.Empty(viewModel.SelectedItems);
+		Assert.Contains(false, availabilityChanges);
+	}
+
+	/// <summary>
+	/// Verifies that direct Copy execution cannot change either definition with an invalid selection.
+	/// </summary>
+	/// <param name="selectionKind">The invalid definition or selection configuration.</param>
+	/// <returns>A task representing completion of the invalid-execution check.</returns>
+	[Theory]
+	[InlineData("None")]
+	[InlineData("Multiple")]
+	[InlineData("Foreign")]
+	[InlineData("NoDefinition")]
+	[InlineData("Removed")]
+	public async Task CopyItem_InvalidSelection_DoesNotMutate(string selectionKind)
+	{
+		// Arrange
+		var viewModel = CreateViewModel(CreateSource("Open", "Closed"));
+		var command = viewModel.CopyItemCommand;
+		await InvokeAsync(viewModel, "AddItemAsync");
+		viewModel.SelectedItems.Clear();
+		var originalRow = viewModel.Items[0];
+		switch (selectionKind)
+		{
+			case "Multiple":
+				viewModel.SelectedItems.Add(originalRow);
+				viewModel.SelectedItems.Add(viewModel.Items[1]);
+				break;
+			case "Foreign":
+				viewModel.SelectedItems.Add(viewModel.StateDefinitions[1].Items[0]);
+				break;
+			case "NoDefinition":
+				viewModel.SelectedStateDefinition = null;
+				viewModel.SelectedItems.Add(originalRow);
+				break;
+			case "Removed":
+				viewModel.Items.Remove(originalRow);
+				viewModel.SelectedItems.Add(originalRow);
+				break;
+		}
+
+		var originalRows = viewModel.StateDefinitions.Select(definition => definition.Items.ToArray()).ToArray();
+		var originalSelection = viewModel.SelectedItems.ToArray();
+		Assert.False(command.CanExecute(null));
+
+		// Act
+		await InvokeAsync(viewModel, "CopyItemAsync");
+
+		// Assert
+		Assert.Equal(2, viewModel.StateDefinitions.Count);
+		for (var index = 0; index < originalRows.Length; index++)
+		{
+			Assert.Equal(originalRows[index], viewModel.StateDefinitions[index].Items);
+		}
+
+		Assert.Equal(originalSelection, viewModel.SelectedItems);
+		Assert.False(command.CanExecute(null));
+	}
+
+	/// <summary>
+	/// Verifies that Copy appends an independent item with source values, an unused name, and sole selection.
+	/// </summary>
+	/// <returns>A task representing completion of the copied-item assertions.</returns>
+	[Fact]
+	public async Task CopyItem_AppendsIndependentCopyAndSelectsIt()
+	{
+		// Arrange
+		var firstLeafId = Guid.NewGuid();
+		var secondLeafId = Guid.NewGuid();
+		var originalColor = Color.FromArgb(37, 12, 34, 56);
+		var source = CreateSource("Open", "Closed");
+		var sourceData = source.StateDefinitions[0].Items[0];
+		sourceData.Name = "Arm";
+		sourceData.Color = originalColor;
+		sourceData.ElementNodeIds = [firstLeafId, secondLeafId];
+		source.StateDefinitions[0].Items.Add(new StateItemData { Name = "Arm - 1" });
+		source.StateDefinitions[0].Items.Add(new StateItemData { Name = "Arm - 3" });
+		var rootNode = CreateNode(Guid.NewGuid(), "Root",
+			CreateColoredLeaf(firstLeafId, "First Leaf", Color.Green),
+			CreateColoredLeaf(secondLeafId, "Second Leaf", Color.Green));
+		var viewModel = CreateViewModel(source, rootNode);
+		var command = viewModel.CopyItemCommand;
+		var definition = viewModel.SelectedStateDefinition!;
+		var definitionId = definition.Definition.Id;
+		var originalRows = viewModel.Items.ToArray();
+		var originalRow = originalRows[0];
+		var otherDefinition = viewModel.StateDefinitions[1];
+		var otherRows = otherDefinition.Items.ToArray();
+		viewModel.SelectedItem = originalRow;
+		Assert.True(command.CanExecute(null));
+
+		// Act
+		await InvokeAsync(viewModel, "CopyItemAsync");
+
+		// Assert
+		Assert.Equal(originalRows.Length + 1, viewModel.Items.Count);
+		Assert.Equal(originalRows, viewModel.Items.Take(originalRows.Length));
+		var copy = viewModel.Items[^1];
+		Assert.NotSame(originalRow, copy);
+		Assert.NotSame(originalRow.Item, copy.Item);
+		Assert.Equal("Arm - 2", copy.Name);
+		Assert.Equal(originalColor, copy.Color);
+		Assert.NotEqual(Guid.Empty, copy.Item.Id);
+		Assert.DoesNotContain(copy.Item.Id, originalRows.Select(item => item.Item.Id));
+		Assert.Equal([firstLeafId, secondLeafId], copy.Item.ElementNodeIds);
+		Assert.NotSame(originalRow.Item.ElementNodeIds, copy.Item.ElementNodeIds);
+		Assert.Same(definition, viewModel.SelectedStateDefinition);
+		Assert.Equal(definitionId, definition.Definition.Id);
+		Assert.Same(copy, viewModel.SelectedItem);
+		Assert.Same(copy, Assert.Single(viewModel.SelectedItems));
+		Assert.True(command.CanExecute(null));
+		Assert.Equal("Arm", originalRow.Name);
+		Assert.Equal(originalColor, originalRow.Color);
+		Assert.Equal(sourceData.Id, originalRow.Item.Id);
+		Assert.Equal([firstLeafId, secondLeafId], originalRow.Item.ElementNodeIds);
+		Assert.Same(otherDefinition, viewModel.StateDefinitions[1]);
+		Assert.Equal(source.StateDefinitions[1].Id, otherDefinition.Definition.Id);
+		Assert.Equal(otherRows, otherDefinition.Items);
+	}
+
+	/// <summary>
+	/// Verifies that the public command executes the selected row's Copy action.
+	/// </summary>
+	[Fact]
+	public void CopyItemCommand_Execute_AppendsAndSelectsCopy()
+	{
+		// Arrange
+		var viewModel = CreateViewModel(CreateSource("Open"));
+		var command = viewModel.CopyItemCommand;
+		viewModel.SelectedItem = viewModel.Items[0];
+
+		// Act
+		command.Execute(null);
+
+		// Assert
+		Assert.Equal(2, viewModel.Items.Count);
+		Assert.Equal("Open Item - 1", viewModel.Items[^1].Name);
+		Assert.Same(viewModel.Items[^1], Assert.Single(viewModel.SelectedItems));
+	}
+
 	[Fact]
 	public void ExactDuplicateDefinitionNames_BlockOk()
 	{
