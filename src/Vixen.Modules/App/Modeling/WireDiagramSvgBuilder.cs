@@ -171,7 +171,7 @@ public static class WireDiagramSvgBuilder
 		LabelMeasurement label,
 		IReadOnlyList<(LabelPlacement Placement, LabelMeasurement Measurement)> placedLabels)
 	{
-		const float clearance = 2f;
+		const float clearance = 0f;
 		var bounds = RectangleF.Inflate(GetLabelBounds(placement, label), clearance, clearance);
 		var overlapArea = 0f;
 		foreach (var placedLabel in placedLabels)
@@ -191,8 +191,8 @@ public static class WireDiagramSvgBuilder
 		var halfHeight = (label.Ascent + label.Descent) / 2f;
 		var absoluteCosine = MathF.Abs(MathF.Cos(radians));
 		var absoluteSine = MathF.Abs(MathF.Sin(radians));
-		var width = 2 * (absoluteCosine * halfWidth + absoluteSine * halfHeight);
-		var height = 2 * (absoluteSine * halfWidth + absoluteCosine * halfHeight);
+		var width = 1.5f * (absoluteCosine * halfWidth + absoluteSine * halfHeight);
+		var height = 1.5f * (absoluteSine * halfWidth + absoluteCosine * halfHeight);
 		return new RectangleF(placement.CenterX - width / 2f, placement.CenterY - height / 2f, width, height);
 	}
 
