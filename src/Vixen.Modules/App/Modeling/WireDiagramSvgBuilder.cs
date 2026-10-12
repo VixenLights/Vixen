@@ -377,7 +377,7 @@ public static class WireDiagramSvgBuilder
 
 	private static SvgPolygon CreateStartMarker(PointF point, float radius)
 	{
-		var outerRadius = radius * 1.25f;
+		var outerRadius = radius * 1.5f;
 		var innerRadius = outerRadius / 2f;
 		var vertices = Enumerable.Range(0, 10)
 			.Select(index =>
