@@ -428,7 +428,8 @@
 									 MinHeight="90">
 														<i:Interaction.Behaviors>
 																<behaviors1:MultiSelectorSelectedItemsBehavior SelectedItems="{Binding SelectedStateItems}"/>
-																<behaviors1:DataGridSortedItemsCommandBehavior SortedItemsCommand="{Binding PersistStateItemSortCommand}"/>
+																<behaviors1:DataGridSortedItemsCommandBehavior SortedItemsCommand="{Binding PersistStateItemSortCommand}"
+																                                                ClearSortAfterCommand="True"/>
 														</i:Interaction.Behaviors>
 														<DataGrid.Columns>
 																<DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

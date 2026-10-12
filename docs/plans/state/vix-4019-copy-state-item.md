@@ -28,8 +28,18 @@ The source issue is [VIX-4019 — Ability to duplicate a State Item in a State D
   - Rider file diagnostics and interactive UI confirmation were unavailable in this session; verify both sort directions and Add placement in the manual end-to-end milestone.
 - [x] (2026-10-12 16:23Z) Review the attempted sorting amendment and record the user's correction. Completed Milestones 1 and 2 below remain historical records, not approval of retained live sorting. The existing Display Setup XAML change is uncommitted; this revision changes only the plan.
 - [x] (2026-10-12 16:35Z) User reverted the earlier Display Setup sorting change to baseline; git diff for StateMapperView.xaml is empty and git status lists only the untracked plan. No Display Setup sorting edit remains for the coding agent.
-- [ ] Milestone 2A: Enable one-time sorting in Custom Prop Editor only (one XAML setting).
-- [ ] Milestone 2B: Verify ascending sort, then visible manual moves and bottom insertion in both editors; reconcile Jira requirements. This review gate must pass before Milestone 3.
+- [x] (2026-10-12 16:45Z) Milestone 2A: Enable one-time sorting in Custom Prop Editor only (one XAML setting).
+  - Added `ClearSortAfterCommand="True"` to the State Item grid's existing behavior in `ElementTree.xaml`, retaining `PersistStateItemSortCommand`. The scoped State Property Setup diff remains empty.
+  - Release solution rebuild passed: 73 warnings, 0 errors, exit 0. Rider file analysis completed with 38 warnings/weak warnings, no errors, and no diagnostics on either changed line. `git diff --check` passed.
+  - Gortex detected only the tracked XAML file and no changed symbol IDs; symbol-based tests/guards/contracts have no applicable target. No automated tests or interactive grid checks were run in this UI-only milestone; both are explicitly required by pending Milestone 2B.
+  - Milestone 2A is at its prescribed review stop. No commit was created; Milestone 2B and naming/Copy work remain pending.
+- [x] (2026-10-12 17:01Z) Milestone 2B: User accepted sorting/manual-order parity and bottom insertion; automated checks passed and Jira requirements reconciled.
+  - User report: “The sort in the Custom Prop editor is now a one time event and the up down arrows function afterwards. It matches the behavior of the State Property setup now. This should confirm 2B.” This confirms the real-grid sort release and both arrow directions, with parity to the unchanged State Property Setup reference.
+  - Release `Vixen_Tests` build exited 0. `StateMapperDefinitionTests`: 22 passed, 0 failed, 0 skipped (786 ms). `CustomPropStateEditorViewModelTests`: 22 passed, 0 failed, 0 skipped (866 ms). Both focused no-build runs exited 0.
+  - Rider rechecked `ElementTree.xaml`: 38 warnings/weak warnings, no errors, no changed-line diagnostics. `git diff --check` exited 0.
+  - The initial report needed clarification about insertion and existing workflows. User follow-up: “Yes, the new one was added at the bottom on both. Persistence, preview and discard all worked.” Together with the preceding acceptance of 2B, this supplies user-performed manual acceptance for the prerequisite. Reports are summary evidence, not individual Name/Count or definition-switch transcripts; the detailed final validation matrix remains required in Milestone 10. No desktop-control tools are available for agent-performed grid checks.
+  - Re-read Jira before updating; no unrelated description additions were present. Reconciled its description with one-time ascending sorting, visible manual moves, and bottom Add/Copy insertion. Readback confirmed the full requirements and preserved title and Accepted status. No completion comment or transition was posted.
+  - Only plan evidence changed in 2B; the earlier 2A XAML edit is preserved and State Property Setup remains unchanged. No staging or commit occurred. Milestone 3 remains unstarted at the 2B review boundary.
 - [ ] Milestone 3: Add source-based State Item naming and focused tests.
 - [ ] Milestone 4: Implement the Display Setup Copy command and basic command tests.
 - [ ] Milestone 5: Add the Display Setup Copy button.
@@ -98,10 +108,20 @@ These entries preserve decision history. The 2026-10-12 16:23Z correction supers
   Rationale: The user reverted the prior Display Setup edit. Git confirms StateMapperView.xaml has no diff and only the untracked plan remains in status. The coding agent therefore has one production setting to change, with no remaining restoration work. This supersedes the earlier two-view edit scope without rewriting completed history.
   Date/Author: 2026-10-12 16:35Z / User and Codex.
 
+- Decision: Accept the user's two manual reports as the Milestone 2B prerequisite review, together with the passing build, focused suites, and diagnostics; reconcile Jira without reopening production scope.
+  Rationale: The user explicitly proposed confirming 2B after proving one-time sorting and both arrow directions, then confirmed bottom insertion in both editors and persistence, preview, and discard. Record exactly those outcomes as user-performed evidence; do not fabricate detailed scenario transcripts. Milestone 10 retains the full end-to-end matrix with Copy.
+  Date/Author: 2026-10-12 17:01Z / User and Codex.
+
 ## Outcomes & Retrospective
 
 
-Current outcome (2026-10-12 16:35Z): State Property Setup is back at baseline following the user's revert. Pending Milestone 2A changes only Custom Prop Editor's State Item sorting behavior; Milestone 2B compares it with the unchanged State Property Setup reference before naming/Copy work. This update changes only the plan. Completed milestones and prior review evidence remain historical records.
+Current outcome (2026-10-12 17:01Z): Milestone 2B is complete and user-accepted. Both editors share the user-verified one-time sorting, working manual arrows, bottom Add insertion, persistence, preview, and discard behavior. The Release test build and both focused suites passed (44 tests total, no failures or skips); changed-view Rider checks and whitespace validation passed. Jira's description was reconciled and read back with its title and Accepted status preserved. Manual evidence comes from the user's reports, not agent-driven desktop testing or invented per-column transcripts. The detailed final matrix remains in Milestone 10. No production changes were needed in 2B, no commit was made, and naming/Copy work remains unstarted at this review boundary.
+
+Previous partial verification outcome (2026-10-12 16:56Z): The user confirmed one-time sorting and functional Up/Down arrows in Custom Prop Editor, matching State Property Setup. Milestone 2B's Release test build and both focused suites passed (44 tests total, no failures or skips), as did the changed-view diagnostics and whitespace check. Detailed Add/persistence/preview/definition-switch scenarios are not individually reported; clarification is pending before recording their completion or agreed deferral. Jira was read but not changed. Milestone 2B remains partially complete, and naming/Copy implementation has not begun.
+
+Previous implementation outcome (2026-10-12 16:45Z): Milestone 2A is implemented: Custom Prop Editor's State Item grid explicitly enables the existing persist-then-clear behavior and retains its sorting command binding. State Property Setup remains at the user's restored baseline with an empty scoped diff. Release compilation and changed-line Rider checks passed, and whitespace validation passed. This proves configuration and compilation, not actual grid movement or insertion; Milestone 2B remains pending for both-screen interactive validation, focused regression suites, and Jira reconciliation. Execution stops at the Milestone 2A review boundary; no commit, Jira write, or naming/Copy work was performed.
+
+Previous prerequisite state (2026-10-12 16:35Z): State Property Setup is back at baseline following the user's revert. Pending Milestone 2A changes only Custom Prop Editor's State Item sorting behavior; Milestone 2B compares it with the unchanged State Property Setup reference before naming/Copy work. This update changes only the plan. Completed milestones and prior review evidence remain historical records.
 
 Previous review outcome (2026-10-12 16:23Z): The plan review found that the attempted amendment chose retained live sorting, opposite to the newly confirmed requirement. This revision defines the existing clear-after-persist behavior as the reference for both grids and adds two small prerequisites. Next implement Milestone 2A, then complete and review Milestone 2B; do not start pending Milestone 3 or Copy work before that gate. No production code or Jira was changed during this review. The previously reported build and 22 passing StateMapperDefinitionTests are historical evidence, not acceptance of the new sorting requirement.
 
@@ -494,3 +514,35 @@ Revision validation (2026-10-12): git status still shows the pre-existing Displa
 Revision note (2026-10-12 16:35Z): The user reverted the previous Display Setup sorting edit to baseline. Confirmed its scoped git diff is empty and git status lists only the untracked plan. Narrowed pending Milestone 2A to one setting in Custom Prop Editor ElementTree.xaml, removed active State Property restoration instructions, and updated Progress, current outcomes, architecture, component scope, and remaining milestone references. Preserved completed execution history and earlier dated review evidence. Milestone 2B still compares both real screens before naming/Copy work. This update changes only the plan; no build or feature test is required for the documentation edit.
 
 Plan revision complete and recorded in the Decision Log. Ready for coding model to implement the next milestone.
+
+Execution evidence (2026-10-12 16:45Z, Milestone 2A): Initial status showed only the untracked plan, and both scoped view diffs were empty. The sole production edit adds `ClearSortAfterCommand="True"` to the State Item sorting behavior in `src/Vixen.Modules/App/CustomPropEditor/Views/ElementTree.xaml`. Gortex impact reported low risk but warned of missing XAML graph edges; post-edit detection reported that XAML file with no changed symbol IDs. Symbol-level tests/guards/contracts are therefore not applicable; a file-target test query also confirmed that symbol IDs are required. Rider `get_file_problems` (`errorsOnly=false`) completed with 38 warnings/weak warnings, zero errors, and none on changed lines 431–432. Unchanged-line diagnostics were left intact.
+
+The prescribed Release rebuild was run. Its large initial output was truncated, so the same rebuild was repeated with summary logging to capture reliable completion evidence:
+
+    msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -verbosity:minimal -consoleLoggerParameters:Summary
+    73 Warning(s)
+    0 Error(s)
+    Time Elapsed 00:00:44.26
+    Exit code: 0
+
+`git diff --check` exited 0 with no output. The final scoped State Property Setup diff is empty; final status contains only the modified Custom Prop Editor XAML and the modified plan (the plan became tracked during execution). Plan post-edit detection returned three documentation IDs; their test query found no mapped tests, guard analysis reported no configured rules or violations, and contract analysis allowed the change. Automated tests and interactive sort/move/Add verification were not run because this UI-only milestone assigns them to Milestone 2B; none are claimed as passed. The project `catel-mvvm` skill kept the change on the existing attached behavior, and `commit-msg` was invoked for the review handoff. No staging or commit occurred. Progress and Outcomes & Retrospective now record implementation and its validation limits; the sorting decisions are unchanged.
+
+Verification evidence (2026-10-12 16:56Z, Milestone 2B): Recorded the user's actual-grid one-time sort and arrow confirmation without extending it to unreported scenarios. Ran the following from `C:\Dev\Vixen`:
+
+    msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m
+    Exit code: 0; Vixen.Tests.dll built successfully (warnings present).
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~Property.State.StateMapperDefinitionTests"
+    Passed: 22, Failed: 0, Skipped: 0; exit code: 0; duration: 786 ms.
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~App.CustomPropEditor.State.CustomPropStateEditorViewModelTests"
+    Passed: 22, Failed: 0, Skipped: 0; exit code: 0; duration: 866 ms.
+
+    git diff --check
+    Exit code: 0; no output.
+
+Rider `get_file_problems` completed for ElementTree.xaml with no errors and no problems on changed lines 431–432 (38 warnings/weak warnings elsewhere). Initial status and scoped diffs showed only the earlier milestone's Custom Prop Editor XAML setting and plan evidence; StateMapperView.xaml remains unchanged. Read VIX-4019's current description and confirmed its title and Accepted status; made no Jira update or comment. This follow-up changes only this plan's evidence. The user confirmation establishes sorting/manual-arrow parity; further manual evidence or explicit agreement to defer the remaining detailed cases is pending. Progress and Outcomes & Retrospective reflected that partial state at the time.
+
+Acceptance and reconciliation evidence (2026-10-12 17:01Z, Milestone 2B): The user's follow-up confirmed Add at the bottom in both editors and working persistence, preview, and discard, completing the prerequisite review alongside the earlier sort/arrow report. Accepted this summary evidence without inventing separate per-column or definition-switch results. The full manual matrix will be repeated with Copy in Milestone 10. Re-read VIX-4019, verified no unrelated additions, updated only its description to the revised user-facing requirements in Artifacts and Notes, then read it back. The title remains “Ability to duplicate a State Item in a State Definition” and status remains Accepted. Description readback contains the one-time ascending sort, visible arrow movement, bottom Add/Copy insertion, and preserved Copy criteria. No Jira comment or status transition occurred.
+
+Progress, Decision Log, and Outcomes & Retrospective now record completed 2B and its evidence source. The project Jira skill guided the concise user-facing reconciliation; the project commit-msg skill is used for the plan-only milestone handoff. The preceding successful build, 22+22 tests, and changed-view checks remain current because no production code changed; they were not rerun. Final git status/scoped diff and git diff --check are required for this evidence update. No staging, commit, or Milestone 3 work was performed.
