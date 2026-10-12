@@ -1008,6 +1008,11 @@
 	    <Setter Property="MinWidth" Value="100" />
 	</Style>
     
+    <Style x:Key="RowButtonNarrowStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Margin" Value="6, 6, 0, 0" />
+        <Setter Property="MinWidth" Value="75" />
+    </Style>
+    
     <Style x:Key="RowButtonAutoStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="Margin" Value="6, 6, 0, 0" />
     </Style>
