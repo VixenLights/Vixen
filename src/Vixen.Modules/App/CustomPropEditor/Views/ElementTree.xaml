@@ -466,10 +466,12 @@
 												</DataGrid>
 												<WrapPanel Grid.Row="2" Style="{StaticResource RowButtonRightContainerStyle}">
 														<Button Content="Add" Command="{Binding AddStateItemCommand}"
-														        Style="{StaticResource RowButtonAutoStyle}"
+														        Style="{StaticResource RowButtonNarrowStyle}"
 														        MinWidth="{Binding ElementName=RemoveBtn, Path=ActualWidth}"/>
+														<Button Content="Copy" Command="{Binding CopyStateItemCommand}"
+														        Style="{StaticResource RowButtonNarrowStyle}"/>
 														<Button Name="RemoveBtn" Content="Remove" Command="{Binding RemoveStateItemCommand}"
-														        Style="{StaticResource RowButtonAutoStyle}"/>
+														        Style="{StaticResource RowButtonNarrowStyle}"/>
 														<Button Command="{Binding MoveStateItemUpCommand}"
 														        Style="{StaticResource RowButtonAutoStyle}"
 														        ToolTip="Move selected State Item up">

@@ -184,14 +184,14 @@
 					<Button Content="Copy" Command="{Binding CopyItemCommand}" Style="{StaticResource RowButtonNarrowStyle}"/>
 					<Button Content="Remove" Command="{Binding RemoveItemCommand}" Style="{StaticResource RowButtonNarrowStyle}"/>
 					<Button Command="{Binding MoveItemUpCommand}"
-							Style="{StaticResource RowButtonNarrowStyle}"
+							Style="{StaticResource RowButtonAutoStyle}"
 							ToolTip="Move selected State Item up">
 						<Image Source="/Resources;component/arrow_up.png"
 							   Width="16"
 							   Height="16"/>
 					</Button>
 					<Button Command="{Binding MoveItemDownCommand}"
-							Style="{StaticResource RowButtonNarrowStyle}"
+							Style="{StaticResource RowButtonAutoStyle}"
 							ToolTip="Move selected State Item down">
 						<Image Source="/Resources;component/arrow_down.png"
 							   Width="16"
