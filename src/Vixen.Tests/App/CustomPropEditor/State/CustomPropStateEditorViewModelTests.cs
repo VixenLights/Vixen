@@ -258,6 +258,191 @@ public sealed class CustomPropStateEditorViewModelTests
 		Assert.True(viewModel.IsDirty);
 	}
 
+	/// <summary>
+	/// Verifies repeated State item copies skip occupied suffixes and retain distinct assignment collections.
+	/// </summary>
+	[Fact]
+	public void CopyStateItem_RepeatedCopiesUseFirstAvailableSuffix()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out var secondLeaf, out _, out _);
+		var editor = viewModel.StateDefinitionEditorViewModel;
+		var definitionViewModel = editor.SelectedStateDefinition;
+		var source = definitionViewModel.Items[0];
+		var sourceModel = source.StateItem;
+		source.Name = "Arm";
+		source.Color = Color.Red;
+		source.AssignElementModelIds([firstLeaf.Id, secondLeaf.Id]);
+		definitionViewModel.AddItem(new StateItemModel { Name = "Arm - 1" });
+		definitionViewModel.AddItem(new StateItemModel { Name = "Arm - 3" });
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+
+		Execute(editor.CopyStateItemCommand);
+
+		var firstCopy = editor.SelectedStateItem;
+		Assert.Equal("Arm - 2", firstCopy.Name);
+		Assert.Equal(2, firstCopy.AssignmentCount);
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], firstCopy.StateItem.ElementModelIds);
+		Assert.Equal(2, firstCopy.StateItem.ElementModelIds.Distinct().Count());
+		Assert.NotSame(sourceModel.ElementModelIds, firstCopy.StateItem.ElementModelIds);
+		Assert.Equal(sourceModel.Color, firstCopy.StateItem.Color);
+		Assert.Same(firstCopy, Assert.Single(editor.SelectedStateItems));
+
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+		Execute(editor.CopyStateItemCommand);
+
+		var secondCopy = editor.SelectedStateItem;
+		Assert.Equal("Arm - 4", secondCopy.Name);
+		Assert.Equal(2, secondCopy.AssignmentCount);
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], secondCopy.StateItem.ElementModelIds);
+		Assert.NotSame(sourceModel.ElementModelIds, secondCopy.StateItem.ElementModelIds);
+		Assert.Equal(2, secondCopy.StateItem.ElementModelIds.Distinct().Count());
+	}
+
+	/// <summary>
+	/// Verifies source and copy edits stay independent and the copied row survives deletion and editor reconstruction.
+	/// </summary>
+	[Fact]
+	public async Task CopyStateItem_SourceAndCopyRemainIndependentAfterEditsAndSourceRemoval()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out var secondLeaf, out _, out _);
+		var editor = viewModel.StateDefinitionEditorViewModel;
+		var definitionViewModel = editor.SelectedStateDefinition;
+		var definition = definitionViewModel.StateDefinition;
+		var source = definitionViewModel.Items[0];
+		var sourceModel = source.StateItem;
+		source.AssignElementModelIds([firstLeaf.Id, secondLeaf.Id]);
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+
+		Execute(editor.CopyStateItemCommand);
+
+		var copy = editor.SelectedStateItem;
+		var copyModel = copy.StateItem;
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], copyModel.ElementModelIds);
+		Assert.Equal(2, copy.AssignmentCount);
+		Assert.NotSame(sourceModel.ElementModelIds, copyModel.ElementModelIds);
+
+		source.Color = Color.Blue;
+		copy.Color = Color.Green;
+		Assert.Equal(Color.Blue, sourceModel.Color);
+		Assert.Equal(Color.Green, copyModel.Color);
+
+		Assert.True(source.RemoveElementModelIds([firstLeaf.Id]));
+		Assert.Equal([secondLeaf.Id], sourceModel.ElementModelIds);
+		Assert.Equal(2, copy.AssignmentCount);
+		Assert.True(copy.RemoveElementModelIds([secondLeaf.Id]));
+		Assert.Equal([firstLeaf.Id], copyModel.ElementModelIds);
+		Assert.Equal([secondLeaf.Id], sourceModel.ElementModelIds);
+		Assert.Equal(1, source.AssignmentCount);
+		Assert.Equal(1, copy.AssignmentCount);
+		Assert.True(source.AssignElementModelIds([firstLeaf.Id]));
+		Assert.True(copy.AssignElementModelIds([secondLeaf.Id]));
+		Assert.Equal(2, source.AssignmentCount);
+		Assert.Equal(2, copy.AssignmentCount);
+		Assert.NotSame(sourceModel.ElementModelIds, copyModel.ElementModelIds);
+
+		var inMemoryReopenedEditor = new StateDefinitionEditorViewModel(viewModel.Prop, new FakeStateDefinitionDialogService());
+		var inMemoryReopenedDefinition = Assert.Single(inMemoryReopenedEditor.StateDefinitions);
+		Assert.Same(definition, inMemoryReopenedDefinition.StateDefinition);
+		Assert.Contains(inMemoryReopenedDefinition.Items, item => item.StateItem.Id == sourceModel.Id);
+		Assert.Contains(inMemoryReopenedDefinition.Items, item => item.StateItem.Id == copyModel.Id);
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], inMemoryReopenedDefinition.Items.Single(item => item.StateItem.Id == copyModel.Id).StateItem.ElementModelIds);
+
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+		await ExecuteAsync(editor.RemoveStateItemCommand);
+
+		Assert.DoesNotContain(definitionViewModel.Items, item => item.StateItem.Id == sourceModel.Id);
+		Assert.Contains(definitionViewModel.Items, item => item.StateItem.Id == copyModel.Id);
+		copy.Name = "Surviving copy";
+		copy.Color = Color.Yellow;
+		Assert.True(copy.RemoveElementModelIds([secondLeaf.Id]));
+		Assert.Equal("Surviving copy", copyModel.Name);
+		Assert.Equal(Color.Yellow, copyModel.Color);
+		Assert.Equal([firstLeaf.Id], copyModel.ElementModelIds);
+
+		var reopenedAfterRemoval = new StateDefinitionEditorViewModel(viewModel.Prop, new FakeStateDefinitionDialogService());
+		var retainedDefinition = Assert.Single(reopenedAfterRemoval.StateDefinitions);
+		Assert.DoesNotContain(retainedDefinition.Items, item => item.StateItem.Id == sourceModel.Id);
+		var retainedCopy = Assert.Single(retainedDefinition.Items, item => item.StateItem.Id == copyModel.Id);
+		Assert.Equal("Surviving copy", retainedCopy.Name);
+		Assert.Equal(Color.Yellow, retainedCopy.Color);
+		Assert.Equal([firstLeaf.Id], retainedCopy.StateItem.ElementModelIds);
+		Assert.Equal(1, retainedCopy.AssignmentCount);
+	}
+
+	/// <summary>
+	/// Verifies the nested editor selects a copied row and routes assignment edits and preview updates to that copy.
+	/// </summary>
+	[Fact]
+	public void CopyStateItem_NestedEditorSelectionAssignmentAndPreviewFollowCopy()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out var secondLeaf, out _, out var secondLight);
+		var editor = viewModel.StateDefinitionEditorViewModel;
+		var source = editor.SelectedStateDefinition.Items[0];
+		source.AssignElementModelIds([firstLeaf.Id, secondLeaf.Id]);
+		viewModel.SelectedTabIndex = 2;
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+
+		Execute(editor.CopyStateItemCommand);
+
+		var copy = editor.SelectedStateItem;
+		Assert.NotSame(source, copy);
+		Assert.Same(copy, Assert.Single(editor.SelectedStateItems));
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], copy.StateItem.ElementModelIds);
+		Assert.Equal(2, copy.StateItem.ElementModelIds.Distinct().Count());
+		Assert.Equal(Color.Red.ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.Red.ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+
+		Assert.True(viewModel.RemoveStateItemAssignment(secondLight));
+		Assert.Equal([firstLeaf.Id, secondLeaf.Id], source.StateItem.ElementModelIds);
+		Assert.Equal([firstLeaf.Id], copy.StateItem.ElementModelIds);
+		Assert.Equal(2, source.AssignmentCount);
+		Assert.Equal(1, copy.AssignmentCount);
+		Assert.Equal(Color.Red.ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.FromArgb(25, 25, 25).ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+
+		copy.Color = Color.Blue;
+		Assert.Equal(Color.Red, source.Color);
+		Assert.Equal(Color.Blue, copy.Color);
+		Assert.Equal(Color.Blue.ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == firstLeaf.Id).DisplayColor.ToArgb());
+		Assert.Equal(Color.FromArgb(25, 25, 25).ToArgb(), viewModel.DrawingPanelViewModel.LightNodes.Single(light => light.Light.ParentModelId == secondLeaf.Id).DisplayColor.ToArgb());
+		Assert.True(editor.IsDirty);
+	}
+
+	/// <summary>
+	/// Verifies an empty copied map uses existing validation and that assigning an element refreshes the error.
+	/// </summary>
+	[Fact]
+	public void CopyStateItem_EmptyAssignmentsUseExistingValidationAndRefreshAfterAssignment()
+	{
+		var viewModel = CreatePropEditorWithState(out var firstLeaf, out _, out var firstLight, out _);
+		var editor = viewModel.StateDefinitionEditorViewModel;
+		var source = editor.SelectedStateDefinition.Items[0];
+		viewModel.SelectedTabIndex = 2;
+		editor.SelectedStateItems.Clear();
+		editor.SelectedStateItems.Add(source);
+
+		Execute(editor.CopyStateItemCommand);
+
+		var copy = editor.SelectedStateItem;
+		const string copiedItemValidation = "State item \"Arm - 1\" in \"Wave\" must assign at least one element.";
+		const string sourceItemValidation = "State item \"Arm\" in \"Wave\" must assign at least one element.";
+		Assert.Empty(copy.StateItem.ElementModelIds);
+		Assert.Contains(copiedItemValidation, editor.ValidationMessages);
+		Assert.Contains(sourceItemValidation, editor.ValidationMessages);
+		Assert.True(editor.HasValidationErrors);
+		Assert.True(viewModel.AssignStateItemAssignment(firstLight));
+		Assert.Equal([firstLeaf.Id], copy.StateItem.ElementModelIds);
+		Assert.DoesNotContain(copiedItemValidation, editor.ValidationMessages);
+		Assert.Contains(sourceItemValidation, editor.ValidationMessages);
+		Assert.True(editor.HasValidationErrors);
+		Assert.True(editor.IsDirty);
+	}
+
 	[Fact]
 	public async Task RemoveStateItemCommand_DeletesAllSelectedItems()
 	{
