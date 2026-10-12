@@ -1,0 +1,123 @@
+<catel:Window x:Class="VixenModules.App.Modeling.Views.WireDiagramExportOptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:catel="http://schemas.catelproject.com"
+        Title="Wire Diagram Export Options"
+        Height="430"
+        Width="440"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Background="{DynamicResource BackColorBrush}"
+        CanCloseUsingEscape="True">
+
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Window.Resources>
+
+	<Grid Margin="16">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Row="0">
+			<CheckBox Content="Show all node numbers"
+			          IsChecked="{Binding AllNumbers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+			          Foreground="{DynamicResource ForeColorBrush}"
+			          Margin="0,0,0,14" />
+
+			<Grid Margin="0,0,0,16">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="88" />
+				</Grid.ColumnDefinitions>
+				<TextBlock Grid.Column="0" Text="Number Label Interval"
+				           Foreground="{DynamicResource ForeColorBrush}" VerticalAlignment="Center" />
+				<TextBox Grid.Column="1"
+				         Text="{Binding LabelIntervalText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+				         TextAlignment="Right" VerticalContentAlignment="Center" Margin="8,0,0,0">
+					<TextBox.Style>
+						<Style TargetType="TextBox">
+							<Setter Property="IsEnabled" Value="True" />
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding AllNumbers}" Value="True">
+									<Setter Property="IsEnabled" Value="False" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</TextBox.Style>
+				</TextBox>
+			</Grid>
+
+			<Grid Margin="0,0,0,16">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="48" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Node Marker Size"
+				           Foreground="{DynamicResource ForeColorBrush}" VerticalAlignment="Center" />
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding NodeRadius}"
+				           Foreground="{DynamicResource ForeColorBrush}" TextAlignment="Right" />
+				<Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+				        Minimum="1" Maximum="30" TickFrequency="1" IsSnapToTickEnabled="True"
+				        Value="{Binding NodeRadius, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+				        Margin="0,6,0,0" />
+			</Grid>
+
+			<Grid Margin="0,0,0,16">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="48" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Number Label Size"
+				           Foreground="{DynamicResource ForeColorBrush}" VerticalAlignment="Center" />
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding LabelFontSize}"
+				           Foreground="{DynamicResource ForeColorBrush}" TextAlignment="Right" />
+				<Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+				        Minimum="6" Maximum="24" TickFrequency="1" IsSnapToTickEnabled="True"
+				        Value="{Binding LabelFontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+				        Margin="0,6,0,0" />
+			</Grid>
+
+			<Grid Margin="0,0,0,12">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="48" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Scaling"
+				           Foreground="{DynamicResource ForeColorBrush}" VerticalAlignment="Center" />
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ExportScalePercent, StringFormat={}{0}%}"
+				           Foreground="{DynamicResource ForeColorBrush}" TextAlignment="Right" />
+				<Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+				        Minimum="100" Maximum="400" TickFrequency="1" IsSnapToTickEnabled="True"
+				        Value="{Binding ExportScalePercent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+				        Margin="0,6,0,0" />
+			</Grid>
+
+			<TextBlock Text="The diagram is fitted to a letter-sized page. Scaling scales the entire result, including the page, labels, markers, and lines."
+			           TextWrapping="Wrap" Foreground="{DynamicResource ForeColorBrush}" />
+		</StackPanel>
+
+		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+			<Button Content="OK" Width="80" Margin="0,0,8,0" Command="{Binding OkCommand}" IsDefault="True" />
+			<Button Content="Cancel" Width="80" Command="{Binding CancelCommand}" IsCancel="True" />
+		</StackPanel>
+	</Grid>
+</catel:Window>

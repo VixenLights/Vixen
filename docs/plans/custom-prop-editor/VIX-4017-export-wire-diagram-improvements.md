@@ -1,0 +1,565 @@
+# Improve wire diagram exports (VIX-4017)
+
+
+This ExecPlan is a living document maintained according to `.agents/PLANS.md`. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. The Jira issue is https://vixenlights.atlassian.net/browse/VIX-4017, “Export Wire Diagram improvements”. This document defines a design; its creation does not implement the feature, update Jira, or authorize commits.
+
+## Purpose / Big Picture
+
+
+A user exporting a crowded prop can show fewer node numbers, adjust marker size, and immediately recognize the beginning and end of the wiring. All three export locations will offer the same options for both front and back diagrams. Every export will use a letter-sized canvas with small margins, preserve the prop's proportions, and fit the largest possible view into that canvas. An enlargement setting will enlarge the entire result, including its canvas, numbers, markers, and lines.
+
+The existing output is SVG, a vector image whose shapes remain sharp when enlarged. Keep that format and its existing temporary-file/open-in-viewer workflow. There is no bitmap resolution or printer DPI setting to add.
+
+The post-M10 improvements let the user identify a numbered interior node by its diamond marker when fewer labels are selected, choose the number-label size independently of marker size, and read labels painted above later markers. Labels remain horizontal, with starts favored close to their nodes, and placement makes a best effort to avoid wires and other labels. Marker overlap is acceptable. Dense diagrams may still contain unavoidable label overlap. These additions come from testing the accepted original work; they do not reopen completed milestones.
+
+## Progress
+
+
+- [x] (2026-10-11) Read VIX-4017, the project planning skill, and `.agents/PLANS.md`; inspected the shared SVG exporter and identified all three callers.
+- [x] (2026-10-11) User confirmed fixed letter canvas, small margins, maximal proportional fit, and enlargement of everything.
+- [x] (2026-10-11) Designed the small milestones below; implementation began with milestone 2 after Jira alignment.
+- [x] (2026-10-11) Milestone 1: Updated VIX-4017's description with the agreed user-facing scope and acceptance criteria; read back and verified the saved description.
+- [x] (2026-10-11) Milestone 2: Confirmed available project/test/host conventions; added validated export options and boundary tests (15 passed).
+- [x] (2026-10-11) Milestone 3: Extracted the shared SVG builder; automated checks passed and the user confirmed equivalent output at all three export locations.
+- [x] (2026-10-11) Milestone 4: Added sequence-position label filtering; focused tests passed and the user confirmed interval 50 skips labels while defaults preserve previous behavior.
+- [x] (2026-10-11) Milestone 5: Added configurable start, middle, and end markers; focused tests passed and the user reviewed the SVG. Record the reported label overlap for later follow-up.
+- [x] (2026-10-11) Milestone 6: Implemented letter-canvas fitting; focused tests passed and the user confirmed centered, appropriately sized multi-page and wide models. Release build completed successfully after closing the running app; M6 is complete.
+- [x] (2026-10-11) Milestone 7: Enlarged the whole SVG through physical dimensions; the user confirmed 200% exports scale the diagrams.
+- [x] (2026-10-11) Milestone 8: Added the validated Catel options view model and focused tests (12 passed); added the centrally managed Catel.MVVM package reference because Modeling had no direct reference.
+- [x] (2026-10-11) Milestone 9: Added the shared Catel WPF dialog and host bridge, with validated label-interval text entry defaulting to 50, marker/enlargement sliders, and focused tests (19 passed). Release test-target build succeeded. Per user decision, live visual/UI checks are deferred to M10 after the dialog is wired into the export flow.
+- [x] (2026-10-11) Milestone 10: Connected the shared dialog to both common export methods; Release build and 55 focused tests passed. User manually verified all three entry points, individual and combined options, cancellation, bounds (marker size 1-30, enlargement 100%-400%, interval 1-1000), and expected SVG output. M11 remains open.
+- [x] (2026-10-11 20:12 UTC) Revised the plan after the user confirmed M1–M10 met the original requirements and supplied three improvements from observed testing. Application changes for these improvements remain unimplemented.
+- [x] (2026-10-11) Milestone 10R: Updated VIX-4017's description with interval-selected interior diamonds, independent label sizing (default 14, range 6–24), and final-pass labels with best-effort wire avoidance and optional upright rotation; read back and confirmed status remained In Progress.
+- [x] (2026-10-11) Milestone 10A: Added four-vertex red diamonds for interval-selected interior nodes while preserving endpoint and all-label markers; the Release test-target build succeeded and all 25 focused builder tests passed.
+- [x] (2026-10-11) Milestone 10B: Added validated label font sizing (default 14, whole-number range 6..24) and applied it to measurement, SVG text, and page fitting. Release test-target build succeeded; 25 options, 27 builder, and 9 cross-feature regression tests passed. Rider file-problem tooling was unavailable; Gortex diagnostics reported no C# LSP provider.
+- [x] (2026-10-11) Milestone 10C: Added the independent number-label size slider and view-model mapping; Release build, 25 focused tests, 114 contract-advised tests, Rider file-problem checks, and user verification through both WPF and WinForms hosts passed. User confirmed the bounded size control updates generated SVG font size as selected.
+- [x] Milestone 10D: Implemented measured, horizontal-only label placement with wire and label overlap avoidance, deterministic fallback, tightened label bounds, and final text layering. The user confirmed the labels are better placed and all areas were retested and function as expected. Earlier automated validation: the Release test-target build succeeded, focused WireDiagramSvgBuilderTests passed 31/31, and Rider file-problem checks reported no issues. The final user refinements were manually retested; no additional automated test count was reported.
+- [x] M10D validation follow-up: User review confirmed the revised horizontal label placement and tightened bounds work as expected across all retested areas. Automated coverage previously passed 31/31 focused builder tests; the subsequent refinements were validated by the user's retest.
+- [x] Milestone 11: User verified the dialog opens from WinForms and WPF, the revised options and combinations work, cancellation closes the dialog, bounds/warnings are enforced, and all tested permutations produce the expected SVG. Final retest also confirmed the “Scaling” label, capitalized option labels, slightly enlarged starting star, and tightened horizontal label placement. M12 remains open.
+- [x] (2026-10-12) Milestone 12: Reconciled VIX-4017's description to delivered horizontal-only label placement, updated Scaling wording, and current options; added a user-visible completion comment with recorded build/test/UI results; read back the description and comment. Jira remains In Progress; no status transition was requested.
+
+Execute 10R, 10A, 10B, 10C, and 10D after completed M10 and before M11/M12. The suffixes preserve the existing milestone identities and completed history.
+
+Checkboxes describe implementation status. Do not mark a milestone complete merely because it appears in this plan.
+
+## Surprises & Discoveries
+
+
+The three entry points already converge in `src/Vixen.Modules/App/Modeling/ElementModeling.cs`. Custom Prop Editor calls `OrderedPointsToSvg`; Display Setup and Preview call `ElementsToSvg`. Therefore the dialog can be inserted at these two common export methods without copying it into three hosts.
+
+The exporter currently draws red circles with radius 6, black labels with font size 16, and black connecting lines with stroke width 1. It enlarges props narrower than 800 units and uses prop-sized document dimensions rather than a paper-sized canvas. It writes a temporary `.svg` and opens it with `Process.Start` and `UseShellExecute = true`.
+
+Milestone 3 moved that existing geometry, dimensions, mirroring, and SVG element ordering into the UI-independent `WireDiagramSvgBuilder`; `ElementModeling` retains both adapters, ordering, and file opening. The extracted builder tests verify the legacy dimensions and mirrored node coordinates for a normal three-node diagram. Manual review confirmed that all three export locations still produce an equivalent SVG diagram that looks like the pre-change output.
+
+Numbering is not simply the loop counter. Custom Prop Editor supplies `(Point, int)` tuples. Element exports use `OrderModule.Order` when present and a counter otherwise. `OrderNodes` also handles duplicate order values by grouping leaves under parents. This improvement must not redefine that wiring order or overwrite stored order values.
+
+Milestone 4 manual review confirmed that `LabelInterval = 50` skips labels as intended and default options preserve the previous all-label behavior.
+
+Milestone 5 manual review (2026-10-11): the user saw locations where later node markers can obscure earlier number labels. The marker/label/wire rendering milestone is accepted as complete; consider adjusting label locations in a later milestone without changing the current numbering contract.
+
+Rider test discovery reported no existing tests for `VixenModules.App.Modeling.ElementModeling`. The new in-memory builder therefore needs focused behavioral coverage rather than relying on an existing export suite.
+
+The existing `CalculateModelRectangle` substitutes 50 for a zero width or height. The new layout must handle genuinely vertical, horizontal, and single-point props directly instead of treating artificial dimensions as real geometry.
+
+Bounded graph discovery surfaced related Custom Prop Editor plans, including `docs/plans/custom-prop-editor/VIX-2499-scale-custom-prop-background-image.md`, but did not return a wire-export specification or complete WPF hosting/project/test metadata. This is a limitation of the evidence collected, not proof that those documents or dependencies do not exist. Milestone 2 explicitly checks these conventions before any C# edits. The optional Gortex research operation was unavailable; the mounted graph read and impact tools worked.
+
+Milestone 1 Jira verification: VIX-4017's description was read, replaced using the project Jira format, and read back. The saved description includes the all-numbers default, interval labels plus endpoints, marker choices and sizing, proportional letter-page fit with automatic orientation, full-image enlargement, all three entry points in both directions, unchanged wiring order/numbers, and no export on cancel/close. The initial read showed status `New Ticket`; after the description-only edit, Jira returned `In Progress`, and the read-back confirmed that status. No status field was sent, so this appears to have changed outside the requested field update; status was not edited separately.
+
+Milestone 2 convention findings: the Modeling project is `src/Vixen.Modules/App/Modeling/Modeling.csproj`. It sets `UseWindowsForms=true`, does not set `UseWPF`, references the `Svg` package, and references Vixen.Core, Location, and Order projects. Rider's dependency view showed no direct Catel dependency. `Vixen.Tests` already references Modeling and has `xunit.v3`; the new tests use its existing xUnit `[Fact]`, `[Theory]`, and `[InlineData]` conventions. The Tag Manager exemplar's XAML derives from `<catel:Window>`, supports Escape, centers on screen, and contains no numeric spinner. Its view code constructs the view model directly, enables `ElementHost.EnableModelessKeyboardInterop`, then calls modal `ShowDialog()` without assigning an owner. Its view model derives from Catel `ViewModelBase` and uses Catel save/cancel lifecycle methods. Do not copy its manual DataContext construction into the planned options view.
+
+The bounded graph searches did not surface relevant modeling/export documentation or a coordinate constraint in VIX-2499. A repository and dependency check found no existing WPF numeric spinner: NumericUpDown usages are WinForms, Orc.Controls provides NumericTextBox but no spinner control, and Directory.Packages.props contains no numeric-spinner package. The initial M9 control choice used bounded WPF sliders; following user feedback, the label interval is instead direct validated text entry while marker size and enlargement remain sliders. No current source evidence contradicts the plan's decision to leave stored prop coordinates unchanged. Milestone 9 enables WPF in Modeling (`UseWPF=true` alongside WinForms). Milestone 8 added the existing centrally managed `Catel.MVVM` dependency to Modeling.
+
+Post-M10 testing observation (2026-10-11 20:12 UTC, user report): later node circles can obscure an earlier number label, and fixed-size labels are difficult to tune for crowded props. The user confirmed that the completed M1–M10 work was correct under its original requirements; diamonds, independent label sizing, and final-pass label placement are new acceptance criteria. The earlier M5 overlap observation is now actionable work rather than a reason to change its completed status.
+
+Source confirmation for this revision: the shared builder uses a 16-pixel Arial measurement font, emits each marker followed by its label, then emits connecting wires. Its actual label predicate uses sequence position, not the supplied displayed number. The old Mathematical / Boundary Logic paragraph described modulo filtering of displayed numbers; the current design below reconciles that discrepancy to the accepted implementation and M4 tests. This revision does not change wiring selection or number values.
+
+## Decision Log
+
+
+Decision: Use a fixed letter canvas with proportional fitting and small margins; enlargement changes every visual component. Rationale: explicit user clarification on 2026-10-11. Date/Author: 2026-10-11, user.
+
+Decision: Retain SVG and the current file-opening workflow. Rationale: the existing exporter already produces a scalable vector image; the issue does not request another format or save workflow. Date/Author: 2026-10-11, planning agent.
+
+Decision: Automatically choose portrait or landscape by whichever permits the larger proportional fit; choose portrait on a tie. Use a quarter-inch margin. Rationale: this gives the largest view on a letter canvas without adding another dialog choice; it follows the recommendation presented before the user's clarification. Date/Author: 2026-10-11, planning agent.
+
+Decision: Express the base SVG in 96 drawing units per inch, with physical document dimensions in inches. Portrait is 816 by 1056 drawing units and 8.5 by 11 inches; landscape reverses these. Rationale: physical SVG dimensions provide meaningful letter sizing, while a stable drawing coordinate system preserves the current radius 6 and font size 16. Date/Author: 2026-10-11, planning agent.
+
+Decision: The first and last markers mean the first and last entries in the existing exported wiring sequence, not the minimum and maximum stored number. A single-node diagram uses the green start star and one label. Rationale: stored order values may repeat, and one point cannot show two distinguishable endpoint markers. Date/Author: 2026-10-11, planning agent.
+
+Decision: Retain existing displayed number values. Always show the two endpoint labels; interval filtering applies to the existing displayed number for other nodes. Rationale: changing numbering is outside this improvement and could misrepresent existing wiring. The ticket's normal 1-based example remains exactly 1, 50, 100, 150, and the final number. Date/Author: 2026-10-11, planning agent.
+
+Decision: Default to all numbers, radius 6, and enlargement 100 percent. Radius is selectable from 1 through 30 drawing units; number interval from 1 through 1000; enlargement from 100 through 400 percent. The interval input initially displays 50 while disabled in all-numbers mode. Rationale: these are bounded, understandable controls; defaults preserve existing marker size and full numbering, while the feature intentionally changes endpoint shapes and canvas sizing. The 1000 interval maximum reflects that higher values are not useful. Date/Author: 2026-10-11, planning agent; maximum clarified by user.
+
+Decision: Use a WPF options dialog in the existing Modeling assembly with a Catel view model and a small view-side modal hosting bridge. Rationale: project skills prohibit new WinForms UI; the bridge permits existing WinForms hosts to use the same WPF dialog. Follow repository hosting conventions confirmed in Milestone 2 rather than introducing a new application-wide dialog framework. Date/Author: 2026-10-11, planning agent.
+
+Decision: Use bounded WPF `Slider` controls with adjacent integer values instead of numeric spinners. Repository and central-package checks found no existing WPF spinner; sliders enforce the supported ranges without parsing invalid text or adding a dependency. Rationale: a numeric text box alone could leave an uncommitted invalid string while the view model still holds its previous valid integer, and a new spinner package/control would exceed this milestone's dependency scope. Date/Author: 2026-10-11, planning agent.
+
+Decision: Assign the dialog to the active WPF window when one exists, otherwise to the active WinForms form using its HWND; if neither host exists, show centered on screen. Rationale: the existing Tag Manager helper uses modal WPF hosting and keyboard interop but does not assign an owner, so this dialog explicitly provides host ownership for the three exporters. Date/Author: 2026-10-11, planning agent.
+
+Decision: In interval mode, use direct whole-number text entry rather than a slider, with default 50 and the existing valid range 1..1000. Keep sliders for marker size and enlargement. Invalid/partial text must participate in Catel validation and disable acceptance rather than silently exporting the last valid interval. Rationale: users commonly know and repeatedly enter values such as 50 and 100, making slider selection unnecessarily slow; preserving the numeric export contract while validating text avoids stale-value acceptance. This supersedes only the interval slider control choice in the unfinished Milestone 9; the prior repository search established no spinner dependency and remains valid. Date/Author: 2026-10-11, user and planning agent.
+
+Decision: Defer M9 live visual/UI testing to M10, after the shared dialog is wired into the export flow, and close M9 based on its successful Release test-target build and focused automated tests. M10 must verify the actual dialog from both WPF and WinForms hosts, including input/defaults, ownership/modality, tab navigation, and cancellation/close behavior. Rationale: the real application dialog can be exercised more directly and meaningfully through the now-wired export actions. Date/Author: 2026-10-11 19:38 UTC, user.
+
+Decision: Keep each milestone to one responsibility and normally at most two production files, plus focused tests and this plan. Rationale: the user requested steps suitable for a lower reasoning model. Date/Author: 2026-10-11, planning agent.
+
+Decision: Paint each marker, then its number label, then paint all connecting wires last. This places a node's label above its own marker and the wires above both; a later marker may still overlap an earlier label. Rationale: the user clarified wire visibility and label layering, then observed this remaining overlap for later follow-up. Date/Author: 2026-10-11, user.
+
+Decision: Add post-M10 milestones 10R and 10A–10D before the still-open M11 and M12; preserve every completed M1–M10 milestone and its evidence. Rationale: the user accepted the original behavior and supplied additional requirements after testing, so implementation and validation must be additive and separately reviewable. Date/Author: 2026-10-11 20:12 UTC, user and planning agent.
+
+Decision: In effective interval mode (LabelInterval greater than 1), render an interior node as a red diamond exactly when the existing sequence-position predicate selects its label. Use four vertices at distance NodeRadius above, right, below, and left of the center. Preserve the endpoint star and square, with star precedence for a singleton. Rationale: the diamond links a selected number to its node without changing marker extents, input order, or the accepted label-selection contract. Interval 1 still means all labels and retains interior circles. Date/Author: 2026-10-11 20:12 UTC, user requirement and planning agent geometry choice.
+
+Decision: Add independent LabelFontSize, default 16 drawing units, with a whole-number slider from 6 through 48. Use the same selected value for Arial pixel measurement, SVG font size, and label bounds; retain full-image enlargement as a separate option. Rationale: 16 is the current value, and matching measurement to rendering prevents clipping when the user chooses another size. The 6–48 bounds are a planning choice, not a user-specified limit; they provide a practical threefold enlargement while leaving positive room on a letter canvas. Date/Author: 2026-10-11 20:12 UTC, user requirement and planning agent bounds choice.
+
+Decision: Supersede the earlier marker/label/wires-last decision only for new M10D work. Paint all markers, then all wires, then all selected labels. Search a bounded set of nearby horizontal positions against wire segments and previously placed labels, favoring label starts close to their nodes; marker overlap is permitted and does not penalize placement. Rationale: labels must remain visible above later markers, while placement rather than drawing wires over numbers makes a best effort to keep wires readable and labels distinct. A crowded diagram may still require the deterministic best-effort fallback. Superseded by the 2026-10-12 horizontal-only refinement below. Date/Author: 2026-10-11 20:12 UTC, user and planning agent.
+
+Decision: Treat the implemented sequence-position filter as authoritative: first entry, every interval-th entry using (index + 1) modulo LabelInterval, and final entry. Keep supplied number text unchanged. Rationale: M4 tests and accepted M10 behavior already establish this contract; correcting the old design paragraph is documentation reconciliation, not a new numbering feature. Date/Author: 2026-10-11 20:12 UTC, planning agent.
+
+Decision: Set the planned LabelFontSize default to 14 drawing units and maximum to 24; retain minimum 6. This supersedes the 20:12 UTC default-16/range-6–48 sizing decision above. Apply default 14 and range 6–24 throughout options, dialog, fitting checks, and new milestone acceptance. Rationale: the user requested a smaller default and a cap of 24. Existing size-16 source evidence and completed M1–M10 history remain accurate records of the pre-change behavior. Date/Author: 2026-10-11 20:22 UTC, user.
+
+Decision: Keep all number labels horizontal; favor placing each label's start close to its node and make a best effort to avoid previously placed labels as well as wires. Tighten the measured label bounds based on the user's visual experiment. Retain the user-approved UI wording “Scaling,” capitalized option labels, and slightly enlarged starting star. Rationale: the user reports this presentation is clearer and final retesting passed. Date/Author: 2026-10-12, user.
+
+Decision: Reconcile VIX-4017's description and add a concise public completion comment after M10D/M11 validation; do not transition the Jira issue. Rationale: M12 requires a Jira read/edit/comment/read loop, while the plan directs that issue status not be changed without authorization. Date/Author: 2026-10-12, user authorization for M12 and plan constraint.
+
+## Outcomes & Retrospective
+
+
+Planning outcome: requirements and the rendering algorithm were divided into twelve reviewable milestones. M10D and M11 completed based on prior automated builder validation and the user's final manual retest. M12 reconciled VIX-4017's user-facing description with the delivered horizontal-only label behavior and updated Scaling wording, added the completion/validation comment, and read back both changes. Jira remains In Progress because no status transition was requested. Automated validation recorded for the builder: Release test-target build succeeded; focused WireDiagramSvgBuilderTests passed 31/31; Rider file-problem checks reported no problems. The user's final refinements were manually retested; no additional automated test count was supplied.
+
+Milestone 10B outcome (2026-10-11): Added transient `LabelFontSize` to `WireDiagramExportOptions`, default 14 drawing units, whole-number validation from 6 through 24, and XML documentation. The builder now uses the selected value for Arial measurement and emitted SVG text; the existing measured-label envelope therefore drives proportional page fit at each size. Expanded option tests to cover default, accepted sizes 6/14/24, and rejected out-of-range, fractional, NaN, and infinite values. Expanded the long-endpoint margin fixture across sizes 6/14/24 and asserted the emitted SVG font size matches. The physical-scale regression continues to confirm viewBox children remain unchanged when ExportScale doubles, preventing double scaling of text. `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded on the second run (the first run exited 1 without an actionable error in captured output; the repeat was clean). Focused filters passed: WireDiagramExportOptionsTests 25/25, WireDiagramSvgBuilderTests 27/27, PropImageDimensionPersistenceTests 9/9. Rider file-problem tooling was unavailable in this environment; Gortex diagnostics confirmed no C# LSP provider, and the successful compiler/test-target build is recorded without claiming a Rider check. Gortex detect/tests/guards/contract completed after reindex; no guard rules were configured, tests covered builder paths, and the contract warned about a high lower-bound blast radius in the existing export graph. No dialog work or manual UI validation is part of 10B.
+
+Milestone 10C implementation outcome (2026-10-11): Added Catel-registered `LabelFontSize` to the shared options view model with default 14, validation range 6..24, and mapping into accepted export options. Added the independent “Number label size” slider and adjacent value using the existing marker-slider pattern; it is not coupled to number mode or marker radius. Added focused tests for the default, mapping 6/14/24 into accepted options, and rejection of 5/25. Also repaired the malformed XML summary immediately above the existing `NodeRadius` property while editing that type. The Release test-target command `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded. `WireDiagramExportOptionsViewModelTests` passed 25/25; contract-advised Modeling and CustomPropEditor.BackgroundImageScaling filters passed 114/114. Rider file-problem checks returned no problems for the changed view model, XAML, or tests. Gortex detect/tests/guards/contract ran; its tests coverage query did not associate these new symbols automatically, guards were empty, and contract warned high risk (reviewed blast size 29). The user manually verified that the dialog opens from both WPF and WinForms hosts, the new slider changes label size within the supported bounds, and the resulting SVG uses the selected font size. M10C acceptance is complete.
+
+Milestone 1 outcome (2026-10-11): VIX-4017 was updated and read back. Its description now states the agreed user-facing requirements and Given/When/Then criteria across all three entry points and both directions. No comments were present before the update, and none were added. No source code or Jira fields other than the description were intentionally changed. The read-back showed Jira status `In Progress` although the pre-edit read showed `New Ticket`; see Surprises & Discoveries. No source validation or commit applies to that Jira-only milestone. Repository change validation consists of the Gortex-backed plan edit; no source tests were run.
+
+Milestone 2 outcome (2026-10-11): Added `WireDiagramExportOptions` with defaults LabelInterval=1, NodeRadius=6f, ExportScale=1f and validation for all supported bounds and nonfinite float inputs. Added focused xUnit v3 tests covering defaults, lower/upper boundaries, zero, out-of-range, NaN, and positive infinity. Rider reported no file problems in either new C# file. The full-MSBuild test-target build completed with exit code 0; it emitted existing warnings in other files. The focused command `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramExportOptionsTests` passed 15 tests (0 failed, 0 skipped). No test project reference or package changes were required.
+
+Milestone 3 implementation outcome (2026-10-11): Added `WireDiagramSvgBuilder` and its focused tests, then routed `OrderedPointsToSvg` and `ElementsToSvg` through the shared builder while retaining node ordering and `OpenDoc` in `ElementModeling`. The builder materializes no files and does not launch a process; it accepts and validates options while preserving the prior radius 6, label size 16, width-based scaling, view box padding, horizontal flip, and element sequence. The full-MSBuild command `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` exited 0. The focused command `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramSvgBuilderTests` passed 4 tests (0 failed, 0 skipped). Rider reported no file problems in the three changed C# files; `git diff --check` passed. Manual review (2026-10-11): the user confirmed that all three export locations still produce an equivalent SVG diagram that looks like the pre-change output. Milestone 3 is complete.
+
+Milestone 4 outcome (2026-10-11): Updated `WireDiagramSvgBuilder` to select number labels by sequence position: the first node, each interval position, and the final node. All markers and links remain, and the supplied number values remain unchanged. Added focused cases for 123 nodes at interval 50, the 100-node boundary without a duplicate endpoint, interval 1, an interval larger than the sequence, a singleton, and repeated/nonsequential displayed values. The full-MSBuild command `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` exited 0 with unrelated existing warnings. The focused command `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramSvgBuilderTests` passed 10 tests (0 failed, 0 skipped). Rider reported warnings in both changed files, with no changes made to warnings outside this milestone's new lines; `git diff --check` passed. Manual review (2026-10-11): the user confirmed interval 50 displays skipped labels and default options preserve the previous behavior. Milestone 4 is complete; milestone 5 remains open.
+
+Milestone 5 implementation outcome (2026-10-11): Changed only the shared builder and its focused test file. The builder now draws each marker, then its number label, then all wires, so labels overlay markers while wires overlay both. It uses a green ten-vertex start star with outer radius 1.25r, red middle circles, and a red square of side 2r at the final point. The wires therefore remain visible through marker centers, as the user requested to match the prechange appearance. It uses the selected `NodeRadius` for all markers and label offsets, and gives the start marker precedence for a singleton. Tests cover marker types/colors/counts, layering, exact star/square/circle dimensions, radius-dependent label offsets, front/back endpoint identity, and the singleton case. The full-MSBuild test-target command `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -verbosity:quiet` exited 0 (unrelated warnings remain); the focused `WireDiagramSvgBuilderTests` command passed 12 tests (0 failed, 0 skipped). Rider file analysis reported weak allocation/style warnings, including existing findings; no unrelated cleanup was made. `git diff --check` passed. Manual review (2026-10-11): the user inspected the SVG and reported that later markers can obscure earlier numbers; label-position refinement is deferred to later work. Milestone 5 is complete.
+
+Milestone 6 implementation outcome (2026-10-11): Replaced width-only scaling and artificial zero-axis extents with double-precision real extents, automatic portrait/landscape selection (portrait on a tie), conservative marker/label bounds, uniform proportional fitting, and a 24-unit margin on the 816x1056 / 1056x816 base ViewBoxes. Each nonempty build creates and disposes one bitmap/Graphics/Arial 16-pixel measurement context; SVG child ordering remains marker, label, then wires. Back coordinates mirror the fitted model span while label text remains unchanged. Added tests for orientation, tie, fixed ViewBox dimensions, proportional scale, negative/horizontal/vertical/single/coincident/extreme coordinates, label and marker margins including long endpoint numbers, and mirrored centers/text. The full-MSBuild test target `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` completed successfully, and the explicit test-project build `msbuild src/Vixen.Tests/Vixen.Tests.csproj -m -t:Build -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:q` completed successfully with existing unrelated warnings. Focused validation `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramSvgBuilderTests` passed 20 tests (0 failed, 0 skipped). Rider file analysis found weak allocation/style warnings in the builder, including framework-element allocations; no unrelated cleanups were made. The initial Release output-copy failure was caused by the user's running `Vixen.Application` process holding `Release/Output/Modeling.dll`; after the application was closed, the user confirmed the Release build completed successfully. Manual review (2026-10-11): the user tested multiple models, including models that previously spanned multiple pages, and confirmed they are now centered and appropriately sized; wide models also fit. The focused `WireDiagramSvgBuilderTests` suite passed 20 tests (0 failed, 0 skipped) in the Debug build, and `git diff --check` passed. M6 is complete; M7 remains open.
+
+Milestone 7 implementation outcome (2026-10-11): Applied `ExportScale` only to the SVG document's physical width and height, expressed in inches at 96 drawing units per inch. The 816/1056-unit ViewBox, proportional fit, marker/text geometry, and line widths remain unchanged. Added a builder test comparing a portrait document at 100% and 200%, including unchanged ViewBox/child geometry and serialized inch dimensions (8.5×11in versus 17×22in). The Release test-target build `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:q` completed successfully; the focused `WireDiagramSvgBuilderTests` run passed 21 tests (0 failed, 0 skipped). Manual review (2026-10-11): the user confirmed that diagrams scale as expected with `ExportScale` set to 2. M7 is complete. Milestone 8 implementation outcome (2026-10-11): Added `WireDiagramExportOptionsViewModel` with Catel property registration, defaults AllNumbers=true, LabelInterval=50, NodeRadius=6, and ExportScalePercent=100, field validation for the supported ranges, business-rule validation against `WireDiagramExportOptions.Validate()`, and Catel save/cancel commands. Accepted options map all-numbers mode to LabelInterval=1, interval mode to the selected interval, radius directly, and percentage to a scale factor; cancellation leaves Options null. Added 12 focused xUnit tests for defaults, both label modes, 200 percent conversion, invalid-value rejection, and cancellation. The first test-target build exposed that Modeling lacked a direct Catel dependency; added the existing centrally managed `Catel.MVVM` package reference only (no package version or new package). `UseWPF` remains a Milestone 9 concern. `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` first failed because Modeling lacked Catel, then exposed that Catel `TaskCommand` does not provide `ExecuteAsync` in the tests. After adding the existing centrally managed package reference and invoking commands through `ICommand`, `msbuild src/Vixen.Tests/Vixen.Tests.csproj -m -t:Build -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:q` completed with exit code 0 and existing unrelated warnings. Focused validation `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramExportOptionsViewModelTests` passed 12 tests (0 failed, 0 skipped). `git diff --check` passed. Gortex guards reported no configured rules; contract review warned high estimated blast radius, and the new focused test suite passed. M8 is complete; M9 remains open.
+
+Milestone 10A outcome (2026-10-11): Updated only `WireDiagramSvgBuilder` and its focused tests. The builder now uses one sequence-position predicate for label measurement and emission; in interval mode, selected interior nodes render as red diamonds with four cardinal vertices at the configured node radius. Start and end markers retain precedence, so endpoints remain a green star and red square even when selected, a singleton remains a star, and interval 1 keeps all interior circles. Added assertions for 123 nodes at interval 50 (diamonds at positions 50 and 100, 119 circles, labels 1/50/100/123, and 122 wires), 123 nodes at interval 1 (121 interior circles), interval larger than count, an endpoint on an interval boundary, singleton, repeated/nonsequential displayed values, radius-scaled vertices, and mirrored diamond centers/unchanged label text. `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` completed with exit code 0; the focused `WireDiagramSvgBuilderTests` command passed 25 tests (0 failed, 0 skipped). Rider file-problem checks ran on both changed files (25 builder and 75 test problems, primarily existing or general allocation/style findings); new xUnit2031 warnings in the changed assertions were corrected and absent after the final build. Gortex guards found no configured rules. Impact/contract review reported a high-risk, lower-bound blast radius because the shared builder has multiple callers, and the covering test suite passed; Gortex's symbol coverage report links only a subset of changed symbols to test edges. No UI behavior, label size/placement/layering, wires, page fitting, or options UI changed. M10A is complete.
+
+Milestone 10R outcome (2026-10-11): Read VIX-4017, updated only its description, and read it back through Atlassian MCP. The saved user-facing Scope and Acceptance Criteria retain the original three entry points, front/back exports, interval labels and endpoints, marker roles, letter-page fit, enlargement, unchanged wiring order/numbers, and cancellation behavior. They now also state that interval-labelled interior nodes use red diamonds; number-label size is independent of marker size, defaults to 14, and ranges from 6 through 24; and labels render above markers and wires with practical wire avoidance and optional readable rotation, allowing marker overlap when clear of wires. The issue remained In Progress; no comment or status update was made. This milestone updates external requirements only; no application code, build, or tests apply. The Jira readback is the acceptance evidence.
+
+Plan revision outcome (2026-10-11 20:12 UTC): the user confirms completed M1–M10 implementation and testing satisfy the original scope. That acceptance remains intact. Added reviewable work for interval diamonds, independently configurable labels, and final-pass label placement; M11 now validates those additions across six workflows and M12 closes the expanded Jira scope. This revision changes the plan only. No new SVG behavior, application tests, manual exports, or Jira updates have been performed by revising the document. Record the actual new evidence when the added milestones execute.
+
+Revision validation: working-tree status shows only the requested plan modified. The file-scoped diff preserves the completed M1–M10 milestone bodies and historical evidence. Git whitespace validation exited 0 with no diagnostics. Rider get_file_problems reported an empty errors array for the Markdown file. Gortex detected only this document, returned no guard violations (no rules configured), and allowed the low-risk contract; the queried document sections have no executable test coverage. Application build/tests were skipped because this revision changes no application code.
+
+Label-size adjustment outcome (2026-10-11 20:22 UTC): the active design, open milestones, boundary checks, and interface contract now use default 14 and range 6–24 at the user's request. The earlier sizing decision is superseded in the Decision Log; source evidence and completed milestones retain their historical value of 16. This remains a plan-only adjustment.
+
+## Context and Orientation
+
+
+`src/Vixen.Modules/App/Modeling/ElementModeling.cs`, namespace `VixenModules.App.Modeling`, is the shared export boundary. `OrderedPointsToSvg(IEnumerable<Tuple<Point, int>> nodes, bool flip = false)` receives already ordered coordinates and labels. `ElementsToSvg(ElementNode elementNode, bool flip = false)` gathers distinct leaf nodes, checks Location properties, optionally calls `OrderNodes`, and obtains coordinates and labels. `flip` means a back diagram: reflect horizontal coordinates while retaining the wiring sequence and readable text.
+
+The callers are `PropEditorViewModel.CreateWireDiagram` in `src/Vixen.Modules/App/CustomPropEditor/ViewModels/PropEditorViewModel.cs`, `SetupElementsTree.ExportWireDiagram` in `src/Vixen.Application/Setup/SetupElementsTree.cs`, and `VixenPreviewSetupElementsDocument.ExportWireDiagram` in `src/Vixen.Modules/Preview/VixenPreview/VixenPreviewSetupElementsDocument.cs`. The last two are reached through the common WinForms ElementTree menu in `src/Vixen.Common/Controls/ElementTree.cs`. Do not change those menu commands or the callers unless verification reveals an integration requirement.
+
+Existing WPF hosting evidence includes `src/Vixen.Common/ElementTagManager/Views/ElementTagManagerWindow.xaml.cs`, whose `ShowAsDialog` is called from Preview. Use this as the bounded host-bridge exemplar in Milestone 2. Custom Prop Editor already uses WPF, but its window currently constructs its own view model; do not copy that pattern into the new dialog. The new dialog must use Catel's view-to-view-model mapping and constructor injection if a service is actually required.
+
+Unit tests belong to `src/Vixen.Tests/Vixen.Tests.csproj`. Its native C++/CLI dependencies require full Visual Studio MSBuild before `dotnet test --no-build`. Do not assume a test framework from generic skill examples: confirm the existing project's attributes and assertions in Milestone 2 and use them consistently.
+
+Proposed new files are `src/Vixen.Modules/App/Modeling/WireDiagramExportOptions.cs`, `src/Vixen.Modules/App/Modeling/WireDiagramSvgBuilder.cs`, `src/Vixen.Modules/App/Modeling/ViewModels/WireDiagramExportOptionsViewModel.cs`, `src/Vixen.Modules/App/Modeling/Views/WireDiagramExportOptionsWindow.xaml`, and its `.xaml.cs`. Proposed focused tests are `src/Vixen.Tests/App/Modeling/WireDiagramExportOptionsTests.cs` and `src/Vixen.Tests/App/Modeling/WireDiagramSvgBuilderTests.cs`. These are new paths, not claims that the files already exist.
+
+Post-M10 orientation: the proposed files above now exist, and both adapters already show the shared dialog and pass accepted options into the builder. The current view-model names are AllNumbers, LabelInterval, LabelIntervalText, NodeRadius, and ExportScalePercent; retain these implemented names rather than introducing the earlier design aliases ShowAllNumbers, NumberInterval, or ExportPercent. The builder owns Build, CalculateLayout, CreateLabel, and marker construction. Its font size is currently a private constant and a literal in CreateLabel. Its label-selection expression appears in both Build and CalculateLayout. Update those responsibilities in place; keep dialog hosting and the two adapters intact.
+
+The additional focused view-model tests are in:
+
+    src/Vixen.Tests/App/Modeling/WireDiagramExportOptionsViewModelTests.cs
+
+The IDE is Rider with build, test discovery, and file-problem tools available. For implementation, provide small method-level snippets suitable for Rider's “Apply snippet from chat”. Apply actual writes through Gortex, as required by repository instructions. No snippets need to be generated during this planning-only task.
+
+## Architecture Design: VIX-4017
+
+
+### Core Strategy
+
+
+Separate export input preparation, SVG construction, and user interaction. Keep input preparation and file opening in `ElementModeling`; put SVG construction in one UI-independent builder. Both entry methods gather their current ordered input, obtain options once, build, and open. Cancellation returns before building or creating temporary files.
+
+The design uses the project `dotnet-best-practices`, `dotnet-design-pattern-review`, `catel-mvvm`, and `csharp-docs` guidance for resource disposal, focused responsibilities, WPF bindings, and documented APIs. It does not add unrelated command-handler infrastructure, libraries, persistence, or a new project. The test builder performs no dialog interaction or process launch.
+
+### Data Model & Property Contracts
+
+
+The immutable WireDiagramExportOptions record retains LabelInterval, NodeRadius, and ExportScale with defaults 1, 6f, and 1f. Add init-only float LabelFontSize defaulting to 14f. Interval 1 means all labels. Validate continues to reject intervals outside 1..1000, nonfinite radius or radius outside 1..30, and nonfinite scale or scale outside 1..4; it additionally throws ArgumentOutOfRangeException for nonfinite LabelFontSize or values outside 6..24. The model permits finite fractional font sizes, as it does for radius; the dialog selects whole numbers. Validate at the builder boundary and in the dialog. Options remain transient per export and are not serialized into prop data.
+
+The implemented Catel view model retains AllNumbers=true, LabelInterval=50, LabelIntervalText="50", NodeRadius=6, and ExportScalePercent=100. Add an integer LabelFontSize property defaulting to 14 with Catel property registration, field/business-rule validation, and accepted-options mapping. All-numbers mode still maps LabelInterval to 1; percentage still maps to ExportScalePercent / 100f. LabelFontSize is always selectable independently of label mode and radius. Cancel returns no accepted options. Keep SVG, window, and process types out of the view model. Add one slider labelled “Number label size” with its selected integer displayed beside it, following the existing node-marker slider's behavior and layout.
+
+### Mathematical / Boundary Logic
+
+
+Materialize the ordered input once. Preserve tuple labels and sequence. Empty input produces no dialog or output. Element exports with any missing Location property continue to produce no output. Keep null ElementNode handling. Do not change `OrderNodes` or introduce new sorting.
+
+For zero-based node index i in a list of count n, use the accepted implementation's predicate: show its label when i is 0, i is n-1, the interval is 1, or (i + 1) modulo the interval is zero. Keep the supplied number as displayed text, even for repeated or nonsequential values. Use one shared predicate for marker selection, label measurement, and label emission. Every marker and link between consecutive entries remains. For n = 1, emit one star and one label.
+
+Use red circles of radius r for unlabelled interior nodes and for every interior node at interval 1. At interval greater than 1, labelled interior nodes use filled red diamonds with vertices (centerX, centerY-r), (centerX+r, centerY), (centerX, centerY+r), and (centerX-r, centerY). The diamond has the same width and height as the circle it replaces. The first marker remains the filled green five-point star with ten alternating vertices, starting upward at -pi/2, stepping by pi/5, outer radius 1.25r and inner radius half the outer radius. The last remains a red square of side 2r centered on its point. Endpoint roles take precedence over diamonds; a singleton uses the star. Determine roles from input sequence before mirroring.
+
+M10D changes drawing order to all markers, all connecting wires, then all selected labels. Before M10D the accepted old layering remains valid. Keep label text black and wire stroke width 1 at base scale. Use selected LabelFontSize for both SVG text and measurement, with explicit Arial on SVG text to match its measurement font. Mirror node coordinates before placement; calculate readable text positions against the resulting wires, without mirroring glyphs.
+
+Fit all geometry AND visible marker/label bounds inside the margins. Use base dimensions (816,1056) for portrait and (1056,816) for landscape, and margin M = 24 units. Obtain the real input extents dx = xmax - xmin and dy = ymax - ymin, using floating-point subtraction to avoid integer overflow. Measure visible labels with a single disposed System.Drawing Font/Graphics measurement context using Arial at the selected LabelFontSize in pixels, and set the SVG font family to Arial too. Use conservative ascent/descent bounds, including measurement padding, so labels do not cross the margin. Do not add a font-measurement package or allocate a measurement context per node.
+
+Before M10D, retain the established fit guards with selected-size measurements: R = 1.25r; W is the maximum selected-label width; A and D are conservative ascent and descent including existing padding. L = R, T = max(R, r + A), B = max(R, D - r), and Q = max(R, r + W). The baseline is centerY-r and text starts at centerX+r. This isolates M10B's font-size change from placement work.
+
+For M10D, reserve a conservative envelope for every permitted horizontal placement. For a measured label use height H = A + D and half-diagonal h = sqrt(W*W + H*H)/2. Set gap g = 2 drawing units and use candidate text-box center distances r + h + g and r + h + 2g from its node. The global guard for each side is max(1.25r, r + 2h + 2g), using the maximum h across visible labels. This contains the furthest candidate rectangle for horizontal text. Replace L, Q, T, and B by that guard in the existing orientation and centering formulas below. The envelope is conservative; maximal proportional fitting means maximal fit under these stated guards. Assert usable dimensions stay positive, including size 24, radius 30, and long integer labels. Do not re-fit independently for individual labels or distort node proportions.
+
+After fitting and mirroring, collect all n-1 wire segments and selected label requests before emitting labels. For each label test the two center distances in eight directions around its own node (upper-right first, then right, lower-right, below, lower-left, left, upper-left, above), using horizontal text only. Compute the SVG baseline from the same ascent/descent and rectangle center used for collision checks. Favor placements that keep the start of the label close to its node.
+
+Test each conservative text rectangle against every wire segment and previously placed label with the configured clearance. Count boundary touching as an intersection; handle zero-length segments safely. Reject any candidate extending outside the usable page margins. Prefer a candidate that avoids wires and prior labels, then favor label-start proximity to its node and stable direction order. Do not reject or penalize marker overlap. If every candidate intersects a wire or label, choose the in-margin candidate with the least overlap using the same proximity and stable-order tie-breaks. Never omit a selected label. This is a deterministic best effort within a bounded search, not a guarantee of collision-free placement for every dense or coincident prop. Preserve original label emission order. No leader lines, opaque label backgrounds, or new label-placement setting is required.
+
+For each orientation let usableWidth = canvasWidth - 2M - L - Q and usableHeight = canvasHeight - 2M - T - B. The uniform coordinate-fit factor k is the smaller of usableWidth/dx and usableHeight/dy, ignoring a ratio whose extent is zero. When both extents are zero use k = 1. Select the orientation with larger k; tie means portrait. This is the largest proportional fit under the explicit conservative bounds, not independent X/Y stretching. Assert usable dimensions remain positive at all allowed option values.
+
+Center the resulting content envelope: originX = M + ((canvasWidth - 2M) - (dx*k + L + Q))/2 + L; originY uses dy*k, T, and B analogously. Front coordinates are (originX + (x-xmin)*k, originY + (y-ymin)*k). For back coordinates replace the X term by originX + dx*k - (x-xmin)*k. The origin and guards are the same for both directions, and labels stay readable. A horizontal or vertical line fits along its nonzero axis; coincident points center safely. Coincident markers may overlap; this change does not invent artificial spacing or remove input points.
+
+At enlargement factor s, keep the ViewBox and all drawing coordinates at base size. Set physical SVG width to pageWidthInches*s and height to pageHeightInches*s. A fixed ViewBox mapped to larger physical dimensions enlarges the canvas, margin, lines, labels, and markers together without separately scaling them or multiplying twice. At 100 percent portrait is 8.5in by 11in; at 200 percent it is 17in by 22in. Enlarge only after choosing the base orientation and fit. Preserve the SVG namespace and write valid unit-bearing dimensions supported by the existing Svg package.
+
+### Subsystem Component Matrix
+
+
+`ElementModeling.cs` becomes two existing public export adapters plus unchanged ordering and file-opening helpers. New `WireDiagramSvgBuilder.cs` owns label filtering, markers, page fitting, mirroring, and SVG dimensions. New `WireDiagramExportOptions.cs` owns defaults and validation. The new WPF view and Catel view model own user choices and cancellation. The three host files consume the behavior through their existing calls. Focused Modeling tests inspect in-memory SVGs, without opening a desktop viewer.
+
+## ACTIVE EXECUTION PLAN (Derived from .agents/PLANS.md)
+
+
+### Shared execution and stop rules
+
+
+Read relevant project skills before applying them: `dotnet-best-practices` for every C# milestone, `csharp-docs` for public/protected API changes, and `catel-mvvm` for the dialog milestones. Apply tabs and LF, document added/changed public APIs, and preserve unrelated work. Do not make commits without an explicit request.
+
+For every coding milestone, use Gortex `explore(operation:"task")`, at most one targeted follow-up, and `change(operation:"impact")` before editing. Use `change(operation:"verify")` for a proposed signature change. Write only through `edit` or `refactor`. After edits use `change(operation:"detect")`, then its returned IDs with `tests`, `guards`, and `contract`. Run Rider `get_file_problems` for each changed C# or XAML file; correct only issues in the lines changed for this milestone. Do not use shell searches to reopen indexed source.
+
+New and modified unfinished milestones use this exact stop criterion:
+
+STOP BOUNDARY: Stop execution, run the git diff on the modified files, invoke the commit-msg skill with the active JIRA ticket prefix VIX-4017, and wait for explicit human review. For a Jira-only milestone, state that there are no repository files to commit. Do not create a commit without an explicit user request.
+
+Completed M1–M10 retain their original stopping text as protected history. At each new boundary halt implementation, inspect working-tree status and the file-scoped diff, update this plan's living sections, invoke the project commit-msg skill with VIX-4017 as the subject prefix when repository files changed, and emit its paste-ready Commit message block. Pause for explicit human review before proceeding. For a Jira-only milestone report that there is no source commit and still pause. These execution boundaries follow the explicitly invoked revise-active-plan skill. The project commit-msg skill is located at:
+
+    .agents/skills/commit-msg/SKILL.md
+
+### Milestone 1: Align the Jira requirements
+
+
+Context and work: this milestone changes only VIX-4017 and the plan's progress. Read the current issue again through Atlassian MCP. Update its description using the project Jira skill's Summary, Scope, and Acceptance Criteria format. Include all ticket behaviors, the user's canvas/scaling clarifications, automatic orientation, all-numbers default, and cancel-without-export. Keep technical file paths and formulas in this plan. State verification as user behavior, including all three entry points in both directions. The update belongs to future execution; it has not been performed by authoring this plan.
+
+Concrete steps and acceptance: use Atlassian get/edit/get issue tools for VIX-4017, then compare the returned description to Purpose and Validation below. Expect the issue to describe a fixed letter canvas, preserved proportions, interval labels plus endpoints, adjustable markers, green start star, final square, and full-image enlargement. Preserve unrelated issue fields and comments.
+
+STOP HERE for manual review and commit execution before proceeding.
+
+### Milestone 2: Confirm conventions and add validated options
+
+
+Context and work: before code, use a bounded Gortex task to inspect relevant `docs/` modeling/export guidance, the Modeling project file, the existing test project conventions, and `ElementTagManagerWindow.ShowAsDialog` plus its view model. Read the related background-image plan only for requirements that might constrain coordinate handling; this feature does not rescale stored coordinates. Record the actual Modeling project path, WPF/Catel references, dialog base class, and test framework in Artifacts. If a repository document demonstrably conflicts with the runtime behavior described above, record and reconcile that specific difference before editing; do not silently change this design.
+
+Create only `WireDiagramExportOptions.cs` and `WireDiagramExportOptionsTests.cs` using the record and Validate contract above. Use the existing test framework. Ensure the test project references Modeling; if absent, add its existing project reference with repository asset/copy conventions. Do not add a project or test package. If Modeling lacks required WPF support, record the minimal project-property/reference addition here for Milestone 9, using central packages already in the solution.
+
+Concrete steps: perform the test build and focused test command in Concrete Steps with the options-test class filter. Acceptance: defaults are exactly 1, 6f, 1f; lower and upper allowed bounds validate; zero, out-of-range, NaN, and infinity inputs throw the documented exception. Test boundaries, not every possible value.
+
+STOP HERE for manual review and commit execution before proceeding.
+
+### Milestone 3: Extract the shared builder without changing export behavior
+
+
+Context and work: edit `ElementModeling.cs`, create `WireDiagramSvgBuilder.cs`, and create `WireDiagramSvgBuilderTests.cs`. Add the public static Build signature specified under Interfaces. Move the existing document assembly, circle, label, line, and coordinate calculation into the builder, preserving the current width-based sizing and visual output for this milestone. Accept and validate options, but defer their rendering effects to later milestones. Keep `OpenDoc` in ElementModeling. Do not open files or show UI from Build.
+
+Make `OrderedPointsToSvg` materialize tuples once; make `ElementsToSvg` materialize leaves, retain its Location guard and current OrderNodes behavior, and adapt the ordered nodes to coordinate/number tuples. Both call Build with default options and then their existing OpenDoc. Preserve original public signatures. A null element or empty list returns without output; do not call Max/Min on an empty sequence.
+
+Concrete steps: build tests and run the builder test class. Acceptance: both adapters reach one document-building path; tests observe supplied labels, all markers, n-1 lines, input order, and reversed horizontal positions for back diagrams. Build itself does not create files or launch processes. Manually compare a normal pre-change and post-extraction SVG before proceeding. This is a refactor checkpoint, not completion of letter sizing.
+
+STOP HERE for manual review and commit execution before proceeding.
+
+### Milestone 4: Filter only node numbers
+
+
+Context and work: change only the builder and its test file. Apply the label predicate from Mathematical / Boundary Logic. Keep markers, lines, order, and displayed number values intact. Do not identify endpoints by comparing their labels to 1 or to the largest value.
+
+Concrete steps: run the builder test class. Acceptance: a sequence labelled 1 through 123 with interval 50 produces labels 1, 50, 100, 123, 123 markers, and 122 lines. At count 100 it produces 1, 50, 100 without a duplicate end label. Interval 1 shows all labels. An interval larger than the sequence leaves the two endpoint labels. Add a nonsequential/repeated-number case to prove endpoint selection uses sequence position. A single point has one label.
+
+STOP HERE for manual review and commit execution before proceeding.
+
+### Milestone 5: Render the three marker roles
+
+
+Context and work: change only the builder and its tests. Replace the first circle with the green star, the last circle with the centered square, and retain red circles in the middle. Use the selected radius and the exact star/square geometry above. For each node, add the marker followed by its number label; after all nodes, add every wire so labels are above their markers but below the connecting lines. Use first-node precedence for a singleton.
+
+Concrete steps: run the builder test class and inspect one SVG in the existing viewer. Acceptance: a three-node export has one green star, one red circle, one red square, and two black wires; doubling the radius doubles each marker's dimensions and label offset. The star's outer radius is 1.25r and square side is 2r. Back export retains endpoint identity while mirroring centers. A one-node export has one green star and one label, with no square or wire.
+
+STOP HERE for manual review and commit execution before proceeding.
+
+### Milestone 6: Fit all visible content to a letter canvas
+
+
+Context and work: change only the builder and its tests. Replace legacy width-based scaling with orientation selection, real extents, conservative label/marker bounds, and the proportional-fit calculation above. Add one disposed font-measurement context per build. Remove the artificial 50-unit zero-axis fallback from the builder's layout path. Do not alter stored locations or OrderNodes.
+
+Concrete steps: run the builder test class. Acceptance: tall inputs choose 8.5in by 11in, wide inputs choose 11in by 8.5in, tie inputs choose portrait. Base ViewBox dimensions are exactly the matching 816/1056 units. Pairwise coordinate differences retain a single uniform factor. Visible content stays inside the quarter-inch margins, and the limiting axis consumes the usable envelope within floating-point tolerance. Test negative coordinates, a horizontal line, a vertical line, one point, all coincident points, large coordinate differences, and a long endpoint label. Mirror tests compare front/back center coordinates and unchanged label text. Inspect tall, wide, and dense examples for clipping in a viewer; do not assert font-dependent pixel widths exactly.
+
+STOP HERE for manual review and commit execution before proceeding.
+
+### Milestone 7: Enlarge the entire SVG through physical dimensions
+
+
+Context and work: change only the builder and its tests. Apply ExportScale solely to the physical width and height in inches. Keep the base ViewBox, fitting, marker geometry, text geometry, and line widths unchanged. Add no separate transform or second scaling pass.
+
+Concrete steps: run the builder test class. Acceptance: the same portrait input produces 8.5in by 11in at scale 1 and 17in by 22in at scale 2 with identical ViewBoxes and child coordinates. Serialize both documents in tests and verify unit-bearing dimensions survive serialization. In a viewer that honors SVG dimensions at actual size, the second output renders every component twice as large. Record if a browser's fit-to-window behavior hides that physical change; use serialized dimensions as the definitive automated proof.
+
+STOP HERE for manual review and commit execution before proceeding.
+
+### Milestone 8: Add the validated Catel view model
+
+
+Context and work: create only `ViewModels/WireDiagramExportOptionsViewModel.cs` and a focused view-model test file under `src/Vixen.Tests/App/Modeling/`. Use Catel.MVVM.ViewModelBase, Catel property registration, and field/business-rule validation. Implement the four UI properties and accepted options mapping above. Use the confirmed Catel save/cancel lifecycle; do not introduce a parallel command framework or service locator.
+
+Concrete steps: build and run the view-model test class using existing Catel test initialization if required. Acceptance: initial values match the design; all-numbers mode ignores the disabled interval; interval mode maps the chosen positive integer; 200 percent maps to 2f; invalid entries prevent acceptance; cancellation yields no accepted options. Tests exercise option conversion/validation, not XAML implementation details. No window or process is opened by these tests.
+
+STOP HERE for manual review and commit execution before proceeding.
+
+### Milestone 9: Add the one shared WPF dialog
+
+
+Context and work: create `Views/WireDiagramExportOptionsWindow.xaml` and `.xaml.cs`. Use the Catel `<catel:Window>` base. The Milestone 2 Tag Manager exemplar has no numeric spinner; verify an existing control available through current dependencies and record its exact type before creating the view. If none exists, update this plan with a compatible control choice before writing XAML, and do not add a package without checking the central package catalog. Show an all-numbers checkbox, a bounded interval text-entry field enabled only when that checkbox is clear, a bounded integer slider labelled “Node marker size”, and an enlargement-percent slider. The interval field must accept quickly entered whole-number values such as 50 and 100, start at 50 in interval mode, and reject empty, non-integer, or out-of-range input so stale valid values cannot be accepted. Display the current interval value and keep the other selected integer values beside their sliders. Implement any minimal Catel view-model input state and focused tests needed to ensure invalid text disables acceptance; retain the numeric LabelInterval option contract. Present a brief note that the result fits a letter page and that enlargement affects everything. Follow existing theme, spacing, and OK/Cancel conventions.
+
+Use bindings and the Catel save/cancel lifecycle. Code-behind is limited to InitializeComponent, icon/view setup if conventional, and the host bridge. Add a public static `ShowAsDialog()` wrapper returning accepted options or null. It creates one modal view, lets Catel locate its view model, and enables `ElementHost.EnableModelessKeyboardInterop(window)` before calling `ShowDialog()`. The exemplar assigns no owner, so verify owner assignment for both WPF and WinForms hosts before implementation; do not assume that `CenterScreen` assigns an owner. Select the active WPF or WinForms owner using that convention; do not set DataContext manually or write rendering logic here. Cancel, Escape, and window close must all return null.
+
+If necessary, make only the WPF project-property/reference changes recorded in Milestone 2. Use existing packages and project references; no new project or new WinForms controls. This milestone does not connect the dialog to export yet.
+
+Concrete steps: build the affected project and run Rider get_file_problems on both view files and changed view-model/test files. Run the focused view-model test class. Acceptance: interval defaults to 50 when interval mode is active; values such as 50 and 100 can be entered directly; empty, malformed, and out-of-range interval text prevents acceptance; marker/enlargement bounds and defaults remain correct. Automated tests and the build establish M9's code acceptance. Defer opening the dialog, tab navigation, host ownership, modal behavior, repeated cancellation, Escape, and close testing to M10 after the dialog is wired into the actual export flow; record those results there.
+
+STOP HERE for code review and commit execution before proceeding. Visual testing is intentionally deferred to Milestone 10, where the dialog is connected and can be exercised through the application UI.
+
+Implementation outcome (2026-10-11): Added `Views/WireDiagramExportOptionsWindow.xaml` and `.xaml.cs` as one Catel WPF dialog. The view uses bounded sliders for the interval, marker size, and enlargement values; disables the interval slider in all-numbers mode; shows current integer values; and binds OK/Cancel to the M8 view-model commands. `ShowAsDialog()` creates the window, relies on Catel view-model location (no manual DataContext assignment), assigns the active WPF or WinForms owner when available, enables WinForms/WPF keyboard interop, and returns null unless accepted. `Modeling.csproj` now enables WPF alongside WinForms and references the existing `WPFCommon` theme project. The WPF-enabled project exposed an `Application` name ambiguity and an implicit `System.IO.Path` using dependency; these were corrected with a qualified WPF Application and explicit `System.IO` import. Validation: `msbuild src/Vixen.Modules/App/Modeling/Modeling.csproj -m -t:Build -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded and produced `Modeling.dll`. Gortex test coverage reported 0/4 changed document symbols covered; guard check reported no guard rules configured; contract verdict allowed (low risk). Rider file-problem analysis and live UI checks (bounds/defaults, validation, tab navigation, modal ownership from WPF and WinForms, repeated cancellation, Escape and close) have not been run. At the time this entry was written, M9 was awaiting manual review. The user subsequently deferred those visual checks to M10; see the M9 follow-up below.\n\nM9 follow-up (2026-10-11): In response to user feedback, replaced the interval slider with an editable whole-number text field; marker-size and enlargement sliders remain. The value stays at 50 when interval mode is enabled, and the view model now validates the raw string so empty, malformed, fractional, or out-of-range text disables acceptance instead of reusing the previous valid number. Added tests for 50 and 100 entry and invalid input cases. Validation: `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` completed successfully with existing unrelated warnings; `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramExportOptionsViewModelTests` passed 19 tests (0 failed, 0 skipped). Per user decision (2026-10-11 19:38 UTC), live visual/UI checks are deferred to M10, when the dialog is wired into the export flow and can be tested from the application. M9 is complete based on its build and automated acceptance; M10 now owns the outstanding checks for interval entry/default, visual bounds, tab navigation, WPF/WinForms ownership and modality, repeated cancellation, Escape, and window close.
+
+### Milestone 10: Connect options at the two common export boundaries
+
+
+Context and work: edit only `ElementModeling.cs` plus focused adapter tests if existing test infrastructure permits. This milestone also owns the visual/UI checks deferred from M9. After input validation/preparation in each public exporter, call the new ShowAsDialog once. Return immediately on null; otherwise pass accepted options to Build and call OpenDoc. Preserve both existing method signatures and the callers' flip arguments. Update XML documentation for the changed public behavior, including no output on cancellation and unchanged numbering/order semantics.
+
+Do not move the dialog into the three callers, change the ElementTree export delegate, or add a second confirmation dialog. If adapter unit tests would require launching UI, use the manual entry-point check instead of an artificial global callback or reflection-heavy test seam. The builder already tests the rendering contract.
+
+Concrete steps: build the affected solution configuration, run focused Modeling tests, and exercise one WPF and one WinForms export. Verify interval mode defaults to 50, values 50 and 100 can be entered, invalid/partial text blocks acceptance, and the marker/enlargement sliders retain their bounds. Also verify tab navigation, modal ownership from both host types, repeated cancellation, Escape, and window close. Acceptance: exactly one options popup appears before a valid export; OK opens one SVG with the chosen options; Cancel/Escape/close opens none and creates no export file. Empty input or missing Location data follows existing no-output behavior. Both directions pass the same options through the same builder.
+
+STOP HERE for manual review and commit execution before proceeding.
+
+M10 implementation and acceptance outcome (2026-10-11): Both exporters show the shared options dialog once after their existing no-output/eligibility checks. Cancellation returns before builder invocation or SVG file creation; accepted options pass to the shared builder with the existing `flip` argument. Public XML documentation records cancellation and preserved numbering/order. Release Modeling build and full-MSBuild `Vixen_Tests` target succeeded; focused `WireDiagram` tests passed 55 (0 failed, 0 skipped); `git diff --check` passed. Gortex found no tests covering the two adapters, and no C# LSP/file-problem provider is registered. The user manually confirmed the dialog launches from all three entry points; all options worked independently and in combinations; Cancel closed the dialog; enlargement was bounded 100%-400%; marker size was bounded 1-30 (the user's initial mention of 40 was a typo); interval values above 1000 or at/below 0 were rejected with an in-form warning; and all tested permutations produced the expected SVG. M10 is complete. M11 remains open for its six-workflow verification.
+
+### Milestone 10R: Align Jira with the testing-derived additions
+
+
+Context and work: this is the first new execution milestone after completed M10. Use the project Jira skill to read VIX-4017, update only its description to add interval-labelled interior diamonds, independent number-label sizing defaulting to 14, and final-pass labels with best-effort wire avoidance and optional upright rotation. Marker overlap is allowed when wires are clear. Keep the existing original requirements, cancellation contract, and all six workflows. Record the user-confirmed 6–24 size range as the chosen design and make no claim that the additions are already delivered.
+
+Concrete steps and acceptance: perform issue read/edit/read through Atlassian MCP and verify that its user-facing acceptance criteria match this revised plan. Do not change status or post completion evidence yet. This plan revision itself does not perform that external update. M12 remains the final reconciliation and validation-comment milestone.
+
+STOP BOUNDARY: Stop execution, run the git diff on the modified files, invoke the commit-msg skill with the active JIRA ticket prefix VIX-4017, and wait for explicit human review. State that a Jira-only change has no source commit; do not create a commit without an explicit request.
+
+### Milestone 10A: Identify labelled interior nodes with diamonds
+
+
+Context and work: modify only the shared builder and its focused test file:
+
+    src/Vixen.Modules/App/Modeling/WireDiagramSvgBuilder.cs
+    src/Vixen.Tests/App/Modeling/WireDiagramSvgBuilderTests.cs
+
+Reuse the accepted sequence-position label predicate, preferably in one private helper shared with measurement, and apply the exact diamond geometry under Mathematical / Boundary Logic. At interval greater than 1, a selected interior label means a red diamond; every other interior marker is a red circle. Endpoints retain their star and square regardless of label selection. Do not change font size, placement, layering, wires, page fitting, or options UI in this milestone.
+
+Concrete steps: perform the full-MSBuild test-target build in Concrete Steps and run the focused WireDiagramSvgBuilderTests filter. Run Rider file-problem checks on the changed files. Acceptance: a 123-node sequence at interval 50 has a start star, diamonds at sequence positions 50 and 100, a final square, 119 interior circles, labels 1/50/100/123, and 122 wires. Interval 1 retains 121 interior circles. Test interval larger than count, a final node also on the interval boundary, a singleton, repeated/nonsequential displayed values, selected radius, and mirrored centers. Compare polygon vertex counts so the ten-vertex star cannot be mistaken for a four-vertex diamond. Record actual results.
+
+STOP BOUNDARY: Stop execution, run the git diff on the modified files, invoke the commit-msg skill with the active JIRA ticket prefix VIX-4017, and wait for explicit human review. Do not create a commit without an explicit request.
+
+### Milestone 10B: Add label sizing to options and SVG construction
+
+
+Context and work: change the options record and builder, with their two focused test files:
+
+    src/Vixen.Modules/App/Modeling/WireDiagramExportOptions.cs
+    src/Vixen.Modules/App/Modeling/WireDiagramSvgBuilder.cs
+    src/Vixen.Tests/App/Modeling/WireDiagramExportOptionsTests.cs
+    src/Vixen.Tests/App/Modeling/WireDiagramSvgBuilderTests.cs
+
+Add LabelFontSize=14f and finite 6..24 validation. Replace both the fixed measurement-font size and CreateLabel's literal with the selected value; set SVG Arial explicitly. Measure label widths/ascent/descent with that same font. Keep the existing fit guards for this milestone and defer expanded placement bounds to M10D. Update public XML docs, including the additional invalid-option exception behavior, using the project csharp-docs skill. Preserve Build and adapter public signatures.
+
+Concrete steps: build the full test target, run WireDiagramExportOptionsTests and WireDiagramSvgBuilderTests, and run Rider file-problem checks. Acceptance: default text changes from the pre-M10B size 16 to size 14; sizes 6, 14, and 24 are measured and emitted consistently; zero, values below 6 or above 24, NaN, and infinities are rejected. Verify larger labels, including long endpoint values, stay inside letter-page margins by adjusting proportional fit while retaining marker size and a uniform coordinate scale. 200 percent enlargement changes physical dimensions without multiplying font size a second time. No dialog change is delivered yet; existing adapters use the new default 14.
+
+STOP BOUNDARY: Stop execution, run the git diff on the modified files, invoke the commit-msg skill with the active JIRA ticket prefix VIX-4017, and wait for explicit human review. Do not create a commit without an explicit request.
+
+### Milestone 10C: Add the shared number-label size control
+
+
+Context and work: change the existing Catel view model and XAML, plus focused view-model tests:
+
+    src/Vixen.Modules/App/Modeling/ViewModels/WireDiagramExportOptionsViewModel.cs
+    src/Vixen.Modules/App/Modeling/Views/WireDiagramExportOptionsWindow.xaml
+    src/Vixen.Tests/App/Modeling/WireDiagramExportOptionsViewModelTests.cs
+
+Use the project catel-mvvm, dotnet-best-practices, and csharp-docs skills. Add integer LabelFontSize=14, registered with Catel, validated within 6..24, and included in accepted options. Add the “Number label size” slider and adjacent value using the existing marker slider's conventions. It is enabled in both all-numbers and interval modes. Preserve dialog ownership, save/cancel behavior, LabelIntervalText validation, and other current bounds. Keep this choice per export without persistence or a new dependency.
+
+Concrete steps: build the full test target, run the focused WireDiagramExportOptionsViewModelTests filter, and run Rider file-problem checks on changed C#/XAML. Open the real options dialog through a WPF host and a WinForms host. Acceptance: 14 is selected initially; 6 and 24 are reachable; size 24 maps to accepted options and produces size-24 SVG numbers. Changing radius does not change label size, and changing label size does not change radius. Invalid programmatic font-size values block acceptance. Interval validation, tab navigation, modality, Cancel, Escape, and close retain their accepted behavior. M11 verifies all three entry points in both directions.
+
+STOP BOUNDARY: Stop execution, run the git diff on the modified files, invoke the commit-msg skill with the active JIRA ticket prefix VIX-4017, and wait for explicit human review. Do not create a commit without an explicit request.
+
+### Milestone 10D: Place labels after geometry with best-effort wire avoidance
+
+
+Context and work: modify only the shared builder and its focused tests. Collect all fitted/mirrored points, selected label requests, measurements, wire segments, and already placed labels. Use bounded horizontal candidates, conservative placement guards, collision checks against wires and prior labels, and a deterministic fallback. Favor keeping the start of each label as close to its node as possible. Reuse one disposed measurement context per nonempty build. Keep placement helpers private within the builder unless a demonstrated need is recorded; do not add a public service, global state, leader lines, or new packages.
+
+Emit every marker, then every connecting wire, then every selected label. Wires remain above marker fills. Labels remain above all markers and wires, including markers added later in the input. A marker overlap is acceptable; avoid wire and other-label overlap when a nearby horizontal candidate allows it. Keep labels horizontal. If no candidate avoids collisions, retain the label with deterministic best-effort placement inside the bounds.
+
+Concrete steps: build the full test target, run WireDiagramSvgBuilderTests, and run Rider file-problem checks. Replace old tests asserting interleaved marker/label order or wires above labels with the new acceptance rather than deleting coverage. Add a regression where a later circle covers an earlier label's old location, and assert all SVG text elements now follow every marker and line. Exercise wire avoidance, label-to-label avoidance, deterministic fallback, zero-length wires/coincident nodes, endpoints, front/back, bounds at sizes 6/14/24 and radii 1/6/30, long labels, and unchanged text/count/order. Prefer robust clearance and margin assertions over exact font-dependent pixel positions.
+
+Manual acceptance: inspect dense and crossing-wire props from front and back at default and larger label sizes. Later markers cannot hide labels. Labels remain horizontal and their starts stay close to the associated nodes where practical. Avoid wires and other labels where a nearby placement permits it; document unavoidable overlaps instead of claiming a universal guarantee. Confirm letter margins, proportional fit, and physical scaling still hold.
+
+STOP BOUNDARY: Stop execution, run the git diff on the modified files, invoke the commit-msg skill with the active JIRA ticket prefix VIX-4017, and wait for explicit human review. Do not create a commit without an explicit request.
+
+### Milestone 11: Verify the six user workflows
+
+
+Context and work: verify the three export entry points—Custom Prop Editor, Display Setup Element Tree, and Preview Element Tree—in both front and back views, along with defaults and revised options. The user's final UI retest exercised the dialog from WinForms and WPF, tested options independently and in combinations, confirmed cancellation closes the dialog, verified bounded values and validation warnings, and confirmed expected SVG output for all tested permutations. The user additionally confirmed the updated “Scaling” wording, capitalized option labels, slightly larger starting star, and tighter horizontal label placement.
+
+Concrete steps: record user-reported manual results without inventing test counts. Automated validation previously recorded for the builder was 31/31 focused tests plus a successful Release test-target build and clean Rider file-problem checks; the user's latest refinements were verified by manual retesting.
+
+Acceptance: the user reports all tested entry points and combinations work as expected, the dialog cancels correctly, option ranges and warnings are enforced, and resulting SVGs match expectations. Preserve front/back geometry and export behavior; do not alter prop coordinates, element Order properties, or saved prop configuration during export.
+
+STOP BOUNDARY: Stop execution, run the git diff on the modified files, invoke the commit-msg skill with the active JIRA ticket prefix VIX-4017, and wait for explicit human review. Do not create a commit without an explicit request.
+
+### Milestone 12: Close the documentation and Jira loop
+
+
+Context and work: review VIX-4017 against delivered behavior. Make only necessary description adjustments and add a concise comment reporting user-visible completion, actual validation results, and any remaining limitation. Do not claim success for an unperformed manual check or change issue status without authorization. Keep implementation paths and algorithms in this repository document. Update Progress and Outcomes with what was delivered and what remains.
+
+Concrete steps and acceptance: read/edit/comment/read through Atlassian MCP, following the Jira skill. Confirm its acceptance criteria match all six workflows and the recorded test results. The plan and issue must agree on canvas sizing and Scaling, sequence-position label selection, numbered interior diamonds in interval mode, independent label size/default/range, labels emitted last, horizontal label placement with best-effort avoidance of wires and other labels, label-start proximity to nodes, permitted marker overlap, and cancellation. Describe observed dense-layout limitations honestly.
+
+STOP BOUNDARY: Stop execution, run the git diff on the modified files, invoke the commit-msg skill with the active JIRA ticket prefix VIX-4017, and wait for explicit human review. For a Jira-only change, report that no source commit applies; do not create a commit without an explicit request.
+
+## Concrete Steps
+
+
+All shell commands below run in PowerShell with working directory `C:\Dev\Vixen`. Use full Visual Studio MSBuild from a Developer PowerShell or its installed executable, not `dotnet msbuild`, because tests depend on C++/CLI projects. Start long commands with native exec_command and yield_time_ms 10000; poll running commands through write_stdin with yield_time_ms at least 30000.
+
+For the added milestones, run the existing full-MSBuild test-target command before the named focused tests. Reuse the options, builder, and view-model filters below. Run the full affected Release build and full suite once at M11 after the new behavior is integrated; this planning-only revision does not require application builds. At each stop record actual results and a file-scoped diff. If Rider file-problem tooling is unavailable, record that limitation and use available Gortex diagnostics plus compiler results without claiming Rider checks ran.
+
+Before every coding milestone:
+
+    git status --short
+
+After a milestone, substitute its actual paths in a file-scoped diff; do not stage unrelated work:
+
+    git diff --check
+    git diff -- src/Vixen.Modules/App/Modeling/ElementModeling.cs
+
+Build the test target before running built tests:
+
+    msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m
+
+Run the initial options tests, then change the FullyQualifiedName substring to WireDiagramSvgBuilderTests or WireDiagramExportOptionsViewModelTests as the corresponding milestone requires:
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagramExportOptionsTests
+
+After several test classes exist, run the focused set:
+
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter FullyQualifiedName~WireDiagram
+
+At the integration/final milestones build the affected solution and run the full already-built unit suite:
+
+    msbuild Vixen.sln -m -t:restore -t:Rebuild -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m
+    dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/
+
+Expected evidence is exit code 0, Build succeeded with zero errors, and test output reporting zero failed tests and a nonzero number of executed tests. A filter matching zero tests is a failure of validation, not a pass. Record actual totals rather than prescribing an invented test count. If msbuild is not on PATH, use a Visual Studio Developer PowerShell or locate the full installation through vswhere; do not replace it with dotnet's bundled MSBuild.
+
+Launch the built Vixen application from Rider's existing application run configuration or `Release/Output/`, using the actual executable configured by the solution. Open Custom Prop Editor, Display Setup, and Preview Setup to perform the six manual exports. Avoid changing the user's real show: use a disposable test profile and prop.
+
+## Validation and Acceptance
+
+
+At defaults every valid export shows all existing number values, uses radius 6 and label font size 14, marks the first point with a green star and the last with a red square, retains interior circles, and fits a letter canvas without distorted proportions or clipped visible content. The document dimensions, not the viewer's arbitrary zoom level, prove physical page size.
+
+For a normal 123-node sequence numbered 1..123, interval 50 shows exactly 1, 50, 100, 123. Interior nodes at sequence positions 50 and 100 are red diamonds, other interior nodes are red circles, and the endpoints remain star and square. All 123 nodes and 122 wires remain. Interval 1, including an entered interval of 1, means all labels and keeps interior circles. Repeated/nonsequential displayed numbers retain their values and are selected by sequence position. Switching front to back mirrors positions but does not reverse input order, replace labels, or mirror text glyphs. One node has one star, one label, and no wire. Zero nodes produce no export.
+
+A radius change affects every marker and label offset; the star remains slightly larger than a circle, and the final square has the circle's diameter as its side length. At 200 percent every visual component doubles physically, with no double scaling and no change to the prop's stored coordinates.
+
+The number-label slider defaults to 14 and selects whole-number sizes 6..24 independently of radius and label mode. SVG text and its measurement use the same selected size and Arial font. A size change can adjust proportional page fitting to keep content within margins; it does not change marker dimensions. At 200 percent the physical size of text doubles along with everything else while its base SVG FontSize stays selected-size units.
+
+Every label is emitted after all markers and all wires. Test and visually confirm the later-circle overlap regression, wire avoidance, label-to-label avoidance, and deterministic best-effort fallback. Best effort means using nearby horizontal candidates to avoid wire and label overlaps whenever possible while favoring label starts close to their nodes. Marker overlap alone is permitted. No selected label disappears when all candidates intersect a wire. Front/back may use different label offsets while keeping text horizontal.
+
+Every entry point shows one shared popup for both directions. Cancel, Escape, and close leave no exported SVG or viewer launch. Missing Location data retains existing behavior. Tests prove the in-memory builder contract; manual checks prove ownership, modal behavior, viewer compatibility, and integration.
+
+Milestone 10D and 11 final validation (2026-10-12): The user tightened the label bounds, changed “Enlargement” to “Scaling,” capitalized the option labels, and slightly increased the starting star node size. User reports all areas were retested and function as expected. Labels are horizontal, their starts are favored close to nodes, and placement makes a best effort to avoid other labels as well as wires. The dialog and SVG options had previously been manually verified across WinForms/WPF entry points, front/back and option combinations. Automated builder validation previously recorded: Release test-target build succeeded, focused WireDiagramSvgBuilderTests passed 31/31, and Rider file-problem checks reported no issues. No automated test count was supplied for the latest UI/code refinements. No commit was created.
+
+## Idempotence and Recovery
+
+
+The feature changes only transient export options and generated images; it does not migrate or resave props. Rerunning builds, tests, and exports is safe. Never overwrite unrelated source changes or alter existing wiring order to make a test pass. If a milestone fails, keep its Progress item open, record the failure, and fix only its scoped changes before review. Remove only explicitly identified test-generated temporary artifacts; do not clean a user's general temporary folder. Preserve the existing OpenDoc workflow, including unrelated temporary-file quirks, unless a demonstrated failure requires a separately recorded scope decision.
+
+If a project reference or WPF setting already exists, do not add it twice. If required framework/hosting metadata differs from this design, resolve the exact integration detail in Milestone 2 and update the relevant milestones before editing; do not let a lower reasoning model invent a second UI architecture.
+
+The new option remains transient; no saved-prop migration or settings rewrite is required. Keep old completed-milestone evidence as history while updating focused tests whose expected marker shapes, selected font size, conservative envelope, or SVG element order changes in the new milestones. Do not weaken count, order, margin, cancellation, or mirroring assertions to accommodate a regression.
+
+## Artifacts and Notes
+
+
+Planning evidence from the existing source:
+
+    ElementModeling.OrderedPointsToSvg: radius = 6; CreateLabel uses FontSize = 16.
+    ElementModeling.ElementsToSvg: preserve OrderNodes and OrderModule.Order.
+    ElementModeling.OpenDoc: write .svg; Process.Start with UseShellExecute = true.
+    Direct export consumers: Custom Prop Editor, Display Setup, Vixen Preview.
+
+Milestone 2 evidence: the Modeling project is `src/Vixen.Modules/App/Modeling/Modeling.csproj`. It sets `UseWindowsForms=true` but has no `UseWPF` property; it references `Svg`, Vixen.Core, Location, and Order. The Rider dependency view showed no direct Catel dependency before Milestone 8 added the centrally managed `Catel.MVVM` reference. `Vixen.Tests` already references Modeling and uses xUnit v3 (`[Fact]`, `[Theory]`, `[InlineData]`). The Tag Manager view derives from Catel's `<catel:Window>`, supports Escape, and has no numeric spinner. `ShowAsDialog` enables `ElementHost.EnableModelessKeyboardInterop(window)` and invokes `window.ShowDialog()`; the exemplar does not assign an owner. Its view model derives from Catel `ViewModelBase`, but the view manually constructs it, which this dialog must not copy. Bounded graph discovery did not surface relevant export docs, VIX-2499 coordinate constraints, or a reusable numeric up/down control; do not interpret that as proof those do not exist. Milestone 9 enables `UseWPF=true` alongside WinForms and uses bounded WPF sliders with displayed integer values because no existing WPF spinner was found; the existing NumericUpDown controls are WinForms and Orc.Controls' NumericTextBox does not provide spinner buttons. The host bridge assigns the active WPF owner first, otherwise the active WinForms HWND. Milestone 8 added the centrally managed `Catel.MVVM` dependency required by the view model.
+
+Revision source evidence (2026-10-11): Build and CalculateLayout both select labels by (index + 1) modulo interval; the measurement font constant is 16 and CreateLabel also sets FontSize to 16. Existing emission order is each marker and selected text followed by all wires. These are the concrete sites for 10A, 10B, and 10D. The revision's Gortex impact query reported no direct dependents but a truncated/lower-bound traversal; that result is not proof of comprehensive coverage. Validation of this revision is document diff/whitespace and Gortex checks, not a new application test result.
+
+The future revision-specific implementation evidence should include actual focused test totals, serialized label sizes and final SVG element order, and observations from dense/crossing props. Do not fabricate screenshots or a test count for work not yet implemented.
+
+Append short actual build/test transcripts and the six manual results as milestones complete. Example only, not an assertion of execution:
+
+    Build succeeded. 0 Error(s).
+    Test result: zero failed, nonzero executed; record the actual passed count.
+    Custom Prop Editor front/back: one dialog, expected SVG, cancel creates no output.
+
+## Interfaces and Dependencies
+
+
+Retain these existing ElementModeling public signatures:
+
+    public static void OrderedPointsToSvg(IEnumerable<Tuple<Point, int>> nodes, bool flip = false)
+    public static void ElementsToSvg(ElementNode elementNode, bool flip = false)
+
+In namespace `VixenModules.App.Modeling`, add one type per file:
+
+    public sealed record WireDiagramExportOptions
+    {
+        public int LabelInterval { get; init; } = 1;
+        public float NodeRadius { get; init; } = 6f;
+        public float LabelFontSize { get; init; } = 14f;
+        public float ExportScale { get; init; } = 1f;
+        public void Validate();
+    }
+
+    public static class WireDiagramSvgBuilder
+    {
+        public static SvgDocument? Build(
+            IReadOnlyList<Tuple<Point, int>> nodes,
+            bool flip,
+            WireDiagramExportOptions options);
+    }
+
+The declaration blocks above specify contracts, not complete paste-ready class definitions: implement method bodies in their named milestones. Build throws ArgumentNullException for null nodes/options, validates options, and returns null for empty input. It uses the existing Svg package and System.Drawing Point/PointF types, does not reorder input, and creates no files. Document all new public members and exceptions with the project csharp-docs skill.
+
+In the existing VixenModules.App.Modeling.ViewModels.WireDiagramExportOptionsViewModel, preserve its implemented properties and accepted-options lifecycle; add the registered integer LabelFontSize property described above. Build's public signature stays unchanged because the new value travels through its existing options parameter. New diamond/placement helpers remain builder implementation details. Update public/protected XML documentation when the new option or view-model property is added. In the new view add:
+
+    public static WireDiagramExportOptions? ShowAsDialog();
+
+The view's exact base class and numeric-control namespace come from the established repository exemplar confirmed in Milestone 2. The bridge owns window creation, modal display, and host ownership; the view model owns option values and validation; ElementModeling owns whether to launch an export. Keep that division and do not add service-locator calls or a new global mutable export setting.
+
+No new runtime or test dependency is planned. If project metadata requires a reference to an existing solution package/project, follow central package and Copy Local/asset conventions. Follow existing test-framework conventions even where a generic skill names a different framework.
+
+Analysis complete and plan integrated with plans.md.
+
+Revision note (2026-10-11): Created this plan after the user resolved paper sizing and enlargement semantics. Split rendering, UI, and integration into twelve small milestones to reduce the reasoning needed per implementation turn. Initial source evidence confirms the common SVG boundary; remaining repository integration metadata has a bounded prerequisite in Milestone 2.
+
+Revision note (2026-10-11 20:12 UTC): Added testing-derived requirements after accepted M10: diamonds identify interval-labelled interior nodes; independent number-label sizing retains default 16; and labels are placed with best-effort wire avoidance and painted last, permitting marker overlap and readable rotation. Preserved M1–M10 scope, steps, and completion evidence. Added 10R and 10A–10D before existing M11/M12; revised current design, interfaces, validation, and living sections. Reconciled the older displayed-number modulo paragraph to the accepted sequence-position implementation. Size bounds 6–48 and the bounded placement algorithm are explicit planning decisions. This revision edits only the plan; implementation and external Jira updates belong to the added milestones.
+
+Revision note (2026-10-11 20:22 UTC): At the user's request, changed the planned number-label size default to 14 and maximum to 24, retaining minimum 6. Updated active option/view-model contracts, interface declaration, open milestones, fitting bounds, and validation scenarios to match. The new Decision Log entry supersedes the earlier sizing choice; completed M1–M10 text and pre-change size-16 evidence are preserved.
+
+Revision note (2026-10-12): Recorded the user's final M10D/M11 retest and marked both complete. Updated active acceptance and validation text to reflect horizontal-only labels, proximity of label starts to nodes, and best-effort avoidance of other labels and wires. Recorded the tightened label bounds, “Scaling” wording, capitalized option labels, and slightly enlarged starting star. Completed M12 by reconciling the Jira description, adding a completion comment with recorded validation, and reading back both; issue status remains In Progress. The latest refinements have no separately reported automated test count. Plan revision complete and recorded in the Decision Log. Ready for coding model to implement the next milestone.
