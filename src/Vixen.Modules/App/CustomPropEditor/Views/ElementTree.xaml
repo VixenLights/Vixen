@@ -390,7 +390,7 @@
 													        Content="Add"
 													        Command="{Binding AddStateDefinitionCommand}"
 													        Style="{StaticResource RowButtonAutoStyle}"
-													        MinWidth="{Binding ElementName=RemoveBtn, Path=ActualWidth}"/>
+													        MinWidth="{Binding ElementName=DeleteBtn, Path=ActualWidth}"/>
 													<Button Grid.Column="3"
 													        Name="DeleteBtn"
 													        Content="Delete"
