@@ -1,7 +1,7 @@
 # Restore export output configuration before handling edits (VIX-4022)
 
 
-This ExecPlan is a living document maintained in accordance with .agents/PLANS.md. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document records the design and tracks implementation progress; Milestones 1 and 2 are complete, with implementation, automated validation, and user-reported hands-on UI results recorded below. Milestone 3 remains unstarted. Issue: https://vixenlights.atlassian.net/browse/VIX-4022, “Export wizard shows output path does not exist before fully loading config”.
+This ExecPlan is a living document maintained in accordance with .agents/PLANS.md. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document records the design and tracks implementation progress; Milestones 1–3 are complete, with implementation, automated validation, user-reported hands-on UI results, and Jira completion evidence recorded below. Issue: https://vixenlights.atlassian.net/browse/VIX-4022, “Export wizard shows output path does not exist before fully loading config”.
 
 ## Purpose / Big Picture
 
@@ -15,7 +15,7 @@ A saved Direct Upload export configuration must open its output stage with Direc
 - [x] (2026-10-13) Identify the synchronous restoration/event ordering defect and save this implementation plan.
 - [x] (2026-10-13) Milestone 1: Updated VIX-4022 with user-facing scope, acceptance criteria, and test plan; read back and confirmed. Status and assignee unchanged.
 - [x] (2026-10-13) Milestone 2: Implemented restoration suppression and mode-aware validation in the output stage; Release build and 41 ExportWizard tests passed. User reports reproducing the issue before the fix and confirming the Direct Upload, File Path, saved-setting, and host-validation behavior after the fix.
-- [ ] Milestone 3: Record validation results and align Jira with the delivered behavior.
+- [x] (2026-10-13) Milestone 3: Confirmed the existing Jira description matches delivered behavior, added and read back validation comment 40586; issue remains In Progress and no workflow change was made.
 
 ## Surprises & Discoveries
 
@@ -49,10 +49,12 @@ Decision: Keep the Milestone 2 implementation confined to the planned output-sta
 
 Decision: Treat the user's report of the pre-fix reproduction and post-fix validation matrix as the manual acceptance evidence for Milestone 2. Rationale: The user exercised the old behavior and the changed application, and reported retained settings and the distinct Direct Upload/File Path outcomes specified by this plan. Date/Author: 2026-10-13 / Codex.
 
+Decision: Keep the existing Jira description unchanged at Milestone 3 and add a completion comment only. Rationale: The fetched description already matched the delivered Direct Upload and File Path behavior and acceptance criteria; changing workflow state was not authorized. Jira readback confirmed comment 40586 and status In Progress with the assignee unchanged. Date/Author: 2026-10-13 / Codex.
+
 ## Outcomes & Retrospective
 
 
-Milestone 1 is complete. VIX-4022 records the observable Direct Upload restoration behavior, File Path behavior to preserve, acceptance criteria, and user test plan; the issue remains Accepted and assigned as before. Milestone 2 is complete: the output stage now suppresses restoration side effects and makes Falcon path validation mode-aware. The full Release rebuild, focused ExportWizard tests, and user-reported manual scenarios passed. The manual checks confirmed the early prompt reproduces before the change and is absent afterward for Direct Upload, while File Path validation and host reachability feedback remain as expected. Milestone 3 has not started.
+Milestone 1 is complete. VIX-4022 records the observable Direct Upload restoration behavior, File Path behavior to preserve, acceptance criteria, and user test plan; at that milestone the issue was Accepted and assigned as before. Milestone 2 is complete: the output stage now suppresses restoration side effects and makes Falcon path validation mode-aware. The full Release rebuild, focused ExportWizard tests, and user-reported manual scenarios passed. Milestone 3 is complete: the current Jira description already matched delivered behavior, so it was left unchanged. Completion and validation comment 40586 was added and read back. At readback the issue was In Progress and remained assigned to Jeff Uchitjil; no workflow change was made. The Release rebuild had 74 warnings and 0 errors; the ExportWizard tests passed 41, failed 0, skipped 0. User-reported checks confirmed no early prompt for Direct Upload, preserved settings, correct File Path warning behavior, and expected host reachability feedback.
 
 ## Architecture Design: VIX-4022
 
@@ -144,7 +146,7 @@ STOP BOUNDARY: Halt code execution. Run git status --short and git diff -- docs/
 ## Concrete Steps
 
 
-All commands above run from C:\Dev\Vixen. Application output is Release/Output/. Use full MSBuild, not dotnet build of the solution, because transitive QMLibrary and LiquidFunWrapper dependencies are C++/CLI projects. No packages or project files need changing. During Milestone 2, `git status --short` was clean before editing. The Release solution rebuild, `Vixen_Tests` MSBuild target, and ExportWizard-filtered test command listed above all completed successfully; see the execution record in Validation and Acceptance. The Rider file-problem inspection was available and run on the affected file. Desktop control was unavailable to the agent during implementation; the user subsequently performed the WinForms validation and reported results recorded below, including the old-build reproduction. Milestone 2 is complete based on that report.
+All commands above run from C:\Dev\Vixen. Application output is Release/Output/. Use full MSBuild, not dotnet build of the solution, because transitive QMLibrary and LiquidFunWrapper dependencies are C++/CLI projects. No packages or project files need changing. During Milestone 2, `git status --short` was clean before editing. The Release solution rebuild, `Vixen_Tests` MSBuild target, and ExportWizard-filtered test command listed above all completed successfully; see the execution record in Validation and Acceptance. The Rider file-problem inspection was available and run on the affected file. Desktop control was unavailable to the agent during implementation; the user subsequently performed the WinForms validation and reported results recorded below, including the old-build reproduction. For Milestone 3, the current Jira description was fetched and found already aligned, so it was not edited. Comment 40586 was added and read back; the issue remained In Progress and assigned to Jeff Uchitjil, with no workflow transition.
 
 ## Validation and Acceptance
 
@@ -164,6 +166,8 @@ This matrix is the primary regression proof because it exercises actual WinForms
 Execution record (2026-10-13): The full Release solution rebuild completed with 0 errors and 74 warnings. The full-MSBuild `Vixen_Tests` target completed successfully. `dotnet test ... --filter "FullyQualifiedName~ExportWizard"` passed 41, failed 0, skipped 0. Rider file-problem analysis ran on `BulkExportOutputFormatStage.cs`; it reported file-wide existing warnings, including the longstanding unused return value warning for `ValidateFalconOutputFolder`, and no new errors in the modified logic. Gortex found no test coverage for the changed symbols and no guard rules.
 
 User-reported manual results (2026-10-13): The issue reproduced before the change. After the change, the saved Direct Upload profile no longer displayed the directory prompt and its other settings remained as expected. A File Path profile with a bad path showed the expected warning and retained its other settings; a valid File Path profile showed no warning and retained its settings. Direct Upload with a valid host enabled Next. An invalid/unreachable host produced the expected unreachable warning. The user reports having performed the Validation and Acceptance steps; the cases above are the specific observations provided in the report.
+
+Jira completion record (2026-10-13): The current VIX-4022 description was read before the update and already matched the delivered behavior, so it was left unchanged. Added comment 40586 with the user-facing behavior and concise validation results; Jira readback confirmed the comment is attached and the status remains In Progress with assignee Jeff Uchitjil. No validation was reported as skipped; no Jira workflow action was taken.
 
 ## Idempotence and Recovery
 
@@ -189,4 +193,4 @@ Retain public override void StageStart() and public override bool CanMoveNext. A
 
 Analysis complete and plan integrated with plans.md.
 
-Execution update (2026-10-13): Milestone 2 implementation, automated validation, and user-reported manual acceptance results are recorded above. Milestone 2 is complete. This update does not authorize or begin Milestone 3.
+Execution update (2026-10-13): Milestone 2 implementation, automated validation, and user-reported manual acceptance results are recorded above. Milestones 2 and 3 are complete. Milestone 3 recorded the current Jira readback and completion comment 40586 without changing workflow state.
