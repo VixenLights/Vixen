@@ -39,12 +39,12 @@ namespace VixenModules.Editor.EffectEditor
 	{
 		public delegate void PreviewStateChangedEventHandler(object sender, PreviewStateEventArgs e);
 
-		private static int MultiEditLimit = 75;
-		private static string TooManyEffectsMessage = String.Empty;
+		private static readonly int MultiEditLimit = 75;
+		private static readonly string TooManyEffectsMessage;
 		private const string InformationMessage = "Select an Effect to edit.";
-		private const string InformationLinkUrl = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effect-editor";
+		private const string InformationLinkUrl = "https://www.vixenlights.com/docs/usage/sequencer/sequencer-basics/effect-editor/";
 		private static readonly Type ThisType = typeof (EffectPropertyEditorGrid);
-		private bool _tooManySelectedEffects = false;
+		private bool _tooManySelectedEffects;
 
 		/// <summary>
 		///     CurrentDescription Dependency Property
