@@ -14,6 +14,7 @@ namespace VixenModules.App.ExportWizard
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly BulkExportWizardData _data;
 		private bool _fppHostReachable;
+		private bool _isRestoringProfile;
 		
 		public BulkExportOutputFormatStage(BulkExportWizardData data)
 		{
@@ -48,40 +49,52 @@ namespace VixenModules.App.ExportWizard
 			txtFalconInfo.Height = txtFalconInfo.Font.Height * numLines + padding + border;
 		}
 
+		/// <summary>
+		/// Restores the active export profile without treating control changes as user edits.
+		/// </summary>
+		/// <remarks>
+		/// Control events raised while the profile is restored are suppressed so saved output paths are not rewritten or validated prematurely.
+		/// </remarks>
 		public override void StageStart()
 		{
-			outputFormatComboBox.Items.Clear();
-			outputFormatComboBox.Items.AddRange(_data.Export.FormatTypes);
-			outputFormatComboBox.Sorted = true;
-			outputFormatComboBox.SelectedItem = _data.ActiveProfile.Format;
-
-			resolutionComboBox.SelectedItem = _data.ActiveProfile.Interval.ToString();
-			//Allow for non standard resolutions to be restored.
-			if (resolutionComboBox.Text != _data.ActiveProfile.Interval.ToString())
+			_isRestoringProfile = true;
+			try
 			{
-				resolutionComboBox.Text = _data.ActiveProfile.Interval.ToString();
+				outputFormatComboBox.Items.Clear();
+				outputFormatComboBox.Items.AddRange(_data.Export.FormatTypes);
+				outputFormatComboBox.Sorted = true;
+				outputFormatComboBox.SelectedItem = _data.ActiveProfile.Format;
+
+				resolutionComboBox.SelectedItem = _data.ActiveProfile.Interval.ToString();
+				//Allow for non standard resolutions to be restored.
+				if (resolutionComboBox.Text != _data.ActiveProfile.Interval.ToString())
+				{
+					resolutionComboBox.Text = _data.ActiveProfile.Interval.ToString();
+				}
+				txtOutputFolder.Text = _data.ActiveProfile.OutputFolder;
+
+				chkFppIncludeAudio.Checked = chkIncludeAudio.Checked = _data.ActiveProfile.IncludeAudio;
+				chkRenameAudio.Enabled = btnAudioOutputFolder.Enabled = lblAudioExportPath.Enabled = txtAudioOutputFolder.Enabled = _data.ActiveProfile.IncludeAudio;
+				chkRenameAudio.Checked = _data.ActiveProfile.RenameAudio;
+				chkCompress.Checked = _data.ActiveProfile.EnableCompression;
+				grpFalcon.Visible = _data.Export.IsFalconFormat(_data.ActiveProfile.Format);
+				grpAudio.Visible = grpSequence.Visible = !grpFalcon.Visible;
+				chkCompress.Enabled = _data.Export.CanCompress(_data.ActiveProfile.Format);
+				chkCreateUniverseFile.Checked = _data.ActiveProfile.CreateUniverseFile;
+				chkBackupUniverseFile.Checked = _data.ActiveProfile.BackupUniverseFile;
+				txtFalconOutputFolder.Text = _data.ActiveProfile.FalconOutputFolder;
+				txtAudioOutputFolder.Text = _data.ActiveProfile.AudioOutputFolder;
+
+				_fppHostReachable = false;
+				rdoDirectUpload.Checked = _data.ActiveProfile.FppDirectUpload;
+				rdoFilePath.Checked = !_data.ActiveProfile.FppDirectUpload;
+				txtFppHostAddress.Text = _data.ActiveProfile.FppHostAddress ?? string.Empty;
+				UpdateUploadModeVisibility();
 			}
-			txtOutputFolder.Text = _data.ActiveProfile.OutputFolder;
-
-			chkFppIncludeAudio.Checked = chkIncludeAudio.Checked = _data.ActiveProfile.IncludeAudio;
-			chkRenameAudio.Enabled = btnAudioOutputFolder.Enabled = lblAudioExportPath.Enabled = txtAudioOutputFolder.Enabled = _data.ActiveProfile.IncludeAudio;
-			chkRenameAudio.Checked = _data.ActiveProfile.RenameAudio;
-			chkCompress.Checked = _data.ActiveProfile.EnableCompression;
-			
-			grpFalcon.Visible = chkCompress.Enabled = _data.Export.IsFalconFormat(_data.ActiveProfile.Format); 
-			grpAudio.Visible = grpSequence.Visible = !grpFalcon.Visible;
-			chkCreateUniverseFile.Checked = _data.ActiveProfile.CreateUniverseFile;
-			chkBackupUniverseFile.Checked = _data.ActiveProfile.BackupUniverseFile;
-			txtFalconOutputFolder.Text = _data.ActiveProfile.FalconOutputFolder;
-
-			txtAudioOutputFolder.Text = _data.ActiveProfile.AudioOutputFolder;
-
-			// Restore Direct Upload mode and host address
-			_fppHostReachable = false;
-			rdoDirectUpload.Checked = _data.ActiveProfile.FppDirectUpload;
-			rdoFilePath.Checked = !_data.ActiveProfile.FppDirectUpload;
-			txtFppHostAddress.Text = _data.ActiveProfile.FppHostAddress ?? string.Empty;
-			UpdateUploadModeVisibility();
+			finally
+			{
+				_isRestoringProfile = false;
+			}
 
 			// If returning to step 4 with a saved host, kick off a background ping so
 			// CanMoveNext is evaluated correctly without requiring the user to re-tab.
@@ -118,6 +131,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void txtOutputFolder_Leave(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile || (_data.ActiveProfile.IsFalconFormat && _data.ActiveProfile.FppDirectUpload)) return;
 			_data.ActiveProfile.OutputFolder = txtOutputFolder.Text;
 			ValidatePath(_data.ActiveProfile.OutputFolder);
 			_WizardStageChanged();
@@ -142,6 +156,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void txtAudioOutputFolder_Leave(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile || (_data.ActiveProfile.IsFalconFormat && _data.ActiveProfile.FppDirectUpload)) return;
 			_data.ActiveProfile.AudioOutputFolder = txtAudioOutputFolder.Text;
 			ValidatePath(_data.ActiveProfile.AudioOutputFolder);
 			_WizardStageChanged();
@@ -164,6 +179,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void UpdateFalconPaths(string path)
 		{
+			if (_isRestoringProfile || (_data.ActiveProfile.IsFalconFormat && _data.ActiveProfile.FppDirectUpload)) return;
 			_data.ActiveProfile.FalconOutputFolder = path;
 			txtFalconOutputFolder.Text = path;
 			if (!string.IsNullOrEmpty(path))
@@ -177,6 +193,7 @@ namespace VixenModules.App.ExportWizard
 
 		private bool ValidateFalconOutputFolder()
 		{
+			if (_isRestoringProfile || (_data.ActiveProfile.IsFalconFormat && _data.ActiveProfile.FppDirectUpload)) return false;
 			var path = _data.ActiveProfile.FalconOutputFolder;
 			if (string.IsNullOrEmpty(path)) return false;
 			if (CanTestPath() && Directory.Exists(path))
@@ -210,10 +227,17 @@ namespace VixenModules.App.ExportWizard
 			return false;
 		}
 
+		/// <summary>
+		/// Gets whether the wizard can advance after interval and destination validation.
+		/// </summary>
+		/// <value>
+		/// <see langword="false" /> while the active profile is being restored; otherwise, a value based on the interval and the selected format's upload host or output directories.
+		/// </value>
 		public override bool CanMoveNext
 		{
 			get
 			{
+				if (_isRestoringProfile) return false;
 				if (!IsIntervalValid()) return false;
 				if (_data.ActiveProfile.IsFalconFormat)
 				{
@@ -256,6 +280,7 @@ namespace VixenModules.App.ExportWizard
 		}
 		private void ValidatePath(string path)
 		{
+			if (_isRestoringProfile || (_data.ActiveProfile.IsFalconFormat && _data.ActiveProfile.FppDirectUpload)) return;
 			if (!Directory.Exists(path))
 			{
 				var messageBox =
@@ -342,7 +367,9 @@ namespace VixenModules.App.ExportWizard
 
 		private void outputFormatComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			ComboBox comboBox = (ComboBox)sender;
+			if (comboBox.SelectedItem == null) return;
 			_data.ActiveProfile.Format = comboBox.SelectedItem.ToString();
 			grpFalcon.Visible = _data.Export.IsFalconFormat(_data.ActiveProfile.Format);
 			grpAudio.Visible = grpSequence.Visible = !grpFalcon.Visible;
@@ -350,8 +377,12 @@ namespace VixenModules.App.ExportWizard
 			if (_data.ActiveProfile.IsFalconFormat)
 			{
 				chkFppIncludeAudio.Checked = _data.ActiveProfile.IncludeAudio;
-				UpdateFalconPaths(_data.ActiveProfile.FalconOutputFolder);
-				ValidateFalconOutputFolder();
+				if (!_data.ActiveProfile.FppDirectUpload)
+				{
+					UpdateFalconPaths(_data.ActiveProfile.FalconOutputFolder);
+					ValidateFalconOutputFolder();
+				}
+				UpdateUploadModeVisibility();
 			}
 			else
 			{
@@ -363,6 +394,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void chkIncludeAudio_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			if (_data.ActiveProfile.IsFalcon2xFormat)
 			{
 				_data.ActiveProfile.RenameAudio = chkFppIncludeAudio.Checked;
@@ -377,22 +409,25 @@ namespace VixenModules.App.ExportWizard
 
 		private void chkRenameAudio_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			_data.ActiveProfile.RenameAudio = chkRenameAudio.Checked;
 		}
 
 		private void chkCreateUniverseFile_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			_data.ActiveProfile.CreateUniverseFile = chkCreateUniverseFile.Checked;
 		}
 
 		private void chkBackupUniverseFile_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			_data.ActiveProfile.BackupUniverseFile = chkBackupUniverseFile.Checked;
 		}
 
 		private void txtFalconOutputFolder_Leave(object sender, EventArgs e)
 		{
-			if (rdoDirectUpload.Checked) return;
+			if (_isRestoringProfile || (_data.ActiveProfile.IsFalconFormat && _data.ActiveProfile.FppDirectUpload)) return;
 			UpdateFalconPaths(txtFalconOutputFolder.Text);
 			ValidateFalconOutputFolder();
 		}
@@ -404,11 +439,13 @@ namespace VixenModules.App.ExportWizard
 
 		private void chkCompress_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			_data.ActiveProfile.EnableCompression = chkCompress.Checked;
 		}
 
 		private void resolutionComboBox_TextChanged(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			_WizardStageChanged();
 		}
 
@@ -423,6 +460,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void rdoUploadMode_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			_data.ActiveProfile.FppDirectUpload = rdoDirectUpload.Checked;
 			// Reset reachability whenever the user switches modes so the old ping
 			// result does not carry over to a new host-address entry.
@@ -433,6 +471,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void txtFppHostAddress_TextChanged(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			_data.ActiveProfile.FppHostAddress = txtFppHostAddress.Text.Trim();
 			// Any edit invalidates the previous ping result; the user must leave the
 			// field (firing Leave) to re-validate.
@@ -442,6 +481,7 @@ namespace VixenModules.App.ExportWizard
 
 		private async void txtFppHostAddress_Leave(object sender, EventArgs e)
 		{
+			if (_isRestoringProfile) return;
 			var host = txtFppHostAddress.Text.Trim();
 			try
 			{
