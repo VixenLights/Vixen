@@ -17,7 +17,7 @@ The original issue is https://vixenlights.atlassian.net/browse/VIX-4020. Reprodu
 - [x] (2026-10-12) Review existing controller-selection documentation and the relevant export source; record a scoped architectural review in docs/reviews/vix-4020-export-controller-loading.md.
 - [x] (2026-10-12 21:21Z) Milestone 1: Updated JIRA requirements and acceptance criteria, preserved New Ticket status, saved the plan and design review, and reached the required manual review boundary. No application code changed.
 - [x] (2026-10-12) Milestone 2: Implement metadata-only wizard synchronization, explicit asynchronous network preparation, placeholder removal, regression tests, and validation. Paused at the required manual review boundary.
-- [ ] Milestone 3: Reproduce with the original profile, compare the new trace, record final results, and update JIRA; pause for final review.
+- [x] (2026-10-13) Milestone 3: User repeatedly exercised cold and warm runs with the original profile (>20 controllers, several requiring network lookups), confirmed immediate controller-list population, conditional summary progress, correct universe outputs, immediate cancellation during preparation, and successful wizard re-entry. Per the user's direction, no new trace or numerical timing was required; JIRA validation comments were added. No quantitative speedup or post-change profiler result is claimed.
 
 ## Surprises & Discoveries
 
@@ -58,7 +58,7 @@ Milestone 2 separates metadata snapshots from network configuration, starts requ
 
 Validation completed: `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded; `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~ExportWizard"` passed 41 tests; `msbuild Vixen.sln -m -t:restore -t:Build -p:Configuration=Release -p:Platform=x64` succeeded with 0 warnings and 0 errors. Rider file problem checks reported no diagnostics in changed C# files. `git diff --check` passed with no whitespace errors.
 
-Runtime comparison against the original profile and dotTrace snapshot remains for milestone 3. No measured speedup is claimed.
+User-reported M3 verification (2026-10-13): The user repeatedly ran the original profile from cold starts and warm passes. It contains more than 20 controllers, several of which encounter network lookup issues; the controller list populated immediately on every run. On the final stage, the progress bar appears when included controllers require slow network configuration evaluation; for quick or unnecessary resolution it either does not appear or completes before becoming visible. Universe-file outputs were checked against several known configurations and appeared correct. The user tested cancellation during network configuration; Cancel closed the dialog immediately, and subsequent wizard visits worked as expected. The user explicitly determined that a new trace is unnecessary. No numerical timings or post-change trace were collected, so the observed responsiveness is qualitative and no quantitative speedup or profiler result is claimed.
 
 ## Context and Orientation
 
@@ -114,9 +114,9 @@ STOP HERE for manual review and commit execution before proceeding. Halt code ex
 ### Milestone 3: Confirm the reproduction and report results
 
 
-Exercise the user's original profile and sequence. Record controller-stage entry time for cold and repeated visits, profile creation, Back/Next, an ordinary export, and a universe-file export. Collect a new dotTrace snapshot covering the same reproduction and compare it with C:\Dev\Snapshots\MarkBar\VIX-4020-initial-capture.dtp using dottrace-analyze. An HTML report is optional and requires an explicit user request. Confirm DetermineIp is absent beneath the controllers stage and any required DNS occurs on a worker while preparation feedback is visible. Exercise cancellation during a slow lookup and ensure a late completion cannot start export or update a closed page.
+Exercise the user's original profile and sequence across cold and repeated warm runs, including ordinary and universe-file exports, then verify Back/Next and cancellation during preparation. Confirm controller-list responsiveness with the original large profile and that wizard re-entry works after cancellation. The user may explicitly waive a new trace and quantitative timing; if so, record that decision and report observed behavior without claiming measured latency or profiler evidence. If a trace is requested, compare it with the supplied initial capture using dottrace-analyze.
 
-Update this plan and the design review with measured results and limitations. Adjust VIX-4020's description to match the final behavior and add a concise validation comment using the jira skill. Do not close or transition the issue unless explicitly requested. A successful build alone is not evidence that the reported performance issue is fixed.
+Update this plan and the design review with results and limitations. Adjust VIX-4020's description to match final behavior and add a concise validation comment using the jira skill. Do not close or transition the issue unless explicitly requested.
 
 STOP HERE for manual review and commit execution before proceeding. Inspect scoped git status/diff, invoke commit-msg if repository documents changed, output the complete message, and pause for final review. Do not create a commit.
 
