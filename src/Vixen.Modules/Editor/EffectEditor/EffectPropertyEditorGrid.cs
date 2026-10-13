@@ -42,7 +42,7 @@ namespace VixenModules.Editor.EffectEditor
 		private static int MultiEditLimit = 75;
 		private static string TooManyEffectsMessage = String.Empty;
 		private const string InformationMessage = "Select an Effect to edit.";
-		private const string InformationLinkUrl = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effect-editor";
+		private const string InformationLinkUrl = "https://www.vixenlights.com/docs/usage/sequencer/sequencer-basics/effect-editor/";
 		private static readonly Type ThisType = typeof (EffectPropertyEditorGrid);
 		private bool _tooManySelectedEffects = false;
 
