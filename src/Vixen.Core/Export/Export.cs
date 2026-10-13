@@ -40,7 +40,14 @@ namespace Vixen.Export
 	    public bool AllSelectedControllersSupportUniverses => ControllerExportInfo.Where(x => x.IsActive).All(x => x.HasNetworkSupport);
 
 		#region Contructor
-		public Export()
+		/// <summary>Initializes a new instance of the <see cref="Export" /> class with network configuration.</summary>
+		public Export() : this(true)
+		{
+		}
+
+		/// <summary>Initializes a new instance of the <see cref="Export" /> class.</summary>
+		/// <param name="initializeControllerNetworkConfiguration"><see langword="true" /> to load network configuration for the initial controller snapshots; otherwise, <see langword="false" />.</param>
+		public Export(bool initializeControllerNetworkConfiguration)
         {
             _exportFileTypes = new Dictionary<string, string>();
             _writers = new Dictionary<string, IExportWriter>();
@@ -64,7 +71,7 @@ namespace Vixen.Export
             _exporting = false;
             _cancelling = false;
 
-			InitializeControllerInfo();
+			InitializeControllerInfo(initializeControllerNetworkConfiguration);
         }
 
 	    #endregion
@@ -138,16 +145,25 @@ namespace Vixen.Export
 
         #region Operational
 
-		private void InitializeControllerInfo()
+		private void InitializeControllerInfo(bool initializeNetworkConfiguration)
 		{
-			_controllerExportInfos = CreateControllerInfo(true);
+			_controllerExportInfos = CreateControllerInfo(true, initializeNetworkConfiguration);
 		}
 
 	    public static List<Controller> CreateControllerInfo(bool index)
 	    {
+		    return CreateControllerInfo(index, true);
+	    }
+
+	    /// <summary>Creates controller snapshots and optionally initializes their network configuration.</summary>
+	    /// <param name="index">A value that indicates whether controllers receive their current enumeration indexes.</param>
+	    /// <param name="initializeNetworkConfiguration"><see langword="true" /> to load controller network configuration; otherwise, <see langword="false" />.</param>
+	    /// <returns>A list of controller snapshots in system enumeration order.</returns>
+	    public static List<Controller> CreateControllerInfo(bool index, bool initializeNetworkConfiguration)
+	    {
 			int i = 0;
 		    var controllerExportInfos = new List<Controller>();
-		    SystemControllers.ForEach(x => controllerExportInfos.Add(new Controller(x, index?i++:Int32.MaxValue)));
+		    SystemControllers.ForEach(x => controllerExportInfos.Add(new Controller(x, index ? i++ : int.MaxValue, initializeNetworkConfiguration)));
 		    return controllerExportInfos;
 	    }
 
@@ -554,22 +570,65 @@ namespace Vixen.Export
 	[DataContract]
     public class Controller:ICloneable, IEqualityComparer<Controller>
     {
+        private readonly OutputController _sourceController;
+        private readonly object _networkConfigurationLock = new();
+        private bool _networkConfigurationInitialized;
+
+        /// <summary>Initializes a new instance of the <see cref="Controller" /> class with network configuration.</summary>
+        /// <param name="controller">The source output controller.</param>
+        /// <param name="index">The export order index.</param>
         public Controller(OutputController controller, int index)
+            : this(controller, index, true)
         {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="Controller" /> class.</summary>
+        /// <param name="controller">The source output controller.</param>
+        /// <param name="index">The export order index.</param>
+        /// <param name="initializeNetworkConfiguration"><see langword="true" /> to initialize network configuration immediately; otherwise, <see langword="false" />.</param>
+        public Controller(OutputController controller, int index, bool initializeNetworkConfiguration)
+        {
+            _sourceController = controller ?? throw new ArgumentNullException(nameof(controller));
             Name = controller.Name;
             Index = index;
             Channels = controller.OutputCount;
-	        Id = controller.Id;
-	        IsActive = true;
-	        if (controller.ControllerModule.SupportsNetwork)
-	        {
-		        var config = controller.ControllerModule.GetNetworkConfiguration();
-		        if (config.SupportsUniverses)
-		        {
-			        HasNetworkSupport = true;
-			        ControllerNetworkConfiguration = config;
-				}
-	        }
+            Id = controller.Id;
+            IsActive = true;
+            if (initializeNetworkConfiguration)
+            {
+                InitializeNetworkConfiguration();
+            }
+        }
+
+        /// <summary>Initializes this snapshot's network configuration from its source controller.</summary>
+        /// <exception cref="InvalidOperationException">The snapshot has no runtime source controller.</exception>
+        public void InitializeNetworkConfiguration()
+        {
+            if (_sourceController == null)
+            {
+                throw new InvalidOperationException($"The source controller for '{Name}' is no longer available.");
+            }
+
+            lock (_networkConfigurationLock)
+            {
+                if (_networkConfigurationInitialized)
+                {
+                    return;
+                }
+
+                var module = _sourceController.ControllerModule;
+                if (module.SupportsNetwork)
+                {
+                    var config = module.GetNetworkConfiguration();
+                    if (config.SupportsUniverses)
+                    {
+                        HasNetworkSupport = true;
+                        ControllerNetworkConfiguration = config;
+                    }
+                }
+
+                _networkConfigurationInitialized = true;
+            }
         }
 
 		[DataMember]

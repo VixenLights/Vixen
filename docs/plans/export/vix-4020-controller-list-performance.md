@@ -16,7 +16,7 @@ The original issue is https://vixenlights.atlassian.net/browse/VIX-4020. Reprodu
 - [x] (2026-10-12) Inspect the supplied trace, including Main-thread waiting and running trees; locate the eager DNS path and the designer placeholder.
 - [x] (2026-10-12) Review existing controller-selection documentation and the relevant export source; record a scoped architectural review in docs/reviews/vix-4020-export-controller-loading.md.
 - [x] (2026-10-12 21:21Z) Milestone 1: Updated JIRA requirements and acceptance criteria, preserved New Ticket status, saved the plan and design review, and reached the required manual review boundary. No application code changed.
-- [ ] Milestone 2: Implement metadata-only wizard synchronization, explicit asynchronous network preparation, placeholder removal, and regression tests; validate and pause for manual review.
+- [x] (2026-10-12) Milestone 2: Implement metadata-only wizard synchronization, explicit asynchronous network preparation, placeholder removal, regression tests, and validation. Paused at the required manual review boundary.
 - [ ] Milestone 3: Reproduce with the original profile, compare the new trace, record final results, and update JIRA; pause for final review.
 
 ## Surprises & Discoveries
@@ -32,6 +32,10 @@ BulkExportSummaryStage.StageStart is already asynchronous and calls ConfigureSum
 
 The existing docs/plans/export/vix-2823-export-wizard-controller-toggle.md describes native multi-selection and checkbox toggles, coalesced channel reindexing, Escape interception, and bulk buttons. Preserve these behaviors. Its historical dotnet-test-only commands are superseded by the current AGENTS.md full-MSBuild test workflow.
 
+Implementation exposed another eager lookup: `BulkExportWizardData.Export` created `Export`, whose constructor loaded all network configurations before the wizard assigned its profile snapshots. The wizard now uses an overload that skips only this initial network load; the existing parameterless `Export` constructor retains its eager behavior for the legacy editor dialog.
+
+Stage re-entry can overlap a synchronous provider call that cannot be cancelled in flight. The snapshot now serializes initialization attempts and marks itself ready only after successful completion, so overlapping/retried preparation cannot duplicate a provider lookup.
+
 ## Decision Log
 
 
@@ -43,10 +47,18 @@ Decision: Leave E1.31 resolution semantics intact. Rationale: Replacing hostname
 
 Decision: Stop after the initial requirements milestone. Rationale: The explicitly invoked analyze-and-plan-issue skill requires manual review and confirmation before advancing to the next milestone. No application fix is claimed at this boundary. Date/Author: 2026-10-12 / Codex.
 
+Decision: Keep the parameterless `Export` constructor eager and add an explicit overload used by the wizard. Rationale: the wizard replaces the initial controller snapshots with profile data, so it should avoid the unnecessary lookup while preserving the existing behavior for the legacy dialog. Date/Author: 2026-10-12 / Codex.
+
+Decision: Invalidate pending summary preparation when the stage ends before readiness or is cancelled. Rationale: the controller module's synchronous lookup cannot be interrupted in flight, but cancellation and generation checks prevent its late completion from enabling export after navigation or closure. Date/Author: 2026-10-12 / Codex.
+
 ## Outcomes & Retrospective
 
 
-Investigation identifies a concrete root cause and a proposed implementation contract. Application source and tests have not yet changed. The baseline trace is analyzed; no improved reproduction or measured speedup exists yet. Milestone 1 records requirements and evidence for review. Implementation and runtime validation remain outstanding.
+Milestone 2 separates metadata snapshots from network configuration, starts required controller preparation on a worker, gates the summary stage until preparation and summary setup succeed, and invalidates stale work on cancellation/navigation. The temporary Test row is removed. Regression coverage verifies metadata construction, profile synchronization and cloning, saved identity/count/order/active state, eager versus explicit configuration equivalence with multicast and multiple universes, idempotent preparation, inactive-controller skipping, cancellation between controllers, provider retry after failure, missing source rejection, stale completion rejection after profile replacement/navigation/cancellation/disposal, and controllers without network or universe support. All provider tests use fakes and perform no real DNS lookups.
+
+Validation completed: `msbuild Vixen.sln -m -restore -t:Vixen_Tests -p:Configuration=Release -p:Platform=x64 -p:PlatformTarget=x64 -v:m` succeeded; `dotnet test src/Vixen.Tests/Vixen.Tests.csproj -c Release --no-build --no-restore -p:Platform=x64 -p:SolutionDir=C:/Dev/Vixen/ --filter "FullyQualifiedName~ExportWizard"` passed 41 tests; `msbuild Vixen.sln -m -t:restore -t:Build -p:Configuration=Release -p:Platform=x64` succeeded with 0 warnings and 0 errors. Rider file problem checks reported no diagnostics in changed C# files. `git diff --check` passed with no whitespace errors.
+
+Runtime comparison against the original profile and dotTrace snapshot remains for milestone 3. No measured speedup is claimed.
 
 ## Context and Orientation
 
@@ -91,7 +103,7 @@ STOP HERE for manual review and commit execution before proceeding. Halt code ex
 ### Milestone 2: Implement and verify the separated snapshot
 
 
-Read the complete remaining callers, summary lifecycle, universe writers, and relevant test setup using Gortex before modifying them. Apply the constructor/factory overloads and explicit preparation contract described above. Modify only Export.cs, ExportProfile.cs, BulkExportSummaryStage.cs, the controller-stage Designer.cs, the necessary regression tests, and this plan. Change BulkExportControllersStage.cs only if a brief local metadata-loading indication is still needed after measurement. Keep existing eager callers compatible. Use Gortex impact before mutation and verify every added or changed signature. Mutate through Gortex edit/refactor; afterwards detect changes and run tests, guards, and contract on the returned symbol IDs.
+Read the complete remaining callers, summary lifecycle, universe writers, and relevant test setup using Gortex before modifying them. Apply the constructor/factory overloads and explicit preparation contract described above. Modify Export.cs, ExportProfile.cs, BulkExportSummaryStage.cs, BulkExportWizardData.cs, the controller-stage Designer.cs, the necessary regression tests, and this plan. The BulkExportWizardData change is required because its lazy Export property constructs Export before replacing the initial controller list; preserve Export's existing eager default for non-wizard callers. Change BulkExportControllersStage.cs only if a brief local metadata-loading indication is still needed after measurement. Keep existing eager callers compatible. Use Gortex impact before mutation and verify every added or changed signature. Mutate through Gortex edit/refactor; afterwards detect changes and run tests, guards, and contract on the returned symbol IDs.
 
 Tests must demonstrate zero configuration-provider calls during metadata construction, profile synchronization, and cloning; preservation of controller identity, counts, active flags, and order; equivalence of explicitly prepared and eagerly constructed configuration; no repeat work after successful preparation of the same snapshot; and correct behavior for non-network or non-universe controllers. Cover inactive controllers, multiple universes, hostname/multicast data, provider failure, cancellation, and stale completion without real DNS. Confirm the existing profile-clone suite remains green. For a missing or removed source controller, report the preparation error and prevent exporting a partial universe file.
 
@@ -159,6 +171,8 @@ These figures are measurements from the initial snapshot, not a measured improve
 
 Preserve the existing core APIs and add overloads rather than removing them:
 
+    public Export()
+    public Export(bool initializeControllerNetworkConfiguration)
     public Controller(OutputController controller, int index)
     public Controller(OutputController controller, int index, bool initializeNetworkConfiguration)
     public void InitializeNetworkConfiguration()

@@ -28,7 +28,7 @@ namespace VixenModules.App.ExportWizard
 
 		public Export Export
 		{
-			get { return _export ?? (_export = new Export()); }
+			get { return _export ?? (_export = new Export(initializeControllerNetworkConfiguration: false)); }
 		}
 
 		[DataMember]

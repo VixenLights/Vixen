@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Test");
 			this.lblConfigureOutput = new System.Windows.Forms.Label();
 			this.tableLayoutMain = new System.Windows.Forms.TableLayoutPanel();
 			this.flowLayoutButtons = new System.Windows.Forms.FlowLayoutPanel();
@@ -110,9 +109,6 @@
 			this.networkListView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			listViewItem1.StateImageIndex = 0;
-			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
 			this.networkListView.MultiSelect = true;
 			this.networkListView.Name = "networkListView";
 			this.networkListView.OwnerDraw = true;

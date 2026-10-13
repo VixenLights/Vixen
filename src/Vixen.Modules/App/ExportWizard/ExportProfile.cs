@@ -101,11 +101,11 @@ namespace VixenModules.App.ExportWizard
 
 			if (Controllers == null)
 			{
-				Controllers = Export.CreateControllerInfo(true);
+				Controllers = Export.CreateControllerInfo(true, false);
 				return;
 			}
 			//get our current list
-			var currentControllerInfo = Export.CreateControllerInfo(false);
+			var currentControllerInfo = Export.CreateControllerInfo(false, false);
 
 			Dictionary<Guid, Controller> lookup = Controllers.ToDictionary(x => x.Id);
 
@@ -128,6 +128,24 @@ namespace VixenModules.App.ExportWizard
 			}
 
 			Controllers = currentControllerInfo;
+		}
+
+		/// <summary>Loads network configuration for the active controller snapshots on a worker thread.</summary>
+		/// <param name="cancellationToken">A token used to stop preparation between controllers.</param>
+		/// <returns>A task that represents the network configuration preparation operation.</returns>
+		/// <exception cref="OperationCanceledException">Preparation is canceled before all controllers are processed.</exception>
+		/// <exception cref="InvalidOperationException">An active controller snapshot no longer has a source controller.</exception>
+		internal Task InitializeControllerNetworkConfigurationAsync(CancellationToken cancellationToken)
+		{
+			var controllers = Controllers.Where(controller => controller.IsActive).ToArray();
+			return Task.Run(() =>
+			{
+				foreach (var controller in controllers)
+				{
+					cancellationToken.ThrowIfCancellationRequested();
+					controller.InitializeNetworkConfiguration();
+				}
+			}, cancellationToken);
 		}
 
 		public object Clone()
