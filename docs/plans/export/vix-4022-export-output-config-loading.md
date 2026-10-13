@@ -1,7 +1,7 @@
 # Restore export output configuration before handling edits (VIX-4022)
 
 
-This ExecPlan is a living document maintained in accordance with .agents/PLANS.md. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document records the design and tracks implementation progress; the code change is implemented and automated validation is recorded below, while hands-on UI verification remains outstanding. Issue: https://vixenlights.atlassian.net/browse/VIX-4022, “Export wizard shows output path does not exist before fully loading config”.
+This ExecPlan is a living document maintained in accordance with .agents/PLANS.md. Keep Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective current. This document records the design and tracks implementation progress; Milestones 1 and 2 are complete, with implementation, automated validation, and user-reported hands-on UI results recorded below. Milestone 3 remains unstarted. Issue: https://vixenlights.atlassian.net/browse/VIX-4022, “Export wizard shows output path does not exist before fully loading config”.
 
 ## Purpose / Big Picture
 
@@ -14,13 +14,13 @@ A saved Direct Upload export configuration must open its output stage with Direc
 - [x] (2026-10-13) Read VIX-4022, the project analysis skill, .agents/PLANS.md, the original FPP Direct Upload design, and the output-stage source. Issue has no attachments, comments, or linked issues. Initial working tree was clean.
 - [x] (2026-10-13) Identify the synchronous restoration/event ordering defect and save this implementation plan.
 - [x] (2026-10-13) Milestone 1: Updated VIX-4022 with user-facing scope, acceptance criteria, and test plan; read back and confirmed. Status and assignee unchanged.
-- [ ] (2026-10-13) Milestone 2 (in progress): Implemented restoration suppression and mode-aware validation in the output stage; full Release build and 41 ExportWizard tests passed. Remaining: execute the prescribed manual UI matrix and verify the pre-fix reproduction when desktop access and a safe saved test profile are available.
+- [x] (2026-10-13) Milestone 2: Implemented restoration suppression and mode-aware validation in the output stage; Release build and 41 ExportWizard tests passed. User reports reproducing the issue before the fix and confirming the Direct Upload, File Path, saved-setting, and host-validation behavior after the fix.
 - [ ] Milestone 3: Record validation results and align Jira with the delivered behavior.
 
 ## Surprises & Discoveries
 
 
-StageStart selects the saved format before restoring the upload radio buttons. outputFormatComboBox_SelectedIndexChanged calls UpdateFalconPaths and ValidateFalconOutputFolder for Falcon formats without checking the upload mode. ValidateFalconOutputFolder can display exactly the reported “The selected output path does not exist. Do you want to create it?” dialog. This supports the reported hypothesis directly from source; the UI reproduction remains to be performed.
+StageStart selects the saved format before restoring the upload radio buttons. outputFormatComboBox_SelectedIndexChanged calls UpdateFalconPaths and ValidateFalconOutputFolder for Falcon formats without checking the upload mode. ValidateFalconOutputFolder can display exactly the reported “The selected output path does not exist. Do you want to create it?” dialog. This supports the reported hypothesis directly from source; the user subsequently reproduced the dialog on the pre-change build and confirmed its absence after the fix for the saved Direct Upload profile.
 
 UpdateFalconPaths also rewrites OutputFolder and AudioOutputFolder from FalconOutputFolder. Restoring controls is therefore capable of changing stored profile values, beyond displaying an early dialog. Checkbox and radio/text change handlers also write into the active profile as controls are restored. Merely moving the radio-button assignment earlier does not suppress these side effects or the format handler's unconditional directory validation.
 
@@ -29,6 +29,8 @@ The original design in docs/plans/export/fpp-direct-upload-export-wizard.md prom
 The Gortex file impact query returned an incomplete lower bound, five direct dependents and no test files. Its HIGH risk label does not establish a specific runtime risk; the query is not complete caller/test coverage. Reassess the actual changed symbols during implementation.
 
 The Milestone 2 Gortex detect pass identified the output-stage type and changed handlers. Its impact remains a lower bound, and the test coverage query found no covering tests (0/20 changed symbols). Gortex guard analysis found no configured rules. The Rider file-problem inspection reported existing warnings in the file; no unrelated cleanup was made. The Release solution rebuild succeeded with 74 warnings and 0 errors; the focused test run passed 41 tests with 0 skipped.
+
+The user subsequently reported reproducing the early directory prompt before the fix and confirming it no longer appears for the saved Direct Upload profile afterward. The user also observed saved settings retained, expected prompting for a File Path profile with a bad path, no warning for a valid File Path, Next enabled for a reachable Direct Upload host, and the expected unreachable-host warning for an invalid/unreachable host.
 
 ## Decision Log
 
@@ -43,12 +45,14 @@ Decision: Use a focused manual WinForms regression matrix and existing ExportWiz
 
 Decision: Prepare Jira updates as execution milestones without posting them during design. Rationale: The current request authorizes solution design and the local plan. Each implementation milestone has a manual review boundary required by the analysis skill; commits require explicit user instruction under AGENTS.md. Date/Author: 2026-10-13 / Codex.
 
-Decision: Keep the Milestone 2 implementation confined to the planned output-stage changes and do not add tests or refactor helpers solely to satisfy broad graph warnings. Rationale: The plan explicitly calls for a private restoration flag, targeted handler guards, no boolean-only unit test, and manual control-event verification; Gortex found no existing coverage, so the required UI evidence remains outstanding rather than being replaced by an unrelated test. Date/Author: 2026-10-13 / Codex.
+Decision: Keep the Milestone 2 implementation confined to the planned output-stage changes and do not add tests or refactor helpers solely to satisfy broad graph warnings. Rationale: The plan explicitly calls for a private restoration flag, targeted handler guards, no boolean-only unit test, and manual control-event verification; Gortex found no existing coverage, so the required UI evidence was collected through the planned manual scenarios rather than replaced by an unrelated test. Date/Author: 2026-10-13 / Codex.
+
+Decision: Treat the user's report of the pre-fix reproduction and post-fix validation matrix as the manual acceptance evidence for Milestone 2. Rationale: The user exercised the old behavior and the changed application, and reported retained settings and the distinct Direct Upload/File Path outcomes specified by this plan. Date/Author: 2026-10-13 / Codex.
 
 ## Outcomes & Retrospective
 
 
-Milestone 1 is complete. VIX-4022 now records the observable Direct Upload restoration behavior, File Path behavior to preserve, acceptance criteria, and user test plan. The issue remains Accepted and assigned as before. Milestone 2 has implemented the planned restoration and validation guards in the output stage; the full Release rebuild and focused ExportWizard tests pass. The actual WinForms manual matrix and pre-fix reproduction have not been performed, so Milestone 2 remains in progress and Milestone 3 has not started.
+Milestone 1 is complete. VIX-4022 records the observable Direct Upload restoration behavior, File Path behavior to preserve, acceptance criteria, and user test plan; the issue remains Accepted and assigned as before. Milestone 2 is complete: the output stage now suppresses restoration side effects and makes Falcon path validation mode-aware. The full Release rebuild, focused ExportWizard tests, and user-reported manual scenarios passed. The manual checks confirmed the early prompt reproduces before the change and is absent afterward for Direct Upload, while File Path validation and host reachability feedback remain as expected. Milestone 3 has not started.
 
 ## Architecture Design: VIX-4022
 
@@ -140,7 +144,7 @@ STOP BOUNDARY: Halt code execution. Run git status --short and git diff -- docs/
 ## Concrete Steps
 
 
-All commands above run from C:\Dev\Vixen. Application output is Release/Output/. Use full MSBuild, not dotnet build of the solution, because transitive QMLibrary and LiquidFunWrapper dependencies are C++/CLI projects. No packages or project files need changing. During Milestone 2, `git status --short` was clean before editing. The Release solution rebuild, `Vixen_Tests` MSBuild target, and ExportWizard-filtered test command listed above all completed successfully; see the execution record in Validation and Acceptance. The Rider file-problem inspection was available and run on the affected file. No desktop computer-use tool was available in this session, so the WinForms UI scenarios—including the old-build reproduction—remain unverified and Milestone 2 is not marked complete.
+All commands above run from C:\Dev\Vixen. Application output is Release/Output/. Use full MSBuild, not dotnet build of the solution, because transitive QMLibrary and LiquidFunWrapper dependencies are C++/CLI projects. No packages or project files need changing. During Milestone 2, `git status --short` was clean before editing. The Release solution rebuild, `Vixen_Tests` MSBuild target, and ExportWizard-filtered test command listed above all completed successfully; see the execution record in Validation and Acceptance. The Rider file-problem inspection was available and run on the affected file. Desktop control was unavailable to the agent during implementation; the user subsequently performed the WinForms validation and reported results recorded below, including the old-build reproduction. Milestone 2 is complete based on that report.
 
 ## Validation and Acceptance
 
@@ -157,7 +161,9 @@ For Direct Upload, a valid reachable saved host enables Next after the existing 
 
 This matrix is the primary regression proof because it exercises actual WinForms events and the modal dialog. Existing ExportWizard tests protect host validation, profile cloning, and upload-service behavior but do not alone prove restoration order. Record build output, test counts, Rider inspection results, and observed UI outcomes.
 
-Execution record (2026-10-13): The full Release solution rebuild completed with 0 errors and 74 warnings. The full-MSBuild `Vixen_Tests` target completed successfully. `dotnet test ... --filter "FullyQualifiedName~ExportWizard"` passed 41, failed 0, skipped 0. Rider file-problem analysis ran on `BulkExportOutputFormatStage.cs`; it reported file-wide existing warnings, including the longstanding unused return value warning for `ValidateFalconOutputFolder`, and no new errors in the modified logic. Gortex found no test coverage for the changed symbols and no guard rules. The UI matrix and pre-fix reproduction were not run because desktop control is unavailable in this session; do not treat build/test results as a substitute.
+Execution record (2026-10-13): The full Release solution rebuild completed with 0 errors and 74 warnings. The full-MSBuild `Vixen_Tests` target completed successfully. `dotnet test ... --filter "FullyQualifiedName~ExportWizard"` passed 41, failed 0, skipped 0. Rider file-problem analysis ran on `BulkExportOutputFormatStage.cs`; it reported file-wide existing warnings, including the longstanding unused return value warning for `ValidateFalconOutputFolder`, and no new errors in the modified logic. Gortex found no test coverage for the changed symbols and no guard rules.
+
+User-reported manual results (2026-10-13): The issue reproduced before the change. After the change, the saved Direct Upload profile no longer displayed the directory prompt and its other settings remained as expected. A File Path profile with a bad path showed the expected warning and retained its other settings; a valid File Path profile showed no warning and retained its settings. Direct Upload with a valid host enabled Next. An invalid/unreachable host produced the expected unreachable warning. The user reports having performed the Validation and Acceptance steps; the cases above are the specific observations provided in the report.
 
 ## Idempotence and Recovery
 
@@ -183,4 +189,4 @@ Retain public override void StageStart() and public override bool CanMoveNext. A
 
 Analysis complete and plan integrated with plans.md.
 
-Execution update (2026-10-13): Milestone 2 implementation and automated validation are recorded above. This update keeps Milestone 2 open because the required hands-on UI matrix and before-fix reproduction remain unverified; it does not authorize or begin Milestone 3.
+Execution update (2026-10-13): Milestone 2 implementation, automated validation, and user-reported manual acceptance results are recorded above. Milestone 2 is complete. This update does not authorize or begin Milestone 3.
