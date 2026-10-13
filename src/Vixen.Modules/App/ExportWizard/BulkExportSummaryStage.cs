@@ -18,6 +18,10 @@ namespace VixenModules.App.ExportWizard
 		private readonly BulkExportWizardData _data;
 		private bool _cancelled;
 		private bool _uploadFailed;
+		private bool _networkPreparationRequired;
+		private bool _networkPreparationReady;
+		private int _stageRunId;
+		private CancellationTokenSource _networkPreparationCancellation;
 		private CancellationTokenSource _directUploadCancellation;
 		private AutoCompleteStringCollection _namesCollection = new();
 		private BindingList<ExportProfile> _profiles;
@@ -30,6 +34,27 @@ namespace VixenModules.App.ExportWizard
 			taskProgress.Maximum = 100;
 			overallProgress.Minimum = 0;
 			overallProgress.Maximum = 100;
+			Disposed += (_, _) =>
+			{
+				_networkPreparationCancellation?.Cancel();
+				++_stageRunId;
+			};
+		}
+
+		public override bool CanMoveNext => !_networkPreparationRequired || _networkPreparationReady;
+
+		internal static bool IsCurrentNetworkPreparation(
+			int completedStageRunId,
+			int currentStageRunId,
+			ExportProfile preparedProfile,
+			ExportProfile activeProfile,
+			CancellationToken cancellationToken,
+			bool isDisposed)
+		{
+			return !cancellationToken.IsCancellationRequested
+				&& !isDisposed
+				&& completedStageRunId == currentStageRunId
+				&& ReferenceEquals(preparedProfile, activeProfile);
 		}
 
 		private void ConfigureSummary()
@@ -59,7 +84,8 @@ namespace VixenModules.App.ExportWizard
 			{
 				lblUniverseFolder.Visible = lblUniverse.Visible = false;
 			}
-			if (!_data.Export.AllSelectedControllersSupportUniverses && _data.ActiveProfile.CreateUniverseFile)
+			if (_data.ActiveProfile.IsFalcon2xFormat && _data.ActiveProfile.CreateUniverseFile
+				&& !_data.Export.AllSelectedControllersSupportUniverses)
 			{
 				lblUniverseFileWarning.Visible = true;
 				lblUniverseFileWarning.Text = new StringBuilder()
@@ -96,10 +122,20 @@ namespace VixenModules.App.ExportWizard
 
 		public override async void StageStart()
 		{
+			_networkPreparationCancellation?.Cancel();
+			_networkPreparationCancellation?.Dispose();
+			_networkPreparationCancellation = new CancellationTokenSource();
+			var cancellationToken = _networkPreparationCancellation.Token;
+			var stageRunId = ++_stageRunId;
+			var profile = _data.ActiveProfile;
+			_cancelled = false;
+			_uploadFailed = false;
+			_networkPreparationRequired = profile.IsFalcon2xFormat && profile.CreateUniverseFile;
+			_networkPreparationReady = !_networkPreparationRequired;
+			_WizardStageChanged();
+
 			try
 			{
-				_cancelled = false;
-				_uploadFailed = false;
 				taskProgress.Visible = false;
 				overallProgress.Visible = false;
 				lblTaskProgress.Visible = false;
@@ -110,21 +146,64 @@ namespace VixenModules.App.ExportWizard
 				comboConfigName.AutoCompleteCustomSource = _namesCollection;
 				_namesCollection.AddRange(_data.Profiles.Select(x => x.Name).ToArray());
 				PopulateProfiles();
-				ConfigureSummary();
 
-				if (_data.ActiveProfile.IsFalcon2xFormat && _data.ActiveProfile.FppDirectUpload)
+				if (_networkPreparationRequired)
+				{
+					lblTaskProgress.Text = "Preparing controller network configuration…";
+					lblTaskProgress.Visible = true;
+					taskProgress.Style = ProgressBarStyle.Marquee;
+					taskProgress.Visible = true;
+					await profile.InitializeControllerNetworkConfigurationAsync(cancellationToken);
+				}
+
+				if (!IsCurrentNetworkPreparation(stageRunId, _stageRunId, profile, _data.ActiveProfile,
+					cancellationToken, IsDisposed || Disposing)) return;
+
+				ConfigureSummary();
+				lblTaskProgress.Text = string.Empty;
+				lblTaskProgress.Visible = false;
+				if (_networkPreparationRequired)
+				{
+					_networkPreparationReady = true;
+				}
+				if (profile.IsFalcon2xFormat && profile.FppDirectUpload)
 				{
 					await PopulateFppInfoAsync();
 				}
 			}
+			catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+			{
+			}
 			catch (Exception e)
 			{
-				Logging.Error(e, $"An error occured starting the summary stage");
+				Logging.Error(e, "An error occurred preparing the export summary");
+				_networkPreparationReady = false;
+				if (!IsDisposed && !Disposing && stageRunId == _stageRunId && ReferenceEquals(profile, _data.ActiveProfile))
+				{
+					lblTaskProgress.Text = $"Controller network preparation failed: {e.Message}. Go back and return to retry.";
+					lblTaskProgress.Visible = true;
+				}
+			}
+			finally
+			{
+				if (!IsDisposed && !Disposing && stageRunId == _stageRunId)
+				{
+					taskProgress.Style = ProgressBarStyle.Blocks;
+					taskProgress.Visible = false;
+					_WizardStageChanged();
+				}
 			}
 		}
 
 		public override async Task StageEnd()
 		{
+			if (!CanMoveNext)
+			{
+				_networkPreparationCancellation?.Cancel();
+				++_stageRunId;
+				return;
+			}
+
 			if (chkSaveConfig.Checked)
 			{
 				SaveActiveConfig();
@@ -142,6 +221,10 @@ namespace VixenModules.App.ExportWizard
 		public override void StageCancelled()
 		{
 			_cancelled = true;
+			_networkPreparationCancellation?.Cancel();
+			++_stageRunId;
+			_networkPreparationReady = false;
+			_WizardStageChanged();
 			_directUploadCancellation?.Cancel();
 			_data.Export.Cancel();
 		}
