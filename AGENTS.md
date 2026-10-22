@@ -54,6 +54,21 @@ Research the codebase before editing. Never change code you have not read.
 
 Inspect `git status` before editing. Preserve unrelated user changes and avoid modifying files outside the requested scope. Do not create commits unless explicitly requested.
 
+## Code Intelligence: Use Gortex
+
+This repo is indexed by Gortex, a code-intelligence graph exposed as the `gortex` MCP server. When its tools are available, prefer graph queries over raw file reads, `grep`, or `glob` for indexed source. Follow any instructions Gortex hooks emit, even when raw file tools remain callable. If the `gortex` server is configured but its tools are missing, report a Gortex MCP integration failure instead of silently falling back.
+
+1. **Find code:** use `explore(operation:"localize")` when the file, symbol, or evidence must be discovered. For diagnosis or modification, use `explore(operation:"task")`.
+2. **Follow up narrowly:** use `search(operation:"symbols")`, `read`, `relations` (for example `usages`), or `trace` on one unresolved symbol at a time. For a file the user names, use `read(operation:"file")`. Do not reopen indexed source with raw file tools.
+3. **Before mutating:** call `change(operation:"impact")`. For a signature change, also call `change(operation:"verify")` with the proposed signature.
+4. **Mutate with Gortex:** use `edit` or `refactor` (for example `refactor(operation:"rename")`) rather than raw file writes on indexed source.
+5. **After mutating:** call `change(operation:"detect")`, then use its symbol IDs with `change(operation:"tests")`, `change(operation:"guards")`, and `change(operation:"contract")`.
+6. Use `recall` before revisiting prior work, and `remember` for durable decisions, invariants, or gotchas. Call `capabilities` only when you need an operation's exact fields; these names are the Gortex `facade-v1` tool surface.
+
+**The graph narrows scope; the source confirms behavior.** The graph tells you where logic lives and what connects to it, not how it behaves. Read the full body of any symbol you are about to change or depend on. Be especially deliberate with behavior-critical code: migrations, retry/fallback/error-recovery paths, compatibility shims, concurrency-sensitive sections, and the tests that pin them. Read their real implementation, and never use compressed bodies for them. Reserve compressed bodies and graph summaries for breadth surveys.
+
+Gortex locates and analyzes code. It does not replace the real build and tests; validate as described in the Build and Validation sections.
+
 ## Architecture
 
 Vixen is a modular system
@@ -69,18 +84,6 @@ parameter docs, return docs, remarks, and exception docs when behavior changes. 
 
 Use the `csharp-docs` skill for changes that add or modify public
 or protected C# classes, interfaces, methods, properties, or events.
-
-### Project Layout
-
-```
-src/
-  Vixen.Core/        # Core framework: module system, execution engine, data models
-  Vixen.Application/ # Main WPF application (entry point, orchestrates everything)
-  Vixen.Common/      # Shared utilities and controls (AudioPlayer, WpfPropertyGrid, etc.)
-  Vixen.Modules/     # All pluggable modules (Effects, Controllers, Editors, etc.)
-  Vixen.Installer/   # Installer projects
-  Vixen.DeployBundle/# Deployment packaging
-```
 
 ### Module (Plugin) System
 
@@ -143,15 +146,6 @@ Per README conventions:
 - Use **project references**, not DLL references
 - Set **Copy Local = No** and **Include Assets = None** on project references
 - NuGet packages follow the same rule — add the package centrally (`Directory.Packages.props`), set **Exclude Assets = None** locally so binaries deploy only to the common output path
-
-### Key Frameworks
-
-- **Catel** (MVVM) + **Orchestra** — WPF application shell, view models, service locator
-- **CommunityToolkit.Mvvm** — additional MVVM helpers
-- **NLog** — logging throughout
-- **MessagePack** — high-performance serialization
-- **LiteDB** — embedded document store for custom props
-- **NAudio** — audio playback
 
 ## Issue Tracker
 
