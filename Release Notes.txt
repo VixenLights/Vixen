@@ -1,6 +1,25 @@
 Release Notes - Vixen 3
 
 
+Release Notes - Vixen 3 - 3.13u4 Build 
+
+** 8 issues resolved in this release. 
+
+** Improvements
+    * [VIX-4012] - Convert the Cycle slider in the State effect to the text entry slider that Spin uses
+    * [VIX-4013] - Provide visual indication about Element Tag cascade modifier 
+    * [VIX-4017] - Export Wire Diagram improvements
+    * [VIX-4019] - Ability to duplicate a State Item in a State Definition
+    * [VIX-4020] - Export wizard list controllers delay
+
+** Bugs
+    * [VIX-4014] - Highlighting pixel in custom prop editor issue
+    * [VIX-4022] - Export wizard shows output path does not exist before fully loading config
+    * [VIX-4025] - Muti-Edit more info link not working
+
+
+
+
 Release Notes - Vixen 3 - 3.13u3 Build 
 
 ** 9 issues resolved in this release. 
