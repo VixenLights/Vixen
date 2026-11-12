@@ -10,13 +10,13 @@ namespace VixenModules.Output.DDP
 {
 	internal class DDP : ControllerModuleInstanceBase
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private DDPData _data;
 		private UdpClient _udpClient;
-		private int _outputCount = 0;
-		private List<int> _packetSize = new List<int>();
-		private byte[] _ddpPacket;
-		private bool _isRunning = false;
+		private int _outputCount;
+		private readonly List<int> _packetSize = [];
+		private readonly byte[] _ddpPacket;
+		private bool _isRunning;
 
 		private const int DDP_HEADER_LEN = 10;
 		private const int DDP_SYNCPACKET_LEN = 10;
@@ -129,8 +129,7 @@ namespace VixenModules.Output.DDP
 
 			if (outputStates.Length != _outputCount)
 				SetupPackets();
-			
-			int dataStart = 0;
+
 			int packet = 0;
 			int channel = 0;
 			foreach (int packetSize in _packetSize)
@@ -146,7 +145,6 @@ namespace VixenModules.Output.DDP
 				}
 				SendPacket(packet);
 
-				dataStart += packetSize;
 				packet++;
 			}
 		}
@@ -164,7 +162,7 @@ namespace VixenModules.Output.DDP
 			if(numPackets > 0)
             {
 				for (int i = 0; i < numPackets; i++)
-					{ _packetSize.Add( DDP_CHANNELS_PER_PACKET ); }
+				{ _packetSize.Add( DDP_CHANNELS_PER_PACKET ); }
 				_packetSize.Add( lastPacketSize );
 			}
 			else
@@ -195,7 +193,7 @@ namespace VixenModules.Output.DDP
 			_ddpPacket[8] = (byte)((_packetSize[packetNumber] & 0xFF00) >> 8);
 			_ddpPacket[9] = (byte)(_packetSize[packetNumber] & 0xFF);
 
-			if ( !(packetNumber == _packetSize.Count - 1) )  //if not last packet
+			if ( packetNumber != _packetSize.Count - 1 )  //if not last packet
 				_ddpPacket[0] = DDP_FLAGS1_VER1;  //No push flag
 			else
 				_ddpPacket[0] = DDP_FLAGS1_VER1 | DDP_FLAGS1_PUSH; //Set push flag on last packet
@@ -270,8 +268,10 @@ namespace VixenModules.Output.DDP
 		 *****************************************/
 		public override ControllerNetworkConfiguration GetNetworkConfiguration()
 		{
-			var config = new ControllerNetworkConfiguration();
-			config.SupportsUniverses = true;
+			var config = new ControllerNetworkConfiguration
+			{
+				SupportsUniverses = true
+			};
 
 			if (IPAddress.TryParse(_data.Address, out var result))
 			{
@@ -287,11 +287,13 @@ namespace VixenModules.Output.DDP
 			config.TransmissionMethod = TransmissionMethods.Unicast;
 			var universes = new List<UniverseConfiguration>(1);
 			
-			var uc = new UniverseConfiguration();
-			uc.UniverseNumber = 1; //not needed for DDP
-			uc.Start = 1; //not needed for DDP
-			uc.Size = _outputCount;
-			uc.Active = true;
+			var uc = new UniverseConfiguration
+			{
+				UniverseNumber = 1, //not needed for DDP
+				Start = 1, //not needed for DDP
+				Size = _outputCount,
+				Active = true
+			};
 			universes.Add(uc);
 			
 			config.Universes = universes;
