@@ -10,5 +10,8 @@
 				<ProjectReference Include="..\..\..\Vixen.Common\Utilities\Utilities.csproj" />
 				<ProjectReference Include="..\..\..\Vixen.Core\Vixen.Core.csproj" />
 		</ItemGroup>
+        <ItemGroup>
+            <InternalsVisibleTo Include="Vixen.Tests" />
+        </ItemGroup>
 
 </Project>
