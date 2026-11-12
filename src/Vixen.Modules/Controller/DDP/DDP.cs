@@ -173,7 +173,7 @@ namespace VixenModules.Output.DDP
 			//Prefill Header Info
 			_ddpPacket[0] = DDP_FLAGS1_VER1;
 			_ddpPacket[1] = 0; //reserved for future use
-			_ddpPacket[2] = 1; //Custom Data = 1
+			_ddpPacket[2] = 0; //Undefined
 			_ddpPacket[3] = DDP_ID_DISPLAY;
 		}
 
