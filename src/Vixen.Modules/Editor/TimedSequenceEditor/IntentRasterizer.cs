@@ -41,13 +41,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// a simple pulse down (or up). The ends/starts of the effect flip to the color of the other end briefly,
 			// for a single pixel width. I'm guessing it's an issue in the gradient rendering for large shapes where
 			// the gradient rectangle is within the same integer range as the rendering rectangle.
-			float offset = rectangle.X * 0.004F;
-			RectangleF gradientRectangle = new RectangleF(
-				(rectangle.X) - offset,
-				rectangle.Y,
-				(rectangle.Width) + (2 * offset),
-				rectangle.Height
-				);
+			if (!float.IsFinite(rectangle.X) || !float.IsFinite(rectangle.Y) ||
+				!float.IsFinite(rectangle.Width) || !float.IsFinite(rectangle.Height) ||
+				!float.IsFinite(rectangle.Right) || !float.IsFinite(rectangle.Bottom) ||
+				rectangle.Width <= 0f || rectangle.Height <= 0f ||
+				rectangle.Right <= rectangle.X || rectangle.Bottom <= rectangle.Y)
+			{
+				return;
+			}
 
 			if (startColor == endColor)
 			{
@@ -57,8 +58,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
+				float offset = rectangle.X * 0.004F;
+				float gradientLeft = rectangle.X - offset;
+				float gradientRight = gradientLeft + (rectangle.Width + 2f * offset);
+				float gradientWidth = gradientRight - gradientLeft;
+				if (!float.IsFinite(gradientLeft) || !float.IsFinite(gradientRight) ||
+					!float.IsFinite(gradientWidth) || gradientWidth < 1f / 256f)
+				{
+					_brush.Color = startColor;
+					_graphics.FillRectangle(_brush, rectangle);
+					return;
+				}
+
 				using (LinearGradientBrush brush = new LinearGradientBrush(
-					gradientRectangle, startColor, endColor, LinearGradientMode.Horizontal))
+					new PointF(gradientLeft, 0f), new PointF(gradientRight, 0f), startColor, endColor))
 				{
 					brush.GammaCorrection = true;
 					_graphics.FillRectangle(brush, rectangle);
