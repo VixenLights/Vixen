@@ -10,7 +10,8 @@ Users should be able to expand the EFL Showstopper mini-tree rows in the Grinch 
 
 - [x] (2026-11-19 00:50Z) Reviewed the Jira description, comments, screenshot, logs, and Grinch profile. Traced the failing timeline drawing path and reproduced the same HRESULT in a standalone Windows brush probe.
 - [x] (2026-11-19 00:50Z) Drafted a Rider execution plan with a baseline debugger capture and a bitmap regression.
-- [ ] Record the requirements and test plan in Jira before implementation.
+- [x] (2026-11-19 01:23Z) Recorded the acceptance criteria and reproduction test plan in Jira, preserving the original report.
+- [ ] Milestone 2 in progress: the gradient brush repair is implemented and the Release x64 test target builds; the existing suite passes 1,219 tests. The bitmap regression and profile validation remain.
 - [x] (2026-11-19 01:07Z) Captured a thin Butterfly segment in the live Grinch profile and stepped over its brush constructor successfully.
 - [x] (2026-11-19 01:10Z) Captured the actual Butterfly throw in Rider and reproduced it with the exact bounds and colors in a standalone Windows process.
 - [x] (2026-11-19 01:11Z) Verified that a two-point horizontal brush accepts the captured inputs and compared ordinary rendered pixels with the original constructor.
