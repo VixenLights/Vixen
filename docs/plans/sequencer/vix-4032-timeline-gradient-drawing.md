@@ -11,12 +11,13 @@ Users should be able to expand the EFL Showstopper mini-tree rows in the Grinch 
 - [x] (2026-11-19 00:50Z) Reviewed the Jira description, comments, screenshot, logs, and Grinch profile. Traced the failing timeline drawing path and reproduced the same HRESULT in a standalone Windows brush probe.
 - [x] (2026-11-19 00:50Z) Drafted a Rider execution plan with a baseline debugger capture and a bitmap regression.
 - [x] (2026-11-19 01:23Z) Recorded the acceptance criteria and reproduction test plan in Jira, preserving the original report.
-- [ ] Milestone 2 in progress: the gradient brush repair is implemented and the Release x64 test target builds; the existing suite passes 1,219 tests. The bitmap regression and profile validation remain.
+- [x] Implemented the gradient brush repair and bounded dense-effect thumbnail sampling. The Release x64 test target built and the full suite passed 1,220 tests, including the dense thumbnail bitmap test.
+- [ ] The separately planned captured-gradient bitmap regression, including baseline failure and gradient pixel comparisons, was not implemented.
 - [x] (2026-11-19 01:07Z) Captured a thin Butterfly segment in the live Grinch profile and stepped over its brush constructor successfully.
 - [x] (2026-11-19 01:10Z) Captured the actual Butterfly throw in Rider and reproduced it with the exact bounds and colors in a standalone Windows process.
 - [x] (2026-11-19 01:11Z) Verified that a two-point horizontal brush accepts the captured inputs and compared ordinary rendered pixels with the original constructor.
-- [ ] Implement the confirmed repair, run the Windows regression tests, and verify the original profile in Rider.
-- [ ] Reconcile the Jira description and post the observed validation results.
+- [x] User reports manual testing confirms the original error no longer occurs, scrolling performance is restored with Butterfly visible, and rendered images remain representative. Playback, zoom, row expansion, and log-check variants were not specified.
+- [x] Reconciled the Jira acceptance criteria with the performance fix and posted the observed manual and automated results, including the remaining coverage gap.
 
 ## Surprises & Discoveries
 
@@ -41,7 +42,9 @@ Users should be able to expand the EFL Showstopper mini-tree rows in the Grinch 
 
 ## Outcomes & Retrospective
 
-The live Grinch throw and standalone replay establish that the legacy rectangle brush fails on the narrow-height Butterfly lane. A standalone comparison verified the two-point design and preserved visible gradient pixels. The production edit, xUnit regression, patched application acceptance, and Jira updates are pending.
+The live Grinch throw and standalone replay establish that the legacy rectangle brush fails on the narrow-height Butterfly lane. A standalone comparison verified the two-point design and preserved visible gradient pixels. The production repair also bounds dense-effect thumbnail sampling, and the user reports that the original error and scrolling delay are resolved while the images remain representative. The exact playback, zoom, row expansion, and log-check variants were not specified.
+
+The Release x64 test target built successfully and the full suite passed 1,220 tests. The added effect rasterizer bitmap test covers sparse targets and many overlapping intents. The separately planned regression using the captured gradient bounds and colors, its baseline failure, and the planned pixel comparisons have not been implemented. Jira's acceptance criteria and verification comment now reflect the performance fix and reported results.
 
 ## Context and Orientation
 
@@ -129,4 +132,4 @@ The attached screenshot is `vixen error.JPG` and the log archive is `vixen error
 
 Analysis complete and plan integrated with plans.md.
 
-Revision on 2026-11-19 records the actual Rider throw, the exact standalone reproduction, and why the two-point horizontal brush supersedes the minimum-height proposal. The next implementation milestone uses the captured bounds and colors for the regression.
+Revision on 2026-11-19 records the actual Rider throw, the exact standalone reproduction, and why the two-point horizontal brush supersedes the minimum-height proposal. A later verification update records the user-reported manual results, dense-effect sampling fix, automated test results, and the remaining captured-gradient regression gap.
