@@ -12,7 +12,7 @@ Users should be able to expand the EFL Showstopper mini-tree rows in the Grinch 
 - [x] (2026-11-19 00:50Z) Drafted a Rider execution plan with a baseline debugger capture and a bitmap regression.
 - [x] (2026-11-19 01:23Z) Recorded the acceptance criteria and reproduction test plan in Jira, preserving the original report.
 - [x] Implemented the gradient brush repair and bounded dense-effect thumbnail sampling. The Release x64 test target built and the full suite passed 1,220 tests, including the dense thumbnail bitmap test.
-- [ ] The separately planned captured-gradient bitmap regression, including baseline failure and gradient pixel comparisons, was not implemented.
+- [x] Added captured-gradient bitmap regression coverage: the original rectangle brush reproduces the HRESULT, the repaired brush accepts the captured bounds and ARGB colors, and ordinary gradients match the original pixels. The focused four tests and full suite of 1,224 tests passed on Windows Release x64.
 - [x] (2026-11-19 01:07Z) Captured a thin Butterfly segment in the live Grinch profile and stepped over its brush constructor successfully.
 - [x] (2026-11-19 01:10Z) Captured the actual Butterfly throw in Rider and reproduced it with the exact bounds and colors in a standalone Windows process.
 - [x] (2026-11-19 01:11Z) Verified that a two-point horizontal brush accepts the captured inputs and compared ordinary rendered pixels with the original constructor.
@@ -44,7 +44,7 @@ Users should be able to expand the EFL Showstopper mini-tree rows in the Grinch 
 
 The live Grinch throw and standalone replay establish that the legacy rectangle brush fails on the narrow-height Butterfly lane. A standalone comparison verified the two-point design and preserved visible gradient pixels. The production repair also bounds dense-effect thumbnail sampling, and the user reports that the original error and scrolling delay are resolved while the images remain representative. The exact playback, zoom, row expansion, and log-check variants were not specified.
 
-The Release x64 test target built successfully and the full suite passed 1,220 tests. The added effect rasterizer bitmap test covers sparse targets and many overlapping intents. The separately planned regression using the captured gradient bounds and colors, its baseline failure, and the planned pixel comparisons have not been implemented. Jira's acceptance criteria and verification comment now reflect the performance fix and reported results.
+The Release x64 test target built successfully and the full suite passed 1,224 tests. The effect rasterizer bitmap test covers sparse targets and many overlapping intents. The intent rasterizer bitmap tests reproduce the original rectangle-brush failure with the captured geometry and ARGB colors, verify the repaired brush accepts those inputs, compare ordinary gradient pixels, and check subsequent drawing after tiny and invalid bounds. Because RGBValue(Color) does not retain alpha, the exact captured colors are passed directly to the private gradient boundary after initializing the rasterizer through its normal entry point; that entry point also receives the captured geometry with opaque distinct colors. Jira's acceptance criteria and earlier verification comment reflect the performance fix and manual results; the comment predates this regression test.
 
 ## Context and Orientation
 
@@ -132,4 +132,4 @@ The attached screenshot is `vixen error.JPG` and the log archive is `vixen error
 
 Analysis complete and plan integrated with plans.md.
 
-Revision on 2026-11-19 records the actual Rider throw, the exact standalone reproduction, and why the two-point horizontal brush supersedes the minimum-height proposal. A later verification update records the user-reported manual results, dense-effect sampling fix, automated test results, and the remaining captured-gradient regression gap.
+Revision on 2026-11-19 records the actual Rider throw, the exact standalone reproduction, and why the two-point horizontal brush supersedes the minimum-height proposal. Later verification updates record the user-reported manual results, dense-effect sampling fix, and captured-gradient regression coverage.
